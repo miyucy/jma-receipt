@@ -14,15 +14,15 @@ LOG_FILE=/var/log/jma-receipt/"$2"orcb013_3.log
 
 
 #-------------------------------------------#
-#        ¸¡º÷·ë²Ì¥Ç¡¼¥¿ºîÀ®
+#        æ¤œç´¢çµæžœãƒ‡ãƒ¼ã‚¿ä½œæˆ
 #        $1  TERMID
 #        $2  HOSPNUM
-#        $3  ¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ëÌ¾
-#        $4  ½èÍýÆü
-#        $5  ½èÍý»þ´Ö
+#        $3  ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«å
+#        $4  å‡¦ç†æ—¥
+#        $5  å‡¦ç†æ™‚é–“
 #        $6  OPID
 #        $7  KARTE_UID (API Only)
-#        $8  Push¥Õ¥¡¥¤¥ëÌ¾(API Only)
+#        $8  Pushãƒ•ã‚¡ã‚¤ãƒ«å(API Only)
 #        $9  ID(for MONBLOB)
 #-------------------------------------------#
 
@@ -46,7 +46,7 @@ PUSH_FILE_BASE=$8
 PUSH_FILE_FULL=${MCP_TEMPDIR}/${PUSH_FILE_BASE}
 
 cleanup(){
-##      ¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ëºï½ü
+##      ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi

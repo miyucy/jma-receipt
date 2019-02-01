@@ -1,25 +1,25 @@
 --                                      --
--- ¥ì¥»¥×¥È´ÉÍý¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹           --
+-- ãƒ¬ã‚»ãƒ—ãƒˆç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´           --
 --                                      --
 --                                      --
--- ¹àÌÜÄÉ²Ã (ÊÔÄÖÂÐ±þ)                  --
---   ¡¡¡¡¡¡¡¡¼ç²Ê¤È¤Ê¤ë¿ÇÎÅ²Ê(SRYKA)    --
---   ¡¡¡¡¡¡¡¡¸©Æâ³°°õºþ½ç(PREFKBN_SRT)  --
---   ¡¡¡¡¡¡¡¡ÊÝ¸±¼Ô°õºþ½ç(HKNJANUM_SRT) --
---   ¡¡¡¡¡¡¡¡¥ì¥»¥×¥È¼ïÊÌ°õºþ½ç         --
+-- é …ç›®è¿½åŠ  (ç·¨ç¶´å¯¾å¿œ)                  --
+--   ã€€ã€€ã€€ã€€ä¸»ç§‘ã¨ãªã‚‹è¨ºç™‚ç§‘(SRYKA)    --
+--   ã€€ã€€ã€€ã€€çœŒå†…å¤–å°åˆ·é †(PREFKBN_SRT)  --
+--   ã€€ã€€ã€€ã€€ä¿é™ºè€…å°åˆ·é †(HKNJANUM_SRT) --
+--   ã€€ã€€ã€€ã€€ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥å°åˆ·é †         --
 --                    (RECESYUBETU_SRT) --
---   ¡¡¡¡¡¡¡¡ÊÝ¸±¼ÔÈÖ¹æ(HKNJANUM)       --
---   ¡¡¡¡¡¡¡¡ºßÁí¿Ç¼±ÊÌ(ZAITAKU)        --
---   ¡¡¡¡¡¡¡¡Ä¹´ü¼±ÊÌ  (CHOUKI)         --
---   ¡¡¡¡¡¡¡¡ºßÁí¿ÇËç¿ô(PAGE_ZAITAKU)   --
---   ¡¡¡¡¡¡¡¡Ä¹´üËç¿ô  (PAGE_CHOUKI)    --
---   ¡¡¡¡¡¡¡¡½ÅÊ£Ëç¿ô  (PAGE_DUP)       --
---   ¡¡¡¡¡¡¡¡ÊÔÄÖ½ç¾ðÊó(HSEQNUM)        --
+--   ã€€ã€€ã€€ã€€ä¿é™ºè€…ç•ªå·(HKNJANUM)       --
+--   ã€€ã€€ã€€ã€€åœ¨ç·è¨ºè­˜åˆ¥(ZAITAKU)        --
+--   ã€€ã€€ã€€ã€€é•·æœŸè­˜åˆ¥  (CHOUKI)         --
+--   ã€€ã€€ã€€ã€€åœ¨ç·è¨ºæžšæ•°(PAGE_ZAITAKU)   --
+--   ã€€ã€€ã€€ã€€é•·æœŸæžšæ•°  (PAGE_CHOUKI)    --
+--   ã€€ã€€ã€€ã€€é‡è¤‡æžšæ•°  (PAGE_DUP)       --
+--   ã€€ã€€ã€€ã€€ç·¨ç¶´é †æƒ…å ±(HSEQNUM)        --
 --                                      --
 -- Create Date : 2005/12/19             --
 --                                      --
 
--- TBL_RECEKANRIWK ºîÀ®               --
+-- TBL_RECEKANRIWK ä½œæˆ               --
 
 create table TBL_RECEKANRIWK (
 PRTID               char(4)		not null,
@@ -40,16 +40,16 @@ TERMID              varchar(16),
 constraint TBL_RECEKANRIWK_primary_key primary key (PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,RECESYUBETU));
 
 
--- TBL_RECEKANRI ¢ª TBL_RECEKANRIWK   --
+-- TBL_RECEKANRI â†’ TBL_RECEKANRIWK   --
 
 insert into TBL_RECEKANRIWK
 select * from TBL_RECEKANRI;
 
--- TBL_RECEKANRI ºï½ü               --
+-- TBL_RECEKANRI å‰Šé™¤               --
 
 drop table TBL_RECEKANRI;
 
--- TBL_RECEKANRI ºîÀ®               --
+-- TBL_RECEKANRI ä½œæˆ               --
 
 create table TBL_RECEKANRI (
 PRTID               char(4)		not null,
@@ -81,7 +81,7 @@ TERMID              varchar(64),
 OPID                varchar(16),
 constraint TBL_RECEKANRI_primary_key primary key (PRTID,SYOKBN,CREYMD,CREHMS,TEISYUTUSAKI,SRYKA,PREFKBN_SRT,HKNJANUM_SRT,HKNJANUM,RECESYUBETU,RECESYUBETU_SRT,ZAITAKU,CHOUKI));
 
--- TBL_RECEKANRIWK ¢ª TBL_RECEKANRI --
+-- TBL_RECEKANRIWK â†’ TBL_RECEKANRI --
 
 insert into TBL_RECEKANRI
 (PRTID,
@@ -120,6 +120,6 @@ TERMID from TBL_RECEKANRIWK;
 -- INDEX idx_recekanri_sryym MAKE --
 CREATE INDEX idx_recekanri_sryym ON tbl_recekanri USING btree (sryym);
 
--- TBL_RECEKANRIWK ºï½ü             --
+-- TBL_RECEKANRIWK å‰Šé™¤             --
 
 drop table TBL_RECEKANRIWK;

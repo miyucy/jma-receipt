@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,47 +16,47 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¼õ¿ÇÆâÍÆ¥Ç¡¼¥¿      CPJYUSIN.INC 
+      *  å—è¨ºå†…å®¹ãƒ‡ãƒ¼ã‚¿      CPJYUSIN.INC 
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  JYU-JYUSIN-REC.
            03  JYU-KEY.
-      *°åÎÅµ¡´Ø¥³¡¼¥É
+      *åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
                05  JYU-HOSPID          PIC X(24).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  JYU-PTID            PIC 9(10).
-      *¼õÉÕÇ¯·îÆü
+      *å—ä»˜å¹´æœˆæ—¥
                05  JYU-UKEYMD          PIC X(08).
-      *¼õÉÕ»þ´Ö
+      *å—ä»˜æ™‚é–“
                05  JYU-UKETIME         PIC X(06).
-      *´µ¼Ô»áÌ¾
+      *æ‚£è€…æ°å
            03  JYU-KNJNAME             PIC X(50).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  JYU-SRYKA               PIC X(02).
-      *¥É¥¯¥¿¡¼¥³¡¼¥É
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  JYU-TANTDR              PIC X(05).
-      *¿ÇÎÅÆâÍÆ
+      *è¨ºç™‚å†…å®¹
            03  JYU-SRYNAIYO            PIC X(02).
-      *²ñ·×»þ´Ö
+      *ä¼šè¨ˆæ™‚é–“
            03  JYU-KAIKEITIME          PIC 9(04).
-      *¥­¡¼Í½Ìó»þ´Ö
+      *ã‚­ãƒ¼äºˆç´„æ™‚é–“
            03  JYU-KYYKTIME            PIC 9(04).
-      *Í½Ìó»þ´Ö
+      *äºˆç´„æ™‚é–“
            03  JYU-YYKTIME             PIC 9(04).
-      *Í½Ìó£É£Ä
+      *äºˆç´„ï¼©ï¼¤
            03  JYU-YYKID               PIC 9(02).
-      *É½¼¨½ç
+      *è¡¨ç¤ºé †
            03  JYU-SORT                PIC 9(04).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  JYU-ADDYMD              PIC X(08).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  JYU-UPDYMD              PIC X(08).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  JYU-UPDYMD              PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  JYU-UPDYMD              PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  JYU-UPDYMD              PIC X(08).

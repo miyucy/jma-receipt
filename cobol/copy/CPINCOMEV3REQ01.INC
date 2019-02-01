@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    HAORI�ꥯ�����ȼ�Ǽ����
+      *    HAORIリクエスト収納情報
       *    COPY (CPINCOMEV3REQ01.INC)
       ******************************************************************
         01  INCOMEREQ01-AREA.
@@ -55,7 +55,7 @@
                         09  INCOMEREQ01-TFORCE         PIC X(05).
                 05  INCOMEREQ01-NYUGAIKBN      PIC X(1).
                 05  INCOMEREQ01-DENPNUM        PIC X(07).
-      *         ����������(NYUHENKBN)���ͽ�ˤϵ��ܤ��ʤ�
+      *         内部処理用(NYUHENKBN)仕様書には記載しない
                 05  INCOMEREQ01-NYUHENKBN      PIC X(1).
                 05  INCOMEREQ01-DENPEDANUM     PIC X(2).
                 05  INCOMEREQ01-NYUHENYMD      PIC X(10).

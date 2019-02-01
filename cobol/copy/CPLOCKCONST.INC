@@ -2,8 +2,8 @@
       *    CPLOCKCONST.INC
       ******************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
        01  ORC-LOCKCONST.
            02  ORC-LOCKCONST-T.
@@ -13,7 +13,7 @@
                05  ORC-LOCKCONST-LD-T01  PIC  X(20)   
                    VALUE   "ORCA00              " .
                05  ORC-LOCKCONST-NAME-T01   PIC  X(40)  
-                   VALUE   "•·•À•Â°º" .
+                   VALUE   "„É°„Éã„É•„Éº" .
                05  ORC-LOCKCONST-GNUM-T01   PIC  9(03)
                    VALUE   0.
              03  ORC-LOCKCONST-T02.
@@ -22,7 +22,7 @@
                05  ORC-LOCKCONST-LD-T02  PIC  X(20)   
                    VALUE   "ORCA01" .
                05  ORC-LOCKCONST-NAME-T02   PIC  X(40)  
-                   VALUE   "∫∆∞ı∫˛" .
+                   VALUE   "ÂÜçÂç∞Âà∑" .
                05  ORC-LOCKCONST-GNUM-T02   PIC  9(03)
                    VALUE   1.
              03  ORC-LOCKCONST-T03.
@@ -31,7 +31,7 @@
                05  ORC-LOCKCONST-LD-T03  PIC  X(20)   
                    VALUE   "ORCA02" .
                05  ORC-LOCKCONST-NAME-T03   PIC  X(40)  
-                   VALUE   "æ Û∫ÔΩ¸" .
+                   VALUE   "ÊÉÖÂ†±ÂâäÈô§" .
                05  ORC-LOCKCONST-GNUM-T03   PIC  9(03)
                    VALUE   3.
              03  ORC-LOCKCONST-T04.
@@ -40,7 +40,7 @@
                05  ORC-LOCKCONST-LD-T04  PIC  X(20)   
                    VALUE   "ORCA11" .
                05  ORC-LOCKCONST-NAME-T04   PIC  X(40)  
-                   VALUE   "ºı…’" .
+                   VALUE   "Âèó‰ªò" .
                05  ORC-LOCKCONST-GNUM-T04   PIC  9(03)
                    VALUE   11.
              03  ORC-LOCKCONST-T05.
@@ -49,7 +49,7 @@
                05  ORC-LOCKCONST-LD-T05  PIC  X(20)   
                    VALUE   "ORCA12" .
                05  ORC-LOCKCONST-NAME-T05   PIC  X(40)  
-                   VALUE   "¥µº‘≈–œø" .
+                   VALUE   "ÊÇ£ËÄÖÁôªÈå≤" .
                05  ORC-LOCKCONST-GNUM-T05   PIC  9(03)
                    VALUE   12.
              03  ORC-LOCKCONST-T06.
@@ -58,7 +58,7 @@
                05  ORC-LOCKCONST-LD-T06  PIC  X(20)   
                    VALUE   "ORCA13" .
                05  ORC-LOCKCONST-NAME-T06   PIC  X(40)  
-                   VALUE   "æ»≤Ò" .
+                   VALUE   "ÁÖß‰ºö" .
                05  ORC-LOCKCONST-GNUM-T06   PIC  9(03)
                    VALUE   13.
              03  ORC-LOCKCONST-T07.
@@ -67,7 +67,7 @@
                05  ORC-LOCKCONST-LD-T07  PIC  X(20)   
                    VALUE   "ORCA14" .
                05  ORC-LOCKCONST-NAME-T07   PIC  X(40)  
-                   VALUE   "ÕΩÃÛ" .
+                   VALUE   "‰∫àÁ¥Ñ" .
                05  ORC-LOCKCONST-GNUM-T07   PIC  9(03)
                    VALUE   14.
              03  ORC-LOCKCONST-T08.
@@ -76,7 +76,7 @@
                05  ORC-LOCKCONST-LD-T08  PIC  X(20)
                    VALUE   "ORCA18" .
                05  ORC-LOCKCONST-NAME-T08   PIC  X(40)  
-                   VALUE   "ºı…’∞ÏÕ˜" .
+                   VALUE   "Âèó‰ªò‰∏ÄË¶ß" .
                05  ORC-LOCKCONST-GNUM-T08   PIC  9(03)
                    VALUE   18.
              03  ORC-LOCKCONST-T09.
@@ -85,7 +85,7 @@
                05  ORC-LOCKCONST-LD-T09  PIC  X(20)
                    VALUE   "ORCA19" .
                05  ORC-LOCKCONST-NAME-T09   PIC  X(40)  
-                   VALUE   "ª·Ãæ∏°∫˜" .
+                   VALUE   "Ê∞èÂêçÊ§úÁ¥¢" .
                05  ORC-LOCKCONST-GNUM-T09   PIC  9(03)
                    VALUE   19.
              03  ORC-LOCKCONST-T10.
@@ -94,7 +94,7 @@
                05  ORC-LOCKCONST-LD-T10  PIC  X(20)
                    VALUE   "ORCA21" .
                05  ORC-LOCKCONST-NAME-T10   PIC  X(40)  
-                   VALUE   "ø«Œ≈π‘∞Ÿ" .
+                   VALUE   "Ë®∫ÁôÇË°åÁÇ∫" .
                05  ORC-LOCKCONST-GNUM-T10   PIC  9(03)
                    VALUE   21.
              03  ORC-LOCKCONST-T11.
@@ -103,7 +103,7 @@
                05  ORC-LOCKCONST-LD-T11  PIC  X(20)
                    VALUE   "ORCA22" .
                05  ORC-LOCKCONST-NAME-T11   PIC  X(40)  
-                   VALUE   "…¬Ãæ" .
+                   VALUE   "ÁóÖÂêç" .
                05  ORC-LOCKCONST-GNUM-T11   PIC  9(03)
                    VALUE   22.
              03  ORC-LOCKCONST-T12.
@@ -112,7 +112,7 @@
                05  ORC-LOCKCONST-LD-T12  PIC  X(20)
                    VALUE   "ORCA23" .
                05  ORC-LOCKCONST-NAME-T12   PIC  X(40)  
-                   VALUE   "º˝«º" .
+                   VALUE   "ÂèéÁ¥ç" .
                05  ORC-LOCKCONST-GNUM-T12   PIC  9(03)
                    VALUE   23.
              03  ORC-LOCKCONST-T13.
@@ -121,7 +121,7 @@
                05  ORC-LOCKCONST-LD-T13  PIC  X(20)
                    VALUE   "ORCA24" .
                05  ORC-LOCKCONST-NAME-T13   PIC  X(40)  
-                   VALUE   "≤Ò∑◊æ»≤Ò" .
+                   VALUE   "‰ºöË®àÁÖß‰ºö" .
                05  ORC-LOCKCONST-GNUM-T13   PIC  9(03)
                    VALUE   24.
              03  ORC-LOCKCONST-T14.
@@ -130,7 +130,7 @@
                05  ORC-LOCKCONST-LD-T14  PIC  X(20)
                    VALUE   "ORCA41" .
                05  ORC-LOCKCONST-NAME-T14   PIC  X(40)  
-                   VALUE   "•«°º•ø•¡•ß•√•Ø" .
+                   VALUE   "„Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ" .
                05  ORC-LOCKCONST-GNUM-T14   PIC  9(03)
                    VALUE   41.
              03  ORC-LOCKCONST-T15.
@@ -139,7 +139,7 @@
                05  ORC-LOCKCONST-LD-T15  PIC  X(20)
                    VALUE   "ORCA42" .
                05  ORC-LOCKCONST-NAME-T15   PIC  X(40)  
-                   VALUE   "Ã¿∫ŸΩÒ" .
+                   VALUE   "ÊòéÁ¥∞Êõ∏" .
                05  ORC-LOCKCONST-GNUM-T15   PIC  9(03)
                    VALUE   42.
              03  ORC-LOCKCONST-T16.
@@ -148,7 +148,7 @@
                05  ORC-LOCKCONST-LD-T16  PIC  X(20)
                    VALUE   "ORCA43" .
                05  ORC-LOCKCONST-NAME-T16   PIC  X(40)  
-                   VALUE   "¿¡µ·¥…Õ˝" .
+                   VALUE   "Ë´ãÊ±ÇÁÆ°ÁêÜ" .
                05  ORC-LOCKCONST-GNUM-T16   PIC  9(03)
                    VALUE   43.
              03  ORC-LOCKCONST-T17.
@@ -157,7 +157,7 @@
                05  ORC-LOCKCONST-LD-T17  PIC  X(20)
                    VALUE   "ORCA44" .
                05  ORC-LOCKCONST-NAME-T17   PIC  X(40)  
-                   VALUE   "¡Ì≥Á°¶∏¯»Ò¿¡µ·ΩÒ" .
+                   VALUE   "Á∑èÊã¨„ÉªÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏" .
                05  ORC-LOCKCONST-GNUM-T17   PIC  9(03)
                    VALUE   44.
              03  ORC-LOCKCONST-T18.
@@ -166,7 +166,7 @@
                05  ORC-LOCKCONST-LD-T18  PIC  X(20)
                    VALUE   "ORCA51" .
                05  ORC-LOCKCONST-NAME-T18   PIC  X(40)  
-                   VALUE   "∆¸º°≈˝∑◊" .
+                   VALUE   "Êó•Ê¨°Áµ±Ë®à" .
                05  ORC-LOCKCONST-GNUM-T18   PIC  9(03)
                    VALUE   51.
              03  ORC-LOCKCONST-T19.
@@ -175,7 +175,7 @@
                05  ORC-LOCKCONST-LD-T19  PIC  X(20)
                    VALUE   "ORCA71" .
                05  ORC-LOCKCONST-NAME-T19   PIC  X(40)  
-                   VALUE   "∑Óº°≈˝∑◊" .
+                   VALUE   "ÊúàÊ¨°Áµ±Ë®à" .
                05  ORC-LOCKCONST-GNUM-T19   PIC  9(03)
                    VALUE   52.
              03  ORC-LOCKCONST-T20.
@@ -184,7 +184,7 @@
                05  ORC-LOCKCONST-LD-T20  PIC  X(20)
                    VALUE   "ORCA71" .
                05  ORC-LOCKCONST-NAME-T20   PIC  X(40)  
-                   VALUE   "•«°º•øΩ–Œœ" .
+                   VALUE   "„Éá„Éº„ÇøÂá∫Âäõ" .
                05  ORC-LOCKCONST-GNUM-T20   PIC  9(03)
                    VALUE   71.
              03  ORC-LOCKCONST-T21.
@@ -193,7 +193,7 @@
                05  ORC-LOCKCONST-LD-T21  PIC  X(20)
                    VALUE   "ORCA82" .
                05  ORC-LOCKCONST-NAME-T21   PIC  X(40)  
-                   VALUE   "≥∞…Ù«ﬁ¬Œ" .
+                   VALUE   "Â§ñÈÉ®Â™í‰Ωì" .
                05  ORC-LOCKCONST-GNUM-T21   PIC  9(03)
                    VALUE   82.
              03  ORC-LOCKCONST-T22.
@@ -202,7 +202,7 @@
                05  ORC-LOCKCONST-LD-T22  PIC  X(20)
                    VALUE   "ORCA101" .
                05  ORC-LOCKCONST-NAME-T22   PIC  X(40)  
-                   VALUE   "•∑•π•∆•‡¥…Õ˝" .
+                   VALUE   "„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ" .
                05  ORC-LOCKCONST-GNUM-T22   PIC  9(03)
                    VALUE   101.
              03  ORC-LOCKCONST-T23.
@@ -211,7 +211,7 @@
                05  ORC-LOCKCONST-LD-T23  PIC  X(20)
                    VALUE   "ORCA102" .
                05  ORC-LOCKCONST-NAME-T23   PIC  X(40)  
-                   VALUE   "≈¿øÙ•ﬁ•π•ø" .
+                   VALUE   "ÁÇπÊï∞„Éû„Çπ„Çø" .
                05  ORC-LOCKCONST-GNUM-T23   PIC  9(03)
                    VALUE   102.
              03  ORC-LOCKCONST-T24.
@@ -220,7 +220,7 @@
                05  ORC-LOCKCONST-LD-T24  PIC  X(20)
                    VALUE   "ORCA103" .
                05  ORC-LOCKCONST-NAME-T24   PIC  X(40)  
-                   VALUE   "•¡•ß•√•Ø•ﬁ•π•ø" .
+                   VALUE   "„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„Çø" .
                05  ORC-LOCKCONST-GNUM-T24   PIC  9(03)
                    VALUE   103.
              03  ORC-LOCKCONST-T25.
@@ -229,7 +229,7 @@
                05  ORC-LOCKCONST-LD-T25  PIC  X(20)
                    VALUE   "ORCA104" .
                05  ORC-LOCKCONST-NAME-T25   PIC  X(40)  
-                   VALUE   " ›∏±»÷πÊ•ﬁ•π•ø" .
+                   VALUE   "‰øùÈô∫Áï™Âè∑„Éû„Çπ„Çø" .
                05  ORC-LOCKCONST-GNUM-T25   PIC  9(03)
                    VALUE   104.
              03  ORC-LOCKCONST-T26.
@@ -238,7 +238,7 @@
                05  ORC-LOCKCONST-LD-T26  PIC  X(20)
                    VALUE   "ORCA105" .
                05  ORC-LOCKCONST-NAME-T26   PIC  X(40)  
-                   VALUE   " ›∏±º‘•ﬁ•π•ø" .
+                   VALUE   "‰øùÈô∫ËÄÖ„Éû„Çπ„Çø" .
                05  ORC-LOCKCONST-GNUM-T26   PIC  9(03)
                    VALUE   105.
              03  ORC-LOCKCONST-T27.
@@ -247,7 +247,7 @@
                05  ORC-LOCKCONST-LD-T27  PIC  X(20)
                    VALUE   "ORCA106" .
                05  ORC-LOCKCONST-NAME-T27   PIC  X(40)  
-                   VALUE   "øÕÃæº≠ΩÒ•ﬁ•π•ø" .
+                   VALUE   "‰∫∫ÂêçËæûÊõ∏„Éû„Çπ„Çø" .
                05  ORC-LOCKCONST-GNUM-T27   PIC  9(03)
                    VALUE   106.
              03  ORC-LOCKCONST-T28.
@@ -256,7 +256,7 @@
                05  ORC-LOCKCONST-LD-T28  PIC  X(20)
                    VALUE   "ORCA31" .
                05  ORC-LOCKCONST-NAME-T28   PIC  X(40)  
-                   VALUE   "∆˛¬‡±°≈–œø" .
+                   VALUE   "ÂÖ•ÈÄÄÈô¢ÁôªÈå≤" .
                05  ORC-LOCKCONST-GNUM-T28   PIC  9(03)
                    VALUE   31.
              03  ORC-LOCKCONST-T29.
@@ -265,7 +265,7 @@
                05  ORC-LOCKCONST-LD-T29  PIC  X(20)
                    VALUE   "ORCA32" .
                05  ORC-LOCKCONST-NAME-T29   PIC  X(40)  
-                   VALUE   "∆˛±°≤Ò∑◊æ»≤Ò" .
+                   VALUE   "ÂÖ•Èô¢‰ºöË®àÁÖß‰ºö" .
                05  ORC-LOCKCONST-GNUM-T29   PIC  9(03)
                    VALUE   32.
              03  ORC-LOCKCONST-T30.
@@ -274,7 +274,7 @@
                05  ORC-LOCKCONST-LD-T30  PIC  X(20)
                    VALUE   "ORCA34" .
                05  ORC-LOCKCONST-NAME-T30   PIC  X(40)  
-                   VALUE   "¬‡±°ª˛≤æ∑◊ªª" .
+                   VALUE   "ÈÄÄÈô¢ÊôÇ‰ªÆË®àÁÆó" .
                05  ORC-LOCKCONST-GNUM-T30   PIC  9(03)
                    VALUE   34.
              03  ORC-LOCKCONST-T31.
@@ -283,7 +283,7 @@
                05  ORC-LOCKCONST-LD-T31  PIC  X(20)
                    VALUE   "ORCA33" .
                05  ORC-LOCKCONST-NAME-T31   PIC  X(40)  
-                   VALUE   "ƒÍ¥¸¿¡µ·" .
+                   VALUE   "ÂÆöÊúüË´ãÊ±Ç" .
                05  ORC-LOCKCONST-GNUM-T31   PIC  9(03)
                    VALUE   33.
            02  ORC-LOCKCONST-R  REDEFINES   ORC-LOCKCONST-T.

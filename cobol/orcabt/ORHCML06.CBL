@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,26 +18,26 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORHCML06.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ޥ���
-      *  ����ݡ��ͥ��̾  : ���ϥ����������ޥ�������ɽ�����ޡ�HCML06��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/08    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 点数マスタ
+      *  コンポーネント名  : 入力コード点数マスタ一覧表・薬剤（HCML06）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/08    MCC-森脇      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/04/24  ���������������ģ¤��ɲ�
-      *  01.00.03    MCC-ƣ��     02/05/10  �ǿ��Υ���ִ����ģ¤ؤι���
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/04/24  印刷管理・印刷ＤＢの追加
+      *  01.00.03    MCC-藤原     02/05/10  頁数のジョブ管理ＤＢへの更新
       *
-      *  01.01.01    NACL-ƣ��    02/10/10  �����ȶ�ʬ�ɲ�
-      *  01.01.02    NACL-����    03/03/10  TERMID���ΰ����ʤ�
-      *  01.01.03    NACL-����    03/09/12  ����������Խ����ɲ�
-      *  01.01.04    NACL-����    06/07/27  �ե饰�ɲá�MONFUNC�б�
-      *  03.05.01    NACL-����    07/05/29  ���롼�׿����б�
-      *  04.03.01    NACL-����    08/06/13  �ãӣ֥ե���������б�
-      *  04.08.01    NACL-����    14/07/31  ����ե�����ǥ��쥯�ȥ�����
-      *  04.08.02    NACL-����    16/03/17  ��ۼ��̣����б�
+      *  01.01.01    NACL-藤原    02/10/10  サイト区分追加
+      *  01.01.02    NACL-森脇    03/03/10  TERMIDの領域指定なし
+      *  01.01.03    NACL-太田    03/09/12  処理件数の編集を追加
+      *  01.01.04    NACL-森脇    06/07/27  フラグ追加、MONFUNC対応
+      *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.03.01    NACL-森脇    08/06/13  ＣＳＶファイル出力対応
+      *  04.08.01    NACL-森脇    14/07/31  一時ファイルディレクトリ設定
+      *  04.08.02    NACL-森脇    16/03/17  金額種別４に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,10 +45,10 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
                                    FILE    STATUS  IS  STS-TENSUERR.
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
            SELECT  TENSUCSV-FILE   ASSIGN  TENSUCSV
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
@@ -57,10 +57,10 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  TENSUERR-FILE.
        01  TENSUERR-REC             PIC X(200). 
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
        FD  TENSUCSV-FILE.
        01  TENSUCSV-REC.
            03  CSV-HOSPNUM         PIC 9(2).
@@ -74,7 +74,7 @@
       *----(04.08.02)--UPD-START---
       *
        WORKING-STORAGE             SECTION.
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
@@ -85,28 +85,28 @@
       *     
            COPY    "HCML06.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-TENSUERR        PIC X(02).
            03  STS-TENSUCSV        PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
            03  FLG-ICD             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(06).
       *
-      *    �����ΰ�
+      *    集計領域
        01  SUM-AREA.
            03  SUM-KENSU           PIC 9(07).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -127,7 +127,7 @@
        01  IDX-AREA.
            03  IDX                   PIC 9(02).      
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PATH              PIC X(64).
            03  WRK-TENSUERR          PIC X(200).        
@@ -152,23 +152,23 @@
       *----(04.08.02)--ADD-END-----
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ŵ���̾      
+      *    医療機関名      
            COPY  "CPSK1001.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *     
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
       *
-      *    ���ϥ�����
+      *    入力コード
        01  ICD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -179,31 +179,31 @@
            COPY    "CPPRTDATA.INC".          
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".          
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
            COPY    "COMMON-SPA".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
@@ -216,7 +216,7 @@
                USING
            COMMAND-PARAM.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -230,7 +230,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -272,7 +272,7 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -281,7 +281,7 @@
            MOVE    WRK-PARA-HOSPNUM
                                    TO  JOB-HOSPNUM
            MOVE    "ORHCML06"      TO  JOB-PGID
-           MOVE    "���ϥ����ɰ���ɽ������" 
+           MOVE    "入力コード一覧表・薬剤" 
                                    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"       USING
                                    ORCSJOBKANRIAREA  
@@ -301,18 +301,18 @@
            MOVE    SGETTEMP-FULLNAME   TO  TENSUERR
       *----(04.08.01)--ADD-END-----
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC                   SECTION.                     
       *
-      *    ���ŵ���̾���Խ�
+      *    医療機関名称編集
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -326,7 +326,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE    
                INITIALIZE                  SYS-1001-REC
-               MOVE    "���ŵ���̾�Τ������Ǥ��ޤ���Ǥ�����"
+               MOVE    "医療機関名称が取得できませんでした。"
                                            TO  WRK-TENSUERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF                                     
@@ -336,15 +336,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            IF      WRK-PARA-CSVKBN =   "1"
-      *        �ãӣ��Խ�����
+      *        ＣＳＶ編集処理
                PERFORM 300-CSV-SEC 
            ELSE
-      *        Ģɼ�Խ�����
+      *        帳票編集処理
                PERFORM 300-PRINT-SEC
            END-IF
       *
@@ -355,7 +355,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        300-CSV-SEC                 SECTION.
       *
@@ -368,25 +368,25 @@
            END-STRING
       *----(04.08.01)--UPD-END-----
       *
-      *    �ãӣ֥ե�����򳫤�
+      *    ＣＳＶファイルを開く
            OPEN    OUTPUT              TENSUCSV-FILE
       *
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       6
                IF      WRK-PARA-IYKCHK (IDX)   >   ZERO    
-      *            Ģɼ�������Ͻ���
+      *            帳票印刷開始処理
                    PERFORM 900-DBSELECT-SEC
-      *            Ģɼ�Խ�<CSV>����
+      *            帳票編集<CSV>処理
                    PERFORM 330-CSV-HEN-SEC
-      *            Ģɼ������λ����
+      *            帳票印刷終了処理
                    PERFORM 900-DBCLOSE-SEC
                END-IF
            END-PERFORM
       *
-      *    �ãӣ֥ե�������Ĥ���
+      *    ＣＳＶファイルを閉じる
            CLOSE                       TENSUCSV-FILE
       *
-      *    ���饤�������¸�ξ��
+      *    クライアント保存の場合
            IF      WRK-PARA-FILE       =   "1"
                PERFORM 380-CSV-OUT-SEC
            END-IF
@@ -396,7 +396,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        300-PRINT-SEC                SECTION.
       *
@@ -404,16 +404,16 @@
                    UNTIL   IDX >       6
                IF      WRK-PARA-IYKCHK (IDX)   >   ZERO    
                    INITIALIZE                  CNT-AREA
-      *            Ģɼ�������Ͻ���
+      *            帳票印刷開始処理
                    PERFORM 900-DBSELECT-SEC
                    PERFORM UNTIL   FLG-TENSU   =   1
-      *                Ģɼ�Խ�<���Ф�>����
+      *                帳票編集<見出し>処理
                        PERFORM 310-HEAD-HEN-SEC 
-      *                Ģɼ�Խ�<����>����
+      *                帳票編集<明細>処理
                        PERFORM 320-BODY-HEN-SEC
                                UNTIL   FLG-TENSU     =   1
                                OR      CNT-LINE      =   35
-      *                Ģɼ��������
+      *                帳票印刷処理
                        PERFORM 390-PRINT-OUT-SEC
                    END-PERFORM
                    PERFORM 900-DBCLOSE-SEC
@@ -425,7 +425,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HEAD-HEN-SEC          SECTION.
       *
@@ -440,17 +440,17 @@
       *
            EVALUATE TNS-YKZKBN
                WHEN    1
-                   MOVE    "����������"        TO  HCML06-DAI
+                   MOVE    "【内用薬】"        TO  HCML06-DAI
                WHEN    6
-                   MOVE    "�ڳ�������"        TO  HCML06-DAI
+                   MOVE    "【外用薬】"        TO  HCML06-DAI
                WHEN    4
-                   MOVE    "����������"        TO  HCML06-DAI
+                   MOVE    "【注射薬】"        TO  HCML06-DAI
                WHEN    8
-                   MOVE    "�ڻ��������ޡ�"    TO  HCML06-DAI
+                   MOVE    "【歯科用薬剤】"    TO  HCML06-DAI
                WHEN    9    
-                   MOVE    "�ڻ����������ޡ�"  TO  HCML06-DAI
+                   MOVE    "【歯科特定薬剤】"  TO  HCML06-DAI
                WHEN    3
-                   MOVE    "�ڤ���¾��"        TO  HCML06-DAI
+                   MOVE    "【その他】"        TO  HCML06-DAI
            END-EVALUATE        
       *
            .
@@ -458,16 +458,16 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC      SECTION.
       *
            PERFORM 900-ICDSELECT-SEC 
            PERFORM UNTIL   FLG-ICD   =   1
                IF      CNT-LINE    =   35  
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 390-PRINT-OUT-SEC
-      *            Ģɼ�Խ�<���Ф�>����
+      *            帳票編集<見出し>処理
                    PERFORM 310-HEAD-HEN-SEC
                END-IF
                ADD     1                 TO  CNT-LINE
@@ -494,7 +494,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        330-CSV-HEN-SEC      SECTION.
       *
@@ -530,7 +530,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�ãӣֽ���
+      *    帳票ＣＳＶ処理
       *****************************************************************
        380-CSV-OUT-SEC                SECTION.
       *
@@ -561,7 +561,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC                SECTION.
       *
@@ -585,7 +585,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCML06.red"        TO  SPRT-PRTID
-           MOVE    "���ϥ����ɰ���ɽ������"
+           MOVE    "入力コード一覧表・薬剤"
                                        TO  SPRT-TITLE
            MOVE    HCML06              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -598,7 +598,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-TENSUERR
                PERFORM 500-ERR-HENSYU-SEC                           
            END-IF                                                              
@@ -607,7 +607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -621,7 +621,7 @@
                MOVE    WRK-TENSUERR         TO  TENSUERR-REC
                WRITE   TENSUERR-REC
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    SUM-KENSU       TO  JOB-UPDCNT
@@ -646,13 +646,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            DISPLAY "*** ORHCML06 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    SUM-KENSU       TO  JOB-UPDCNT
@@ -672,7 +672,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ����ǯ����������ǯ�����ʵ�ǽ������
+      *   和暦年月日→西暦年月日（機能１２）
       *****************************************************************
        831-YMDCONV12-SEC                         SECTION.
       *
@@ -689,7 +689,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɡ����� 
+      *    入力コード　検索 
       *****************************************************************
        900-ICDSELECT-SEC           SECTION.
       *  
@@ -713,7 +713,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ���ϥ����ɤ򸡺�����
+      *     入力コードを検索処理
       *****************************************************************
        900-ICDFETCH-SEC            SECTION.
       *
@@ -738,7 +738,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɡ�������������
+      *    入力コード　クローズ処理
       *****************************************************************
        900-ICDCLOSE-SEC            SECTION.
       *
@@ -753,7 +753,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ��������� 
+      *    点数マスタ　検索 
       *****************************************************************
        900-DBSELECT-SEC                 SECTION.
       *  
@@ -794,7 +794,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �����ޥ����򸡺�����
+      *     点数マスタを検索処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -815,7 +815,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ�����������������
+      *    点数マスタ　クローズ処理
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
@@ -830,7 +830,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹���
+      *    システム管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
@@ -869,7 +869,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -891,7 +891,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

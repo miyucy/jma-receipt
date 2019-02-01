@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION                            DIVISION.
        PROGRAM-ID.                               ORCGP982.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���긡��
-      *  ����ݡ��ͥ��̾  : ����������̡�P982��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/04    MCC-¿��Ǽ    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 住所検索
+      *  コンポーネント名  : 住所一覧画面（P982）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/04    MCC-多々納    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  05/11/14  MONFUNC �б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
-      *  04.04.00    NACL-¿��Ǽ  08/12/03  ���꤫��͹���ֹ������ɲ�
-      * 04.06.00     NACL-¿��Ǽ  11/02/10  �������̤�̾���Խ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  05/11/14  MONFUNC 対応
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  04.04.00    NACL-多々納  08/12/03  住所から郵便番号設定追加
+      * 04.06.00     NACL-多々納  11/02/10  京都府通り名称編集対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -44,38 +44,38 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ������Ͽ�Ѷ��̥ѥ�᥿
+      *    患者登録用共通パラメタ
            COPY    "P02COMMON-SPA".
       *
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *   
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-ADRS            PIC 9(01).
            03  FLG-KENSAKU         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-ENT             PIC 9(06).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDX-STR             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYY         PIC 9(04).
@@ -99,37 +99,37 @@
            03  FLG-GMN-INIT        PIC  9(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �ʼ���Į������
+      *    （周辺町域情報）
            COPY    "CPSK1015.INC".
-      *    ����ޥ���
+      *    住所マスタ
        01  ADRS-REC.
            COPY    "CPADRS.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -175,7 +175,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -193,15 +193,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -214,20 +214,20 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "PERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -247,7 +247,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
@@ -258,7 +258,7 @@
            MOVE    SPACE               TO  SPA-GMN982-KEYNAME
       *
            PERFORM 310-SPA-SET-SEC
-      *    ����Τߤλ����оݤȤ���
+      *    １件のみの時、対象とする
            IF      SPA-GMN982-MAX          =   1
                MOVE    1                   TO  IDX
                MOVE    SPA-GMN982-TPOST   (IDX)
@@ -279,16 +279,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        310-SPA-SET-SEC             SECTION.
       *
            MOVE    1                  TO  FLG-GMN-INIT
            IF      SPA-GMN982-KBN      =   2
-      *        ���꤫�鸡��
+      *        住所から検索
                PERFORM 3102-ADRS-HEN-SEC
            ELSE
-      *        ͹���ֹ������鸡��
+      *        郵便番号等から検索
                PERFORM 3101-POST-HEN-SEC
            END-IF
       *
@@ -297,7 +297,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͹���ֹ�����������
+      *    郵便番号等検索処理
       *****************************************************************
        3101-POST-HEN-SEC               SECTION.
       *
@@ -318,30 +318,30 @@
            ELSE
                MOVE    SPA-GMN982-POST         TO  ADRS-POST
            END-IF
-      *    �����������Υ����ɤΤ�
+      *    地方公共団体コードのみ
            IF     (SPA-GMN982-LPUBCD   NOT =   SPACE )  AND
                   (SPA-GMN982-POST         =   SPACE )
                MOVE    "key3"              TO  WRK-DBPATH
            END-IF
-      *    ͹���ֹ�Τ�
+      *    郵便番号のみ
            IF     (SPA-GMN982-LPUBCD       =   SPACE )  AND
                   (SPA-GMN982-POST     NOT =   SPACE )
                MOVE    "key4"              TO  WRK-DBPATH
            END-IF
-      *    ξ��
+      *    両方
            IF     (SPA-GMN982-LPUBCD   NOT =   SPACE )  AND
                   (SPA-GMN982-POST     NOT =   SPACE )
                MOVE    "key5"              TO  WRK-DBPATH
            END-IF
       *
-      *    ����ɽ�Խ�����
+      *    一覧表編集処理
            PERFORM 3101-TBLHENSYU-SEC 
            .
        3101-POST-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�Խ�����
+      *    一覧表編集処理
       *****************************************************************
        3101-TBLHENSYU-SEC               SECTION.
       *
@@ -385,17 +385,17 @@
                                                                    (IDX)
                        MOVE    ADRS-EDANUM     TO  SPA-GMN982-TRENNUM
                                                                    (IDX)
-      *                �̤�̾
+      *                通り名
                        MOVE    ADRS-TOWNNAME2  TO  SPA-GMN982-TTOWNNAME2
                                                                    (IDX)
-      *                ��Į¼̾��Į��̾
+      *                市町村名＋町域名
                        STRING  ADRS-CITYNAME
                                ADRS-TOWNNAME       DELIMITED  BY  SPACE
                                            INTO    SPA-GMN982-TCITYNAMET
                                                                   (IDX)
                        END-STRING
                        IF      ADRS-TOWNNAME
-                                           =   "�ʲ��˷Ǻܤ��ʤ����"
+                                           =   "以下に掲載がない場合"
                            MOVE    SPACE       TO  SPA-GMN982-TCITYNAMET
                                                                   (IDX)
                            MOVE    ADRS-CITYNAME
@@ -405,14 +405,14 @@
                        MOVE    ADRS-EDITADRS-NAME
                                            TO  SPA-GMN982-TCITYNAMET2
                                                                    (IDX)
-      *                ���Ԥ��̤�̾�Τ��Խ������
+      *                京都で通り名称を編集する時
                        IF     (ADRS-LPUBCD(1:2)    =   "26"  )
                          AND  (ADRS-TOWNNAME2  NOT =   SPACE )
                          AND  (SPA-NAI-TOWNNAME2KBN-FLG    =   "1" )
-                           IF      ADRS-TOWNNAME2(1:2)     =   "��" 
+                           IF      ADRS-TOWNNAME2(1:2)     =   "（" 
                                CONTINUE
                            ELSE
-      *                        ��Į¼̾���̤�̾�Ρ�Į��̾
+      *                        市町村名＋通り名称＋町域名
                                STRING  ADRS-CITYNAME
                                        ADRS-TOWNNAME2
                                        ADRS-TOWNNAME
@@ -420,7 +420,7 @@
                                            INTO    SPA-GMN982-TCITYNAMET
                                                                   (IDX)
                                END-STRING
-      *                        ��ƻ�ܸ�̾�ܻ�Į¼̾���̤�̾�Ρ�Į��̾
+      *                        都道府県名＋市町村名＋通り名称＋町域名
                                STRING  ADRS-PREFNAME
                                        ADRS-CITYNAME
                                        ADRS-TOWNNAME2
@@ -447,18 +447,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ���꤫��θ�������
+      *    住所からの検索処理
       *****************************************************************
        3102-ADRS-HEN-SEC               SECTION.
       *
            IF      SPA-GMN982-KEYNAME  =   SPACE
                PERFORM 31021-ADRS-INITHEN-SEC
            ELSE
-      *        ���ڡ���
+      *        改ページ
                INITIALIZE                      ADRS-REC
                MOVE    SPA-GMN982-KEYNAME  TO  ADRS-EDITADRS-NAME
                MOVE    "key8"              TO  WRK-DBPATH
-      *        ����ɽ�Խ�����
+      *        一覧表編集処理
                PERFORM 3101-TBLHENSYU-SEC
            END-IF
            .
@@ -466,7 +466,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���꤫��θ�������
+      *    住所からの検索処理
       *****************************************************************
        31021-ADRS-INITHEN-SEC              SECTION.
       *
@@ -493,7 +493,7 @@
                INITIALIZE                      ADRS-REC
                MOVE    WRK-ADRSNAME        TO  ADRS-EDITADRS-NAME
                MOVE    "key8"              TO  WRK-DBPATH
-      *        ����ɽ�Խ�����
+      *        一覧表編集処理
                PERFORM 3101-TBLHENSYU-SEC
                IF      SPA-GMN982-MAX      =   ZERO
                    IF      WRK-MAX-CNT     >   6
@@ -511,27 +511,27 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    INITIALIZE                  SPA-GMN982-KEY
                    MOVE    SPACE               TO  SPA-GMN982-TOWNNAME
                    MOVE    SPACE               TO  SPA-GMN982-CITYNAMET
                    PERFORM 210-BACK
-      *        ����
+      *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 260-MAE-PAGE-SEC
-      *        ����
+      *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 220-NEXT-HEN-SEC
-      *        ͹���ֹ�Τ�
+      *        郵便番号のみ
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 2100-B10-SYORI-SEC
-      *        ����
+      *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 2120-B12-SYORI-SEC
            END-EVALUATE
@@ -540,15 +540,15 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ��������
+      *        キー入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41011-SELNUM-CHK-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 41012-LISTSEL-SEC
            END-EVALUATE
@@ -557,7 +557,7 @@
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ����򡡽���
+      *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
@@ -565,7 +565,7 @@
       *
            MOVE    P982-SELNUM         TO  SPA-GMN982-SELNUM
       *
-      *    �����ֹ�����
+      *    選択番号入力
            INITIALIZE                      ORCSNUMAREA
            MOVE    P982-SELNUM         TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -579,7 +579,7 @@
                MOVE    SNUM-OUTNUM     TO  SPA-NAI982-SELNUM
            END-IF
       *
-      *    ����ΤߤȤ������Ȥ���
+      *    １件のみとき、１とする
            IF     (SPA-GMN982-MAX      =   1  )  AND
                   (SPA-NAI982-SELNUM   =   ZERO)
                MOVE    1               TO  SPA-NAI982-SELNUM
@@ -617,10 +617,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
-      *        ������
+      *        行選択
            MOVE    ZERO                TO  SPA-NAI982-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   100
@@ -640,7 +640,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͹���ֹ�Τ߽���
+      *    郵便番号のみ処理
       *****************************************************************
        2100-B10-SYORI-SEC       SECTION.
       *
@@ -659,7 +659,7 @@
        2100-B10-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    確定処理
       *****************************************************************
        2120-B12-SYORI-SEC       SECTION.
       *
@@ -688,7 +688,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    次頁処理
       *****************************************************************
        220-NEXT-HEN-SEC       SECTION.
       *
@@ -703,7 +703,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    前頁処理
       *****************************************************************
        260-MAE-PAGE-SEC       SECTION.
       *
@@ -718,7 +718,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -740,7 +740,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -760,7 +760,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -800,19 +800,19 @@
       *
            IF      SPA-GMN982-NEXT     =   1
                IF      SPA-GMN982-PAGE     =   1
-                   MOVE    "���Ǥ���"          TO  P982-NEXT-VALUE
+                   MOVE    "次頁あり"          TO  P982-NEXT-VALUE
                    MOVE    "red"               TO  P982-NEXT-STYLE
                ELSE
-                   MOVE    "�������Ǥ���"      TO  P982-NEXT-VALUE
+                   MOVE    "前・次頁あり"      TO  P982-NEXT-VALUE
                    MOVE    "red"               TO  P982-NEXT-STYLE
                END-IF
            ELSE
                IF      SPA-GMN982-PAGE     >   1
-                   MOVE    "���Ǥ���"          TO  P982-NEXT-VALUE
+                   MOVE    "前頁あり"          TO  P982-NEXT-VALUE
                    MOVE    "red"               TO  P982-NEXT-STYLE
                END-IF
            END-IF
-      *    ����ǽ
+      *    選択機能
            IF      SPA-GMN982-KBN      =   2
                MOVE    WIDGET-NORMAL       TO  P982-B10-STATE
                MOVE    WIDGET-NORMAL       TO  P982-B12-STATE
@@ -828,7 +828,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -842,26 +842,26 @@
        5001-MAPCUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "���ϥ��顼"
+                   MOVE    "入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���ڡ����Ϥ���ޤ���"
+                   MOVE    "次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�����ڡ����Ϥ���ޤ���"
+                   MOVE    "前次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "�оݤΥǡ�������������ʾ夢��ޤ�"
+                   MOVE    "対象のデータが１００件以上あります"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -884,7 +884,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ޥ������ɹ�����
+      *    住所マスター読込処理
       *****************************************************************
        900-ADRS-READ-SEC         SECTION.
       *
@@ -905,7 +905,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-ADRS-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -918,7 +918,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -933,7 +933,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -948,7 +948,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       * 
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

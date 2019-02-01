@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,25 +18,25 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSTOTALACCT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ���Ų����������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/02/02    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 診療会計請求点取得サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/02/02    NACL−門脇    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07/05/09  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-門脇    07/05/09  グループ診療対応
       *
-      *  04.05.01    NACL-ƣ��    11/09/16  ����ñ���б�
-      *                                     �������磵�����ѹ���ʻ����
-      *                                     �ݸ��ȹ礻���ѹ�
+      *  04.05.01    NACL-藤原    11/09/16  公費単独対応
+      *                                     公費を最大５０に変更に併せて
+      *                                     保険組合せも変更
       *
-      *  04.07.01    NACL-����    13/09/19  �����ա��軰�Թ԰١��б�
-      *  04.07.02    NACL-����    14/09/01  ʿ������ǯ����������б�
-      *  04.07.03    NACL-����    15/03/16  ʿ������ǯ��������б�
-      *  04.08.01    NACL-����    16/03/22  ʿ������ǯ��������б�
+      *  04.07.01    NACL-門脇    13/09/19  自賠責（第三者行為）対応
+      *  04.07.02    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.03    NACL-門脇    15/03/16  平成２７年４月改正対応
+      *  04.08.01    NACL-門脇    16/03/22  平成２８年４月改正対応
       *****************************************************************
       *
       *
@@ -51,7 +51,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-SRYACCT                 PIC 9(01).
@@ -61,59 +61,59 @@
            03  FLG-ARI                     PIC 9(01).
            03  FLG-ARI2                    PIC 9(01).
            03  FLG-NG                      PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(03).
            03  IDX2                        PIC 9(03).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-HKNCOMBIINF-TABLE.
              05  WRK-HKNCOMBIINF-OCC       OCCURS  50.
                07  WRK-HKNCOMBI-DAISANFLG  PIC 9(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ���Ų���ղþ���ޥ�����
+      *    診療会計付加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ������׺����ѥѥ�᥿
+      *    入院会計作成用パラメタ
            COPY    "CPORCSTOTALACCT.INC".
       *
 grpsys     COPY    "COMMON-SPA".
@@ -125,7 +125,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -135,13 +135,13 @@ grpsys     COPY    "COMMON-SPA".
            INITIALIZE                  LNK-ORCSTOTALACCT-OUT-AREA
            MOVE    ZERO          TO    LNK-ORCSTOTALACCT-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
            IF      LNK-ORCSTOTALACCT-RC  NOT =   ZERO
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    �����
+      *    主処理
            IF      LNK-ORCSTOTALACCT-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -153,11 +153,11 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ������ʬ�����å�
+      *    入外区分チェック
            IF     LNK-ORCSTOTALACCT-NYUGAIKBN   =   "1"  OR  "2"
                CONTINUE
            ELSE
@@ -165,7 +165,7 @@ grpsys     COPY    "COMMON-SPA".
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                             PTINF-REC
            MOVE    LNK-ORCSTOTALACCT-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-ORCSTOTALACCT-PTID     TO  PTINF-PTID
@@ -175,13 +175,13 @@ grpsys     COPY    "COMMON-SPA".
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ����ǯ������å�
+      *    算定年月チェック
            IF     LNK-ORCSTOTALACCT-SANTEIYM    =   SPACE
                MOVE    3               TO  LNK-ORCSTOTALACCT-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ������ʬ�����å�
+      *    処理区分チェック
            EVALUATE   LNK-ORCSTOTALACCT-NYUGAIKBN
                WHEN    "1"
                   CONTINUE
@@ -199,7 +199,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
@@ -223,7 +223,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    請求点取得
       *****************************************************************
        2001-TENSU-HENSYU-SEC            SECTION.
       *
@@ -281,7 +281,7 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų��Խ����������ѡ�
+      *    診療科編集（請求点用）
       *****************************************************************
        20011-SRYKA-HENSYU-SEC            SECTION.
       *
@@ -317,7 +317,7 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������׻�
+      *    請求点計算
       *****************************************************************
        200111-TENSU-KEISAN-SEC            SECTION.
       *
@@ -347,7 +347,7 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
            EXIT.
       *
       **************************************************************
-      *    ���Ų���ղþ��󸡺�
+      *    診療会計付加情報検索
       **************************************************************
        200112-SRYACCTPLUS-KENSAKU-SEC           SECTION.
       *
@@ -386,7 +386,7 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�����Խ�
+      *    保険組み合わせ情報編集
       *****************************************************************
        20012-HKNCOMBI-HENSYU-SEC            SECTION.
       *
@@ -420,7 +420,7 @@ grpsys     CALL    "ORCDBMAIN"                  USING MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ǲ������
+      *    受診回数取得
       *****************************************************************
        2002-KAISU-HENSYU-SEC            SECTION.
       *
@@ -480,7 +480,7 @@ grpsys     CALL    "ORCDBMAIN"                 USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų��Խ��ʼ��ǲ���ѡ�
+      *    診療科編集（受診回数用）
       *****************************************************************
        20021-SRYKA-HENSYU2-SEC            SECTION.
       *
@@ -507,7 +507,7 @@ grpsys     CALL    "ORCDBMAIN"                 USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ǲ���׻�
+      *    受診回数計算
       *****************************************************************
        200211-KAISU-KEISAN-SEC            SECTION.
       *
@@ -519,7 +519,7 @@ grpsys     CALL    "ORCDBMAIN"                 USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -558,7 +558,7 @@ grpsys         CALL    "ORCDBMAIN"         USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        900-SRYACCT-READ-SEC        SECTION.
       *
@@ -579,7 +579,7 @@ grpsys     CALL    "ORCDBMAIN"          USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ�
+      *    受診履歴読込
       *****************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
@@ -600,7 +600,7 @@ grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų���ղþ����ɹ�
+      *    診療会計付加情報読込
       *****************************************************************
        900-SRYACCTPLUS-READ-SEC           SECTION.
       *
@@ -621,7 +621,7 @@ grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ȥ߹�碌�����ɹ�
+      *    保険組み合わせ情報読込
       *****************************************************************
        900-HKNCOMBI-READ-SEC           SECTION.
       *
@@ -642,7 +642,7 @@ grpsys     CALL    "ORCDBMAIN"         USING  MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

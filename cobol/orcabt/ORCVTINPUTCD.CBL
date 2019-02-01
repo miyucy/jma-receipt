@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTINPUTCD.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ãӣ֥ե����륳��С��Ƚ���
-      *                                 �������ޥ������������ϥ����ɡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01/08/21    ����          ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : ＣＳＶファイルコンバート処理
+      *                                 （点数マスター情報：入力コード）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/08/21    山本          新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-��ƣ     01/12/12  �ģ¥����륤�󥿡��ե�����
-      *                                     ���ѹ�  
-      *  01.00.02    NACL-����    05/07/13  ���顼��å����������ߥå�
-      *  01.00.03    NACL-����    05/09/28  ��¤�ѹ�
-      *  01.00.04    NACL-¿��Ǽ  06/04/26  �����å��ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/16  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-伊藤     01/12/12  ＤＢコールインターフェイス
+      *                                     の変更  
+      *  01.00.02    NACL-森脇    05/07/13  エラーメッセージ、コミット
+      *  01.00.03    NACL-森脇    05/09/28  構造変更
+      *  01.00.04    NACL-多々納  06/04/26  チェック追加
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,19 +41,19 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    �����ޥ���������ãӣ֥ե�����
+      *    点数マスター情報ＣＳＶファイル
            SELECT  CSV-FILE        ASSIGN
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -61,7 +61,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-RECKBN             PIC X(01).
@@ -69,35 +69,35 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
-      *    �����ޥ���������ãӣ֥ե�����
+      *    点数マスター情報ＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC.
            03  CSV-R                   PIC X(3000).
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   3000.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
            03  STS-LST                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
@@ -116,7 +116,7 @@
                05  FLG-DELI2           PIC 9(01).
                05  FLG-NODATA          PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
@@ -124,7 +124,7 @@
            03  CNT-COMMIT              PIC 9(06).
            03  CNT-ICD                 PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -133,13 +133,13 @@
            03  IDE                     PIC 9(04).
            03  IDX-C                   PIC 9(04).
       *
-      *    �ѥ�᡼����¸
+      *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-09-5               PIC X(06).
            03  PARA-11-5               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -179,11 +179,11 @@
                05  WRK-NUMCNT          PIC 9(04).
                05  WRK-SPCFLG          PIC 9(01).
       *
-      *    Ģɼ�����ΰ�
+      *    帳票出力領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(25) VALUE
-                                       "��PGID:ORCVTINPUTCD.CBL��".
+                                       "【PGID:ORCVTINPUTCD.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -193,15 +193,15 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]ɬ��̤����        [2]���ܷ������     ".
+                   " [1]必須未入力        [2]項目桁数不正     ".
                    07  FILLER          PIC X(41) VALUE
-                   " [3]������            [4]�ãķ�������С�".
+                   " [3]誤入力            [4]ＣＤ件数オーバー".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]���������������  [6]���ϣãĽ��ϼ���".
+                   " [5]点数情報取得失敗  [6]入力ＣＤ出力失敗".
                    07  FILLER          PIC X(41) VALUE
-                   " [7]���ϣã���Ͽ�Ѥ�  [8]ɽ�������������".
+                   " [7]入力ＣＤ登録済み  [8]表示キー桁数不正".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -209,7 +209,7 @@
                    "-------------------------------------------------".
       *
        01  ERRLST-AREA.
-      *    ���顼�ֹ棱�����������ǻ���
+      *    エラー番号１・２・３　で使用
            03  ERR-REC1.
                05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -219,7 +219,7 @@
                    07  ERR1-ERRNO      PIC X(03).
                    07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    ���顼�ֹ棴�����������ǻ���
+      *    エラー番号４・５・６　で使用
            03  ERR-REC2.
                05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -236,24 +236,24 @@
                05  ERR2-INPUTCD        PIC X(20).
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ����
+      *    システム管理（医療機関情報）
            COPY    "CPSK1001.INC".
-      *    ���ϥ�����
+      *    入力コード
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
            COPY    "CPORCXKANACONV.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
@@ -266,7 +266,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -281,7 +281,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -292,18 +292,18 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    ASS-PARA
            END-UNSTRING
       *
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
            IF  FLG-PARA            =   2
                MOVE    1               TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
-      *    ���ŵ����ֹ�
+      *    医療機関番号
            IF      PARA-HOSPNUM    NUMERIC
                MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            ELSE
@@ -320,10 +320,10 @@
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
       *
-      *    ü���ɣĸ���
+      *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    Ģɼ�ϣУţν���
+      *    帳票ＯＰＥＮ処理
            OPEN    INPUT               CSV-FILE
            IF  STS-CSV             NOT =   ZERO
                MOVE    1               TO  FLG-CSV
@@ -332,16 +332,16 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
            PERFORM 2990-ERRLST-INIT-SEC
            IF  FLG-CSV                 =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
            PERFORM 110-CP1001-KENSAKU-SEC
            IF  FLG-CSV                 =   1
                GO  TO  100-INIT-EXT
@@ -350,7 +350,7 @@
            MOVE    PARA-09-5       TO  WRK-COMMIT
            MOVE    PARA-11-5       TO  WRK-ERR
       *
-      *    �ãӣ֥ե����롡��������
+      *    ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -358,7 +358,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
@@ -383,7 +383,7 @@
       *
            CLOSE                       PARA-FILE
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            IF    ( PARA-09-5           IS  NUMERIC )   AND
                  ( PARA-11-5           IS  NUMERIC )
                CONTINUE
@@ -396,7 +396,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼����������ʣ���
+      *    パラメータ情報取得（１）
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
@@ -418,7 +418,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        110-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -458,19 +458,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            IF  CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTINPUTCD)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      *    ���ꤷ������ˤʤä��饳�ߥåȽ�����Ԥ�
+      *    指定した件数になったらコミット処理を行う
            IF  CNT-COMMIT          =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
-      *    ���顼�����ꤷ������ˤʤä��������ȴ����
+      *    エラーが指定した件数になったら処理を抜ける
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
@@ -485,8 +485,8 @@
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ���ϥ����ɣãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ���ޤ��ϥ��顼ȯ���ޤ�
+      *    入力コードＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了、またはエラー発生まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   20   )
                    OR      ( WRK-PO-ED     >=  3000 )
@@ -501,24 +501,24 @@
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1           TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *        �����̽���
+      *        項目別処理
                IF      FLG-DATAEND     =   ZERO
                    PERFORM 240-KOUMOKU-BETU-SEC
                END-IF
            END-PERFORM
       *
-      *    ���顼�����å�
+      *    エラーチェック
            IF      FLG-ERRARI           NOT =  ZERO
-      *        ���顼�ꥹ�Ƚ��Ͻ���
+      *        エラーリスト出力処理
                PERFORM 2950-ERRLST-OUT-SEC
            END-IF
       *
-      *    �ãӣ֥ե����롡��������
+      *    ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -526,7 +526,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
@@ -534,19 +534,19 @@
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY   >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
-      *        ����ޤΰ���
+      *        カンマの位置
                IF  ( CSV-X (IDY)       =   ","  )   OR
                    ((IDX               =   20   )  AND
                     (CSV-X (IDY)       =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
                ELSE
-      *            ����ޤ�­��ʤ����ν�λ���ַ���
+      *            カンマが足りない場合の終了位置決定
                    IF      CSV-X (IDY) NOT =   SPACE
                        MOVE    IDY         TO  WRK-PO-ED
                    END-IF
                END-IF
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF  CSV-X (IDY)         =   """"
                    IF  FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
@@ -561,15 +561,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽���
+      *    項目共通処理
       *****************************************************************
        220-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF  FLG-DELI1               =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF  FLG-DELI2           =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -580,16 +580,16 @@
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF  WRK-PO-ST           =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
            IF  FLG-DELI1               =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                COMPUTE   WRK-MO-ST     =   WRK-PO-ST   +   1
                IF  FLG-DELI2           =   1
                    COMPUTE   WRK-MO-CNT    =   WRK-PO-ED
@@ -599,7 +599,7 @@
                                            -   WRK-PO-ST
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST   TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT  =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
@@ -614,30 +614,30 @@
            EXIT.
       *
       *****************************************************************
-      *    �����̽���
+      *    項目別処理
       *****************************************************************
        240-KOUMOKU-BETU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
-      *    �������ť�����
+      *    １：診療コード
            WHEN    1
                PERFORM 2410-CD-SET-SEC
-      *    �������쥻�ץ��Ż�������
+      *    １４：レセプト電算コード
            WHEN    14
                PERFORM 2410-SRYCD-SET-SEC
-      *    ���������ϥ����ɣ�
+      *    １６：入力コード１
            WHEN    16
                PERFORM 2450-INPUTCD-SET-SEC
-      *    ���������ϥ����ɣ�
+      *    １７：入力コード２
            WHEN    17
                PERFORM 2450-INPUTCD-SET-SEC
-      *    ���������ϥ����ɣ�
+      *    １８：入力コード３
            WHEN    18
                PERFORM 2450-INPUTCD-SET-SEC
-      *    ���������ϥ����ɣ�
+      *    １９：入力コード４
            WHEN    19
                PERFORM 2450-INPUTCD-SET-SEC
-      *    ���������ϥ����ɣ�
+      *    ２０：入力コード５
            WHEN    20
                PERFORM 2450-INPUTCD-SET-SEC
            END-EVALUATE
@@ -651,7 +651,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѷ�����������
+      *    全角桁数・空白処理
       *****************************************************************
        2402-ZENKAKU-HEN-SEC        SECTION.
       *
@@ -665,7 +665,7 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            MOVE    KANACHK-MAX         TO  WRK-LEN
            IF      KANACHK-RC      NOT =   ZERO
-      *        ���ѡ�Ⱦ�Ѻ��ߤξ���Ⱦ�Ѥ����Ѥ�
+      *        全角・半角混在の場合は半角を全角へ
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI
                MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
@@ -680,12 +680,12 @@
                    MOVE    2               TO  FLG-ERR
                END-IF
            ELSE
-      *        ����
+      *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
                END-IF
            END-IF
-      *    �������
+      *    空白を削除
            IF      WRK-LEN             >   ZERO
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
@@ -694,7 +694,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ѷ���������
+      *    全角空白削除処理
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
@@ -702,10 +702,10 @@
            MOVE    1                   TO  IDZ
            MOVE    ZERO                TO  WRK-LEN-W
            IF      FLG-KANJI           =   1
-      *        ���Ѷ�����
+      *        全角空白削除
                PERFORM VARYING IDS     FROM    1   BY  2
                        UNTIL   IDS     >   WRK-LEN
-                   IF      WRK-DATA (IDS:2)  =   "��"
+                   IF      WRK-DATA (IDS:2)  =   "　"
                                              OR  SPACE
                        CONTINUE
                    ELSE
@@ -715,7 +715,7 @@
                    END-IF
                END-PERFORM
            ELSE
-      *        �֤ζ�����
+      *        間の空白削除
                PERFORM VARYING IDS     FROM    1   BY  1
                        UNTIL   IDS     >   WRK-LEN
                    IF      WRK-DATA (IDS:1)  =   SPACE
@@ -734,7 +734,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������ť����ɡ�����
+      *    項目１：診療コード　処理
       *****************************************************************
        2410-CD-SET-SEC             SECTION.
       *
@@ -747,7 +747,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������쥻�ץ��Ż������ɡ�����
+      *    項目１４：レセプト電算コード　処理
       *****************************************************************
        2410-SRYCD-SET-SEC          SECTION.
       *
@@ -763,7 +763,7 @@
       *
            MOVE  CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SRYCD
-      *    �����ޥ����ɤ߹���
+      *    点数マスタ読み込み
            PERFORM 900-TENSU-READ-SEC
            IF  FLG-TENSU           NOT = ZERO
                MOVE    5           TO  FLG-ERR
@@ -774,7 +774,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ����ݣ��������ϥ����ɡ�����
+      *    項目１６−２０：入力コード　処理
       *****************************************************************
        2450-INPUTCD-SET-SEC        SECTION.
       *
@@ -790,7 +790,7 @@
                GO  TO  2450-INPUTCD-SET-EXT
            END-IF
       *
-      *    ���ϥ����ɥ��å�
+      *    入力コードセット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-CNT
@@ -806,7 +806,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϣã���Ͽ������
+      *    入力ＣＤ登録　処理
       *****************************************************************
        250-INPUTCD-INSERT-SEC     SECTION.
       *
@@ -817,12 +817,12 @@
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
       *
-      *    ��ʣ�ǡ�����̵���������å�
+      *    重複データが無いかチェック
            PERFORM 2501-INPUTCD-CHK-SEC
            IF      FLG-ERR         NOT =   ZERO
                GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
-      *    Ϣ�ָ���
+      *    連番検索
            MOVE    SPACE               TO  INPUTCD-REC
            INITIALIZE                      INPUTCD-REC
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
@@ -856,7 +856,7 @@
                 MOVE    4              TO  FLG-ERR
                 GO  TO  250-INPUTCD-INSERT-EXT
            END-IF
-      *    ɽ�������ϣ�����ޤǤȤ���
+      *    表示キーは１０桁までとする
            IF      WRK-DSPSEQ      =   1
                IF      WRK-LEN         >   10
                     MOVE    8              TO  FLG-ERR
@@ -864,7 +864,7 @@
                END-IF
            END-IF
       *
-      *    ���ϥ����ɺ���
+      *    入力コード作成
            MOVE    SPACE       TO  INPUTCD-REC
            INITIALIZE              INPUTCD-REC
            MOVE    SPA-HOSPNUM     TO  ICD-HOSPNUM
@@ -898,26 +898,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɼ��̡�����
+      *    コード種別　処理
       *****************************************************************
        250-CDSYU-SET-SEC           SECTION.
       *
            MOVE    SPACE           TO  WRK-CDSYU
       *
            IF      FLG-KANJI           =   1
-      *        ���Ѥϣ�ʸ���Ȥ���
+      *        全角は５文字とする
                IF      WRK-LEN             >   10
                    MOVE    3               TO  FLG-ERR
                END-IF
            ELSE
-      *        Ⱦ��
+      *        半角
                IF      WRK-INPUTCD(1:WRK-LEN)  NUMERIC
-      *            ���夫�飶��
+      *            ４桁から６桁
                    IF      WRK-LEN        <   4   OR  >  6
                        MOVE    3               TO  FLG-ERR
                    END-IF
                END-IF
-      *        ��ʸ����Ƚ��
+      *        １文字目判定
                IF      WRK-INPUTCD(1:1)   =   "P"
                                           OR  "S"
                                           OR  "#"
@@ -925,7 +925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    3               TO  FLG-ERR
                END-IF
            END-IF
-      *    ����������ԲĤȤ���
+      *    記号は入力不可とする
            IF      FLG-KANJI           =   1
                MOVE    2                   TO  IDX-C
            ELSE
@@ -944,14 +944,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                ELSE
                    IF      WRK-INPUTCD (IDZ:2)
-                                           =   "��"   OR  "��"
-                                           OR  "��"   OR  "��"
-                                           OR  "��"   OR  "��"
+                                           =   "＋"   OR  "−"
+                                           OR  "／"   OR  "！"
+                                           OR  "．"   OR  "＊"
                        MOVE    3           TO  FLG-ERR
                    END-IF
                END-IF
            END-PERFORM
-      *    �����ɼ���
+      *    コード種別
            IF      FLG-KANJI           =   1
                MOVE    "J"                 TO  WRK-CDSYU
            ELSE
@@ -974,7 +974,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��ʣ�ǡ��������å�����
+      *    重複データチェック処理
       *****************************************************************
        2501-INPUTCD-CHK-SEC         SECTION.
       *
@@ -1020,7 +1020,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ�����
+      *    エラーリスト編集処理
       *****************************************************************
        290-ERRREC-EDIT-SEC         SECTION.
       *
@@ -1044,27 +1044,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            EVALUATE    FLG-ERR
-      *    ɬ�ܹ���̤���ϥ��顼
+      *    必須項目未入力エラー
            WHEN    1
-      *    ������顼
+      *    桁数エラー
            WHEN    2
-      *    ���ܥ��顼
+      *    項目エラー
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
-      *    ���ϣãķ�������С����顼
+      *    入力ＣＤ件数オーバーエラー
            WHEN    4
-      *    ��������������顼
+      *    点数情報取得エラー
            WHEN    5
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
       *********PERFORM 2950-ERRLST-OUT-SEC
                MOVE    1           TO  FLG-ERRARI
-      *    ���ϣã���Ͽ�Ѥ�
+      *    入力ＣＤ登録済み
            WHEN    7
            WHEN    8
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
                PERFORM 2950-ERRLST-OUT-SEC
                MOVE    0           TO  FLG-ERRARI
-      *    ���ϣãĽ��ϥ��顼
+      *    入力ＣＤ出力エラー
            WHEN    6
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
                PERFORM 2950-ERRLST-OUT-SEC
@@ -1076,41 +1076,41 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別１　処理
       *****************************************************************
        2910-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
-      *    ���顼�����ֹ�ž��
+      *    エラー内容番号転送
            MOVE    "["             TO  ERR1-ERRNO(IDE)(1:1)
            MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO(IDE)(2:1)
            MOVE    "]"             TO  ERR1-ERRNO(IDE)(3:1)
       *
-      *    ���顼����̾��ž��
+      *    エラー項目名称転送
            EVALUATE    WRK-KOUMOKU-NO
-      *    �������ť�����
+      *    １：診療コード
            WHEN    1
-               MOVE    "���ţã�:"     TO  ERR1-KOMOKU(IDE)
-      *    �������쥻�ץ��Ż�������
+               MOVE    "診療ＣＤ:"     TO  ERR1-KOMOKU(IDE)
+      *    １４：レセプト電算コード
            WHEN    14
-               MOVE    "���Ź԰�:"     TO  ERR1-KOMOKU(IDE)
-      *    ���������ϥ����ɣ�
+               MOVE    "診療行為:"     TO  ERR1-KOMOKU(IDE)
+      *    １６：入力コード１
            WHEN    16
-               MOVE    "���ϣã�:"     TO  ERR1-KOMOKU(IDE)
-      *    ���������ϥ����ɣ�
+               MOVE    "入力ＣＤ:"     TO  ERR1-KOMOKU(IDE)
+      *    １７：入力コード２
            WHEN    17
-               MOVE    "����CD��:"     TO  ERR1-KOMOKU(IDE)
-      *    ���������ϥ����ɣ�
+               MOVE    "入力CD２:"     TO  ERR1-KOMOKU(IDE)
+      *    １８：入力コード３
            WHEN    18
-               MOVE    "����CD��:"     TO  ERR1-KOMOKU(IDE)
-      *    ���������ϥ����ɣ�
+               MOVE    "入力CD３:"     TO  ERR1-KOMOKU(IDE)
+      *    １９：入力コード４
            WHEN    19
-               MOVE    "����CD��:"     TO  ERR1-KOMOKU(IDE)
-      *    ���������ϥ����ɣ�
+               MOVE    "入力CD４:"     TO  ERR1-KOMOKU(IDE)
+      *    ２０：入力コード５
            WHEN    20
-               MOVE    "����CD��:"     TO  ERR1-KOMOKU(IDE)
+               MOVE    "入力CD５:"     TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
-      *    ���顼��ž��
+      *    エラー値転送
            IF  WRK-MO-CNT          NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  ERR1-ATAI  (IDE)(1:8)
@@ -1121,7 +1121,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別２　処理
       *****************************************************************
        2910-ERRREC-EDIT-BETU2-SEC  SECTION.
       *
@@ -1131,9 +1131,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "["             TO  ERR2-ERRNO(1:1)
            MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO(2:1)
            MOVE    "]"             TO  ERR2-ERRNO(3:1)
-           MOVE    "���Ź԰�:"     TO  ERR2-SRYCDMES
-           MOVE    "ɽ��Ϣ��:"     TO  ERR2-DSPSEQMES
-           MOVE    "���ϣã�:"     TO  ERR2-INPUTCDMES
+           MOVE    "診療行為:"     TO  ERR2-SRYCDMES
+           MOVE    "表示連番:"     TO  ERR2-DSPSEQMES
+           MOVE    "入力ＣＤ:"     TO  ERR2-INPUTCDMES
            MOVE    "ERR"           TO  ERR2-NAIYO
       *
            MOVE    WRK-SRYCD       TO  ERR2-SRYCD
@@ -1145,7 +1145,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ�Ƚ��Ͻ���
+      *    エラーリスト出力処理
       *****************************************************************
        2950-ERRLST-OUT-SEC         SECTION.
       *
@@ -1162,7 +1162,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
       *****************************************************************
        2990-ERRLST-INIT-SEC        SECTION.
       *
@@ -1187,14 +1187,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    Ģɼ���ϡ���λ����
+      *    帳票出力　終了処理
            CLOSE                       CSV-FILE
            CLOSE                       ERR-FILE
       *
@@ -1207,7 +1207,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ƣţԣãȽ���
+      *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -1223,7 +1223,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɥơ��֥�ƣţԣãȽ���
+      *    入力コードテーブルＦＥＴＣＨ処理
       *****************************************************************
        940-INPUTCD-NEXT-SEC         SECTION.
       *
@@ -1241,7 +1241,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ���¸�ߥ����å�
+      *    点数マスタ存在チェック
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
       *
@@ -1277,7 +1277,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1290,7 +1290,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1304,7 +1304,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *   �ģ¥�����������
+      *   ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *
@@ -1317,7 +1317,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֥ե����븡������
+      *    ＣＳＶファイル検索処理
       *****************************************************************
        900-CSV-KENSAKU-SEC         SECTION.
       *
@@ -1337,7 +1337,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -1355,7 +1355,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *      
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1379,7 +1379,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -1397,7 +1397,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

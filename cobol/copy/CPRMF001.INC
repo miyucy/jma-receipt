@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,50 +16,50 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ÇÎÅÊó½·ÀÁµá½ñ     COPY (CPRMF001.INC)                *
+      *    è¨ºç™‚å ±é…¬è«‹æ±‚æ›¸     COPY (CPRMF001.INC)                *
       *
-      *                        ¶èÊ¬¡§ORCBM001
-      *                              2:¸øÈñ¤È°åÊÝ¡¦Ï·¿Í¤ÎÊ»ÍÑ
-      *                              3:¸øÈñ¤È¸øÈñ¤ÎÊ»ÍÑ
-      *                              4:¸øÈñÃ±ÆÈ
+      *                        åŒºåˆ†ï¼šORCBM001
+      *                              2:å…¬è²»ã¨åŒ»ä¿ãƒ»è€äººã®ä½µç”¨
+      *                              3:å…¬è²»ã¨å…¬è²»ã®ä½µç”¨
+      *                              4:å…¬è²»å˜ç‹¬
       *                              ORCBM004
-      *                              1¤Î¤ß
-      *                        ÎÅÍÜ¤ÎµëÉÕ¾ðÊó
-      *                               1:Æþ±¡
-      *                               2:Æþ±¡³° 
+      *                              1ã®ã¿
+      *                        ç™‚é¤Šã®çµ¦ä»˜æƒ…å ±
+      *                               1:å…¥é™¢
+      *                               2:å…¥é™¢å¤– 
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  MF01-REC.
            03  MF01-KEY.
-      *¶èÊ¬
+      *åŒºåˆ†
                05  MF01-KBN             PIC  X(01).
-      *¸øÈñ¾ðÊó
+      *å…¬è²»æƒ…å ±
                05  MF01-KOHINF          OCCURS  4.
-      *¸øÈñ¡ÝÊÝ¸±ÈÖ¹æ
+      *å…¬è²»âˆ’ä¿é™ºç•ªå·
                    07  MF01-KOHNUM      PIC  X(03).
-      *ÎÅÍÜ¤ÎµëÉÕ¾ðÊó
+      *ç™‚é¤Šã®çµ¦ä»˜æƒ…å ±
            03  MF01-KYUFUINF            OCCURS  2.
-      *·ï¿ô
+      *ä»¶æ•°
                05  MF01-KENSU           PIC  9(06).
-      *Æü¿ô
+      *æ—¥æ•°
                05  MF01-NISSU           PIC  9(06).
-      *ÅÀ¿ô
+      *ç‚¹æ•°
                05  MF01-TOTALTEN        PIC  9(10).
-      *ÉéÃ´¶â³Û
+      *è² æ‹…é‡‘é¡
                05  MF01-FTNMONEY        PIC  9(10).
-      *ÌôºÞ°ìÉôÉéÃ´¶â
+      *è–¬å‰¤ä¸€éƒ¨è² æ‹…é‡‘
                05  MF01-YKZFTN          PIC  9(10).
-      *¿©»öÎÅÍÜÈñ¾ðÊó
+      *é£Ÿäº‹ç™‚é¤Šè²»æƒ…å ±
            03  MF01-SHOKUJIINF.
-      *¿©»ö·ï¿ô
+      *é£Ÿäº‹ä»¶æ•°
                05  MF01-SHOKUJIKENSU    PIC  9(06).
-      *¿©»öÆü¿ô
+      *é£Ÿäº‹æ—¥æ•°
                05  MF01-SHOKUJINISSU    PIC  9(06).
-      *¿©»öÎÅÍÜÈñ
+      *é£Ÿäº‹ç™‚é¤Šè²»
                05  MF01-SHOKUJIRYOYOHI  PIC  9(09).
-      *É¸½àÉéÃ´³Û
+      *æ¨™æº–è² æ‹…é¡
                05  MF01-SHOKUJIFTN      PIC  9(09).
       *

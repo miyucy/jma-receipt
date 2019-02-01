@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ¥Ø¥ë¥×			  --
+-- ãƒ˜ãƒ«ãƒ—			  --
 --                                --
 -- Table Name  : TBL_HELP	  --
 -- Create Date : 2005/1/19	  --

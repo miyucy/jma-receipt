@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCGN21FIL.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ÌôºÞ¾ðÊóÀßÄê
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥Õ¥¡¥¤¥ë¥»¥ì¥¯¥·¥ç¥ó
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  08/06/25    NACL¡Ý¿¹ÏÆ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è–¬å‰¤æƒ…å ±è¨­å®š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ãƒ•ã‚¡ã‚¤ãƒ«ã‚»ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  08/06/25    NACLâˆ’æ£®è„‡    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
-      * 04.08.01     NACL-¿¹ÏÆ     16/09/27  GINBEE(API)ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…        æ—¥ä»˜      å†…å®¹
+      * 04.08.01     NACL-æ£®è„‡     16/09/27  GINBEE(API)å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,36 +39,36 @@
       *
        WORKING-STORAGE         SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "N21COMMON-SPA".
       *
            COPY    "N21SCR-SPA".
       *
            COPY    "ENUM-VALUE".
       *
-      *    ¥Õ¥¡¥¤¥ëÂ¸ºß¥Á¥§¥Ã¥¯
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCSFILECHK.INC".
-      *    ²èÁüÉ½¼¨ÍÑ
+      *    ç”»åƒè¡¨ç¤ºç”¨
            COPY    "ORCA-BLOB".
       *
       *     COPY    "ORCA-DBPATH".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
-      *    ²èÁü¥¤¥á¡¼¥¸ºîÀ®¥Ñ¥é¥á¥¿
+      *    ç”»åƒã‚¤ãƒ¡ãƒ¼ã‚¸ä½œæˆãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSMIAREA.INC".
       *
-      *    ¥³¥Þ¥ó¥É
+      *    ã‚³ãƒžãƒ³ãƒ‰
        01  COMMAND                 PIC X(512).
       *
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(03).
       *
@@ -77,7 +77,7 @@
            03  WRK-FILEMEI         PIC X(128).
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -102,7 +102,7 @@
            LINKAREA
            SCRAREA.
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -117,7 +117,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *        ²èÌÌÁ«°Ü
+      *        ç”»é¢é·ç§»
                WHEN    "PUTG"          ALSO    "CLICKED"
                    PERFORM 200-GMNSENI
            END-EVALUATE
@@ -130,7 +130,7 @@
            EXIT    PROGRAM.
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -145,15 +145,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        Ìá¤ë
+      *        æˆ»ã‚‹
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        ÅÐÏ¿
+      *        ç™»éŒ²
                WHEN    OTHER
                    PERFORM 210-GAZO
                    PERFORM 210-BACK
@@ -164,7 +164,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -183,41 +183,41 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¢¥Ã¥×¥í¡¼¥É¡¡½èÍý
+      *    ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ã€€å‡¦ç†
       *****************************************************************
        210-GAZO                    SECTION.
       *
-      *    ²èÁü¥Á¥§¥Ã¥¯
+      *    ç”»åƒãƒã‚§ãƒƒã‚¯
            IF      N21FIL-PHOTO    =   SPACE
                GO  TO  210-GAZO-EXT
            END-IF
       *
            MOVE    N21FIL-PHOTO    TO  SPA-GMN-PHOTO
       *
-      *    ³ÈÄ¥»Ò¤¬°ã¤¨¤Ð½èÍýÈ´¤±¤ë
+      *    æ‹¡å¼µå­ãŒé•ãˆã°å‡¦ç†æŠœã‘ã‚‹
            PERFORM 431-GAZO-TYPE-CHK-SEC
            IF      FLG-OK          =   1
                GO  TO  210-GAZO-EXT
            END-IF
       *
-      *    ²èÁü¥Õ¥¡¥¤¥ë¤¬¤¢¤ì¤Ð½èÍýÈ´¤±¤ë
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Œã°å‡¦ç†æŠœã‘ã‚‹
            PERFORM 431-GAZO-FILE-CHK
            IF      FLG-OK          =   0
                GO  TO  210-GAZO-EXT
            END-IF
       *
-      *    ²èÁü¥¤¥á¡¼¥¸¤Ê¤±¤ì¤Ð½èÍýÈ´¤±¤ë
+      *    ç”»åƒã‚¤ãƒ¡ãƒ¼ã‚¸ãªã‘ã‚Œã°å‡¦ç†æŠœã‘ã‚‹
            IF      N21FIL-PHOTOAREA    =   LOW-VALUE
                GO  TO  210-GAZO-EXT
            END-IF
       *
-      *    ²èÁü¥Ñ¥¹¥Á¥§¥Ã¥¯
+      *    ç”»åƒãƒ‘ã‚¹ãƒã‚§ãƒƒã‚¯
            PERFORM 431-GAZO-PATH-CHK-SEC
       *
-      *    ²èÁü¥Õ¥¡¥¤¥ëºîÀ®½èÍý
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆå‡¦ç†
            PERFORM 500-GAZO-OBJECT-SEC
       *
-      *    ²èÁü¥Ç¡¼¥¿¥µ¥¤¥º¤ò¥Á¥§¥Ã¥¯
+      *    ç”»åƒãƒ‡ãƒ¼ã‚¿ã‚µã‚¤ã‚ºã‚’ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSMIAREA
            MOVE    "misizechk"     TO  ORCSMI-SRYCD
            MOVE    MCP-TEMPDIR     TO  ORCSMI-TEMPDIR
@@ -233,13 +233,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÁü¥Õ¥¡¥¤¥ëÂ¸ºß¥Á¥§¥Ã¥¯
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«å­˜åœ¨ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        431-GAZO-FILE-CHK           SECTION.
       *
            MOVE    ZERO            TO  FLG-OK
       *
-      *    ²èÁü¥Õ¥¡¥¤¥ë¤¬¤Ê¤¤¾ì¹ç¤Ï½èÍýÈ´¤±¤ë
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ãŒãªã„å ´åˆã¯å‡¦ç†æŠœã‘ã‚‹
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    SPA-GMN-PHOTO   TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
@@ -253,7 +253,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ³ÈÄ¥»Ò¥Á¥§¥Ã¥¯
+      *    æ‹¡å¼µå­ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        431-GAZO-TYPE-CHK-SEC       SECTION.
       *
@@ -285,7 +285,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÁü¥Ñ¥¹Ì¾ÊÔ½¸
+      *    ç”»åƒãƒ‘ã‚¹åç·¨é›†
       *****************************************************************
        431-GAZO-PATH-CHK-SEC       SECTION.
       *
@@ -321,7 +321,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÁü¥Õ¥¡¥¤¥ëºîÀ®½èÍý
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆå‡¦ç†
       *****************************************************************
        500-GAZO-OBJECT-SEC         SECTION.
       *
@@ -334,16 +334,16 @@
                    INTO                ORCA-BLOB-FILE
            END-STRING
       *
-      *    ¥¤¥á¡¼¥¸¥Ç¡¼¥¿¥Õ¥©¥ë¥ÀºîÀ®¥³¥Þ¥ó¥É
+      *    ã‚¤ãƒ¡ãƒ¼ã‚¸ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚©ãƒ«ãƒ€ä½œæˆã‚³ãƒžãƒ³ãƒ‰
            MOVE    LOW-VALUE       TO  COMMAND
            STRING  "mkdir -p "         DELIMITED BY SIZE
                    SPA-GMN-FOLDER      DELIMITED BY SIZE
                                INTO    COMMAND
            END-STRING
-      *    ¥³¥Þ¥ó¥É¼Â¹Ô
+      *    ã‚³ãƒžãƒ³ãƒ‰å®Ÿè¡Œ
            CALL    "system"            USING
                                        COMMAND
-      *    ²èÁü¥Õ¥¡¥¤¥ë¤òºîÀ®
+      *    ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ã‚’ä½œæˆ
            MOVE    "BLOBEXPORT"    TO  MCP-FUNC
            MOVE    "blob"          TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
@@ -356,7 +356,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

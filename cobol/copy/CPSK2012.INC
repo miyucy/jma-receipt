@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK2012.INC)            *
-      *         ¡Ê£²£°£±£²¡Ë                                     *
-      *         ÊÝ¸±¼Ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó                             *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK2012.INC)            *
+      *         ï¼ˆï¼’ï¼ï¼‘ï¼’ï¼‰                                     *
+      *         ä¿é™ºè€…ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±                             *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-2012-REC.
            03  SYS-2012-KEY.
                05  SYS-2012-HOSPNUM         PIC  9(02).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-2012-KANRICD         PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-2012-KBNCD           PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-2012-STYUKYMD        PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-2012-EDYUKYMD        PIC  X(08).
       *
-      *´¶£³£·¤Î£²¡ÊË¡ÊÌ£±£°¡Ë
+      *æ„Ÿï¼“ï¼—ã®ï¼’ï¼ˆæ³•åˆ¥ï¼‘ï¼ï¼‰
            03  SYS-2012-HBTNUM10KBN         PIC  X(01).
            03  SYS-2012-HBTNUM10-TAIKBN     PIC  X(01).
-      *·ë³ËÆþ±¡¡¡¡ÊË¡ÊÌ£±£±¡Ë
+      *çµæ ¸å…¥é™¢ã€€ï¼ˆæ³•åˆ¥ï¼‘ï¼‘ï¼‰
            03  SYS-2012-HBTNUM11KBN         PIC  X(01).
            03  SYS-2012-HBTNUM11-TAIKBN     PIC  X(01).
-      *Àº¿ÀÆþ±¡¡¡¡ÊË¡ÊÌ£²£°¡Ë
+      *ç²¾ç¥žå…¥é™¢ã€€ï¼ˆæ³•åˆ¥ï¼’ï¼ï¼‰
            03  SYS-2012-HBTNUM20KBN         PIC  X(01).
            03  SYS-2012-HBTNUM20-TAIKBN     PIC  X(01).
-      *Àº¿ÀÄÌ±¡¡¡¡ÊË¡ÊÌ£²£±¡Ë
+      *ç²¾ç¥žé€šé™¢ã€€ï¼ˆæ³•åˆ¥ï¼’ï¼‘ï¼‰
            03  SYS-2012-HBTNUM21KBN         PIC  X(01).
            03  SYS-2012-HBTNUM21-TAIKBN     PIC  X(01).
       *
-      *Í½È÷
+      *äºˆå‚™
            03  SYS-2012-YOBI                PIC  X(492).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-2012-TERMID              PIC  X(16).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-2012-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-2012-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-2012-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-2012-UPHMS               PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-2012-UPD-KEY.
                05  SYS-2012-UPD-HOSPNUM     PIC 9(2).
                05  SYS-2012-UPD-KANRICD     PIC X(04).

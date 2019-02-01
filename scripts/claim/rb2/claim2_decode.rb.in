@@ -1,96 +1,96 @@
 #!%RUBY%
 # coding : euc-jp
 Encoding.default_external = "utf-8"
-# Claim�̿��С������2
-# ����XML�Υ������󥷥��ե�����ؤ��Ѵ�����
+# Claim通信バージョン2
+# 受信XMLのシーケンシャルファイルへの変換処理
 
 # 2004/01/28 version2.00
-#   ��XML�ǡ�����ꥹ�ȹ�¤�ˤ��뤳�Ȥǹ�®��
-#     ���������ǡ����̤ξ��ʤ��ե�����ˤĤ��Ƥϡ�®�٤��Ѥ��ʤ�
-#     �礭��XML�ե�������Ф�����̤��⤯��
-#     �Ǥ��礭��ʪ��90�ܤι�®�����ǧ���Ƥ���
-#     �ʤ���®�٤�����ե�������礭���˰�¸���Ƥ��뤿�ᡢ
-#     ����ե�����Υ��������礭���ʤ���٤��ʤ�Τǡ�
-#     �߷פˤ����դ��Ƥۤ���
-#   ������ե�����򥳥�С��Ȥ��������������Ȥ뤳�Ȥǡ������������
-#     ���ޤޤǡ�����ե�����θ��ɤ������ʤ��ü���ä�����
-#     ���Ҥ�XML�ѥ��˻��������ˤ������ϰ��־����ʤ������Ȥ�
-#     ����ե�����ϸ��䤹���ʤäƤ��롣
+#   ★XMLデータをリスト構造にすることで高速化
+#     ただし、データ量の少ないファイルについては、速度は変わらない
+#     大きいXMLファイルに対する効果が高く、
+#     最も大きな物で90倍の高速化を確認している
+#     なお、速度は設定ファイルの大きさに依存しているため、
+#     設定ファイルのサイズが大きくなると遅くなるので、
+#     設計には注意してほしい
+#   ★設定ファイルをコンバートして生成する形をとることで、可読性を向上
+#     いままで、設定ファイルの見栄えがかなり特殊だったが、
+#     記述をXMLパスに似せた形にし、開始位置情報をなくすことで
+#     設定ファイルは見やすくなっている。
 
 
 
 # =============================================================================
 # =============================================================================
-# ľ�ܼ¹Ԥ����Ȥ��ν���
+# 直接実行したときの処理
 if __FILE__ == $0
 
 
-#	$debug = 0	# �ǥХå��⡼�ɤǤϤʤ�
-#	$debug = 1	# �ǥХå��⡼�ɤǤ��� (��٥�1)
-#	$debug = 2	# �ǥХå��⡼�ɤǤ��� (��٥�2)
-	$debug = 3	# �ǥХå��⡼�ɤǤ��� (��٥�3)
+#	$debug = 0	# デバッグモードではない
+#	$debug = 1	# デバッグモードである (レベル1)
+#	$debug = 2	# デバッグモードである (レベル2)
+	$debug = 3	# デバッグモードである (レベル3)
 
-	# Debian�Ķ��Ǥ�EUC�Ķ���Windows�Ķ��Ǥϥ��ե�JIS�Ķ������򤷤Ƥ���������
-	$lang_conf = '1'	# EUC�Ķ�
-#	$lang_conf = '2'	# ���ե�JIS�Ķ�
+	# Debian環境ではEUC環境を、Windows環境ではシフトJIS環境を選択してください。
+	$lang_conf = '1'	# EUC環境
+#	$lang_conf = '2'	# シフトJIS環境
 
 
 
-	# LineTarget����ǡ�����ˤ���XML�ѥ����֤�����ʸ��
+	# LineTarget定義で、空白にするXMLパスの置き換え文字
 	$nodata_word = '<none>'
 
-	help_flg = 0		# �إ��ɽ���ե饰 [0 = �إ�פ�ɽ�����ʤ�, 1 = �إ�פ�ɽ������]
-	$output_mode = 0	# ���ϥ⡼�� [0 = �������󥷥��ե��������, 1 = CSV�ե��������]
-						# �嵭�ν��ϥ⡼�ɤ��ǥե����
-	w_file_name = []		# �ե�����̾�ΰ��Ū�ʳ�Ǽ�ΰ�
+	help_flg = 0		# ヘルプ表示フラグ [0 = ヘルプを表示しない, 1 = ヘルプを表示する]
+	$output_mode = 0	# 出力モード [0 = シーケンシャルファイル出力, 1 = CSVファイル出力]
+						# 上記の出力モードがデフォルト
+	w_file_name = []		# ファイル名の一時的な格納領域
 
-	$hir_match_mode = 0		# ���ؾ����ͤ���碌�⡼��[0 = �������󸡺�, 1 = ���إꥹ�ȸ���]
+	$hir_match_mode = 0		# 階層情報突き合わせモード[0 = 階層配列検索, 1 = 階層リスト検索]
 
 
 
-	# �����Υ��åȽ���
+	# 引数のセット処理
 	ARGV.each do |w_a1|
 		case	w_a1.strip
 		when	'-s'
-			# ���Ϥ���ե�����ϥ������󥷥��ե���������Ǥ���
+			# 出力するファイルはシーケンシャルファイル形式である
 			$output_mode = 0
 		when	'-c'
-			# ���Ϥ���ե������CSV�ե���������Ǥ���
+			# 出力するファイルはCSVファイル形式である
 			$output_mode = 1
 		when	'--lang=euc-jp'
-			# ����Ķ��ϡ�EUC-JP�Ǥ���
+			# 言語環境は、EUC-JPである
 			$lang_conf = '1'
 		when	'--lang=shift_jis'
-			# ����Ķ��ϡ����ե�JIS�Ǥ���
+			# 言語環境は、シフトJISである
 			$lang_conf = '2'
 		when	'--hierarcy-match=array'
-			# ���ؾ���ȤΥޥå��󥰤ϡ���������Ǥ���
+			# 階層情報とのマッチングは、配列形式である
 			$hir_match_mode = 0
 		when	'--hierarcy-match=list'
-			# ���ؾ���ȤΥޥå��󥰤ϡ����ؾ�������Ǥ���
+			# 階層情報とのマッチングは、階層情報形式である
 			$hir_match_mode = 1
 		when	'--help', '-?'
 			help_flg = 1
 		else
 			if (w_a1.strip)[0, 1] != '-'
-				# ��ʸ���ܤ��ޥ��ʥ��ʳ��Τ���¾�Υ��ޥ�ɥ��ץ����ϥե�����̾�Ȥ��ƥ��åȤ���
+				# １文字目がマイナス以外のその他のコマンドオプションはファイル名としてセットする
 				w_file_name.push w_a1.strip
 			end
 		end
 	end
 
-	# �ե�����̾�ο������ʤ��Ȥ��ϡ����顼ɽ��������
+	# ファイル名の数が少ないときは、エラー表示させる
 	case	w_file_name.size
 	when	0
-		# �ե�����̾�λ��꤬�ʤ�
+		# ファイル名の指定がない
 		help_flg = 1
 	when	1, 2
-		# �ե�����ο������ʤ�
-		$stderr.puts '���ޥ�ɥ饤��ΰ����˥ե�����̾�����ꤵ��Ƥ��ޤ���'
+		# ファイルの数が少ない
+		$stderr.puts 'コマンドラインの引数にファイル名が指定されていません'
 		$stderr.puts ''
 		help_flg = 1
 	else
-		# �ե�����̾�λ��꤬���İʾ�ʤΤǡ����åȤ��줿���Ƥ��Ϥ�
+		# ファイル名の指定が３つ以上なので、セットされた内容を渡す
 		$hir_file = w_file_name[0]
 		$xml_file = w_file_name[1]
 		$seq_file = w_file_name[2]
@@ -98,26 +98,26 @@ if __FILE__ == $0
 
 
 	if help_flg == 1
-		$stderr.puts 'claim2_decode.rb [option] [��������ե�����] [����XML�ե�����] [���ϥե�����]'
+		$stderr.puts 'claim2_decode.rb [option] [階層定義ファイル] [入力XMLファイル] [出力ファイル]'
 		$stderr.puts ''
 		$stderr.puts '  [option]'
-		$stderr.puts '    -s  �������󥷥��ե�������� [default]'
-		$stderr.puts '    -c  CSV�ե��������'
-		$stderr.puts '    --lang=euc-jp     �¹ԴĶ���ʸ�������ɤ�EUC-JP�Ǥ���(Default)'
-		$stderr.puts '    --lang=shift_jis  �¹ԴĶ���ʸ�������ɤ�Shift_JIS�Ǥ���(Windows�Ǥμ¹���)'
+		$stderr.puts '    -s  シーケンシャルファイル出力 [default]'
+		$stderr.puts '    -c  CSVファイル出力'
+		$stderr.puts '    --lang=euc-jp     実行環境の文字コードがEUC-JPである(Default)'
+		$stderr.puts '    --lang=shift_jis  実行環境の文字コードがShift_JISである(Windowsでの実行用)'
 		exit 0
 	end
 
 
-	# �ѿ���ǧ�Ѥ�ɽ������
-	$stderr.puts '��������ե�����           = [' + $hir_file + ']'
-	$stderr.puts '����XML�ե�����            = [' + $xml_file + ']'
-	$stderr.puts '���ϥ������󥷥��ե����� = [' + $seq_file + ']'
+	# 変数確認用の表示処理
+	$stderr.puts '階層定義ファイル           = [' + $hir_file + ']'
+	$stderr.puts '入力XMLファイル            = [' + $xml_file + ']'
+	$stderr.puts '出力シーケンシャルファイル = [' + $seq_file + ']'
 
 
 
 # =============================================================================
-	# �̥⥸�塼������߽���
+	# 別モジュール取り込み処理
 
 
 
@@ -133,32 +133,32 @@ require 'nkf'
 
 # =============================================================================
 # =============================================================================
-# ���饹��
+# クラス部
 
 
-# XML�ꥹ�ȴ��ܥ��饹
+# XMLリスト基本クラス
 class Xml_baselist
 
 
 	# ------------------------------------------------------------
-	# �����
+	# 初期化
 	def initialize
-		@flg = 0	# �ե饰(0=�ǡ������ޤ��ϡ��ǡ����ʤ�, 1=°��)
-		@name = ''	# ����̾��°��̾
-		@data = nil	# �¥ǡ���
-		@list_value = 0	# ����XML�ꥹ�ȿ�
-		@xmllist = []	# ����XML�ꥹ��
+		@flg = 0	# フラグ(0=データ、または、データなし, 1=属性)
+		@name = ''	# タグ名・属性名
+		@data = nil	# 実データ
+		@list_value = 0	# 派生XMLリスト数
+		@xmllist = []	# 派生XMLリスト
 	end
 
 
 	# ------------------------------------------------------------
-	# XML�ꥹ�ȴ��ܥ��饹������
-	#    ����
-	# name - ����̾���ޤ��ϡ�°��̾ [IN / String��]
-	# flg - �ե饰 [IN / Numeric��]
-	#          0 = �ǡ������ޤ��ϡ��ǡ����ʤ�
-	#          1 = °��
-	# data - �������ޤ��ϡ�°���Υǡ������� [IN / String��]
+	# XMLリスト基本クラスの生成
+	#    引数
+	# name - タグ名、または、属性名 [IN / String型]
+	# flg - フラグ [IN / Numeric型]
+	#          0 = データ、または、データなし
+	#          1 = 属性
+	# data - タグ、または、属性のデータ内容 [IN / String型]
 	def childadd(name, flg, data)
 		xml_newlist = Xml_baselist.new
 		xml_newlist.name = name
@@ -172,23 +172,23 @@ class Xml_baselist
 
 
 	# ------------------------------------------------------------
-	# XML�ѥ���XML�ѥ�����������Ѵ�
-	#    ����
-	# xmlpath - �Ѵ�����XML�ѥ� [IN / String��]
-	#    �����
-	# XML�ѥ�����
-	#    ����
-	# ���δؿ��ϡ����Хѥ����θ�������ˤϤʤäƤ��ޤ���Τǡ�
-	# ���Хѥ��ǵ��Ҥ��Ƥ�����ϡ����Хѥ����Ѵ����Ƥ���������
-	#    ���
-	# ���С��ؿ��Ȥ��Ƥϡ����ޤ깥�ޤ����ʤ�����
-	# ��������ǤΤ��Ȥ������ˤ��Ƥ���Τǡ��Ȥꤢ�������С��ؿ��Ȥ��ƺ�������
+	# XMLパスをXMLパス配列形式に変換
+	#    引数
+	# xmlpath - 変換するXMLパス [IN / String型]
+	#    戻り値
+	# XMLパス配列
+	#    備考
+	# この関数は、相対パスを考慮した作りにはなっていませんので、
+	# 相対パスで記述している場合は、絶対パスに変換してください。
+	#    メモ
+	# メンバー関数としては、あまり好ましくないが、
+	# 配列形式でのやりとりを前提にしているので、とりあえずメンバー関数として作成する
 	def convert_xml_path_to_patharray(xmlpath)
 		xml_array = [] ; xml_array_size = 0 ; w_xmlpath = ''
-		# ����ζ����������ǡ���/�פζ��ڤ�����󲽤���
+		# 前後の空白を除去した上で、「/」の区切りで配列化する
 		w_xmlpath = xmlpath.strip
 		xml_array = w_xmlpath.split(/\//)
-		# �������Ƭ���������ʤ顢��������Τߺ��
+		# 配列の先頭が空白等なら、該当配列のみ削除
 		case	xml_array[0]
 		when	nil, ''
 			xml_array.delete_at(0)
@@ -198,82 +198,82 @@ class Xml_baselist
 			word1 = '' ; word2 = []
 			word1 = xml_array[xml_array_size - 1]
 			word2 = word1.split(/@/)
-			# ����@�פ�����ʾ�и����뤳�ȤϹ�θ���Ƥ��ޤ���
-			xml_array[xml_array_size - 1] = word2[0]	# ��@�פ�����򥻥å�
-			xml_array.push('@' + word2[1])	# ��@�װʹߤ򥻥å�
+			# ※「@」が２回以上出現することは考慮していません
+			xml_array[xml_array_size - 1] = word2[0]	# 「@」より前をセット
+			xml_array.push('@' + word2[1])	# 「@」以降をセット
 		end
 		return	xml_array
 	end
 
 
 	# ------------------------------------------------------------
-	# ����XML�ѥ�(���Хѥ������Τ�)����Υǡ����μ���
-	#    ����
-	# xmlpatharray - XML�ѥ����� [IN / ����(String)��]
-	#    �����
-	# ���ꤷ��XML�ѥ�����Υǡ���(nil�ξ�硢�����Ǥ��ʤ��ä�) [OUT / String��]
-	#    ����
-	# ����������ϴؿ��¹Ը���ͤ��ݾڤ��ޤ���
-	# ����XML�ꥹ�ȤΥǡ����������������Ǥ�
+	# 該当XMLパス(絶対パス形式のみ)配列のデータの取得
+	#    引数
+	# xmlpatharray - XMLパス配列 [IN / 配列(String)型]
+	#    戻り値
+	# 指定したXMLパス配列のデータ(nilの場合、取得できなかった) [OUT / String型]
+	#    備考
+	# 引数の配列は関数実行後の値を保証しません
+	# 派生XMLリストのデータを取得する処理です
 	def get_data_from_xmlpatharray(xmlpatharray)
 		xml_tag = '' ; array_size = 0 ; xmllist_size = 0
 		ret_data = nil
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
-			# nil�ξ��֤ξ��ϡ��㳰��ȯ��������
-			raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '������XML�ѥ�����˥ǡ���������ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# nilの状態の場合は、例外を発生させる
+			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			# 例外が発生できない場合を考慮する
 			return	nil
 		end
 		array_size = xmlpatharray.size
 		xmllist_size = @xmllist.size
 		if array_size > 0
-			# ����XML�ꥹ�Ȥμ���
+			# 派生XMLリストの取得
 			for x in 1..xmllist_size do
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 				if @xmllist[x - 1].name == xml_tag
-					# ���եȸ��XML�ѥ����������˻��ꤷ�ơ�����XML�Υǡ��������ؿ���ƤӽФ�
+					# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ取得関数を呼び出す
 					ret_data = @xmllist[x - 1].get_data_from_xmlpatharray(xmlpatharray.clone)
-					break	# forʸ����ȴ����
+					break	# for文から抜ける
 				end
 				if x == xmllist_size
-					# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�nil���֤���
+					# 派生XMLリストに該当するタグが見つからなかった場合は、nilを返す。
 					ret_data = nil
 				end
 			end
 		else
-			# ����XML�ꥹ�Ȥϸ������ʤ�
-			# ���ꤷ������̾���ͤ����
+			# 派生XMLリストは検索しない
+			# 指定したタグ名の値を取得
 			if xml_tag[0, 1] == '@'
-				# °���Υǡ��������Ǥ���
+				# 属性のデータ取得である
 				attr_tag = xml_tag
 #				attr_tag = ''
-#				attr_tag = xml_tag[1..-1]	# ��ʸ���ܰʹߤ�°��̾�Ȥ��ƻ��Ѥ���
+#				attr_tag = xml_tag[1..-1]	# ２文字目以降を属性名として使用する
 				for x in 1..xmllist_size do
 					if @xmllist[x - 1].name == attr_tag
-						ret_data = @xmllist[x - 1].data	# �¥ǡ������֤�
-						break	# forʸ����ȴ����
+						ret_data = @xmllist[x - 1].data	# 実データを返す
+						break	# for文から抜ける
 					end
 					if x == xmllist_size
-						# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�nil���֤���
+						# 派生XMLリストに該当するタグが見つからなかった場合は、nilを返す。
 						ret_data = nil
 					end
 				end
 			else
-				# �����Υǡ��������Ǥ���
+				# タグのデータ取得である
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 				
 				for x in 1..xmllist_size do
 					if @xmllist[x - 1].name == xml_tag
-						ret_data = @xmllist[x - 1].data	# �¥ǡ������֤�
-						break	# forʸ����ȴ����
+						ret_data = @xmllist[x - 1].data	# 実データを返す
+						break	# for文から抜ける
 					end
 					if x == xmllist_size
-						# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�nil���֤���
+						# 派生XMLリストに該当するタグが見つからなかった場合は、nilを返す。
 						ret_data = nil
 					end
 				end
@@ -281,51 +281,51 @@ class Xml_baselist
 		end
 
 
-	#    ���
-	# ������Ѥ�Τϡ�/***[**]/****[**]/****[**]@***�Ȥ��ä�XML�ѥ�
-	# join�ǡ�/�פ���ڤä����ȡ�@��¸�ߤ��뤫������å����ơ�¸�ߤ���С�
-	# ��@�פǶ��ڤä����ȡ��Ǹ������ǡ������ܰ�����Ƭ�ˡ�@�����ˤ��դ���
-	# ����nil�ˤʤä������ǡ��ǡ������������
+	#    メモ
+	# 配列に積むのは、/***[**]/****[**]/****[**]@***といったXMLパス
+	# joinで「/」を区切ったあと、@が存在するかをチェックして、存在すれば、
+	# 「@」で区切ったあと、最後の配列データに目印（先頭に「@」等）を付ける
+	# 配列がnilになった時点で、データを取得する
 
 		return ret_data
 	end
 
 
 	# ------------------------------------------------------------
-	# LineTarget����ǻ��Ѥ���XML�ѥ�����Υǡ����μ���
-	#    ����
-	# xmlpatharray - �����о�XML�ѥ����� [IN / ����(String)��]
-	# hierarcy_xmlpath - �ƤӽФ���XML�ѥ����� [IN / ����(String)�� / �ǥե���� = []]
-	#    �����
-	# []�ξ�� - �����Ǥ��ʤ��ä�
-	# []�ʳ��ξ��
-	#  [x][0] - �����ǻ��ꤷ��XML�ѥ������Ĥ��ä����ºݤ�XML�ѥ� [OUT / String��]
-	#  [x][1] - ���ꤷ��XML�ѥ�����Υǡ��� [OUT / String��]
-	#    ����
-	# ����������ϴؿ��¹Ը���ͤ��ݾڤ��ޤ���
-	# ���Хѥ��ˤ��б����Ƥ��ޤ���
-	# ��������ꤷ�ʤ�ɽ���ϡ�***[x]�פȤ����褦�ˡ�����������ˡ�x�פ���ꤷ�ޤ�
-	# ����XML�ꥹ�ȤΥǡ����������������Ǥ�
-	# �̾�ϡ���hierarcy_xmlpath�פϻ��ꤷ�ޤ���
-	#   ���ꤹ�륱�����ϡ����δؿ�����ǺƵ��ƤӽФ��򤷤����ΤߤǤ��礦��
+	# LineTarget定義で使用するXMLパス配列のデータの取得
+	#    引数
+	# xmlpatharray - 検索対象XMLパス配列 [IN / 配列(String)型]
+	# hierarcy_xmlpath - 呼び出し元XMLパス配列 [IN / 配列(String)型 / デフォルト = []]
+	#    戻り値
+	# []の場合 - 取得できなかった
+	# []以外の場合
+	#  [x][0] - 引数で指定したXMLパスが見つかった、実際のXMLパス [OUT / String型]
+	#  [x][1] - 指定したXMLパス配列のデータ [OUT / String型]
+	#    備考
+	# 引数の配列は関数実行後の値を保証しません
+	# 相対パスには対応していません
+	# 配列を特定しない表現は「***[x]」というように、数字の代わりに「x」を指定します
+	# 派生XMLリストのデータを取得する処理です
+	# 通常は、「hierarcy_xmlpath」は指定しません。
+	#   指定するケースは、この関数の中で再帰呼び出しをした場合のみでしょう。
 	def get_data_from_xmlpatharray_reg(xmlpatharray, hierarcy_xmlpath = [])
 		xml_tag = '' ; array_size = 0 ; xmllist_size = 0
 		xml_tag2 = ''
-		xml_tag3 = ''		# �����ֹ�ʤ��Υ���̾
-		w_xml_path1 = ''	# XML�ѥ������å���ʸ������Ѵ��������Ƥ��Ǽ������
-		w_xml_path2 = []	# ��XML�ꥹ�Ȥ��Ϥ�XML�ѥ�����
+		xml_tag3 = ''		# 配列番号なしのタグ名
+		w_xml_path1 = ''	# XMLパススタックを文字列に変換した内容を格納する場所
+		w_xml_path2 = []	# 子XMLリストに渡すXMLパス配列
 		attr_tag = ''
-		#reg_flg = 0		# ����ɽ���ե饰(0 = ����ɽ���ǤϤʤ�, 1 = ����ɽ���Ǥ���)
+		#reg_flg = 0		# 正規表現フラグ(0 = 正規表現ではない, 1 = 正規表現である)
 		ret_data = []
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
-			# nil�ξ��֤ξ��ϡ��㳰��ȯ��������
-			raise 'get_data_from_xmlpatharray_reg���㳰��ȯ�����ޤ�����' + "\n" + '������XML�ѥ�����˥ǡ���������ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# nilの状態の場合は、例外を発生させる
+			raise 'get_data_from_xmlpatharray_regで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			# 例外が発生できない場合を考慮する
 			return	[]
 		end
 
-		# �����������������̾��xml_tag3�˥��åȤ���
+		# 配列部を除いたタグ名をxml_tag3にセットする
 		xml_tag =~ /^(\S+?)\[[0-9x]+?\]/i
 		xml_tag3 = $1
 
@@ -334,141 +334,141 @@ class Xml_baselist
 
 		if xml_tag =~ /^(\S+?)\[x\]/i
 			# ----------------------------------------
-			# ����������ɽ������ꤷ�Ƥ���
-			# $1 = ������ʬ�����������̾
-			xml_tag2 = Regexp.quote($1) + '\[[0-9]+?\]'	# ����ɽ������ӤǤ���褦�ˤ���
+			# タグに正規表現を指定している
+			# $1 = 配列部分を除いたタグ名
+			xml_tag2 = Regexp.quote($1) + '\[[0-9]+?\]'	# 正規表現で比較できるようにする
 			if array_size > 0
-				# ����XML�ꥹ�Ȥμ���
+				# 派生XMLリストの取得
 				for x in 1..xmllist_size do
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ����ΤȤ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを全体としている。
 
 					if @xmllist[x - 1].name =~ /#{xml_tag2}/
-						# ��XML�ꥹ�Ȥˡ����ߤΥ���̾��ä����Ϥ�
+						# 子XMLリストに、現在のタグ名を加えて渡す
 						w_xml_path2 = hierarcy_xmlpath.clone
 						w_xml_path2.push @xmllist[x - 1].name
-						# ���եȸ��XML�ѥ����������˻��ꤷ�ơ�����XML�Υǡ��������ؿ���ƤӽФ�
+						# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ取得関数を呼び出す
 						ret_data += @xmllist[x - 1].get_data_from_xmlpatharray_reg(xmlpatharray.clone, w_xml_path2)
 					end
-					# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+					# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 				end
 			else
-				# ����XML�ꥹ�Ȥϸ������ʤ�
-				# ���ꤷ������̾���ͤ����
+				# 派生XMLリストは検索しない
+				# 指定したタグ名の値を取得
 				if xml_tag =~ /^(@\S+?)\[x\]/
-					# °���Υǡ��������Ǥ���
-					# $1 = ��@�פ�������ʬ��ޤ᤿°��̾
-					attr_tag = Regexp.quote($1)	# ����ɽ������ӤǤ���褦�ˤ���
-#					# $1 = ��@�פ�������ʬ�������°��̾
-#					attr_tag = Regexp.quote($1) + '\[[0-9]\]'	# ����ɽ������ӤǤ���褦�ˤ���
+					# 属性のデータ取得である
+					# $1 = 「@」と配列部分を含めた属性名
+					attr_tag = Regexp.quote($1)	# 正規表現で比較できるようにする
+#					# $1 = 「@」と配列部分を除いた属性名
+#					attr_tag = Regexp.quote($1) + '\[[0-9]\]'	# 正規表現で比較できるようにする
 					for x in 1..xmllist_size do
 						if @xmllist[x - 1].name =~ /#{attr_tag}/
 							w_xml_path1 = '/' + hierarcy_xmlpath.join('/') + @xmllist[x - 1].name
 #							w_xml_path1 = '/' + hierarcy_xmlpath.join('/') + '@' + @xmllist[x - 1].name
-							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# �¥ǡ����򥹥��å����Ѥ�
+							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# 実データをスタックに積む
 						end
-						# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+						# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 					end
 				else
-					# �����Υǡ��������Ǥ���
+					# タグのデータ取得である
 					for x in 1..xmllist_size do
 						if @xmllist[x - 1].name =~ /#{xml_tag2}/
 							w_xml_path1 = '/' + hierarcy_xmlpath.join('/') + '/' + @xmllist[x - 1].name
-							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# �¥ǡ����򥹥��å����Ѥ�
+							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# 実データをスタックに積む
 						end
-						# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+						# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 					end
 				end
 			end
 			# ----------------------------------------
 		else
 			# ----------------------------------------
-			# ����������ɽ������ꤷ�Ƥ��ʤ�
+			# タグに正規表現を指定していない
 			if array_size > 0
-				# ����XML�ꥹ�Ȥμ���
+				# 派生XMLリストの取得
 				for x in 1..xmllist_size do
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 					if @xmllist[x - 1].name == xml_tag
-						# ��XML�ꥹ�Ȥˡ����ߤΥ���̾��ä����Ϥ�
+						# 子XMLリストに、現在のタグ名を加えて渡す
 						w_xml_path2 = hierarcy_xmlpath.clone
 						w_xml_path2.push @xmllist[x - 1].name
-						# ���եȸ��XML�ѥ����������˻��ꤷ�ơ�����XML�Υǡ��������ؿ���ƤӽФ�
+						# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ取得関数を呼び出す
 						ret_data += @xmllist[x - 1].get_data_from_xmlpatharray_reg(xmlpatharray.clone, w_xml_path2)
-						break	# forʸ����ȴ����
+						break	# for文から抜ける
 					end
-					# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+					# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 				end
 			else
-				# ����XML�ꥹ�Ȥϸ������ʤ�
-				# ���ꤷ������̾���ͤ����
+				# 派生XMLリストは検索しない
+				# 指定したタグ名の値を取得
 				if xml_tag[0, 1] == '@'
-					# °���Υǡ��������Ǥ���
+					# 属性のデータ取得である
 					attr_tag = xml_tag
 #					attr_tag = ''
-#					attr_tag = xml_tag[1..-1]	# ��ʸ���ܰʹߤ�°��̾�Ȥ��ƻ��Ѥ���
+#					attr_tag = xml_tag[1..-1]	# ２文字目以降を属性名として使用する
 					for x in 1..xmllist_size do
 						if @xmllist[x - 1].name == attr_tag
 							w_xml_path1 = '/' + hierarcy_xmlpath.join('/') + '@' + @xmllist[x - 1].name
-							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# �¥ǡ����򥹥��å����Ѥ�
-							break	# forʸ����ȴ����(����ɽ���Ǥʤ���в�)
+							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# 実データをスタックに積む
+							break	# for文から抜ける(正規表現でなければ可)
 						end
-						# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+						# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 					end
 				else
-					# �����Υǡ��������Ǥ���
+					# タグのデータ取得である
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 					for x in 1..xmllist_size do
 						if @xmllist[x - 1].name == xml_tag
 							w_xml_path1 = '/' + hierarcy_xmlpath.join('/') + '/' + @xmllist[x - 1].name
-							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# �¥ǡ����򥹥��å����Ѥ�
-							break	# forʸ����ȴ����(����ɽ���Ǥʤ���в�)
+							ret_data.push [w_xml_path1, @xmllist[x - 1].data]	# 実データをスタックに積む
+							break	# for文から抜ける(正規表現でなければ可)
 						end
-						# �������륿�������Ĥ���ʤ��Ƥ⡢ret_data���Ф��Ƥϲ��⤷�ʤ�
+						# 該当するタグが見つからなくても、ret_dataに対しては何もしない
 					end
 				end
 			end
 			# ----------------------------------------
 		end
 
-		# ����ǡ���������ͤȤ��ƻ��Ѥ���
+		# 配列データを戻り値として使用する
 		return ret_data
 	end
 
-	# ��reg = regular expression��ά
+	# ※reg = regular expressionの略
 
 
 
 	# ------------------------------------------------------------
-	# ���ǡ���������XML�ꥹ�Ȥκ��
-	#    ����
-	# ������������Ƥ���XML�ꥹ�Ȥ��θ
+	# 空データの派生XMLリストの削除
+	#    備考
+	# さらに派生しているXMLリストも考慮
 	def del_nodataxmllist
 		if @list_value > 0
-			# �����������ȡ�@list_value���ͤ��Ѥ�äƤ��ޤ��Τǡ�����ΰ�˸����ͤ򥻥åȤ���
+			# 配列を削除すると、@list_valueの値が変わってしまうので、ワーク領域に固定値をセットする
 			w_list_value1 = @list_value
 			for m in 1..w_list_value1 do
 				n = w_list_value1 - m
 				if @xmllist[n].list_value > 0
-					# ����XML�ꥹ�Ȥ��餵����������Ƥ���Τǡ�����XML�ꥹ�Ȥζ��ǡ��������¹Ԥ��롣
+					# 派生XMLリストからさらに派生しているので、派生XMLリストの空データ削除を実行する。
 					@xmllist[n].del_nodataxmllist
 				end
 
-				# ������������XML�ꥹ�Ȥ����뤫���ޤ��ϥǡ���������å�����
-				# ��������XML�ꥹ�Ȥ��ʤ����ǡ�����ʤ���С�������������XML�ꥹ�Ȥ�������
+				# 再度派生するXMLリストがあるか、またはデータをチェックし、
+				# 派生するXMLリストがなく、データもなければ、該当する派生XMLリストを削除する
 				if @xmllist[n].list_value == 0
-					# ����XML�ꥹ�Ȥ����������Ƥ���XML�ꥹ�ȤϤʤ�
+					# 派生XMLリストから派生しているXMLリストはない
 					case	@xmllist[n].data
 					when	nil, ''
-						# ����nil�Ǥ���
-						# ������������XML�ꥹ�Ȥ������������
+						# 空白かnilである
+						# 該当する派生XMLリストの配列を削除する
 						@xmllist.delete_at(n)
-						@list_value -= 1	# ���ߤ�������򥻥åȤ���
-						# ��forʬ�ǡ�������¹Ԥ���ȡ����󥪡��С���Ƚ��ϳ��򵯤����Τǡ�
-						#   ���ʤ餺�Ǹ�����󤫤�¹Ԥ��뤳��
+						@list_value -= 1	# 現在の配列数をセットする
+						# ※for分で、０から実行すると、配列オーバーや判定漏れを起こすので、
+						#   かならず最後の配列から実行すること
 					end
 				end
 			end
@@ -477,29 +477,29 @@ class Xml_baselist
 
 
 	# ------------------------------------------------------------
-	# ����XML�ꥹ�Ȥκ��
-	#    ����
-	# ����XML�ꥹ�Ȥ����������Ƥ����Τ��Ф��Ƥ��������򤷤ޤ���
-	# ����XML�ꥹ�Ȥ��Ф��Ƥϡ�����XML�ꥹ�ȥ��֥������ȤΥ᥽�åɤ�¹Ԥ��ޤ���
+	# 派生XMLリストの削除
+	#    備考
+	# 派生XMLリストから派生しているものに対しても削除処理をします。
+	# 派生XMLリストに対しては、派生XMLリストオブジェクトのメソッドを実行します。
 	def del_child
 		if @list_value > 0
-			# ����XML�ꥹ�Ȥ�¸�ߤ���
-			# �ҥ��֥������Ȥ�����XML�ꥹ�Ȥκ��
+			# 派生XMLリストが存在する
+			# 子オブジェクトの派生XMLリストの削除
 			for x in 1..@list_value do
 				@xmllist[x - 1].del_child
 			end
-			# ����XML�ꥹ�Ȥκ��
+			# 派生XMLリストの削除
 			for x in 1..@list_value do
 				@xmllist[x - 1] = nil
 			end
 			@xmllist = []
-			# �����󥿤Υ��ꥢ
+			# カウンタのクリア
 			@list_value = 0
 		end
 	end
 
 	# ------------------------------------------------------------
-	# ���֥������ȳ�����Υǡ������С��ؤΥ����������ǽ�ˤ���
+	# オブジェクト外からのデータメンバーへのアクセスを可能にする
 	attr_accessor :flg, :name, :data, :list_value, :xmllist
 #	public :flg, :name, :data, :list_value, :xmllist
 end
@@ -509,57 +509,57 @@ end
 # =============================================================================
 
 
-# ���إǡ����ꥹ�ȥ��饹
-# ���Υ��饹�ϡ����إǡ�����ĥ꡼��¤���Ѵ������ĥ꡼�������뤳�Ȥǹ�®�����뤿��Υ��饹�Ǥ�
-# ��������������Ѵ���Ԥ����Ӥ˼¹Ԥ���ȥե�åȷ��������٤��ʤ뤿�ᡢ
-# ��®�����뤿��ˤϡ����������ФȤ����礬ɬ�ܤǤ���
+# 階層データリストクラス
+# このクラスは、階層データをツリー構造に変換し、ツリー検索することで高速化するためのクラスです
+# ただし、これは変換を行うたびに実行するとフラット形式よりも遅くなるため、
+# 高速化するためには、受信サーバとの統合が必須です。
 
-# �����ˡ�ϡ�XML�ꥹ�Ȥ���˹�¤ñ�̤���Ӥ�Ԥ�����Ӳ���򸺤餹���Ȥǹ�®����������롣
-# �����ͤϡ��ե����뤫����ɤ߹��߻��˹Ԥ���
-
-
-#    def initialize - �����
-#    def child_create(name, byte) - ����˻ҳ��ؾ�����ɲ�
-#    def convert_xml_path_to_patharray(xmlpath) - XML�ѥ������������XML�ѥ�������Ѵ�
-#    def get_data_from_xmlpatharray(xmlpatharray) - ����XML�ѥ�����ε������֤ȥХ��ȿ��μ���
-#    @flg - �ե饰(0=�ǡ������ޤ��ϡ��ǡ����ʤ�, 1=°��)
-#    @name - �������ؤΥ���̾ [String��]
-#    @position - �������ؤΥ������󥷥��ե�����ε������� [Numeric��]
-#    @byte - �������ؤΥǡ����ΥХ��ȿ� [Numeric��]
-#    @seq_num - �����ֹ� [Numeric��](CSV���Ϥ˻���)
-#    @hirlist_value - �ҳ��ؾ�����礭�� [Numeric��]
-#    @hirlist - �ҳ��ؾ��� [����(���֥�������)��]
+# 比較方法は、XMLリストを基準に構造単位の比較を行い、比較回数を減らすことで高速化が見込める。
+# 起点値は、ファイルからの読み込み時に行う。
 
 
-# ���إǡ����ꥹ�ȥ��饹
+#    def initialize - 初期化
+#    def child_create(name, byte) - 後ろに子階層情報の追加
+#    def convert_xml_path_to_patharray(xmlpath) - XMLパスを配列形式のXMLパス配列に変換
+#    def get_data_from_xmlpatharray(xmlpatharray) - 該当XMLパス配列の起点位置とバイト数の取得
+#    @flg - フラグ(0=データ、または、データなし, 1=属性)
+#    @name - 該当階層のタグ名 [String型]
+#    @position - 該当階層のシーケンシャルファイルの起点位置 [Numeric型]
+#    @byte - 該当階層のデータのバイト数 [Numeric型]
+#    @seq_num - 項目番号 [Numeric型](CSV出力に使用)
+#    @hirlist_value - 子階層情報の大きさ [Numeric型]
+#    @hirlist - 子階層情報 [配列(オブジェクト)型]
+
+
+# 階層データリストクラス
 class HierarcydataList
 
 	# ------------------------------------------------------------
-	# �����
+	# 初期化
 	def initialize
-		@flg = 0			# �ե饰(0=�ǡ������ޤ��ϡ��ǡ����ʤ�, 1=°��)
-		@name = ''			# �������ؤΥ���̾ [String��]
-		@position = 0		# �������ؤΥ������󥷥��ե�����ε������� [Numeric��]
-		@byte = 0			# �������ؤΥǡ����ΥХ��ȿ� [Numeric��]
-		@seq_num = 0		# �����ֹ� [Numeric��](CSV���Ϥ˻���)
-		@hirlist_value = 0	# �ҳ��ؾ�����礭�� [Numeric��]
-		@hirlist = []		# �ҳ��ؾ��� [����(���֥�������)��]
+		@flg = 0			# フラグ(0=データ、または、データなし, 1=属性)
+		@name = ''			# 該当階層のタグ名 [String型]
+		@position = 0		# 該当階層のシーケンシャルファイルの起点位置 [Numeric型]
+		@byte = 0			# 該当階層のデータのバイト数 [Numeric型]
+		@seq_num = 0		# 項目番号 [Numeric型](CSV出力に使用)
+		@hirlist_value = 0	# 子階層情報の大きさ [Numeric型]
+		@hirlist = []		# 子階層情報 [配列(オブジェクト)型]
 	end
 
 
 	# ------------------------------------------------------------
 
-	# ����˻ҳ��ؾ�����ɲ�
-	#    ����
-	# name - ����̾���ޤ��ϡ�°��̾ [IN / String��]
-	# flg - �ե饰 [IN / Numeric��]
-	#          0 = �ǡ������ޤ��ϡ��ǡ����ʤ�
-	#          1 = °��
-	# position - ����������°����񤭹��൯������ [Numeric��]
-	# byte - �񤭹���Х��ȿ� [Numeric��]
-	# seq_num - �����ֹ� [Numeric��]
-	#    �����
-	# �ʤ�
+	# 後ろに子階層情報の追加
+	#    引数
+	# name - タグ名、または、属性名 [IN / String型]
+	# flg - フラグ [IN / Numeric型]
+	#          0 = データ、または、データなし
+	#          1 = 属性
+	# position - 該当タグ・属性を書き込む起点位置 [Numeric型]
+	# byte - 書き込むバイト数 [Numeric型]
+	# seq_num - 項目番号 [Numeric型]
+	#    戻り値
+	# なし
 	def childadd(name, flg, position, byte, seq_num = 0)
 		hir_newlist = HierarcydataList.new
 		hir_newlist.name = name
@@ -575,24 +575,24 @@ class HierarcydataList
 
 	# ------------------------------------------------------------
 
-	# XML�ѥ������������XML�ѥ�������Ѵ�
-	#    ����
-	# xmlpath - �Ѵ�����XML�ѥ� [IN / String��]
-	#    �����
-	# XML�ѥ�����
-	#    ����
-	# ���δؿ��ϡ����Хѥ����θ�������ˤϤʤäƤ��ޤ���Τǡ�
-	# ���Хѥ��ǵ��Ҥ��Ƥ�����ϡ����Хѥ����Ѵ����Ƥ���������
-	#    ���
-	# ���С��ؿ��Ȥ��Ƥϡ����ޤ깥�ޤ����ʤ�����
-	# ��������ǤΤ��Ȥ������ˤ��Ƥ���Τǡ��Ȥꤢ�������С��ؿ��Ȥ��ƺ�������
-	# �����̤Υ��饹��Ʊ�����С��ؿ�������Τǡ������ؿ������Ƥ��ޤ��Τ�������
+	# XMLパスを配列形式のXMLパス配列に変換
+	#    引数
+	# xmlpath - 変換するXMLパス [IN / String型]
+	#    戻り値
+	# XMLパス配列
+	#    備考
+	# この関数は、相対パスを考慮した作りにはなっていませんので、
+	# 相対パスで記述している場合は、絶対パスに変換してください。
+	#    メモ
+	# メンバー関数としては、あまり好ましくないが、
+	# 配列形式でのやりとりを前提にしているので、とりあえずメンバー関数として作成する
+	# 既に別のクラスに同じメンバー関数があるので、外部関数化してしまうのも手だろう
 	def convert_xml_path_to_patharray(xmlpath)
 		xml_array = [] ; xml_array_size = 0 ; w_xmlpath = ''
-		# ����ζ����������ǡ���/�פζ��ڤ�����󲽤���
+		# 前後の空白を除去した上で、「/」の区切りで配列化する
 		w_xmlpath = xmlpath.strip
 		xml_array = w_xmlpath.split(/\//)
-		# �������Ƭ���������ʤ顢��������Τߺ��
+		# 配列の先頭が空白等なら、該当配列のみ削除
 		case	xml_array[0]
 		when	nil, ''
 			xml_array.delete_at(0)
@@ -602,9 +602,9 @@ class HierarcydataList
 			word1 = '' ; word2 = []
 			word1 = xml_array[xml_array_size - 1]
 			word2 = word1.split(/@/)
-			# ����@�פ�����ʾ�и����뤳�ȤϹ�θ���Ƥ��ޤ���
-			xml_array[xml_array_size - 1] = word2[0]	# ��@�פ�����򥻥å�
-			xml_array.push('@' + word2[1])	# ��@�װʹߤ򥻥å�
+			# ※「@」が２回以上出現することは考慮していません
+			xml_array[xml_array_size - 1] = word2[0]	# 「@」より前をセット
+			xml_array.push('@' + word2[1])	# 「@」以降をセット
 		end
 		return	xml_array
 	end
@@ -612,78 +612,78 @@ class HierarcydataList
 
 	# ------------------------------------------------------------
 
-	# ����XML�ѥ�����ε������֤ȥХ��ȿ��μ���
-	#    ����
-	# xmlpatharray - XML�ѥ����� [IN / ����(String)��]
-	#    �����
-	# ���ꤷ��XML�ѥ�����ε������֤ȥХ��ȿ�([]�ξ�硢�����Ǥ��ʤ��ä�) [����(Numeric)��]
-	#  [0] - �������� [Numeric��]
-	#  [1] - �Х��ȿ� [Numeric��]
-	#    ����
-	# ����������ϴؿ��¹Ը���ͤ��ݾڤ��ޤ���
-	# ����XML�ꥹ�ȤΥǡ����������������Ǥ�
+	# 該当XMLパス配列の起点位置とバイト数の取得
+	#    引数
+	# xmlpatharray - XMLパス配列 [IN / 配列(String)型]
+	#    戻り値
+	# 指定したXMLパス配列の起点位置とバイト数([]の場合、取得できなかった) [配列型(Numeric)型]
+	#  [0] - 起点位置 [Numeric型]
+	#  [1] - バイト数 [Numeric型]
+	#    備考
+	# 引数の配列は関数実行後の値を保証しません
+	# 派生XMLリストのデータを取得する処理です
 	def get_data_from_xmlpatharray(xmlpatharray)
 		xml_tag = '' ; array_size = 0 ; hirlist_size = 0
 		ret_data = []
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
-			# nil�ξ��֤ξ��ϡ��㳰��ȯ��������
-			raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '������XML�ѥ�����˥ǡ���������ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# nilの状態の場合は、例外を発生させる
+			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			# 例外が発生できない場合を考慮する
 			return	nil
 		end
 		array_size = xmlpatharray.size
 		hirlist_size = @hirlist.size
 		if array_size > 0
-			# ����XML�ꥹ�Ȥμ���
+			# 派生XMLリストの取得
 			for x in 1..hirlist_size do
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 				if @hirlist[x - 1].name == xml_tag
-					# ���եȸ��XML�ѥ����������˻��ꤷ�ơ�����XML�Υǡ��������ؿ���ƤӽФ�
+					# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ取得関数を呼び出す
 					ret_data = @hirlist[x - 1].get_data_from_xmlpatharray(xmlpatharray.clone)
-					break	# forʸ����ȴ����
+					break	# for文から抜ける
 				end
 				if x == hirlist_size
-					# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�[]���֤���
+					# 派生XMLリストに該当するタグが見つからなかった場合は、[]を返す。
 					ret_data = []
 				end
 			end
 		else
-			# ����XML�ꥹ�Ȥϸ������ʤ�
-			# ���ꤷ������̾���ͤ����
+			# 派生XMLリストは検索しない
+			# 指定したタグ名の値を取得
 			if xml_tag[0, 1] == '@'
-				# °���Υǡ��������Ǥ���
+				# 属性のデータ取得である
 				attr_tag = xml_tag
 #				attr_tag = ''
-#				attr_tag = xml_tag[1..-1]	# ��ʸ���ܰʹߤ�°��̾�Ȥ��ƻ��Ѥ���
+#				attr_tag = xml_tag[1..-1]	# ２文字目以降を属性名として使用する
 				for x in 1..hirlist_size do
 					if @hirlist[x - 1].name == attr_tag
-						# °��̾�����Ĥ��ä�
-						ret_data.push @hirlist[x - 1].position	# �������֤򥻥å�
-						ret_data.push @hirlist[x - 1].byte		# �Х��ȿ��򥻥å�
-						break	# forʸ����ȴ����
+						# 属性名が見つかった
+						ret_data.push @hirlist[x - 1].position	# 起点位置をセット
+						ret_data.push @hirlist[x - 1].byte		# バイト数をセット
+						break	# for文から抜ける
 					end
 					if x == hirlist_size
-						# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�[]���֤���
+						# 派生XMLリストに該当するタグが見つからなかった場合は、[]を返す。
 						ret_data = []
 					end
 				end
 			else
-				# �����Υǡ��������Ǥ���
+				# タグのデータ取得である
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
 				for x in 1..hirlist_size do
 					if @hirlist[x - 1].name == xml_tag
-						# ����̾�����Ĥ��ä�
-						ret_data.push @hirlist[x - 1].position	# �������֤򥻥å�
-						ret_data.push @hirlist[x - 1].byte		# �Х��ȿ��򥻥å�
-						break	# forʸ����ȴ����
+						# タグ名が見つかった
+						ret_data.push @hirlist[x - 1].position	# 起点位置をセット
+						ret_data.push @hirlist[x - 1].byte		# バイト数をセット
+						break	# for文から抜ける
 					end
 					if x == hirlist_size
-						# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�[]���֤���
+						# 派生XMLリストに該当するタグが見つからなかった場合は、[]を返す。
 						ret_data = []
 					end
 				end
@@ -697,146 +697,146 @@ class HierarcydataList
 
 	# ------------------------------------------------------------
 
-	# ����XML�ѥ�����ε������֤ȥХ��ȿ��γ�Ǽ
-	#    ����
-	# xmlpatharray - XML�ѥ����� [IN / ����(String)��]
-	# position - �������� [Numeric��]
-	# byte - �Х��ȿ� [Numeric��]
-	# seq_num - �����ֹ� [Numeric��]
-	#    �����
-	# �ʤ�
-	#    ����
-	# ����������ϴؿ��¹Ը���ͤ��ݾڤ��ޤ���
-	# ����XML�ꥹ�ȤΥǡ����������������Ǥ�
+	# 該当XMLパス配列の起点位置とバイト数の格納
+	#    引数
+	# xmlpatharray - XMLパス配列 [IN / 配列(String)型]
+	# position - 起点位置 [Numeric型]
+	# byte - バイト数 [Numeric型]
+	# seq_num - 項目番号 [Numeric型]
+	#    戻り値
+	# なし
+	#    備考
+	# 引数の配列は関数実行後の値を保証しません
+	# 派生XMLリストのデータを取得する処理です
 	def put_data_from_xmlpatharray(xmlpatharray, position, byte, seq_num = 0)
 		xml_tag = '' ; array_size = 0 ; hirlist_size = 0
-		ret_data = nil	# 0 = ���ｪλ��
+		ret_data = nil	# 0 = 正常終了？
 
 		xml_tag = xmlpatharray.shift
 		if xml_tag == nil
-			# nil�ξ��֤ξ��ϡ��㳰��ȯ��������
-			raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '������XML�ѥ�����˥ǡ���������ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# nilの状態の場合は、例外を発生させる
+			raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '引数のXMLパス配列にデータがありません。'
+			# 例外が発生できない場合を考慮する
 			return	nil
 		end
 		array_size = xmlpatharray.size
 		hirlist_size = @hirlist.size
 		if array_size > 0
 
-			# x1 = forʸ��
-			x2 = 0	# �ե饰(0=�������륿�������Ĥ���ʤ��ä�,1=�ҳ��ؤ˳������륿�������Ĥ��ä�)
-			x3 = 0	# ���Ĥ��ä����������ֹ�
+			# x1 = for文用
+			x2 = 0	# フラグ(0=該当するタグが見つからなかった,1=子階層に該当するタグが見つかった)
+			x3 = 0	# 見つかった時の配列番号
 			if hirlist_size > 0
-				# ���˥�����¸�ߤ��뤫��Ĵ�٤�
+				# 既にタグが存在するかを調べる
 				for x1 in 0..(hirlist_size - 1) do
 					if @hirlist[x1].name == xml_tag
-						# �������륿�����ҳ��ؤ��鸫�Ĥ��ä�
-						x2 = 1	# �ե饰�Υ��å�
-						x3 = x1	# �����ֹ�Υ��å�
-						break	# forʸ����ȴ����
+						# 該当するタグが子階層から見つかった
+						x2 = 1	# フラグのセット
+						x3 = x1	# 配列番号のセット
+						break	# for文から抜ける
 					end
 				end
 			end
 
-			# ���åȤ��줿�ե饰�򸫤ơ��ҳ��ؤ��ä��ꡢ��¸�λҳ��ؤ򥿡����åȤˤ���
+			# セットされたフラグを見て、子階層を作ったり、既存の子階層をターゲットにする
 			case	x2
 			when	0
-				# ����XML�ꥹ�Ȥ˳������륿�������Ĥ���ʤ��ä����ϡ�������������롣
+				# 派生XMLリストに該当するタグが見つからなかった場合は、タグを作成する。
 
-				# �ҳ��ؾ�����ɲ�(�������֤Ƚ񤭹���Х��ȿ��ϡ�ξ���Ȥ�0�ˤ���)
+				# 子階層情報の追加(起点位置と書き込むバイト数は、両方とも0にした)
 #				self.childadd(xml_tag, 0, 0, 0, seq_num)
 				childadd(xml_tag, 0, 0, 0, seq_num)
-				# ���������ҳ��ؤ�XML�Υǡ������Ǽ����
+				# 作成した子階層へXMLのデータを格納する
 				ret_data = @hirlist[-1].put_data_from_xmlpatharray(xmlpatharray.clone, position, byte, seq_num)
-				# ���Ǹ��������Ф��ƹԤ��Τǡ���������-1
-				# �������ΤߤʤΤǡ�°��Ƚ��Ϥ��ʤ�
+				# ※最後の配列に対して行うので、配列指定は-1
+				# ※タグのみなので、属性判定はしない
 			when	1
-				# ���եȸ��XML�ѥ����������˻��ꤷ�ơ�����XML�Υǡ�����Ǽ�ؿ���ƤӽФ�
+				# シフト後のXMLパス配列を引数に指定して、派生XMLのデータ格納関数を呼び出す
 				ret_data = @hirlist[x3].put_data_from_xmlpatharray(xmlpatharray.clone, position, byte, seq_num)
 			else
-				raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '�ե饰(x2)���������ͤ����åȤ���ޤ�����x2 = [' + String(x2) + ']'
+				raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 			end
 		else
-			# ����XML�ꥹ�Ȥϸ������ʤ�
-			# ���ꤷ������̾���ͤ����
+			# 派生XMLリストは検索しない
+			# 指定したタグ名の値を取得
 			if xml_tag[0, 1] == '@'
-				# °���Υǡ��������Ǥ���
+				# 属性のデータ取得である
 				attr_tag = xml_tag
 #				attr_tag = ''
-#				attr_tag = xml_tag[1..-1]	# ��ʸ���ܰʹߤ�°��̾�Ȥ��ƻ��Ѥ���
+#				attr_tag = xml_tag[1..-1]	# ２文字目以降を属性名として使用する
 
-				# x1 = forʸ��
-				x2 = 0	# �ե饰(0=�������륿�������Ĥ���ʤ��ä�,1=�ҳ��ؤ˳������륿�������Ĥ��ä�)
-				x3 = 0	# ���Ĥ��ä����������ֹ�
+				# x1 = for文用
+				x2 = 0	# フラグ(0=該当するタグが見つからなかった,1=子階層に該当するタグが見つかった)
+				x3 = 0	# 見つかった時の配列番号
 				if hirlist_size > 0
-					# ���˥���(°��)��¸�ߤ��뤫��Ĵ�٤�
+					# 既にタグ(属性)が存在するかを調べる
 					for x1 in 0..(hirlist_size - 1) do
 						if @hirlist[x1].name == attr_tag
-							# �������륿��(°��)���ҳ��ؤ��鸫�Ĥ��ä�
-							x2 = 1	# �ե饰�Υ��å�
-							x3 = x1	# �����ֹ�Υ��å�
-							break	# forʸ����ȴ����
+							# 該当するタグ(属性)が子階層から見つかった
+							x2 = 1	# フラグのセット
+							x3 = x1	# 配列番号のセット
+							break	# for文から抜ける
 						end
 					end
 				end
 
-				# ���åȤ��줿�ե饰�򸫤�
-				# ���Ǥ˥���(°��)��¸�ߤ�����ϡ����顼��ȯ�������롣
+				# セットされたフラグを見る
+				# すでにタグ(属性)が存在する場合は、エラーを発生させる。
 				case	x2
 				when	0
-					# ����XML�ꥹ�Ȥ˳������륿��(°��)���ʤ��Τ��ǧ�����Τǡ��ҳ��ؤ�������롣
+					# 派生XMLリストに該当するタグ(属性)がないのを確認したので、子階層を作成する。
 					childadd(xml_tag, 1, position, byte, seq_num)
 				when	1
-					# °��̾�����Ĥ��ä�
-#					# ��񤭽񤭹���
+					# 属性名が見つかった
+#					# 上書き書き込み
 #					@hirlist[x].position = position
 #					@hirlist[x].byte = byte
-					# ��񤭽񤭹��ߤ򤻤��ˡ����顼��ȯ��������
-					raise 'put_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + 'Ʊ��XML�ѥ����Ф��ơ���񤭽񤭹��ߤ��褦�Ȥ��ޤ�����' + "\n" + 'XML�ѥ����� = [' + xml_tag + ']'
+					# 上書き書き込みをせずに、エラーを発生させる
+					raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "\n" + 'XMLパス末尾 = [' + xml_tag + ']'
 				else
-					raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '�ե饰(x2)���������ͤ����åȤ���ޤ�����x2 = [' + String(x2) + ']'
+					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 				end
 			else
-				# �����Υǡ��������Ǥ���
+				# タグのデータ取得である
 
-# ��XML�ǡ������ɤ߹���������ǡ����������̾�����֤������Ƥ��뤳�Ȥ�����Ȥ��Ƥ��롣
+# ※XMLデータを読み込んだ時点で、配列形式の名前に置き換えていることを前提としている。
 
-				# x1 = forʸ��
-				x2 = 0	# �ե饰(0=�������륿�������Ĥ���ʤ��ä�,1=�ҳ��ؤ˳������륿�������Ĥ��ä�)
-				x3 = 0	# ���Ĥ��ä����������ֹ�
+				# x1 = for文用
+				x2 = 0	# フラグ(0=該当するタグが見つからなかった,1=子階層に該当するタグが見つかった)
+				x3 = 0	# 見つかった時の配列番号
 				if hirlist_size > 0
-					# ���˥�����¸�ߤ��뤫��Ĵ�٤�
+					# 既にタグが存在するかを調べる
 					for x1 in 0..(hirlist_size - 1) do
 						if @hirlist[x1].name == xml_tag
-							# �������륿�����ҳ��ؤ��鸫�Ĥ��ä�
-							x2 = 1	# �ե饰�Υ��å�
-							x3 = x1	# �����ֹ�Υ��å�
-							break	# forʸ����ȴ����
+							# 該当するタグが子階層から見つかった
+							x2 = 1	# フラグのセット
+							x3 = x1	# 配列番号のセット
+							break	# for文から抜ける
 						end
 					end
 				end
 
-				# ���åȤ��줿�ե饰�򸫤�
-				# ���Ǥ˥�����¸�ߤ�����ϡ����顼��ȯ�������롣
+				# セットされたフラグを見る
+				# すでにタグが存在する場合は、エラーを発生させる。
 				case	x2
 				when	0
-					# ����XML�ꥹ�Ȥ˳������륿�����ʤ��Τ��ǧ�����Τǡ��ҳ��ؤ�������롣
+					# 派生XMLリストに該当するタグがないのを確認したので、子階層を作成する。
 					childadd(xml_tag, 0, position, byte, seq_num)
 
 				when	1
-					# ����̾�����Ĥ��ä�
+					# タグ名が見つかった
 					if (@hirlist[x3].position == 0) and (@hirlist[x3].byte == 0)
-						# �ޤ�����񤫤�Ƥ��ʤ������Ǥ���
-						# ��񤭽񤭹���
+						# まだ何も書かれていないタグである
+						# 上書き書き込み
 						@hirlist[x3].position = position
 						@hirlist[x3].byte = byte
 					else
-						# ���Ǥ˽񤭹��ޤ�Ƥ��륿���Ǥ���
-						# ��񤭽񤭹��ߤ򤻤��ˡ����顼��ȯ��������
-						raise 'put_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + 'Ʊ��XML�ѥ����Ф��ơ���񤭽񤭹��ߤ��褦�Ȥ��ޤ�����' + "\n" + 'XML�ѥ����� = [' + xml_tag + ']'
+						# すでに書き込まれているタグである
+						# 上書き書き込みをせずに、エラーを発生させる
+						raise 'put_data_from_xmlpatharrayで例外が発生しました。' + "\n" + '同じXMLパスに対して、上書き書き込みしようとしました。' + "\n" + 'XMLパス末尾 = [' + xml_tag + ']'
 					end
 				else
-					raise 'get_data_from_xmlpatharray���㳰��ȯ�����ޤ�����' + "\n" + '�ե饰(x2)���������ͤ����åȤ���ޤ�����x2 = [' + String(x2) + ']'
+					raise 'get_data_from_xmlpatharrayで例外が発生しました。' + "\n" + 'フラグ(x2)に不正な値がセットされました。x2 = [' + String(x2) + ']'
 				end
 
 			end
@@ -848,7 +848,7 @@ class HierarcydataList
 
 
 	# ------------------------------------------------------------
-	# ���֥������ȳ�����Υǡ������С��ؤΥ����������ǽ�ˤ���
+	# オブジェクト外からのデータメンバーへのアクセスを可能にする
 	attr_accessor :flg, :name, :position, :byte, :seq_num, :hirlist_value, :hirlist
 end
 
@@ -857,71 +857,71 @@ end
 # =============================================================================
 
 
-# XML�ꥹ�ȥ��饹
-# ���Υ��饹�ϡ�XML�ǡ�����ĥ꡼��¤����¸�����ĥ꡼�������뤳�Ȥǹ�®�����뤿��Υ��饹�Ǥ�
+# XMLリストクラス
+# このクラスは、XMLデータをツリー構造で保存し、ツリー検索することで高速化するためのクラスです
 
-# ���С��ؿ�
-#   �����
-#   XML�ǡ����μ�����
-#   XML�ѥ�����Υǡ�������
+# メンバー関数
+#   初期化
+#   XMLデータの取り込み
+#   XMLパス指定のデータ取得
 
-# XML�ꥹ�ȥ��饹
+# XMLリストクラス
 class Xml_listdata
 
-	# �ǡ������С�
+	# データメンバー
 	attr_accessor :xmllist
 
 
 	# ------------------------------------------------------------
-	# �����
+	# 初期化
 #	def initialize(x)
 	def initialize
-		# xml�Υꥹ�ȥǡ����ν����
+		# xmlのリストデータの初期化
 		@xmllist = nil
 	end
 
 
 	# ------------------------------------------------------------
-	# XML�ǡ����μ�����
-	#    ����
-	# xml_data - ������XML�ǡ��� [IN / String��]
-	# out_word_code - ����ʸ�������� [IN / String��]
-	#                    '1' - EUC������
-	#                    '2' - ���ե�JIS������
-	#    �����
-	# XML�ꥹ�ȴ��ܥǡ������֥�������(nil�ξ�硢�����ߤǤ��ʤ��ä�)
-	#    ����
-	# ���ΥС������Ǥϡ�XML�ѥ����Ѵ�����������ä�����
-	#   �����XML�ꥹ�ȥ��֥������Ȥ���������������Ȥ�
-	#   ����ˤ�ꡢ����θ����оݤιʤ����
+	# XMLデータの取り込み
+	#    引数
+	# xml_data - 取り込むXMLデータ [IN / String型]
+	# out_word_code - 出力文字コード [IN / String型]
+	#                    '1' - EUCコード
+	#                    '2' - シフトJISコード
+	#    戻り値
+	# XMLリスト基本データオブジェクト(nilの場合、取り込みできなかった)
+	#    備考
+	# 前のバージョンでは、XMLパスに変換する形式だったが、
+	#   今回はXMLリストオブジェクトを生成する方式をとる
+	#   これにより、配列の検索対象の絞り込み
 	def xmldata_setup(xml_data, out_word_code)
 		ret_data = nil
 
-		idx1 = 0	# �إå�Ƚ��ǻ��Ѥ���
-		idx2 = 0	# ���󲽽����ǻ��Ѥ���
-		idx3 = 0	# ���󲽽����ǻ��Ѥ���
+		idx1 = 0	# ヘッダ判定で使用する
+		idx2 = 0	# 配列化処理で使用する
+		idx3 = 0	# 配列化処理で使用する
 
 
-		flg1 = 0	# ���󲽽����ǻ��Ѥ���
+		flg1 = 0	# 配列化処理で使用する
 
-		now_xmllist = nil	# ���ߥ������åȤˤ��Ƥ��륿����xmllist���֥�������
-		xmllist_stack = []	# ����Ҥ��б����뤿���xmllist���֥������ȤΥ����å��ΰ�
+		now_xmllist = nil	# 現在ターゲットにしているタグのxmllistオブジェクト
+		xmllist_stack = []	# 入れ子に対応するためのxmllistオブジェクトのスタック領域
 
-		wd_name1 = ''	# ̾�ΤΥ���ΰ�(�����ֹ�ʤ�)
-		wd_name2 = ''	# ̾�ΤΥ���ΰ�(�����ֹ椢��)
-		wd_name3 = ''	# ̾�ΤΥ���ΰ�(�����ֹ椢��)
+		wd_name1 = ''	# 名称のワーク領域(配列番号なし)
+		wd_name2 = ''	# 名称のワーク領域(配列番号あり)
+		wd_name3 = ''	# 名称のワーク領域(配列番号あり)
 
-		wd_atrname1 = ''	# °��̾�ΤΥ���ΰ�
-		wd_atrdata1 = ''	# °���ǡ����Υ���ΰ�
+		wd_atrname1 = ''	# 属性名称のワーク領域
+		wd_atrdata1 = ''	# 属性データのワーク領域
 
-		wd_cdata1 = ''	# �����ǡ����Υ���ΰ�
+		wd_cdata1 = ''	# タグデータのワーク領域
 
-		w_xml1 = ''	# XMLʸ����γ�Ǽ���
-		i_encoding = ''	# ����ʸ����δ���������
-		o_encoding = ''	# ����ʸ����δ���������
+		w_xml1 = ''	# XML文字列の格納場所
+		i_encoding = ''	# 入力文字列の漢字コード
+		o_encoding = ''	# 出力文字列の漢字コード
 
 
-		# ����ʸ����δ��������ɤΥ��å�
+		# 出力文字列の漢字コードのセット
 		case String(out_word_code)
 		when '1'
 			o_encoding = 'EUC-JP'
@@ -934,13 +934,13 @@ class Xml_listdata
 		end
 
 
-		# �����ܤμ���
+		# １行目の取得
 		idx1 = xml_data.index("\n")
 		w_xml1 = xml_data[0, idx1]
 
-		# �إå����Ѵ�
-		# ������ : UTF��Ƚ�����˹Ԥ�����()
-		# encoding�ε��Ҥ��ʤ���С�UTF-8�Ȥ��ư���
+		# ヘッダの変換
+		# ※注意 : UTFの判定を先に行うこと()
+		# encodingの記述がなければ、UTF-8として扱う
 		if w_xml1 =~ /^.*?(<\?xml\sversion\s*?=\s*?\"[\.\d]+?\")\s*?(\?\>)/i 
 #		if w_xml1 =~ /^.*?(<\?xml\sversion\s*?=\s*?\".+?\")\s*?(\?\>)/i 
 			w_xml1 = $1 + " encoding=\"UTF-8\"" + $2 + "\n"
@@ -963,7 +963,7 @@ class Xml_listdata
 			i_encoding = "JIS"
 		end
 
-		# �Ĥ��ʸ�����������ơ��Ѵ�
+		# 残りの文字列を取得して、変換
 		w_xml1 += xml_data[idx1 .. -1]
 		case i_encoding
 		when "EUC-JP"
@@ -977,15 +977,15 @@ class Xml_listdata
 			w_xml1 = w_xml1.encode("UTF-8", "UTF-8", :invalid => :replace)
 			#w_xml1 = euctou8(Uconv.u8toeuc(w_xml1))
 #			if w_xml1[0] != '<'
-#				w_xml1 = w_xml1[3 .. -1]		# ���ߤ������äƤ����顢������
+#				w_xml1 = w_xml1[3 .. -1]		# ゴミが混じっていたら、取り除く
 #			end
 		else
-			# ̤�б���ʸ�������ɤʤΤǡ��㳰��ȯ��������
-			raise '���Ϥ��줿ʸ�������ɤ��б����Ƥ��ޤ��� [' + String(i_encoding) + ']'
+			# 未対応の文字コードなので、例外を発生させる
+			raise '入力された文字コードは対応していません [' + String(i_encoding) + ']'
 		end
 
 
-		# XML�ꥹ�ȴ��ܥ��饹������
+		# XMLリスト基本クラスの生成
 		@xmllist = Xml_baselist.new
 
 
@@ -999,7 +999,7 @@ class Xml_listdata
 			# ----------------------------------------
 			case type
 			when XMLParser::START_ELEM
-				# ���ϥ���
+				# 開始タグ
 				case o_encoding
 				when "EUC-JP"
 					wd_name1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', name )
@@ -1009,39 +1009,39 @@ class Xml_listdata
 #					wd_name1 = name
 				end
 
-				# ���ߤΥ���̾������
-				idx2 = 1	# �����ֹ�ν����(1���ꥸ��)
+				# 現在のタグ名の配列化
+				idx2 = 1	# 配列番号の初期化(1オリジン)
 				if now_xmllist.list_value > 0
-					# ����XML�ꥹ�Ȥ�����Τǡ�̾�������֤�ʤ���������å�
-					flg1 = 0	# ������̥ե饰�ν����(0 = ������³, 1 = ������λ)
+					# 派生XMLリストがあるので、名前がかぶらないかをチェック
+					flg1 = 0	# 検索結果フラグの初期化(0 = 検索継続, 1 = 検索終了)
 					while flg1 == 0 do
-						flg1 = 1	# �ǥե���ȤǸ�����λ�Ȥ���
-						wd_name3 = wd_name1 + '[' + String(idx2) + ']'	# �������륿��̾
+						flg1 = 1	# デフォルトで検索終了とする
+						wd_name3 = wd_name1 + '[' + String(idx2) + ']'	# 検索するタグ名
 						for idx3 in 0..(now_xmllist.list_value - 1) do
 							if now_xmllist.xmllist[idx3].name == wd_name3
-								# ���פ���̾�������Ĥ��ä�
+								# 一致する名前が見つかった
 								flg1 = 0
-								idx2 += 1	# �����ֹ��û�����
-								break	# forʸ����ȴ����
+								idx2 += 1	# 配列番号を加算する
+								break	# for文から抜ける
 							end
 						end
 					end
 				end
-				# ����̾�������ֹ���ղä���
+				# タグ名に配列番号を付加する
 				wd_name2 = wd_name1 + '[' + String(idx2) + ']'
 
 
-				xmllist_stack.push now_xmllist	# �����å��ˡ�ľ����xmllist���֥������Ȥ�����
+				xmllist_stack.push now_xmllist	# スタックに、直前のxmllistオブジェクトを待避
 
-				# ����xmllist�κ���
-				now_xmllist = now_xmllist.childadd(wd_name2, 0, nil)	# data�����Ƥˤϡ��ǡ����ʤ������
+				# 派生xmllistの作成
+				now_xmllist = now_xmllist.childadd(wd_name2, 0, nil)	# dataの内容には、データなしを指定
 
 
-				# °���Υ��å�
-				# ���嵭������xmllist����ˡ�°���ǡ����򥻥åȤ���
+				# 属性のセット
+				# ※上記の派生xmllistの中に、属性データをセットする
 				#
 				data.each do |key, value|
-					wd_atrname1 = '' ; wd_atrdata1 = ''		# �ǥХå����Ѥ����ä�����
+					wd_atrname1 = '' ; wd_atrdata1 = ''		# デバッグが済んだら消すこと
 					case o_encoding
 					when "EUC-JP"
 						wd_atrname1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', key )
@@ -1053,21 +1053,21 @@ class Xml_listdata
 #						wd_atrname1 = key
 #						wd_atrdata1 = value
 					end
-					# ����xmllist��°���ǡ����򥻥å�
+					# 派生xmllistに属性データをセット
 					now_xmllist.childadd(('@' + wd_atrname1), 1, wd_atrdata1)
 				end
 
 			# ----------------------------------------
 			when XMLParser::END_ELEM
-				# ��λ����
-				# �оݥ����򡢤ҤȤľ�̤Υ������᤹
+				# 終了タグ
+				# 対象タグを、ひとつ上位のタグに戻す
 				now_xmllist = xmllist_stack.pop
 
 			# ----------------------------------------
 			when XMLParser::CDATA
-				# �����Υǡ�������
+				# タグのデータ内容
 				if data != nil
-					# data�����Ƥ�nil�ǤϤʤ�
+					# dataの内容はnilではない
 					case o_encoding
 					when "EUC-JP"
 						wd_cdata1 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', data )
@@ -1079,15 +1079,15 @@ class Xml_listdata
 #					when "UTF-8"
 #						wd_cdata1 = data
 					end
-					wd_cdata1.strip!	# ����ζ��������
-					# ���Ƥ�����ξ��ϡ�nil�ˤ���
+					wd_cdata1.strip!	# 前後の空白を除去する
+					# 内容が空白の場合は、nilにする
 					wd_cdata1 = nil			if wd_cdata1 == ''
 				else
-					# data�����Ƥ�nil�Ǥ���
+					# dataの内容がnilである
 					wd_cdata1 = nil
 				end
 				if wd_cdata1 != nil
-					# data��nil�Ǥʤ���硢�оݥ��֥������Ȥ����Ƥ򥻥å�
+					# dataがnilでない場合、対象オブジェクトに内容をセット
 					now_xmllist.data = wd_cdata1
 				end
 			# ----------------------------------------
@@ -1105,122 +1105,122 @@ class Xml_listdata
 
 
 	# ------------------------------------------------------------
-	# XML�ѥ��Υǡ����μ���(���Хѥ������Τ�)
-	#    ����
-	# xmlpath - ����������XML�ѥ� [IN / String��]
-	#    �����
-	# ���ꤷ��XML�ѥ�������(nil�ξ�硢�����Ǥ��ʤ��ä�)
-	#    ����
-	# ������XML�ѥ��ϴؿ��¹Ը���ͤ��ݾڤ��ޤ���
-	# ����XML�ꥹ�ȤΥǡ����������������Ǥ�
-	# �����˻��ꤹ��Τϡ����Хѥ������ǹԤäƤ�������
-	#   ���Хѥ��ˤ��б����Ƥ��ޤ���
+	# XMLパスのデータの取得(絶対パス形式のみ)
+	#    引数
+	# xmlpath - 取得したいXMLパス [IN / String型]
+	#    戻り値
+	# 指定したXMLパスの内容(nilの場合、取得できなかった)
+	#    備考
+	# 引数のXMLパスは関数実行後の値を保証しません
+	# 派生XMLリストのデータを取得する処理です
+	# 引数に指定するのは、絶対パス形式で行ってください
+	#   相対パスには対応していません
 	def get_xmlpath_data(xml_path)
 		return (@xmllist.get_data_from_xmlpatharray(@xmllist.convert_xml_path_to_patharray(xml_path)))
 	end
 
 
 	# ------------------------------------------------------------
-	# XML�ǡ��������������γ�ǧ(�ǥХå���)
-	#    ����
-	# show_mode - ɽ���⡼�� [IN / Numeric�� / �ǥե������ = 10]
-	#                10 - �ǥХå�������ɽ���⡼��
-	#    �����
-	# �ʤ�
-	#    ����
-	# ���Υ��С��ؿ��ϡ������ǡ�������������Ǽ����Ƥ��뤫���ǧ���뤿��˺������ޤ���
-	# ���δؿ����ΤΥǥХå��⡢�����դ��뤳��
+	# XMLデータの内部形式の確認(デバッグ用)
+	#    引数
+	# show_mode - 表示モード [IN / Numeric型 / デフォルト値 = 10]
+	#                10 - デバッグ向けの表示モード
+	#    戻り値
+	# なし
+	#    備考
+	# このメンバー関数は、内部データが正しく格納されているかを確認するために作成しました
+	# この関数自体のデバッグも、気を付けること
 	def print_xmllist(show_mode = 10)
-		now_xmllist = nil			# ���ߤ�XML�ꥹ�ȥ��֥�������
-		now_xmllist_index = 0		# ���ߤ��о�����XML�ꥹ�ȥ��֥������ȤΥ���ǥå�����
-		xmllist_stack = []			# XML�ꥹ�ȥ��֥������ȤΥ����å�
-		xmllist_index_stack = []	# XML�ꥹ�ȥ��֥������ȤΥ���ǥå����ͤΥ����å�
+		now_xmllist = nil			# 現在のXMLリストオブジェクト
+		now_xmllist_index = 0		# 現在の対象派生XMLリストオブジェクトのインデックス値
+		xmllist_stack = []			# XMLリストオブジェクトのスタック
+		xmllist_index_stack = []	# XMLリストオブジェクトのインデックス値のスタック
 
 		case	show_mode
 		# ----------------------------------------
-		# �ǥХå�������ɽ���⡼��
+		# デバッグ向けの表示モード
 		when	10
 			now_xmllist = @xmllist
 			now_xmllist_index = 0
 			if now_xmllist == nil
-				puts 'XML�ꥹ�ȥ��֥������Ȥ�nil�Ǥ�'
+				puts 'XMLリストオブジェクトはnilです'
 			elsif now_xmllist.list_value == 0
-				# XML�ꥹ�Ȥο������Ǥ���
-				puts 'XML�ꥹ�ȥǡ�����¸�ߤ��ޤ���'
+				# XMLリストの数が０である
+				puts 'XMLリストデータが存在しません'
 			else
-				# XML�ꥹ�Ȥ�ɽ������
+				# XMLリストを表示する
 				while true do
 					case	now_xmllist.flg
 					when	0
-						# �������ޤ��ϡ��ǡ����ʤ�
+						# タグ、または、データなし
 						if now_xmllist_index == 0
-							# ����ǥå�����0�λ��Τ�ɽ������
-							# (��XML�ꥹ�Ȥ�����äƤ����Ȥ��ˤ�ɽ�������Τ��ɤ�����)
+							# インデックスが0の時のみ表示する
+							# (子XMLリストから戻ってきたときにも表示されるのを防ぐため)
 							case	now_xmllist.name
 							when	nil
-								# ����̾��°��̾��nil�����åȤ���Ƥ���
-								puts '����̾��nil�Ǥ�'
+								# タグ名・属性名にnilがセットされている
+								puts 'タグ名がnilです'
 							when	''
-								# ����̾��°��̾�˶��򤬥��åȤ���Ƥ���
-								puts '����̾������Ǥ�'
+								# タグ名・属性名に空白がセットされている
+								puts 'タグ名が空白です'
 							else
-								# ����̾��°��̾��ʸ���󤬥��åȤ���Ƥ���
+								# タグ名・属性名に文字列がセットされている
 								case	now_xmllist.data
 								when	nil, ''
-									# �����ΤߤǤ���
+									# タグのみである
 								else
-									# ���Ƥ�¸�ߤ���
+									# 内容が存在する
 									puts ':' + now_xmllist.name + ' = [' + now_xmllist.data + ']'
 								end
 							end
 						end
 
 					when	1
-						# °��
+						# 属性
 						case	now_xmllist.name
 						when	nil
-							# °��̾��nil�����åȤ���Ƥ���
-							puts '°��̾��nil�Ǥ�'
+							# 属性名にnilがセットされている
+							puts '属性名がnilです'
 						when	''
-							# °��̾�˶��򤬥��åȤ���Ƥ���
-							puts '°��̾������Ǥ�'
+							# 属性名に空白がセットされている
+							puts '属性名が空白です'
 						else
-							# °��̾��ʸ���󤬥��åȤ���Ƥ���
+							# 属性名に文字列がセットされている
 							case	now_xmllist.data
 							when	nil
-								# °����nil�����äƤ���
+								# 属性にnilが入っている
 								puts ':' + now_xmllist.name + ' = [nil]'
 							when	''
-								# °���˶������äƤ���
-								puts ':' + now_xmllist.name + ' = [����]'
+								# 属性に空白が入っている
+								puts ':' + now_xmllist.name + ' = [空白]'
 							else
-								# ���Ƥ�¸�ߤ���
+								# 内容が存在する
 								puts ':' + now_xmllist.name + ' = [' + now_xmllist.data + ']'
 							end
 						end
 					else
-						puts 'XML�ꥹ�ȤΥե饰���������ͤ����åȤ���Ƥ��ޤ�'
+						puts 'XMLリストのフラグに不正な値がセットされています'
 						puts '   flg = [' + String(now_xmllist.flg) + ']'
 					end
 
-					# ����XML�ꥹ�Ȥ�����С������å��˥���ǥå����ȥ��֥������Ȥ򥻥åȤ��ơ����ߤ�XML�ꥹ�ȥ��֥��������ΰ�ˡ���XML�ꥹ�Ȥ򥻥åȤ���
+					# 派生XMLリストがあれば、スタックにインデックスとオブジェクトをセットして、現在のXMLリストオブジェクト領域に、子XMLリストをセットする
 					if now_xmllist_index < now_xmllist.list_value
-						# ���ߤ����Ƥ򥹥��å��˥��å�
+						# 現在の内容をスタックにセット
 						xmllist_stack.push now_xmllist
 						xmllist_index_stack.push now_xmllist_index
-						# ���ߤ����Ƥ򡢻�XML�ꥹ�Ȥˤ���
+						# 現在の内容を、子XMLリストにする
 						now_xmllist_index = 0
 						now_xmllist = now_xmllist.xmllist[0]
 						puts '>' + now_xmllist.name
 					else
-						# ��XML�ꥹ�Ȥ��ʤ��Τǡ����Υ��֥������Ȥˤ���
+						# 子XMLリストがないので、元のオブジェクトにする
 						while	((now_xmllist != nil) && (now_xmllist_index >= now_xmllist.list_value)) do
 							puts '<' + now_xmllist.name
 							now_xmllist_index = xmllist_index_stack.pop
-							now_xmllist_index += 1	# ����XML�ꥹ�Ȥ˰ܤ�
+							now_xmllist_index += 1	# 次のXMLリストに移る
 							now_xmllist = xmllist_stack.pop
 						end
-						# �Ǿ�̤�XML�ꥹ�Ȥ���ȴ�����顢whileʸ����ȴ���ƽ�����λ����
+						# 最上位のXMLリストから抜けたら、while文から抜けて処理を終了する
 						if now_xmllist == nil
 							puts 'XML End'
 							break
@@ -1236,99 +1236,99 @@ class Xml_listdata
 
 
 	# ------------------------------------------------------------
-	# LineTarget�������
-	#    ����
-	# hierarcy_data - LineTarget���������Ԥ����ؾ��� [IN / String��]
-	#    �����
-	# nil - ���顼��ȯ������
-	# nil�ʳ� - �Ѵ���γ��ؾ���
-	#    ����
-	# ���Ȥ���XML�ꥹ�ȥǡ����ϡ�����XML���֥������Ȥ�XML�ꥹ�ȥǡ����Ǥ�
-	# �¹����ˡ������Ȥ򳰤����ꡢ̵�̤ʶ���Ԥ������Ƥ�������
-	# ���Υ��С��ؿ��ϡ����ؾ��󥪥֥������Ȥ����ä���硢
-	#   ������Υ��С��ؿ��˴ޤ�٤���Ρ�
-	#   �⤷�⡢���ؾ��󥪥֥������ȤΥ��饹������������ϡ�
-	#   �������ؾ��󤫤�XML�ꥹ�ȥ��֥������Ȥ��Ѥ��뤳�ȡ�
-	# ���Хѥ����Ѵ��Ǥ��ޤ���
+	# LineTarget定義処理
+	#    引数
+	# hierarcy_data - LineTarget定義処理を行う階層情報 [IN / String型]
+	#    戻り値
+	# nil - エラーが発生した
+	# nil以外 - 変換後の階層情報
+	#    備考
+	# 参照するXMLリストデータは、このXMLオブジェクトのXMLリストデータです
+	# 実行前に、コメントを外したり、無駄な空白行を削除してください
+	# このメンバー関数は、階層情報オブジェクトがあった場合、
+	#   そちらのメンバー関数に含むべきもの。
+	#   もしも、階層情報オブジェクトのクラスを作成した場合は、
+	#   引数を階層情報からXMLリストオブジェクトに変えること。
+	# 相対パスは変換できません
 	def exec_LineTargetDefinition(hierarcy_data)
 		#ret_data = nil ; h_data = ''
 		define_startline = '' ; define_symbol = '' ; define_param = ''
 		define_endline = ''
 
-		h_data1 = hierarcy_data.clone	# ǰ�Τ��ᡢ�������ΰ����ݤ��ƤΥ��ԡ�
+		h_data1 = hierarcy_data.clone	# 念のため、新しい領域を確保してのコピー
 
 		while h_data1 =~ /^(\s*?\$LineTargetStart\s*?,\s*?(\S+?)\s*?,(.+?)\n)/i
-			# LineTarget������ѥ�᡼���ǡ�����¸�ߤ���
-			# $1 = LineTarget������и�������
-			# $2 = LineTarget����Υ���ܥ�̾
-			# $3 = ����ܥ�̾�����Υѥ�᡼������
+			# LineTarget定義がパラメータデータに存在する
+			# $1 = LineTarget定義が出現した行
+			# $2 = LineTarget定義のシンボル名
+			# $3 = シンボル名から後のパラメータ情報
 			define_startline = $1
 			define_symbol = $2
 			define_param = $3
 
-			# LineTarget����ν�λ���֤μ���
+			# LineTarget定義の終了位置の取得
 			if h_data1 =~ /^(\s*?\$LineTargetEnd\s*?,\s*?#{define_symbol}\s*?)/i
-				# $1 = ��λLineTargetEnd������и�������
+				# $1 = 終了LineTargetEnd定義が出現した行
 				define_endline = $1
 			else
-				$stderr.puts '$LineTargetEnd�����¸�ߤ��ޤ��� (����ܥ�̾ = ' + String(define_symbol) + ')'
+				$stderr.puts '$LineTargetEnd定義が存在しません (シンボル名 = ' + String(define_symbol) + ')'
 				exit 2
 			end
 
-			# �����������Ƥ�����ɽ���ǻȤ���褦���Ѵ�
+			# 取得した内容を、正規表現で使えるように変換
 			define_startline = Regexp.quote(define_startline)
 			define_endline = Regexp.quote(define_endline)
 
-			define_before = ''	# LineTarget����Ѵ������о�
-			define_after = ''	# LineTarget����Ѵ�����о�
+			define_before = ''	# LineTarget定義変換前の対象
+			define_after = ''	# LineTarget定義変換後の対象
 			if h_data1 =~ /(#{define_startline}([\s\S]*?)#{define_endline})/
-				# $1 - �ִ����о�
-				# $2 - �ִ����о�
-				define_before = $1.clone			# �ִ������Ƥγ�Ǽ�ΰ�
- 				define_after = $2.clone			# �ִ������Ƥγ�Ǽ�ΰ�
+				# $1 - 置換前対象
+				# $2 - 置換後対象
+				define_before = $1.clone			# 置換前内容の格納領域
+ 				define_after = $2.clone			# 置換後内容の格納領域
 			end
 
 
-			# �ѥ�᡼������μ���
+			# パラメータ情報の取得
 			w_arg1 = []
 			w_arg2 = []
-			w_arg1 = define_param.split ','		# ��,�׶��ڤ��ȴ���Ф�
+			w_arg1 = define_param.split ','		# 「,」区切りで抜き出す
 			w_arg1.each_index do |w_idx1|
-				# ������ζ���������
+				# 各配列の空白削除処理
 				w_arg1[w_idx1].strip!
 			end
-			w_arg2 = w_arg1[0].split '='	# �����ܤΰ����Τߡ�=�׶��ڤ�Ǥ����ȴ���Ф�
+			w_arg2 = w_arg1[0].split '='	# ２番目の引数のみ「=」区切りでさらに抜き出す
 			w_arg2.each_index do |w_idx2|
-				# ������ζ���������
+				# 各配列の空白削除処理
 				w_arg2[w_idx2].strip!
 			end
-			base_hierarcy = w_arg1[2]			# ��೬�ؤμ���
-			#mean_decision = '='					# Ƚ����ˡ�ʸ��ߡ���=�פǸ����
-			decision_hierarcy = w_arg2[0]		# Ƚ�곬��
-			decision_value = w_arg2[1]			# Ƚ������
+			base_hierarcy = w_arg1[2]			# 基準階層の取得
+			#mean_decision = '='					# 判定方法（現在、「=」で固定）
+			decision_hierarcy = w_arg2[0]		# 判定階層
+			decision_value = w_arg2[1]			# 判定内容
 			if decision_value[0, 1] == "\"" and decision_value[-1, 1] == "\""
 				decision_value = decision_value[1, (decision_value.size - 2)]
 			end
-			arg_num = Integer(w_arg1[1]) - 1	# �о������ֹ�(���ؾ���ե�����ˤϡ������ꥸ��ǵ���)
+			arg_num = Integer(w_arg1[1]) - 1	# 対象配列番号(階層情報ファイルには、１オリジンで記述)
 
 			# +++++
-			find_flg1 = 0	# �����ե饰
+			find_flg1 = 0	# 検索フラグ
 			# +++++
 
 
-			# Ƚ�곬�ؤ�̾�Τ����Ƥ����
+			# 判定階層の名称と内容を取得
 			w_arg3 = []
 			w_arg3 = @xmllist.get_data_from_xmlpatharray_reg(@xmllist.convert_xml_path_to_patharray(decision_hierarcy))
 			if w_arg3 == nil or w_arg3.size == 0
 				# +++++
-				find_flg1 = 1	# �����ե饰�Υ��å�
+				find_flg1 = 1	# 検索フラグのセット
 				# +++++
-#				$stderr.puts '���إǡ�����¸�ߤ��ޤ��� (Ƚ�곬�� = ' + String(decision_hierarcy) + ')'
+#				$stderr.puts '階層データが存在しません (判定階層 = ' + String(decision_hierarcy) + ')'
 #				exit 2
 			end
 
-			# �����������Ƥ�Ƚ���������
-			# ���Ƥ�LineTarget�ΰ����Ρ����ơפ���Ӥ���Ʊ��ʪ�򥹥��å��˥��å�
+			# 取得した内容と判定内容比較
+			# 内容とLineTargetの引数の「内容」と比較し、同じ物をスタックにセット
 			# +++++
 			if find_flg1 == 0
 			# +++++
@@ -1336,16 +1336,16 @@ class Xml_listdata
 				h_value_arg1 = []
 				w_arg3.each do |e1|
 					if e1[1] == decision_value
-						# �������Ƥ�Ƚ�����Ƥ����פ����Τǡ�����˥��åȤ���
+						# 取得内容と判定内容が一致したので、配列にセットする
 						h_name_arg1.push e1[0]
 						h_value_arg1.push e1[1]
 					end
 				end
 				if h_value_arg1 == nil or h_value_arg1 == []
 					# +++++
-					find_flg1 = 2	# �����ե饰�Υ��å�
+					find_flg1 = 2	# 検索フラグのセット
 					# +++++
-#					$stderr.puts '���ꤵ�줿���ؤ˳��������Ƥ�¸�ߤ��ޤ��� (Ƚ�곬�� = ' + String(decision_hierarcy) + ') = (' + decision_value + ')'
+#					$stderr.puts '指定された階層に該当の内容が存在しません (判定階層 = ' + String(decision_hierarcy) + ') = (' + decision_value + ')'
 #					exit 2
 				end
 			# +++++
@@ -1353,8 +1353,8 @@ class Xml_listdata
 			# +++++
 
 
-			# �������å���������
-			# �����Ρ֣����ܡפ�����������Ĥ��ä���Τ��ѿ��ΰ�˥��å�
+			# ターゲット配列の抽出
+			# 引数の「ｎ番目」を取得し、見つかったものを変数領域にセット
 			# +++++
 			if find_flg1 == 0
 			# +++++
@@ -1364,9 +1364,9 @@ class Xml_listdata
 				h_value1 = h_value_arg1[arg_num]
 				if h_name1 == nil
 					# +++++
-					find_flg1 = 3	# �����ե饰�Υ��å�
+					find_flg1 = 3	# 検索フラグのセット
 					# +++++
-#					$stderr.puts '���ꤵ�줿����γ��ؤ˳��������Ƥ�¸�ߤ��ޤ��� (Ƚ�곬�� = ' + String(decision_hierarcy) + ') = (' + decision_value + ') (���� = ' + String(arg_num) + ')'
+#					$stderr.puts '指定された配列の階層に該当の内容が存在しません (判定階層 = ' + String(decision_hierarcy) + ') = (' + decision_value + ') (配列 = ' + String(arg_num) + ')'
 #					exit 2
 				end
 			# +++++
@@ -1377,74 +1377,74 @@ class Xml_listdata
 			# +++++
 			if find_flg1 == 0
 			# +++++
-				# ���ؤ����Ĥ��ä�
-				# ���λ����ǡ�h_name1�˳������볬�ؾ������äƤ���
+				# 階層が見つかった
+				# この時点で、h_name1に該当する階層情報が入っている
 
-				# LineTarget�δ�೬�ؤ���ӡʹ��ʤ����ϡ���̿Ū���顼�ˤ���
-				# ���θ塢��೬����ʬ������ɽ���Ȱ��פ��볺�����ؤȡ�
-				# �����������δ֡�LineTarget�����ޤ�ʤ��ˤ��ѿ����Ф��ơ��ִ���Ԥ���
-				# ���θ塢���ؾ������Τ��Ф��ơ��ִ�������Ԥ���
-				# ���ִ������ϡ�gsub��Ȥ�ʤ���ˡ����ѡ�
+				# LineTargetの基準階層と比較（合わない場合は、致命的エラー）し、
+				# その後、基準階層部分の正規表現と一致する該当階層と、
+				# 起点〜終点の間（LineTarget定義を含めない）の変数に対して、置換を行う。
+				# その後、階層情報全体に対して、置換処理を行う。
+				# （置換処理は、gsubを使わない方法を使用）
 
-#				h_name2 = exchange_hierarcy_name(1, base_hierarcy)		# ��೬�ؤ��Ѵ�����
-				# ��೬�ؤ�����ɽ���ǻ���Ǥ���褦���Ѵ�����
+#				h_name2 = exchange_hierarcy_name(1, base_hierarcy)		# 基準階層を、変換する
+				# 基準階層を、正規表現で指定できるように変換する
 				h_name2 = Regexp.quote(base_hierarcy).gsub(/\\\[x\\\]/i, '\[[0-9]+?\]')
 
-				# Ʊ����Τ����Ĥ��ä���硢��೬�ؤ����ɽ���򡢼�ɽ�����Ѵ�����
+				# 同じものが見つかった場合、基準階層の抽象表現を、実表現に変換する
 				if h_name1 =~ /(#{h_name2})/
-					# ��೬�ؤ�����ɽ����Ƚ�곬�ؤ����פ���
-					h_name3 = $1	# ��೬�ؤμ³���̾�μ���
-					# ��೬��̾�ȼ³���̾���ִ�����
+					# 基準階層の正規表現と判定階層が一致した
+					h_name3 = $1	# 基準階層の実階層名の取得
+					# 基準階層名と実階層名の置換処理
 					define_after.gsub!(/#{Regexp.quote(base_hierarcy)}/, h_name3)
-					# ���Τ��Ф��Ƥ��ִ�����(�����������ִ������Ǥ���)
+					# 全体に対しての置換処理(ここが、実置換処理である)
 #					h_data1.gsub! /#{Regexp.quote(define_before)}/, define_after
 #					h_data1.gsub! Regexp.quote(define_before), define_after
 
 					w_idx1 = 0 ; w_idx2 = 0 ; w_idx3 = 0
-					w_idx1 = h_data1.index define_before		# �Ѵ���ʸ����򸡺�����
+					w_idx1 = h_data1.index define_before		# 変換前文字列を検索する
 					w_idx2 = define_before.size
 					w_idx3 = h_data1.size
 					h_data1 = h_data1[0 .. (w_idx1 - 1)] + define_after + h_data1[(w_idx1 + w_idx2) ... w_idx3]
 
 
 				else
-					# ��೬�ؤ�����ɽ����Ƚ�곬�ؤ����פ��ʤ��ä�
-					$stderr.puts 'Ƚ�곬�ؤϡ���೬�ؤ���ˤʤ���Фʤ�ޤ��� (Ƚ�곬�� = ' + String(decision_hierarcy) + '), (��೬�� = ' + base_hierarcy + ')'
+					# 基準階層の正規表現と判定階層が一致しなかった
+					$stderr.puts '判定階層は、基準階層の中になければなりません (判定階層 = ' + String(decision_hierarcy) + '), (基準階層 = ' + base_hierarcy + ')'
 					exit 2
 				end
 			# +++++
 			else
-				# ���ؤ����Ĥ���ʤ��ä�
-# �����ޤޤǡ������Ǻ����������å����Ȥ߹���Ǥ���������������ȡ�
-#   ���ؾ���˵������־��󤬤ʤ����ᡢ����ʥХ���ȯ�����롣
-#   �н���ˡ�ϡ�����ʸ����XML�ǡ������֤���������ˡ��Ȥ�
+				# 階層が見つからなかった
+# ※いままで、ここで削除するロジックを組み込んでいたが、そうすると、
+#   階層情報に起点位置情報がないため、重大なバグが発生する。
+#   対処方法は、代替文字でXMLデータを置き換える方法をとる
 
 				w_define_after1 = []
 				w_define_after1 = define_after.split "\n"
 
 				w_define_after1.each_index do |w_aryidx1|
 					if w_define_after1[w_aryidx1] =~ /^\s*?\S+?\s*?\=\s*?([\S\s]+?)\s*?$/
-						# $1 - �Х��ȿ�����ʸ����
+						# $1 - バイト数等の文字列
 						w_define_after1[w_aryidx1] = $nodata_word + '=' + $1
 					end
 				end
 				define_after = w_define_after1.join "\n"
-				# �Ǹ��ʸ�������ԤǤʤ����ϡ����Ԥ��ɲä���
+				# 最後の文字が改行でない場合は、改行を追加する
 				if define_after[-1, 1] != "\n"
 					define_after += "\n"
 				end
 				w_idx1 = 0 ; w_idx2 = 0 ; w_idx3 = 0
-				w_idx1 = h_data1.index define_before		# �Ѵ���ʸ����򸡺�����
+				w_idx1 = h_data1.index define_before		# 変換前文字列を検索する
 				w_idx2 = define_before.size
 				w_idx3 = h_data1.size
 				h_data1 = h_data1[0 .. (w_idx1 - 1)] + define_after + h_data1[(w_idx1 + w_idx2) ... w_idx3]
-				# �����ϡ������Υ�����
+				# 下記は、以前のコード
 				# ----------
-# 				# �����������Ƥ������Ƥ��ޤ�(���ؤ��ʤ��Ȥߤʤ�)
+# 				# 該当場所の内容を削除してしまう(階層がないとみなす)
 # #				h_data1.gsub! /#{Regexp.quote(define_before)}/, ''
-# 				# �嵭gsub��Ȥ��ȡ�Ĺ�����ư۾ｪλ����Τǡ��ʲ�����ˡ������
+# 				# 上記gsubを使うと、長すぎて異常終了するので、以下の方法で代用
 # 				w_idx1 = 0 ; w_idx2 = 0 ; w_idx3 = 0
-# 				w_idx1 = h_data1.index define_before		# �Ѵ���ʸ����򸡺�����
+# 				w_idx1 = h_data1.index define_before		# 変換前文字列を検索する
 # 				w_idx2 = define_before.size
 # 				w_idx3 = h_data1.size
 # 				h_data1 = h_data1[0 .. (w_idx1 - 1)] + h_data1[(w_idx1 + w_idx2) ... w_idx3]
@@ -1452,28 +1452,28 @@ class Xml_listdata
 			end
 			# +++++
 
-		end		# whileʸ
-				# �����ޤǤϡ�LineTarget����β��ʬ�����֤���whileʸ��
+		end		# while文
+				# ここまでは、LineTarget定義の回数分繰り返す（while文）
 
 
-# ǰ�Τ��ᡢ���ޤޤǤΥ����ɤˤ��ä�����ݳ��ؾ���(***[x])��³��ؾ�����Ѵ��פ��Ȥ߹���
-# # ���Υ����ɤ˰�̣������Τ�����
-# # ��ǡ��ǥХå������ɤ��Ȥ߹���ǡ��Τ���Ƥߤ뤳��
+# 念のため、いままでのコードにあった「抽象階層情報(***[x])を実階層情報に変換」を組み込む
+# # このコードに意味があるのか不明
+# # 後で、デバッグコードを組み込んで、確かめてみること
 
-		# ��ݳ��ؾ����³��ؾ�����Ѵ�
+		# 抽象階層情報を実階層情報に変換
 		while h_data1 =~ /^\s*?(.*?\([xX]\).*?)\s*?=.*?\n/
-			# $1 = ����̾
+			# $1 = 階層名
 			w_hname = $1.strip
 			r1_data = []
 			r1_data = @xmllist.get_data_from_xmlpatharray_reg(@xmllist.convert_xml_path_to_patharray(w_hname))
 			if r1_data == nil or r1_data.size == 0
-				# ���ꤵ�줿���إǡ����ϡ�¸�ߤ��ʤ�
-				$stderr.puts '���ꤵ�줿���إǡ�����¸�ߤ��ޤ��� {' + String(w_hname) + ']'
+				# 指定された階層データは、存在しない
+				$stderr.puts '指定された階層データは存在しません {' + String(w_hname) + ']'
 				exit 2
 			end
 			r2_data = r1_data[0]
-			w_hname = Regexp.quote(w_hname)	# ����ɽ���˻Ȥ���������Ѵ�
-			h_data1.gsub!(/#{w_hname}/, r2_data[0])	# �ִ�����
+			w_hname = Regexp.quote(w_hname)	# 正規表現に使える形式に変換
+			h_data1.gsub!(/#{w_hname}/, r2_data[0])	# 置換処理
 		end
 
 
@@ -1483,21 +1483,21 @@ class Xml_listdata
 
 
 	# ------------------------------------------------------------
-	# ���ؾ���ǡ������Ѵ�(�ե�å�����ǡ�������)
-	#    ����
-	# hierarcy_data - ���ؾ���ǡ��� [IN / String��]
-	# out_word_code - ����ʸ�������� [IN / String��]
-	#                    '1' - EUC������
-	#                    '2' - ���ե�JIS������
-	#    �����
-	# []�ξ��
-	# []�Ǥʤ����
-	#   [x][0] - XML�ѥ� [OUT / String��]
-	#   [x][1] - �Х��ȿ� [OUT / Integer��]
-	#    ����
-	# ���Υ��С��ؿ��Ǥϡ��������Ϥ������γ��ؾ���ǡ������Ф���
-	# LineTarget���������Ԥ���XML�ѥ��ȥХ��ȿ���ʬ����������������Ƥ��֤��ޤ�
-	# �¹Ը�ΰ����γ��ؾ���ǡ������ͤ��ݾڤ���ޤ���
+	# 階層情報データの変換(フラット配列データ形式)
+	#    引数
+	# hierarcy_data - 階層情報データ [IN / String型]
+	# out_word_code - 出力文字コード [IN / String型]
+	#                    '1' - EUCコード
+	#                    '2' - シフトJISコード
+	#    戻り値
+	# []の場合
+	# []でない場合
+	#   [x][0] - XMLパス [OUT / String型]
+	#   [x][1] - バイト数 [OUT / Integer型]
+	#    備考
+	# このメンバー関数では、引数に渡した元の階層情報データに対して
+	# LineTarget定義処理を行い、XMLパスとバイト数に分けた２次配列の内容を返します
+	# 実行後の引数の階層情報データの値は保証されません
 	def exchange_hierarcy_to_harray(hierarcy_data, out_word_code)
 		ret_data = []
 		h_data0 = ''
@@ -1505,87 +1505,87 @@ class Xml_listdata
 		h_data2 = []
 		xml_path1 = ''
 		seq_byte1 = ''
-		w_idx1 = 0	# ���顼ɽ������Ω�Ƥ뤿����ΰ�
+		w_idx1 = 0	# エラー表示に役立てるための領域
 
 
 
-		# �С�����󡦸�������å����Ѵ�
-		first_line = ''	# �����ܤ����Ƥ򥻥åȤ����ΰ�
-		hfdef_flg = []	# ��Ƭ������Ϥ������Ƥ򥻥åȤ����ΰ�
+		# バージョン・言語チェックと変換
+		first_line = ''	# １行目の内容をセットする領域
+		hfdef_flg = []	# 行頭から解析した内容をセットする領域
 		hierarcy_data =~ /^([^\n]+?)\n/
-		first_line = $1	# �����ܤ����Ƥ򥻥å�
-		# ��Ƭǧ�������μ¹�
+		first_line = $1	# １行目の内容をセット
+		# 行頭認識処理の実行
 		hfdef_flg = realize_topline(first_line)
 		if hfdef_flg[0] != 5
-			$stderr.puts '�����˻��ꤵ�줿���إե�����Υإå������Ƥ���̵���Ǥ���'
-			$stderr.puts '�¹Ի��Ѥγ��إե����뤫���ޤ��ϸŤ����إǡ����ǤϤʤ�����ǧ���Ƥ���������'
+			$stderr.puts '引数に指定された階層ファイルのヘッダの内容が、無効です。'
+			$stderr.puts '実行時用の階層ファイルか、または古い階層データではないか確認してください。'
 			exit 1
 		end
 		if hfdef_flg[1] != 2
-			$stderr.puts '���إե�����Υإå��Υ᥸�㡼�С������2�ʳ��Ǥ���'
-			$stderr.puts '���Υ�����ץȤϡ��᥸�㡼�С������2�ʳ��ˤ��б����Ƥ��ޤ���'
+			$stderr.puts '階層ファイルのヘッダのメジャーバージョンが2以外です。'
+			$stderr.puts 'このスクリプトは、メジャーバージョン2以外には対応していません。'
 			exit 1
 		end
 		case	hfdef_flg[3]
 		when	0
-			# ̤�����̤�����ʸ�������ɤǤ���
-			$stderr.puts '�إå���ʸ�������ɤ����ꤵ��Ƥ��ޤ���'
-			$stderr.puts '�إå���ʸ�������ɤ򵭽Ҥ��Ƥ��顢�¹Ԥ��Ƥ���������'
+			# 未定義か未定義の文字コードである
+			$stderr.puts 'ヘッダに文字コードが指定されていません。'
+			$stderr.puts 'ヘッダに文字コードを記述してから、実行してください。'
 			exit 1
 		when	1
-			# ���ϳ��إե������EUC-JP������
+			# 入力階層ファイルはEUC-JPコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = hierarcy_data
 #				h_data0 = Kconv::toeuc(hierarcy_data)
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = Kconv::tosjis(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	2
-			# ���ϳ��إե������Shift_JIS������
+			# 入力階層ファイルはShift_JISコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = Kconv::toeuc(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ� (windows�Ǥ����פ�����debian¦�Ǥ�ɬ��)
+				# 改行コードの変換 (windowsでは不要だが、debian側では必要)
 				while	h_data0 =~ /\x0d\x0a/
 					h_data0.gsub!(/\x0d\x0a/, "\x0a")
 				end
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = hierarcy_data
 #				h_data0 = Kconv::tosjis(hierarcy_data)
 			end
 		when	3
-			# ���ϳ��إե������UTF-8������
+			# 入力階層ファイルはUTF-8コード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', hierarcy_data )
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', hierarcy_data )
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	4
-			# ���ϳ��إե������JIS������
+			# 入力階層ファイルはJISコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = Kconv::toeuc(hierarcy_data)
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = Kconv::tosjis(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
@@ -1593,10 +1593,10 @@ class Xml_listdata
 		end
 
 
-		# �����Ȥȹ�����ζ�������
+		# コメントと行前後の空白を除去
 		h_data1 = record_del_comment_space(h_data0)
 
-		# ��=�פ�����ζ�������
+		# 「=」の前後の空白を除去
 		while  /\=[^\S\n]+?/ =~ h_data1
 			h_data1.gsub!(/\=[^\S\n]+?/ , '=')
 		end
@@ -1604,17 +1604,17 @@ class Xml_listdata
 			h_data1.gsub!(/\s+?\=/ , '=')
 		end
 
-		# LineTarget����
+		# LineTarget処理
 		h_data1 = exec_LineTargetDefinition(h_data1)
 		if h_data1 == nil
-			# �ؿ���ǥ��顼��ȯ������
-			raise '��exec_LineTargetDefinition�״ؿ��ǡ����顼��ȯ�����ޤ�����(exchange_hierarcy_to_harray)'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# 関数内でエラーが発生した
+			raise '「exec_LineTargetDefinition」関数で、エラーが発生しました。(exchange_hierarcy_to_harray)'
+			# 例外が発生できない場合を考慮する
 			return	nil
 		end
 
 
-		# ����ñ�̤�����
+		# 改行単位で配列化
 		h_data2 = h_data1.split("\n")
 
 		w_idx1 = 0
@@ -1622,15 +1622,15 @@ class Xml_listdata
 		h_data2.each do |h_data_ex1|
 			w_idx1 += 1
 			if h_data_ex1 =~ /^\s*?(\S+?)\s*?\=\s*?(\S+?)\s*?$/
-				# $1 = XML�ѥ�
-				# $2 = �Х��ȿ�
+				# $1 = XMLパス
+				# $2 = バイト数
 				xml_path1 = $1
 				seq_byte1 = $2
-				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# �񼰤��Ѥ�äƤ�����פʤ褦�����򤦤�
+				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# 書式が変わっても大丈夫なように先手をうつ
 				ret_data.push [xml_path1, Integer(seq_byte1)]
 			else
-				raise '���ؾ������ˡ������ʵ��Ҥ�ȯ�����ޤ�����(�ۤ�' + String(w_idx1) + '�����ն�)' + "\n" + '[' + h_data_ex1 + ']'
-				# �㳰��ȯ���Ǥ��ʤ������θ����
+				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1) + '行目付近)' + "\n" + '[' + h_data_ex1 + ']'
+				# 例外が発生できない場合を考慮する
 				return	nil
 			end
 		end
@@ -1641,22 +1641,22 @@ class Xml_listdata
 
 
 	# ------------------------------------------------------------
-	# XML�ǡ����Υ������󥷥�����ؤ��Ѵ�(�ե�å�����ǡ�������)
-	#    ����
-	# hierarcy_data - ���ؾ���ǡ��� [IN / String��]
-	# output_mode   - ���ϥ⡼�� [IN / Integer��]
-	#                    0 - �������󥷥��ե��������
-	#                    1 - CSV�ե��������
-	# out_word_code - ����ʸ�������� [IN / String��]
-	#                    '1' - EUC������
-	#                    '2' - ���ե�JIS������
-	#    �����
-	# �������󥷥��ǡ��� [OUT / ����(String)��] ([]�ξ�硢���顼)
-	#    ����
-	# ���δؿ��μ¹����ˡ�xmldata_setup�ץ��С��ؿ���¹Ԥ��Ƥ���������
-	# �¹Ը�ΰ��������Ƥ��ݾڤ���ޤ���
-	# ��®���Τ��ᡢ�������󥷥��ǡ��������󷿤ˤ��Ƥ��ޤ���
-	# �ե�����񤭹��ߤκݤˡ����֤˽񤭹���Ǥ�館���̾��ʸ�����񤭹���Τ�Ʊ���ˤʤ�ޤ�
+	# XMLデータのシーケンシャル情報への変換(フラット配列データ形式)
+	#    引数
+	# hierarcy_data - 階層情報データ [IN / String型]
+	# output_mode   - 出力モード [IN / Integer型]
+	#                    0 - シーケンシャルファイル出力
+	#                    1 - CSVファイル出力
+	# out_word_code - 出力文字コード [IN / String型]
+	#                    '1' - EUCコード
+	#                    '2' - シフトJISコード
+	#    戻り値
+	# シーケンシャルデータ [OUT / 配列(String)型] ([]の場合、エラー)
+	#    備考
+	# この関数の実行前に「xmldata_setup」メンバー関数を実行してください。
+	# 実行後の引数の内容は保証されません
+	# 高速化のため、シーケンシャルデータは配列型にしています。
+	# ファイル書き込みの際に、順番に書き込んでもらえば通常の文字列を書き込むのと同等になります
 	def convert_xmldata_to_sequenthdata(hierarcy_data, output_mode, out_word_code)
 		ret_data = []
 		h_array1 = []
@@ -1666,70 +1666,70 @@ class Xml_listdata
 		bytesliced_data = ''
 
 
-		# ��xmldata_setup�פμ¹ԥ����å�
+		# 「xmldata_setup」の実行チェック
 		if @xmllist == nil
-			raise '��xmllist�ץǡ������С���nil�Ǥ�����xmldata_setup�פ��¹Ԥ���ʤ��ä��������顼��ȯ�����Ƥ���Ȼפ��ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			raise '「xmllist」データメンバーがnilです。「xmldata_setup」が実行されなかったか、エラーが発生していると思われます。'
+			# 例外が発生できない場合を考慮する
 			return	[]
 		end
 
 
-		# ���ؾ���ǡ������ؾ�������ǡ������Ѵ�����
+		# 階層情報データを階層情報配列データに変換する
 		h_array1 = exchange_hierarcy_to_harray(hierarcy_data, out_word_code)
 		if h_array1 == []
-			# ���ؾ���¸�ߤ��ʤ�
+			# 階層情報が存在しない
 			return []
 		end
 
-		w_idx1 = 0	# ��������
+		w_idx1 = 0	# 起点位置
 		h_array1.each do |h_data1|
-			# h_data1[0] - XML�ѥ� [OUT / String��]
-			# h_data1[1] - ʸ���� [OUT / Integer��]
+			# h_data1[0] - XMLパス [OUT / String型]
+			# h_data1[1] - 文字数 [OUT / Integer型]
 			if h_data1[0] != $nodata_word
-				# LineTarget����Ǿä���Ƥ��ʤ��ǡ����Ǥ���
+				# LineTarget定義で消されていないデータである
 				xml_data1 = @xmllist.get_data_from_xmlpatharray(@xmllist.convert_xml_path_to_patharray(h_data1[0]))
 			else
-				# LineTarget����Ǿä��줿�ǡ����Ǥ���
+				# LineTarget定義で消されたデータである
 				xml_data1 = nil
 			end
 
 			if xml_data1 != nil
-				# XML�ǡ��������Ĥ��ä�
-				xml_size1 = xml_data1.bytesize	# ʸ�����μ���
+				# XMLデータが見つかった
+				xml_size1 = xml_data1.bytesize	# 文字数の取得
 				if xml_size1 < h_data1[1]
-					# ����XML�ѥ��Υǡ����ϡ��������󥷥��ե�����˽񤭹���ʸ������꾮����
+					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より小さい
 					ret_data.push xml_data1
-					if output_mode != 1		# CSV���Ϥξ��ϡ�����ϥ��åȤ��ʤ�
-						ret_data.push(' ' * (h_data1[1] - xml_size1))	# ­��ʤ�ʸ����ʬ����򥻥å�
+					if output_mode != 1		# CSV出力の場合は、空白はセットしない
+						ret_data.push(' ' * (h_data1[1] - xml_size1))	# 足りない文字数分空白をセット
 					end
 				elsif xml_size1 > h_data1[1]
-					# ����XML�ѥ��Υǡ����ϡ��������󥷥��ե�����˽񤭹���ʸ��������礭��
-					$stderr.puts '����ʸ����Ĺ������Τǡ��ͤ��ڤ�ΤƤޤ�' + "\n" + '�ڤ�Τ���[' + xml_data1 + ']'
+					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数より大きい
+					$stderr.puts '該当文字は長すぎるので、値を切り捨てます' + "\n" + '切り捨て前[' + xml_data1 + ']'
 					bytesliced_data = xml_data1.dup.force_encoding("BINARY").slice(0, h_data1[1]).force_encoding("EUC-JP")
-					ret_data.push bytesliced_data	# �񤭹����ʸ�����Τ߽񤭹���
-					$stderr.puts '�ڤ�ΤƸ�[' + bytesliced_data  + ']'
+					ret_data.push bytesliced_data	# 書き込める文字数のみ書き込み
+					$stderr.puts '切り捨て後[' + bytesliced_data  + ']'
 				else
-					# ����XML�ѥ��Υǡ����ϡ��������󥷥��ե�����˽񤭹���ʸ������Ʊ��
-					ret_data.push xml_data1	# ���Τޤ�ʸ����򥻥å�
+					# 該当XMLパスのデータは、シーケンシャルファイルに書き込む文字数と同じ
+					ret_data.push xml_data1	# そのまま文字列をセット
 				end
 				w_idx1 += h_data1[1]
 			else
-				# XML�ǡ��������Ĥ���ʤ��ä�
-				if output_mode != 1		# CSV���Ϥξ��ϡ�����ϥ��åȤ��ʤ�
-					ret_data.push(' ' * h_data1[1])	# ����ʸ����������򥻥å�
+				# XMLデータが見つからなかった
+				if output_mode != 1		# CSV出力の場合は、空白はセットしない
+					ret_data.push(' ' * h_data1[1])	# 指定文字数数空白をセット
 					w_idx1 += h_data1[1]
 				end
 			end
 			if output_mode == 1
-				# CSV�ե�������ϤǤ���
+				# CSVファイル出力である
 				ret_data.push ','
 			end
 
 		end
 		if output_mode == 1
-			# CSV�ե�������ϤǤ���
+			# CSVファイル出力である
 			if ret_data[-1] == ','
-				# �Ǹ�Ρ�,�פ�������
+				# 最後の「,」を削除する
 				ret_data.pop
 			end
 		end
@@ -1738,28 +1738,28 @@ class Xml_listdata
 		return ret_data
 	end
 
-	# �쥳���ɤΡ�set_sequenth_xmldata�״ؿ�������
+	# 旧コードの「set_sequenth_xmldata」関数に相当
 
 
 
 
 	# ------------------------------------------------------------
-	# ���ؾ���ǡ������Ѵ�(���إꥹ�ȥǡ�������)
-	#    ����
-	# hierarcy_data - ���ؾ���ǡ��� [IN / String��]
-	# out_word_code - ����ʸ�������� [IN / String��]
-	#                    '1' - EUC������
-	#                    '2' - ���ե�JIS������
-	#    �����
-	# nil��[]�ξ�� - ���ؾ�����Ѵ��˼��Ԥ���
-	# nil��[]�Ǥʤ����
-	#  [0] - ���ؾ���ꥹ�ȥǡ��� [OUT / ���֥������ȷ�]
-	#  [1] - ���Ϸ�� [OUT / Numeric��]
-	#  [2] - ���ΤΥ������󥷥��ǡ����ΥХ��ȿ� [OUT / Numeric��]
-	#    ����
-	# ���Υ��С��ؿ��Ǥϡ��������Ϥ������γ��ؾ���ǡ������Ф���
-	# LineTarget���������Ԥ������إꥹ�ȥǡ������֤��ޤ�
-	# �¹Ը�ΰ����γ��ؾ���ǡ������ͤ��ݾڤ���ޤ���
+	# 階層情報データの変換(階層リストデータ形式)
+	#    引数
+	# hierarcy_data - 階層情報データ [IN / String型]
+	# out_word_code - 出力文字コード [IN / String型]
+	#                    '1' - EUCコード
+	#                    '2' - シフトJISコード
+	#    戻り値
+	# nilか[]の場合 - 階層情報の変換に失敗した
+	# nilか[]でない場合
+	#  [0] - 階層情報リストデータ [OUT / オブジェクト型]
+	#  [1] - 出力件数 [OUT / Numeric型]
+	#  [2] - 全体のシーケンシャルデータのバイト数 [OUT / Numeric型]
+	#    備考
+	# このメンバー関数では、引数に渡した元の階層情報データに対して
+	# LineTarget定義処理を行い、階層リストデータを返します
+	# 実行後の引数の階層情報データの値は保証されません
 	def exchange_hierarcy_to_hierarcylist(hierarcy_data, out_word_code)
 		ret_data = nil
 		h_data0 = ''
@@ -1769,87 +1769,87 @@ class Xml_listdata
 		seq_byte1 = ''
 		seq_byte2 = 0
 		seq_point1 = 0
-		w_idx1 = 0	# CSV���Ϥ˻Ȥ��ֹ�ȡ����顼ɽ������Ω�Ƥ뤿����ΰ�
+		w_idx1 = 0	# CSV出力に使う番号と、エラー表示に役立てるための領域
 
 
 
-		# �С�����󡦸�������å����Ѵ�
-		first_line = ''	# �����ܤ����Ƥ򥻥åȤ����ΰ�
-		hfdef_flg = []	# ��Ƭ������Ϥ������Ƥ򥻥åȤ����ΰ�
+		# バージョン・言語チェックと変換
+		first_line = ''	# １行目の内容をセットする領域
+		hfdef_flg = []	# 行頭から解析した内容をセットする領域
 		hierarcy_data =~ /^([^\n]+?)\n/
-		first_line = $1	# �����ܤ����Ƥ򥻥å�
-		# ��Ƭǧ�������μ¹�
+		first_line = $1	# １行目の内容をセット
+		# 行頭認識処理の実行
 		hfdef_flg = realize_topline(first_line)
 		if hfdef_flg[0] != 5
-			$stderr.puts '�����˻��ꤵ�줿���إե�����Υإå������Ƥ���̵���Ǥ���'
-			$stderr.puts '�¹Ի��Ѥγ��إե����뤫���ޤ��ϸŤ����إǡ����ǤϤʤ�����ǧ���Ƥ���������'
+			$stderr.puts '引数に指定された階層ファイルのヘッダの内容が、無効です。'
+			$stderr.puts '実行時用の階層ファイルか、または古い階層データではないか確認してください。'
 			exit 1
 		end
 		if hfdef_flg[1] != 2
-			$stderr.puts '���إե�����Υإå��Υ᥸�㡼�С������2�ʳ��Ǥ���'
-			$stderr.puts '���Υ�����ץȤϡ��᥸�㡼�С������2�ʳ��ˤ��б����Ƥ��ޤ���'
+			$stderr.puts '階層ファイルのヘッダのメジャーバージョンが2以外です。'
+			$stderr.puts 'このスクリプトは、メジャーバージョン2以外には対応していません。'
 			exit 1
 		end
 		case	hfdef_flg[3]
 		when	0
-			# ̤�����̤�����ʸ�������ɤǤ���
-			$stderr.puts '�إå���ʸ�������ɤ����ꤵ��Ƥ��ޤ���'
-			$stderr.puts '�إå���ʸ�������ɤ򵭽Ҥ��Ƥ��顢�¹Ԥ��Ƥ���������'
+			# 未定義か未定義の文字コードである
+			$stderr.puts 'ヘッダに文字コードが指定されていません。'
+			$stderr.puts 'ヘッダに文字コードを記述してから、実行してください。'
 			exit 1
 		when	1
-			# ���ϳ��إե������EUC-JP������
+			# 入力階層ファイルはEUC-JPコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = hierarcy_data
 #				h_data0 = Kconv::toeuc(hierarcy_data)
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = Kconv::tosjis(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	2
-			# ���ϳ��إե������Shift_JIS������
+			# 入力階層ファイルはShift_JISコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = Kconv::toeuc(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ� (windows�Ǥ����פ�����debian¦�Ǥ�ɬ��)
+				# 改行コードの変換 (windowsでは不要だが、debian側では必要)
 				while	h_data0 =~ /\x0d\x0a/
 					h_data0.gsub!(/\x0d\x0a/, "\x0a")
 				end
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = hierarcy_data
 #				h_data0 = Kconv::tosjis(hierarcy_data)
 			end
 		when	3
-			# ���ϳ��إե������UTF-8������
+			# 入力階層ファイルはUTF-8コード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=EUC-JP', hierarcy_data )
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = NKF.nkf( '-xm0 --ic=UTF-8 --oc=CP932', hierarcy_data )
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
 			end
 		when	4
-			# ���ϳ��إե������JIS������
+			# 入力階層ファイルはJISコード
 			case	out_word_code
 			when	'1'
-				# �Ѵ����ʸ�������ɤ�EUC������
+				# 変換後の文字コードはEUCコード
 				h_data0 = Kconv::toeuc(hierarcy_data)
 			when	'2'
-				# �Ѵ����ʸ�������ɤϥ��ե�JIS������
+				# 変換後の文字コードはシフトJISコード
 				h_data0 = Kconv::tosjis(hierarcy_data)
-				# ���ԥ����ɤ��Ѵ�
+				# 改行コードの変換
 				while	h_data0 =~ /[^\x0d]\x0a/
 					h_data0.gsub!(/([^\x0d])\x0a/, '\1'+"\x0d\x0a")
 				end
@@ -1857,10 +1857,10 @@ class Xml_listdata
 		end
 
 
-		# �����Ȥȹ�����ζ�������
+		# コメントと行前後の空白を除去
 		h_data1 = record_del_comment_space(h_data0)
 
-		# ��=�פ�����ζ�������
+		# 「=」の前後の空白を除去
 		while  /\=[^\S\n]+?/ =~ h_data1
 			h_data1.gsub!(/\=[^\S\n]+?/ , '=')
 		end
@@ -1868,48 +1868,48 @@ class Xml_listdata
 			h_data1.gsub!(/\s+?\=/ , '=')
 		end
 
-		# LineTarget����
+		# LineTarget処理
 		h_data1 = exec_LineTargetDefinition(h_data1)
 		if h_data1 == nil
-			# �ؿ���ǥ��顼��ȯ������
-			raise '��exec_LineTargetDefinition�״ؿ��ǡ����顼��ȯ�����ޤ�����(exchange_hierarcy_to_harray)'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			# 関数内でエラーが発生した
+			raise '「exec_LineTargetDefinition」関数で、エラーが発生しました。(exchange_hierarcy_to_harray)'
+			# 例外が発生できない場合を考慮する
 			return	nil
 		end
 
 
-		# ���إǡ����ꥹ�ȥ��饹������
+		# 階層データリストクラスの生成
 		ret_data = HierarcydataList.new
 
 
-		# ���ؾ�����إǡ����ꥹ�ȷ������Ѵ�����
+		# 階層情報を階層データリスト形式に変換する
 
-		# ����ñ�̤�����
+		# 改行単位で配列化
 		h_data2 = h_data1.split("\n")
 
 		w_idx1 = 0
-		seq_point1 = 0	# �������֤ν����
+		seq_point1 = 0	# 起点位置の初期化
 
 		h_data2.each do |h_data_ex1|
 
 			if h_data_ex1 =~ /^\s*?(\S+?)\s*?\=\s*?(\S+?)\s*?$/
-				# $1 = XML�ѥ�
-				# $2 = �Х��ȿ�
+				# $1 = XMLパス
+				# $2 = バイト数
 				xml_path1 = $1
 				seq_byte1 = $2
-				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# �񼰤��Ѥ�äƤ�����פʤ褦�����򤦤�
+				seq_byte1.gsub!(/^\s*?([0-9]+?)\s*?,[\S\s]*?$/, '\1')	# 書式が変わっても大丈夫なように先手をうつ
 				seq_byte2 = Integer(seq_byte1)
 
-				# ������ܤξ��ϡ����إǡ����ꥹ�Ȥˤϲ��⥻�åȤ��ʤ�
+				# 空白項目の場合は、階層データリストには何もセットしない
 				if xml_path1 != $nodata_word
-					# ���إǡ����ꥹ�Ȥγ���XML�ѥ��˵������֤ȥХ��ȿ��Υ��å�
+					# 階層データリストの該当XMLパスに起点位置とバイト数のセット
 					ret_data.put_data_from_xmlpatharray(ret_data.convert_xml_path_to_patharray(xml_path1), seq_point1, seq_byte2, w_idx1)
 				end
-				# ����Х��ȿ��������֤򤺤餹
+				# 指定バイト数起点位置をずらす
 				seq_point1 += seq_byte2
 			else
-				raise '���ؾ������ˡ������ʵ��Ҥ�ȯ�����ޤ�����(�ۤ�' + String(w_idx1 + 1) + '�����ն�)' + "\n" + '[' + h_data_ex1 + ']'
-				# �㳰��ȯ���Ǥ��ʤ������θ����
+				raise '階層情報の中に、不正な記述を発見しました。(ほぼ' + String(w_idx1 + 1) + '行目付近)' + "\n" + '[' + h_data_ex1 + ']'
+				# 例外が発生できない場合を考慮する
 				return	nil
 			end
 			w_idx1 += 1
@@ -1920,126 +1920,126 @@ class Xml_listdata
 
 	# ------------------------------------------------------------
 
-	# XML�ǡ����Υ������󥷥�����ؤ��Ѵ�(���إꥹ�ȥǡ�������)
-	#    ����
-	# hierarcy_list - ���إꥹ�ȥǡ��� [IN / ����(���֥�������)��]
-	# output_mode   - ���ϥ⡼�� [IN / Integer��]
-	#                    0 - �������󥷥��ե��������
-	#                    1 - CSV�ե��������
-	# out_word_code - ����ʸ�������� [IN / String��]
-	#                    '1' - EUC������
-	#                    '2' - ���ե�JIS������
-	#    �����
-	# �������󥷥��ǡ��� [OUT / ����(String)��] ([]�ξ�硢���顼)
-	#    [0] - ��Ǽ�ǡ��� (����˶�����դ����ꡢ���դ줿��ʬ���ڤ�ΤƤϤ��Ƥ��ޤ���)
-	#    [1] - ��������
-	#    [2] - ��Ǽ�Х��ȿ�
-	#    ����
-	# �¹����ˡ����ؾ���ǡ������إꥹ�ȥǡ������Ѵ����Ƥ���������
-	# ���δؿ��μ¹����ˡ�xmldata_setup�ץ��С��ؿ���¹Ԥ��Ƥ���������
-	# �¹Ը�ΰ��������Ƥ��ݾڤ���ޤ���
-	# ��®���Τ��ᡢ�������󥷥��ǡ��������󷿤ˤ��Ƥ��ޤ���
-	# �ե�����񤭹��ߤκݤˡ����֤˽񤭹���Ǥ�館���̾��ʸ�����񤭹���Τ�Ʊ���ˤʤ�ޤ�
-	# ������������ξ���nil�����뤳�Ȥ�����ޤ��Τǡ����դ��Ƥ���������
+	# XMLデータのシーケンシャル情報への変換(階層リストデータ形式)
+	#    引数
+	# hierarcy_list - 階層リストデータ [IN / 配列(オブジェクト)型]
+	# output_mode   - 出力モード [IN / Integer型]
+	#                    0 - シーケンシャルファイル出力
+	#                    1 - CSVファイル出力
+	# out_word_code - 出力文字コード [IN / String型]
+	#                    '1' - EUCコード
+	#                    '2' - シフトJISコード
+	#    戻り値
+	# シーケンシャルデータ [OUT / 配列(String)型] ([]の場合、エラー)
+	#    [0] - 格納データ (後ろに空白を付けたり、あふれた部分の切り捨てはしていません)
+	#    [1] - 起点位置
+	#    [2] - 格納バイト数
+	#    備考
+	# 実行前に、階層情報データを階層リストデータに変換してください。
+	# この関数の実行前に「xmldata_setup」メンバー関数を実行してください。
+	# 実行後の引数の内容は保証されません
+	# 高速化のため、シーケンシャルデータは配列型にしています。
+	# ファイル書き込みの際に、順番に書き込んでもらえば通常の文字列を書き込むのと同等になります
+	# ただし、空白の場所にnilが入ることがありますので、注意してください。
 	#
 	def convert_xmldata_to_sequenthdata_main(hierarcy_list, output_mode, out_word_code)
 
 
-		hirlist_stack = []			# ���ؾ���ꥹ�ȥ����å�
-									# �ҳ��ؤ����뤿�Ӥ˥����å����Ѥ�
-		hirlist_index_stack = []	# ���ؾ���ꥹ�ȤΥ���ǥå����ͤΥ����å�
-									# �ҳ��ؤ����뤿�Ӥ˥����å����Ѥ�
-		xmllist_stack = []			# XML�ꥹ�ȥ����å�
-									# �ҳ��ؤ����뤿�Ӥ˥����å����Ѥ�
-		xmllist_index_stack = []	# XML�ꥹ�ȤΥ���ǥå����ͤΥ����å�
+		hirlist_stack = []			# 階層情報リストスタック
+									# 子階層に入るたびにスタックに積む
+		hirlist_index_stack = []	# 階層情報リストのインデックス値のスタック
+									# 子階層に入るたびにスタックに積む
+		xmllist_stack = []			# XMLリストスタック
+									# 子階層に入るたびにスタックに積む
+		xmllist_index_stack = []	# XMLリストのインデックス値のスタック
 
-		now_hirlist = nil			# ���ߤ��оݳ��ؾ���ꥹ��
-		now_hirlist_index = 0		# ���ߤ��оݳ��ؾ���ꥹ�ȤΥ���ǥå�����
-		now_xmllist = nil			# ���ߤ��о�XML�ꥹ��
-		now_xmllist_index = 0		# ���ߤ��о�XML�ꥹ�ȤΥ���ǥå�����
+		now_hirlist = nil			# 現在の対象階層情報リスト
+		now_hirlist_index = 0		# 現在の対象階層情報リストのインデックス値
+		now_xmllist = nil			# 現在の対象XMLリスト
+		now_xmllist_index = 0		# 現在の対象XMLリストのインデックス値
 
-		seq_data = []				# ��������ǡ���
-									# [0] = ��Ǽ�ǡ���, [1] = ��������, [2] = �Х��ȿ�
+		seq_data = []				# 出力配列データ
+									# [0] = 格納データ, [1] = 起点位置, [2] = バイト数
 
 
-		# ��xmldata_setup�פμ¹ԥ����å�
+		# 「xmldata_setup」の実行チェック
 		if @xmllist == nil
-			raise '��xmllist�ץǡ������С���nil�Ǥ�����xmldata_setup�פ��¹Ԥ���ʤ��ä��������顼��ȯ�����Ƥ���Ȼפ��ޤ���'
-			# �㳰��ȯ���Ǥ��ʤ������θ����
+			raise '「xmllist」データメンバーがnilです。「xmldata_setup」が実行されなかったか、エラーが発生していると思われます。'
+			# 例外が発生できない場合を考慮する
 			return	[]
 		end
 
 
-		now_xmllist = @xmllist			# XML�ꥹ�ȤΥ��å�
-		now_hirlist = hierarcy_list		# ���إꥹ�ȤΥ��å�
+		now_xmllist = @xmllist			# XMLリストのセット
+		now_hirlist = hierarcy_list		# 階層リストのセット
 
 
 		loop do
-			# XML����ǥå����ͤ����ξ�硢���ߤ�XML�ꥹ�Ȥ˥ǡ������Ƥ�����С�
-			# ���ؾ���ꥹ�Ȥ򻲾Ȥ��ơ������ΰ�˥ǡ�����񤭹���
+			# XMLインデックス値が０の場合、現在のXMLリストにデータ内容があれば、
+			# 階層情報リストを参照して、該当領域にデータを書き込む
 			if now_xmllist_index == 0
 				case	now_xmllist.data
 				when	nil, ''
-					# ���򤫤�nil�ʤ顢���⤷�ʤ�
+					# 空白からnilなら、何もしない
 				else
 					if now_hirlist.byte > 0
-						# ���ؾ���ǻ��ꤵ�줿����ǥå���������ˡ�
-						# ���ơ��������֡��Х��ȿ��򥻥åȤ���
+						# 階層情報で指定されたインデックスの配列に、
+						# 内容・起点位置・バイト数をセットする
 						seq_data[now_hirlist.seq_num] = [now_xmllist.data, now_hirlist.position, now_hirlist.byte]
 					end
 				end
 			end
 
-# Xml_baselist�˥ǡ���������С�HierarcydataList�λ��ꤵ�줿�ΰ�˥ǡ����򥻥å�
-#    [��Ǽ�ǡ���], [��������], [�Х��ȿ�]
-# ����ν����ϡ�����ǥå��������ξ��˼¹Ԥ��롣
+# Xml_baselistにデータがあれば、HierarcydataListの指定された領域にデータをセット
+#    [格納データ], [起点位置], [バイト数]
+# ※上の処理は、インデックスが０の場合に実行する。
 #
 #
-# Xml_baselist�λҳ��ؤ˥ǡ���������С�HierarcydataList���鳺�����륿���򸡺�����
-# �ҳ��ؤ򸽺ߤΥ��֥������ȤȤ��ƥ롼�פ��롣
+# Xml_baselistの子階層にデータがあれば、HierarcydataListから該当するタグを検索し、
+# 子階層を現在のオブジェクトとしてループする。
 #
-# Xml_basellist�ҳ��ؤ˥ǡ������ʤ���С������å��˥��֥������Ȥ�����С�
-# �����å�����ݥåפ�����Τ򸽺ߤ�XML�γ��ؤˤ��롣(����ǥå����ϼ��ˤ���)
-# �����ơ��롼��
+# Xml_basellist子階層にデータがなければ、スタックにオブジェクトがあれば、
+# スタックからポップしたものを現在のXMLの階層にする。(インデックスは次にする)
+# そして、ループ
 
 
 			if (now_xmllist.list_value - now_xmllist_index) > 0
-				# �ҳ��ؤ�����
-				# ���ؾ���ꥹ�Ȥ��顢�������륿���򸡺�����
+				# 子階層がある
+				# 階層情報リストから、該当するタグを検索する
 
 				if now_hirlist.hirlist_value > 0
 					now_hirlist_index = 0
 					for now_hirlist_index in 0..(now_hirlist.hirlist_value - 1) do
 						if now_xmllist.xmllist[now_xmllist_index].name == now_hirlist.hirlist[now_hirlist_index].name
-							# ����̾�����פ���
-							# ���ߤ�XML�ꥹ�ȡ����إꥹ�Ȥ�����
+							# タグ名が一致した
+							# 現在のXMLリスト・階層リストを待避
 							xmllist_stack.push now_xmllist
 							xmllist_index_stack.push now_xmllist_index
 							hirlist_stack.push now_hirlist
 							hirlist_index_stack.push now_hirlist_index
-							# ���ߤ��о�XML�ꥹ�ȡ����إꥹ�Ȥ��ѹ�
+							# 現在の対象XMLリスト・階層リストを変更
 							now_xmllist = now_xmllist.xmllist[now_xmllist_index]
-							now_xmllist_index = 0	# ����ǥå����ν����
+							now_xmllist_index = 0	# インデックスの初期化
 							now_hirlist = now_hirlist.hirlist[now_hirlist_index]
-							# forʸ����ȴ����
+							# for文から抜ける
 							break
 						else
 							if now_hirlist_index == (now_hirlist.hirlist_value - 1)
-								# �Ǹ�ʤΤǡ����Ĥ���ʤ��ä�
-								now_xmllist_index += 1	# ����XML�ꥹ�Ȥ˰ܤ�
+								# 最後なので、見つからなかった
+								now_xmllist_index += 1	# 次のXMLリストに移る
 							end
 						end
 					end
 
 				else
-					# �ҳ��ؼ��Τ��ʤ��Τǡ��������ʤ�
-					now_xmllist_index = now_xmllist.list_value	# �Ǹ���ͤˤ��Ƥ���
+					# 子階層自体がないので、検索しない
+					now_xmllist_index = now_xmllist.list_value	# 最後の値にしておく
 				end
 			else
-				# �ҳ��ؤ��ʤ�
+				# 子階層がない
 				now_xmllist = xmllist_stack.pop
 				if now_xmllist == nil
-					# �Ƴ��ؤ�ʤ��Τǡ��롼�פ���ȴ����
+					# 親階層もないので、ループから抜ける
 					break
 				end
 				now_xmllist_index = xmllist_index_stack.pop
@@ -2048,7 +2048,7 @@ class Xml_listdata
 				hirlist_index_stack.pop
 				now_hirlist_index = 0
 
-				# XML�ꥹ�ȤΥ���ǥå����򼡤ˤ���
+				# XMLリストのインデックスを次にする
 				now_xmllist_index += 1
 
 			end
@@ -2068,89 +2068,89 @@ end
 
 # =============================================================================
 # =============================================================================
-# �ؿ���
+# 関数部
 
 
 
 
 # =============================================================================
 # =============================================================================
-# �ᥤ�������
+# メイン処理部
 if __FILE__ == $0
 
-	# ���������
+	# 初期化処理
 	hir_data1 = '' ; hir_data2 = ''
 	xml_data1 = ''
 	seq_data1 = ''
 	hir_list1 = []
 
 
-	# ��������ե�������ɤ߹���
+	# 階層定義ファイルの読み込み
 	open($hir_file, 'r') do |fp_h|
 		hir_data1 = fp_h.read
 	end
 
 
-	# XML�ե�������ɤ߹���
+	# XMLファイルの読み込み
 	open($xml_file, 'r') do |fp_xml|
 		xml_data1 = fp_xml.read
 	end
 
 
-	# XML�ꥹ�ȥ��֥������Ȥγ���
+	# XMLリストオブジェクトの確保
 	xml_list = Xml_listdata.new
 
 
-	# XML�ǡ����μ�����
+	# XMLデータの取り込み
 	case	$lang_conf
 	when	'1'
-#		$stderr.puts '���ߡ�EUCʸ�������ɤǤμ¹ԤǤ�'
+#		$stderr.puts '現在、EUC文字コードでの実行です'
 	when	'2'
-#		$stderr.puts '���ߡ����ե�JISʸ�������ɤǤμ¹ԤǤ�'
+#		$stderr.puts '現在、シフトJIS文字コードでの実行です'
 	else
-		raise 'ͽ�����̥��顼�Ǥ�'
+		raise '予期せぬエラーです'
 	end
 	xml_list.xmldata_setup(xml_data1, $lang_conf)
 
 	case	$hir_match_mode
 	when	0
-		# ñ����������ǡ���
-		# XML�ǡ����򥷡����󥷥��ǡ������Ѵ�
+		# 単純配列形式データ
+		# XMLデータをシーケンシャルデータへ変換
 		seq_data1 = xml_list.convert_xmldata_to_sequenthdata(hir_data1, $output_mode, $lang_conf)
 	when	1
-		# ���إǡ�����ꥹ�ȷ����ˤ������
-		# ���ؾ����ꥹ�ȹ�¤���Ѵ�
+		# 階層データをリスト形式にしたもの
+		# 階層情報をリスト構造に変換
 		
 		hir_list1 = xml_list.exchange_hierarcy_to_hierarcylist(hir_data1, $lang_conf)
-		#    �����
-		# nil��[]�ξ�� - ���ؾ�����Ѵ��˼��Ԥ���
-		# nil��[]�Ǥʤ����
-		#  [0] - ���ؾ���ꥹ�ȥǡ��� [OUT / ���֥������ȷ�]
-		#  [1] - ���Ϸ�� [OUT / Numeric��]
-		#  [2] - ���ΤΥ������󥷥��ǡ����ΥХ��ȿ� [OUT / Numeric��]
-		# XML�ǡ����򥷡����󥷥��ǡ������Ѵ�
+		#    戻り値
+		# nilか[]の場合 - 階層情報の変換に失敗した
+		# nilか[]でない場合
+		#  [0] - 階層情報リストデータ [OUT / オブジェクト型]
+		#  [1] - 出力件数 [OUT / Numeric型]
+		#  [2] - 全体のシーケンシャルデータのバイト数 [OUT / Numeric型]
+		# XMLデータをシーケンシャルデータへ変換
 
 		seq_data2 = []
 		seq_data2 = xml_list.convert_xmldata_to_sequenthdata_main(hir_list1[0], $output_mode, $lang_conf)
 
-		# ����Ū�ˡ�ʸ����Ȥ��ơ���Ǽ����
+		# 暫定的に、文字列として、格納する
 		seq_data1 = []
 		seq_data1[0] = ''
 		seq_data3 = ''
 		seq_data3 = ' ' * hir_list1[2]
 		seq_data2.each do |w_ary1|
-			# nil�ι��ܤ�ȤФ�������(�Х���)
+			# nilの項目をとばす・・・(バグ？)
 			if w_ary1 != nil
 				seq_data3[w_ary1[1], w_ary1[2]] = w_ary1[0]
 			end
 		end
 		seq_data1[0] = seq_data3
 	else
-		raise 'ͽ�����̥��顼�Ǥ�'
+		raise '予期せぬエラーです'
 	end
 
 
-	# �������󥷥��ե�����ؤν񤭹���
+	# シーケンシャルファイルへの書き込み
 	open($seq_file, 'w') do |fp_sw|
 		seq_data1.each do |w_str1|
 			fp_sw.print w_str1

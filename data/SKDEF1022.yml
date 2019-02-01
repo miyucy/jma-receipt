@@ -1,47 +1,47 @@
 kanri_cd    : "1022"
-name        : "ибл╬иямя╦║╨В║щибл╬╔Ё║╪╔и"
+name        : "Г≈┘Е░█И═╩Г■╗Ф╓°Г╢╒Б┬▓Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴"
 class_cd    : "*"
 item_max    : 7
 item_list   :
 - item_no   : 1
   item      : "BYOMEICD1"
-  item_jp   : "ибл╬╔Ё║╪╔иё╠"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒"
   type      : "X"
   start     : 1
   length    : 5
 - item_no   : 2
   item      : "BYOMEICD2"
-  item_jp   : "ибл╬╔Ё║╪╔иё╡"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓"
   type      : "X"
   start     : 6
   length    : 5
 - item_no   : 3
   item      : "BYOMEICD3"
-  item_jp   : "ибл╬╔Ё║╪╔иёЁ"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠"
   type      : "X"
   start     : 11
   length    : 5
 - item_no   : 4
   item      : "BYOMEICD4"
-  item_jp   : "ибл╬╔Ё║╪╔иё╢"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■"
   type      : "X"
   start     : 16
   length    : 5
 - item_no   : 5
   item      : "BYOMEICD5"
-  item_jp   : "ибл╬╔Ё║╪╔иё╣"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙"
   type      : "X"
   start     : 21
   length    : 5
 - item_no   : 6
   item      : "BYOMEICD6"
-  item_jp   : "ибл╬╔Ё║╪╔иё╤"
+  item_jp   : "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√"
   type      : "X"
   start     : 26
   length    : 5
 - item_no   : 7
   item      : "YOBI"
-  item_jp   : "м╫хВ"
+  item_jp   : "Д╨┬Е┌≥"
   type      : "X"
   start     : 31
   length    : 470

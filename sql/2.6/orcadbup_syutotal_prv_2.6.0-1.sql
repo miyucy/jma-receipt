@@ -1,8 +1,8 @@
 --                                    --
--- ��Ǽ��ץơ��֥���ѹ�             --
+-- 収納合計テーブルの変更             --
 --                                    --
--- ���ܤ��ɲ�                         --
---   ���񣶤��飱��  JIHI_6           --
+-- 項目の追加                         --
+--   自費６から１０  JIHI_6           --
 --                   JIHI_6_TAX       --
 --                   JIHI_7           --
 --                   JIHI_7_TAX       --
@@ -12,18 +12,18 @@
 --                   JIHI_9_TAX       --
 --                   JIHI_10          --
 --                   JIHI_10_TAX      --
---   ���ȶ��        DISCOUNT_MONEY   --
+--   減免金額        DISCOUNT_MONEY   --
 --                                    --
 -- Create Date : 2005/07/14           --
 --                                    --
 --
 
--- TBL_SYUTOTAL_PRV ���              --
+-- TBL_SYUTOTAL_PRV 削除              --
 
 drop table TBL_SYUTOTAL_PRV;
 
 --
--- TBL_SYUTOTAL_PRV ����              --
+-- TBL_SYUTOTAL_PRV 作成              --
 
 create	table	tbl_syutotal_prv	(
 	HOSPID	char(24),

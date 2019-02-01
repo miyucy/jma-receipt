@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ժǽ��象���Խ��ѥ�᥿                            *
+      *    患者最終来院日編集パラメタ                            *
       *                         COPY  (CPORCSLASTYMD.INC)        *
       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSLASTYMDAREA.
       *
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  ORCSLASTYMD-PTID                PIC 9(10).
-      *    ���Ų�̾������ʣ������ꤹ���
+      *    診療科名称設定（１：設定する）
            03  ORCSLASTYMD-SRYKAFLG            PIC X(01).
-      *    ���Ϲ���
+      *    出力項目
            03  ORCSLASTYMD-OUT.
-      *        �ǽ��象���������
+      *        最終来院日（西暦）
                05  ORCSLASTYMD-LASTYMD         PIC X(08).
-      *        �ǽ��象���������
+      *        最終来院日（和暦）
                05  ORCSLASTYMD-LASTYMDW        PIC X(09).
-      *        ������Ų�
+      *        前回診療科
                05  ORCSLASTYMD-SRYKA           PIC X(02).
-      *        ������Ų�̾
+      *        前回診療科名
                05  ORCSLASTYMD-SRYKA-MEI       PIC X(10).
-      *        �ݸ��ȹ礻
+      *        保険組合せ
                05  ORCSLASTYMD-HKNCOMBI        PIC X(04).
-      *        �ݸ��ʸ����
+      *        保険（公費）
                05  ORCSLASTYMD-HKNNUM          PIC X(03).
-      *        �ݸ��ʸ����̾��
+      *        保険（公費）名称
                05  ORCSLASTYMD-HKNCOMBI-MEI    PIC X(20).
-      *        �ܿͲ�²̾
+      *        本人家族名
                05  ORCSLASTYMD-HONKZKKBN       PIC X(02).
-      *        ����ɥ�����
+      *        前回ドクター
                05  ORCSLASTYMD-DRCD            PIC X(05).
-      *        ����ʥ����ƥ������������
+      *        病棟（システム日で入院中）
                05  ORCSLASTYMD-BRMNUM          PIC X(09).
-      *        �ǽ�������
+      *        最終入院日
                05  ORCSLASTYMD-NYUINYMD        PIC X(08).
-      *        �ǽ��ౡ��
+      *        最終退院日
                05  ORCSLASTYMD-TAIINYMD        PIC X(08).
       *

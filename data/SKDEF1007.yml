@@ -1,41 +1,41 @@
 kanri_cd    : "1007"
-name        : "¼«Æ°»»Äê¡¦¥Á¥§¥Ã¥¯µ¡Ç½À©¸æ¾ğÊó"
+name        : "è‡ªå‹•ç®—å®šãƒ»ãƒã‚§ãƒƒã‚¯æ©Ÿèƒ½åˆ¶å¾¡æƒ…å ±"
 class_cd    : "*"
 item_max    : 6
 item_list   :
 - item_no   : 1
   item      : "SANTEI1"
-  item_jp   : "Ä´ºŞµ»½Ñ´ğËÜÎÁ"
+  item_jp   : "èª¿å‰¤æŠ€è¡“åŸºæœ¬æ–™"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SANTEI2"
-  item_jp   : "ÌôºŞ¾ğÊóÄó¶¡ÎÁ¡Ê°ìÈÌ¡Ë"
+  item_jp   : "è–¬å‰¤æƒ…å ±æä¾›æ–™ï¼ˆä¸€èˆ¬ï¼‰"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "SANTEI3"
-  item_jp   : "ÌôºŞ¾ğÊóÄó¶¡ÎÁ¡ÊÏ·¿Í¡¡¼êÄ¢µ­ºÜ¤¢¤ê¡Ë"
+  item_jp   : "è–¬å‰¤æƒ…å ±æä¾›æ–™ï¼ˆè€äººã€€æ‰‹å¸³è¨˜è¼‰ã‚ã‚Šï¼‰"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "SANTEI4"
-  item_jp   : "ÌôºŞ¾ğÊóÄó¶¡ÎÁ¡ÊÏ·¿Í¡¡¼êÄ¢µ­ºÜ¤Ê¤·¡Ë "
+  item_jp   : "è–¬å‰¤æƒ…å ±æä¾›æ–™ï¼ˆè€äººã€€æ‰‹å¸³è¨˜è¼‰ãªã—ï¼‰ "
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "SANTEI5"
-  item_jp   : "ÎÅÍÜÃ´Åö¼êÅö¡ÊËÌ³¤Æ»¡Ë"
+  item_jp   : "ç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼ˆåŒ—æµ·é“ï¼‰"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "SANTEI6"
-  item_jp   : "ÆÃÄêÌôºŞ¼£ÎÅ´ÉÍıÎÁ"
+  item_jp   : "ç‰¹å®šè–¬å‰¤æ²»ç™‚ç®¡ç†æ–™"
   type      : "X"
   start     : 6
   length    : 1

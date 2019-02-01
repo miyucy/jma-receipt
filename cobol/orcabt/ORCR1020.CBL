@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,27 +18,27 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR1020.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �����쥻�ץȡ���������
-      *                      Ʊ��ޤΤޤȤ�ʵ������±��ʳ��ΤȤ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/11/16    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 公害レセプト（入院外）
+      *                      同一剤のまとめ（旧総合病院以外のとき）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/11/16    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.02.01    NACL-����    08/03/24  ʿ������ǯ��������б�
-      *                                     �ʿ��Ŷ�ʬ���������������б���
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
       *
-      *  04.05.01    NACL-����    09/06/10  Ŧ�������ؤΥ����ȵ����б�
-      *  04.05.02    NACL-����    12/04/11  ʿ������ǯ�������
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    12/04/11  平成２４年４月改正
       *
-      *  04.08.01    NACL-����    13/01/22  ��������ơ��֥룱�����б�
-      *  04.08.02    NACL-����    13/01/25  ������ʬ�������ѥ쥻�ץȵ����б�
-      *  04.08.03    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.04    NACL-����    16/11/07  �����߰ʲ����ޤ�����ѥ쥻�ץȵ���
-      *                                     �ʵ�Ͽ���б�����
+      *  04.08.01    NACL-門脇    13/01/22  日数回数テーブル１０回対応
+      *  04.08.02    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
+      *  04.08.03    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.04    NACL-門脇    16/11/07  １５円以下薬剤の提出用レセプト記載
+      *                                     （記録）対応修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -65,7 +65,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE121-KEY
                                    FILE    STATUS  IS  STS-RECE121.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -88,7 +88,7 @@
        01  RECE121-REC. 
            COPY    "CPRCF121.INC".
       * 
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -112,15 +112,15 @@ grpsys     COPY    "COMMON-SPA".
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE121//.
       *
-      *    ���顼�ե�����̾���ΰ�
+      *    エラーファイル名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե�����̾���ΰ�
+      *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE100             PIC X(02).
            03  STS-RECE120             PIC X(02).
@@ -139,7 +139,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-MATOME              PIC 9(01).
            03  FLG-NG                  PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-IN-CANCEL           PIC 9(06).
@@ -147,7 +147,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-RECE120             PIC 9(06). 
            03  CNT-RECE120W            PIC 9(06). 
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(03).
@@ -156,7 +156,7 @@ grpsys     COPY    "COMMON-SPA".
            03  IDZ3                    PIC 9(03).
            03  IDZ4                    PIC 9(03).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM      PIC X(06).
@@ -167,14 +167,14 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-PARA-HOSPNUM        PIC 9(02).
       *
            03  WRK-COMRENNUM           PIC 9(05).
-      *    ���ֹ������
+      *    剤番号の退避
            03  WRK-ZAINUM              PIC 9(08).
-      *    ���ֹ������
+      *    剤番号の退避
            03  WRK-SRYSYUKBN           PIC X(03).
-      *    ����������
+      *    コメント退避
            03  WRK-COM-AREA.
                05  WRK-COM             PIC X(200)  OCCURS  10.
-      *    ����ǥå�������
+      *    インデックス退避
            03  WRK-INDEX-AREA.
                05  WRK-INDEX           PIC 9(003)  OCCURS  10.
       *
@@ -185,22 +185,22 @@ grpsys     COPY    "COMMON-SPA".
                                    BY         //WRK-RECE121//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -215,7 +215,7 @@ grpsys     COPY    "COMMON-SPA".
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -232,7 +232,7 @@ grpsys     COPY    "COMMON-SPA".
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -271,18 +271,18 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    TEMPFLPARA          TO  RECE121PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        �ģ¥����ץ����
+      *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR1020"      TO  JOB-PGID
-               MOVE    "Ʊ��ޤΤޤȤ�"
+               MOVE    "同一剤のまとめ"
                                        TO  JOB-SHELLMSG
                PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
@@ -293,11 +293,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    Ʊ��ޤΤޤȤ����
+      *    同一剤のまとめ処理
            OPEN    INPUT               RECE120-FILE
                                        RECE130-FILE
                                        RECE100-FILE
@@ -312,7 +312,7 @@ grpsys     COPY    "COMMON-SPA".
                    RECE130-FILE
                    RECE100-FILE
       *
-      *    ���Υե�����˽��Ͻ���
+      *    元のファイルに出力処理
            IF      FLG-END             =   ZERO
                OPEN    INPUT   RECE121-FILE
                        OUTPUT  RECE120-FILE
@@ -331,7 +331,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       * 
       *****************************************************************
-      *    Ʊ��ޤΤޤȤ����
+      *    同一剤のまとめ処理
       *****************************************************************
        210-RECE121-WRITE-SEC                SECTION.
       *
@@ -354,7 +354,7 @@ grpsys     COPY    "COMMON-SPA".
                    OR     ( RECE100-KEY
                                        NOT =   RECE120-KEY1 )
       *
-      *        ���ż��̶�ʬ�������������Խ�
+      *        診療種別区分取得・コメント編集
                MOVE    RECE120-ZAINUM      TO  WRK-ZAINUM
                MOVE    SPACE               TO  WRK-SRYSYUKBN
                INITIALIZE                  WRK-COM-AREA
@@ -399,7 +399,7 @@ grpsys     COPY    "COMMON-SPA".
                            MOVE    RECE120-REC     TO  RECE121-REC1
                            MOVE    WRK-COM-AREA    TO  RECE121-COM-AREA
                        END-IF
-      *                �޲������������ơ��֥�βû�
+      *                剤回数・日数回数テーブルの加算
                        ADD     RECE120-ZAIKAISU    TO  RECE121-ZAIKAISU
                        PERFORM VARYING IDX FROM    1   BY  1
                                UNTIL   IDX >      10
@@ -460,7 +460,7 @@ grpsys     COPY    "COMMON-SPA".
                            MOVE    WRK-RECE121-REC     TO  RECE121-REC
                            MOVE    RECE120-REC         TO  RECE121-REC1
                        END-IF
-      *                �޲������������ơ��֥�βû�
+      *                剤回数・日数回数テーブルの加算
                        ADD     RECE120-ZAIKAISU    TO  RECE121-ZAIKAISU
                        PERFORM VARYING IDX FROM    1   BY  1
                                UNTIL   IDX >      10
@@ -519,7 +519,7 @@ grpsys     COPY    "COMMON-SPA".
       *
                PERFORM     900-RECE120-READ-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -540,7 +540,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ���ż��̶�ʬ�������ȼ���
+      *    診療種別区分・コメント取得
       *****************************************************************
        2101-RECE130-COM-HENSYU-SEC         SECTION.
       *
@@ -560,12 +560,12 @@ grpsys     COPY    "COMMON-SPA".
                          ( RECE100-KEY NOT =  RECE130-KEY1   ) OR
                          ( WRK-ZAINUM  NOT =  RECE130-ZAINUM )
       *
-      *        �����ΤȤ��ǽ�ο��Ŷ�ʬ�����
+      *        検査のとき最初の診療区分を取得
                IF    ( RECE120-SRYKBN      =   "60" OR "64" OR "99" )
                AND   ( WRK-SRYSYUKBN       =    SPACE               )
                    MOVE   RECE130-SRYSYUKBN   TO   WRK-SRYSYUKBN
                END-IF
-      *        �����ȼ���
+      *        コメント取得
                IF      RECE120-COMCDFLG    =   "1"
                    PERFORM  VARYING IDZ    FROM    1   BY  1
                             UNTIL ( IDZ    >       5 )
@@ -597,13 +597,13 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ���Υե�����˽��Ͻ���
+      *    元のファイルに出力処理
       *****************************************************************
        220-RECE120-WRITE-SEC           SECTION.
       *
            MOVE    RECE121-REC1        TO  RECE120-REC
       *
-      *   �޲������������ơ��֥�βû�������Τ��Խ�
+      *   剤回数・日数回数テーブルの加算したものを編集
            MOVE    RECE121-ZAIKAISU     TO  RECE120-ZAIKAISU
            MOVE    RECE121-DAY-AREA     TO  RECE120-DAY-AREA
       *
@@ -617,7 +617,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM     900-RECE121-READ-SEC
       *
-      *    ��������������
+      *    処理中止設定処理
            IF      CNT-IN-CANCEL   =   50
                MOVE    ZERO            TO  CNT-IN-CANCEL
                PERFORM 500-CANCEL-HENSYU-SEC
@@ -627,7 +627,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -642,7 +642,7 @@ grpsys     COPY    "COMMON-SPA".
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -658,7 +658,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -671,7 +671,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -684,7 +684,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -704,12 +704,12 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״�����λ����
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -726,7 +726,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ե�����̾��������
+      *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -740,7 +740,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ܾ���ե������ɹ�����
+      *    基本情報ファイル読込処理
       *****************************************************************
        900-RECE100-READ-SEC           SECTION.
       *
@@ -757,7 +757,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ե������ɹ�����
+      *    点数情報ファイル読込処理
       *****************************************************************
        900-RECE120-READ-SEC            SECTION.
       *
@@ -774,7 +774,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ŭ�������ե������ɹ�����
+      *    適用欄情報ファイル読込処理
       *****************************************************************
        900-RECE130-READ-SEC            SECTION.
       *
@@ -789,7 +789,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ޤȤ�ե������ɹ�����
+      *    点数情報まとめファイル読込処理
       *****************************************************************
        900-RECE121-READ-SEC            SECTION.
       *
@@ -805,7 +805,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ޤȤ�ե������ɹ�����
+      *    点数情報まとめファイル読込処理
       *****************************************************************
        900-RECE121-INV-SEC            SECTION.
       *
@@ -820,7 +820,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե�����ңţ��Ľ����ʣƣ�������
+      *    中間ファイルＲＥＡＤ処理（Ｆ００４）
       *****************************************************************
        900-RECE121-INV2-SEC            SECTION.
       *
@@ -911,7 +911,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -928,7 +928,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -941,7 +941,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -959,7 +959,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

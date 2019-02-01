@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,22 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    ÁªÄêÎÅÍÜÈñ¡¦°ìÈÌ¥³¡¼¥É¿¶ÂØ    COPY (CPSENTEICDCHG.INC)
+      *    é¸å®šç™‚é¤Šè²»ãƒ»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿    COPY (CPSENTEICDCHG.INC)
       *
       *-------------------------------------------------*
       *01  SENTEICDCHG-REC.
            03  SENCHG-KEY.
-      *°ìÈÌ¿ÇÎÅ¥³¡¼¥É
+      *ä¸€èˆ¬è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SENCHG-IPNSRYCD     PIC  X(09).
-      *ÁªÄêÎÅÍÜÈñ¿ÇÎÅ¥³¡¼¥É
+      *é¸å®šç™‚é¤Šè²»è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SENCHG-SENTEISRYCD  PIC  X(09).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SENCHG-TERMID           PIC  X(16).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SENCHG-OPID             PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SENCHG-CREYMD           PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SENCHG-UPYMD            PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SENCHG-UPHMS            PIC  X(06).

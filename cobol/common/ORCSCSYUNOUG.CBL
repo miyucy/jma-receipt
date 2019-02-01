@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCSYUNOUG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ������Ź԰٤γ����Ǽ�Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  15/04/10    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : ワーク診療行為の外来収納編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  15/04/10    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  18/01/17  �軰�Թ԰�ʬ�׻�ͥ���б�
-      *  05.00.00    NACL-¿��Ǽ  18/11/20  ���������ե饰���б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  18/01/17  第三者行為分計算優先対応
+      *  05.00.00    NACL-多々納  18/11/20  初診料算定フラグ２対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -42,7 +42,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -53,7 +53,7 @@
            03  FLG-SYOSIN-OK       PIC 9(01).
            03  FLG-SYU40           PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -68,55 +68,55 @@
            03  IDX-S1                  PIC 9(04).
            03  IDS1                    PIC 9(04).
            03  IDS2                    PIC 9(04).
-      *    ʡ�����б���
+      *    福岡県対応用
            03  IDX-SYU                 PIC 9(04).
            03  IDX-SYU2                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD               PIC X(09).
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBN           PIC X(03).
-      *    ����
+      *    点数
            03  WRK-TENSU               PIC 9(08).
            03  WRK-HKNTEN              PIC 9(08).
       *
-      *     ������ô��׻���
+      *     一部負担金計算用
            03  WRK-SYUTEN1             PIC 9(08).
            03  WRK-TENSU-SYU           PIC 9(08).
            03  WRK-TEN                 PIC 9(08).
-      *     ������ô��׻���
+      *     一部負担金計算用
            03  WRK-SYUTEN1-KEI         PIC S9(08).
            03  WRK-LNK-S01-SYUTEN      PIC S9(08).
            03  WRK-SINDAN              PIC S9(07).
            03  WRK-SEIKYU              PIC S9(07).
            03  WRK-CHK-SRYSYUKBN       PIC X(03).
            03  WRK-S01-TENSU           PIC 9(08).
-      *    ʴ��Ƚ����
+      *    粉砕判定用
            03  WRK-FUNSA-AREA.
                05  FLG-FUNSAI          PIC 9(01).
                05  WRK-FUNSAI-CNT      PIC 9(04).
       *
            03  WRK-ZAINUM              PIC 9(08).
       *
-      *    �����ʳ���ǻ����û�Ƚ��
+      *    小児科外来診察料加算判定
       *    03  WRK-SYONIKA-KBN         PIC X(01).
-      *    ������
+      *    自費用
       *
-      *    ���׼�Ǽ��������
+      *    集計収納請求内容
        01  WRK-SUM-AREA.
            03  SUM-SYU-SKY-NAIYOU.
                05  SUM-SYU-SKY-TBL             OCCURS   17.
-      *    �ݸ�����
+      *    保険点数
                    07  SUM-SYU-HKNTEN          PIC  S9(07).
       *
-      *    ��Ǽ�ޥ������
+      *    収納マスタワーク
        01  WRK-SYUNOU-REC.
            COPY    "CPSYUNOU.INC"      REPLACING
                                        //SYU-// BY //WRK-SYU-//.
-      *    ��Ǽ�ޥ��������
+      *    収納マスタワーク２
        01  LNK-SYUNOU2-AREA.
            02  LNK-SYUNOU2-REC      OCCURS   15.
            COPY    "CPSYUNOU.INC"      REPLACING
@@ -124,12 +124,12 @@
        01  LNK-SYUNOU2-MAX              PIC 9(04).
       *
       *
-      *    ������Ź԰٥ޥ����ݡʥѥ�᥿��
+      *    ワーク診療行為マスタ−（パラメタ）
        01  LNK2-WKSRYACT-AREA.
            02  LNK2-WKSRYACT-REC         OCCURS   400.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK2-WKSRY-//.
-      *    ���þ�����ɲ�
+      *    附加情報を追加
            03  LNK2-WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //LNK2-WKSRYP-//.
@@ -141,69 +141,69 @@
        01  LNK-SYUNOU-MAX              PIC 9(04).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ������Ź԰٥ޥ�����
+      *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
-      *    ���þ���
+      *    附加情報
        01  WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
       * 01 TENSUPLUS-REC.
       *    COPY    "CPTENSUPLUS.INC".
       *
-      *    ϫ�Ұ��ŵ��ؾ���
+      *    労災医療機関情報
            COPY    "CPSK4001.INC".
       *
-      *    ��Ǽ�ޥ������
+      *    収納マスタワーク
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *     �ѥ�᥿�ơ��֥�
+      *     パラメタテーブル
       *01  PARA-REC.
       *    COPY    "CPPARA.INC".
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
       *01  SPATMP-REC.
       *    COPY    "CPSPA-TMP.INC".
       *
       *    COPY    "MCPDATA2.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *ʡ�����б���
-      *    �����оݳ������Խ����֥ѥ�᥿
+      *福岡県対応用
+      *    給付対象外点数編集サブパラメタ
            COPY    "CPORCSSYU40.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
       *    COPY    "CPORCSNUM.INC".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
       *    COPY    "CPORCSC00.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
            COPY    "MCPAREA".
@@ -212,29 +212,29 @@
       *    COPY    "ORCA-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����Ǽ�����ѥ�᥿�ΰ�
+      *    外来収納作成パラメタ領域
            COPY    "CPORCSCSYUNOUG.INC".
-      *    ��ô��۷׻��ѥѥ�᥿
+      *    負担金額計算用パラメタ
            COPY    "CPORCS01.INC".
       *
-      *    ��Ǽ�ǡ���
+      *    収納データ
        01  LNK-SYUNOU-AREA.
            02  LNK-SYUNOU-REC      OCCURS   15.
            COPY    "CPSYUNOU.INC"      REPLACING
                                        //SYU-// BY //LNK-SYU-//.
-      *    ���Ź԰٥ǡ���
+      *    診療行為データ
        01  LNK-WKSRYACT-AREA.
            02  LNK-WKSRYACT-REC      OCCURS   600.
            COPY    "CPWKSRYACT.INC"  REPLACING
                                      //WKSRY-// BY //LNK-WKSRY-//.
-      *    ���þ�����ɲ�
+      *    附加情報を追加
            03  LNK-WKSRYACTPLUS-REC.
            COPY    "CPWKSRYACTPLUS.INC"  REPLACING
                                      //WKSRYP-// BY //LNK-WKSRYP-//.
@@ -249,7 +249,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -260,9 +260,9 @@
       *****INITIALIZE                  STS-AREA
       *
            MOVE    SPA-WORK            TO  SPA-K01KYOUTU
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SYORI-SEC
-      *    �����
+      *    主処理
            IF      ORCSCSYU-ERRCD      =   ZERO
                PERFORM 200-MAIN-SYORI-SEC
            END-IF
@@ -274,7 +274,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SYORI-SEC          SECTION.
       *
@@ -299,10 +299,10 @@
                GO      TO      100-INIT-SYORI-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻̤����
+      *    保険組合せ未設定
            IF      ORCSCSYU-HKNCOMBI(1)    =   SPACE
                IF      LNK-SYUNOU-MAX      =   1
-      *            ��Ǽ�Σ�����
+      *            収納の１件目
                    MOVE    LNK-SYU-HKNCOMBINUM(1)
                                            TO  ORCSCSYU-HKNCOMBI(1)
                    MOVE    LNK-SYU-SRYKA  (1)
@@ -314,15 +314,15 @@
            END-IF
       *
            IF      ORCSCSYU-SYORIKBN   =   "1"
-      *        ��ô�����Խ�
+      *        負担金初期編集
                PERFORM 1001-ORCS01-INIT-SEC
            END-IF
       *
-      *    �����դλ��������ƥ��������
+      *    自賠責の時、システム管理検索
            IF      (SPA-HKNKBN         =   1   )  AND
                    (SPA-RSI-HKNKBN     =   "4"
                                        OR  "5"
-      *             �軰�Թ԰��ɲ�
+      *             第三者行為追加
                                        OR  "6"  ) 
                PERFORM 4500-RSI-SYSKANRI-SEC
            END-IF
@@ -331,7 +331,7 @@
        100-INIT-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô�����Խ�����
+      *    負担金初期編集処理
       *****************************************************************
        1001-ORCS01-INIT-SEC             SECTION.
       *
@@ -345,7 +345,7 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX
-      *        ������ô�۷׻��ѥ��ꥢ�ʸ���̤���ѡ�
+      *        一部負担額計算用クリア（現在未使用）
                IF     (IDX                 >   1    )  AND
                       (LNK-WKSRY-ZAINUM (IDX) NOT =
                                            LNK-WKSRY-ZAINUM (IDX - 1))
@@ -355,45 +355,45 @@
       *
                IF     (LNK-WKSRY-HKNCOMBI (IDX)    =   "9999")
                    OR (LNK-WKSRY-CONTKBN  (IDX)    =   "H"   )
-      *           ��ɾ�ʳ�
+      *           薬評以外
                    OR (LNK-WKSRY-ZAIKBN   (IDX)    =   1    )
                    CONTINUE
                ELSE
-      *            ���������Խ�
+      *            診療内容編集
                    PERFORM VARYING     IDS     FROM    1   BY  1
                            UNTIL      (IDS         >   5   )  OR
                                       (LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   SPACE )
-      *                ������ô�۷׻��ѡʸ���̤���ѡ�
+      *                一部負担額計算用（現在未使用）
                        PERFORM 1002-ORCS01-SET-SEC
-      *                �������ʿǻ���̤���갷����Ƚ��
+      *                特定公費（診察料未算定扱い）判定
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409905"
                            MOVE    "1"         TO  LNK-S01-SINSATUFLG2
                        END-IF
-      *                �������ʻ��ֳ����ǡ�Ƚ��
+      *                特定公費（時間外受診）判定
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409907"
                            MOVE    "1"         TO  LNK-S01-JIKANGAI
                        END-IF
       *H30.1
-      *                �軰�Թ԰�ʬ�׻�ͥ��ե饰
+      *                第三者行為分計算優先フラグ
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099999931"
                            MOVE    "1"     TO  LNK-S01-DAISANYUSENFLG
                        END-IF
       *H30.11
-      *                ���������ե饰�������������ѡ�
+      *                初診料算定フラグ２（地方公費用）
                        IF      LNK-WKSRY-SRYCD(IDX IDS)
                                                    =   "099409906"
                            MOVE    "1"     TO  LNK-S01-SYOSINFLG2
                        END-IF
       *
-      *                �����Ƚ��
+      *                初診料判定
                        PERFORM 1001-SYOSIN-CHK-SEC
                    END-PERFORM
                END-IF
-      *        �ǻ�������ե饰�����������ѡ�
+      *        診察料算定フラグ（地方公費用）
                IF      LNK-WKSRY-SRYKBN (IDX)  =   "11"
                                                OR  "12"
                                                OR  "13"
@@ -402,8 +402,8 @@
                END-IF
            END-PERFORM
       *
-      *������ô�۷׻��ѡʸ���̤���ѡ�
-      *    �ޤ��Ȥ�����������ľ��
+      *一部負担額計算用（現在未使用）
+      *    剤ごとに点数を入れ直す
            PERFORM VARYING     IDY     FROM    40 BY  -1
                    UNTIL       IDY     <   1
                IF      LNK-S01-SRYKBN (IDX-Y IDY)  NOT =   SPACE
@@ -418,22 +418,22 @@
                END-IF
            END-PERFORM
       *
-      *    ��������
+      *    訂正処理
            IF      SPA-SYORIFLG        =   1
                MOVE    "1"             TO  LNK-S01-SAIKEISAN-KBN
            END-IF
       *
-      *H27.4���ʹߤ�����Ѥ���
-      *    �������硦�������������괵�Զ�ʬ
+      *H27.4　以降から使用する
+      *    在宅総合・在宅末期　算定患者区分
            IF     ( SPA-SRYYMD         <   "20021001")  OR
                   ((SPA-NETAKIRI-ARI   =   ZERO )  AND
                    (SPA-NETAKIRI-ARI2  =   ZERO )  AND
                    (SPA-ZAIMATU-ARI    =   ZERO )  AND
                    (SPA-ZAIMATU-ARI2   =   ZERO )  AND
-      *            �ȣ��������ɲ�
+      *            Ｈ１８．４追加
                    (SPA-ZAIKANRI-ARI   =   ZERO )  AND
                    (SPA-ZAIKANRI-ARI2  =   ZERO )
-      *            �ȣ��������ɲá���������������������������
+      *            Ｈ２０．４追加（特定施設入居時医学総合管理料）
               AND  (SPA-IGAKUKAN-ARI   =   ZERO )
               AND  (SPA-IGAKUKAN-ARI2  =   ZERO )  )
                CONTINUE
@@ -441,7 +441,7 @@
                MOVE    "1"             TO  LNK-S01-KOUREI-ZAITAKU-KBN
            END-IF
       *
-      *    ���������ե饰�����������ѡ�
+      *    初診料算定フラグ（地方公費用）
            IF      FLG-SYOSIN-OK       =   1
                MOVE    "1"             TO  LNK-S01-SYOSINFLG
            END-IF
@@ -451,11 +451,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ô�۷׻��ѥ��åȽ�������̤���ѹ��ܡ�
+      *    一部負担額計算用セット処理　（未使用項目）
       *****************************************************************
        1002-ORCS01-SET-SEC            SECTION.
       *
-      *    ʴ�դλ��ǽ�Σ��ޤΤߤȤ���
+      *    粉砕の時最初の１剤のみとする
            IF      LNK-WKSRY-SRYCD(IDX IDS)    =   "099209901"
                ADD     1                   TO  WRK-FUNSAI-CNT
                MOVE    1                   TO  FLG-FUNSAI
@@ -470,7 +470,7 @@
            MOVE    ZERO                TO  FLG-FUNSAI
            IF     (LNK-WKSRY-SRYCD(IDX IDS)(1:1) =   "6"  ) OR
                   (LNK-WKSRY-SRYCD(IDX IDS)(1:3) =   "001")
-      *        �������ޤΤߤȤ���
+      *        院内薬剤のみとする
                MOVE    LNK-WKSRY-SRYSYUKBN (IDX) TO
                                                    WRK-CHK-SRYSYUKBN
                IF      WRK-CHK-SRYSYUKBN       =   SPACE
@@ -523,13 +523,13 @@
        1002-ORCS01-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Ƚ�����
+      *    初診料算定判定処理
       *****************************************************************
        1001-SYOSIN-CHK-SEC             SECTION.
       *
            IF      LNK-WKSRY-SRYKBN(IDX)   =   "11"  OR  "13"
                EVALUATE    LNK-WKSRY-SRYCD  (IDX IDS)
-      *            �����
+      *            初診料
                    WHEN    "111000110"
                    WHEN    "111003610"
                    WHEN    "111700110"
@@ -537,16 +537,16 @@
                    WHEN    "113003510"
                    WHEN    "113003710"
                    WHEN    "101110010"
-      *            ���ߡ��ɲ�
+      *            ダミー追加
                    WHEN    "099110001"
-      *            �Ҳ���ʤ��ɲ�
+      *            紹介状なし追加
                    WHEN    "111012510"
-      *H27.1       �ŷ�Ψ����ʲ�
+      *H27.1       妥結率５割以下
                    WHEN    "111012710"
       *H28.4
                    WHEN    "113019710"
                    WHEN    "113019910"
-      *H29.2       Ʊ����������
+      *H29.2       同一日２科目
                    WHEN    "111011810"
                    WHEN    "111012610"
                    WHEN    "111012810"
@@ -559,7 +559,7 @@
       *
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SYORI-SEC          SECTION.
       *
@@ -567,7 +567,7 @@
            MOVE    SPACE               TO  LNK-SYUNOU2-AREA
            INITIALIZE                  LNK-SYUNOU2-AREA
            INITIALIZE                  LNK-SYUNOU2-MAX
-      *    ʡ��������
+      *    福岡公費用
            MOVE    ZERO                TO  FLG-SYU40
       *
            PERFORM VARYING   IDH1      FROM    1   BY  1
@@ -585,13 +585,13 @@
                                                =   WRK-HKNCOMBI ) AND
                                (LNK-SYU-SRYKA (IDH)
                                                =   WRK-SRYKA    )
-      *                    �ݸ��ȹ礻��˼�Ǽ�Խ�
+      *                    保険組合せ毎に収納編集
                            PERFORM 2001-SYUNOU-HENSYU-SEC
                        END-IF
                    END-PERFORM
                END-PERFORM
                IF     (ORCSCSYU-SRYKA (IDH1 2) NOT =   SPACE)
-      *            ʣ���ʹ���ɲá�K08)
+      *            複数科合計追加（K08)
                    MOVE    ZERO            TO  WRK-SRYKA
                    PERFORM 2002-SYUNOU-ADD-SEC
                END-IF
@@ -603,16 +603,16 @@
                GO      TO      200-MAIN-SYORI-EXT
            END-IF
       *
-      *    ʣ���ʤޤȤὸ�ץե饰
+      *    複数科まとめ集計フラグ
            MOVE    SPA-KAGRPFLG        TO  LNK-S01-KAGRPFLG
       *
-      *    ��ô��׻�����
+      *    負担金計算処理
            CALL    "ORCSGAIFTN"        USING
                                        MCPAREA
                                        LNK-ORCS01-REC
                                        LNK-SYUNOU2-AREA
                                        SPA-AREA
-      *    �׻���۷�������å��ե饰
+      *    計算金額桁数チェックフラグ
            IF      LNK-S01-SKYCHKFLG   =   "1"
                MOVE    11              TO  ORCSCSYU-ERRCD
            END-IF
@@ -627,7 +627,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ��������
+      *    収納更新処理
       *****************************************************************
        2001-SYUNOU-HENSYU-SEC             SECTION.
       *
@@ -639,7 +639,7 @@
            END-IF
            ADD     1                   TO  LNK-SYUNOU2-MAX
       *
-      *    ������
+      *    各点数
            MOVE    ZERO                TO  IDX-KOUI
            MOVE    SPACE               TO  LNK2-WKSRYACT-AREA
            INITIALIZE                      LNK2-WKSRYACT-AREA
@@ -652,7 +652,7 @@
                    UNTIL       IDY     >  LNK-WKSRYACT-MAX
                IF     (LNK-WKSRY-HKNCOMBI(IDY) =   WRK-HKNCOMBI)
                   AND (LNK-WKSRY-SRYKA   (IDY) =   WRK-SRYKA   )
-      *            ��硦��ɾ�ʳ�
+      *            包括・薬評以外
                    IF     (LNK-WKSRY-HKNCOMBI (IDY)    =   "9999")
                        OR (LNK-WKSRY-CONTKBN  (IDY)    =   "H"   )
                        OR (LNK-WKSRY-ZAIKBN   (IDY)    =   1     )
@@ -661,7 +661,7 @@
                        IF     (IDX-KOUI        >   ZERO  )  AND
                               (LNK-WKSRY-ZAINUM (IDY) NOT =
                                            LNK2-WKSRY-ZAINUM (IDX-KOUI))
-      *                    ����˽�����Ԥ�
+      *                    剤毎に処理を行う
                            PERFORM 20011-ZAINUM-SYORI-SEC
                            MOVE    ZERO            TO  IDX-KOUI
                            MOVE    SPACE       TO  LNK2-WKSRYACT-AREA
@@ -677,7 +677,7 @@
            IF      IDX-KOUI            >   ZERO
                PERFORM 20011-ZAINUM-SYORI-SEC
            END-IF
-      *    ��Ǽ�ݸ������Խ�
+      *    収納保険点数編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   17
                MOVE    ZERO                TO  SYU-HKNTEN(IDX)
@@ -685,21 +685,21 @@
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   16
-      *        �ݸ�����
+      *        保険点数
                IF      SUM-SYU-HKNTEN(IDX)     <   ZERO
                    MOVE    ZERO                TO  SUM-SYU-HKNTEN (IDX)
                    MOVE    "0010"              TO  SPA-ERRCD
                END-IF
                MOVE    SUM-SYU-HKNTEN(IDX)     TO  SYU-HKNTEN(IDX)
-      *        �ݸ��������
+      *        保険合計点数
                ADD     SYU-HKNTEN(IDX)         TO  SYU-HKNTEN (17)
            END-PERFORM
       *
-      *    �����դμ굻����
+      *    自賠責の手技点数
            MOVE    WRK-LNK-S01-SYUTEN  TO  LNK-S01-SYUTEN
                                                    (LNK-SYUNOU2-MAX)
       *
-      *    ���ް�����ô��׻�����
+      *    薬剤一部負担金計算処理
            PERFORM 20012-YAKFTN-KEI-SEC
       *
            MOVE    SYUNOU-REC          TO  LNK-SYUNOU2-REC
@@ -710,25 +710,25 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ������ƽ��׽���
+      *    保険点数再集計処理
       *****************************************************************
        20011-ZAINUM-SYORI-SEC             SECTION.
       *
-      *    �ݸ������ƽ��׽���
+      *    保険点数再集計処理
            PERFORM 20011-HKNTEN-KEI-SEC
       *
            MOVE    ZERO                TO  WRK-SYUTEN1
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   IDX-KOUI
-      *        �����դλ����������򽸷פ���
+      *        自賠責の時、技術点を集計する
                IF      (SPA-HKNKBN         =   1   )  AND
                        (SPA-RSI-HKNKBN     =   "4"
                                            OR  "5"
-      *                �軰�Թ԰��ɲ�
+      *                第三者行為追加
                                            OR  "6"  ) 
                    PERFORM 200112-JIBAI-SYORI-SEC
                END-IF
-      *        �����ݸ��λ����������򽸷פ���
+      *        公害保険の時、技術点を集計する
                IF      (SPA-HKNKBN         =   2   )  AND
                        (LNK2-WKSRY-SYUTEN1 (IDX)    NOT =  ZERO )
                    PERFORM 200113-KOGAI-SYORI-SEC
@@ -739,23 +739,23 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ������ƽ��׽���
+      *    保険点数再集計処理
       *****************************************************************
        20011-HKNTEN-KEI-SEC             SECTION.
       *
            MOVE    LNK2-WKSRY-SRYKBN   (1) TO  WRK-SRYKBN
            MOVE    LNK2-WKSRY-SRYSYUKBN(1) TO  WRK-SRYSYUKBN
-      *    ���װ��ַ���
+      *    集計位置決定
            PERFORM 200111-SYUNOU-TENSU-SEC
       *
            IF      IDX-TS                  =   ZERO
                GO      TO      20011-HKNTEN-KEI-EXT
            END-IF
            IF     (LNK2-WKSRYP-RSIKINGAKU(1)  >    ZERO )
-      *        ϫ�Ҷ�ۤ���ϡ�ϫ�������򽸷סʣ����ܡ�
+      *        労災金額ありは、労災点数を集計（１件目）
                MOVE    LNK2-WKSRYP-RSI-TENSU (1)   TO  WRK-TENSU
            ELSE
-      *        �������ϺǸ�ι�
+      *        剤点数は最後の行
                MOVE    LNK2-WKSRY-ZAITENKEI(IDX-KOUI)  TO  WRK-TENSU
            END-IF
       *
@@ -764,17 +764,17 @@
                                                           (IDX-KOUI)
       *
            IF      LNK2-WKSRYP-PLUSKBN (IDX-KOUI)   =   ZERO
-      *        ����
+      *        集計
                ADD     WRK-HKNTEN          TO  SUM-SYU-HKNTEN (IDX-TS)
            ELSE
-      *        ����
+      *        減点
                COMPUTE SUM-SYU-HKNTEN (IDX-TS)
                                            =   SUM-SYU-HKNTEN (IDX-TS)
                                            -   WRK-HKNTEN
            END-IF
-      *    ����������
+      *    処方せん料
            IF      WRK-SRYSYUKBN       =   "820"
-      *        �����������Ʒ�
+      *        処方せん料再掲
                ADD     WRK-HKNTEN          TO  SYU-SHOHOU-SAI
            END-IF
       *
@@ -782,11 +782,11 @@
        20011-HKNTEN-KEI-EXT.
            EXIT.
       *****************************************************************
-      *    �����դλ����������򽸷׽���
+      *    自賠責の時、技術点を集計処理
       *****************************************************************
        200112-JIBAI-SYORI-SEC          SECTION.
       *
-      *    �ǻ����ȿ��������λ������ť����ɤ�Ƚ�ꤹ��
+      *    診察料と診断料等の時、診療コードを判定する
            IF      LNK2-WKSRY-SRYKBN (IDX) =   "80"
                PERFORM VARYING     IDS     FROM    1   BY  1
                        UNTIL      (IDS         >   5   )  OR
@@ -795,13 +795,13 @@
       *
                    MOVE    LNK2-WKSRY-SRYCD (IDX IDS)  TO  TNS-SRYCD
                    PERFORM 910-TENSU-READ-SEC
-      *            �����ն������
+      *            自賠責金額入力
                    IF      LNK2-WKSRY-SRYSYUKBN(IDX)    =   "809"
                        MOVE    LNK2-WKSRY-JIHIMONEY(IDX IDS)
                                                    TO  TNS-TEN
                    END-IF
-      *            �����ն�۽���
-      *            �����տ��ǽ�������
+      *            自賠責金額集計
+      *            自賠責診断書料集計
                    IF      LNK2-WKSRY-SRYCD (IDX IDS)(1:5)
                                                    =   "09591"
                        COMPUTE WRK-SINDAN      =   TNS-TEN
@@ -810,7 +810,7 @@
                        ADD     WRK-SINDAN      TO  LNK-S01-SINDAN
                                                       (LNK-SYUNOU2-MAX)
                    END-IF
-      *            ���������ٽ�������
+      *            自賠責明細書料集計
                    IF      LNK2-WKSRY-SRYCD (IDX IDS)(1:5)
                                                    =   "09592"
                        COMPUTE WRK-SINDAN  =   TNS-TEN
@@ -819,7 +819,7 @@
                        ADD     WRK-SINDAN      TO  LNK-S01-MEISAI
                                                       (LNK-SYUNOU2-MAX)
                    END-IF
-      *            �����դ���¾�Υ������Խ�
+      *            自賠責その他のコード編集
                    IF      LNK2-WKSRY-SRYCD (IDX IDS)(1:5)
                                                    =   "09591"
                                                    OR  "09592"
@@ -837,11 +837,11 @@
                                                 (LNK-SYUNOU2-MAX IDX-S1)
                        END-IF
                    END-IF
-      *            ����ô�������������򥼥��Ȥ���
+      *            療養担当手当の点数をゼロとする
                    IF     (LNK2-WKSRY-SRYKBN(IDX)      =   "80")  AND
                           (LNK2-WKSRY-SRYCD (IDX IDS)  =   "199000610")
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
-      *                ����������ô����������
+      *                自賠責療養担当手当点数
                        COMPUTE WRK-SINDAN      =   TNS-TEN
                                                *   LNK2-WKSRY-ZAIKAIKEI
                                                             (IDX-KOUI)
@@ -849,10 +849,10 @@
                                                       (LNK-SYUNOU2-MAX)
                    END-IF
       *H25.7
-      *            �ߵް��Ŵ����û�����
+      *            救急医療管理加算点数
                    IF     (SPA-SRYYMD                  >=  "20130701")
                      AND  (LNK2-WKSRY-SRYCD (IDX IDS)  =   "101800890")
-      *                ����������ô����������
+      *                自賠責療養担当手当点数
                        COMPUTE WRK-SINDAN      =   TNS-TEN
                                                *   LNK2-WKSRY-ZAIKAIKEI
                                                             (IDX-KOUI)
@@ -862,8 +862,8 @@
       *
                END-PERFORM
            END-IF
-      *    ���������Ӳû����������Ȥ����оݳ��Ȥ���
-      *    �����ո����Ӳû����谷��Ƚ�ꤹ��
+      *    腰部固定帯加算を器材点数として対象外とする
+      *    自賠責固定帯加算等取扱を判定する
            IF     (SYS-4001-KOTEIKBN    =   "2"  OR   SPACE )  AND
                   (LNK2-WKSRY-SRYKBN(IDX)(1:1)   NOT =   "9"  )
                PERFORM VARYING     IDS     FROM    1   BY  1
@@ -873,7 +873,7 @@
                    IF     LNK2-WKSRY-SRYCD(IDX IDS)    =   "140037490"
                                                        OR  "140040110"
                                                        OR  "150266970"
-      *                    ���������Ӳû�
+      *                    頸部固定帯加算
                                                        OR  "140052610"
                        MOVE    LNK2-WKSRY-SRYCD (IDX IDS)
                                                TO  TNS-SRYCD
@@ -883,31 +883,31 @@
                END-PERFORM
            END-IF
       *
-      *    �ޤκǽ���
+      *    剤の最終行
            IF      IDX             NOT =   IDX-KOUI
                GO      TO      200112-JIBAI-SYORI-EXT
            END-IF
       *H26.10
-      *    �������������оݳ�
+      *    薬剤料逓減は対象外
            IF     (LNK2-WKSRY-SRYCD (IDX 01)(1:1)  =   "6" )
              AND  (LNK2-WKSRYP-PLUSKBN (01)     =   1   )
                GO      TO      200112-JIBAI-SYORI-EXT
            END-IF
       *
-      *    �������Ǥλ����ե�����������оݳ��Ȥ���
+      *    画像診断の時、フィルム点数を対象外とする
            IF      LNK2-WKSRY-SRYKBN (IDX)  =   "70"
                MOVE    LNK2-WKSRY-SYUTEN2 (IDX)    TO  WRK-SYUTEN1
            END-IF
       *
            IF     (LNK2-WKSRYP-RSIKINGAKU(1)  >    ZERO )
-      *        ϫ�Ҷ�ۤ���ϡ�ϫ�������ʣ����ܡˤ�굻����
+      *        労災金額ありは、労災点数（１件目）を手技点数
                MOVE    LNK2-WKSRYP-RSI-TENSU (1)   TO  WRK-TENSU-SYU
            ELSE
-      *        �ޤμ굻�����ϺǸ�ι�
+      *        剤の手技点数は最後の行
                MOVE    LNK2-WKSRY-SYUTEN1(IDX)     TO  WRK-TENSU-SYU
            END-IF
       *
-      *    �����ռ굻�����
+      *    自賠責手技点合計
            IF      WRK-TENSU-SYU           <   WRK-SYUTEN1
                CONTINUE
            ELSE
@@ -916,7 +916,7 @@
                                            *   LNK2-WKSRY-ZAIKAIKEI
                                                              (IDX)
                IF      LNK2-WKSRY-ZAIKBN (IDX) =   2
-      *            ����ʬ
+      *            減点分
                    COMPUTE WRK-SYUTEN1-KEI     =   WRK-SYUTEN1-KEI
                                                *   -1
                END-IF
@@ -928,11 +928,11 @@
        200112-JIBAI-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ݸ��λ����������򽸷׽���
+      *    公害保険の時、技術点を集計処理
       *****************************************************************
        200113-KOGAI-SYORI-SEC          SECTION.
       *
-      *    ������ͭ�Υ����ɤ��оݳ��Ȥ���
+      *    公害固有のコードを対象外とする
            IF     (LNK2-WKSRY-SRYKBN(IDX)(1:1)  NOT =   "9"  )
                PERFORM VARYING     IDS     FROM    1   BY  1
                        UNTIL      (IDS         >   5   )  OR
@@ -945,13 +945,13 @@
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
                    END-IF
       *H28.3
-      *            ����ô�������������򥼥��Ȥ���
+      *            療養担当手当の点数をゼロとする
                    IF     (LNK2-WKSRY-SRYKBN(IDX)      =   "80")  AND
                           (LNK2-WKSRY-SRYCD (IDX IDS)  =   "199000610")
                        MOVE    LNK2-WKSRY-SRYCD (IDX IDS)  TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        ADD     TNS-TEN         TO  WRK-SYUTEN1
-      *                ����������ô����������
+      *                自賠責療養担当手当点数
                        COMPUTE WRK-SINDAN      =   TNS-TEN
                                                *   LNK2-WKSRY-ZAIKAIKEI
                                                             (IDX-KOUI)
@@ -961,12 +961,12 @@
                END-PERFORM
            END-IF
       *
-      *    �ޤκǽ���
+      *    剤の最終行
            IF      IDX             NOT =   IDX-KOUI
                GO      TO      200113-KOGAI-SYORI-EXT
            END-IF
       *
-      *    �������������оݳ�
+      *    薬剤料逓減は対象外
            IF     (LNK2-WKSRY-SRYCD (IDX 01)(1:1)   =   "6" )
              AND  (LNK2-WKSRYP-PLUSKBN (01)     =   1  )
                GO      TO      200113-KOGAI-SYORI-EXT
@@ -976,12 +976,12 @@
                GO      TO      200113-KOGAI-SYORI-EXT
            END-IF
       *
-      *    �������Ǥλ����ե�����������оݳ��Ȥ���
+      *    画像診断の時、フィルム点数を対象外とする
            IF      LNK2-WKSRY-SRYKBN (IDX)  =   "70"
                MOVE    LNK2-WKSRY-SYUTEN2 (IDX)     TO  WRK-SYUTEN1
            END-IF
       *
-      *    �굻�����
+      *    手技点合計
            IF      LNK2-WKSRY-SYUTEN1 (IDX) <   WRK-SYUTEN1
                CONTINUE
            ELSE
@@ -990,7 +990,7 @@
                                            *   LNK2-WKSRY-ZAIKAIKEI
                                                              (IDX)
                IF      LNK2-WKSRY-ZAIKBN (IDX) =   2
-      *            ����ʬ
+      *            減点分
                    COMPUTE WRK-SYUTEN1-KEI     =   WRK-SYUTEN1-KEI
                                                *   -1
                END-IF
@@ -1004,19 +1004,19 @@
       *
       *
       *****************************************************************
-      *    ���ް�����ô��׻�����
+      *    薬剤一部負担金計算処理
       *****************************************************************
        20012-YAKFTN-KEI-SEC             SECTION.
       *
-      *    �����ݸ��ǽ���������
+      *    船員保険で初診料算定時
            IF     (SYU-SYUHKNNUM       =   "002" )  AND
                   (SYU-HKNTEN (01)     >   ZERO  )  AND
                   (LNK-S01-SYOSINFLG   =   "1"   )
                PERFORM 200121-SENINFLG-SET-SEC
            END-IF
       *
-      *ʡ���������б�
-      *    ʡ�����ǡ������ݸ������
+      *福岡県公費対応
+      *    福岡県で、一般保険算定時
            IF     (SPA-PREFNUM         =   40   )  AND
                   (SPA-HKNKBN          =   ZERO )
                PERFORM 200122-PREFNUM-40-SEC
@@ -1026,7 +1026,7 @@
        20012-YAKFTN-KEI-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�������ʹ���ɲý���
+      *    収納更新・科合計追加処理
       *****************************************************************
        2002-SYUNOU-ADD-SEC             SECTION.
       *
@@ -1060,76 +1060,76 @@
        2002-SYUNOU-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�������װ��ֽ���
+      *    収納点数集計位置処理
       *****************************************************************
        200111-SYUNOU-TENSU-SEC              SECTION.
       *
            MOVE    ZERO                TO  IDX-TS
            EVALUATE    WRK-SRYKBN
-      *        �ǻ�
+      *        診察
                WHEN    "11"
                WHEN    "12"
                    MOVE    1                TO  IDX-TS
-      *        ��Ƴ
+      *        指導
                WHEN    "13"
                    MOVE    2                TO  IDX-TS
-      *        ����
+      *        在宅
                WHEN    "14"
                    MOVE    3                TO  IDX-TS
-      *        ����
+      *        投薬
                WHEN    "21"   THRU  "27"
                    MOVE    4                TO  IDX-TS
-      *        ����
+      *        注射
                WHEN    "31"
                WHEN    "32"
                WHEN    "33"
                    MOVE    5                TO  IDX-TS
-      *        ����
+      *        処置
                WHEN    "40"
                    MOVE    6                TO  IDX-TS
-      *        ���
+      *        手術
                WHEN    "50"
                    MOVE    7                TO  IDX-TS
-      *        ���
+      *        麻酔
                WHEN    "54"
                    MOVE    8                TO  IDX-TS
-      *        ����
+      *        検査
                WHEN    "60"
                    MOVE    9                TO  IDX-TS
-      *        ��������
+      *        病理診断
                WHEN    "64"
                    MOVE    14               TO  IDX-TS
-      *        ��������
+      *        画像診断
                WHEN    "70"
                    MOVE    10               TO  IDX-TS
                WHEN    "80"
                    EVALUATE    WRK-SRYSYUKBN
-      *            ��ϥӥ�
+      *            リハビリ
                    WHEN    "800"
                        MOVE    11               TO  IDX-TS
-      *            �����ն��
+      *            自賠責金額
                    WHEN    "809"
                        MOVE    11               TO  IDX-TS
-      *            ����������
+      *            処方せん料
                    WHEN    "820"
                        MOVE    4                TO  IDX-TS
-      *            ������
+      *            精神科
                    WHEN    "830"
                        MOVE    12               TO  IDX-TS
-      *            ����������
+      *            放射線治療
                    WHEN    "840"
                        MOVE    13               TO  IDX-TS
-      *            ����ô��������
+      *            療養担当手当て
                    WHEN    "850"
                        MOVE    16               TO  IDX-TS
-      *            �������ʳ����
+      *            入院料（外来）
                    WHEN    "890"
                        MOVE    15               TO  IDX-TS
-      *            ����¾
+      *            その他
                    WHEN    OTHER
                        MOVE    11               TO  IDX-TS
                    END-EVALUATE
-      *            ����
+      *            食事
                WHEN    "90"
                WHEN    "92"
                    MOVE    15               TO  IDX-TS
@@ -1139,11 +1139,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ǽ������������åȽ���
+      *    船員保険で初診料算定時セット処理
       *****************************************************************
        200121-SENINFLG-SET-SEC            SECTION.
       *
-      *    �ݸ��ȹ�ޥ������Խ�
+      *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SPA-HOSPNUM        TO  COMB-HOSPNUM
@@ -1165,7 +1165,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-HKNCOMBI        =   ZERO
-      *        �ܿͤ��̶кҳ�
+      *        本人で通勤災害
                IF     (COMB-HONKZKKBN      =   "1"  )  AND
                       (COMB-HOJOKBN        =   "3"  OR
                                                "C"  OR
@@ -1180,7 +1180,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʡ���������б�����
+      *    福岡県公費対応処理
       *****************************************************************
        200122-PREFNUM-40-SEC            SECTION.
       *
@@ -1198,21 +1198,21 @@
                   (LNK-WKSRY-SRYKA   (IDX) NOT =   SYU-SRYKA  ))
                CONTINUE
            ELSE
-      *        ����˥��ꥢ����
+      *        剤毎にクリアする
                IF     (IDX                 >   1    )  AND
                       (LNK-WKSRY-ZAINUM (IDX) NOT =
                                            LNK-WKSRY-ZAINUM (IDX - 1))
                    MOVE    ZERO            TO  IDX-SYU2
                END-IF
       *
-      *        ��ǡ����ǡ������ʳ���ǻ����ν�ǻ�
+      *        初診・往診、小児科外来診察料の初診時
                IF     (LNK-WKSRY-SRYKBN (IDX)  =   "11"
                                                OR  "14" )  OR
                      ((SPA-SYONIKA-ARI         =   1    )  AND
                       (SPA-SYOSIN              =   1    )  AND
                       (LNK-WKSRY-SRYKBN (IDX)  =   "13"
                                                OR  "99"  ))
-      *            Ϣ�֤����λ����ơ��֥��Խ�
+      *            連番が１の時、テーブル編集
                    IF      LNK-WKSRY-RENNUM (IDX)  =   1
                        ADD     1                   TO  IDX-SYU
                        MOVE    LNK-WKSRY-SRYKBN (IDX)  TO  ORCS40-SRYKBN
@@ -1220,7 +1220,7 @@
                    END-IF
                    MOVE    LNK-WKSRY-ZAITENKEI (IDX)   TO  ORCS40-ZAITEN
                                                            (IDX-SYU)
-      *            ���������Խ�
+      *            診療内容編集
                    PERFORM VARYING     IDS     FROM    1   BY  1
                            UNTIL      (IDS         >   5   )  OR
                                       (LNK-WKSRY-SRYCD(IDX IDS)
@@ -1240,14 +1240,14 @@
                END-IF
            END-PERFORM
       *
-      *    �оݤ����ä����
+      *    対象があった場合
            IF      IDX-SYU             >   ZERO
-      *        �����оݳ������Խ�
+      *        給付対象外点数編集
                CALL    "ORCSSYU40"     USING
                                        SPA-AREA
                                        ORCSSYU40AREA
                                        SYUNOU-REC
-      *        �������Ʊ����Ǥ��������������Τ�
+      *        初診料と同日初診がある時、初診料のみ
                IF      FLG-SYU40           =   1
                    COMPUTE SYU-KYUFUGAI-GOKEI-TEN
                                            =   SYU-KYUFUGAI-GOKEI-TEN
@@ -1258,7 +1258,7 @@
                    MOVE    1               TO  FLG-SYU40
                END-IF
            ELSE
-      *        ���Ŷ�ʬ�̵��ճ��������ꥢ
+      *        診療区分別給付外点数クリア
                INITIALIZE              SYU-KYUFUGAI
            END-IF
       *
@@ -1268,7 +1268,7 @@
       *
       *
       *****************************************************************
-      *    ��Ǽ�������ʹ���ɲý���
+      *    収納更新・科合計追加処理
       *****************************************************************
        450141-SYUNOU-ADD-HEN-SEC             SECTION.
       *
@@ -1291,7 +1291,7 @@
                ADD    WRK-SYU-JIHI-TAXARI (IDS2)
                                            TO  SYU-JIHI-TAXARI(IDS2)
            END-PERFORM
-      *    �����������Ʒ�
+      *    処方せん料再掲
            ADD     WRK-SYU-SHOHOU-SAI      TO  SYU-SHOHOU-SAI
            ADD     WRK-SYU-JIHI-TOTAL      TO  SYU-JIHI-TOTAL
            ADD     WRK-SYU-JIHI-TOTAL-TAX  TO  SYU-JIHI-TOTAL-TAX
@@ -1300,11 +1300,11 @@
            ADD     WRK-SYU-KOH-FTN         TO  SYU-KOH-FTN
            ADD     WRK-SYU-KOH-FTN-ENTANI  TO  SYU-KOH-FTN-ENTANI
            ADD     WRK-SYU-YKZ-FTN         TO  SYU-YKZ-FTN
-      *Ĵ����
+      *調整金
            ADD     WRK-SYU-CHOSEI          TO  SYU-CHOSEI
            ADD     WRK-SYU-CHOSEI1         TO  SYU-CHOSEI1
            ADD     WRK-SYU-CHOSEI2         TO  SYU-CHOSEI2
-      *ϫ���ݸ�
+      *労災保険
            ADD     WRK-SYU-RSISHOSHIN-MONEY
                                            TO  SYU-RSISHOSHIN-MONEY
            ADD     WRK-SYU-RSISAISHIN-MONEY
@@ -1315,13 +1315,13 @@
            ADD     WRK-SYU-RSI-TOTAL       TO  SYU-RSI-TOTAL
            ADD     WRK-SYU-RSIJIBAI-SKYMONEY
                                            TO  SYU-RSIJIBAI-SKYMONEY
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            ADD     WRK-SYU-SKYMONEY-TAX-SAI TO  SYU-SKYMONEY-TAX-SAI
-      *������
+      *請求金額
            ADD     WRK-SYU-SKYMONEY        TO  SYU-SKYMONEY
-      *�����׳�
+      *入金合計額
            ADD     WRK-SYU-NYUKIN-TOTAL    TO  SYU-NYUKIN-TOTAL 
-      *���Ŷ�ʬ�̵��ճ�����
+      *診療区分別給付外点数
            PERFORM VARYING     IDS2    FROM    1   BY  1
                    UNTIL       IDS2    >   6
                ADD    WRK-SYU-KYUFUGAI-TEN (IDS2)
@@ -1333,11 +1333,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ������ϫ�Ҿ���˸�������
+      *    システム管理（労災情報）検索処理
       *****************************************************************
        4500-RSI-SYSKANRI-SEC         SECTION.
       *
-      *    �����ƥ����������ϫ�Ҿ����
+      *    システム管理検索（労災情報）
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
@@ -1347,7 +1347,7 @@
            MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    SYS-4001-REC        TO  MCPDATA-REC
       *
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 910-DBSELECT-SEC
@@ -1368,7 +1368,7 @@
        4500-RSI-SYSKANRI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1396,7 +1396,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1415,7 +1415,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1430,7 +1430,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

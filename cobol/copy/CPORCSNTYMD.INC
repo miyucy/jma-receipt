@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���ౡ�����������ѥѥ�᥿  COPY (CPORCSNTYMD.INC)
-      *                                ���ѥץ������ (ORCSNTYMD)
+      *    入退院日取得サブ用パラメタ  COPY (CPORCSNTYMD.INC)
+      *                                使用プログラム (ORCSNTYMD)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSNTYMDAREA.
            03  SNTYMD-IN.
-      *        ���ŵ��أɣ�
+      *        医療機関ＩＤ
                05  SNTYMD-HOSPNUM          PIC 9(2).
                05  SNTYMD-PTID             PIC 9(10).
-      *        ������ʬ 1...���Ƥ�������
-      *                 2...¾��������
-      *                 3...¾���򡦼���������
+      *        処理区分 1...全ての歴を取得
+      *                 2...他院歴を除く
+      *                 3...他院歴・自院歴を除く
                05  SNTYMD-KBN              PIC X(01).
            03  SNTYMD-OT.
-      *        �ֵѷ��
+      *        返却件数
                05  SNTYMD-MAX              PIC 9(05).
                05  SNTYMD-OCC              OCCURS  50.
-      *            ���������ֹ�
+      *            入院履歴番号
                    07  SNTYMD-RRKNUM       PIC 9(03).
-      *            ������
+      *            入院日
                    07  SNTYMD-NYUINYMD     PIC X(08).
-      *            �ౡ��
+      *            退院日
                    07  SNTYMD-TAIINYMD     PIC X(08).
-      *            ����ֹ�
+      *            初回番号
                    07  SNTYMD-SHONUM       PIC 9(03).
-      *            ���ֶ�ʬ
+      *            状態区分
                    07  SNTYMD-JTIKBN       PIC X(01).
-      *        �꥿���󥳡���
+      *        リターンコード
                05  SNTYMD-RC               PIC 9(02).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGJ99.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ≤Ò∑◊æ»≤Ò
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : £–•´∆˛Œœ° £ £π£π°À
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  00/12/01    MCC°›¬ø°π«º   ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ‰ºöË®àÁÖß‰ºö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ôº∞„Ç´ÂÖ•ÂäõÔºàÔº™ÔºôÔºôÔºâ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  00/12/01    MCC‚àíÂ§ö„ÄÖÁ¥ç   Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      * 01.00.01     MCC-¬ø°π«º   01/05/22  ∏Â¬‡§Ú•‹•ø•Û§À —ππ
-      * 01.00.02     NACL-¬ø°π«º  05/11/30  MONFUNC ¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      * 01.00.01     MCC-Â§ö„ÄÖÁ¥ç   01/05/22  ÂæåÈÄÄ„Çí„Éú„Çø„É≥„Å´Â§âÊõ¥
+      * 01.00.02     NACL-Â§ö„ÄÖÁ¥ç  05/11/30  MONFUNC ÂØæÂøú
       *****************************************************************
       *
       *
@@ -37,29 +37,29 @@
       *
        DATA                    DIVISION.
        WORKING-STORAGE             SECTION.
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
-      *    ø«Œ≈π‘∞ŸÕ—∂¶ƒÃ•—•È•·•ø
+      *    Ë®∫ÁôÇË°åÁÇ∫Áî®ÂÖ±ÈÄö„Éë„É©„É°„Çø
            COPY    "J01COMMON-SPA".
       *
-      *    ≤ËÃÃ•π•—ŒŒ∞Ë
+      *    ÁîªÈù¢„Çπ„ÉëÈ†òÂüü
            COPY    "J04SCR-SPA".
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(02).
            03  IDX1                PIC 9(03).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-ERRMSG          PIC X(40).
            03  WRK-PIN.
@@ -73,24 +73,24 @@
       *
        01  PIN-TBL-AREA.
            03  KANA-TBL.
-               05 FILLER PIC X(20) VALUE "•¢•§•¶•®•™°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•´•≠•Ø•±•≥°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•µ•∑•π•ª•Ω°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•ø•¡•ƒ•∆•»°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "• •À•Ã•Õ•Œ°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•œ•“•’•ÿ•€°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•ﬁ•ﬂ•‡•·•‚°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•‰°°•Ê°°•Ë°°°°°°°°°°".
-               05 FILLER PIC X(20) VALUE "•È•Í•Î•Ï•Ì£±£≤£≥£¥£µ".
-               05 FILLER PIC X(20) VALUE "•Ô•Ú•Û°´°¨£∂£∑£∏£π£∞".
+               05 FILLER PIC X(20) VALUE "„Ç¢„Ç§„Ç¶„Ç®„Ç™„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Ç´„Ç≠„ÇØ„Ç±„Ç≥„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Çµ„Ç∑„Çπ„Çª„ÇΩ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Çø„ÉÅ„ÉÑ„ÉÜ„Éà„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Éä„Éã„Éå„Éç„Éé„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Éè„Éí„Éï„Éò„Éõ„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„Éû„Éü„É†„É°„É¢„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„É§„ÄÄ„É¶„ÄÄ„É®„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ".
+               05 FILLER PIC X(20) VALUE "„É©„É™„É´„É¨„É≠ÔºëÔºíÔºìÔºîÔºï".
+               05 FILLER PIC X(20) VALUE "„ÉØ„É≤„É≥„Çõ„ÇúÔºñÔºóÔºòÔºôÔºê".
            03  KANA-TBL-R          REDEFINES  KANA-TBL.
                05  PKANA           PIC X(02)  OCCURS  100.
       *      
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -109,7 +109,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -123,15 +123,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ≤ËÃÃ¡´∞‹
+      *    ÁîªÈù¢ÈÅ∑Áßª
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ∆˛Œœ
+      *    ÂÖ•Âäõ
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ≤ËÃÃ¡´∞‹§¨§ §§ª˛°¢≤ËÃÃ…Ωº®§ÿ
+      *    ÁîªÈù¢ÈÅ∑Áßª„Åå„Å™„ÅÑÊôÇ„ÄÅÁîªÈù¢Ë°®Á§∫„Å∏
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -145,7 +145,7 @@
            .
       *
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -156,10 +156,10 @@
            INITIALIZE                  IDX-AREA
       *    INITIALIZE                  SPA-J99-DATA
       *
-      *    ΩÈ¥¸≤ËÃÃ ‘Ω∏
+      *    ÂàùÊúüÁîªÈù¢Á∑®ÈõÜ
       *    PERFORM 300-SCREEN-SEC
       *
-      *    ≤ËÃÃ ‘Ω∏
+      *    ÁîªÈù¢Á∑®ÈõÜ
            PERFORM 500-GMNHEN-SEC
       *
            MOVE   "NEW"                TO  MCP-PUTTYPE.
@@ -172,7 +172,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ΩÈ¥¸≤ËÃÃΩËÕ˝
+      *    ÂàùÊúüÁîªÈù¢Âá¶ÁêÜ
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -185,7 +185,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •π•—ΩÈ¥¸ ‘Ω∏ΩËÕ˝
+      *    „Çπ„ÉëÂàùÊúüÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -195,7 +195,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -209,7 +209,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ•´°º•Ω•Î•ª•√•»ΩËÕ˝
+      *    ÁîªÈù¢„Ç´„Éº„ÇΩ„É´„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -220,7 +220,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ¡´∞‹ΩËÕ˝
+      *    ÁîªÈù¢ÈÅ∑ÁßªÂá¶ÁêÜ
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
@@ -237,10 +237,10 @@
                            WHEN    "BSH"
                                PERFORM 410112-SHIFT-SEC
       *----(01.00.01) LINE ADD START ----------------------------------
-      *                    ∏Â¬‡
+      *                    ÂæåÈÄÄ
                            WHEN     "BAK"
                                PERFORM 410113-BACK-SEC
-      *                    Ω™Œª
+      *                    ÁµÇ‰∫Ü
                            WHEN     "BEND"
                                PERFORM 210-BACK
                        END-EVALUATE
@@ -251,12 +251,12 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ≤Òœ√°°ΩËÕ˝
+      *    ‰ºöË©±„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        »÷πÊ∆˛Œœ
+      *        Áï™Âè∑ÂÖ•Âäõ
                WHEN    "ACTIVATE"      ALSO    "PIN"
                    PERFORM 41011-PIN-CHK-SEC
            END-EVALUATE
@@ -265,32 +265,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆˛Œœ°°ΩËÕ˝
+      *    ÂÖ•Âäõ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        41011-PIN-CHK-SEC            SECTION.
       *
            IF       J99-PIN            =   SPACE
-      *        ∂ı«Ú∆˛Œœª˛°¢Ω™Œª
+      *        Á©∫ÁôΩÂÖ•ÂäõÊôÇ„ÄÅÁµÇ‰∫Ü
                PERFORM 210-BACK
            ELSE
                EVALUATE    TRUE
-      *        ¡∞§Œ∑Â§Ú∫ÔΩ¸
+      *        Ââç„ÅÆÊ°Å„ÇíÂâäÈô§
                    WHEN   (J99-PIN(1:2)       =   "--") AND
                           (SPA-J99-IDX        >   0   )
                        MOVE    SPACE          TO  SPA-J99-PEDX
                                                           (SPA-J99-IDX)
                        COMPUTE SPA-J99-IDX    =   SPA-J99-IDX   -   1
-      *        ∂ı«Ú 
+      *        Á©∫ÁôΩ 
                    WHEN   (J99-PIN(1:2)        =   "..") AND
                           (SPA-J99-IDX         >   0)
                        ADD    1               TO  SPA-J99-IDX
                        MOVE   SPACE           TO  SPA-J99-PEDX
                                                         (SPA-J99-IDX)
-      *        æÆ ∏ª˙ —¥π
+      *        Â∞èÊñáÂ≠óÂ§âÊèõ
                    WHEN   (J99-PIN(1:1)        =   "+")  AND
                           (SPA-J99-IDX         >   0  )
                        PERFORM 410112-SHIFT-SEC
-      *        ¥¡ª˙ —¥π
+      *        Êº¢Â≠óÂ§âÊèõ
                    WHEN    OTHER
                        MOVE    J99-PIN         TO  WRK-PIN
                        IF     (WRK-PIN(1:1)    =   SPACE) OR
@@ -307,7 +307,7 @@
                                MOVE    "0002"          TO  SPA-ERRCD
                                GO      TO      41011-PIN-CHK-EXT
                            END-IF
-      *                    ¥¡ª˙•ª•√•»
+      *                    Êº¢Â≠ó„Çª„ÉÉ„Éà
                            PERFORM 410111-PIN-SET-SEC
                        END-IF
       *
@@ -318,7 +318,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¡ª˙•ª•√•»°°ΩËÕ˝
+      *    Êº¢Â≠ó„Çª„ÉÉ„Éà„ÄÄÂá¶ÁêÜ
       *****************************************************************
        410111-PIN-SET-SEC              SECTION.
       *
@@ -336,68 +336,68 @@
                    END-IF
            END-EVALUATE
            MOVE    PKANA(IDX1)         TO  WRK-PKANA
-           IF     (WRK-PKANA           =   "°¨"  ) AND
+           IF     (WRK-PKANA           =   "„Çú"  ) AND
                   (SPA-J99-IDX         >   0     )
                EVALUATE    SPA-J99-PEDX (SPA-J99-IDX)
-                   WHEN    "•œ"
-                       MOVE    "•—"            TO  WRK-PKANA
-                   WHEN    "•“"
-                       MOVE    "•‘"            TO  WRK-PKANA
-                   WHEN    "•’"
-                       MOVE    "•◊"            TO  WRK-PKANA
-                   WHEN    "•ÿ"
-                       MOVE    "•⁄"            TO  WRK-PKANA
-                   WHEN    "•€"
-                       MOVE    "•›"            TO  WRK-PKANA
+                   WHEN    "„Éè"
+                       MOVE    "„Éë"            TO  WRK-PKANA
+                   WHEN    "„Éí"
+                       MOVE    "„Éî"            TO  WRK-PKANA
+                   WHEN    "„Éï"
+                       MOVE    "„Éó"            TO  WRK-PKANA
+                   WHEN    "„Éò"
+                       MOVE    "„Éö"            TO  WRK-PKANA
+                   WHEN    "„Éõ"
+                       MOVE    "„Éù"            TO  WRK-PKANA
                    WHEN    OTHER
                        ADD    1                TO  SPA-J99-IDX
                END-EVALUATE
            ELSE
-               IF    (WRK-PKANA        =   "°´" ) AND
+               IF    (WRK-PKANA        =   "„Çõ" ) AND
                      (SPA-J99-IDX      >   0    )
                    EVALUATE    SPA-J99-PEDX (SPA-J99-IDX)
-                       WHEN    "•¶"
-                           MOVE    "•Ù"            TO  WRK-PKANA
-                       WHEN    "•´"
-                           MOVE    "•¨"            TO  WRK-PKANA
-                       WHEN    "•≠"
-                           MOVE    "•Æ"            TO  WRK-PKANA
-                       WHEN    "•Ø"
-                           MOVE    "•∞"            TO  WRK-PKANA
-                       WHEN    "•±"
-                           MOVE    "•≤"            TO  WRK-PKANA
-                       WHEN    "•≥"
-                           MOVE    "•¥"            TO  WRK-PKANA
-                       WHEN    "•µ"
-                           MOVE    "•∂"            TO  WRK-PKANA
-                       WHEN    "•∑"
-                           MOVE    "•∏"            TO  WRK-PKANA
-                       WHEN    "•π"
-                           MOVE    "•∫"            TO  WRK-PKANA
-                       WHEN    "•ª"
-                           MOVE    "•º"            TO  WRK-PKANA
-                       WHEN    "•Ω"
-                           MOVE    "•æ"            TO  WRK-PKANA
-                       WHEN    "•ø"
-                           MOVE    "•¿"            TO  WRK-PKANA
-                       WHEN    "•¡"
-                           MOVE    "•¬"            TO  WRK-PKANA
-                       WHEN    "•ƒ"
-                           MOVE    "•≈"            TO  WRK-PKANA
-                       WHEN    "•∆"
-                           MOVE    "•«"            TO  WRK-PKANA
-                       WHEN    "•»"
-                           MOVE    "•…"            TO  WRK-PKANA
-                       WHEN    "•œ"
-                           MOVE    "•–"            TO  WRK-PKANA
-                       WHEN    "•“"
-                           MOVE    "•”"            TO  WRK-PKANA
-                       WHEN    "•’"
-                           MOVE    "•÷"            TO  WRK-PKANA
-                       WHEN    "•ÿ"
-                           MOVE    "•Ÿ"            TO  WRK-PKANA
-                       WHEN    "•€"
-                           MOVE    "•‹"            TO  WRK-PKANA
+                       WHEN    "„Ç¶"
+                           MOVE    "„É¥"            TO  WRK-PKANA
+                       WHEN    "„Ç´"
+                           MOVE    "„Ç¨"            TO  WRK-PKANA
+                       WHEN    "„Ç≠"
+                           MOVE    "„ÇÆ"            TO  WRK-PKANA
+                       WHEN    "„ÇØ"
+                           MOVE    "„Ç∞"            TO  WRK-PKANA
+                       WHEN    "„Ç±"
+                           MOVE    "„Ç≤"            TO  WRK-PKANA
+                       WHEN    "„Ç≥"
+                           MOVE    "„Ç¥"            TO  WRK-PKANA
+                       WHEN    "„Çµ"
+                           MOVE    "„Ç∂"            TO  WRK-PKANA
+                       WHEN    "„Ç∑"
+                           MOVE    "„Ç∏"            TO  WRK-PKANA
+                       WHEN    "„Çπ"
+                           MOVE    "„Ç∫"            TO  WRK-PKANA
+                       WHEN    "„Çª"
+                           MOVE    "„Çº"            TO  WRK-PKANA
+                       WHEN    "„ÇΩ"
+                           MOVE    "„Çæ"            TO  WRK-PKANA
+                       WHEN    "„Çø"
+                           MOVE    "„ÉÄ"            TO  WRK-PKANA
+                       WHEN    "„ÉÅ"
+                           MOVE    "„ÉÇ"            TO  WRK-PKANA
+                       WHEN    "„ÉÑ"
+                           MOVE    "„ÉÖ"            TO  WRK-PKANA
+                       WHEN    "„ÉÜ"
+                           MOVE    "„Éá"            TO  WRK-PKANA
+                       WHEN    "„Éà"
+                           MOVE    "„Éâ"            TO  WRK-PKANA
+                       WHEN    "„Éè"
+                           MOVE    "„Éê"            TO  WRK-PKANA
+                       WHEN    "„Éí"
+                           MOVE    "„Éì"            TO  WRK-PKANA
+                       WHEN    "„Éï"
+                           MOVE    "„Éñ"            TO  WRK-PKANA
+                       WHEN    "„Éò"
+                           MOVE    "„Éô"            TO  WRK-PKANA
+                       WHEN    "„Éõ"
+                           MOVE    "„Éú"            TO  WRK-PKANA
                        WHEN    OTHER
                            ADD    1                TO  SPA-J99-IDX
                    END-EVALUATE
@@ -413,7 +413,7 @@
            EXIT.
       *
       *****************************************************************
-      *    æÆ ∏ª˙ —¥π°°ΩËÕ˝
+      *    Â∞èÊñáÂ≠óÂ§âÊèõ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        410112-SHIFT-SEC                    SECTION.
       *
@@ -423,26 +423,26 @@
       *
            MOVE    SPACE               TO  WRK-PKANA
            EVALUATE    SPA-J99-PEDX (SPA-J99-IDX)
-               WHEN    "•¢"
-                   MOVE    "•°"            TO  WRK-PKANA
-               WHEN    "•§"
-                   MOVE    "•£"            TO  WRK-PKANA
-               WHEN    "•¶"
-                   MOVE    "••"            TO  WRK-PKANA
-               WHEN    "•®"
-                   MOVE    "•ß"            TO  WRK-PKANA
-               WHEN    "•™"
-                   MOVE    "•©"            TO  WRK-PKANA
-               WHEN    "•´"
-                   MOVE    "•ı"            TO  WRK-PKANA
-               WHEN    "•ƒ"
-                   MOVE    "•√"            TO  WRK-PKANA
-               WHEN    "•‰"
-                   MOVE    "•„"            TO  WRK-PKANA
-               WHEN    "•Ê"
-                   MOVE    "•Â"            TO  WRK-PKANA
-               WHEN    "•Ë"
-                   MOVE    "•Á"            TO  WRK-PKANA
+               WHEN    "„Ç¢"
+                   MOVE    "„Ç°"            TO  WRK-PKANA
+               WHEN    "„Ç§"
+                   MOVE    "„Ç£"            TO  WRK-PKANA
+               WHEN    "„Ç¶"
+                   MOVE    "„Ç•"            TO  WRK-PKANA
+               WHEN    "„Ç®"
+                   MOVE    "„Çß"            TO  WRK-PKANA
+               WHEN    "„Ç™"
+                   MOVE    "„Ç©"            TO  WRK-PKANA
+               WHEN    "„Ç´"
+                   MOVE    "„Éµ"            TO  WRK-PKANA
+               WHEN    "„ÉÑ"
+                   MOVE    "„ÉÉ"            TO  WRK-PKANA
+               WHEN    "„É§"
+                   MOVE    "„É£"            TO  WRK-PKANA
+               WHEN    "„É¶"
+                   MOVE    "„É•"            TO  WRK-PKANA
+               WHEN    "„É®"
+                   MOVE    "„Éß"            TO  WRK-PKANA
            END-EVALUATE
       *
            IF      WRK-PKANA       NOT =   SPACE
@@ -455,11 +455,11 @@
       *
       *----(01.00.01) LINE ADD START ----------------------------------
       *****************************************************************
-      *    ∏Â¬‡°°ΩËÕ˝
+      *    ÂæåÈÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        410113-BACK-SEC                    SECTION.
       *
-      *    ¡∞§Œ∑Â§Ú∫ÔΩ¸
+      *    Ââç„ÅÆÊ°Å„ÇíÂâäÈô§
            IF      SPA-J99-IDX        >   0
                MOVE    SPACE          TO  SPA-J99-PEDX(SPA-J99-IDX)
                COMPUTE SPA-J99-IDX    =   SPA-J99-IDX   -   1
@@ -470,7 +470,7 @@
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -494,7 +494,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º´≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    Ëá™ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -514,16 +514,16 @@
            EXIT.
       *
       *****************************************************************
-      *    •®•È°º•·•√•ª°º•∏…Ωº®Õ˝
+      *    „Ç®„É©„Éº„É°„ÉÉ„Çª„Éº„Ç∏Ë°®Á§∫ÁêÜ
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "∆˛Œœ•®•È°º"        TO  SPA-ERRMSG
+                   MOVE    "ÂÖ•Âäõ„Ç®„É©„Éº"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "£±£∞ ∏ª˙§ﬁ§«§«§π"  TO  SPA-ERRMSG
+                   MOVE    "ÔºëÔºêÊñáÂ≠ó„Åæ„Åß„Åß„Åô"  TO  SPA-ERRMSG
            END-EVALUATE
       *
            MOVE    SPACE               TO  JERR
@@ -545,7 +545,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £–£’£‘°°ΩËÕ˝
+      *    Ôº∞ÔºµÔº¥„ÄÄÂá¶ÁêÜ
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

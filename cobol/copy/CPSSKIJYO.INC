@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¾É¾õÁ¼ÃÖµ¡½ø¥Þ¥¹¥¿        COPY (CPSSKIJYO.INC)       *
+      *    ç—‡çŠ¶æŽªç½®æ©Ÿåºãƒžã‚¹ã‚¿        COPY (CPSSKIJYO.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SSKIJYO-REC.
            03  SSKIJYO-KEY.
-      *¾É¾õ¥³¡¼¥É
+      *ç—‡çŠ¶ã‚³ãƒ¼ãƒ‰
                05  SSKIJYO-SYOJYOUCD        PIC  X(07).
-      *¾É¾õ
+      *ç—‡çŠ¶
            03  SSKIJYO-SYOJYOU             PIC  X(2048).
-      *ºîÍÑµ¡½ø
+      *ä½œç”¨æ©Ÿåº
            03  SSKIJYO-SAYOKIJYO           PIC  X(2048).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SSKIJYO-TERMID              PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SSKIJYO-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SSKIJYO-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SSKIJYO-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SSKIJYO-UPHMS               PIC  X(06).
       *

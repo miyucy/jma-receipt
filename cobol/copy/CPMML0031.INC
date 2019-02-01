@@ -2,151 +2,151 @@
       *    CPMML0031.INC
       ******************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      * ≥∞…Ù•’•°•§•Î§ÀΩ–Œœ§π§Î§»§≠§œ°¢ZZZ ‘Ω∏§π§Î
-      * √¢§∑°¢πÒ ›§ŒæÏπÁ§Œ§ﬂ°÷00°◊§Ú¿ﬂƒÍ§π§Î
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      * Â§ñÈÉ®„Éï„Ç°„Ç§„É´„Å´Âá∫Âäõ„Åô„Çã„Å®„Åç„ÅØ„ÄÅZZZÁ∑®ÈõÜ„Åô„Çã
+      * ‰ΩÜ„Åó„ÄÅÂõΩ‰øù„ÅÆÂ†¥Âêà„ÅÆ„Åø„Äå00„Äç„ÇíË®≠ÂÆö„Åô„Çã
       ************************************************************
        01  MML0031-VALUES.
            02  MML0031-T.
                05  FILLER               PIC  X(3)   VALUE   "001" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿Ø…‹¥…æ∏" .
+                   VALUE   "ÊîøÂ∫úÁÆ°Êéå" .
                05  FILLER               PIC  X(3)   VALUE   "002" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¡•∞˜" .
+                   VALUE   "ËàπÂì°" .
                05  FILLER               PIC  X(3)   VALUE   "003" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∆¸∏€" .
+                   VALUE   "Êó•Èõá" .
                05  FILLER               PIC  X(3)   VALUE   "004" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∆¸∏€°¶∆√ Ã" .
+                   VALUE   "Êó•Èõá„ÉªÁâπÂà•" .
                05  FILLER               PIC  X(3)   VALUE   "006" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¡»πÁ" .
+                   VALUE   "ÁµÑÂêà" .
                05  FILLER               PIC  X(3)   VALUE   "007" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "º´±“¥±≈˘" .
+                   VALUE   "Ëá™Ë°õÂÆòÁ≠â" .
                05  FILLER               PIC  X(3)   VALUE   "031" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "πÒ≤»∂¶∫—" .
+                   VALUE   "ÂõΩÂÆ∂ÂÖ±Ê∏à" .
                05  FILLER               PIC  X(3)   VALUE   "032" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "√œ ˝∂¶∫—" .
+                   VALUE   "Âú∞ÊñπÂÖ±Ê∏à" .
                05  FILLER               PIC  X(3)   VALUE   "033" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∑Ÿª°∂¶∫—" .
+                   VALUE   "Ë≠¶ÂØüÂÖ±Ê∏à" .
                05  FILLER               PIC  X(3)   VALUE   "034" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∂µø¶∂¶∫—" .
+                   VALUE   "ÊïôËÅ∑ÂÖ±Ê∏à" .
                05  FILLER               PIC  X(3)   VALUE   "060" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "πÒ ›" .
+                   VALUE   "ÂõΩ‰øù" .
                05  FILLER               PIC  X(3)   VALUE   "010" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∑ÎÕΩ£≥£¥æÚ" .
+                   VALUE   "Áµê‰∫àÔºìÔºîÊù°" .
                05  FILLER               PIC  X(3)   VALUE   "011" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "µÀÕΩ£≥£µæÚ" .
+                   VALUE   "Ê°î‰∫àÔºìÔºïÊù°" .
                05  FILLER               PIC  X(3)   VALUE   "012" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿∏≥Ë ›∏Ó" .
+                   VALUE   "ÁîüÊ¥ª‰øùË≠∑" .
                05  FILLER               PIC  X(3)   VALUE   "013" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿ÔΩ˝Œ≈Õ‹" .
+                   VALUE   "Êà¶ÂÇ∑ÁôÇÈ§ä" .
                05  FILLER               PIC  X(3)   VALUE   "014" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿ÔΩ˝ππ¿∏" .
+                   VALUE   "Êà¶ÂÇ∑Êõ¥Áîü" .
                05  FILLER               PIC  X(3)   VALUE   "015" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "ø»æ„ππ¿∏" .
+                   VALUE   "Ë∫´ÈöúÊõ¥Áîü" .
                05  FILLER               PIC  X(3)   VALUE   "016" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "ª˘∆∏∞È¿Æ" .
+                   VALUE   "ÂÖêÁ´•ËÇ≤Êàê" .
                05  FILLER               PIC  X(3)   VALUE   "017" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "ª˘∆∏Œ≈Õ‹" .
+                   VALUE   "ÂÖêÁ´•ÁôÇÈ§ä" .
                05  FILLER               PIC  X(3)   VALUE   "018" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∏∂«˙«ßƒÍ" .
+                   VALUE   "ÂéüÁàÜË™çÂÆö" .
                05  FILLER               PIC  X(3)   VALUE   "019" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∏∂«˙∞Ï»Ã" .
+                   VALUE   "ÂéüÁàÜ‰∏ÄËà¨" .
                05  FILLER               PIC  X(3)   VALUE   "020" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿∫ø¿£≤£πæÚ" .
+                   VALUE   "Á≤æÁ•ûÔºíÔºôÊù°" .
                05  FILLER               PIC  X(3)   VALUE   "021" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¿∫ø¿£≥£≤æÚ" .
+                   VALUE   "Á≤æÁ•ûÔºìÔºíÊù°" .
                05  FILLER               PIC  X(3)   VALUE   "022" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "À„ÃÙ" .
+                   VALUE   "È∫ªËñ¨" .
                05  FILLER               PIC  X(3)   VALUE   "023" .
                05  FILLER               PIC  X(40)  
-                   VALUE   " Ïª“∂µ∞È" .
+                   VALUE   "ÊØçÂ≠êÊïôËÇ≤" .
                05  FILLER               PIC  X(3)   VALUE   "027" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "œ∑øÕ ›∏±" .
+                   VALUE   "ËÄÅ‰∫∫‰øùÈô∫" .
                05  FILLER               PIC  X(3)   VALUE   "041" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "œ∑øÕ°¶∏©" .
+                   VALUE   "ËÄÅ‰∫∫„ÉªÁúå" .
                05  FILLER               PIC  X(3)   VALUE   "042" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "œ∑øÕ°¶ª‘" .
+                   VALUE   "ËÄÅ‰∫∫„ÉªÂ∏Ç" .
                05  FILLER               PIC  X(3)   VALUE   "051" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∆√ƒÍº¿¥µ" .
+                   VALUE   "ÁâπÂÆöÁñæÊÇ£" .
                05  FILLER               PIC  X(3)   VALUE   "052" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "æÆª˘À˝¿≠" .
+                   VALUE   "Â∞èÂÖêÊÖ¢ÊÄß" .
                05  FILLER               PIC  X(3)   VALUE   "053" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "ª˘∆∏ ›∏Ó" .
+                   VALUE   "ÂÖêÁ´•‰øùË≠∑" .
                05  FILLER               PIC  X(3)   VALUE   "067" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¬‡ø¶º‘" .
+                   VALUE   "ÈÄÄËÅ∑ËÄÖ" .
                05  FILLER               PIC  X(3)   VALUE   "068" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∆√Œ≈»Ò" .
+                   VALUE   "ÁâπÁôÇË≤ª" .
                05  FILLER               PIC  X(3)   VALUE   "069" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "¬‡∆√Œ≈»Ò" .
+                   VALUE   "ÈÄÄÁâπÁôÇË≤ª" .
                05  FILLER               PIC  X(3)   VALUE   "063" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∆√ƒÍ∑Ú ›" .
+                   VALUE   "ÁâπÂÆöÂÅ•‰øù" .
                05  FILLER               PIC  X(3)   VALUE   "072" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "πÒ≤»∆√ƒÍ" .
+                   VALUE   "ÂõΩÂÆ∂ÁâπÂÆö" .
                05  FILLER               PIC  X(3)   VALUE   "073" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "√œ ˝∆√ƒÍ" .
+                   VALUE   "Âú∞ÊñπÁâπÂÆö" .
                05  FILLER               PIC  X(3)   VALUE   "074" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∑Ÿª°∆√ƒÍ" .
+                   VALUE   "Ë≠¶ÂØüÁâπÂÆö" .
                05  FILLER               PIC  X(3)   VALUE   "075" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∂µø¶∆√ƒÍ" .
+                   VALUE   "ÊïôËÅ∑ÁâπÂÆö" .
                05  FILLER               PIC  X(3)   VALUE   "0Z1" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "º´»Ò£±" .
+                   VALUE   "Ëá™Ë≤ªÔºë" .
                05  FILLER               PIC  X(3)   VALUE   "0Z2" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "º´»Ò£≤" .
+                   VALUE   "Ëá™Ë≤ªÔºí" .
                05  FILLER               PIC  X(3)   VALUE   "0Z3" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "º´»Ò£≥" .
+                   VALUE   "Ëá™Ë≤ªÔºì" .
                05  FILLER               PIC  X(3)   VALUE   "039" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∏Â¥¸π‚Œº‘" .
+                   VALUE   "ÂæåÊúüÈ´òÈΩ¢ËÄÖ" .
                05  FILLER               PIC  X(3)   VALUE   "040" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∏Â¥¸∆√Œ≈»Ò" .
+                   VALUE   "ÂæåÊúüÁâπÁôÇË≤ª" .
                05  FILLER               PIC  X(3)   VALUE   "975" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∏¯≥≤" .
+                   VALUE   "ÂÖ¨ÂÆ≥" .
                05  FILLER               PIC  X(3)   VALUE   "009" .
                05  FILLER               PIC  X(40)  
-                   VALUE   "∂®≤Ò§±§Û§›" .
+                   VALUE   "Âçî‰ºö„Åë„Çì„ÅΩ" .
            02  MML0031-R  REDEFINES   MML0031-T.
              03  MML0031-TX           OCCURS  46.
                05  MML0031-HOKEN      PIC  X(3).

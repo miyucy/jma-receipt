@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCDTCHK011.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½ÄÍ÷¥Ç¡¼¥¿¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  13/12/10    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ç¸¦è¦§ãƒ‡ãƒ¼ã‚¿å–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  13/12/10    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -34,26 +34,26 @@
        INPUT-OUTPUT                    SECTION.
        FILE-CONTROL.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆ
            SELECT  DCACCT-FILE     ASSIGN  DTCHKACCTPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCACCT-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°Ù
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚º
            SELECT  DCSRY-FILE      ASSIGN  DTCHKSRYPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÂÐ¾Ý´µ¼Ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆå¯¾è±¡æ‚£è€…ï¼‰
            SELECT  DTCHK003-FILE   ASSIGN  DTCHK003PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê»»Äê²ó¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç®—å®šå›žæ•°ï¼‰
            SELECT  DTCHK013-FILE
                                    ASSIGN  DTCHK013PARA
                                    ORGANIZATION    IS  INDEXED
@@ -61,7 +61,7 @@
                                    RECORD  KEY     IS  DTCHK013-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÅ»ÒÅÀ¿ôÉ½¡Ý»»Äê²ó¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆé›»å­ç‚¹æ•°è¡¨âˆ’ç®—å®šå›žæ•°ï¼‰
            SELECT  DTCHK014-FILE
                                    ASSIGN  DTCHK014PARA
                                    ORGANIZATION    IS  INDEXED
@@ -69,7 +69,7 @@
                                    RECORD  KEY     IS  DTCHK014-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÀ¿ôÉÕ²Ã¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç‚¹æ•°ä»˜åŠ ï¼‰
            SELECT  DTCHK015-FILE
                                    ASSIGN  DTCHK015PARA
                                    ORGANIZATION    IS  INDEXED
@@ -77,7 +77,7 @@
                                    RECORD  KEY     IS  DTCHK015-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÀ¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç‚¹æ•°ï¼‰
            SELECT  DTCHK016-FILE
                                    ASSIGN  DTCHK016PARA
                                    ORGANIZATION    IS  INDEXED
@@ -85,28 +85,28 @@
                                    RECORD  KEY     IS  DTCHK016-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            SELECT  DTCHK017-FILE   ASSIGN  DTCHK017PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK017-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿
            SELECT  DTCHK018-FILE   ASSIGN  DTCHK018PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK018-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ï¼‰
            SELECT  DTCHK019-FILE   ASSIGN  DTCHK019PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DTCHK019-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¥³¥á¥ó¥È´ØÏ¢¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆé–¢é€£ï¼‰
            SELECT  DTCHK022-FILE
                                    ASSIGN  DTCHK022PARA
                                    ORGANIZATION    IS  INDEXED
@@ -114,70 +114,70 @@
                                    RECORD  KEY     IS  DTCHK022-ISAM-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆ
        FD  DCACCT-FILE.
        01  DCACCT-REC.
            COPY    "CPDCACCT.INC".
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°Ù
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚º
        FD  DCSRY-FILE.
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÂÐ¾Ý´µ¼Ô¾ðÊó¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆå¯¾è±¡æ‚£è€…æƒ…å ±ï¼‰
        FD  DTCHK003-FILE.
            COPY    "CPDTCHK001.INC"
                                    REPLACING  //DTCHK001//
                                    BY         //DTCHK003//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê»»Äê²ó¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç®—å®šå›žæ•°ï¼‰
        FD  DTCHK013-FILE.
            COPY    "CPDTCHK013.INC".
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÅ»ÒÅÀ¿ôÉ½¡Ý»»Äê²ó¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆé›»å­ç‚¹æ•°è¡¨âˆ’ç®—å®šå›žæ•°ï¼‰
        FD  DTCHK014-FILE.
        01  DTCHK014-REC.
            COPY    "CPETENSU5.INC" REPLACING  //ETENSU5//
                                    BY         //DTCHK014//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÀ¿ôÉÕ²Ã¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç‚¹æ•°ä»˜åŠ ï¼‰
        FD  DTCHK015-FILE.
        01  DTCHK015-REC.
            COPY    "CPTENSUPLUS.INC"
                                    REPLACING  //TNSP//
                                    BY         //DTCHK015//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÀ¿ô¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆç‚¹æ•°ï¼‰
        FD  DTCHK016-FILE.
            COPY    "CPTENSU.INC"   REPLACING  //TNS//
                                    BY         //DTCHK016//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÊÝ¸±ÁÈ¹ç¤»¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆä¿é™ºçµ„åˆã›ï¼‰
        FD  DTCHK017-FILE.
        01  DTCHK017-REC.
            COPY    "CPHKNCOMBI.INC" REPLACING  //COMB-//
                                     BY         //DTCHK017-//.
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿
        FD  DTCHK018-FILE.
        01  DTCHK018-REC.
            COPY    "CPCHK.INC"      REPLACING  //CHK-//
                                     BY         //DTCHK018-//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ï¼‰
        FD  DTCHK019-FILE.
        01  DTCHK019-REC.
            03  DTCHK019-KEY.
                05  DTCHK019-SRYCD      PIC X(09).
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¥³¥á¥ó¥È´ØÏ¢¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆé–¢é€£ï¼‰
        FD  DTCHK022-FILE.
        01  DTCHK022-REC.
          02    DTCHK022-ISAM-KEY.
@@ -189,16 +189,16 @@
            COPY    "CPRECEKISAI.INC"   REPLACING  //RKISAI-//
                                        BY         //DTCHK022-//.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿ åç§°é ˜åŸŸ 
            COPY    "CPCOMMONPRT.INC".
       *
-      *    Ãæ´Ö¥Õ¥¡¥¤¥ë¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è 
+      *    ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ 
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHKACCTPARA//.
@@ -245,11 +245,11 @@
       *
            COPY    "CPASGNPARA.INC".
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è 
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
@@ -416,111 +416,111 @@
                                    BY         //TNSCHK//.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1101.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÊä½õ¡Ë
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆè£œåŠ©ï¼‰
        01  ETENSU1-REC.
            COPY    "CPETENSU1.INC".
       *
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÊñ³ç¡Ë
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆåŒ…æ‹¬ï¼‰
        01  ETENSU2-REC.
            COPY    "CPETENSU2.INC".
       *
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÇØÈ¿¡Ë
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆèƒŒåï¼‰
        01  ETENSU3-REC.
            COPY    "CPETENSU3.INC".
       *
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡Ë
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰
        01  ETENSU5-REC.
            COPY    "CPETENSU5.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù
+      *    è¨ºç™‚è¡Œç‚º
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ¿ÇÎÅ²ñ·×
+      *    è¨ºç™‚ä¼šè¨ˆ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºç…§ä¼š
        01  NSRYSRH-REC.
            COPY    "CPNSRYSRH.INC".
       *
-      *    Æþ±¡ÍúÎò¾È²ñ
+      *    å…¥é™¢å±¥æ­´ç…§ä¼š
        01  NRRKSRH-REC.
            COPY    "CPNRRKSRH.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿
            COPY    "CPTENSU.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±
        01  TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    ¥ì¥»¥×¥Èµ­ºÜ¥Þ¥¹¥¿
+      *    ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰ãƒžã‚¹ã‚¿
        01  RKISAI-REC.
            COPY    "CPRECEKISAI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    Á´³ÑÈ¾³Ñ¥Á¥§¥Ã¥¯
+      *    å…¨è§’åŠè§’ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCSKANACHK.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    ¥Ñ¥é¥á¥¿ÎÎ°è
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è 
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯°ì³ç½èÍý¥Ñ¥é¥á¡¼¥¿
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸€æ‹¬å‡¦ç†ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
            COPY    "CPORCBSD01PARA.INC".
       ****************************************************************
        PROCEDURE                       DIVISION
@@ -531,7 +531,7 @@
                                                ORCBSD01PARA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -546,7 +546,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -568,13 +568,13 @@
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
                PERFORM 900-DBSTART-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
                MOVE    "ORCDTCHK011"       TO  JOB-PGID
-               MOVE    "½ÄÍ÷¥Ç¡¼¥¿¼èÆÀ"
+               MOVE    "ç¸¦è¦§ãƒ‡ãƒ¼ã‚¿å–å¾—"
                                            TO JOB-SHELLMSG
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
@@ -584,7 +584,7 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ëÌ¾
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«å
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHKACCTPARA-HOSPNUM
            MOVE    "DCACCT00"          TO  DTCHKACCTPARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHKACCTPARA-TERMID
@@ -704,7 +704,7 @@
            OPEN    OUTPUT              DTCHK022-FILE
            CLOSE   DTCHK022-FILE
       *
-      *    ½é´üÃÍÀßÄê½èÍý
+      *    åˆæœŸå€¤è¨­å®šå‡¦ç†
            PERFORM 1001-INIT-VAL-SET-SEC
       *
            INITIALIZE                  SYSKANRI-REC
@@ -742,7 +742,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ½é´üÃÍÀßÄê½èÍý
+      *    åˆæœŸå€¤è¨­å®šå‡¦ç†
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
@@ -766,21 +766,21 @@
        1001-INIT-VAL-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            IF    ( ORCBSD01-CHKKBN (20)    =   "2" )
       *
-      *        »»Äê²ó¿ôÊÔ½¸½èÍý
+      *        ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
                PERFORM 2001-KAISU-EDIT-SEC
       *
-      *        ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *        éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
                PERFORM 2001-KAKO-KAISU-EDIT-SEC
       *
            END-IF
       *
-      *    »²¾È¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    å‚ç…§ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
            PERFORM 2001-REFMST-EDIT-SEC
       *
            MOVE    1                   TO  FLG-END
@@ -788,7 +788,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    »»Äê²ó¿ôÊÔ½¸½èÍý
+      *    ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-KAISU-EDIT-SEC             SECTION.
       *
@@ -849,7 +849,7 @@
        2001-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    »»Äê²ó¿ôÊÔ½¸½èÍý¡ÊÅÅ»ÒÅÀ¿ôÉ½¤è¤ê¡Ë
+      *    ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†ï¼ˆé›»å­ç‚¹æ•°è¡¨ã‚ˆã‚Šï¼‰
       *****************************************************************
        20011-KAISU-EDIT-SEC            SECTION.
       *
@@ -869,7 +869,7 @@
        20011-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¡¦Ã±°ÌÊÌ»»Äê²ó¿ô¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *    æ‚£è€…ãƒ»å˜ä½åˆ¥ç®—å®šå›žæ•°ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-DTCHK013-EDIT-SEC        SECTION.
       *
@@ -884,7 +884,7 @@
            MOVE    ZERO                TO  IDX4
       *
            EVALUATE    ETENSU5-TANICD
-      *    ´µ¼ÔÅö¤ê
+      *    æ‚£è€…å½“ã‚Š
            WHEN    53
                INITIALIZE                  DTCHK013-REC
                MOVE    "00000000"     TO  DTCHK013-SRYSTYMD
@@ -892,7 +892,7 @@
                PERFORM 900-DTCHK013-READ-SEC
                PERFORM 2001111-DTCHK013-EDIT-SEC
       *
-      *    Æü
+      *    æ—¥
            WHEN   121
                INITIALIZE                  DTCHK013-REC
                MOVE    DCACCT-SRYYMD   TO  DTCHK013-SRYSTYMD
@@ -900,7 +900,7 @@
                                            DTCHK013-SRYYMD
                PERFORM 900-DTCHK013-READ-SEC
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    ·î
+      *    æœˆ
            WHEN   131
                IF    ( DCACCT-SRYKBN   =   "90" OR "92" )
                    PERFORM 2001111-NYUIN-EDIT-SEC
@@ -913,16 +913,16 @@
                                            TO  DTCHK013-SRYYM
                    PERFORM 2001111-DTCHK013-EDIT-SEC
                END-IF
-      *    Æþ±¡½éÆü
+      *    å…¥é™¢åˆæ—¥
            WHEN   132
                PERFORM 2001111-NYUIN-EDIT-SEC
-      *    Æþ±¡Ãæ
+      *    å…¥é™¢ä¸­
            WHEN   133
                PERFORM 2001111-NYUIN-EDIT-SEC
-      *    Âà±¡»þ
+      *    é€€é™¢æ™‚
            WHEN   134
                PERFORM 2001111-NYUIN-EDIT-SEC
-      *    ½µ
+      *    é€±
            WHEN   138
                INITIALIZE              DTCHK013-REC
                MOVE    DCACCT-SRYYMD   TO  WRK-SYMD
@@ -932,7 +932,7 @@
                PERFORM 900-DTCHK013-READ-SEC
                MOVE    WRK-WEEK        TO  DTCHK013-WEEK
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £²½µ
+      *    ï¼’é€±
            WHEN   142
                INITIALIZE              DTCHK013-REC
                MOVE    DCACCT-SRYYMD   TO  WRK-SYMD
@@ -949,7 +949,7 @@
                    MOVE    WRK-TW-SUNDAY       TO  DTCHK013-SRYSTYMD
                    PERFORM 2001112-DTCHK013-EDIT-SEC
                END-IF
-      *    £²·î
+      *    ï¼’æœˆ
            WHEN   143
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -962,7 +962,7 @@
                MOVE    DCACCT-SRYYMD (1:6)
                                        TO  DTCHK013-SRYYM
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £³·î
+      *    ï¼“æœˆ
            WHEN   144
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -975,7 +975,7 @@
                MOVE    DCACCT-SRYYMD (1:6)
                                        TO  DTCHK013-SRYYM
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £´·î
+      *    ï¼”æœˆ
            WHEN   145
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -988,7 +988,7 @@
                MOVE    DCACCT-SRYYMD (1:6)
                                        TO  DTCHK013-SRYYM
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £¶·î
+      *    ï¼–æœˆ
            WHEN   146
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -1001,7 +1001,7 @@
                MOVE    DCACCT-SRYYMD (1:6)
                                        TO  DTCHK013-SRYYM
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £±£²·î
+      *    ï¼‘ï¼’æœˆ
            WHEN   147
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -1014,7 +1014,7 @@
                MOVE    DCACCT-SRYYMD (1:6)
                                        TO  DTCHK013-SRYYM
                PERFORM 2001111-DTCHK013-EDIT-SEC
-      *    £µÇ¯
+      *    ï¼•å¹´
            WHEN   148
                INITIALIZE              DTCHK013-REC
                MOVE    WRK-BOMYMD      TO  WRK-SYMD
@@ -1033,7 +1033,7 @@
        200111-DTCHK013-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¡¦Ã±°ÌÊÌ»»Äê²ó¿ô¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý¡ÊÆþ±¡¡Ë
+      *    æ‚£è€…ãƒ»å˜ä½åˆ¥ç®—å®šå›žæ•°ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†ï¼ˆå…¥é™¢ï¼‰
       *****************************************************************
        2001111-NYUIN-EDIT-SEC          SECTION.
       *
@@ -1042,7 +1042,7 @@
                IF    ( TNYUINRRK-DAY-RRKNUM (IDX4 DCACCT-DAY)
                                        >   ZERO )
                    EVALUATE    MASTER-TANICD
-      *            ·î
+      *            æœˆ
                    WHEN   131
                        INITIALIZE          DTCHK013-REC
                        MOVE    TNYUINRRK-DAY-SHONUM   (IDX4 DCACCT-DAY)
@@ -1053,9 +1053,9 @@
                        MOVE    DCACCT-SRYYMD (1:6)
                                            TO  DTCHK013-SRYYM
                        PERFORM 2001111-DTCHK013-EDIT-SEC
-      *            Æþ±¡»þ
+      *            å…¥é™¢æ™‚
                    WHEN   132
-      *                »»ÄêÆü¥Á¥§¥Ã¥¯ÍÑ
+      *                ç®—å®šæ—¥ãƒã‚§ãƒƒã‚¯ç”¨
                        INITIALIZE          DTCHK013-REC
                        MOVE    TNYUINRRK-DAY-SHONUM   (IDX4 DCACCT-DAY)
                                        TO  DTCHK013-SHONUM
@@ -1070,7 +1070,7 @@
                                        TO  DTCHK013-NYUINYMD
                        PERFORM 2001111-DTCHK013-EDIT-SEC
       *
-      *                »»Äê²ó¿ô¥Á¥§¥Ã¥¯ÍÑ
+      *                ç®—å®šå›žæ•°ãƒã‚§ãƒƒã‚¯ç”¨
                        MOVE    TMP013-REC
                                        TO  DTCHK013-REC
                        MOVE    "00000000"
@@ -1079,7 +1079,7 @@
                        MOVE    TNYUINRRK-DAY-NYUINYMD (IDX4 DCACCT-DAY)
                                        TO  DTCHK013-NYUINYMD
                        PERFORM 2001111-DTCHK013-EDIT-SEC
-      *            Æþ±¡Ãæ
+      *            å…¥é™¢ä¸­
                    WHEN   133
                        INITIALIZE          DTCHK013-REC
                        MOVE    TNYUINRRK-DAY-SHONUM   (IDX4 DCACCT-DAY)
@@ -1092,9 +1092,9 @@
                        MOVE    TNYUINRRK-DAY-NYUINYMD (IDX4 DCACCT-DAY)
                                        TO  DTCHK013-NYUINYMD
                        PERFORM 2001111-DTCHK013-EDIT-SEC
-      *            Âà±¡»þ
+      *            é€€é™¢æ™‚
                    WHEN   134
-      *                »»ÄêÆü¥Á¥§¥Ã¥¯ÍÑ
+      *                ç®—å®šæ—¥ãƒã‚§ãƒƒã‚¯ç”¨
                        INITIALIZE          DTCHK013-REC
                        MOVE    TNYUINRRK-DAY-SHONUM   (IDX4 DCACCT-DAY)
                                        TO  DTCHK013-SHONUM
@@ -1111,7 +1111,7 @@
                                        TO  DTCHK013-TAIINYMD
                        PERFORM 2001111-DTCHK013-EDIT-SEC
       *
-      *                »»Äê²ó¿ô¥Á¥§¥Ã¥¯ÍÑ
+      *                ç®—å®šå›žæ•°ãƒã‚§ãƒƒã‚¯ç”¨
                        MOVE    TMP013-REC
                                        TO  DTCHK013-REC
                        MOVE    TNYUINRRK-DAY-NYUINYMD (IDX4 DCACCT-DAY)
@@ -1134,7 +1134,7 @@
        2001111-NYUIN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¡¦Ã±°ÌÊÌ»»Äê²ó¿ô¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *    æ‚£è€…ãƒ»å˜ä½åˆ¥ç®—å®šå›žæ•°ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-DTCHK013-EDIT-SEC       SECTION.
       *
@@ -1183,7 +1183,7 @@
        2001111-DTCHK013-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¡¦Ã±°ÌÊÌ»»Äê²ó¿ô¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *    æ‚£è€…ãƒ»å˜ä½åˆ¥ç®—å®šå›žæ•°ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        2001112-DTCHK013-EDIT-SEC       SECTION.
       *
@@ -1215,7 +1215,7 @@
        2001112-DTCHK013-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»ÊÔ½¸½èÍý
+      *    ä¿é™ºçµ„åˆã›ç·¨é›†å‡¦ç†
       *****************************************************************
        20011111-HKNCOMBI-EDIT-SEC        SECTION.
       *
@@ -1242,7 +1242,7 @@
        20011111-HKNCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æ±ÆüºÆÆþ±¡¾ðÊóÂàÈòÎÎ°è½é´ü½èÍý
+      *    åŒæ—¥å†å…¥é™¢æƒ…å ±é€€é¿é ˜åŸŸåˆæœŸå‡¦ç†
       *****************************************************************
        2100-TDOJITSU-EDIT-SEC          SECTION.
       *
@@ -1270,7 +1270,7 @@
        2100-TDOJITSU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎòÂàÈòÎÎ°è½é´ü½èÍý
+      *    å…¥é™¢å±¥æ­´é€€é¿é ˜åŸŸåˆæœŸå‡¦ç†
       *****************************************************************
        2100-TNYUINRRK-EDIT-SEC         SECTION.
       *
@@ -1362,7 +1362,7 @@
        2100-TNYUINRRK-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎòÂàÈòÎÎ°è½é´ü½èÍý
+      *    å…¥é™¢å±¥æ­´é€€é¿é ˜åŸŸåˆæœŸå‡¦ç†
       *****************************************************************
        21001-TNYUINRRK-EDIT-SEC        SECTION.
       *
@@ -1421,7 +1421,7 @@
        21001-TNYUINRRK-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æ±ÆüºÆÆþ±¡¥Á¥§¥Ã¥¯½èÍý
+      *    åŒæ—¥å†å…¥é™¢ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        21011-DOJITSU-SAINYUIN-CHK-SEC     SECTION.
       *
@@ -1441,7 +1441,7 @@
        21011-DOJITSU-SAINYUIN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    »»Äê²ó¿ôÊÔ½¸½èÍý¡ÊÅÀ¿ô¥Þ¥¹¥¿¤è¤ê¡Ë
+      *    ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†ï¼ˆç‚¹æ•°ãƒžã‚¹ã‚¿ã‚ˆã‚Šï¼‰
       *****************************************************************
        20012-KAISU-EDIT-SEC            SECTION.
       *
@@ -1476,7 +1476,7 @@
        20012-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¡¦Ã±°ÌÊÌ»»Äê²ó¿ô¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *    æ‚£è€…ãƒ»å˜ä½åˆ¥ç®—å®šå›žæ•°ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        200121-DTCHK013-EDIT-SEC        SECTION.
       *
@@ -1484,12 +1484,12 @@
            MOVE    TNSCHK-JGNCNTERR    TO  WRK-JGNCNTERR
            MOVE    ZERO                TO  IDX4
       *
-      *    ·î
+      *    æœˆ
            IF    ( TNSCHK-JGNCNT          >  ZERO )
                MOVE    ZERO            TO  WRK-TSUKISU
                INITIALIZE                  MASTER-AREA
                MOVE    131             TO  MASTER-TANICD
-               MOVE    "·î"            TO  MASTER-TANINAME
+               MOVE    "æœˆ"            TO  MASTER-TANINAME
                MOVE    TNSCHK-JGNCNT     TO  MASTER-KAISU
       *
                IF    ( DCACCT-SRYKBN   =   "90" OR "92" )
@@ -1506,12 +1506,12 @@
                END-IF
            END-IF
       *
-      *    Æü
+      *    æ—¥
            IF    ( TNSCHK-JGNCNT1D       >   ZERO )
                MOVE    ZERO            TO  WRK-TSUKISU
                INITIALIZE                  MASTER-AREA
                MOVE    121             TO  MASTER-TANICD
-               MOVE    "Æü"            TO  MASTER-TANINAME
+               MOVE    "æ—¥"            TO  MASTER-TANINAME
                MOVE    TNSCHK-JGNCNT1D   TO  MASTER-KAISU
       *
                INITIALIZE                  DTCHK013-REC
@@ -1522,12 +1522,12 @@
                PERFORM 2001111-DTCHK013-EDIT-SEC
            END-IF
       *
-      *    ½µ
+      *    é€±
            IF    ( TNSCHK-JGNCNT1W       >   ZERO )
                MOVE    ZERO            TO  WRK-TSUKISU
                INITIALIZE                  MASTER-AREA
                MOVE    138             TO  MASTER-TANICD
-               MOVE    "½µ"            TO  MASTER-TANINAME
+               MOVE    "é€±"            TO  MASTER-TANINAME
                MOVE    TNSCHK-JGNCNT1W   TO  MASTER-KAISU
       *
                INITIALIZE              DTCHK013-REC
@@ -1540,14 +1540,14 @@
                PERFORM 2001111-DTCHK013-EDIT-SEC
            END-IF
       *
-      *    ´µ¼ÔÅö¤êor·î¥Õ¥ê¡¼
+      *    æ‚£è€…å½“ã‚Šoræœˆãƒ•ãƒªãƒ¼
            IF    ( TNSCHK-JGNCNTETCM     >   ZERO )
             AND  ( TNSCHK-JGNCNTETC      >   ZERO )
                IF    ( TNSCHK-JGNCNTETCM =   99 )
                    MOVE    ZERO        TO  WRK-TSUKISU
                    INITIALIZE              MASTER-AREA
                    MOVE    53          TO  MASTER-TANICD
-                   MOVE    "´µ¼ÔÅö¤ê"  TO  MASTER-TANINAME
+                   MOVE    "æ‚£è€…å½“ã‚Š"  TO  MASTER-TANINAME
                    MOVE    TNSCHK-JGNCNTETC
                                        TO  MASTER-KAISU
       *
@@ -1565,13 +1565,13 @@
                    IF    ( WRK-TSUKISU >=  10 )
                        MOVE    WRK-TSUKISU TO  WRK-TSUKISUZ2
                        STRING  WRK-TSUKISUZ2   DELIMITED BY SIZE
-                               "·î"            DELIMITED BY SIZE
+                               "æœˆ"            DELIMITED BY SIZE
                        INTO    WRK-KANACHK-STR
                        END-STRING
                    ELSE
                        MOVE    WRK-TSUKISU TO  WRK-TSUKISUZ1
                        STRING  WRK-TSUKISUZ1   DELIMITED BY SIZE
-                               "·î"            DELIMITED BY SIZE
+                               "æœˆ"            DELIMITED BY SIZE
                        INTO    WRK-KANACHK-STR
                        END-STRING
                    END-IF
@@ -1597,7 +1597,7 @@
        200121-DTCHK013-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-KAKO-KAISU-EDIT-SEC        SECTION.
       *
@@ -1612,14 +1612,14 @@
                MOVE    ZERO    TO  WRK-KAISU
       *
                EVALUATE    DTCHK013-TANICD
-      *        Æü
+      *        æ—¥
                WHEN   121
-      *        ·î
+      *        æœˆ
                WHEN   131
                    CONTINUE
-      *        Æþ±¡½éÆü
+      *        å…¥é™¢åˆæ—¥
                WHEN   132
-      *        Âà±¡»þ
+      *        é€€é™¢æ™‚
                WHEN   134
                    IF    ( DTCHK013-SRYSTYMD (1:6) <   ORCBSD01-SRYYM )
                     AND  ( DTCHK013-SRYYMD         =   "00000000" )
@@ -1628,27 +1628,27 @@
                            PERFORM 20012-KAKO-KAISU-EDIT-SEC
                        END-IF
                    END-IF
-      *        ´µ¼ÔÅö¤ê
+      *        æ‚£è€…å½“ã‚Š
                WHEN    53
-      *        Æþ±¡Ãæ
+      *        å…¥é™¢ä¸­
                WHEN   133
-      *        ½µ
+      *        é€±
                WHEN   138
-      *        £²½µ
+      *        ï¼’é€±
                WHEN   142
-      *        £²·î
+      *        ï¼’æœˆ
                WHEN   143
-      *        £³·î
+      *        ï¼“æœˆ
                WHEN   144
-      *        £´·î
+      *        ï¼”æœˆ
                WHEN   145
-      *        £¶·î
+      *        ï¼–æœˆ
                WHEN   146
-      *        £±£²·î
+      *        ï¼‘ï¼’æœˆ
                WHEN   147
-      *        £µÇ¯
+      *        ï¼•å¹´
                WHEN   148
-      *        ·î¡Ê¥Õ¥ê¡¼ÆþÎÏ¡Ë
+      *        æœˆï¼ˆãƒ•ãƒªãƒ¼å…¥åŠ›ï¼‰
                WHEN   901
                    IF    ( DTCHK013-SRYSTYMD (1:6) <   ORCBSD01-SRYYM )
                        PERFORM 20011-KAKO-KAISU-EDIT-SEC
@@ -1684,7 +1684,7 @@
        2001-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-KAKO-KAISU-EDIT-SEC       SECTION.
       *
@@ -1741,7 +1741,7 @@
        20011-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-KAKO-KAISU-EDIT-SEC      SECTION.
       *
@@ -1770,7 +1770,7 @@
        200111-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        200112-KAKO-KAISU-EDIT-SEC      SECTION.
       *
@@ -1803,7 +1803,7 @@
        200112-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        2001121-KAKO-KAISU-EDIT-SEC     SECTION.
       *
@@ -1836,7 +1836,7 @@
        2001121-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        20011211-KAKO-KAISU-EDIT-SEC     SECTION.
       *
@@ -1856,7 +1856,7 @@
        20011211-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        20012-KAKO-KAISU-EDIT-SEC      SECTION.
       *
@@ -1905,7 +1905,7 @@
        20012-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        200121-KAKO-KAISU-EDIT-SEC      SECTION.
       *
@@ -1925,7 +1925,7 @@
        200121-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ²áµî»»Äê²ó¿ôÊÔ½¸½èÍý
+      *    éŽåŽ»ç®—å®šå›žæ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        200122-KAKO-KAISU-EDIT-SEC      SECTION.
       *
@@ -1970,7 +1970,7 @@
        200122-KAKO-KAISU-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    »²¾È¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    å‚ç…§ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-REFMST-EDIT-SEC            SECTION.
       *
@@ -2027,7 +2027,7 @@
        2001-REFMST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»»»Äê¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    ä½µç®—å®šãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-CHKMST-EDIT-SEC           SECTION.
       *
@@ -2075,7 +2075,7 @@
        20011-CHKMST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»»»Äê¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    ä½µç®—å®šãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-CHKMST-EDIT-SEC           SECTION.
       *
@@ -2108,7 +2108,7 @@
        200111-CHKMST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥»µ­ºÜ¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    ãƒ¬ã‚»è¨˜è¼‰ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-RKISAI-EDIT-SEC           SECTION.
       *
@@ -2123,7 +2123,7 @@
        20011-RKISAI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥»µ­ºÜ¥Þ¥¹¥¿ÊÔ½¸½èÍý
+      *    ãƒ¬ã‚»è¨˜è¼‰ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-RKISAI-EDIT-SEC          SECTION.
       *
@@ -2158,7 +2158,7 @@
        200111-RKISAI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»»»Äê¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÔ½¸½èÍý¡ÊÅÅ»ÒÅÀ¿ôÉ½¤è¤ê¡Ë
+      *    ä½µç®—å®šãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†ï¼ˆé›»å­ç‚¹æ•°è¡¨ã‚ˆã‚Šï¼‰
       *****************************************************************
        20011211-CHKMST-EDIT-SEC       SECTION.
       *
@@ -2192,7 +2192,7 @@
        20011211-CHKMST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»»»Äê¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÊÔ½¸½èÍý¡ÊÅÅ»ÒÅÀ¿ôÉ½¤è¤ê¡Ë
+      *    ä½µç®—å®šãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ç·¨é›†å‡¦ç†ï¼ˆé›»å­ç‚¹æ•°è¡¨ã‚ˆã‚Šï¼‰
       *****************************************************************
        200113-CHKMST-EDIT-SEC          SECTION.
       *
@@ -2232,7 +2232,7 @@
        200113-CHKMST-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -2247,7 +2247,7 @@
                CLOSE   DTCHKERR-FILE
       *
              IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -2267,7 +2267,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -2280,7 +2280,7 @@
                                        DTCHK019-FILE
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -2299,7 +2299,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥«¥ì¥ó¥À¡¼½èÍý
+      *    ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å‡¦ç†
       *****************************************************************
        800-CALENDAR-SEC               SECTION.
       *
@@ -2317,7 +2317,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ÍËÆü¼èÆÀ½èÍý(1:ÆüÍËÆü...7:ÅÚÍËÆü¡Ë
+      *    æ›œæ—¥å–å¾—å‡¦ç†(1:æ—¥æ›œæ—¥...7:åœŸæ›œæ—¥ï¼‰
       *****************************************************************
        800-DOW-SEC                     SECTION.
       *
@@ -2374,7 +2374,7 @@
        800-DOW-EXT.
            EXIT.
       *****************************************************************
-      *    ·îËöÆü¼èÆÀ½èÍý
+      *    æœˆæœ«æ—¥å–å¾—å‡¦ç†
       *****************************************************************
        800-GETUMATU-SEC      SECTION.
       *
@@ -2390,7 +2390,7 @@
        800-GETUMATU-EXT.
             EXIT.
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ã‚µãƒ–
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -2407,7 +2407,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    Á´³ÑÊÑ´¹½èÍý
+      *    å…¨è§’å¤‰æ›å‡¦ç†
       *****************************************************************
        800-ZENKAKU-SEC                 SECTION.
       *
@@ -2423,7 +2423,7 @@
        800-ZENKAKU-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -2434,7 +2434,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾¼èÆÀ
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åå–å¾—
       *****************************************************************
        800-ORCSGETTEMP-SEC             SECTION.
       *
@@ -2447,7 +2447,7 @@
        800-ORCSGETTEMP-EXT.
             EXIT.
       *****************************************************************
-      *    ÂÐ¾Ý´µ¼Ô¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    å¯¾è±¡æ‚£è€…ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK003-READ-SEC           SECTION.
       *
@@ -2465,7 +2465,7 @@
        900-DTCHK003-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×START½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆSTARTå‡¦ç†
       *****************************************************************
        900-DCACCT-START-SEC             SECTION.
       *
@@ -2486,7 +2486,7 @@
        900-DCACCT-START-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×ÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆèª­è¾¼å‡¦ç†
       *****************************************************************
        900-DCACCT-READ-SEC             SECTION.
       *
@@ -2545,7 +2545,7 @@
        900-DCACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°ÙSTART½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚ºSTARTå‡¦ç†
       *****************************************************************
        900-DCSRY-START-SEC             SECTION.
       *
@@ -2568,7 +2568,7 @@
        900-DCSRY-START-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°ÙÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚ºèª­è¾¼å‡¦ç†
       *****************************************************************
        900-DCSRY-READ-SEC              SECTION.
       *
@@ -2609,7 +2609,7 @@
        900-DCSRY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×START½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆSTARTå‡¦ç†
       *****************************************************************
        901-DCACCT-START-SEC             SECTION.
       *
@@ -2630,7 +2630,7 @@
        901-DCACCT-START-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ²ñ·×ÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚ä¼šè¨ˆèª­è¾¼å‡¦ç†
       *****************************************************************
        901-DCACCT-READ-SEC             SECTION.
       *
@@ -2662,7 +2662,7 @@
        901-DCACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°ÙSTART½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚ºSTARTå‡¦ç†
       *****************************************************************
        901-DCSRY-START-SEC             SECTION.
       *
@@ -2685,7 +2685,7 @@
        901-DCSRY-START-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°ÙÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚ºèª­è¾¼å‡¦ç†
       *****************************************************************
        901-DCSRY-READ-SEC              SECTION.
       *
@@ -2720,7 +2720,7 @@
        901-DCSRY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¿ÇÎÅ¹Ô°ÙÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯è¨ºç™‚è¡Œç‚ºèª­è¾¼å‡¦ç†
       *****************************************************************
        902-DCSRY-READ-SEC              SECTION.
       *
@@ -2739,7 +2739,7 @@
        902-DCSRY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÅ»ÒÅÀ¿ôÉ½¡Ý»»Äê²ó¿ô¡ËÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆé›»å­ç‚¹æ•°è¡¨âˆ’ç®—å®šå›žæ•°ï¼‰èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK013-READ-SEC           SECTION.
       *
@@ -2760,7 +2760,7 @@
        900-DTCHK013-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡ÊÅÅ»ÒÅÀ¿ôÉ½¡Ý»»Äê²ó¿ô¡ËÆÉ¹þ½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆé›»å­ç‚¹æ•°è¡¨âˆ’ç®—å®šå›žæ•°ï¼‰èª­è¾¼å‡¦ç†
       *****************************************************************
        901-DTCHK013-READ-SEC           SECTION.
       *
@@ -2794,7 +2794,7 @@
        901-DTCHK013-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -2819,7 +2819,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY17-SEL-SEC        SECTION.
       *
@@ -2845,7 +2845,7 @@
        900-PTNYUINRRK-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎòFETCH½èÍý
+      *    å…¥é™¢å±¥æ­´FETCHå‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY17-FET-SEC        SECTION.
       *
@@ -2880,7 +2880,7 @@
        900-PTNYUINRRK-KEY17-FET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY60-SEL-SEC        SECTION.
       *
@@ -2905,7 +2905,7 @@
        900-PTNYUINRRK-KEY60-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎòFETCH½èÍý
+      *    å…¥é™¢å±¥æ­´FETCHå‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY60-FET-SEC        SECTION.
       *
@@ -2926,7 +2926,7 @@
        900-PTNYUINRRK-KEY60-FET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY38-SEL-SEC        SECTION.
       *
@@ -2950,7 +2950,7 @@
        900-PTNYUINRRK-KEY38-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎòFETCH½èÍý
+      *    å…¥é™¢å±¥æ­´FETCHå‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY38-FET-SEC        SECTION.
       *
@@ -2971,7 +2971,7 @@
        900-PTNYUINRRK-KEY38-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-CHK-KEY2-SEL-SEC        SECTION.
       *
@@ -2998,7 +2998,7 @@
        900-CHK-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿FETCH½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿FETCHå‡¦ç†
       *****************************************************************
        900-CHK-KEY2-FET-SEC        SECTION.
       *
@@ -3018,7 +3018,7 @@
        900-CHK-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡Ë¥Õ¥¡¥¤¥ëSTART½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰ãƒ•ã‚¡ã‚¤ãƒ«STARTå‡¦ç†
       *****************************************************************
        900-DTCHK014-START-SEC          SECTION.
       *
@@ -3043,7 +3043,7 @@
        900-DTCHK014-START-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡Ë¥Õ¥¡¥¤¥ëSTART½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰ãƒ•ã‚¡ã‚¤ãƒ«STARTå‡¦ç†
       *****************************************************************
        9001-DTCHK014-START-SEC          SECTION.
       *
@@ -3078,8 +3078,8 @@
                END-START
            ELSE
       *
-      *        ÆÉ¤ßÈô¤Ð¤·ÍÑ¤Î¥À¥ß¡¼¥Ç¡¼¥¿ºîÀ®
-      *        ¡Ê£Ä£Â¸¡º÷²óÈòÍÑ¡Ë
+      *        èª­ã¿é£›ã°ã—ç”¨ã®ãƒ€ãƒŸãƒ¼ãƒ‡ãƒ¼ã‚¿ä½œæˆ
+      *        ï¼ˆï¼¤ï¼¢æ¤œç´¢å›žé¿ç”¨ï¼‰
                INITIALIZE                  DTCHK014-KEY
                MOVE    DCSRY-SRYCD     TO  DTCHK014-SRYCD
                MOVE    "00000000"      TO  DTCHK014-YUKOSTYMD
@@ -3096,7 +3096,7 @@
        9001-DTCHK014-START-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡Ë¥Õ¥¡¥¤¥ëREAD½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰ãƒ•ã‚¡ã‚¤ãƒ«READå‡¦ç†
       *****************************************************************
        900-DTCHK014-READ-SEC           SECTION.
       *
@@ -3139,7 +3139,7 @@
        900-DTCHK014-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡Ë¸¡º÷½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-ETENSU5-KEY3-SEL-SEC        SECTION.
       *
@@ -3165,7 +3165,7 @@
        900-ETENSU5-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡Ê»»Äê²ó¿ô¡ËFETCH½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆç®—å®šå›žæ•°ï¼‰FETCHå‡¦ç†
       *****************************************************************
        900-ETENSU5-KEY3-FET-SEC        SECTION.
       *
@@ -3186,7 +3186,7 @@
        900-ETENSU5-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÊä½õ¡Ë¸¡º÷½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆè£œåŠ©ï¼‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-ETENSU1-KEY-SEL-SEC         SECTION.
       *
@@ -3216,7 +3216,7 @@
        900-ETENSU1-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÊñ³ç¡Ë¸¡º÷½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆåŒ…æ‹¬ï¼‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-ETENSU2-KEY2-SEL-SEC        SECTION.
       *
@@ -3242,7 +3242,7 @@
        900-ETENSU2-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÊñ³ç¡ËFETCH½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆåŒ…æ‹¬ï¼‰FETCHå‡¦ç†
       *****************************************************************
        900-ETENSU2-KEY2-FET-SEC        SECTION.
       *
@@ -3263,7 +3263,7 @@
        900-ETENSU2-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÇØÈ¿¡Ë¸¡º÷½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆèƒŒåï¼‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-ETENSU3-SEL-SEC             SECTION.
       *
@@ -3289,7 +3289,7 @@
        900-ETENSU3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½¡ÊÇØÈ¿¡ËFETCH½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨ï¼ˆèƒŒåï¼‰FETCHå‡¦ç†
       *****************************************************************
        900-ETENSU3-FET-SEC             SECTION.
       *
@@ -3325,7 +3325,7 @@
        900-ETENSU3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¸¡º÷½èÍý
+      *    è¨ºç™‚è¡Œç‚ºæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SRYACT-KEY20-SEL-SEC        SECTION.
       *
@@ -3359,7 +3359,7 @@
        900-SRYACT-KEY20-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°ÙFETCH½èÍý
+      *    è¨ºç™‚è¡Œç‚ºFETCHå‡¦ç†
       *****************************************************************
        900-SRYACT-KEY20-FET-SEC        SECTION.
       *
@@ -3379,7 +3379,7 @@
        900-SRYACT-KEY20-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¸¡º÷½èÍý
+      *    è¨ºç™‚ä¼šè¨ˆæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SRYACCT-KEY57-SEL-SEC       SECTION.
       *
@@ -3408,7 +3408,7 @@
        900-SRYACCT-KEY57-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñ¸¡º÷½èÍý
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºç…§ä¼šæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-NSRYSRH-KEY2-SEL-SEC        SECTION.
       *
@@ -3436,7 +3436,7 @@
        900-NSRYSRH-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¾È²ñFETCH½èÍý
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºç…§ä¼šFETCHå‡¦ç†
       *****************************************************************
        900-NSRYSRH-KEY2-FET-SEC        SECTION.
       *
@@ -3455,7 +3455,7 @@
        900-NSRYSRH-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¾È²ñ¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´ç…§ä¼šæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-NRRKSRH-KEY3-SEL-SEC        SECTION.
       *
@@ -3482,7 +3482,7 @@
        900-NRRKSRH-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¾È²ñFETCH½èÍý
+      *    å…¥é™¢å±¥æ­´ç…§ä¼šFETCHå‡¦ç†
       *****************************************************************
        900-NRRKSRH-KEY3-FET-SEC        SECTION.
       *
@@ -3502,7 +3502,7 @@
        900-NRRKSRH-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ôÉÕ²Ã¸¡º÷½èÍý
+      *    ç‚¹æ•°ä»˜åŠ æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-TENSUPLUS-KEY-SEL-SEC       SECTION.
       *
@@ -3553,7 +3553,7 @@
        900-TENSUPLUS-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ôÉÕ²ÃÆÉ¹þ½èÍý
+      *    ç‚¹æ•°ä»˜åŠ èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK015-READ-SEC           SECTION.
       *
@@ -3573,7 +3573,7 @@
        900-DTCHK015-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¸¡º÷½èÍý
+      *    ç‚¹æ•°æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-TENSU-KEY-SEL-SEC       SECTION.
       *
@@ -3627,7 +3627,7 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ôÆÉ¹þ½èÍý
+      *    ç‚¹æ•°èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK016-READ-SEC           SECTION.
       *
@@ -3647,7 +3647,7 @@
        900-DTCHK016-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¸¡º÷½èÍý
+      *    ä¿é™ºçµ„åˆã›æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-HKNCOMBI-KEY-SEL-SEC        SECTION.
       *
@@ -3695,7 +3695,7 @@
        900-HKNCOMBI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥»µ­ºÜ¸¡º÷½èÍý
+      *    ãƒ¬ã‚»è¨˜è¼‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-RECEKISAI-KEY5-SEL-SEC      SECTION.
       *
@@ -3720,7 +3720,7 @@
        900-NRRKSRH-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¾È²ñFETCH½èÍý
+      *    å…¥é™¢å±¥æ­´ç…§ä¼šFETCHå‡¦ç†
       *****************************************************************
        900-RECEKISAI-KEY5-FET-SEC      SECTION.
       *
@@ -3757,7 +3757,7 @@
        900-RECEKISAI-KEY5-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»ÆÉ¹þ½èÍý
+      *    ä¿é™ºçµ„åˆã›èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK017-READ-SEC           SECTION.
       *
@@ -3776,7 +3776,7 @@
        900-DTCHK017-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿ÆÉ¹þ½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿èª­è¾¼å‡¦ç†
       *****************************************************************
        900-DTCHK018-READ-SEC           SECTION.
       *
@@ -3799,7 +3799,7 @@
        900-DTCHK018-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ï¼‰
       *****************************************************************
        900-DTCHK019-READ-SEC           SECTION.
       *
@@ -3816,7 +3816,7 @@
        900-DTCHK019-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯Ãæ´Ö¥Õ¥¡¥¤¥ë¡Ê¥³¥á¥ó¥È´ØÏ¢¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆé–¢é€£ï¼‰
       *****************************************************************
        900-DTCHK022-READ-SEC           SECTION.
       *
@@ -3833,7 +3833,7 @@
        900-DTCHK022-READ-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3851,7 +3851,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤ò¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚’è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -3866,7 +3866,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -3881,7 +3881,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -3896,7 +3896,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *    ï¼¤ï¼¢ï¼µï¼°ï¼¤ï¼¡ï¼´ï¼¥å‡¦ç†
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -3908,7 +3908,7 @@
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼©ï¼®ï¼³ï¼¥ï¼²ï¼´å‡¦ç†
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -3920,7 +3920,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£Ó£Ô£Á£Ò£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼´ï¼¡ï¼²ï¼´å‡¦ç†
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
@@ -3938,7 +3938,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Ã£Ï£Í£Í£É£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼£ï¼¯ï¼­ï¼­ï¼©ï¼´å‡¦ç†
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *

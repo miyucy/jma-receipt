@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCDTCKMAIN.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : ���̳���ǡ��������å���ץ�
-      *                    : �ꥢ�륿����ץ�ӥ塼��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    NACL�����ġ�����������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 月次業務　データチェック主プロ
+      *                    : リアルタイムプレビュー用
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    NACL−竹田　　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *
       *****************************************************************
       *
@@ -36,23 +36,23 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  DTCHKPRM-FILE   ASSIGN          ASS-DTCHKPRM
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                    DIVISION.
        FILE                            SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  DTCHKPRM-FILE.
            COPY    "CPORCBSD01PARA.INC"
                        REPLACING  //ORCBSD01PARA// BY //DTCHKPRM-REC//
                                   //ORCBSD01-//    BY //DTCHKPRM-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
       *
@@ -60,12 +60,12 @@
       *
        01  LNK-TIMEOFDAY       PIC X(100).
       *
-      *    �ѥ�᡼���ե�����̾
+      *    パラメータファイル名
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //ASS-DTCHKPRM//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
@@ -73,7 +73,7 @@
        01  STS-AREA.
            03  STS-DTCHKERR                            PIC X(02).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  FLG-AREA.
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYUMEI                              PIC 9(01).
@@ -86,7 +86,7 @@
            03  FLG-PTCOM                               PIC 9(01).
            03  FLG-PRVKANRI                            PIC 9(01).
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-ARG                                 PIC X(4096).
@@ -106,89 +106,89 @@
            03  WRK-PARA-HKNKBN     PIC X(01).
            03  WRK-PARA-PTID       PIC 9(10).
       *
-      *    �ǡ��������å��������ѥ�᡼��
+      *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1005.INC".
       *
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
       *
-      *    ��Ǽ
+      *    収納
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ����
+      *    収納明細
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    ��Ǽ��ץޥ���
+      *    収納合計マスタ
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ��������ޥ���
+      *    受診履歴マスタ
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ��ץޥ���
+      *    会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ����ղþ���ޥ���
+      *    会計付加情報マスタ
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ���Ź԰٥ޥ���
+      *    診療行為マスタ
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ����ޥ���
+      *    算定マスタ
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ���Ų�����ޥ���
+      *    診療科履歴マスタ
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    ���ԥ����ȥޥ���
+      *    患者コメントマスタ
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ץ�ӥ塼�����ޥ���
+      *    プレビュー管理マスタ
            COPY    "CPPRVKANRI.INC".
-      *    �����å��ޥ�����
+      *    チェックマスタ４
            COPY    "CPCHK004.INC".
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -203,7 +203,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -215,7 +215,7 @@
       *    STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -226,7 +226,7 @@
       *
            MOVE    SPACE           TO  RECEERR
       *
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED BY ","
@@ -292,14 +292,14 @@
            CLOSE   DTCHKERR-FILE
       *
            PERFORM 20010-PRVDATA-DEL-SEC
-      *    ����ʬ���(¸�ߤ����)
+      *    前回分削除(存在すれば)
            PERFORM 200101-PRVDATA-DEL-SEC
-      *    ��ö COMMIT 
+      *    一旦 COMMIT 
            PERFORM 900-DBCOMMIT-SEC
       *
       *  
            PERFORM 100-DBOPEN-SEC
-      *    CHK004 ���ߡ�����
+      *    CHK004 ダミー作成
            PERFORM 20011-CHK004-DB-MAKE-SEC
       *
            .
@@ -307,7 +307,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -318,7 +318,7 @@
            PERFORM 2001-DTCHK-PARA-SEC
       *
            IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
-      *    �ģ¥����ץ����(�⤦��������)
+      *    ＤＢオープン処理(もう少し整理)
                    PERFORM 100-DBOPEN-SEC
                    PERFORM 20011-TMPDB-DELETE-SEC
                    PERFORM 900-DBCOMMIT-SEC
@@ -329,7 +329,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ݡ��������˽���
+      *    医保（入院外）処理
       *****************************************************************
        2001-DTCHK-PARA-SEC                 SECTION.
       *
@@ -441,7 +441,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ʬ���(¸�ߤ����)
+      *    前回分削除(存在すれば)
       *****************************************************************
        20010-PRVDATA-DEL-SEC         SECTION.
       *
@@ -469,7 +469,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ʬ���(¸�ߤ����)
+      *    前回分削除(存在すれば)
       *****************************************************************
        200101-PRVDATA-DEL-SEC        SECTION.
       *
@@ -497,7 +497,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(��Ǽ)
+      *    実ＤＢ更新処理(収納)
       *****************************************************************
        20011-SYUNOU-DB-MAKE-SEC      SECTION.
            EVALUATE    SYU-CREYMD
@@ -522,7 +522,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(��Ǽ����)
+      *    実ＤＢ更新処理(収納明細)
       *****************************************************************
        20011-SYUMEI-DB-MAKE-SEC      SECTION.
            EVALUATE    SMEI-CREYMD
@@ -547,7 +547,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(��Ǽ�ȡ�����)
+      *    実ＤＢ更新処理(収納トータル)
       *****************************************************************
        20011-SYUTOTAL-DB-MAKE-SEC      SECTION.
            EVALUATE    SYUTTL-CREYMD
@@ -575,7 +575,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(���)
+      *    実ＤＢ更新処理(会計)
       *****************************************************************
        20011-SRYACCT-DB-MAKE-SEC      SECTION.
            EVALUATE    ACCT-CREYMD
@@ -604,7 +604,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(��������)
+      *    実ＤＢ更新処理(受診履歴)
       *****************************************************************
        20011-JYURRK-DB-MAKE-SEC      SECTION.
            EVALUATE    JYURRK-CREYMD
@@ -629,7 +629,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(���ԥ�����)
+      *    実ＤＢ更新処理(患者コメント)
       *****************************************************************
        20011-PTCOM-DB-MAKE-SEC      SECTION.
            EVALUATE    PTCOM-CREYMD
@@ -659,10 +659,10 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������
+      *    実ＤＢ更新処理
       *****************************************************************
        20011-REAL-DB-DELETE-SEC      SECTION.
-      *����������
+      *受診履歴削除
            DISPLAY "real db(jyurrk) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
@@ -678,7 +678,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            DISPLAY "real db(jyurrk) delete ed  "
                    " "  LNK-TIMEOFDAY(1:20)
-      *���Ų�׺��
+      *診療会計削除
            DISPLAY "real db(sryacct) delete st  "
                    " "  LNK-TIMEOFDAY(1:20)
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
@@ -695,7 +695,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 200111-REAL-SRYACY-DB-DELETE2-SEC
            DISPLAY "real db(sryact) del ed  "
                    " "  LNK-TIMEOFDAY(1:20)
-      *����������
+      *算定履歴削除
            DISPLAY "real db(santei) del ed  "
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      SANTEI-PTID
@@ -710,7 +710,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������
+      *    実ＤＢ更新処理
       *****************************************************************
        200111-REAL-SRYACY-DB-DELETE2-SEC   SECTION.
       *
@@ -749,7 +749,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������(�����å��ޥ�����)
+      *    実ＤＢ更新処理(チェックマスタ４)
       *****************************************************************
        20011-CHK004-DB-MAKE-SEC        SECTION.
            DISPLAY "chk004 org delete start"
@@ -783,16 +783,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �£ģ¹�������
+      *    実ＤＢ更新処理
       *****************************************************************
        20011-REAL-DB-MAKE-SEC        SECTION.
            DISPLAY "real db make st  "
                    " "  LNK-TIMEOFDAY(1:20)
            PERFORM 20011-REAL-DB-DELETE-SEC
-      *��Ǽ�ޥ����ط��ϡ���ô���ΤƤ�Ȥ������Ȥǰ�������ȥ�����
-      *�� â������Ǽ��ۤ򸫤���ô���ֹ�νФ�����򤷤Ƥ���Τ�̵��
-      *   ����롣(�ɤ�����)
-      *��Ǽ�ޥ���
+      *収納マスタ関係は、負担金を捨てるということで一時コメントアウト
+      *※ 但し、収納金額を見て負担者番号の出し入れをしているのも無視
+      *   される。(どうする)
+      *収納マスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYU-HOSPNUM
       **   MOVE    ORCBSD01-NYUGAIKBN   TO      SYU-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -824,7 +824,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **   END-IF
       *
       *--------------------------------------------------
-      *��Ǽ���٥ޥ���
+      *収納明細マスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SMEI-HOSPNUM
       **   MOVE    ORCBSD01-NYUGAIKBN   TO      SMEI-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -857,7 +857,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *--------------------------------------------------
       *--------------------------------------------------
-      *��Ǽ�ȡ�����ޥ���
+      *収納トータルマスタ
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYUTTL-HOSPNUM
       **   MOVE    ORCBSD01-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -889,7 +889,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **   END-IF
       *
       *--------------------------------------------------
-      *��ץޥ���
+      *会計マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      ACCT-PTID
@@ -915,12 +915,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
            MOVE    "key40"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *���Ź԰٥ޥ���
+      *診療行為マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      SRY-PTID
@@ -949,12 +949,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
            MOVE    "key12"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *��������ޥ���
+      *算定履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    ORCBSD01-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
@@ -984,12 +984,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_santei_prv"     TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *��������ޥ���
+      *受診履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      JYURRK-PTID
@@ -1015,12 +1015,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
            MOVE    "key30"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *���Ų�����ޥ���
+      *診療科履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
@@ -1057,12 +1057,12 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *���ԥ����ȥޥ���
+      *患者コメントマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
@@ -1115,7 +1115,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PARA-PTID
            END-IF
       *--------------------------------------------------
-      * �� DBCLOSECURSOR
+      * ★ DBCLOSECURSOR
            MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
            MOVE    "key3"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
@@ -1128,7 +1128,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ɹ�
+      *    収納読込
       *****************************************************************
        900-SYUNOUPRV-READ-SEC           SECTION.
       *
@@ -1146,7 +1146,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�����ɹ�
+      *    収納明細読込
       *****************************************************************
        900-SYUMEIPRV-READ-SEC           SECTION.
       *
@@ -1164,7 +1164,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ȡ������ɹ�
+      *    収納トータル読込
       *****************************************************************
        900-SYUTTLPRV-READ-SEC           SECTION.
       *
@@ -1182,7 +1182,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ɹ�
+      *    会計読込
       *****************************************************************
        900-ACCTPRV-READ-SEC            SECTION.
       *
@@ -1200,7 +1200,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰��ɹ�
+      *    診療行為読込
       *****************************************************************
        900-ACTPRV-READ-SEC             SECTION.
       *
@@ -1218,7 +1218,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ�
+      *    受診履歴読込
       *****************************************************************
        900-JYURRKPRV-READ-SEC          SECTION.
       *
@@ -1236,7 +1236,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ�
+      *    算定履歴読込
       *****************************************************************
        900-SANTEIPRV-READ-SEC          SECTION.
       *
@@ -1254,7 +1254,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ų������ɹ�
+      *    診療科履歴読込
       *****************************************************************
        900-SRYKARRKPRV-READ-SEC        SECTION.
       *
@@ -1272,7 +1272,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ������ɹ�
+      *    患者コメント読込
       *****************************************************************
        900-PTCOMPRV-READ-SEC           SECTION.
       *
@@ -1290,7 +1290,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����DB��������
+      *    本体DB更新処理
       *****************************************************************
        900-REALDB-INS-SEC            SECTION.
       *
@@ -1305,10 +1305,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ƥ�ݥ��DB�������
+      *    テンポラリDB削除処理
       *****************************************************************
        20011-TMPDB-DELETE-SEC        SECTION.
-      *��Ǽ�ޥ���
+      *収納マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      SYU-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      SYU-PTID
@@ -1321,7 +1321,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
-      *��Ǽ���٥ޥ���
+      *収納明細マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      SMEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      SMEI-PTID
@@ -1332,7 +1332,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
            DISPLAY "take tmp db delete syumei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *��Ǽ�ȡ�����ޥ���
+      *収納トータルマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      SYUTTL-PTID
@@ -1343,7 +1343,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
-      *��ץޥ���
+      *会計マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      ACCT-PTID
@@ -1354,7 +1354,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            DISPLAY "take tmp db delete acct st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *���Ź԰٥ޥ���
+      *診療行為マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      SRY-PTID
@@ -1365,7 +1365,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            DISPLAY "take tmp db delete act st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *��������ޥ���
+      *算定履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    ORCBSD01-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
@@ -1377,7 +1377,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
            DISPLAY "take tmp db delete santei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *��������ޥ���
+      *受診履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      JYURRK-PTID
@@ -1388,7 +1388,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            DISPLAY "take tmp db delete jyurr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *���Ų�����ޥ���
+      *診療科履歴マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      KARRK-PTID
            MOVE    SRYKARRK-REC         TO      MCPDATA-REC
@@ -1398,7 +1398,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            DISPLAY "take tmp db delete srykarr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *���ԥ����ȥޥ���
+      *患者コメントマスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      PTCOM-PTID
            MOVE    PTCOM-REC            TO      MCPDATA-REC
@@ -1408,7 +1408,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            DISPLAY "take tmp db delete ptcom st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *���ԥޥ���
+      *患者マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      PTINF-PTID
            MOVE    PTINF-REC            TO      MCPDATA-REC
@@ -1417,7 +1417,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete ptinf st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
-      *���Ź԰��ղþ���ޥ���
+      *診療行為付加情報マスタ
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
            MOVE    ORCBSD01-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      ACCTP-PTID
@@ -1434,7 +1434,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ���������ģ��ɤ߹���
+      *     印刷管理ＤＢ読み込み
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
@@ -1450,7 +1450,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1461,7 +1461,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1473,7 +1473,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1485,7 +1485,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1498,7 +1498,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1516,7 +1516,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
@@ -1534,7 +1534,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        900-DBCOMMIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

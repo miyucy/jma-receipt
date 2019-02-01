@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¤ªÌô¼êÄ¢¥Ç¡¼¥¿Ï¢·È      COPY (CPOKUSURIKANRI.INC)     *
+      *    ãŠè–¬æ‰‹å¸³ãƒ‡ãƒ¼ã‚¿é€£æº      COPY (CPOKUSURIKANRI.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  OKUSURI-KANRI-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  OKUKAN-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  OKUKAN-HOSPNUM           PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  OKUKAN-PTID              PIC  9(10).
-      *Ä´ºÞÆü
+      *èª¿å‰¤æ—¥
                05  OKUKAN-SRYYMD            PIC  X(08).
-      *°åÎÅµ¡´Ø¥³¡¼¥É
+      *åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
                05  OKUKAN-HOSPCD            PIC  X(07).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  OKUKAN-RENNUM            PIC  9(03).
-      *´µ¼Ô»áÌ¾
+      *æ‚£è€…æ°å
            03  OKUKAN-NAME                  PIC  X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
            03  OKUKAN-SEX                   PIC  X(1).
-      *À¸Ç¯·îÆü
+      *ç”Ÿå¹´æœˆæ—¥
            03  OKUKAN-BIRTHDAY              PIC  X(8).
-      *°åÎÅµ¡´ØÌ¾
+      *åŒ»ç™‚æ©Ÿé–¢å
            03  OKUKAN-HOSPNAME              PIC  X(200).
-      *¥Ç¡¼¥¿¥­¡¼
+      *ãƒ‡ãƒ¼ã‚¿ã‚­ãƒ¼
            03  OKUKAN-DATA-KEY              PIC  9(16).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  OKUKAN-TERMID                PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  OKUKAN-OPID                  PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  OKUKAN-CREYMD                PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  OKUKAN-UPYMD                 PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  OKUKAN-UPHMS                 PIC  X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,19 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       **************************************************************
-      *         Å¬±þÉÂÌ¾°åÌôÉÊ¥Þ¥¹¥¿  COPY (CPTEKIOU-MEDICINE.INC) *
+      *         é©å¿œç—…ååŒ»è–¬å“ãƒžã‚¹ã‚¿  COPY (CPTEKIOU-MEDICINE.INC) *
       **************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TEKIOU-MEDICINE-REC.
            03  TEKMED-KEY.
-      *¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  TEKMED-SRYCD        PIC X(09).
-      *¸úÇ½¥³¡¼¥É
+      *åŠ¹èƒ½ã‚³ãƒ¼ãƒ‰
            03  TEKMED-KONOCD           PIC X(05).
-      *²þÄûÇ¯·î
+      *æ”¹è¨‚å¹´æœˆ
            03  TEKMED-KAITEIYM         PIC X(06).
       *
            03  TEKMED-CREYMD           PIC X(08).

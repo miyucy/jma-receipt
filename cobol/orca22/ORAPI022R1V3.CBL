@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI022R1V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    :  APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ������̾��Ͽ(xml2)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/02/06    NACL��ƣ��    ��������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    :  API連携用モジュール
+      *  コンポーネント名  : 患者病名登録(xml2)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/02/06    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.00.01    NACL-ƣ��    17/08/03  ��­�����Ȥ�������ˡ����
-      *  05.00.02    NACL-ƣ��    17/08/31  ��­�����ȤΥ����å�����
-      *  05.00.03    NACL-ƣ��    18/08/21  ��̾����ε����ե饰������
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    17/08/03  補足コメントの設定方法修正
+      *  05.00.02    NACL-藤原    17/08/31  補足コメントのチェック修正
+      *  05.00.03    NACL-藤原    18/08/21  病名からの疑いフラグの設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,7 +41,7 @@
        FILE                        SECTION.
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -55,11 +55,11 @@
       *
            03  FLG-HOSOKU-CHK      PIC 9(01).
       *
-      *    0:���� 1:���顼  2:ñ����̾���顼
-      *    3:�����ɽ票�顼 4:������Τ�
-      *    5:̤�����ɲ�����̾������
-      *    6:ñ����̾���顼����̾��
-      *    9:Ʊ����̾��ʣ
+      *    0:正常 1:エラー  2:単独病名エラー
+      *    3:コード順エラー 4:修飾語のみ
+      *    5:未コード化傷病名コード
+      *    6:単独病名エラー（病名）
+      *    9:同一病名重複
            03  FLG-BYOMEI-CHK      PIC 9(01).
            03  FLG-BYOMEI-DELETE   PIC 9(01).
       *
@@ -71,7 +71,7 @@
            03  FLG-BYOMEI-HEN      PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -88,13 +88,13 @@
            03  PTBYOMEI-HKNCOMBI-CNT
                                    PIC 9(02).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT             PIC 9(04).
            03  CNT-DIAG            PIC 9(04).
            03  CNT-DELETE          PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SMCNDATE-DATE   PIC X(10).
            03  WRK-SMCNDATE-TIME   PIC X(08).
@@ -205,9 +205,9 @@
       *
            03  WRK-COL             PIC 9(03).
       *
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（疑い）
            03  WRK-HENFLG1         PIC X(01).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（急性）
            03  WRK-HENFLG2         PIC X(01). 
       *
            03  WRK-SYMD.
@@ -220,7 +220,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -231,7 +231,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-WARNING             PIC X(03).
@@ -262,7 +262,7 @@
                05 WRK-DISEASEQ-INSURANCE-CLASS
                                            PIC X(01).
       *
-      *    �ݸ��ȹ礻���軰�Թ԰ٽ�ʣ�����å��ѥ��ꥢ
+      *    保険組合せ、第三者行為重複チェック用エリア
        01  WRK-CHK-HKNCOMBI-AREA.
            02  WRK-CHK-HKNCOMBI1   PIC 9(04).
            02  WRK-CHK-HKNCOMBI2   PIC 9(04).
@@ -286,129 +286,129 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-HDD         PIC 9(02).
       *
-      *    �Ǿ����Ų���̾����
+      *    最小診療科病名情報
        01  WRK-PTBYOMEI-SRYKA-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //WRK-PTBYO-SRYKA//.
       *
-      *    ��̾��������å�
+      *    病名情報チェック
        01  CHK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //CHK-PTBYO//.
-      *    Ʊ����̾����ʿ��Ųʡ�������ʬ���ݸ��ȹ礻��
+      *    同一病名情報（診療科、入外区分、保険組合せ）
        01  OK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //OK-PTBYO//.
       *
-      *    �����о���̾����
+      *    更新対象病名情報
        01  WRK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"  REPLACING  //PTBYO//
                                      BY         //WRK-PTBYO//.
       *
        01  WRK-CONS-AREA.
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
       *
-      *    ̤�����ɲ�����̾������
+      *    未コード化傷病名コード
            03  WRK-CONS-BYOMEICD   PIC X(07)   VALUE   "0000999".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK1009.INC".
       *
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
       *
-      *    ��̾
+      *    病名
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    ������̾
+      *    自院病名
        01  USERBYOMEI-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
-      *    Ʊ����
+      *    同義語
        01  SYNONYM-REC.
            COPY    "CPSYNONYM.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *   ���������Ѵ�����
+      *   画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
            COPY    "MCPDATA.INC".
       *
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ��ĥ���������å�����
+      *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
-      *    ��̾�����ɸ�������
+      *    病名コード検索サブ
            COPY    "CPORCSBYOMEI.INC".
       *
-      *    ��̾��Ω����
+      *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPDISEASEV2REQ.INC".
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPDISEASEV2RES.INC".
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
            COPY    "MCPDATA2.INC".
       *
            COPY    "ORCA-BLOB".
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -426,7 +426,7 @@
                                                SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -440,19 +440,19 @@
            INITIALIZE                      CNT-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
       *
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "999"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
            END-IF
       *
@@ -464,11 +464,11 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    �ޥ������ռ���
+      *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -488,7 +488,7 @@
            MOVE    WRK-SMCNDATE-DATE   TO  DISEASES-INFORMATION-DATE
            MOVE    WRK-SMCNDATE-TIME   TO  DISEASES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å�
+      *    医療機関識別番号セット
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -498,7 +498,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -512,7 +512,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �����ƥ���������ʴ����ֹ湽�����������
+      *    システム管理取得（患者番号構成管理情報）
            INITIALIZE                  SYS-1009-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    "1009"              TO  SYS-1009-KANRICD
@@ -551,7 +551,7 @@
                                            TO  SPA-1009-JIYKSIKBN
                MOVE    SYS-1009-JIYKSIKETA
                                            TO  SPA-1009-JIYKSIKETA
-      *        ��ĥ������ʬ
+      *        拡張構成区分
                MOVE    SYS-1009-KKCKSIKBN
                                        TO  SPA-1009-KKCKSIKBN
                MOVE    SYS-1009-KKCKSIMAEKETA
@@ -568,11 +568,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-RGTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -613,14 +613,14 @@
            DISPLAY "SPA-SYSYMD=" SPA-SYSYMD "#" 
       *??
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            PERFORM 2001-INPUT-CHK-SEC
       *
       *??
            DISPLAY "2001=" WRK-ERRCD "#" 
       *??
            IF      WRK-ERRCD           =   SPACE
-      *        ��¾�����å� & ���å�����
+      *        排他チェック & ロック処理
                PERFORM 990-LOCK-IN-SEC
                IF      SLOCK-RETURN    NOT =   ZERO
                    MOVE    "E90"               TO  WRK-ERRCD
@@ -628,14 +628,14 @@
                    GO  TO  200-MAIN-EXT
                END-IF
       *
-      *        ��̾��������
+      *        病名更新処理
                PERFORM 2002-DISEASE-SEC
-      *        �԰�����̾�Խ�����
+      *        不一致病名編集処理
                PERFORM 2003-DISEASES-UNMATCH-SEC
       *
                PERFORM 990-LOCK-OUT-SEC
                IF      SLOCK-RETURN    NOT =   ZERO
-                   DISPLAY "���å��������"
+                   DISPLAY "ロック解除失敗"
                END-IF
            END-IF
            .
@@ -643,7 +643,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
       *
@@ -673,15 +673,15 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-RGTXMLMAKE-SEC   SECTION.
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-                MOVE   "�����»ܽ�λ"  TO  DISEASES-API-RESULT-MSG
+      *        正常終了
+                MOVE   "処理実施終了"  TO  DISEASES-API-RESULT-MSG
            ELSE
-      *        ���顼��å�����
+      *        エラーメッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD       TO  DISEASES-API-RESULT
                MOVE    WRK-ERRMSG      TO  DISEASES-API-RESULT-MSG
@@ -712,11 +712,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    ����
+      *    基準月
            IF      DISEASEQ-BASE-MONTH =   SPACE
                MOVE    WRK-SMCNDATE-DATE (1:7)
                                            TO  DISEASEQ-BASE-MONTH
@@ -725,7 +725,7 @@
                MOVE    DISEASEQ-BASE-MONTH TO  WRK-HEN-DATE
                PERFORM 802-DAYHEN02-SEC
                MOVE    WRK-SYMD (1:6)      TO  WRK-BASE-MONTH
-      *        ���������å�
+      *        暦日チェック
                INITIALIZE                      ORCSGDAYAREA
                MOVE    "1"                 TO  SGDAY-INTYPE
                MOVE    WRK-BASE-MONTH      TO  SGDAY-INDAY
@@ -741,11 +741,11 @@
            END-IF
            MOVE    DISEASEQ-BASE-MONTH TO  DISEASES-BASE-MONTH
       *
-      *    �����ֹ�
+      *    患者番号
            IF      DISEASEQ-PATIENT-ID =   SPACE
                MOVE    "E01"              TO  WRK-ERRCD
            ELSE
-               DISPLAY "�����ֹ� = ["    DISEASEQ-PATIENT-ID "]"
+               DISPLAY "患者番号 = ["    DISEASEQ-PATIENT-ID "]"
                INITIALIZE                      ORCSPTIDAREA
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    DISEASEQ-PATIENT-ID TO  SPTID-PTNUM
@@ -766,7 +766,7 @@
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *    ���Ų�
+      *    診療科
           IF      DISEASEQ-DEPARTMENT-CODE
                                        =   SPACE
                MOVE    "01"                TO  WRK-SRYKA
@@ -786,7 +786,7 @@
                END-IF
            END-IF
       *
-           DISPLAY "���Ų�   = ["    WRK-SRYKA "]"
+           DISPLAY "診療科   = ["    WRK-SRYKA "]"
       *
            MOVE    WRK-SRYKA           TO  DISEASES-DPERTMENT-CODE
            PERFORM 5001-SRYKA-HENSYU-SEC
@@ -804,11 +804,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾��������
+      *    病名更新処理
       *****************************************************************
         2002-DISEASE-SEC                SECTION.
       *
-      *****DISPLAY "��̾���� ================== "
+      *****DISPLAY "病名情報 ================== "
       *
            MOVE    ZERO            TO  FLG-DIAG
            INITIALIZE                  WRK-DISEASEQ-INFORMATION-AREA
@@ -842,16 +842,16 @@
                    AND   ( DISEASEQ-SPINAME1(IDX)  =   SPACE )
                        MOVE    50                  TO  IDX
                    ELSE
-      *                Ϣ�뼰��̾�Խ�����
+      *                連結式病名編集処理
                        PERFORM 20021-SPICOD1-HENSYU-SEC
                    END-IF
                ELSE
-      *            ñ�ȼ���̾�Խ�����
+      *            単独式病名編集処理
                    PERFORM 20022-SPICOD2-HENSYU-SEC
                 END-IF
            END-PERFORM
       *
-      *    �����ɡ���̾�����ꤵ��Ƥ��ʤ��Ȥ�
+      *    コード、病名が設定されていないとき
            IF      FLG-BYOMEI-HEN      =   ZERO
                MOVE    2                   TO  FLG-DIAG
            END-IF
@@ -869,7 +869,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ϣ�뼰��̾�Խ�����
+      *    連結式病名編集処理
       *****************************************************************
        20021-SPICOD1-HENSYU-SEC                 SECTION.
       *
@@ -879,11 +879,11 @@
            DISPLAY " diagnosis code =" DISEASEQ-SPICOD1 (IDX)
            DISPLAY " diagnosis name =" DISEASEQ-SPINAME1(IDX)
       *
-      *    ���������ɤ����ꤵ��Ƥ��ʤ��Ȥ�
+      *    疾患コードが設定されていないとき
            IF         DISEASEQ-SPICOD1 (IDX)  =   SPACE
                MOVE    1                      TO  FLG-BYOMEI-CHK
            ELSE  
-      *        ���������ɤ�ʬ�䤹��
+      *        疾患コードを分割する
                UNSTRING   DISEASEQ-SPICOD1 (IDX)  DELIMITED  BY  "."
                                            INTO   WRK-TBYOMEICD (1)
                                                   WRK-TBYOMEICD (2)
@@ -895,34 +895,34 @@
                END-UNSTRING
            END-IF
       *
-      *    ���İʾ�Υ����ɤ����ꤵ��Ƥ���Ȥ�
+      *    ７個以上のコードが設定されているとき
            IF      WRK-TBYOMEICD (7)   NOT =   SPACE
                MOVE    1                   TO  FLG-BYOMEI-CHK
            END-IF
       *
-      *    ��̾�����ɥ����å�
+      *    病名コードチェック
            PERFORM 200211-BYOMEICD-CHK-SEC
       *
-      *    ��̾�����ɤ����顼����̤�����ɲ�����̾�����ɤΤȤ��ϼ���̾���Խ�
+      *    病名コードがエラー又は未コード化傷病名コードのときは疾患名を編集
            IF      FLG-BYOMEI-CHK      =   1   OR  5
                MOVE    DISEASEQ-SPINAME1 (IDX) TO  WRK-BYOMEI
            END-IF
       *
-      *    ������̾�ޥ�������
+      *    患者病名マスタ作成
            PERFORM 20023-BYOMEI-HEN-SEC
            .
        20021-SPICOD1-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ñ�ȼ���̾�Խ�����
+      *    単独式病名編集処理
       *****************************************************************
        20022-SPICOD2-HENSYU-SEC                 SECTION.
       *
            DISPLAY "--------------------------- " 
            DISPLAY "IDX=" IDX 
       *
-      *    ��̾�Τ�����ΤȤ������ɥ����å�
+      *    病名のみ設定のときコードチェック
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       6
                    OR (    DISEASEQ-SPINAME2(IDX IDY) 
@@ -946,10 +946,10 @@
                END-IF
            END-PERFORM
       *     
-      *    ��̾�����ɥ����å�
+      *    病名コードチェック
            PERFORM 200211-BYOMEICD-CHK-SEC
       *
-      *    ��̾�����ɤ����顼����̤�����ɲ�����̾�����ɤΤȤ��ϼ���̾���Խ�
+      *    病名コードがエラー又は未コード化傷病名コードのときは疾患名を編集
            IF      FLG-BYOMEI-CHK      =   1   OR  5
                STRING  DISEASEQ-SPINAME2 (IDX 1)   DELIMITED BY SPACE
                        DISEASEQ-SPINAME2 (IDX 2)   DELIMITED BY SPACE
@@ -961,20 +961,20 @@
                END-STRING
            END-IF
       *
-      *    ������̾�ޥ�������
+      *    患者病名マスタ作成
            PERFORM 20023-BYOMEI-HEN-SEC
            .
        20022-SPICOD2-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ��̾�����ɥ����å�����
+      *    病名コードチェック処理
       *****************************************************************
        200211-BYOMEICD-CHK-SEC         SECTION.
       *
            MOVE    WRK-BYOMEICD-G  TO  WRK-SPICOD-G
       *
-      *    ��­�����ȥ����å�
+      *    補足コメントチェック
               PERFORM 2002111-HOSOKU-COMMENT-CHK-SEC
       *
            IF      FLG-BYOMEI-CHK      =   1
@@ -986,7 +986,7 @@
                    OR      WRK-TBYOMEICD (IDY) =   SPACE
                    OR      FLG-BYOMEI-CHK      =   1
       *
-      *        ��̾�����ɤ�Ⱦ�ѥ����å���Ĺ�������å�
+      *        病名コードの半角チェック、長さチェック
                INITIALIZE                      ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    WRK-TBYOMEICD (IDY) TO  KANACHK-MAE-INPUT
@@ -1011,7 +1011,7 @@
                    MOVE    1               TO  FLG-BYOMEI-CHK
                END-IF
       *
-      *        ��̾�ޥ���¸�ߥ����å�
+      *        病名マスタ存在チェック
                IF      FLG-BYOMEI-CHK          =   ZERO
                    IF      WRK-TBYOMEICD (IDY)     =   WRK-CONS-BYOMEICD
                        MOVE    5               TO  FLG-BYOMEI-CHK
@@ -1044,7 +1044,7 @@
                END-IF
            END-PERFORM
       *
-      *    �����졦��Ƭ������å�
+      *    接尾語・接頭語チェック
            IF      FLG-BYOMEI-CHK       =   ZERO
                MOVE    SPACE                TO  WRK-RECECD-TBL
       *
@@ -1082,7 +1082,7 @@
                 END-IF
            END-IF 
       *
-      *    ñ�Ȼ��Ѷػߤ���̾�����å�����­�����ȥ��顼�ʳ���
+      *    単独使用禁止の病名チェック（補足コメントエラー以外）
            IF    ( FLG-HOSOKU-CHK      =   2     )
            AND   ( WRK-HOSOKU-COMMENT  =   SPACE )
                CONTINUE
@@ -1110,10 +1110,10 @@
                END-IF
            END-IF
       *           
-      *    �ޥ���������̾���Ȥ�Ω�Ƥ�
+      *    マスタから病名を組み立てる
            MOVE    SPACE                   TO  WRK-BYOMEI
            IF      FLG-BYOMEI-CHK          =   2
-               STRING  "��"                DELIMITED   BY  SIZE
+               STRING  "＊"                DELIMITED   BY  SIZE
                        WRK-TBYOMEI (1)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (2)     DELIMITED   BY  SPACE
                        WRK-TBYOMEI (3)     DELIMITED   BY  SPACE
@@ -1145,7 +1145,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��­�����ȥ����å�����
+      *    補足コメントチェック処理
       *****************************************************************
        2002111-HOSOKU-COMMENT-CHK-SEC  SECTION.
       *
@@ -1171,14 +1171,14 @@
                                            TO  WRK-THOSOKUCD (IDY)
                END-PERFORM
       *
-      *        ��­�����ȥ����ɥ����å�
+      *        補足コメントコードチェック
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       3
                        OR      WRK-THOSOKUCD (IDY) =   SPACE
                        OR      FLG-HOSOKU-CHK      =   2
                    MOVE    ZERO                TO  FLG-HOSOKU-CHK
       *
-      *            ��̾�����ɤ�Ĺ�������å�
+      *            病名コードの長さチェック
                    MOVE    ZERO                TO  WRK-LENGTH 
                    PERFORM VARYING IDZ FROM    10  BY  -1
                            UNTIL   IDZ <       1
@@ -1195,7 +1195,7 @@
                        WHEN    OTHER
                            MOVE    1           TO  FLG-HOSOKU-CHK
                    END-EVALUATE
-      *            ��̾�ޥ��������å�
+      *            病名マスタチェック
                    IF      FLG-HOSOKU-CHK      =   ZERO
                        INITIALIZE                      BYOMEI-REC
                        EVALUATE    WRK-LENGTH
@@ -1222,7 +1222,7 @@
                        END-IF
                    END-IF
                    IF      FLG-HOSOKU-CHK      =   1
-      *                ������̾�����å�
+      *                自院病名チェック
                        INITIALIZE              USERBYOMEI-REC
                        MOVE    WRK-THOSOKUCD (IDY)
                                                TO  USBYO-BYOMEIINPUTCD
@@ -1238,7 +1238,7 @@
                    END-IF
                END-PERFORM
       *
-      *        ��­�����Ȥ��Ȥ�Ω�Ƥ�
+      *        補足コメントを組み立てる
                MOVE    SPACE                   TO  WRK-HOSOKU-COMMENT
                IF      FLG-HOSOKU-CHK      =   ZERO
                    STRING  WRK-THOSOKU-COMMENT (1) DELIMITED   BY  SPACE
@@ -1252,7 +1252,7 @@
                END-IF
            END-IF
       *
-      *    ���ѥ����å�
+      *    全角チェック
            IF      WRK-HOSOKU-COMMENT  NOT =   SPACE
                INITIALIZE                      ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI 
@@ -1267,7 +1267,7 @@
                END-IF
       *
                IF  WRK-DIAG-WARNING        =   SPACE
-      *            ���ԥ����ɥ����å�
+      *            改行コードチェック
                    MOVE    ZERO                TO  WRK-COL
                    INSPECT WRK-HOSOKU-COMMENT  TALLYING    WRK-COL
                                                FOR ALL WRK-CONS-RETURN
@@ -1277,17 +1277,17 @@
                END-IF
       *
                IF  WRK-DIAG-WARNING    NOT =   SPACE
-                   MOVE    "����������"        TO  WRK-HOSOKU-COMMENT
+                   MOVE    "？？？？？"        TO  WRK-HOSOKU-COMMENT
                    PERFORM 500-WARNING-HENSYU-SEC
                END-IF
            END-IF
       *
-      *    ����Ρʡˤ�Ϥ���
+      *    前後の（）をはずす
            IF      WRK-HOSOKU-COMMENT  NOT =   SPACE    
                MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
                COMPUTE IDY     =   KANACHK-MAX     -   1
                IF      WRK-HOSOKU-COMMENT (IDY:2)
-                                               =   "��"
+                                               =   "）"
                    COMPUTE IDZ     =   KANACHK-MAX     -   2
                    MOVE    WRK-HOSOKU-COMMENT (1:IDZ)
                                                TO  WRK-HOSOKU-COMMENT1
@@ -1295,7 +1295,7 @@
                END-IF
                MOVE    SPACE               TO  WRK-HOSOKU-COMMENT1
                IF      WRK-HOSOKU-COMMENT (1:2)
-                                               =   "��"
+                                               =   "（"
                    MOVE    WRK-HOSOKU-COMMENT (3:)
                                                TO  WRK-HOSOKU-COMMENT1
                    MOVE    WRK-HOSOKU-COMMENT1 TO  WRK-HOSOKU-COMMENT
@@ -1309,7 +1309,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ�����������
+      *    患者病名マスタ作成処理
       *****************************************************************
        20023-BYOMEI-HEN-SEC                 SECTION.
       *
@@ -1318,14 +1318,14 @@
            DISPLAY " diagnosis connectname ="  WRK-BYOMEI
            DISPLAY " diagnosis check flag  ="  FLG-BYOMEI-CHK
       *
-      *    ��̾������ΤȤ�
+      *    病名が空白のとき
            IF      WRK-BYOMEI          =   SPACE
                MOVE    "E33"               TO  WRK-DIAG-WARNING
                PERFORM 500-WARNING-HENSYU-SEC
                GO  TO  20023-BYOMEI-HEN-EXT
            END-IF
       *
-      *    ��­�����ȥ����ɤ����顼�ΤȤ�
+      *    補足コメントコードがエラーのとき
            IF    ( FLG-HOSOKU-CHK      =   2     )
            AND   ( WRK-HOSOKU-COMMENT  =   SPACE )
                MOVE    "E34"               TO  WRK-DIAG-WARNING
@@ -1333,7 +1333,7 @@
                GO  TO  20023-BYOMEI-HEN-EXT
             END-IF
       *
-      *    ����������
+      *    疾患開始日
            DISPLAY "startDate ="      DISEASEQ-STARTDATE(IDX)
       *
            MOVE    DISEASEQ-STARTDATE(IDX)
@@ -1351,8 +1351,8 @@
                GO  TO  20023-BYOMEI-HEN-EXT
            END-IF
       *
-      *    ��̾�����ɤ����顼����̤�����ɲ�����̾�����ɤΤȤ�
-      *    ����̾����ñ�Ȼ��Ѷػߤ���̾�����å�
+      *    病名コードがエラー又は未コード化傷病名コードのとき
+      *    疾患名から単独使用禁止の病名チェック
            IF      FLG-BYOMEI-CHK      =   1   OR  5
                INITIALIZE                  ORCSBYOMEIAREA
                MOVE    "1"                 TO  LNK-BYO-SYORI
@@ -1371,7 +1371,7 @@
                    PERFORM 500-WARNING-HENSYU-SEC
       *
                    MOVE    SPACE               TO  WRK-BYOMEI
-                   STRING  "��"                DELIMITED   BY  SIZE
+                   STRING  "＊"                DELIMITED   BY  SIZE
                            LNK-BYO-BYOMEI      DELIMITED   BY  SPACE
                                                INTO    WRK-BYOMEI
                    END-STRING
@@ -1381,8 +1381,8 @@
                END-IF
            END-IF
       *
-      *    ��̾
-      *    ���ѥ����å�
+      *    病名
+      *    全角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI 
            MOVE    WRK-BYOMEI          TO  KANACHK-MAE-INPUT
@@ -1397,7 +1397,7 @@
            END-IF
       *
            IF  WRK-DIAG-WARNING        =   SPACE
-      *        ���ԥ����ɥ����å�
+      *        改行コードチェック
                MOVE    ZERO                TO  WRK-COL
                INSPECT WRK-BYOMEI          TALLYING    WRK-COL
                                            FOR ALL WRK-CONS-RETURN
@@ -1408,11 +1408,11 @@
       *
            IF      WRK-DIAG-WARNING
                                    NOT =   SPACE
-               MOVE    "����������"        TO  WRK-BYOMEI
+               MOVE    "？？？？？"        TO  WRK-BYOMEI
                PERFORM 500-WARNING-HENSYU-SEC
            END-IF
       *
-      *    ������λ��
+      *    疾患終了日
            DISPLAY "endDate   ="       DISEASEQ-ENDDATE(IDX)
       *
            IF      DISEASEQ-ENDDATE (IDX)
@@ -1435,7 +1435,7 @@
                END-IF
            END-IF
       *
-      *    ž��
+      *    転帰
            DISPLAY "outcome ="        DISEASEQ-TENKIKBN (IDX)
       *
            MOVE    SPACE               TO  WRK-TENKI
@@ -1444,7 +1444,7 @@
            ELSE
                MOVE    0                   TO  FLG-BYOMEI-DELETE
                IF      DISEASEQ-ENDDATE(IDX)    NOT =   SPACE
-      *            ž��������λ�������
+      *            転帰が空白の時、治癒
                    EVALUATE    DISEASEQ-TENKIKBN (IDX)
                        WHEN    SPACE
                        WHEN    "F"
@@ -1463,19 +1463,19 @@
                END-IF
            END-IF
       *
-      *    ����̾�ե饰
+      *    主病名フラグ
            IF      DISEASEQ-SYUBYOFLG (IDX)
                                    =   "PD"
                MOVE    "1"             TO  WRK-SYUBYOFLG
            END-IF
       *
-      *    �����ե饰
+      *    疑いフラグ
            IF       DISEASEQ-UTAGAIFLG (IDX)
                                    =   "S"
                MOVE    "1"             TO  WRK-UTAGAIFLG
            END-IF
       *
-      *    ������ʬ
+      *    入外区分
            DISPLAY " "
            DISPLAY " InOutPatient ="   DISEASEQ-NYUGAIKBN (IDX)
       *
@@ -1488,7 +1488,7 @@
                    MOVE    SPACE       TO  WRK-NYUGAIKBN
            END-EVALUATE
       *
-      *    �������̾
+      *    カルテ病名
            IF      DISEASEQ-KARTE-NAME (IDX)
                                        =   "None"
                MOVE    DISEASEQ-KARTE-NAME (IDX)
@@ -1498,7 +1498,7 @@
                                            =   SPACE
                    CONTINUE
                ELSE
-      *            ���ѥ����å�
+      *            全角チェック
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "2"                 TO  KANACHK-SYORI 
                    MOVE    DISEASEQ-KARTE-NAME (IDX)
@@ -1513,7 +1513,7 @@
                    END-IF
       *
                    IF  WRK-DIAG-WARNING        =   SPACE
-      *                ���ԥ����ɥ����å�
+      *                改行コードチェック
                        MOVE    ZERO            TO  WRK-COL
                        INSPECT WRK-KARTE-NAME  TALLYING    WRK-COL
                                                FOR ALL WRK-CONS-RETURN
@@ -1523,13 +1523,13 @@
                    END-IF
       *
                    IF  WRK-DIAG-WARNING    NOT =   SPACE
-                       MOVE    "����������"        TO  WRK-KARTE-NAME
+                       MOVE    "？？？？？"        TO  WRK-KARTE-NAME
                        PERFORM 500-WARNING-HENSYU-SEC
                    END-IF
                END-IF
            END-IF
       *
-      *    ������ʬ
+      *    疾患区分
           IF      DISEASEQ-MANSEIKBN (IDX)
                                        =   "None"  OR  "Auto"
                MOVE    DISEASEQ-MANSEIKBN (IDX)
@@ -1550,7 +1550,7 @@
            END-IF
            DISPLAY " WRK-MANSEIKBN=" WRK-MANSEIKBN-X " " WRK-MANSEIKBN
       *
-      *    �ݸ�Ŭ�ѡ��軰�Թ԰١�
+      *    保険適用（第三者行為）
            IF      DISEASEQ-HKNCOMBI (IDX) =   "None"  OR  SPACE
                IF      DISEASEQ-INSURANCE-CLASS (IDX)
                                            =   "1"
@@ -1606,7 +1606,7 @@
                                GO  TO  20023-BYOMEI-HEN-EXT
                            END-IF
                        END-IF
-      *                ���������ݸ��ȹ礻���軰�Թ԰١ˤΥ����å�
+      *                開始日と保険組合せ（第三者行為）のチェック
                        IF      COMB-KOHHKNNUM (1)  =   "970"
                            INITIALIZE                      PTRSIINF-REC
                            MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
@@ -1654,7 +1654,7 @@
                END-IF
            END-IF
       *
-      *    �쥻�ץ�ɽ��
+      *    レセプト表示
            IF      DISEASEQ-REZEFLG (IDX)   =   "None"
                MOVE    DISEASEQ-REZEFLG (IDX)   TO  WRK-REZEFLG-X
            ELSE
@@ -1665,7 +1665,7 @@
                END-IF
            END-IF
       *
-      *    ɽ������
+      *    表示期間
            IF      DISEASEQ-REZEMM (IDX)   =   "None"
                MOVE    DISEASEQ-REZEMM (IDX)   TO  WRK-REZEMM-X
            ELSE
@@ -1682,7 +1682,7 @@
                END-IF
            END-IF
       *
-      *    �ݸ���̾
+      *    保険病名
            IF      DISEASEQ-HKNBYOMEIFLG (IDX)
                                        =   "None"
                MOVE    DISEASEQ-HKNBYOMEIFLG (IDX)
@@ -1697,7 +1697,7 @@
                 END-IF
            END-IF
       *
-      *    �ౡ������
+      *    退院証明書
            IF      DISEASEQ-DISCHARGEFLG (IDX)
                                        =   "None"
                MOVE    DISEASEQ-DISCHARGEFLG (IDX)
@@ -1712,7 +1712,7 @@
                END-IF
            END-IF
       *
-      *    ��������ʬ
+      *    原疾患区分
            IF      DISEASEQ-CLASS1 (IDX)
                                        =   "None"
                MOVE    DISEASEQ-CLASS1 (IDX)
@@ -1730,7 +1730,7 @@
                        MOVE    ZERO                TO  WRK-CLASS1
                END-EVALUATE
            END-IF
-      *    ��ʻ�ɶ�ʬ
+      *    合併症区分
            IF      DISEASEQ-CLASS2 (IDX)
                                        =   "None"
                MOVE    DISEASEQ-CLASS2 (IDX)
@@ -1749,48 +1749,48 @@
                END-EVALUATE
            END-IF
       *
-      *    ��������
+      *    更新処理
            INITIALIZE                  FLG-PTBYOMEI-UMU
                                        WRK-PTBYOMEI-SRYKA-REC
                                        WRK-UTAGAIFLG-KETASU
                                        PTBYOMEI-SRYKA-CNT
       *
-      *    �֤ε����פ򸡺�
+      *    「の疑い」を検索
            PERFORM VARYING IDY FROM    1  BY  2
                    UNTIL   IDY >       75
-               IF      WRK-BYOMEI1 (IDY:6)  =   "�ε���"
+               IF      WRK-BYOMEI1 (IDY:6)  =   "の疑い"
                    MOVE    IDY              TO  WRK-UTAGAIFLG-KETASU
                    MOVE    80               TO  IDY
                END-IF
            END-PERFORM
       *
-      *    ������̾�������
+      *    患者病名削除処理
            IF      FLG-BYOMEI-DELETE   =   1
                PERFORM 200231-PTBYO-DELETE-SEC
                GO  TO  20023-BYOMEI-HEN-EXT
            END-IF
       *
-      *    ������̾���������ʴ������ס�
+      *    患者病名検索処理（完全一致）
            PERFORM 200232-BYOMEI-CHK-SEC
-      *    �������פ�����̾������Ȥ�
+      *    完全一致する病名があるとき
       *??
            DISPLAY "FLG-PTBYOMEI-OK=" FLG-PTBYOMEI-OK "#" 
       *??
            IF      FLG-PTBYOMEI-OK     =   1
-      *        ��ʣ�����å�
+      *        重複チェック
                MOVE    OK-PTBYOMEI-REC     TO  CHK-PTBYOMEI-REC
                PERFORM 200233-BYOMEI-DABURI-CHK-SEC
                IF      FLG-BYOMEI-CHK      =   9
                    CONTINUE
                ELSE
-      *            ������̾��������
+      *            患者病名更新処理
                    MOVE    OK-PTBYOMEI-REC     TO  PTBYOMEI-REC
                    PERFORM 200234-KOUSIN-02-SEC
                END-IF
                GO  TO  20023-BYOMEI-HEN-EXT
            END-IF
       *
-      *    ������̾�ޥ���������Ʊ�쳫��������̾��
+      *    患者病名マスタ検索（同一開始日・病名）
            INITIALIZE                  WRK-PTBYOMEI-SRYKA-REC
                                        PTBYOMEI-SRYKA-CNT
                                        PTBYOMEI-HKNCOMBI-CNT
@@ -1805,7 +1805,7 @@
            IF      WRK-UTAGAIFLG-KETASU    =   ZERO
                MOVE    WRK-BYOMEI1             TO  PTBYO-BYOMEI
                STRING  WRK-BYOMEI1             DELIMITED BY  SPACE
-                       "�ε���"                DELIMITED BY  SIZE  
+                       "の疑い"                DELIMITED BY  SIZE  
                                                INTO    PTBYO-XXBYOMEI
                END-STRING
            ELSE
@@ -1836,11 +1836,11 @@
            END-IF
            PERFORM             UNTIL   FLG-PTBYOMEI        =   1
                MOVE    ZERO            TO  FLG-PTBYOMEI-OK
-      *        Ʊ����Ųʤ���̾��������
+      *        同一診療科の病名情報を取得
                IF      PTBYO-SRYKA         =   WRK-SRYKA
                    ADD     1               TO  PTBYOMEI-SRYKA-CNT
                    MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-SRYKA-REC
-      *            Ʊ����Ųʤ��ݸ��ȹ礻��Ʊ����
+      *            同一診療科で保険組合せが同じ時
                    IF    ( WRK-HKNCOMBI    =   PTBYO-HKNCOMBI  )
                    AND   ( WRK-KOHID       =   PTBYO-KOHID     )
                        ADD     1           TO  PTBYOMEI-HKNCOMBI-CNT
@@ -1848,7 +1848,7 @@
                        MOVE    PTBYOMEI-REC
                                            TO  OK-PTBYOMEI-REC
                    ELSE
-      *               ����ʬ�ΤȤ�
+      *               医保分のとき
                        IF      DISEASEQ-INSURANCE-CLASS (IDX)
                                            NOT =   "1"
                            IF      PTBYO-HKNCOMBI  =   ZERO
@@ -1902,7 +1902,7 @@
       *
            EVALUATE    PTBYOMEI-HKNCOMBI-CNT
                WHEN    ZERO
-      *            Ʊ���ݸ��ȹ礻��¸�ߤ��ʤ��Ȥ�
+      *            同一保険組合せが存在しないとき
                    INITIALIZE           CHK-PTBYOMEI-REC
                    PERFORM 200233-BYOMEI-DABURI-CHK-SEC
                    IF      FLG-BYOMEI-CHK      =   9
@@ -1914,50 +1914,50 @@
                    IF    ( WRK-NYUGAIKBN       =   OK-PTBYO-NYUGAIKBN )
                    OR    ( WRK-NYUGAIKBN       =   SPACE              )
                    OR    ( OK-PTBYO-NYUGAIKBN  =   SPACE              )
-      *                ��ʣ�����å�
+      *                重複チェック
                        MOVE    OK-PTBYOMEI-REC     TO  CHK-PTBYOMEI-REC
                        PERFORM 200233-BYOMEI-DABURI-CHK-SEC
                        IF      FLG-BYOMEI-CHK      =   9
                            CONTINUE
                        ELSE
-      *                    ������̾��������
+      *                    患者病名更新処理
                            MOVE    OK-PTBYOMEI-REC     TO  PTBYOMEI-REC
                            PERFORM 200234-KOUSIN-02-SEC
                        END-IF
                    ELSE
-      *                Ʊ���ݸ��ȹ礻��������ʬ���㤦�Ȥ�
+      *                同一保険組合せで入外区分が違うとき
                        INITIALIZE           CHK-PTBYOMEI-REC
                        PERFORM 200233-BYOMEI-DABURI-CHK-SEC
                        IF      FLG-BYOMEI-CHK      =   9
                            CONTINUE
                        ELSE
-      *                    ������̾�ɲý���
+      *                    患者病名追加処理
                            PERFORM 200235-KOUSIN-01-SEC
                        END-IF
                    END-IF
                WHEN    2
                    IF      WRK-NYUGAIKBN       =   SPACE
-      *                ������¸�ߤ���Ȥ��˶���Ǥι����Ϥʤ�
+      *                入外で存在するときに空白での更新はなし
                        MOVE    "E23"               TO  WRK-DIAG-WARNING
                        PERFORM 5001-SRYKA-HENSYU-SEC
                        MOVE    SYS-1005-SRYKANAME1 TO  WRK-ERR-SRYKA
                        PERFORM 500-WARNING-HENSYU-SEC
                    ELSE
                        IF      WRK-NYUGAIKBN   =   OK-PTBYO-NYUGAIKBN
-      *                    ��ʣ�����å�
+      *                    重複チェック
                            MOVE    OK-PTBYOMEI-REC TO  CHK-PTBYOMEI-REC
                            PERFORM 200233-BYOMEI-DABURI-CHK-SEC
                            IF      FLG-BYOMEI-CHK  =   9
                                CONTINUE
                            ELSE
-      *                        ������̾��������
+      *                        患者病名更新処理
                                MOVE    OK-PTBYOMEI-REC TO  PTBYOMEI-REC
                                PERFORM 200234-KOUSIN-02-SEC
                            END-IF
                        END-IF
                    END-IF
                WHEN    OTHER
-      *            Ʊ���ݸ��ȹ礻�ǣ���ʾ�����Ϥ�����Ȥ�
+      *            同じ保険組合せで３件以上の入力があるとき
                    MOVE    "E24"               TO  WRK-DIAG-WARNING
                    PERFORM 5001-SRYKA-HENSYU-SEC
                    MOVE    SYS-1005-SRYKANAME1 TO  WRK-ERR-SRYKA
@@ -1969,14 +1969,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�������
+      *    患者病名削除処理
       *****************************************************************
        200231-PTBYO-DELETE-SEC             SECTION.
       *
            INITIALIZE              WRK-PTBYOMEI-SRYKA-REC
                                    FLG-PTBYOMEI-UMU
       *
-      *    �֤ε����פ򸡺������Ȥ�
+      *    「の疑い」を検索したとき
            IF      WRK-UTAGAIFLG-KETASU    >   ZERO
                EVALUATE    WRK-UTAGAIFLG
                    WHEN    SPACE
@@ -1991,10 +1991,10 @@
            IF      WRK-UTAGAIFLG       =   "3" OR  "2"
                CONTINUE
            ELSE
-      *        �ֵ����פ򸡺�
+      *        「急性」を検索
                PERFORM VARYING IDY FROM    1   BY  2
                        UNTIL   IDY >       77
-                   IF      WRK-BYOMEI1 (IDY:4) =   "����"
+                   IF      WRK-BYOMEI1 (IDY:4) =   "急性"
                        EVALUATE    WRK-UTAGAIFLG
                            WHEN    SPACE
                                MOVE    "2"         TO  WRK-UTAGAIFLG
@@ -2038,7 +2038,7 @@
                        MOVE    PTBYO-HKNCOMBI  TO  COMB-HKNCOMBINUM
                        MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
                        PERFORM 900-COMB-READ-SEC
-      *                ����ʬ�ʳ����оݤȤ��ʤ�
+      *                医保分以外は対象としない
                        IF    ( COMB-HKNNUM     =   "971"   OR
                                                    "973"   OR
                                                    "975" )
@@ -2102,7 +2102,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����̾�����å�����
+      *    同一病名チェック処理
       *****************************************************************
        200232-BYOMEI-CHK-SEC             SECTION.
       *
@@ -2141,7 +2141,7 @@
                            MOVE    PTBYOMEI-REC
                                                TO  OK-PTBYOMEI-REC
                        ELSE
-      *                    ����ʬ�ΤȤ�
+      *                    医保分のとき
                            IF      DISEASEQ-INSURANCE-CLASS (IDX)
                                                NOT =   "1"
                                IF      PTBYO-HKNCOMBI  =   ZERO
@@ -2188,7 +2188,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ޥ����Ȥν�ʣ�����å�������ž������
+      *    マスタとの重複チェック処理（転帰等）
       *****************************************************************
        200233-BYOMEI-DABURI-CHK-SEC  SECTION.
       *
@@ -2255,7 +2255,7 @@
                    END-EVALUATE
       *
                    IF      FLG-DABURI-CHK      >   0
-      *                Ʊ����̾�ˤ������ݸ�����ν�ʣ�����å�����
+      *                同一病名における保険限定の重複チェック処理
                        INITIALIZE                  WRK-CHK-HKNCOMBI-AREA
       *
                        MOVE    WRK-HKNCOMBI    TO  WRK-CHK-HKNCOMBI1
@@ -2301,13 +2301,13 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����̾�ˤ������ݸ�����ν�ʣ�����å�����
+      *    同一病名における保険限定の重複チェック処理
       *****************************************************************
        2002331-HKNCOMBI-DABURI-CHK-SEC   SECTION.
       *
            MOVE    ZERO                TO  FLG-HKNCOMBI-DABURI
       *
-      **    ���ݰʳ����ݸ����ʤ����ϥ����å����ʤ�
+      **    医保以外の保険がない場合はチェックしない
       **     IF    ( SPA-NAI-C02-HKNCOMBI-ROUSAI
       **                                 =   ZERO )
       **     AND   ( SPA-NAI-C02-HKNCOMBI-JIHI
@@ -2319,7 +2319,7 @@
       **         GO  TO   2002331-HKNCOMBI-DABURI-CHK-EXT
       **     END-IF
       *
-      *    �ݸ���������꤬�ʤ����ϥ����å����ʤ�
+      *    保険限定の設定がない場合はチェックしない
            IF    ( WRK-CHK-HKNCOMBI1   =   ZERO )
            AND   ( WRK-CHK-HKNCOMBI2   =   ZERO )
            AND   ( WRK-CHK-KOHID1      =   ZERO )
@@ -2327,7 +2327,7 @@
                GO  TO   2002331-HKNCOMBI-DABURI-CHK-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻�ν�ʣ�����å�
+      *    保険組合せの重複チェック
            IF    ( WRK-CHK-HKNCOMBI1   =   ZERO )
            AND   ( WRK-CHK-HKNCOMBI2   =   ZERO )
              CONTINUE
@@ -2351,7 +2351,7 @@
                MOVE    HKNCOMBI-REC        TO  WRK-CHK-HKNCOMBI-REC (2)
              END-IF
       *
-      *      �����Τ�ϫ�Ҥޤ��ϼ����դޤ��ϸ����ξ�����Ͽ��ǽ�Ȥ���
+      *      片方のみ労災または自賠責または公害の場合は登録可能とする
              EVALUATE    WRK-CHK-COMB-HKNNUM (1)
                                    ALSO    WRK-CHK-COMB-HKNNUM (2)
                WHEN    "971"       ALSO    "971"
@@ -2372,7 +2372,7 @@
                    MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
              END-EVALUATE
       *
-      *      ������ݸ�����ʤ��ޤ���Ʊ������ξ�����Ͽ�ԲĤȤ���
+      *      自費と保険限定なしまたは同じ自費の場合は登録不可とする
              IF    ( WRK-CHK-COMB-HKNNUM (1) (1:2)
                                    =   "98" ) 
              OR    ( WRK-CHK-COMB-HKNNUM (2) (1:2)
@@ -2392,24 +2392,24 @@
                END-EVALUATE
              END-IF
       *
-      *      �ݸ��ȹ礻����Ͽ�ԲĤΤȤ�
+      *      保険組合せで登録不可のとき
              IF      FLG-HKNCOMBI-DABURI =   ZERO
                GO  TO   2002331-HKNCOMBI-DABURI-CHK-EXT
              END-IF
            END-IF
       *
-      *    �軰�Թ԰٤����꤬�ʤ����ϥ����å����ʤ�
+      *    第三者行為の設定がない場合はチェックしない
            IF    ( WRK-CHK-KOHID1   =   ZERO )
            AND   ( WRK-CHK-KOHID2   =   ZERO )
                GO  TO   2002331-HKNCOMBI-DABURI-CHK-EXT
            END-IF
       *
-      *    �軰�Թ԰٤����꤬ξ���ξ��
+      *    第三者行為の設定が両方の場合
            IF    ( WRK-CHK-KOHID1
                                NOT =   ZERO )
            AND   ( WRK-CHK-KOHID2
                                NOT =   ZERO )
-      *        Ʊ���軰�Թ԰٤ξ�����Ͽ�ԲĤȤ���
+      *        同じ第三者行為の場合は登録不可とする
                IF      WRK-CHK-KOHID1  =   WRK-CHK-KOHID2
                    MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
                ELSE
@@ -2417,7 +2417,7 @@
                END-IF
                GO  TO  2002331-HKNCOMBI-DABURI-CHK-EXT
            ELSE
-      *        ���������ݰʳ��ΤȤ������å����ʤ�
+      *        片方が医保以外のときチェックしない
                IF    ( WRK-CHK-KOHID1
                                    NOT =   ZERO             )
                AND   ( WRK-CHK-COMB-HKNNUM (2) (1:2)
@@ -2432,7 +2432,7 @@
                END-IF
            END-IF
       *
-      *    ���ݤ��軰�Թ԰٤Τ�����Ͽ�ԲĤȤ���
+      *    医保と第三者行為のため登録不可とする
            MOVE    ZERO            TO  FLG-HKNCOMBI-DABURI
            .
       *
@@ -2440,11 +2440,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ�����������
+      *    患者病名マスタ更新処理
       *****************************************************************
        200234-KOUSIN-02-SEC           SECTION.
       *
-      *    �ݸ��ȹ礻������ΤȤ�
+      *    保険組合せが削除のとき
            IF    ( WRK-HKNCOMBI        >   ZERO           )
            AND   ( WRK-HKNCOMBI    NOT =   PTBYO-HKNCOMBI )
                IF      WRK-HKNCOMBI-DELKBN =  "1"
@@ -2453,7 +2453,7 @@
                    GO  TO  200234-KOUSIN-02-EXT
                END-IF
            END-IF
-      *    �軰�Թ԰٤�����ΤȤ�
+      *    第三者行為が削除のとき
            IF    ( WRK-KOHID           >   ZERO        )
            AND   ( WRK-KOHID       NOT =   PTBYO-KOHID )
                IF     WRK-KOHID-DELKBN     =   "1"
@@ -2463,11 +2463,11 @@
                END-IF
            END-IF
       *
-      *    ž����
+      *    転帰日
            MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
-      *    ž����ʬ
+      *    転帰区分
            MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
-      *    �����ե饰
+      *    疑いフラグ
            EVALUATE    PTBYO-UTAGAIFLG ALSO    WRK-UTAGAIFLG
                WHEN    SPACE           ALSO    "1"
                WHEN    "1"             ALSO    "1"
@@ -2483,7 +2483,7 @@
                    MOVE    "2"             TO  PTBYO-UTAGAIFLG
            END-EVALUATE
       *
-      *    ��̾�Խ�����
+      *    病名編集処理
            MOVE    2                   TO  FLG-KOUSIN
            PERFORM 2002341-PTBYOMEI-HENSYU-SEC
       *
@@ -2503,7 +2503,7 @@
                DISPLAY "UPD PTBYOMEI-KEY =>" PTBYO-KEY  "."
       ***         MOVE    "12"                TO  LNK-ERR2-CODE
       ***         MOVE
-      ***             "���Ƥ���̾�ι����˼��Ԥ��ޤ����ʹ������˥��顼��"
+      ***             "全ての病名の更新に失敗しました（更新時にエラー）"
       ***                                     TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2515,33 +2515,33 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ�����
+      *    病名編集処理
       *****************************************************************
        2002341-PTBYOMEI-HENSYU-SEC       SECTION.
       *
-      *    ������ʬ
+      *    入外区分
            MOVE    WRK-NYUGAIKBN       TO  PTBYO-NYUGAIKBN
       *
-      *    ����̾�ե饰
+      *    主病名フラグ
            MOVE    WRK-SYUBYOFLG       TO  PTBYO-SYUBYOFLG
       *
-      *    ��̾
+      *    病名
            MOVE    WRK-BYOMEI1         TO  PTBYO-BYOMEI
       *
            INITIALIZE                      PTBYO-BYOMEICD-G
                                            PTBYO-KHNBUICD-G
            MOVE    ZERO                TO  PTBYO-BYOMEICDSU
       *
-      *    ���������ɤ����顼����̤�����ɲ�����̾�����ɰʳ��ΤȤ�
+      *    疾患コードがエラー又は未コード化傷病名コード以外のとき
            IF      FLG-BYOMEI-CHK      NOT =   1   AND 5 AND 6
                MOVE    ZERO                TO  IDZ
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       6
                        OR      WRK-TBYOMEICD (IDY) =   SPACE
-      *            ��̾������
+      *            病名コード
                    MOVE    WRK-TBYOMEICD (IDY) 
                                            TO  PTBYO-BYOMEICD (IDY)
-      *            �����ե饰����̾�����ɤ���
+      *            疑いフラグ（病名コードより）
                    IF      PTBYO-UTAGAIFLG     =   "3"
                        CONTINUE
                    ELSE
@@ -2556,9 +2556,9 @@
                                MOVE    "3"     TO  PTBYO-UTAGAIFLG
                        END-EVALUATE
                    END-IF
-      *            ��̾�����ɿ�
+      *            病名コード数
                    ADD     1                   TO  PTBYO-BYOMEICDSU
-      *            ������̾�����ɡ��������̥�����
+      *            基本病名コード・基本部位コード
                    IF      PTBYO-BYOMEICD (IDY)(1:1)
                                                NOT =   "Z" 
                        MOVE    PTBYO-BYOMEICD (IDY)
@@ -2575,7 +2575,7 @@
                    END-IF
                END-PERFORM
       *
-      *        ��̾ʸ����
+      *        病名文字数
                PERFORM VARYING     IDY     FROM    80 BY  -1
                        UNTIL       IDY     <   1
                    IF      PTBYO-BYOMEI(IDY:1)     NOT =   SPACE
@@ -2584,19 +2584,19 @@
                    END-IF
                END-PERFORM
       *
-      *        ��̾�Խ��ե饰�ʥ����ɤ����顼�ΤȤ�����̾��Ĺ���Ȥ���
+      *        病名編集フラグ（コードがエラーのとき、病名が長いとき）
                IF    ( FLG-BYOMEI-CHK  NOT =   ZERO  )
                OR    ( WRK-BYOMEI2     NOT =   SPACE )    
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                END-IF
       *
-      *        �쥻�ť��顼�ե饰���Խ���̾�ΤȤ���
+      *        レセ電エラーフラグ（編集病名のとき）
                IF    ( PTBYO-BYOMEIHENFLG  =   "1" )
                AND   ( PTBYO-BYOMEIMOJI    >   20  )
                    MOVE    "1"                 TO  PTBYO-RECEDENFLG
                END-IF
       *
-      *        �쥻�ť��顼�ե饰�ʵ����ե饰�����ꤵ��Ƥ���Ȥ���
+      *        レセ電エラーフラグ（疑いフラグが設定されているとき）
                IF    ( PTBYO-RECEDENFLG    =   SPACE ) 
                AND   ( PTBYO-UTAGAIFLG NOT =   SPACE )
                    INITIALIZE                      ORCSMKBYOMEIAREA
@@ -2613,7 +2613,7 @@
                        END-IF
                    END-IF
                END-IF
-      *       ������ʬ
+      *       慢性区分
                IF      WRK-MANSEIKBN-X =   "None"
                    CONTINUE
                ELSE
@@ -2624,8 +2624,8 @@
                    END-IF
                END-IF
            ELSE
-      *        ���������ɤ����顼����̤�����ɲ�����̾�����ɤΤȤ�
-      *        ��̾���饳���ɸ���
+      *        疾患コードがエラー又は未コード化傷病名コードのとき
+      *        病名からコード検索
                INITIALIZE                      ORCSBYOMEIAREA
                MOVE    "1"                 TO  LNK-BYO-SYORI
                MOVE    PTBYO-SRYYMD        TO  LNK-BYO-SRYYMD-IN
@@ -2634,16 +2634,16 @@
                MOVE    PTBYO-SYUBYOFLG     TO  LNK-BYO-SYUBYOFLG 
                CALL    "ORCSBYOMEI"        USING    ORCSBYOMEIAREA
                                                     SPA-AREA
-      *        ��̾
+      *        病名
       ****     MOVE    LNK-BYO-BYOMEI      TO  PTBYO-BYOMEI
                IF      FLG-KOUSIN          =   1
                    IF      LNK-BYO-TANDOKUKBN-ERR  =   1
-      *                ñ����̾�ΤȤ�
+      *                単独病名のとき
                        IF      PTBYO-HOSOKU-COMMENT
                                                NOT =   SPACE
                            CONTINUE
                        ELSE
-                           STRING  "��"            DELIMITED   BY  SIZE
+                           STRING  "＊"            DELIMITED   BY  SIZE
                                    LNK-BYO-BYOMEI  DELIMITED   BY  SPACE
                                                    INTO    PTBYO-BYOMEI
                            END-STRING
@@ -2652,7 +2652,7 @@
                        END-IF
                    END-IF
                END-IF
-      *        �����ե饰
+      *        疑いフラグ
                IF      PTBYO-UTAGAIFLG     =   "3"
                    CONTINUE
                ELSE
@@ -2669,38 +2669,38 @@
                            MOVE    "3"         TO  PTBYO-UTAGAIFLG
                    END-EVALUATE
                END-IF      
-      *        ��̾������
+      *        病名コード
                PERFORM VARYING IDX4    FROM    1   BY  1
                        UNTIL   IDX4    >       LNK-BYO-BYOMEI-MAX
                    MOVE    LNK-BYO-TBYOMEICD (IDX4)
                                        TO  PTBYO-BYOMEICD  (IDX4)
                END-PERFORM
-      *        ��̾�����ɿ�
+      *        病名コード数
                MOVE    LNK-BYO-BYOMEICDSU  TO  PTBYO-BYOMEICDSU
-      *        ������̾������
+      *        基本病名コード
                MOVE    LNK-BYO-KHNBYOMEICD TO  PTBYO-KHNBYOMEICD
-      *        �������̥�����
+      *        基本部位コード
                MOVE    LNK-BYO-KHNBUICD (1)
                                            TO  PTBYO-KHNBUICD (1)
                MOVE    LNK-BYO-KHNBUICD (2)
                                            TO  PTBYO-KHNBUICD (2)
                MOVE    LNK-BYO-KHNBUICD (3)
                                            TO  PTBYO-KHNBUICD (3)
-      *        �쥻�ť��顼�ե饰
+      *        レセ電エラーフラグ
                MOVE    LNK-BYO-RECEDENFLG  TO  PTBYO-RECEDENFLG
-      *        ��̾ʸ����
+      *        病名文字数
                MOVE    LNK-BYO-BYOMEIMOJI  TO  PTBYO-BYOMEIMOJI
-      *        ��̾�Խ��ե饰
+      *        病名編集フラグ
                IF    ( LNK-BYO-BYOMEICD-ERR    =   1  )
                OR    ( LNK-BYO-TANDOKUKBN-ERR  =   1  )
                OR    ( LNK-BYO-BYOMEIMOJI      >   80 )
-      *            ñ����̾�������쥳���ɤΤߡ���̾��Ĺ���Ȥ�
+      *            単独病名・修飾語コードのみ・病名が長いとき
                    MOVE    "1"                 TO  PTBYO-BYOMEIHENFLG
                ELSE
                    MOVE    LNK-BYO-BYOMEIHENFLG
                                                TO  PTBYO-BYOMEIHENFLG
                END-IF
-      *       ������ʬ
+      *       慢性区分
                IF      WRK-MANSEIKBN-X =   "None"
                    CONTINUE
                ELSE
@@ -2721,12 +2721,12 @@
                END-IF
            END-IF
       *
-      *    �������̾
+      *    カルテ病名
            IF      WRK-KARTE-NAME-X    =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-KARTE-NAME      TO  PTBYO-CHARTBYOMEI
-      *        �������̾ʸ����
+      *        カルテ病名文字数
                PERFORM VARYING     IDY     FROM    80  BY  -1
                        UNTIL       IDY     <   1
                    IF      PTBYO-CHARTBYOMEI (IDY:1)
@@ -2736,44 +2736,44 @@
                    END-IF
                 END-PERFORM
            END-IF
-      *    �ݸ�Ŭ��
+      *    保険適用
            IF      WRK-HKNCOMBI-X      =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-HKNCOMBI        TO  PTBYO-HKNCOMBI
                MOVE    WRK-KOHID           TO  PTBYO-KOHID
            END-IF
-      *    �쥻�ץ�ɽ��
+      *    レセプト表示
            IF      WRK-REZEFLG-X       =   "None"
                CONTINUE
            ELSE
               MOVE    WRK-REZEFLG         TO  PTBYO-REZEFLG
            END-IF
-      *    ɽ������
+      *    表示期間
            IF      WRK-REZEMM-X        =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-REZEMM          TO  PTBYO-REZEMM
            END-IF
-      *    �ݸ���̾
+      *    保険病名
            IF      WRK-HKNBYOMEIFLG-X  =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-HKNBYOMEIFLG    TO  PTBYO-HKNBYOMEIFLG
             END-IF
-      *    �ౡ������
+      *    退院証明書
            IF      WRK-DISCHARGEFLG-X  =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-DISCHARGEFLG    TO  PTBYO-DISCHARGEFLG
            END-IF
-      *    ��������ʬ
+      *    原疾患区分
            IF      WRK-CLASS1-X        =   "None"
                CONTINUE
            ELSE
                MOVE    WRK-CLASS1          TO  PTBYO-CLASS1
            END-IF
-      *    ��ʻ�ɶ�ʬ
+      *    合併症区分
            IF      WRK-CLASS2-X        =   "None"
                CONTINUE
            ELSE
@@ -2784,11 +2784,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ɲý���
+      *    患者病名追加処理
       *****************************************************************
        200235-KOUSIN-01-SEC           SECTION.
       *
-      *    �ݸ��ȹ礻������ΤȤ�
+      *    保険組合せが削除のとき
            IF      WRK-HKNCOMBI        >   ZERO
                IF      WRK-HKNCOMBI-DELKBN =  "1"
                    MOVE    "E28"               TO  WRK-DIAG-WARNING
@@ -2796,7 +2796,7 @@
                    GO  TO  200235-KOUSIN-01-EXT
                END-IF
            END-IF
-      *    �軰�Թ԰٤�����ΤȤ�
+      *    第三者行為が削除のとき
            IF      WRK-KOHID           >   ZERO
                IF     WRK-KOHID-DELKBN     =   "1"
                    MOVE    "E29"               TO  WRK-DIAG-WARNING
@@ -2805,7 +2805,7 @@
                END-IF
            END-IF
       *
-      *    Ϣ�ּ���
+      *    連番取得
            MOVE    ZERO                TO  WRK-PTBYO-RENNUM
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -2826,26 +2826,26 @@
            MOVE    WRK-BYOYMD          TO  PTBYO-SRYYMD
            MOVE    WRK-PTBYO-RENNUM    TO  PTBYO-RENNUM
            MOVE    9999                TO  PTBYO-SEQNUM
-      *    ž��
+      *    転帰
            IF      WRK-TENKIYMD    NOT =   SPACE
-      *        ž����
+      *        転帰日
                MOVE    WRK-TENKIYMD        TO  PTBYO-TENKIYMD
-      *        ž����ʬ
+      *        転帰区分
                MOVE    WRK-TENKI           TO  PTBYO-TENKIKBN
            END-IF
-      *    ��­�����ȥ�����
+      *    補足コメントコード
            PERFORM VARYING IDY FROM    1   BY  1
                    UNTIL   IDY >       3
                    OR      WRK-THOSOKUCD (IDY) =   SPACE
                 MOVE    WRK-THOSOKUCD (IDY) 
                                            TO  PTBYO-HOSOKUCD (IDY)
            END-PERFORM
-      *    ��­������
+      *    補足コメント
            MOVE    WRK-HOSOKU-COMMENT  TO  PTBYO-HOSOKU-COMMENT
-      *    �����ե饰
+      *    疑いフラグ
            MOVE    WRK-UTAGAIFLG       TO  PTBYO-UTAGAIFLG
       *
-      *    ��̾�Խ�����
+      *    病名編集処理
            MOVE    SPACE               TO  WRK-DISEASEQ-AREA-X
            IF      WRK-MANSEIKBN-X     =   "None"
                MOVE    SPACE               TO  WRK-MANSEIKBN-X
@@ -2870,7 +2870,7 @@
                DISPLAY "INS PTBYOMEI-KEY =>" PTBYO-KEY  "."
       *??      MOVE    "11"                TO  LNK-ERR2-CODE
       *??      MOVE
-      *??           "���Ƥ���̾�ι����˼��Ԥ��ޤ������ɲû��˥��顼��"
+      *??           "全ての病名の更新に失敗しました（追加時にエラー）"
       *??                                  TO  LNK-ERR2-MSG 
            ELSE
                ADD     1                   TO  CNT-OUT
@@ -2918,7 +2918,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �԰�����̾�Խ�����
+      *    不一致病名編集処理
       *****************************************************************
        2003-DISEASES-UNMATCH-SEC       SECTION.
       *
@@ -2956,7 +2956,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �԰�����̾�����å�����
+      *    不一致病名チェック処理
       *****************************************************************
        20031-DISEASES-UNMATCH-CHK-SEC SECTION.
       *
@@ -3017,9 +3017,9 @@
                END-IF
            END-PERFORM
       *
-      *    �оݤ���̾���ʤ��Ȥ��԰��ץꥹ�Ȥ��ֵ�
+      *    対象の病名がないとき不一致リストに返却
            IF      FLG-OK              =   ZERO
-      *        ������ʾ�ΤȤ����顼�Ȥ���
+      *        ５０件以上のときエラーとする
                IF      IDY                 =   50
                    MOVE    "True"              TO
                                           DISEASES-INFORMATION-OVERFLOW
@@ -3029,7 +3029,7 @@
       *
                ADD     1                   TO  IDY
       *
-      *        ������̾�����ɤޤ��ֵ�
+      *        入る病名コードまで返却
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       21
                        OR      PTBYO-BYOMEICD (IDXX)   =   SPACE
@@ -3163,7 +3163,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����оݰ�������
+      *    更新対象一覧処理
       *****************************************************************
        20029-DISEASEQ-INFORMATION-SEC          SECTION.
       *
@@ -3198,7 +3198,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ٹ��Խ�����
+      *    警告編集処理
       *****************************************************************
        500-WARNING-HENSYU-SEC          SECTION.
       *
@@ -3224,117 +3224,117 @@
            MOVE    SPACE               TO  WRK-DIAG-MSG
            EVALUATE    WRK-DIAG-WARNING
                WHEN    "E16"
-                   MOVE    "�������������ǤϤ���ޤ���"
+                   MOVE    "開始日が暦日ではありません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E17"
-                   MOVE    "ž�����������ǤϤ���ޤ���"
+                   MOVE    "転帰日が暦日ではありません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E18"
-                   MOVE    "����ʬ�Ǥ�������Ǥ��ʤ��ͤǤ���"
+                   MOVE    "医保分でしか設定できない値です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E19"
-                   MOVE    "�ݸ��ȹ礻�ֹ椬¸�ߤ��ޤ���"
+                   MOVE    "保険組合せ番号が存在しません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E20"
                WHEN    "E21"
-                   MOVE    "�ݸ���ʬ������Ȱۤʤ��ݸ��ȹ礻�ֹ�Ǥ���"
+                   MOVE    "保険区分の設定と異なる保険組合せ番号です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E22"
-                   MOVE    "�ݸ��ȹ礻�ֹ������˸��꤬����ޤ���"
+                   MOVE    "保険組合せ番号の設定に誤りがあります。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E23"
-                   STRING  "Ʊ̾����̾��"      DELIMITED   BY  SIZE 
+                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYKA       DELIMITED   BY  SPACE
-                           "��"                DELIMITED   BY  SIZE 
-                           "ʣ��¸�ߤ��ޤ���"  DELIMITED   BY  SIZE
+                           "に"                DELIMITED   BY  SIZE 
+                           "複数存在します。"  DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                 WHEN    "E24"
-                   STRING  "Ʊ̾����̾��"      DELIMITED   BY  SIZE 
+                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYKA       DELIMITED   BY  SPACE
-                           "�ˣ���ʾ�¸�ߤ��ޤ���"
+                           "に３件以上存在します。"
                                                DELIMITED   BY  SIZE 
-                           "���̤ǳ�ǧ���Ʋ�������"
+                           "画面で確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "E25"
-                   MOVE    "�軰�Թ԰٤�¸�ߤ��ޤ���"
+                   MOVE    "第三者行為が存在しません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E26"
-                   MOVE    "���������軰�Թ԰٤�Ŭ�������ϰϳ��Ǥ���"
+                   MOVE    "開始日が第三者行為の適用日の範囲外です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E27"
-                   MOVE    "�����������ȹ礻��Ŭ�������ϰϳ��Ǥ���"
+                   MOVE    "開始日が険組合せの適用日の範囲外です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E28"
-                   MOVE    "�ݸ��ȹ礻�ֹ椬¸�ߤ��ޤ���"
+                   MOVE    "保険組合せ番号が存在しません。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E29"
-                   MOVE    "�軰�Թ԰٤�¸�ߤ��ޤ���"
+                   MOVE    "第三者行為が存在しません。"
                                            TO  WRK-DIAG-MSG
       *
                WHEN    "E31"
-                   STRING  "Ʊ̾����̾��"      DELIMITED   BY  SIZE 
+                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
-                           "��¸�ߤ��ޤ���ž���������ǧ���Ʋ������ˡ�"
+                           "に存在します（転帰日等を確認して下さい）。"
                                                DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "E32"
-                   STRING  "Ʊ̾����̾��"      DELIMITED   BY  SIZE 
+                   STRING  "同名の病名が"      DELIMITED   BY  SIZE 
                            WRK-ERR-SRYYMD      DELIMITED   BY  SPACE
-                           "��¸�ߤ��ޤ���"    DELIMITED   BY  SIZE
+                           "に存在します。"    DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "E33"
-                   MOVE    "��̾�����ɤ������Ǥ���"
+                   MOVE    "病名コードが不正です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E34"
-                   MOVE    "��­�����ȥ����ɤ������Ǥ���"
+                   MOVE    "補足コメントコードが不正です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "E36"
-                   MOVE    "����оݤ���̾������ޤ���"
+                   MOVE    "削除対象の病名がありません。"
                                            TO  WRK-DIAG-MSG
       *
                WHEN    "W01"
-                   MOVE    "�ѻߡ��ܹ��衦�侩�Τ�����̾��¸�ߤ��ޤ���"
+                   MOVE    "廃止・移行先・推奨のある病名が存在します。"
                                            TO  WRK-DIAG-MSG
                    MOVE    WRK-DIAG-CHANGE
                                        TO  DISEASES-DIAG-CHANGE
                                                            (CNT-DIAG)
                WHEN    "W02"
-                   MOVE    "ñ�Ȼ��Ѷػ���̾�Ǥ���"
+                   MOVE    "単独使用禁止病名です。"
                                            TO  WRK-DIAG-MSG
                WHEN    "W03"
-                   STRING  "���ѥ����å��ǥ��顼�Ȥʤ�ʸ����"
+                   STRING  "全角チェックでエラーとなる文字が"
                                                DELIMITED   BY  SIZE
-                           "��̾��¸�ߤ��ޤ���"
+                           "病名に存在します。"
                                                DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "W04"
-                   MOVE    "��̾�˲��ԥ����ɤ�¸�ߤ��ޤ���"
+                   MOVE    "病名に改行コードが存在します。"
                                            TO  WRK-DIAG-MSG
                WHEN    "W05"
-                   STRING  "���ѥ����å��ǥ��顼�Ȥʤ�ʸ����"
+                   STRING  "全角チェックでエラーとなる文字が"
                                                DELIMITED   BY  SIZE
-                           "��­�����Ȥ�¸�ߤ��ޤ���"
+                           "補足コメントに存在します。"
                                                DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "W06"
-                   MOVE    "��­�����Ȥ˲��ԥ����ɤ�¸�ߤ��ޤ���"
+                   MOVE    "補足コメントに改行コードが存在します。"
                                            TO  WRK-DIAG-MSG
                WHEN    "W07"
-                   STRING  "���ѥ����å��ǥ��顼�Ȥʤ�ʸ����"
+                   STRING  "全角チェックでエラーとなる文字が"
                                                DELIMITED   BY  SIZE
-                           "�������̾��¸�ߤ��ޤ���"
+                           "カルテ病名に存在します。"
                                                DELIMITED   BY  SIZE
                                                INTO  WRK-DIAG-MSG
                    END-STRING
                WHEN    "W08"
-                   MOVE    "�������̾�˲��ԥ����ɤ�¸�ߤ��ޤ���"
+                   MOVE    "カルテ病名に改行コードが存在します。"
                                            TO  WRK-DIAG-MSG
            END-EVALUATE
       *
@@ -3420,7 +3420,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����ޥ��������å�����
+      *    同義語マスタチェック処理
       *****************************************************************
        5001-SYNONYM-CHK-SEC            SECTION.
       *
@@ -3446,7 +3446,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -3471,7 +3471,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų��Խ�����
+      *    診療科編集処理
       *****************************************************************
        5001-SRYKA-HENSYU-SEC       SECTION.
       *
@@ -3510,7 +3510,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -3535,7 +3535,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -3556,7 +3556,7 @@
        802-DAYHEN02-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
@@ -3564,82 +3564,82 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    "E01"
-                   MOVE    "�����ֹ椬̤����Ǥ���"
+                   MOVE    "患者番号が未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E04"
-                   MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+                   MOVE    "電子カルテＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E05"
-                   MOVE    "���륫�գɣĤ�̤����Ǥ���"
+                   MOVE    "オルカＵＩＤが未設定です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E10"
-                   MOVE    "�����ֹ�˳������봵�Ԥ�¸�ߤ��ޤ���"
+                   MOVE    "患者番号に該当する患者が存在しません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E13"
-                   MOVE    "���Ųʤ�¸�ߤ��ޤ���"
+                   MOVE    "診療科が存在しません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E28"
-                   STRING  "�����ƥ�����ʴ����ֹ湽����������ˤ�"
+                   STRING  "システム管理（患者番号構成管理情報）が"
                                                    DELIMITED   BY  SIZE
-                           "�����Ǥ��ޤ���Ǥ�����"
+                           "取得できませんでした。"
                                                    DELIMITED   BY  SIZE
                                                    INTO  WRK-ERRMSG
                    END-STRING
                WHEN    "E40"
-                   MOVE    "�ٹ𤬤�����̾��¸�ߤ��ޤ���"
+                   MOVE    "警告がある病名が存在します。"
                                                    TO  WRK-ERRMSG
                WHEN    "E41"
-                   MOVE    "��̾�����꤬����ޤ���"
+                   MOVE    "病名の設定がありません。"
                                                    TO  WRK-ERRMSG
                WHEN    "E42"
-                   MOVE    "��Ͽ����ʤ���̾��¸�ߤ��ޤ���"
+                   MOVE    "登録出来ない病名が存在します。"
                                                    TO  WRK-ERRMSG
-      *        ���̥��顼
+      *        共通エラー
                WHEN    "E89"
-      *            ORCSCOMMON �Υ��顼
+      *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
-                           MOVE    "�������󤬼����Ǥ��ޤ���"
+                           MOVE    "職員情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1002"
-                           MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                           MOVE    "医療機関情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1003"
-                           MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                           MOVE    "システム日付が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1005"
-                           MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                           MOVE    "患者番号構成情報が取得できません。"
                                                    TO  WRK-ERRMSG
                        WHEN    "1015"
-                           STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                               "������λ���Ʋ�������"
+                           STRING  "グループ医療機関が不整合です。"
+                               "処理を終了して下さい。"
                                                    DELIMITED  BY  SIZE
                                                    INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
-                           MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                           MOVE    "システム項目が設定できません。"
                                                    TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "E90"
-                   MOVE    "¾ü���ǻ�����Ǥ���"  TO  WRK-ERRMSG
+                   MOVE    "他端末で使用中です。"  TO  WRK-ERRMSG
                WHEN    "E91"
-                   MOVE    "�ꥯ�������ֹ椬�����Ǥ���"
+                   MOVE    "リクエスト番号が不正です。"
                                                    TO  WRK-ERRMSG
                WHEN    "E97"
-                   MOVE   "�������Ƥ˸��꤬����ޤ���"
+                   MOVE   "送信内容に誤りがあります。"
                                                    TO  WRK-ERRMSG
                WHEN    "E98"
-                   MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                    TO  WRK-ERRMSG
                WHEN    "E99"
-                   MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+                   MOVE    "ユーザＩＤが未登録です。"
                                                    TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -3671,7 +3671,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
@@ -3687,7 +3687,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ɹ��ʼ祭����
+      *    患者病名マスター読込（主キー）
       *****************************************************************
        900-PTBYO-INV-SEC         SECTION.
       *
@@ -3713,7 +3713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ɹ�
+      *    患者病名マスター読込
       *****************************************************************
        900-PTBYO-READ-SEC           SECTION.
       *
@@ -3731,7 +3731,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ɹ��ʼ祭����
+      *    自院病名マスター読込（主キー）
       *****************************************************************
        900-USBYO-INV-SEC         SECTION.
       *
@@ -3765,7 +3765,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����ޥ����ɹ�
+      *    同義語マスタ読込
       *****************************************************************
        900-SYNONYM-READ-SEC         SECTION.
       *
@@ -3798,7 +3798,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɹ�
+      *    保険組合せマスタ読込
       *****************************************************************
        900-COMB-READ-SEC                SECTION.
       *
@@ -3823,7 +3823,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ɹ�
+      *    保険組合せ読込
       *****************************************************************
        900-COMB-READ-N-SEC         SECTION.
       *
@@ -3841,7 +3841,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ������ɹ�
+      *    患者労災保険情報読込
       *****************************************************************
        900-PTRSIINF-READ-SEC         SECTION.
       *
@@ -3872,11 +3872,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾�������
+      *    排他制御処理
       *****************************************************************
        990-LOCK-IN-SEC         SECTION.
       *
-      *    ��¾�������
+      *    排他制御処理
            MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "C02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
@@ -3895,11 +3895,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾����������(���)
+      *    排他制御解除処理(削除)
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
-      *    ��¾����������
+      *    排他制御解除処理
       *    MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "C02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
@@ -3915,7 +3915,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3929,7 +3929,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -3943,7 +3943,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

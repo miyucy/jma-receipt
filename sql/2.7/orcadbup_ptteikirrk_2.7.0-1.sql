@@ -1,10 +1,10 @@
 --                                     --
--- ´µ¼ÔÄê´üÀÁµáÍúÎò¥Æ¡¼¥Ö¥ë            --
+-- æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«            --
 --                                     --
--- ºï½ü¥Õ¥é¥° (DELFLG)                 --
--- ½èÍı¶èÊ¬ (SYOKBN)                   --
--- ´üÊÌ     (KBT)                      --
--- ¤òÄÉ²Ã                              --
+-- å‰Šé™¤ãƒ•ãƒ©ã‚° (DELFLG)                 --
+-- å‡¦ç†åŒºåˆ† (SYOKBN)                   --
+-- æœŸåˆ¥     (KBT)                      --
+-- ã‚’è¿½åŠ                               --
 -- Create Date : 2006/01/16            --
 --                                     --
 
@@ -31,7 +31,7 @@ CREATE TABLE "tbl_ptteikirrkwk" (
 );
 
 
--- TBL_PTTEIKIRRK ¢ª TBL_PTTEIKIRRKWK   --
+-- TBL_PTTEIKIRRK â†’ TBL_PTTEIKIRRKWK   --
 
 insert into tbl_ptteikirrkwk
 select * from tbl_ptteikirrk;

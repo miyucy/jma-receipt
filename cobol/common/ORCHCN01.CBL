@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,26 +18,26 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCN01.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ��������ơʿ���Ͽ�˰���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/03/13    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院登録
+      *  コンポーネント名  : 入院カルテ（診療録）印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/03/13    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    03.05.16  ��̾�Խ��򥳥��Ȳ�
-      *  01.00.02    NACL-����    03.07.01  ������ץ�󥿥����ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/09  ���롼�׿����б�
-      *  04.04.00    NACL-����    08/12/25  �ץ�����४�ץ����
-      *  04.06.00    NACL=¿��Ǽ  10/11/25  ��̾��­�������б�
-      *  04.06.00    NACL=¿��Ǽ  11/02/03  �ݸ�Ŭ����̾Ƚ���б�
-      *  04.07.00    NACL-¿��Ǽ  13/10/08  �軰�Թ԰��б�
-      *  04.08.00    NACL-¿��Ǽ  14/07/30  ����ǥ��쥯�ȥ��б�
-      *  05.00.00    NACL-����    17/04/29  �ౡ���Խ��б�
-      *  05.00.00    NACL-����    17/07/11  API(GINBEE)�б�
-      *  05.00.01    NACL-����    18/07/26  API�����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-太田    03.05.16  病名編集をコメント化
+      *  01.00.02    NACL-太田    03.07.01  出力先プリンタサブ追加
+      *  03.05.00    NACL-多々納  07/05/09  グループ診療対応
+      *  04.04.00    NACL-太田    08/12/25  プログラムオプション
+      *  04.06.00    NACL=多々納  10/11/25  病名補足コメント対応
+      *  04.06.00    NACL=多々納  11/02/03  保険適応病名判定対応
+      *  04.07.00    NACL-多々納  13/10/08  第三者行為対応
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
+      *  05.00.00    NACL-太田    17/04/29  退院日編集対応
+      *  05.00.00    NACL-森脇    17/07/11  API(GINBEE)対応
+      *  05.00.01    NACL-太田    18/07/26  API印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -45,7 +45,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       **** SELECT  PRT-FILE        ASSIGN  HC01PARA
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
@@ -53,28 +53,28 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC                 PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *     �����ѥǡ��� ̾���ΰ� 
+      *     印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *v4.8
-      *    ����ǥ��쥯�ȥ��ΰ� 
+      *    一時デイレクトリ領域 
            COPY    "CPASGNPARA.INC".
       *
-      *    �����
+      *    カルテ
            COPY    "HCN01.INC".
-      *    ³��
+      *    続紙
            COPY    "HCN011.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -91,11 +91,11 @@
       *
            03  FLG-OK              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-MEI             PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -104,14 +104,14 @@
       *
            03  SYS-TIME            PIC 9(08).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDX-H                   PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-WSYSYMD.
                05  WRK-WGO             PIC X(01).
@@ -136,7 +136,7 @@
       *----API-ADD-START---
                05  WRK-DRCD-CODE       PIC X(05)  OCCURS  3.
                05  WRK-DRCD-KANA       PIC X(50)  OCCURS  3.
-      *    ����
+      *    状態
            03  WRK-CONDITION-MEI       PIC X(20).
            03  WRK-CONDITION           PIC X(08).
            03  WRK-KANRICD             PIC X(04).
@@ -149,7 +149,7 @@
            03  WRK-NENREI-X.
                05  WRK-NENREI          PIC 9(03).
       *
-      *    �ݸ�����
+      *    保険情報
            03  WRK-HKN-AREA.
                05  WRK-HKNJA           PIC X(08).
                05  WRK-KIGONUM         PIC X(80).
@@ -172,7 +172,7 @@
       *
            03  WRK-COMMENT             PIC X(40).
       *----API-ADD-START---
-      *    �����Խ�
+      *    日付編集
            03  WRK-HEN-DATE.
                05  WRK-HEN-YY          PIC X(04).
                05  WRK-HEN-H1          PIC X(01).
@@ -181,7 +181,7 @@
                05  WRK-HEN-DD          PIC X(02).
       *----API-ADD-END-----
       *
-      *    �ݸ��ȹ礻�ơ��֥�
+      *    保険組合せテーブル
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC        OCCURS   100.
                05  TBL-HKNCOMBINUM     PIC X(04).
@@ -203,11 +203,11 @@
                05  FILLER          PIC X(01)   VALUE  ":".
                05  WRK-TMM         PIC 99.
       *
-      *���ٺ����
+      *明細最大行
        01  MAX-LINE1               PIC 9(02)   VALUE   10.
        01  MAX-LINE2               PIC 9(02)   VALUE   22.
       *
-      *    �ץ�����४�ץ����ѥ�᥿
+      *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-BYOMEIKBN          PIC X(01).
            03  PARA-SRYKAKBN           PIC X(01).
@@ -226,112 +226,112 @@
            03  WRK-PARA                PIC X(50).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ����ޥ���
+      *    公費マスタ
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
-      *    ������̾�ޥ�����
+      *    患者病名マスタ−
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    �ݸ��Թ�ޥ���
+      *    保険者号マスタ
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSK1034.INC".
-      *    �ɥ�����
+      *    ドクター
            COPY  "CPSK1010.INC".
-      *    ���Ų�
+      *    診療科
            COPY  "CPSK1005.INC".
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ������Ͽ��ǽ�������
+      *    患者登録機能制御情報
            COPY  "CPSK1017.INC".
       *----API-ADD-START---
-      *    ���ŵ��ؾ���ݴ��ܾ���
+      *    医療機関情報−基本情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1018.INC".
       *
-      *    ��������Ͽapi
+      *    入院診療録api
            COPY    "CPFMKARTE1N.INC".
       *----API-ADD-END-----
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
       *
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY  "CPORCSNUM.INC".
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY  "CPORCSPTID.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    ��̾�Խ�����
+      *    病名編集サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *D   COPY    "CPORCMCP.INC".
       *----API-ADD-START---
-      *    �ݸ�ǯ��ѥ�᥿
+      *    保険年齢パラメタ
            COPY    "CPORCSAGECHK.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *----API-ADD-END-----
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
-      *    ��������ƽ��ϥѥ�᥿
+      *    入院カルテ出力パラメタ
            COPY    "CPORCHCN01.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -340,18 +340,18 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    ���������
+      *    初期　処理
            PERFORM 100-INIT-SEC
       *
            EVALUATE    ORCHCN01-SYORIKBN
-      *        Ƭ��Τ�
+      *        頭書のみ
                WHEN    "1"
                    PERFORM 200-HEAD-PRT-SEC
-      *        ���٤�
+      *        すべて
                WHEN    "2"
                    PERFORM 300-ALL-PRT-SEC
            END-EVALUATE
@@ -360,7 +360,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -372,10 +372,10 @@
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    ZERO                TO  WRK-PAGE
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
-      *    �ץ�����४�ץ��������
+      *    プログラムオプション取込み
            PERFORM 100-OPTION-SELECT-SEC
       *
            .
@@ -383,11 +383,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץ��̾�Խ�����
+      *    出力先プリンタ名編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC                   SECTION.
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
@@ -417,7 +417,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ�������߽���
+      *    プログラムオプション取込み処理
       *****************************************************************
        100-OPTION-SELECT-SEC             SECTION.
       *
@@ -429,7 +429,7 @@
            MOVE    "1"             TO  PARA-CHARTKBN
            MOVE    "0"             TO  PARA-TAIINYMDKBN
       *
-      *    ��̾�Խ�
+      *    病名編集
            IF    ( SYS-1017-KARUTE-BYOMEI
                                        =   "0" OR "1" OR "2" )
                MOVE    SYS-1017-KARUTE-BYOMEI
@@ -441,55 +441,55 @@
                MOVE    WRK-PARA(1:1)   TO  PARA-BYOMEIKBN
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            MOVE    "SRYKAKBN"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-SRYKAKBN
            END-IF
-      *    ��̾������ʬ
+      *    病名疑い区分
            MOVE    "UTAGAIKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-UTAGAIKBN
            END-IF
-      *    ������ʬ
+      *    入外区分
            MOVE    "NYUGAIKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-NYUGAIKBN
            END-IF
-      *    �������̾������ʬ
+      *    カルテ病名疑い区分
            MOVE    "CHARTKBN"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-CHARTKBN
            END-IF
-      *    �ݸ�Ŭ����̾��ʬ
+      *    保険適応病名区分
            MOVE    "HKNCOMBIKBN"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-HKNCOMBIKBN
       *
-      *    �軰���Խ���ʬ
+      *    第三者編集区分
            MOVE    "DAISANKBN"         TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)       TO  PARA-DAISANKBN
       *
-      *    �ౡ����ʬ
+      *    退院日区分
            MOVE    "TAIINYMDKBN"       TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            IF    ( WRK-PARA(1:1)       =   "0" OR "1" )
                MOVE    WRK-PARA(1:1)   TO  PARA-TAIINYMDKBN
            END-IF
       *----API-ADD-START---
-      *    ���У��ֵѥǡ�����1:�������� Ģɼ�����ʤ���
+      *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
            MOVE    "API_DATA"          TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
            IF     (PARA-API-DATA       =   "1"       )
                CONTINUE
            ELSE
-      *        API�����ʤ�
+      *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
            IF    ( SPA-API-FLG         NOT =   ZERO )
@@ -500,7 +500,7 @@
                    END-IF
                END-IF
            END-IF
-      *    ���Уɥ�������ɣ�
+      *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-API-CUSTOM-ID
@@ -510,7 +510,7 @@
        100-OPTION-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ����ѥ�᥿��������
+      *    プログラムオプションパラメタ取得処理
       *****************************************************************
        1001-OPTION-CALL-SEC             SECTION.
       *
@@ -527,7 +527,7 @@
                                    TO  WRK-PARA
            WHEN    OTHER
                IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *            Ⱦ�Ѥǣ�ʸ���ܤ��ͤȤ���
+      *            半角で１文字目を値とする
                    MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
                END-IF
            END-EVALUATE
@@ -536,11 +536,11 @@
        1001-OPTION-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    Ƭ��Τ߰�������
+      *    頭書のみ印刷処理
       *****************************************************************
        200-HEAD-PRT-SEC                SECTION.
       *
-      *��   ���̰��������Խ�
+      *　   共通印刷項目編集
             PERFORM 2001-HEAD-HENSYU-SEC
       *----API-ADD-START---
            IF      PARA-API-DATA       =   "1"
@@ -548,13 +548,13 @@
                GO  TO  200-HEAD-PRT-EXT
            END-IF
       *----API-ADD-END-----
-      *     ����ư���
+      *     カルテ印刷
             IF      ORCHCN01-PRTKBN    =   "1"  OR  "3"
                  PERFORM 2002-HCN01-HENSYU-SEC
                  PERFORM 2003-HCN01-PRINT-SEC
             END-IF
       *
-      *     ³�����
+      *     続紙印刷
             IF      ORCHCN01-PRTKBN    =   "2"  OR  "3"
                  PERFORM 2004-HCN011-HENSYU-SEC
                  PERFORM 2005-HCN011-PRINT-SEC
@@ -565,11 +565,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̰��������Խ�����
+      *    共通印刷項目編集処理
       *****************************************************************
        2001-HEAD-HENSYU-SEC                SECTION.
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
@@ -579,7 +579,7 @@
                GO      TO      2001-HEAD-HENSYU-EXT
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            IF      SPA-SRYKA           =   SPACE
                MOVE    SPACE               TO  WRK-SRYKA-MEI
            ELSE
@@ -602,7 +602,7 @@
                END-IF
            END-IF
       *
-      *    �ɥ�����
+      *    ドクター
            INITIALIZE                  WRK-DRCD-G
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
@@ -633,7 +633,7 @@
        2001-HEAD-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ������Խ�����
+      *    カルテ編集処理
       *****************************************************************
        2002-HCN01-HENSYU-SEC           SECTION.
       *
@@ -641,29 +641,29 @@
            INITIALIZE                      HCN01
       *
            MOVE    SPA-PTNUM           TO  HCN01-PTNUM
-      *    ���ԥޥ��������
-      *    ���Ի�̾
+      *    患者マスターより
+      *    患者氏名
            MOVE    PTINF-KANANAME      TO  HCN01-KANANAME
            IF      PTINF-NAME(31:)     =   SPACE
                MOVE    PTINF-NAME          TO  HCN01-NAME
            ELSE
                MOVE    PTINF-NAME          TO  HCN01-NAME2
            END-IF
-      *    ����
+      *    性別
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "��"                TO  HCN01-SEX (1)
+                   MOVE    "○"                TO  HCN01-SEX (1)
                WHEN    "2"
-                   MOVE    "��"                TO  HCN01-SEX (2)
+                   MOVE    "○"                TO  HCN01-SEX (2)
            END-EVALUATE
-      *    ��ǯ����
+      *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:4)    TO  HCN01-BIRTHGG
            MOVE    WRK-HYY             TO  HCN01-BIRTHYY
            MOVE    WRK-HMM             TO  HCN01-BIRTHMM
            MOVE    WRK-HDD             TO  HCN01-BIRTHDD
-      *����ǯ��
+      *　　年齢
            MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
            COMPUTE WRK-NENREI          =   WRK-SYSYY
                                        -   WRK-SYY
@@ -673,25 +673,25 @@
            MOVE    WRK-NENREI          TO  WRK-Z3
            MOVE    WRK-Z3              TO  HCN01-NENREI
       *
-      *    ���Ų�
+      *    診療科
            MOVE    WRK-SRYKA-MEI       TO  HCN01-SINRYOKA
-      *    �ɥ�����
+      *    ドクター
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
                MOVE    WRK-DRCD-MEI (IDX)  TO  HCN01-DR  (IDX)
            END-PERFORM
       *
-      *    ����ݽ���
+      *    自宅−住所
            MOVE    SPACE               TO  WRK-ADRS
            STRING  PTINF-HOME-ADRS     DELIMITED   BY  SPACE
                    PTINF-HOME-BANTI    DELIMITED   BY  SPACE
                    INTO                    WRK-ADRS
            END-STRING
            MOVE    WRK-ADRS            TO  HCN01-ADRS
-      *    ������������ֹ�
+      *    自宅−昼電話番号
            MOVE    PTINF-HOME-TEL1     TO  HCN01-TEL
       *
-      *    Ϣ����
+      *    連絡先
            MOVE    PTINF-RENRAKU-NAME  TO  HCN01-RENNAME
            MOVE    SPACE               TO  WRK-ADRS
            STRING  PTINF-RENRAKU-ADRS  DELIMITED   BY  SPACE
@@ -702,7 +702,7 @@
            MOVE    PTINF-RENRAKU-TEL1  TO  HCN01-HIRUTEL
            MOVE    PTINF-RENRAKU-TEL2  TO  HCN01-YORUTEL
       *
-      *    ��̳��
+      *    勤務先
            MOVE    PTINF-OFFICE-NAME   TO  HCN01-KINNAME
            MOVE    SPACE               TO  WRK-ADRS
            STRING  PTINF-OFFICE-ADRS   DELIMITED   BY  SPACE
@@ -712,7 +712,7 @@
            MOVE    WRK-ADRS            TO  HCN01-KINADRS
            MOVE    PTINF-OFFICE-TEL    TO  HCN01-KINTEL
       *
-      *    ������
+      *    入院日
            IF      ORCHCN01-NYUINYMD   NOT =   SPACE
                MOVE    ORCHCN01-NYUINYMD       TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
@@ -722,7 +722,7 @@
                MOVE    WRK-HDD             TO  HCN01-NYUINDD
            END-IF
       *
-      *    �ౡ��
+      *    退院日
            IF      PARA-TAIINYMDKBN        =   "1"
             AND    ORCHCN01-TAIINYMD   NOT =   SPACE
                MOVE    ORCHCN01-TAIINYMD   TO  WRK-SYMD
@@ -738,11 +738,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ư�������
+      *    カルテ印刷処理
       *****************************************************************
        2003-HCN01-PRINT-SEC                SECTION.
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -750,7 +750,7 @@
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
@@ -758,7 +758,7 @@
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
            OPEN    OUTPUT              PRT-FILE
-      *    �����ѥǡ�������
+      *    印刷用データ出力
            MOVE    HCN01               TO  PRT-REC
            WRITE   PRT-REC
       *
@@ -771,7 +771,7 @@
       ***** MOVE   HC01PARA            TO  MKPRT-DAT
             MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(1)   TO  MKPRT-PRTNM
-            MOVE   "��������Ͽ"
+            MOVE   "入院診療録"
                                       TO  MKPRT-INFO
             CALL   "ORCSMKPRT"         USING
                                        ORCSMKPRTAREA
@@ -781,7 +781,7 @@
        2003-HCN01-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ³���Խ�����
+      *    続紙編集処理
       *****************************************************************
        2004-HCN011-HENSYU-SEC           SECTION.
       *
@@ -789,8 +789,8 @@
            INITIALIZE                      HCN011
       *
            MOVE    SPA-PTNUM           TO  HCN011-PTNUM
-      *    ���ԥޥ��������
-      *    ���Ի�̾
+      *    患者マスターより
+      *    患者氏名
            IF      PTINF-NAME(31:)     =   SPACE
                MOVE    PTINF-NAME          TO  HCN011-NAME
            ELSE
@@ -802,11 +802,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ³���������
+      *    続紙印刷処理
       *****************************************************************
        2005-HCN011-PRINT-SEC                SECTION.
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC01"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -814,7 +814,7 @@
            ADD     1                   TO  WRK-PAGE
            MOVE    WRK-PAGE            TO  HC01PARA-CNT
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
@@ -822,7 +822,7 @@
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
            OPEN    OUTPUT              PRT-FILE
-      *    �����ѥǡ�������
+      *    印刷用データ出力
            MOVE    HCN011              TO  PRT-REC
            WRITE   PRT-REC
       *
@@ -844,11 +844,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٤Ƥΰ�������
+      *    すべての印刷処理
       *****************************************************************
        300-ALL-PRT-SEC                SECTION.
       *
-      *��  ���̰��������Խ�
+      *　  共通印刷項目編集
            PERFORM 2001-HEAD-HENSYU-SEC
       *----API-ADD-START---
            IF      PARA-API-DATA       =   "1"
@@ -857,14 +857,14 @@
            END-IF
       *----API-ADD-END-----
            PERFORM 2002-HCN01-HENSYU-SEC
-      *    �ݸ������Խ�
+      *    保険項目編集
            PERFORM 3001-HCN01-ALLHENSYU-SEC
       *
            IF   (  PARA-BYOMEIKBN          NOT =   "2" )
-      *        ��̾���������
+      *        病名を印刷する
                PERFORM 3002-BYOMEI-PRT-SEC
            ELSE
-      *        ����ư���
+      *        カルテ印刷
                PERFORM 2003-HCN01-PRINT-SEC
            END-IF
       *
@@ -872,30 +872,30 @@
        300-ALL-PRT-EXT.
            EXIT.
       *****************************************************************
-      *    ������ݸ������Խ�����
+      *    カルテ保険情報編集処理
       *****************************************************************
        3001-HCN01-ALLHENSYU-SEC        SECTION.
       *
-      *    �ݸ����󸡺�
+      *    保険情報検索
            PERFORM 30011-HKNCOMBI-HEN-SEC
       *
-      *    ³��
+      *    続柄
            MOVE    PTINF-ZOKUGARA      TO  HCN01-ZOKUGARA
       *
            EVALUATE    COMB-HONKZKKBN
            WHEN    "1"
-               MOVE    "�ܿ�"          TO  HCN01-HONKZK
+               MOVE    "本人"          TO  HCN01-HONKZK
            WHEN    "2"
-               MOVE    "��²"          TO  HCN01-HONKZK
+               MOVE    "家族"          TO  HCN01-HONKZK
            END-EVALUATE
       *
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    WRK-HKNJA-G         TO  HCN01-HPTNUM
-      *    �����ֹ�
+      *    記号番号
            MOVE    WRK-HEN-KIGONUM     TO  HCN01-KIGONUM
-      *    ���ݸ���̾
+      *    被保険者名
            MOVE    PTHKN-HIHKNJANAME   TO  HCN01-HIHKNNAME
-      *    ��ʼ���ǯ����
+      *    資格取得年月日
            IF      PTHKN-SKKGETYMD     =   SPACE
                CONTINUE
            ELSE
@@ -906,7 +906,7 @@
                MOVE    WRK-HMM             TO  HCN01-SYUTOKMM
                MOVE    WRK-HDD             TO  HCN01-SYUTOKDD
            END-IF
-      *    ͭ�����¡�Ŭ�ѽ�λǯ������
+      *    有効期限（適用終了年月日）
            IF      PTHKN-TEKEDYMD      =   SPACE  OR  ALL "9"
                CONTINUE
            ELSE
@@ -918,15 +918,15 @@
                MOVE    WRK-HDD             TO  HCN01-YUKODD
            END-IF
       *
-      *    ���Ƚ�̾
+      *    事業所名
            MOVE    HKNJA-HKNJANAME     TO  HCN01-JIGYONAME
-      *    ���Ƚ꽻��
+      *    事業所住所
            STRING  HKNJA-ADRS          DELIMITED  BY  SPACE
                    HKNJA-BANTI         DELIMITED  BY  SPACE
                    INTO                    HCN01-JIGYOADRS
            END-STRING
       *
-      *    �������
+      *    公費情報
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   2
                IF      COMB-KOHID (IDY)    NOT =   SPACE
@@ -952,7 +952,7 @@
                                                                 (IDY)
                        END-IF
                    END-IF
-      *            ��λǯ����
+      *            終了年月日
                    IF      PTKOH-TEKEDYMD      =   SPACE  OR  ALL "9"
                        CONTINUE
                    ELSE
@@ -970,9 +970,9 @@
                END-IF
            END-PERFORM
       *
-      *    ϫ�Ҥλ����ݸ����ֹ桦������ѹ�
+      *    労災の時、保険者番号・記号の変更
            IF      COMB-HKNNUM         =   "971"  OR  "973"
-      *        �����ݸ����󸡺�
+      *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
@@ -993,9 +993,9 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
                IF      FLG-PTRSIINF        =   ZERO
-      *            �ݸ����ֹ�ص����ϫ�Ҷ�ʬ̾��
+      *            保険者番号へ記号（労災区分名）
                    MOVE    WRK-HEN-KIGONUM     TO  HCN01-HPTNUM
-      *            ����ش��Ը����ֹ�
+      *            記号へ患者交付番号
                    IF    ( PTRSI-KOFUNUM       =   SPACE )
                        MOVE    SPACE           TO  HCN01-KIGONUM
                    ELSE
@@ -1012,7 +1012,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ������Խ�����
+      *    保険情報編集処理
       *****************************************************************
        30011-HKNCOMBI-HEN-SEC          SECTION.
       *
@@ -1027,8 +1027,8 @@
                INITIALIZE                  HKNCOMBI-REC
            END-IF
       *
-      *    �����ݸ����󸡺�
-      *    ���ݸ��ݣɣ�
+      *    患者保険情報検索
+      *    主保険−ＩＤ
            INITIALIZE                      PTHKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    SPA-PTID            TO  PTHKN-PTID
@@ -1038,7 +1038,7 @@
                INITIALIZE              PTHKNINF-REC
            END-IF
       *
-      *    �ݸ����ֹ��Ѵ������ʱ��Ť��
+      *    保険者番号変換処理（右づめ）
            MOVE    SPACE               TO  WRK-HKNJA
            MOVE    9                   TO  IDY
            MOVE    ZERO                TO  FLG-OK
@@ -1060,8 +1060,8 @@
                MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNJA-G
            END-IF
       *
-      *    ���桦�ֹ�
-      *    �����Ѵ�
+      *    記号・番号
+      *    全角変換
            IF      PTHKN-KIGO          =   SPACE
                MOVE    SPACE               TO  WRK-KIGONUM
            ELSE
@@ -1083,13 +1083,13 @@
                MOVE    SPACE               TO  WRK-HEN-KIGONUM
            ELSE
                STRING  WRK-KIGONUM         DELIMITED   BY  SPACE
-                       "��"                DELIMITED   BY  SIZE
+                       "・"                DELIMITED   BY  SIZE
                        WRK-NUM             DELIMITED   BY  SPACE
                    INTO                    WRK-HEN-KIGONUM
                END-STRING
            END-IF
       *
-      *    �ݸ��ֹ�ޥ���������
+      *    保険番号マスター検索
            INITIALIZE                  HKNNUM-REC
            MOVE    SPA-HOSPNUM         TO  HKN-HOSPNUM
            MOVE    COMB-HKNNUM         TO  HKN-HKNNUM
@@ -1099,7 +1099,7 @@
                INITIALIZE              HKNNUM-REC
            END-IF
       *
-      *    �ݸ����ֹ桡���������å�
+      *    保険者番号　検索チェック
            INITIALIZE                  HKNJAINF-REC
            MOVE    SPA-HOSPNUM         TO  HKNJA-HOSPNUM
            MOVE    PTHKN-HKNJA-G       TO  HKNJA-HKNJANUM
@@ -1124,13 +1124,13 @@
        30011-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը����Ѵ�����
+      *    患者公費変換処理
       *****************************************************************
        30012-PTKOHINF-HEN-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-FTNSNO
            MOVE    SPACE               TO  WRK-JKYSNO
-      *    ��ô���ֹ�
+      *    負担者番号
            IF      PTKOH-FTNJANUM      =   SPACE
                MOVE    SPACE               TO  WRK-FTNSNO
            ELSE
@@ -1139,7 +1139,7 @@
                MOVE    WRK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  WRK-FTNSNO
            END-IF
-      *    ������ֹ棱
+      *    受給者番号１
            IF      PTKOH-JKYSNUM       =   SPACE
                MOVE    SPACE               TO  WRK-JKYSNO
            ELSE
@@ -1150,27 +1150,27 @@
            END-IF
       *ver.4.7
            IF      COMB-KOH1HKNNUM     =   "970"
-      *        �軰�Թ԰�
+      *        第三者行為
                MOVE    COMB-KOH1-TANSEIDONAME
                                            TO  WRK-FTNSNO
            END-IF
       *ver.4.7
            IF      COMB-KOH1HKNNUM     =   "970"
-      *        �軰�Թ԰�
+      *        第三者行為
                IF      PARA-DAISANKBN      =   "1"
-      *            ��ô���ֹ��
+      *            負担者番号へ
                    MOVE    COMB-KOH1-TANSEIDONAME
                                                TO  WRK-FTNSNO
                    MOVE    SPACE               TO  WRK-JKYSNO
                    IF      PTKOH-JKYSNUM   NOT =   SPACE
-                       STRING  "��"
+                       STRING  "（"
                                PTKOH-JKYSNUM
-                               "��"            DELIMITED  BY  SPACE
+                               "）"            DELIMITED  BY  SPACE
                                                INTO    WRK-JKYSNO
                        END-STRING
                    END-IF
                ELSE
-      *            ���ͤ�
+      *            備考へ
                    MOVE    SPACE               TO  WRK-FTNSNO
                    MOVE    SPACE               TO  WRK-JKYSNO
                    MOVE    SPACE               TO  WRK-COMMENT
@@ -1178,9 +1178,9 @@
                        MOVE    COMB-KOH1-TANSEIDONAME  TO  WRK-COMMENT
                    ELSE
                        STRING  COMB-KOH1-TANSEIDONAME
-                               "��"
+                               "（"
                                PTKOH-JKYSNUM
-                               "��"            DELIMITED  BY  SPACE
+                               "）"            DELIMITED  BY  SPACE
                                            INTO    WRK-COMMENT
                        END-STRING
                    END-IF
@@ -1193,18 +1193,18 @@
        30012-PTKOHINF-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��̾�����Խ�����
+      *    病名印刷編集処理
       *****************************************************************
        3002-BYOMEI-PRT-SEC        SECTION.
       *
-      *    �ݸ��ȹ礻�ơ��֥��Խ�
+      *    保険組合せテーブル編集
            INITIALIZE                  TBL-HKNCOMBI-AREA
            IF      SPA-HKNCOMBINUM     =   ZERO
                MOVE    SPACE               TO  WRK-COMB-HKNNUM
            ELSE
                MOVE    COMB-HKNNUM         TO  WRK-COMB-HKNNUM
       *ver.4.7
-      *        �軰��
+      *        第三者
                IF      COMB-KOH1HKNNUM     =   "970"
                    MOVE    COMB-KOH1HKNNUM TO  WRK-COMB-HKNNUM
                    MOVE    COMB-KOH1ID     TO  WRK-COMB-KOHID
@@ -1215,7 +1215,7 @@
                PERFORM 2009-HKNCOMBI-HEN-SEC
            END-IF
       *
-      *    ������̾�ޥ�������Խ�
+      *    患者病名マスタより編集
            MOVE    MAX-LINE1           TO  CNT-MEI
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
@@ -1241,19 +1241,19 @@
                ADD     1               TO  IDX
                IF      WRK-PRT-CNT     =   1
                    IF      IDX             >   MAX-LINE1
-      *                ����ư���
+      *                カルテ印刷
                        PERFORM 2003-HCN01-PRINT-SEC
-      *                ³�����Խ�
+      *                続紙初期編集
                        PERFORM 2004-HCN011-HENSYU-SEC
                        ADD     1               TO  WRK-PRT-CNT
                        MOVE    1               TO  IDX
                    END-IF
                ELSE
-      *            ³�����
+      *            続紙印刷
                    IF      IDX             >   MAX-LINE2
-      *                ³�����
+      *                続紙印刷
                        PERFORM 2005-HCN011-PRINT-SEC
-      *                ³�����Խ�
+      *                続紙初期編集
                        PERFORM 2004-HCN011-HENSYU-SEC
                        ADD     1               TO  WRK-PRT-CNT
                        MOVE    1               TO  IDX
@@ -1261,10 +1261,10 @@
                END-IF
       *
                IF      WRK-PRT-CNT         =   1
-      *            �������̾�Խ�����
+      *            カルテ病名編集処理
                    PERFORM 3103-HCN01-BYOMEI-SET-SEC
                ELSE
-      *            ³����̾�Խ�����
+      *            続紙病名編集処理
                    PERFORM 3104-HCN011-BYOMEI-SET-SEC
                END-IF
       *
@@ -1277,11 +1277,11 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      WRK-PRT-CNT     =   1
-      *            ����ư���
+      *            カルテ印刷
                PERFORM 2003-HCN01-PRINT-SEC
            ELSE
                IF      IDX             >   ZERO
-      *            ³�����
+      *            続紙印刷
                    PERFORM 2005-HCN011-PRINT-SEC
                END-IF
            END-IF
@@ -1291,7 +1291,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ơ��֥��Խ�����
+      *    保険組合せテーブル編集処理
       *****************************************************************
        2009-HKNCOMBI-HEN-SEC        SECTION.
       *
@@ -1302,7 +1302,7 @@
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
       *H28.10
-      *    �����оݤȤ���
+      *    全件対象とする
       *    MOVE    SPA-SYSYMD          TO  COMB-TEKSTYMD
       *    MOVE    SPA-SYSYMD          TO  COMB-TEKEDYMD
       *
@@ -1322,7 +1322,7 @@
                        OR  (IDX-H          >=  100 )
       ****     IF      COMB-DELKBN         =   SPACE
       *H28.10
-      *        ϫ�ҡ������ա��軰�ԤΤߤ��٤��Խ�
+      *        労災・自賠責・第三者のみすべて編集
                IF     (COMB-HKNNUM         =   "971"
                                            OR  "973"
                                            OR  "970" )
@@ -1333,7 +1333,7 @@
                    MOVE    COMB-HKNNUM         TO  TBL-HKNNUM
                                                                (IDX-H)
       *ver.4.7
-      *            �軰��
+      *            第三者
                    IF      COMB-KOH1HKNNUM     =   "970"
                        MOVE    COMB-KOH1HKNNUM TO  TBL-HKNNUM (IDX-H)
                        MOVE    COMB-KOH1ID     TO  TBL-KOHID  (IDX-H)
@@ -1350,20 +1350,20 @@
        2009-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������̾�Խ�����
+      *    カルテ病名編集処理
       *****************************************************************
        3103-HCN01-BYOMEI-SET-SEC          SECTION.
       *
            INITIALIZE                  ORCSMKBYOMEIAREA
            MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
-      *    ��­������
+      *    補足コメント
            MOVE    PTBYO-HOSOKU-COMMENT    TO  SMKBYO-HOSOKU-COMMENT
            IF    ( PARA-UTAGAIKBN      =   "1" )
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
            END-IF
            CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
       *
-      *    �������̾��������ϥ������̾
+      *    カルテ病名がある時はカルテ病名
            IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
@@ -1374,14 +1374,14 @@
            END-IF
            MOVE    SMKBYO-BYOMEI       TO  HCN01-BYOMEI (IDX)
       *
-      *    ����ǯ�����ʿ���ǯ������
+      *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HYY             TO  HCN01-STRYY  (IDX)
            MOVE    WRK-HMM             TO  HCN01-STRMM  (IDX)
            MOVE    WRK-HDD             TO  HCN01-STRDD  (IDX)
       *
-      *    ��λǯ������ž��ǯ������
+      *    終了年月日（転帰年月日）
            IF      PTBYO-TENKIYMD  NOT =   SPACE
                MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
@@ -1392,22 +1392,22 @@
       *
            EVALUATE    PTBYO-TENKIKBN
            WHEN    "1"
-               MOVE    "��"            TO  HCN01-TENKI(IDX 1)
+               MOVE    "○"            TO  HCN01-TENKI(IDX 1)
            WHEN    "2"
-               MOVE    "��"            TO  HCN01-TENKI(IDX 3)
-               MOVE    "��"            TO  HCN01-TENKIMSG(IDX)
+               MOVE    "○"            TO  HCN01-TENKI(IDX 3)
+               MOVE    "死"            TO  HCN01-TENKIMSG(IDX)
            WHEN    "3"
-               MOVE    "��"            TO  HCN01-TENKI(IDX 2)
+               MOVE    "○"            TO  HCN01-TENKI(IDX 2)
            WHEN    "8"
-               MOVE    "��"            TO  HCN01-TENKI(IDX 3)
-               MOVE    "��"            TO  HCN01-TENKIMSG(IDX)
+               MOVE    "○"            TO  HCN01-TENKI(IDX 3)
+               MOVE    "移"            TO  HCN01-TENKIMSG(IDX)
            END-EVALUATE
       *
            .
        3103-HCN01-BYOMEI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ³����̾�Խ�����
+      *    続紙病名編集処理
       *****************************************************************
        3104-HCN011-BYOMEI-SET-SEC          SECTION.
       *
@@ -1418,13 +1418,13 @@
            INITIALIZE                  ORCSMKBYOMEIAREA
            MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
       *
-      *    ��­������
+      *    補足コメント
            MOVE    PTBYO-HOSOKU-COMMENT    TO  SMKBYO-HOSOKU-COMMENT
            IF    ( PARA-UTAGAIKBN      =   "1" )
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
            END-IF
            CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
-      *    �������̾��������ϥ������̾
+      *    カルテ病名がある時はカルテ病名
            IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
@@ -1434,14 +1434,14 @@
                END-IF
            END-IF
            MOVE    SMKBYO-BYOMEI       TO  HCN011-BYOMEI (IDX)
-      *    ����ǯ�����ʿ���ǯ������
+      *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HYY             TO  HCN011-STRYY  (IDX)
            MOVE    WRK-HMM             TO  HCN011-STRMM  (IDX)
            MOVE    WRK-HDD             TO  HCN011-STRDD  (IDX)
       *
-      *    ��λǯ������ž��ǯ������
+      *    終了年月日（転帰年月日）
            IF      PTBYO-TENKIYMD  NOT =   SPACE
                MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
@@ -1452,15 +1452,15 @@
       *
            EVALUATE    PTBYO-TENKIKBN
            WHEN    "1"
-               MOVE    "��"            TO  HCN011-TENKI(IDX 1)
+               MOVE    "○"            TO  HCN011-TENKI(IDX 1)
            WHEN    "2"
-               MOVE    "��"            TO  HCN011-TENKI(IDX 3)
-               MOVE    "��"            TO  HCN011-TENKIMSG(IDX)
+               MOVE    "○"            TO  HCN011-TENKI(IDX 3)
+               MOVE    "死"            TO  HCN011-TENKIMSG(IDX)
            WHEN    "3"
-               MOVE    "��"            TO  HCN011-TENKI(IDX 2)
+               MOVE    "○"            TO  HCN011-TENKI(IDX 2)
            WHEN    "8"
-               MOVE    "��"            TO  HCN011-TENKI(IDX 3)
-               MOVE    "��"            TO  HCN011-TENKIMSG(IDX)
+               MOVE    "○"            TO  HCN011-TENKI(IDX 3)
+               MOVE    "移"            TO  HCN011-TENKIMSG(IDX)
            END-EVALUATE
       *
            .
@@ -1468,7 +1468,7 @@
            EXIT.
       *----API-ADD-START---
       *****************************************************************
-      *    ���Уɽ���
+      *    ＡＰＩ処理
       *****************************************************************
        710-HEAD-API-SEC            SECTION.
       *
@@ -1479,7 +1479,7 @@
        710-HEAD-API-EXT.
            EXIT.
       *****************************************************************
-      *    ���Уɽ���
+      *    ＡＰＩ処理
       *****************************************************************
        710-ALL-API-SEC            SECTION.
       *
@@ -1491,7 +1491,7 @@
            END-IF
       *
            IF   (  PARA-BYOMEIKBN          NOT =   "2" )
-      *        ��̾���������
+      *        病名を印刷する
                PERFORM 710-API-BYOMEIHEN-SEC
            END-IF
       *
@@ -1500,17 +1500,17 @@
        710-ALL-API-EXT.
            EXIT.
       *****************************************************************
-      *    ���Уɽ���
+      *    ＡＰＩ処理
       *****************************************************************
        710-API-HEAD-SYORI-SEC     SECTION.
       *
            INITIALIZE                      FMKARTE1N-REC
-      *    ����������ʬ
+      *    印刷処理区分
            MOVE    ORCHCN01-PRTKBN     TO  FMKARTE1N-HAKKOKBN
            MOVE    "karte_no1_n"       TO  FMKARTE1N-FORM-ID
            MOVE    SYS-1034-PRTNM(1)   TO  FMKARTE1N-PRINTER
       *
-      *    ���ŵ���̾
+      *    医療機関名
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -1527,13 +1527,13 @@
            END-IF
            MOVE    SYS-1001-HOSPNAME   TO  FMKARTE1N-HOSPNAME
       *
-      *    ���ԥޥ��������
+      *    患者マスターより
            MOVE    SPA-PTNUM           TO  FMKARTE1N-PTNUM
            MOVE    PTINF-KANANAME      TO  FMKARTE1N-KANANAME
            MOVE    PTINF-NAME          TO  FMKARTE1N-NAME
            MOVE    PTINF-SEX           TO  FMKARTE1N-SEX
       *
-      *    ��ǯ����
+      *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-BIRTHDAY
@@ -1542,11 +1542,11 @@
        710-API-HEAD-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Уɽ���
+      *    ＡＰＩ処理
       *****************************************************************
        710-API-PTINF-SYORI-SEC     SECTION.
       *
-      *    ǯ��
+      *    年齢
            MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
            COMPUTE WRK-NENREI          =   WRK-SYSYY
                                        -   WRK-SYY
@@ -1555,10 +1555,10 @@
            END-IF
            MOVE    WRK-NENREI          TO  FMKARTE1N-HOKEN-AGE
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPA-SRYKA           TO  FMKARTE1N-SRYKA
            MOVE    WRK-SRYKA-MEI       TO  FMKARTE1N-SRYKANAME
-      *    �ɥ�����
+      *    ドクター
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   3
                MOVE    WRK-DRCD-CODE(IDX)  TO  FMKARTE1N-DR-CODE(IDX)
@@ -1567,14 +1567,14 @@
                                        TO  FMKARTE1N-DR-KANANAME(IDX)
            END-PERFORM
       *
-      *    ����ݽ���
+      *    自宅−住所
            MOVE    PTINF-HOME-POST     TO  FMKARTE1N-HOME-POST
            MOVE    PTINF-HOME-ADRS     TO  FMKARTE1N-HOME-ADRS(1)
            MOVE    PTINF-HOME-BANTI    TO  FMKARTE1N-HOME-ADRS(2)
            MOVE    PTINF-HOME-TEL1     TO  FMKARTE1N-HOME-TEL1
            MOVE    PTINF-HOME-TEL2     TO  FMKARTE1N-HOME-TEL2
       *
-      *    ����̾�Σ�����
+      *    状態名称１〜３
            MOVE    PTINF-CONDITION-1   TO  WRK-CONDITION
            MOVE    "1018"              TO  WRK-KANRICD
            PERFORM 200190-API-CONDITION-SEC
@@ -1588,13 +1588,13 @@
            PERFORM 200190-API-CONDITION-SEC
            MOVE    WRK-CONDITION-MEI   TO  FMKARTE1N-CONDITION(3)
       *
-      *    ��̳��
+      *    勤務先
            MOVE    PTINF-OFFICE-NAME   TO  FMKARTE1N-OFFICE-NAME
            MOVE    PTINF-OFFICE-POST   TO  FMKARTE1N-OFFICE-POST
            MOVE    PTINF-OFFICE-ADRS   TO  FMKARTE1N-OFFICE-ADRS(1)
            MOVE    PTINF-OFFICE-BANTI  TO  FMKARTE1N-OFFICE-ADRS(2)
            MOVE    PTINF-OFFICE-TEL    TO  FMKARTE1N-OFFICE-TEL
-      *    Ϣ����
+      *    連絡先
            MOVE    PTINF-RENRAKU-NAME  TO  FMKARTE1N-RENRAKU-NAME
            MOVE    PTINF-RENRAKU-ZOKUGARA
                                        TO  FMKARTE1N-RENRAKU-ZOKUGARA
@@ -1603,44 +1603,44 @@
            MOVE    PTINF-RENRAKU-BANTI TO  FMKARTE1N-RENRAKU-ADRS(2)
            MOVE    PTINF-RENRAKU-TEL1  TO  FMKARTE1N-RENRAKU-TEL1
            MOVE    PTINF-RENRAKU-TEL2  TO  FMKARTE1N-RENRAKU-TEL2
-      *    ������
+      *    帰省先
            MOVE    PTINF-KISEI-NAME    TO  FMKARTE1N-KISEI-NAME
            MOVE    PTINF-KISEI-POST    TO  FMKARTE1N-KISEI-POST
            MOVE    PTINF-KISEI-ADRS    TO  FMKARTE1N-KISEI-ADRS(1)
            MOVE    PTINF-KISEI-BANTI   TO  FMKARTE1N-KISEI-ADRS(2)
            MOVE    PTINF-KISEI-TEL     TO  FMKARTE1N-KISEI-TEL
       *
-      *    ³��
+      *    続柄
            MOVE    PTINF-ZOKUGARA      TO  FMKARTE1N-ZOKUGARA
-      *    ����
+      *    職業
            MOVE    PTINF-JOB           TO  FMKARTE1N-JOB
-      *    ���Ӽ�
+      *    世帯主
            MOVE    PTINF-SETAINUSI     TO  FMKARTE1N-SETAINUSI
-      *    ��Ͽ��
+      *    登録日
            MOVE    PTINF-CREYMD        TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-CREYMD
       *
-      *    ���Ͷش��Խ�
+      *    備考禁忌編集
            MOVE    PTINF-TABOO-1       TO  FMKARTE1N-TABOO(1)
            MOVE    PTINF-TABOO-2       TO  FMKARTE1N-TABOO(2)
-      *    ���ͥ���륮���Խ�
+      *    備考アレルギー編集
            MOVE    PTINF-ALLERGY-1     TO  FMKARTE1N-ALLERGY(1)
            MOVE    PTINF-ALLERGY-2     TO  FMKARTE1N-ALLERGY(2)
-      *    ���ʹ������Խ�
+      *    備考感染症編集
            MOVE    PTINF-KANSENSYO-1   TO  FMKARTE1N-KANSENSYO(1)
            MOVE    PTINF-KANSENSYO-2   TO  FMKARTE1N-KANSENSYO(2)
-      *    ���ͥ������Խ�
+      *    備考コメント編集
            MOVE    PTINF-COMMENT-1     TO  FMKARTE1N-COMMENT(1)
            MOVE    PTINF-COMMENT-2     TO  FMKARTE1N-COMMENT(2)
       *
-      *    ������
+      *    入院日
            IF      ORCHCN01-NYUINYMD   NOT =   SPACE
                MOVE    ORCHCN01-NYUINYMD   TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  FMKARTE1N-NYUINYMD
            END-IF
-      *    �ౡ��
+      *    退院日
            IF      PARA-TAIINYMDKBN        =   "1"
             AND    ORCHCN01-TAIINYMD   NOT =   SPACE
                MOVE    ORCHCN01-TAIINYMD   TO  WRK-SYMD
@@ -1651,19 +1651,19 @@
        710-API-PTINF-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Уɽ���
+      *    ＡＰＩ処理
       *****************************************************************
        710-API-PTHKN-SYORI-SEC     SECTION.
       *
-      *    �ݸ����󸡺�
+      *    保険情報検索
            PERFORM 30011-HKNCOMBI-HEN-SEC
       *
            MOVE    SPA-HKNCOMBINUM     TO  FMKARTE1N-HKNCOMBI
-      *    ��ô���
+      *    負担割合
            MOVE    COMB-GAI-KFTNRATE   TO  FMKARTE1N-GAI-KFTNRATE
            MOVE    COMB-NYU-KFTNRATE   TO  FMKARTE1N-NYU-KFTNRATE
-      *    �ݸ�ǯ��
-      *    �ݸ�����ǯ������å���
+      *    保険年齢
+      *    保険算定年齢チェック等
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
@@ -1675,15 +1675,15 @@
                                        ORCSAGECHKAREA
                                        SPA-AREA
            IF      AGECHK-FTNRATE  NOT =   ZERO
-      *        ��ôΨ
+      *        負担率
                MOVE    AGECHK-FTNRATE      TO  FMKARTE1N-HOKEN-RATE
            END-IF
-      *    ǯ��
+      *    年齢
            MOVE    AGECHK-NENREI       TO  FMKARTE1N-HOKEN-AGE
       *
-      *    �ݸ�����
+      *    保険情報
            MOVE    COMB-HKNNUM         TO  FMKARTE1N-HKNNUM
-      *    û������̾
+      *    短縮制度名
            MOVE    COMB-SYU-TANSEIDONAME
                                        TO  FMKARTE1N-HKNNAME
            INITIALIZE                  HKNNUM-REC
@@ -1696,40 +1696,40 @@
                MOVE    HKN-TANSEIDONAME
                                        TO  FMKARTE1N-HKNNAME
            END-IF
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    PTHKN-HKNJANUM      TO  FMKARTE1N-HKNJANUM
-      *    ���桦�ֹ�
+      *    記号・番号
            MOVE    PTHKN-KIGO          TO  FMKARTE1N-KIGO
            MOVE    PTHKN-NUM           TO  FMKARTE1N-NUM
-      *    ��³��ʬ
+      *    継続区分
            MOVE    PTHKN-CONTKBN       TO  FMKARTE1N-CONTKBN
-      *    �����ʬ
+      *    補助区分
            MOVE    PTHKN-HOJOKBN       TO  FMKARTE1N-HOJOKBN
-      *    �ܿͲ�²��ʬ
+      *    本人家族区分
            MOVE    PTHKN-HONKZKKBN     TO  FMKARTE1N-HONKZKKBN
-      *    ��ʼ�����
+      *    資格取得日
            MOVE    PTHKN-SKKGETYMD     TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-SKKGETYMD
-      *    Ŭ�ѳ���ǯ����
+      *    適用開始年月日
            MOVE    PTHKN-TEKSTYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-TEKSTYMD
-      *    Ŭ�ѽ�λǯ����
+      *    適用終了年月日
            MOVE    PTHKN-TEKEDYMD      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMKARTE1N-TEKEDYMD
-      *    �ݸ��Ծ���
+      *    保険者情報
            MOVE    HKNJA-HKNJANAME     TO  FMKARTE1N-HKNJANAME
            MOVE    HKNJA-ADRS          TO  FMKARTE1N-HKNJA-ADRS(1)
            MOVE    HKNJA-BANTI         TO  FMKARTE1N-HKNJA-ADRS(2)
            MOVE    HKNJA-TEL           TO  FMKARTE1N-HKNJA-TEL
-      *    ���ݸ���̾
+      *    被保険者名
            MOVE    PTHKN-HIHKNJANAME   TO  FMKARTE1N-HIHKNJANAME
       *
-      *    ϫ�Ҥλ����ݸ����ֹ桦������ѹ�
+      *    労災の時、保険者番号・記号の変更
            IF      COMB-HKNNUM         =   "971"  OR  "973"
-      *        �����ݸ����󸡺�
+      *        患者保険情報検索
                INITIALIZE                      PTRSIINF-REC
                MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
                MOVE    SPA-PTID            TO  PTRSI-PTID
@@ -1751,47 +1751,47 @@
                PERFORM 990-DBCLOSE-SEC
                IF      FLG-PTRSIINF        =   ZERO
                    MOVE    PTRSI-HKNKBN    TO  FMKARTE1N-RSI-HKNKBN
-      *            ���Ը����ֹ桦ǯ��ڽ��ֹ桦�򹯴�����Ģ�ֹ�
+      *            患者交付番号・年金証書番号・健康管理手帳番号
                    MOVE    PTRSI-KOFUNUM   TO  FMKARTE1N-RSI-KOFUNUM
-      *            ���Ƚ�̾��
+      *            事業所名称
                    MOVE    PTRSI-JIGYOUNAME
                                            TO  FMKARTE1N-RSI-JIGYOUNAME
-      *            �������ƻ�ܸ�̾
+      *            所在地都道府県名
                    PERFORM 200191-RSI-PREFNAME-SEC
-      *            �������ƻ�ܸ�̾
+      *            所在地都道府県名
                    STRING  PTRSI-PREFNAME
                            WRK-KEIMEI      DELIMITED  BY  SPACE
                                            INTO    FMKARTE1N-PREFNAME
                    END-STRING
-      *            ����Ϸ��Զ�̾
+      *            所在地郡市区名
                    STRING  PTRSI-CITYNAME
                            WRK-SIKUMEI     DELIMITED  BY  SPACE
                                            INTO    FMKARTE1N-CITYNAME
                    END-STRING
-      *            ����ǯ����
+      *            傷病年月日
                    MOVE    PTRSI-SHOBYOYMD     TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
                                        TO  FMKARTE1N-RSI-SHOBYOYMD
                    IF      PTRSI-HKNKBN    =   "3"
-      *            ���ե�������
-      *                ���ܳ�����
+      *            アフターケア
+      *                療養開始日
                        MOVE    PTRSI-SINSATUYMD    TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE
                                            TO  FMKARTE1N-RSI-RYOSTYMD
-      *                ���ܽ�λ��
+      *                療養終了日
                        MOVE    PTRSI-SINSATUEND    TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE
                                            TO  FMKARTE1N-RSI-RYOEDYMD
                    ELSE
-      *                ���ܳ�����
+      *                療養開始日
                        MOVE    PTRSI-RYOSTYMD      TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE
                                            TO  FMKARTE1N-RSI-RYOSTYMD
-      *                ���ܽ�λ��
+      *                療養終了日
                        MOVE    PTRSI-RYOEDYMD      TO  WRK-SYMD
                        PERFORM 801-DAYHEN01-SEC
                        MOVE    WRK-HEN-DATE
@@ -1800,7 +1800,7 @@
                END-IF
            END-IF
       *
-      *    �������
+      *    公費情報
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >   2
                IF      COMB-KOHID(IDY)     NOT =   SPACE
@@ -1819,12 +1819,12 @@
                        MOVE    PTKOH-JKYSNUM 
                                    TO  FMKARTE1N-KOH-JKYSNUM(IDY)
                    END-IF
-      *            ����ǯ����
+      *            開始年月日
                    MOVE    PTKOH-TEKSTYMD      TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
                                    TO  FMKARTE1N-KOH-TEKSTYMD(IDY)
-      *            ��λǯ����
+      *            終了年月日
                    MOVE    PTKOH-TEKEDYMD      TO  WRK-SYMD
                    PERFORM 801-DAYHEN01-SEC
                    MOVE    WRK-HEN-DATE
@@ -1835,18 +1835,18 @@
        710-API-PTHKN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���У���̾�Խ�����
+      *    ＡＰＩ病名編集処理
       *****************************************************************
        710-API-BYOMEIHEN-SEC         SECTION.
       *
-      *    �ݸ��ȹ礻�ơ��֥��Խ�
+      *    保険組合せテーブル編集
            INITIALIZE                  TBL-HKNCOMBI-AREA
            IF      SPA-HKNCOMBINUM     =   ZERO
                MOVE    SPACE               TO  WRK-COMB-HKNNUM
            ELSE
                MOVE    COMB-HKNNUM         TO  WRK-COMB-HKNNUM
       *ver.4.7
-      *        �軰��
+      *        第三者
                IF      COMB-KOH1HKNNUM     =   "970"
                    MOVE    COMB-KOH1HKNNUM TO  WRK-COMB-HKNNUM
                    MOVE    COMB-KOH1ID     TO  WRK-COMB-KOHID
@@ -1857,7 +1857,7 @@
                PERFORM 2009-HKNCOMBI-HEN-SEC
            END-IF
       *
-      *    ������̾�ޥ�������Խ�
+      *    患者病名マスタより編集
            MOVE    MAX-LINE1           TO  CNT-MEI
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  WRK-PRT-CNT
@@ -1882,17 +1882,17 @@
       *
                ADD     1               TO  IDX
       *
-      *        ��̾�Խ�
+      *        病名編集
                INITIALIZE                  ORCSMKBYOMEIAREA
                MOVE    PTBYO-BYOMEI        TO  SMKBYO-BYOMEI
-      *        ��­������
+      *        補足コメント
                MOVE    PTBYO-HOSOKU-COMMENT
                                            TO  SMKBYO-HOSOKU-COMMENT
                IF    ( PARA-UTAGAIKBN      =   "1" )
                    MOVE    PTBYO-UTAGAIFLG     TO  SMKBYO-UTAGAIFLG
                END-IF
                CALL    "ORCSMKBYOMEI"  USING   ORCSMKBYOMEIAREA
-      *        �������̾��������ϥ������̾
+      *        カルテ病名がある時はカルテ病名
                IF    ( PTBYO-CHARTBYOMEI   NOT =   SPACE )
                    INITIALIZE                      ORCSMKBYOMEIAREA
                    MOVE    PTBYO-CHARTBYOMEI   TO  SMKBYO-BYOMEI
@@ -1903,20 +1903,20 @@
                END-IF
                MOVE    SMKBYO-BYOMEI   TO  FMKARTE1N-BYOMEI (IDX)
       *
-      *        ���¶�ʬ
+      *        主病区分
                MOVE    PTBYO-SYUBYOFLG TO  FMKARTE1N-SYUBYOFLG(IDX)
-      *        ������ʬ
+      *        疑い区分
                MOVE    PTBYO-UTAGAIFLG TO  FMKARTE1N-UTAGAIFLG(IDX)
       *
-      *        ����ǯ�����ʿ���ǯ������
+      *        開始年月日（診療年月日）
                MOVE    PTBYO-SRYYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE    TO  FMKARTE1N-SRYYMD(IDX)
-      *        ž������
+      *        転帰日付
                MOVE    PTBYO-TENKIYMD  TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE    TO  FMKARTE1N-TENKIYMD(IDX)
-      *        ž����ʬ
+      *        転帰区分
                MOVE    PTBYO-TENKIKBN  TO  FMKARTE1N-TENKIKBN(IDX)
       *
                MOVE    "tbl_ptbyomei"  TO  MCP-TABLE
@@ -1932,13 +1932,13 @@
        710-API-BYOMEIHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ����̾���Խ�����
+      *    状態名称編集処理
       *****************************************************************
        200190-API-CONDITION-SEC        SECTION.
       *
            IF      WRK-CONDITION       =   SPACE
                                        OR  ZERO
-               MOVE    "�����ʤ�"          TO  WRK-CONDITION-MEI
+               MOVE    "該当なし"          TO  WRK-CONDITION-MEI
            ELSE
                MOVE    SPACE               TO  SYS-1018-REC
                INITIALIZE                      SYS-1018-REC
@@ -1954,37 +1954,37 @@
                    MOVE    SYS-1018-CONDITION-BODY
                                                TO  WRK-CONDITION-MEI
                ELSE
-                   MOVE    "�����ʤ�"          TO  WRK-CONDITION-MEI
+                   MOVE    "該当なし"          TO  WRK-CONDITION-MEI
                END-IF
            END-IF
            .
        200190-API-CONDITION-EXT.
            EXIT.
       *****************************************************************
-      *    ��ƻ�ܸ�̾�Խ�����
+      *    都道府県名編集処理
       *****************************************************************
        200191-RSI-PREFNAME-SEC        SECTION.
       *
            EVALUATE    PTRSI-PREFKBN
                WHEN    "1"
-                   MOVE    "��"            TO  WRK-KEIMEI
+                   MOVE    "都"            TO  WRK-KEIMEI
                WHEN    "2"
-                   MOVE    "ƻ"            TO  WRK-KEIMEI
+                   MOVE    "道"            TO  WRK-KEIMEI
                WHEN    "3"
-                   MOVE    "��"            TO  WRK-KEIMEI
+                   MOVE    "府"            TO  WRK-KEIMEI
                WHEN    "4"
-                   MOVE    "��"            TO  WRK-KEIMEI
+                   MOVE    "県"            TO  WRK-KEIMEI
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-KEIMEI
            END-EVALUATE
       *
            EVALUATE    PTRSI-CITYKBN
                WHEN    "1"
-                   MOVE    "��"            TO  WRK-SIKUMEI
+                   MOVE    "郡"            TO  WRK-SIKUMEI
                WHEN    "2"
-                   MOVE    "��"            TO  WRK-SIKUMEI
+                   MOVE    "市"            TO  WRK-SIKUMEI
                WHEN    "3"
-                   MOVE    "��"            TO  WRK-SIKUMEI
+                   MOVE    "区"            TO  WRK-SIKUMEI
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-SIKUMEI
            END-EVALUATE
@@ -1993,17 +1993,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���У���������
+      *    ＡＰＩ送信処理
       *****************************************************************
        790-API-CALL-SEC         SECTION.
       *
-      *    ��������ɣ�
+      *    カスタムＩＤ
            MOVE    PARA-API-CUSTOM-ID  TO  FMKARTE1N-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "karte_no1_n"       TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "����ƣ�����������"
+           MOVE    "カルテ１号紙（入院）"
                                        TO  RPMAIN-TITLE
            MOVE    "fm_karte_no1_h"
                                        TO  MCP-TABLE
@@ -2017,7 +2017,7 @@
        790-API-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    日付変換処理
       *****************************************************************
        801-DAYHEN01-SEC            SECTION.
       *
@@ -2040,7 +2040,7 @@
            EXIT.
       *----API-ADD-END-----
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -2054,13 +2054,13 @@
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
       *
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        2009-HENKAN-SEC                 SECTION.
      *
@@ -2081,7 +2081,7 @@
        2009-HENKAN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ������ɤ߹���
+      *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2110,7 +2110,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɤ߹���
+      *    保険組合せマスター読み込み
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2140,7 +2140,7 @@
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ޥ������ɤ߹���
+      *    保険マスター読み込み
       *****************************************************************
        920-PTHKNINF-READ-SEC         SECTION.
       *
@@ -2171,7 +2171,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɤ߹���
+      *    保険番号マスター読み込み
       *****************************************************************
        930-HKNNUM-READ-SEC         SECTION.
       *
@@ -2201,7 +2201,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ޥ������ɤ߹���
+      *    公費マスター読み込み
       *****************************************************************
        940-PTKOHINF-READ-SEC         SECTION.
       *
@@ -2232,7 +2232,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ɤ߹���
+      *    患者病名マスター読み込み
       *****************************************************************
        950-PTBYOMEI-READ-SEC         SECTION.
       *
@@ -2287,7 +2287,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-EVALUATE
       *
-      *            �ݸ�Ŭ����̾Ƚ��
+      *            保険適応病名判定
                    IF     (FLG-LOOP-END        =   1     )  AND
                           (PARA-HKNCOMBIKBN    =   "1"  OR  "2")
                        PERFORM 20024-HKNCOMBI-CHK-SEC
@@ -2305,24 +2305,24 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        950-PTBYOMEI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ�Ŭ����̾Ƚ�����
+      *    保険適応病名判定処理
       *****************************************************************
        20024-HKNCOMBI-CHK-SEC          SECTION.
       *
            EVALUATE    PARA-HKNCOMBIKBN
            WHEN    "1"
-      *        ϫ�ҡ������դȤ���¾�ݸ�
+      *        労災・自賠責とその他保険
                IF      WRK-COMB-HKNNUM         =   "971"
                                                OR  "973"
                                                OR  "970"
-      *            �ݸ��ȹ礻���פΤ�
+      *            保険組合せ一致のみ
                    IF      SPA-HKNCOMBINUM     =   PTBYO-HKNCOMBI
                        CONTINUE
                    ELSE
                        MOVE    ZERO            TO  FLG-LOOP-END
                    END-IF
       *ver.47
-      *            �軰�Թ԰٤ϡ�����ɣİ���
+      *            第三者行為は、公費ＩＤ一致
                    IF      WRK-COMB-HKNNUM     =   "970"
                        MOVE    ZERO                TO  FLG-LOOP-END
                        IF      PTBYO-KOHID         =   WRK-COMB-KOHID
@@ -2330,7 +2330,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                ELSE
-      *            ϫ�ҡ������դ��оݳ�
+      *            労災・自賠責は対象外
                    PERFORM VARYING IDX-H   FROM    1   BY  1
                            UNTIL   (IDX-H          >   100 )  OR
                                    (TBL-HKNCOMBINUM (IDX-H)  =   SPACE)
@@ -2345,20 +2345,20 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-PERFORM
       *ver.47
-      *            �軰�Թ԰�ʬ���оݳ�
+      *            第三者行為分は対象外
                    IF      PTBYO-KOHID     NOT =   ZERO
                        MOVE    ZERO            TO  FLG-LOOP-END
                    END-IF
                END-IF
            WHEN    "2"
-      *        �ݸ��ȹ礻���פΤ�
+      *        保険組合せ一致のみ
                IF      SPA-HKNCOMBINUM     =   PTBYO-HKNCOMBI
                    CONTINUE
                ELSE
                    MOVE    ZERO            TO  FLG-LOOP-END
                END-IF
       *ver.47
-      *        �軰�Թ԰٤ϡ�����ɣİ���
+      *        第三者行為は、公費ＩＤ一致
                IF      WRK-COMB-HKNNUM     =   "970"
                    MOVE    ZERO            TO  FLG-LOOP-END
                    IF      PTBYO-KOHID         =   WRK-COMB-KOHID
@@ -2371,7 +2371,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �祭�������ޥ����ɤ߹���
+      *    主キー管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
       *
@@ -2401,7 +2401,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ����ֹ�ޥ�������������
+      *    保険者番号マスタ次検索処理
       *****************************************************************
        900-HKNJAINF-READ-SEC              SECTION.
       *
@@ -2418,7 +2418,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ������ɤ߹���
+      *    患者労災保険情報読み込み
       *****************************************************************
        993-PTRSIINF-NEXT-SEC        SECTION.
       *
@@ -2435,7 +2435,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        993-PTRSIINF-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɤ߹���
+      *    保険組合せマスター読み込み
       *****************************************************************
        909-HKNCOMBI-NEXT-SEC         SECTION.
       *
@@ -2454,7 +2454,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        909-HKNCOMBI-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2466,7 +2466,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2479,7 +2479,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

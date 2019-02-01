@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI031RC1V2.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡´ðËÜ¾ðÊó¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  13/08/20    NACL¡ÝÂÀÅÄ¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢åŸºæœ¬æƒ…å ±å–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  13/08/20    NACLâˆ’å¤ªç”°ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,21 +39,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDXK                    PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
@@ -89,41 +89,41 @@
            03  CONST-H200401           PIC X(08)   VALUE "20080401".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPHSCONFBASEV2REQ.INC".
       *
-      *    API XML½ñ¤­¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLæ›¸ãè¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPHSCONFBASEV2RES.INC".
       *
       *ver.4.7
-      *    API XMLÆÉ¤ß¹þ¤ß¶¦ÄÌÄêµÁ
+      *    API XMLèª­ã¿è¾¼ã¿å…±é€šå®šç¾©
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            COPY    "CPSK1010.INC".
-      *    Æþ±¡´ðËÜ
+      *    å…¥é™¢åŸºæœ¬
            COPY    "CPSK5000.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
@@ -132,7 +132,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -148,7 +148,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -161,19 +161,19 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF    ( WRK-ERRCD          =   SPACE )
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF    ( WRK-ERRCD          =   "99" )
-      *        ¥æ¡¼¥¶£É£Ä¥¨¥é¡¼
+      *        ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤ã‚¨ãƒ©ãƒ¼
                MOVE   404             TO  APILST11-HTTPSTATUS
            ELSE
-      *        ÊÖµÑÎÎ°èÊÔ½¸
+      *        è¿”å´é ˜åŸŸç·¨é›†
                PERFORM 300-END-SEC
            END-IF
       *
@@ -186,13 +186,13 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  XML-HSCONFBASERES
       *
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -200,7 +200,7 @@
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¥»¥Ã¥È 
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ã‚»ãƒƒãƒˆ 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -210,7 +210,7 @@
            END-IF
       *
            IF    ( WRK-ERRCD          =   SPACE )
-      *        £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *        ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
                INITIALIZE                  SYS-1010-REC
                INITIALIZE                  ORCSCOMMONAREA
                MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -225,7 +225,7 @@
            END-IF
       *
            IF    ( WRK-ERRCD          =   SPACE )
-      *        XML¾ðÊó¼è¤ê½Ð¤·
+      *        XMLæƒ…å ±å–ã‚Šå‡ºã—
                PERFORM 900-XML-READ-SEC
            END-IF
       *
@@ -238,7 +238,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÅÊ¸¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    é›»æ–‡é …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        1001-INIT-CHECK-SEC         SECTION.
       *
@@ -267,7 +267,7 @@
        1001-INIT-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -291,7 +291,7 @@
       *
       *
       *****************************************************************
-      *    Æþ±¡´ðËÜ¾ðÊóÊÔ½¸½èÍý
+      *    å…¥é™¢åŸºæœ¬æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-NYUIN-KIHON-EDIT-SEC       SECTION.
       *
@@ -318,7 +318,7 @@
                MOVE   "0"              TO  SYS-5000-SENTEI-TAXKBN
            END-IF
       *
-           MOVE    "¿©»öÎÅÍÜÈñ"        TO  HSCBRES-SKJRYOYO-LBL
+           MOVE    "é£Ÿäº‹ç™‚é¤Šè²»"        TO  HSCBRES-SKJRYOYO-LBL
            MOVE    SYS-5000-SHOKUJIRYOYOCD
                                        TO  HSCBRES-SKJRYOYO-DATA
            MOVE    SYS-5000-SHOKUJIRYOYOCD
@@ -331,59 +331,59 @@
                 AND  ( SPA-HOSPSBT     =   2 )
                    CONTINUE
                ELSE
-                   MOVE    "±ÉÍÜ´ÉÍý·Ð²áÁ¼ÃÖ"
+                   MOVE    "æ „é¤Šç®¡ç†çµŒéŽæŽªç½®"
                                        TO  HSCBRES-EIYOKANRI-LBL
                    MOVE    SYS-5000-EIYOUKSNKBN
                                        TO  HSCBRES-EIYOKANRI-DATA
                    EVALUATE    SYS-5000-EIYOUKSNKBN
                    WHEN    "0"
-                       MOVE    "±ÉÍÜ´ÉÍýÂÎÀ©´ð½àÅ¬¹ç"
+                       MOVE    "æ „é¤Šç®¡ç†ä½“åˆ¶åŸºæº–é©åˆ"
                                        TO  HSCBRES-EIYOKANRI-NAME
                    WHEN    "1"
-                       MOVE    "±ÉÍÜ´ÉÍýÂÎÀ©´ð½àÌ¤Å¬¹ç"
+                       MOVE    "æ „é¤Šç®¡ç†ä½“åˆ¶åŸºæº–æœªé©åˆ"
                                        TO  HSCBRES-EIYOKANRI-NAME
                    END-EVALUATE
                END-IF
            END-IF
       *
-           MOVE    "¼¼ÎÁº¹³Û¾ÃÈñÀÇ"    TO  HSCBRES-SAGAKUTAX-LBL
+           MOVE    "å®¤æ–™å·®é¡æ¶ˆè²»ç¨Ž"    TO  HSCBRES-SAGAKUTAX-LBL
            MOVE    SYS-5000-BRMSGK-TAXKBN
                                        TO  HSCBRES-SAGAKUTAX-DATA
            EVALUATE    SYS-5000-BRMSGK-TAXKBN
            WHEN    "0"
-               MOVE    "¤Ê¤·"          TO  HSCBRES-SAGAKUTAX-NAME
+               MOVE    "ãªã—"          TO  HSCBRES-SAGAKUTAX-NAME
            WHEN    "1"
-               MOVE    "¤¢¤ê"          TO  HSCBRES-SAGAKUTAX-NAME
+               MOVE    "ã‚ã‚Š"          TO  HSCBRES-SAGAKUTAX-NAME
            END-EVALUATE
       *
-           MOVE    "É¸·ç¤Ë¤è¤ë¸º³Û"    TO  HSCBRES-HYOKETSU-LBL
+           MOVE    "æ¨™æ¬ ã«ã‚ˆã‚‹æ¸›é¡"    TO  HSCBRES-HYOKETSU-LBL
            MOVE    SYS-5000-HYOUKETUKBN
                                        TO  HSCBRES-HYOKETSU-DATA
            EVALUATE    SYS-5000-HYOUKETUKBN
            WHEN    "0"
-               MOVE    "¸º³Û¤Ê¤·"
+               MOVE    "æ¸›é¡ãªã—"
                                        TO  HSCBRES-HYOKETSU-NAME
            WHEN    "1"
-               MOVE    "£±£°£°Ê¬¤Î£±£°¸º³Û"
+               MOVE    "ï¼‘ï¼ï¼åˆ†ã®ï¼‘ï¼æ¸›é¡"
                                        TO  HSCBRES-HYOKETSU-NAME
            WHEN    "2"
-               MOVE    "£±£°£°Ê¬¤Î£±£µ¸º³Û"
+               MOVE    "ï¼‘ï¼ï¼åˆ†ã®ï¼‘ï¼•æ¸›é¡"
                                        TO  HSCBRES-HYOKETSU-NAME
            WHEN    "3"
-               MOVE    "£±£°£°Ê¬¤Î£²¸º³Û"
+               MOVE    "ï¼‘ï¼ï¼åˆ†ã®ï¼’æ¸›é¡"
                                        TO  HSCBRES-HYOKETSU-NAME
            WHEN    "4"
-               MOVE    "£±£°£°Ê¬¤Î£³¸º³Û"
+               MOVE    "ï¼‘ï¼ï¼åˆ†ã®ï¼“æ¸›é¡"
                                        TO  HSCBRES-HYOKETSU-NAME
            END-EVALUATE
       *
-           MOVE    "Äê¿ôÄ¶²á"          TO  HSCBRES-TEISUCHOKA-LBL
+           MOVE    "å®šæ•°è¶…éŽ"          TO  HSCBRES-TEISUCHOKA-LBL
            MOVE    SYS-5000-TEISUKBN   TO  HSCBRES-TEISUCHOKA-DATA
            EVALUATE    SYS-5000-TEISUKBN
            WHEN    "0"
-               MOVE    "Äê¿ôÄ¶²á¤Ê¤·"  TO  HSCBRES-TEISUCHOKA-NAME
+               MOVE    "å®šæ•°è¶…éŽãªã—"  TO  HSCBRES-TEISUCHOKA-NAME
            WHEN    "1"
-               MOVE    "Äê¿ôÄ¶²á¤¢¤ê"  TO  HSCBRES-TEISUCHOKA-NAME
+               MOVE    "å®šæ•°è¶…éŽã‚ã‚Š"  TO  HSCBRES-TEISUCHOKA-NAME
            END-EVALUATE
       *
            MOVE    ZERO                TO  IDXK
@@ -399,20 +399,20 @@
            MOVE    SYS-5000-CHIIKIKSN  TO  WRK-TNS-SRYCD
            PERFORM 20011-NYUIN-KSN-EDIT-SEC
       *
-           MOVE    "Æþ±¡»þ¤ÎÁªÄêÆþ±¡"  TO  HSCBRES-SENTEI-DEF-LBL
+           MOVE    "å…¥é™¢æ™‚ã®é¸å®šå…¥é™¢"  TO  HSCBRES-SENTEI-DEF-LBL
            MOVE    SYS-5000-SENTEIKBN  TO  HSCBRES-SENTEI-DEF-DATA
            EVALUATE    SYS-5000-SENTEIKBN
            WHEN    "1"
-               MOVE    "ÁªÄêÂÐ¾Ý"      TO  HSCBRES-SENTEI-DEF-NAME
+               MOVE    "é¸å®šå¯¾è±¡"      TO  HSCBRES-SENTEI-DEF-NAME
            WHEN    "2"
-               MOVE    "ÁªÄêÂÐ¾Ý³°"    TO  HSCBRES-SENTEI-DEF-NAME
+               MOVE    "é¸å®šå¯¾è±¡å¤–"    TO  HSCBRES-SENTEI-DEF-NAME
            END-EVALUATE
       *
           .
        2001-NYUIN-KIHON-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²Ã»»ÊÔ½¸½èÍý
+      *    å…¥é™¢åŠ ç®—ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-NYUIN-KSN-EDIT-SEC        SECTION.
       *
@@ -425,7 +425,7 @@
       *
                        COMPUTE IDXK  = IDXK  + 1
       *
-                       MOVE    "Æþ±¡²Ã»»"
+                       MOVE    "å…¥é™¢åŠ ç®—"
                                    TO  HSCBRES-NYUINKSN-LBL  (IDXK)
                        MOVE    TNS-SRYCD
                                    TO  HSCBRES-NYUINKSN-DATA (IDXK)
@@ -439,7 +439,7 @@
        20011-NYUIN-KSN-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -465,7 +465,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -487,7 +487,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-SYMD-SEC                    SECTION.
       *
@@ -503,7 +503,7 @@
        800-SYMD-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-HIZUKE-SEC                      SECTION.
       *
@@ -530,7 +530,7 @@
        800-HIZUKE-EXT.
            EXIT.
       *****************************************************************
-      *    »þ¹ïÊÔ½¸½èÍý
+      *    æ™‚åˆ»ç·¨é›†å‡¦ç†
       *****************************************************************
        800-TIME-SEC                    SECTION.
       *
@@ -546,67 +546,67 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "00"
-               MOVE    "½èÍý½ªÎ»"      TO  WRK-ERRMSG
+               MOVE    "å‡¦ç†çµ‚äº†"      TO  WRK-ERRMSG
            WHEN    "01"
-               MOVE    "´ð½àÆü¤ÎÀßÄê¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹"
+               MOVE    "åŸºæº–æ—¥ã®è¨­å®šã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™"
                                        TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "Æþ±¡´ðËÜ¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+               MOVE    "å…¥é™¢åŸºæœ¬æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
-      *¶¦ÄÌ¥¨¥é¡¼
+      *å…±é€šã‚¨ãƒ©ãƒ¼
            WHEN    "89"
-      *        ORCSCOMMON ¤Î¥¨¥é¡¼
+      *        ORCSCOMMON ã®ã‚¨ãƒ©ãƒ¼
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "¿¦°÷¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "è·å“¡æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "¥·¥¹¥Æ¥àÆüÉÕ¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "´µ¼ÔÈÖ¹æ¹½À®¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "æ‚£è€…ç•ªå·æ§‹æˆæƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "¥°¥ë¡¼¥×°åÎÅµ¡´Ø¤¬ÉÔÀ°¹ç¤Ç¤¹¡£"
+                   STRING  "ã‚°ãƒ«ãƒ¼ãƒ—åŒ»ç™‚æ©Ÿé–¢ãŒä¸æ•´åˆã§ã™ã€‚"
                                                DELIMITED  BY  SIZE
-                           "½èÍý¤ò½ªÎ»¤·¤Æ²¼¤µ¤¤¡£"
+                           "å‡¦ç†ã‚’çµ‚äº†ã—ã¦ä¸‹ã•ã„ã€‚"
                                                DELIMITED  BY  SIZE
                    INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "¥·¥¹¥Æ¥à¹àÌÜ¤¬ÀßÄê¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ é …ç›®ãŒè¨­å®šã§ãã¾ã›ã‚“"
                                        TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "92"
-               STRING  "´ð½àÆü¤ÏÊ¿À®£²£°Ç¯¡Ê£²£°£°£¸Ç¯¡Ë"
+               STRING  "åŸºæº–æ—¥ã¯å¹³æˆï¼’ï¼å¹´ï¼ˆï¼’ï¼ï¼ï¼˜å¹´ï¼‰"
                                        DELIMITED BY SIZE
-                       "£´·î£±Æü°Ê¹ß"
+                       "ï¼”æœˆï¼‘æ—¥ä»¥é™"
                                        DELIMITED BY SIZE
-                       "¤ò»ØÄê¤·¤Æ¤¯¤À¤µ¤¤"
+                       "ã‚’æŒ‡å®šã—ã¦ãã ã•ã„"
                                        DELIMITED BY SIZE
                INTO  WRK-ERRMSG
                END-STRING
            WHEN    "97"
-               MOVE   "Á÷¿®ÆâÍÆ¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹"
+               MOVE   "é€ä¿¡å†…å®¹ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™"
                                        TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "Á÷¿®ÆâÍÆ¤ÎÆÉ¹þ¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE   "é€ä¿¡å†…å®¹ã®èª­è¾¼ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                        TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "¥æ¡¼¥¶£É£Ä¤¬Ì¤ÅÐÏ¿¤Ç¤¹"
+               MOVE    "ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤ãŒæœªç™»éŒ²ã§ã™"
                                        TO  WRK-ERRMSG
            WHEN    OTHER
-               MOVE    "ÊÖµÑ¾ðÊó¤ÎÊÔ½¸¤Ç¥¨¥é¡¼¤¬È¯À¸¤·¤Þ¤·¤¿"
+               MOVE    "è¿”å´æƒ…å ±ã®ç·¨é›†ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸ"
                                        TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -614,7 +614,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó¤«¤éÆâÍÆ¤ò¼è¤ê½Ð¤¹
+      *    XMLæƒ…å ±ã‹ã‚‰å†…å®¹ã‚’å–ã‚Šå‡ºã™
       *****************************************************************
        900-XML-READ-SEC             SECTION.
       *
@@ -642,7 +642,7 @@
        900-XML-READ-EXT.
            EXIT.
       *****************************************************************
-      *    XML¥Õ¥£¥ë¥¿¥ê¥ó¥°½èÍý
+      *    XMLãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°å‡¦ç†
       *****************************************************************
        9001-XML-FILTER-SEC             SECTION.
       *
@@ -657,7 +657,7 @@
        9001-XML-FILTER-EXT.
            EXIT.
       *****************************************************************
-      *    XML¾ðÊó¤ò½ñ¤­½Ð¤¹
+      *    XMLæƒ…å ±ã‚’æ›¸ãå‡ºã™
       *****************************************************************
        900-XML-WRITE-SEC             SECTION.
       *
@@ -683,7 +683,7 @@
        900-XML-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -709,7 +709,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-TENSU-KEY-SEL-SEC          SECTION.
       *
@@ -731,7 +731,7 @@
                INITIALIZE                  TNS-TENSU-REC
            END-IF
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¥¯¥í¡¼¥º
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -740,7 +740,7 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -758,7 +758,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -773,7 +773,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -788,7 +788,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ø£Í£ÌÆÉ¹þ½èÍý
+      *    ï¼¸ï¼­ï¼¬èª­è¾¼å‡¦ç†
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
       *
@@ -802,7 +802,7 @@
        910-XMLREAD-EXT.
            EXIT.
       *****************************************************************
-      *    £Ø£Í£Ì½ñ¹þ½èÍý
+      *    ï¼¸ï¼­ï¼¬æ›¸è¾¼å‡¦ç†
       *****************************************************************
        910-XMLWRITE-SEC                SECTION.
       *

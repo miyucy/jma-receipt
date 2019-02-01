@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- Table Name  : Å¬±şÉÂÌ¾¥Ş¥¹¥¿   --
+-- Table Name  : é©å¿œç—…åãƒã‚¹ã‚¿   --
 --               TBL_TEKIOUBYOMEI --
 -- Create Date : 2005/12/19       --
 

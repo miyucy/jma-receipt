@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,232 +15,232 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �쥻�ץ����ٽ񡦰����������������� COPY (CPRCF061.INC)      *
+      *    レセプト明細書・医療費請求書（入院） COPY (CPRCF061.INC)      *
       ********************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    03.03.03  ���Ųʿ��������飲�����ѹ�
-      *  01.00.02    NACL-ƣ��    03.03.11  �쥻�ץȼ�������������ɲ�
-      *  01.00.03    NACL-ƣ��    03.07.28  ���Ų���ơ��֥���ɲ�
-      *  01.00.04    NACL-ƣ��    04.06.15  ��������ɲáʸ��̺������Τߡ�
-      *  01.00.05    NACL-ƣ��    04.10.31  ���Ծ��󡦸��ֹ���ɲ�
-      *  01.00.06    NACL-ƣ��    04.11.01  ����쥻�ץ������ʬ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    03.03.03  診療科数１０から２０へ変更
+      *  01.00.02    NACL-藤原    03.03.11  レセプト種別不明情報の追加
+      *  01.00.03    NACL-藤原    03.07.28  診療回数テーブルの追加
+      *  01.00.04    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
+      *  01.00.05    NACL-藤原    04.10.31  患者情報・県番号の追加
+      *  01.00.06    NACL-藤原    04.11.01  公費レセプト請求区分の追加
       *
       *  ver.2.6.0 
-      *  02.06.01    NACL-ƣ��    05.07.13  �ݸ��ȹ礻�����ݸ�������ɲ� 
-      *  02.06.02    NACL-ƣ��    05.07.28  �쥻�ץ����ᤷ�ʤ�������ɲ�
+      *  02.06.01    NACL-藤原    05.07.13  保険組合せ・主保険情報の追加 
+      *  02.06.02    NACL-藤原    05.07.28  レセプト請求しない公費の追加
       *
-      *  03.04.01    NACL-ƣ��    06/12/05  ̤����쥻�б�
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       * 
-      *  04.02.01    NACL-ƣ��    08/03/04  ʿ������ǯ��������б�
-      *                                     ��������ʬ���ɲ�
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     就学前区分の追加
       *
-      *  04.05.01    NACL-ƣ��    11/03/02  ���縩�б�
-      *                                     ������������������������ѹ�
-      *                                     �ˤʤä����ε��ܽ�
-      *                                     ����Ŭ�ѳ��������ɲ�
-      *  04.05.02    NACL-ƣ��    11/03/25  �ҳ��б�
-      *                                     Ϣ��������ɲ�
-      *  04.05.03    NACL-ƣ��    11/11/22  Ʊ���������б�
+      *  04.05.01    NACL-藤原    11/03/02  徳島県対応
+      *                                     乳児４５、４８が月途中で変更
+      *                                     になった場合の記載順
+      *                                     公費適用開始日を追加
+      *  04.05.02    NACL-藤原    11/03/25  災害対応
+      *                                     連絡先情報追加
+      *  04.05.03    NACL-藤原    11/11/22  同日再入院対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    11/12/12  �����쥻������������б�
-      *  04.06.03    NACL-ƣ��    12/10/04  Ʊ��쥻�ץȤθ��񤬣��Ĥ�Ķ
-      *                                     �������μ��������б�
-      *  04.06.04    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *  04.06.05    NACL-ƣ��    12/12/21  ����������ǻ��ꤷ������
-      *                                     ���ౡ�򵭺��б�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.03    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
+      *                                     えた場合の種別不明対応
+      *  04.06.04    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *  04.06.05    NACL-藤原    12/12/21  入院料を自費で算定した場合の
+      *                                     入退院歴記載対応
       *
-      *  04.07.01    NACL-ƣ��    14/12/08  ������˸������ô���ֹ�����
-      *                                     �ѹ������ä����ε����б�
-      *                                     ˡ���ֹ桢Ŭ�ѳ������ν�Ȥ���
-      *                                     ����������� 
-      *                                     ˡ���ֹ��ɲ�
-      *  04.07.02    NACL-ƣ��    14/11/13  ���ݤ���ô���ֹ桢������ֹ�
-      *                                     ��Ʊ���Ȥ��ϤޤȤ��
+      *  04.07.01    NACL-藤原    14/12/08  月途中に公費の負担者番号等の
+      *                                     変更があった場合の記載対応
+      *                                     法別番号、適用開始日の順とする
+      *                                     （地方公費） 
+      *                                     法別番号追加
+      *  04.07.02    NACL-藤原    14/11/13  生保の負担者番号、受給者番号
+      *                                     が同じときはまとめる
       ********************************************************************
       *01  RECE61-REC.
            03  RECE61-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RECE61-HOSPNUM         PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  RECE61-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  RECE61-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE61-PTID            PIC  9(10).
-      *ʬ���ʬ
+      *分割区分
                05  RECE61-RECEIPT-KBN     PIC  X(10).
-      *�쥻�ץȿ��Ų�
+      *レセプト診療科
                05  RECE61-RECEKA          PIC  X(02).
-      *���ݸ��ݸ��ֹ�
+      *主保険保険番号
                05  RECE61-HKNNUM          PIC  X(03).
-      *����ɣġ�Ϸ���ݸ���
+      *公費ＩＤ（老人保険）
                05  RECE61-KOHID           PIC  9(10).
-      *�ݸ����ֹ�        
+      *保険者番号        
                05  RECE61-HKNJANUM        PIC  X(08).
-      *�ܿͲ�²��ʬ
+      *本人家族区分
                05  RECE61-HONKZKKBN       PIC  X(01).
-      *�����ʬ
+      *補助区分
                05  RECE61-HOJOKBN         PIC  X(01).
-      *����ɣġʸ���ñ�Ȼ����ѡ�
+      *公費ＩＤ（公費単独時使用）
                05  RECE61-KOH-KOHID       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE61-TEKSTYMD        PIC  X(08). 
-      *�����ΰ�
+      *公費領域
            03 RECE61-KOHI-AREA.
                05  RECE61-KOHI-TBL        OCCURS  10.
-      *    ����ɣ�
+      *    公費ＩＤ
                    07  RECE61-KOHID-O     PIC  9(10).
-      *    �����ݸ��ֹ�
+      *    公費保険番号
                    07  RECE61-KOHHKNNUM-O PIC  X(03).
-      *    �����ʧ��ʬ
+      *    公費支払区分
                    07  RECE61-KOHPAYKBN-O PIC  X(02).
-      *    ����쥻�ץ������ʬ�ʶ��򡧥쥻���ܤΤߡ��������ܤʤ���
+      *    公費レセプト請求区分（空白：レセ記載のみ、４：記載なし）
                    07  RECE61-RECESKYKBN-O
                                           PIC  X(01).
-      *    ����Ŭ�ѳ���ǯ����
+      *    公費適用開始年月日
                    07  RECE61-KOHTEKSTYMD-O
                                           PIC  X(08).
-      *    ����ˡ���ֹ�
+      *    公費法別番号
                    07  RECE61-KOHHBTNUM-O PIC  X(02).
-      *    ������ô���ֹ�
+      *    公費負担者番号
                    07  RECE61-KOHFTNJANUM-O
                                           PIC  X(08).
-      *    ���������ֹ�
+      *    公費受給者番号
                    07  RECE61-KOHJKYSNUM-O
                                           PIC  X(20).
       *
-      *���ݸ�����
+      *主保険情報
            03  RECE61-HKN.
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
                05  RECE61-HKNID           PIC  9(10).
-      *���ݸ���ˡ���ֹ�
+      *主保険−法別番号
                05  RECE61-HKNHBTNUM       PIC  X(02).
-      *���ݸ����ݸ����ֹ�
+      *主保険−保険者番号
                05  RECE61-HKN-HKNJANUM    PIC  X(08).
-      *���ݸ����ܿͲ�²��ʬ
+      *主保険−本人家族区分
                05  RECE61-HKN-HONKZKKBN   PIC  X(01).
-      *���ݸ��������ʬ
+      *主保険−補助区分
                05  RECE61-HKN-HOJOKBN     PIC  X(01).
-      *���ݸ��ݷ�³��ʬ
+      *主保険−継続区分
                05  RECE61-CONTKBN         PIC  X(01).
-      *���ݸ��ݵ���
+      *主保険−記号
                05  RECE61-KIGO            PIC  X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
                05  RECE61-NUM             PIC  X(80).
-      *���ݸ��ݾ������ֹ�
+      *主保険−証明書番号
                05  RECE61-CERTNUM         PIC  X(03).
       *
-      *�ݸ��ȹ礻�ֹ��ΰ�
+      *保険組合せ番号領域
            03 RECE61-HKNCOMBI-AREA.
                05  RECE61-HKNCOMBI-TBL    OCCURS  10.
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                    07  RECE61-HKNCOMBI-O  PIC  9(04).
-      *���ݸ��ֹ�
+      *主保険番号
                    07  RECE61-HKNNUMHC    PIC  X(03).
-      *�ȹ礻�����ݸ��ֹ����
+      *組合せ公費保険番号情報
                    07  RECE61-KOHNUMHCINF OCCURS  4.
-      *�ȹ礻�����ݸ��ֹ�
+      *組合せ公費保険番号
                        09  RECE61-KOHNUMHC
                                           PIC  X(03).
-      *�ȹ礻�����ݸ��ɣ�
+      *組合せ公費保険ＩＤ
                        09  RECE61-KOHIDHC PIC  9(10).
       *
-      *���Ųʾ���
+      *診療科情報
            03 RECE61-SRYKAINF.
                05  RECE61-SRYKA           PIC  X(02)  OCCURS  20.
-      *Ŭ��ǯ�����ΰ�
+      *適用年月日領域
            03 RECE61-TEKYMD-AREA.
                05  RECE61-TEKYMD-TBL      OCCURS  10.
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE61-TEKSTYMDX   PIC  X(08). 
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
                    07  RECE61-TEKEDYMDX   PIC  X(08). 
       *
-      *�쥻�ץ����ᤷ�ʤ������ΰ�
+      *レセプト請求しない公費領域
            03 RECE61-KOHSKY-KOHI-AREA.
                05  RECE61-KOHSKY-KOHI-TBL OCCURS  4.
-      *    ����ɣ�
+      *    公費ＩＤ
                    07  RECE61-KOHSKY-KOHID-O
                                           PIC  9(10).
-      *    �����ݸ��ֹ�
+      *    公費保険番号
                    07  RECE61-KOHSKY-KOHHKNNUM-O
                                           PIC  X(03).
-      *���Ų���ơ��֥�
+      *診療回数テーブル
            03  RECE61-DAY-AREA.
                05  RECE61-DAY             PIC  9(03)
                                                OCCURS   31.
-      *���Ų���ơ��֥���������������ꤷ�Ƥ��ʤ��Ȥ���
+      *診療回数テーブル（入院基本料を算定していないとき）
            03  RECE61-DAY-1-AREA.
                05  RECE61-DAY-1           PIC  9(03)
                                                OCCURS   31.
-      *���Ծ���
+      *患者情報
            03  RECE61-PTINF.
-      *�����ֹ�  
+      *患者番号  
                05  RECE61-PTNUM           PIC  X(20).
-      *���ʻ�̾
+      *カナ氏名
                05  RECE61-KANANAME        PIC  X(50).
-      *������̾
+      *漢字氏名
                05  RECE61-NAME            PIC  X(100).
-      *����
+      *性別
                05  RECE61-SEX             PIC  X(01).
-      *��ǯ����
+      *生年月日
                05  RECE61-BIRTHDAY        PIC  9(08).
-      *��˴��ʬ
+      *死亡区分
                05  RECE61-DEATHKBN        PIC  X(01).
-      *ǯ��
+      *年齢
                05  RECE61-AGE             PIC  9(03).
-      *��������ʬ
+      *就学前区分
                05  RECE61-SYUGAKUKBN      PIC 9(01).
-      *�ƥ��ȴ����ֹ��ʬ
+      *テスト患者番号区分
                05  RECE61-TSTPTNUMKBN     PIC  X(01).
-      *�����͹���ֹ�
+      *自宅−郵便番号
                05  RECE61-HOME-POST       PIC X(07).
-      *����ݽ���
+      *自宅−住所
                05  RECE61-HOME-ADRS       PIC X(200).
-      *�������������
+      *自宅−番地方書
                05  RECE61-HOME-BANTI      PIC X(200).
-      *Ϣ�����̾��
+      *連絡先−名称
                05  RECE61-RENRAKU-NAME    PIC X(100).
-      *Ϣ�����͹���ֹ�
+      *連絡先−郵便番号
                05  RECE61-RENRAKU-POST    PIC X(07).
-      *Ϣ����ݽ���
+      *連絡先−住所
                05  RECE61-RENRAKU-ADRS    PIC X(200).
-      *Ϣ�������������
+      *連絡先−番地方書
                05  RECE61-RENRAKU-BANTI   PIC X(200).
-      *Ϣ������������ֹ�
+      *連絡先−昼電話番号
                05  RECE61-RENRAKU-TEL1    PIC X(15).
-      *Ϣ������������ֹ�
+      *連絡先−夜電話番号
                05  RECE61-RENRAKU-TEL2    PIC X(15).
-      *���ֹ�
+      *県番号
            03  RECE61-PREFNUM             PIC  9(02).
-      *��������������ե饰
+      *入院料情報取得フラグ
            03  RECE61-DOUJITSU-FLG        PIC 9(01).
-      *����������
+      *入院料情報
            03  RECE61-DOUJITSU-AREA.
-      *Ʊ��������������ʬ�ˤ��ݸ��ȹ礻
+      *同日再入院（入院分）の保険組合せ
                05  RECE61-DOUJITSU-HKNCOMBI
                                           PIC 9(04)   OCCURS  31.
-      *Ʊ��������������ʬ�ˤο������ϻ��ֶ�ʬ
+      *同日再入院（入院分）の食事開始時間区分
                05  RECE61-DOUJITSU-SKJKBN PIC X(01)   OCCURS  31.
-      *������ʬ
+      *入院区分
                05  RECE61-NYUINDAY-TBL.
                    07  RECE61-NYUINDAY-KBN
                                           PIC  X(01)  OCCURS  31.
-      *������
+      *印刷順
            03  RECE61-PRTSEQ              PIC  9(03).
-      *̤����ե饰
+      *未請求フラグ
            03  RECE61-MISEIKYU-FLG        PIC X(02).
-      *̤������ʬ
+      *未訂正区分
            03  RECE61-TEISEIKBN           PIC  X(01).
-      *�����쥻��������ե饰
+      *点検レセ０点公費フラグ
            03  RECE61-TENKEN-FLG          PIC X(01).
-      *�쥻�ץȼ����������顼����
+      *レセプト種別不明エラー情報
            03  RECE61-ERR-AREA.
                05  RECE61-ERR-ERRKBN      PIC 9(01).
                05  RECE61-ERR-DAY         PIC 9(02).

@@ -1,12 +1,12 @@
 --                                    --
--- º˝«º•∆°º•÷•Î§Œ —ππ                 --
+-- ÂèéÁ¥ç„ÉÜ„Éº„Éñ„É´„ÅÆÂ§âÊõ¥                 --
 --                                    --
--- π‡Ã‹§Œƒ…≤√                         --
---       ∆˛±°Õ˙ŒÚ»÷πÊ                 --
+-- È†ÖÁõÆ„ÅÆËøΩÂä†                         --
+--       ÂÖ•Èô¢Â±•Ê≠¥Áï™Âè∑                 --
 --          NYUIN_RRKNUM              --
 --          KOH_FTN_ENTANI            --
 --          ACCT_UPDKBN               --
--- π‡Ã‹§Œ —ππ                         --
+-- È†ÖÁõÆ„ÅÆÂ§âÊõ¥                         --
 --       SYUCOMPFTN_ENTANI            --
 --       KOH1COMPFTN_ENTANI           --
 --       KOH2COMPFTN_ENTANI           --
@@ -18,7 +18,7 @@
 -- Create Date : 2004/03/04           --
 --                                    --
 
--- TBL_SYUNOUWK ∫Ó¿Æ                  --
+-- TBL_SYUNOUWK ‰ΩúÊàê                  --
 
 create table TBL_SYUNOUWK (
 HOSPID				char(24)	not null,
@@ -275,16 +275,16 @@ constraint TBL_SYUNOUWK_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
 
--- TBL_SYUNOU ¢™ TBL_SYUNOUWK   --
+-- TBL_SYUNOU ‚Üí TBL_SYUNOUWK   --
 
 insert into TBL_SYUNOUWK
 select * from TBL_SYUNOU;
 
--- TBL_SYUNOU ∫ÔΩ¸               --
+-- TBL_SYUNOU ÂâäÈô§               --
 
 drop table TBL_SYUNOU;
 
--- TBL_SYUNOU ∫Ó¿Æ               --
+-- TBL_SYUNOU ‰ΩúÊàê               --
 
 create table TBL_SYUNOU (
 HOSPID				char(24)	not null,
@@ -543,10 +543,10 @@ UPHMS				char(6),
 constraint TBL_SYUNOU_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
--- index ∫Ó¿Æ
+-- index ‰ΩúÊàê
 create index idx_syunou_ptid on tbl_syunou (ptid);
 
--- TBL_SYUNOUWK ¢™ TBL_SYUNOU   --
+-- TBL_SYUNOUWK ‚Üí TBL_SYUNOU   --
 
 insert into TBL_SYUNOU
 (HOSPID,
@@ -918,11 +918,11 @@ KYUFUGAI_GOKEI_TEN,
 DAYINFFLG,
 TERMID,OPID,CREYMD,UPYMD,UPHMS from TBL_SYUNOUWK;
 
--- TBL_SYUNOUWK ∫ÔΩ¸             --
+-- TBL_SYUNOUWK ÂâäÈô§             --
 
 drop table TBL_SYUNOUWK;  
 
--- NYUIN_RRKNUMππø∑
+-- NYUIN_RRKNUMÊõ¥Êñ∞
 update tbl_syunou
 set nyuin_rrknum = a.rrknum
 from 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,121 +16,121 @@
       * 113-8621, Japan.
       ********************************************************************
       *---------------------------------------------------------------*
-      *    ¥·¥§¥ë£É£ÄÂÐ±þ£Ê£Ï£ÂÌ¾¾Î¥Æ¡¼¥Ö¥ë   COPY (CMJOBNAME.INC)    *
+      *    ã‚·ã‚§ãƒ«ï¼©ï¼¤å¯¾å¿œï¼ªï¼¯ï¼¢åç§°ãƒ†ãƒ¼ãƒ–ãƒ«   COPY (CMJOBNAME.INC)    *
       *---------------------------------------------------------------*
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-ÂÀÅÄ     02/06/27  ´µ¼Ô¾È²ñÄÉ²Ã
-      *  01.00.02    MCC-ÂÀÅÄ     02/12/19  Äê´üÀÁµáÄÉ²Ã
-      *  01.00.03    NACL-ÂÀÅÄ    03/10/14  Æþ±¡´µ¼Ô¾È²ñÄÉ²Ã
-      *  01.00.04    NACL-Æ£¸¶    03/12/03  Åý·×¥Ç¡¼¥¿ºîÀ®ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-å¤ªç”°     02/06/27  æ‚£è€…ç…§ä¼šè¿½åŠ 
+      *  01.00.02    MCC-å¤ªç”°     02/12/19  å®šæœŸè«‹æ±‚è¿½åŠ 
+      *  01.00.03    NACL-å¤ªç”°    03/10/14  å…¥é™¢æ‚£è€…ç…§ä¼šè¿½åŠ 
+      *  01.00.04    NACL-è—¤åŽŸ    03/12/03  çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ä½œæˆè¿½åŠ 
       *
-      *  04.05.01    NACL-Æ£¸¶    09/10/01  Åý·×£Ã£Ó£Ö½ÐÎÏÄÉ²Ã
-      *  05.00.01    NACL-°ËÆ£    18/02/02  Ï¢·È´ðÈ×ÄÉ²Ã
+      *  04.05.01    NACL-è—¤åŽŸ    09/10/01  çµ±è¨ˆï¼£ï¼³ï¼¶å‡ºåŠ›è¿½åŠ 
+      *  05.00.01    NACL-ä¼Šè—¤    18/02/02  é€£æºåŸºç›¤è¿½åŠ 
       *****************************************************************
        01  MNAME-DATA-REC.
            03  FILLER               PIC X(08)   VALUE   "RECEPT1".
-           03  FILLER               PIC X(40)   VALUE   "¥ì¥»¥×¥ÈºîÀ®".
+           03  FILLER               PIC X(40)   VALUE   "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆ".
       *
            03  FILLER               PIC X(08)   VALUE   "RECEPT2".
-           03  FILLER               PIC X(40)   VALUE   "¥ì¥»¥×¥È°õºþ".
+           03  FILLER               PIC X(40)   VALUE   "ãƒ¬ã‚»ãƒ—ãƒˆå°åˆ·".
       *
            03  FILLER               PIC X(08)   VALUE   "ORCBSD1 ".
            03  FILLER               PIC X(40)   VALUE
-                                    "¥Ç¡¼¥¿¥Á¥§¥Ã¥¯".
+                                    "ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯".
       *
            03  FILLER               PIC X(08)   VALUE   "ORCBSE1 ".
-           03  FILLER               PIC X(40)   VALUE   "¥Ç¡¼¥¿½ÐÎÏ".
+           03  FILLER               PIC X(40)   VALUE   "ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›".
       *
            03  FILLER               PIC X(08)   VALUE   "ORCBSF1 ".
-           03  FILLER               PIC X(40)   VALUE   "³°ÉôÇÞÂÎÊÑ´¹".
+           03  FILLER               PIC X(40)   VALUE   "å¤–éƒ¨åª’ä½“å¤‰æ›".
       *
            03  FILLER               PIC X(08)   VALUE   "MSTMNT  ".
-           03  FILLER               PIC X(40)   VALUE   "¥Þ¥¹¥¿¹¹¿·".
+           03  FILLER               PIC X(40)   VALUE   "ãƒžã‚¹ã‚¿æ›´æ–°".
       *
            03  FILLER               PIC X(08)   VALUE   "SOKATU".
            03  FILLER               PIC X(40)   VALUE
-                                    "Áí³ç¡¦¸øÈñÀÁµá½ñ".
+                                    "ç·æ‹¬ãƒ»å…¬è²»è«‹æ±‚æ›¸".
       *
            03  FILLER               PIC X(08)   VALUE   "TENSU".
            03  FILLER               PIC X(40)   VALUE
-                                    "ÅÀ¿ô¥Þ¥¹¥¿°ìÍ÷".
+                                    "ç‚¹æ•°ãƒžã‚¹ã‚¿ä¸€è¦§".
       *
            03  FILLER               PIC X(08)   VALUE   "TENSU2".
            03  FILLER               PIC X(40)   VALUE
-                                    "·Ð²áÁ¼ÃÖ°åÌôÉÊÃÖ´¹¥Þ¥¹¥¿°ìÍ÷".
+                                    "çµŒéŽæŽªç½®åŒ»è–¬å“ç½®æ›ãƒžã‚¹ã‚¿ä¸€è¦§".
       *
            03  FILLER               PIC X(08)   VALUE   "DAILY".
-           03  FILLER               PIC X(40)   VALUE   "Æü¼¡Åý·×".
+           03  FILLER               PIC X(40)   VALUE   "æ—¥æ¬¡çµ±è¨ˆ".
       *
            03  FILLER               PIC X(08)   VALUE   "MONTHLY".
-           03  FILLER               PIC X(40)   VALUE   "·î¼¡Åý·×".
+           03  FILLER               PIC X(40)   VALUE   "æœˆæ¬¡çµ±è¨ˆ".
       *
            03  FILLER               PIC X(08)   VALUE   "REPRINT".
            03  FILLER               PIC X(40)   VALUE
-                                    "ºÆ°õºþ½èÍý".
+                                    "å†å°åˆ·å‡¦ç†".
            03  FILLER               PIC X(08)   VALUE   "ORCBQ01".
            03  FILLER               PIC X(40)   VALUE
-                                    "´µ¼Ô¾È²ñ".
+                                    "æ‚£è€…ç…§ä¼š".
            03  FILLER               PIC X(08)   VALUE   "TEIKI1".
            03  FILLER               PIC X(40)   VALUE
-                                    "Äê´üÀÁµá¡Ý¼ýÇ¼¥Ç¡¼¥¿ºîÀ®".
+                                    "å®šæœŸè«‹æ±‚âˆ’åŽç´ãƒ‡ãƒ¼ã‚¿ä½œæˆ".
            03  FILLER               PIC X(08)   VALUE   "TEIKI2".
            03  FILLER               PIC X(40)   VALUE
-                                    "Äê´üÀÁµá¡ÝÀÁµá½ñ°õºþ".
+                                    "å®šæœŸè«‹æ±‚âˆ’è«‹æ±‚æ›¸å°åˆ·".
            03  FILLER               PIC X(08)   VALUE   "ORCBI201".
            03  FILLER               PIC X(40)   VALUE
-                                    "Æþ±¡´µ¼Ô¾È²ñ".
+                                    "å…¥é™¢æ‚£è€…ç…§ä¼š".
       *
            03  FILLER               PIC X(08)   VALUE   "MONTHLY1".
            03  FILLER               PIC X(40)   VALUE
-                                                "·î¼¡Åý·×¥Ç¡¼¥¿ºîÀ®".
+                                                "æœˆæ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ä½œæˆ".
       *
            03  FILLER               PIC X(08)   VALUE   "CHKMST".
            03  FILLER               PIC X(40)   VALUE
-                                                "¥Á¥§¥Ã¥¯¥Þ¥¹¥¿°ìÍ÷".
+                                                "ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ä¸€è¦§".
       *
            03  FILLER               PIC X(08)   VALUE   "ORCBS01".
            03  FILLER               PIC X(40)   VALUE
-                                                "»ÙÊ§¾ÚÌÀ½ñ".
+                                                "æ”¯æ‰•è¨¼æ˜Žæ›¸".
       *
            03  FILLER               PIC X(08)   VALUE   "DAILY1".
            03  FILLER               PIC X(40)   VALUE
-                                                "Æü¼¡Åý·×¥Ç¡¼¥¿ºîÀ®".
+                                                "æ—¥æ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ä½œæˆ".
       *
            03  FILLER               PIC X(08)   VALUE   "TEIKI3".
            03  FILLER               PIC X(40)   VALUE
-                                    "Äê´üÀÁµá¡ÝÀÁµáºï½ü".
+                                    "å®šæœŸè«‹æ±‚âˆ’è«‹æ±‚å‰Šé™¤".
            03  FILLER               PIC X(08)   VALUE   "YKJMST".
            03  FILLER               PIC X(40)   VALUE
-                                    "ÌôºÞ¾ðÊó¥Þ¥¹¥¿".
+                                    "è–¬å‰¤æƒ…å ±ãƒžã‚¹ã‚¿".
            03  FILLER               PIC X(08)   VALUE   "ORHCML09".
            03  FILLER               PIC X(40)   VALUE
-                                    "¼«±¡ÉÂÌ¾°ìÍ÷".
+                                    "è‡ªé™¢ç—…åä¸€è¦§".
            03  FILLER               PIC X(08)   VALUE   "COLLECT".
            03  FILLER               PIC X(40)   VALUE
-                                    "¥Ç¡¼¥¿¼ý½¸".
+                                    "ãƒ‡ãƒ¼ã‚¿åŽé›†".
       *
            03  FILLER               PIC X(08)   VALUE   "PUTCSV".
            03  FILLER               PIC X(40)   VALUE
-                                    "Åý·×£Ã£Ó£Ö½ÐÎÏ".
+                                    "çµ±è¨ˆï¼£ï¼³ï¼¶å‡ºåŠ›".
       *
            03  FILLER               PIC X(08)   VALUE   "INFECTIO".
            03  FILLER               PIC X(40)   VALUE
-                                    "´¶À÷¾É¥µ¡¼¥Ù¥¤".
+                                    "æ„ŸæŸ“ç—‡ã‚µãƒ¼ãƒ™ã‚¤".
       *
            03  FILLER               PIC X(08)   VALUE   "RENKEI1".
            03  FILLER               PIC X(40)   VALUE
-                                    "Ï¢·È´ðÈ×".
+                                    "é€£æºåŸºç›¤".
       *
            03  FILLER               PIC X(08)   VALUE   "MISRECE1".
            03  FILLER               PIC X(40)   VALUE
-                                    "¿ÇÎÅ¾ðÊóÍÑ¥ì¥»ÅÅ".
+                                    "è¨ºç™‚æƒ…å ±ç”¨ãƒ¬ã‚»é›»".
       *
            03  FILLER               PIC X(08)   VALUE   "MISJMAMR".
            03  FILLER               PIC X(40)   VALUE
-                                    "¿ÇÎÅ¾ðÊó¥Õ¥©¡¼¥Þ¥Ã¥È".
+                                    "è¨ºç™‚æƒ…å ±ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆ".
       *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
            03  MNAME-TBL-OCC        OCCURS      29  INDEXED TBL-IDX.

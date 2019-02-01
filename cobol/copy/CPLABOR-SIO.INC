@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,34 +16,34 @@
       * 113-8621, Japan.
       *******************************************************************
       ************************************************************
-      *    Ï«Æ¯´ð½à´ÆÆÄ½ð¥Þ¥¹¥¿     COPY  (CPLABOR-SIO.INC)      *
+      *    åŠ´åƒåŸºæº–ç›£ç£ç½²ãƒžã‚¹ã‚¿     COPY  (CPLABOR-SIO.INC)      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  LABOR-SIO-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  LABOR-SIO-KEY.
-      *½ð¥³¡¼¥É
+      *ç½²ã‚³ãƒ¼ãƒ‰
                05  LABOR-SIO-SYOCD          PIC  X(05).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  LABOR-SIO-YUKOSTYMD      PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  LABOR-SIO-YUKOEDYMD      PIC  X(08).
-      *Ì¾¾Î
+      *åç§°
            03  LABOR-SIO-NAME               PIC  X(50).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  LABOR-SIO-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  LABOR-SIO-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  LABOR-SIO-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  LABOR-SIO-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  LABOR-SIO-UPHMS              PIC  X(06).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  LABOR-SIO-UP-KEY.
                05  LABOR-SIO-UPSYOCD      PIC  X(05).
                05  LABOR-SIO-UPYUKOSTYMD  PIC  X(08).

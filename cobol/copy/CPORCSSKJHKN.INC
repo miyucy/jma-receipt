@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿©»öÊÝ¸±¼èÆÀ¥Ñ¥é¥á¥¿¡¡COPY (CPORCSSKJHKN.INC)
-      *                        »ÈÍÑ¥×¥í¥°¥é¥à (ORCSSKJHKN)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´ØÈÖ¹æ
-      *      ´µ¼Ô£É£Ä
-      *      »»ÄêÇ¯·î
+      *    é£Ÿäº‹ä¿é™ºå–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€COPY (CPORCSSKJHKN.INC)
+      *                        ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSSKJHKN)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ç•ªå·
+      *      æ‚£è€…ï¼©ï¼¤
+      *      ç®—å®šå¹´æœˆ
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSSKJHKN-AREA.
       *
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  LNK-SKJHKN-HOSPNUM             PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-SKJHKN-PTID                PIC  9(10).
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-SKJHKN-SANTEIYM            PIC  X(06).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-SKJHKN-HENKYAKU-AREA.
-      *Æþ±¡¶èÊ¬
+      *å…¥é™¢åŒºåˆ†
              05  LNK-SKJHKN-TBL.
                07  LNK-SKJHKN-DAY             OCCURS  31.
-      *          ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
-      *        ¡ÊÅº»ú£±¡§Æþ±¡Ê¬¡¡Åº»ú£²¡§Æ±ÆüºÆÆþ±¡Ê¬¡¡¶õÇò¡§ÆþÎÏÌµ¤·¡Ë
+      *          ä¿é™ºçµ„åˆã›ç•ªå·
+      *        ï¼ˆæ·»å­—ï¼‘ï¼šå…¥é™¢åˆ†ã€€æ·»å­—ï¼’ï¼šåŒæ—¥å†å…¥é™¢åˆ†ã€€ç©ºç™½ï¼šå…¥åŠ›ç„¡ã—ï¼‰
                  09  LNK-SKJHKN-HKNCOMBINUM   PIC X(04)  OCCURS  2.
-      *          ÊÝ¸±¼ïÎà
-      *        ¡Ê£±¡§¼ÒÊÝ¡¡£²¡§¹ñÊÝ¡¡£³¡§¸å´ü¹âÎð¡¡£´¡§Ï«ºÒ¡¡£µ¡§¼«Çå
-      *          £¶¡§¸ø³²¡¡£·¡§¼«Èñ¡¡£¸¡§¼£¸³¡¡¶õÇò¡§ÆþÎÏÌµ¤·¡Ë
+      *          ä¿é™ºç¨®é¡ž
+      *        ï¼ˆï¼‘ï¼šç¤¾ä¿ã€€ï¼’ï¼šå›½ä¿ã€€ï¼“ï¼šå¾ŒæœŸé«˜é½¢ã€€ï¼”ï¼šåŠ´ç½ã€€ï¼•ï¼šè‡ªè³ 
+      *          ï¼–ï¼šå…¬å®³ã€€ï¼—ï¼šè‡ªè²»ã€€ï¼˜ï¼šæ²»é¨“ã€€ç©ºç™½ï¼šå…¥åŠ›ç„¡ã—ï¼‰
                  09  LNK-SKJHKN-HKNSYU        PIC X(01)  OCCURS  2.
       *
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§»»ÄêÇ¯·î¥¨¥é¡¼¡¡£²¡§´µ¼Ô¸¡º÷¥¨¥é¡¼
-      *            £³¡§Æþ±¡¤Ê¤·¡¡£´¡§¥·¥¹¥Æ¥àÍ½ÌóÆþÎÏ¤Ê¤·
-      *            £µ¡§¥·¥¹¥Æ¥àÍ½Ìó½ÅÊ£ÆþÎÏ¥¨¥é¡¼¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šç®—å®šå¹´æœˆã‚¨ãƒ©ãƒ¼ã€€ï¼’ï¼šæ‚£è€…æ¤œç´¢ã‚¨ãƒ©ãƒ¼
+      *            ï¼“ï¼šå…¥é™¢ãªã—ã€€ï¼”ï¼šã‚·ã‚¹ãƒ†ãƒ äºˆç´„å…¥åŠ›ãªã—
+      *            ï¼•ï¼šã‚·ã‚¹ãƒ†ãƒ äºˆç´„é‡è¤‡å…¥åŠ›ã‚¨ãƒ©ãƒ¼ï¼‰
            03  LNK-SKJHKN-RC                PIC S9(9) BINARY.
       *

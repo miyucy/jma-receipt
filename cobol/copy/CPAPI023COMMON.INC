@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,47 +16,47 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    º˝«ºAPI∂¶ƒÃ•≥•‘°º∂Á          COPY (CPAPI023COMMON.INC)
+      *    ÂèéÁ¥çAPIÂÖ±ÈÄö„Ç≥„Éî„ÉºÂè•          COPY (CPAPI023COMMON.INC)
       ******************************************************************
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
-      *    ¿¡µ·≈¿øÙÃææŒ
+      *    Ë´ãÊ±ÇÁÇπÊï∞ÂêçÁß∞
        01  TBL-HKNTEN-MEI-AREA.
            03  FILLER              PIC X(03)   VALUE   "A00".
-           03  FILLER              PIC X(30)   VALUE   "ΩÈ°¶∫∆ø«Œ¡".
+           03  FILLER              PIC X(30)   VALUE   "Âàù„ÉªÂÜçË®∫Êñô".
            03  FILLER              PIC X(03)   VALUE   "B00".
-           03  FILLER              PIC X(30)   VALUE   "∞Â≥ÿ¥…Õ˝≈˘".
+           03  FILLER              PIC X(30)   VALUE   "ÂåªÂ≠¶ÁÆ°ÁêÜÁ≠â".
            03  FILLER              PIC X(03)   VALUE   "C00".
-           03  FILLER              PIC X(30)   VALUE   "∫ﬂ¬Œ≈Õ‹".
+           03  FILLER              PIC X(30)   VALUE   "Âú®ÂÆÖÁôÇÈ§ä".
            03  FILLER              PIC X(03)   VALUE   "F00".
-           03  FILLER              PIC X(30)   VALUE   "≈ÍÃÙ".
+           03  FILLER              PIC X(30)   VALUE   "ÊäïËñ¨".
            03  FILLER              PIC X(03)   VALUE   "G00".
-           03  FILLER              PIC X(30)   VALUE   "√ÌºÕ".
+           03  FILLER              PIC X(30)   VALUE   "Ê≥®Â∞Ñ".
            03  FILLER              PIC X(03)   VALUE   "J00".
-           03  FILLER              PIC X(30)   VALUE   "ΩË√÷".
+           03  FILLER              PIC X(30)   VALUE   "Âá¶ÁΩÆ".
            03  FILLER              PIC X(03)   VALUE   "K00".
-           03  FILLER              PIC X(30)   VALUE   "ºÍΩ—".
+           03  FILLER              PIC X(30)   VALUE   "ÊâãË°ì".
            03  FILLER              PIC X(03)   VALUE   "L00".
-           03  FILLER              PIC X(30)   VALUE   "À„øÏ".
+           03  FILLER              PIC X(30)   VALUE   "È∫ªÈÖî".
            03  FILLER              PIC X(03)   VALUE   "D00".
-           03  FILLER              PIC X(30)   VALUE   "∏°∫∫".
+           03  FILLER              PIC X(30)   VALUE   "Ê§úÊüª".
            03  FILLER              PIC X(03)   VALUE   "E00".
-           03  FILLER              PIC X(30)   VALUE   "≤Ë¡¸ø«√«".
+           03  FILLER              PIC X(30)   VALUE   "ÁîªÂÉèË®∫Êñ≠".
            03  FILLER              PIC X(03)   VALUE   "H00".
-           03  FILLER              PIC X(30)   VALUE   "•Í•œ•”•Í".
+           03  FILLER              PIC X(30)   VALUE   "„É™„Éè„Éì„É™".
            03  FILLER              PIC X(03)   VALUE   "I00".
-           03  FILLER              PIC X(30)   VALUE   "¿∫ø¿≤ ¿ÏÃÁ".
+           03  FILLER              PIC X(30)   VALUE   "Á≤æÁ•ûÁßëÂ∞ÇÈñÄ".
            03  FILLER              PIC X(03)   VALUE   "M00".
-           03  FILLER              PIC X(30)   VALUE   " ¸ºÕ¿˛º£Œ≈".
+           03  FILLER              PIC X(30)   VALUE   "ÊîæÂ∞ÑÁ∑öÊ≤ªÁôÇ".
            03  FILLER              PIC X(03)   VALUE   "N00".
-           03  FILLER              PIC X(30)   VALUE   "…¬Õ˝ø«√«".
+           03  FILLER              PIC X(30)   VALUE   "ÁóÖÁêÜË®∫Êñ≠".
            03  FILLER              PIC X(03)   VALUE   "A10".
-           03  FILLER              PIC X(30)   VALUE   "∆˛±°Œ¡".
+           03  FILLER              PIC X(30)   VALUE   "ÂÖ•Èô¢Êñô".
            03  FILLER              PIC X(03)   VALUE   "001".
-           03  FILLER              PIC X(30)   VALUE   "Œ≈Õ‹√¥≈ˆºÍ≈ˆ".
+           03  FILLER              PIC X(30)   VALUE   "ÁôÇÈ§äÊãÖÂΩìÊâãÂΩì".
        01  TBL-HKNTEN-MEI-RES      REDEFINES   TBL-HKNTEN-MEI-AREA.
            03  TBL-HKNTEN-MEI-OCC  OCCURS   16.
                05  TBL-HKNTEN-KBN  PIC X(03).

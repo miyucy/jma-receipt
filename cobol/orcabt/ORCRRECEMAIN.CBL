@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,59 +18,59 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCRRECEMAIN.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : •Ï•ª•◊•»
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∑Óº°∂»Ã≥°°Ã¿∫ŸΩÒºÁ•◊•Ì
-      *                    : •◊•Ï•”•Â°ºÕ—
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  00/12/01    NACL°›√›≈ƒ°°°°ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : „É¨„Çª„Éó„Éà
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÊúàÊ¨°Ê•≠Âãô„ÄÄÊòéÁ¥∞Êõ∏‰∏ª„Éó„É≠
+      *                    : „Éó„É¨„Éì„É•„ÉºÁî®
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  00/12/01    NACL‚àíÁ´πÁî∞„ÄÄ„ÄÄÊñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *
-      *  02.08.01    NACL-∆£∏∂    06/02/20  ºÁ≤ ¬–±˛
-      *  02.08.02    NACL-∆£∏∂    06/03/28  ª≥∑¡∏©§Œ•Ï•ª•◊•»ÕÕº∞ —ππ¬–±˛
+      *  02.08.01    NACL-Ëó§Âéü    06/02/20  ‰∏ªÁßëÂØæÂøú
+      *  02.08.02    NACL-Ëó§Âéü    06/03/28  Â±±ÂΩ¢Áúå„ÅÆ„É¨„Çª„Éó„ÉàÊßòÂºèÂ§âÊõ¥ÂØæÂøú
       *
-      *  03.00.01    NACL-∆£∏∂    06/05/29  ∞ı∫˛ª˛§Œ•◊•Í•Û•ø°ºªÿƒÍ¬–±˛
-      *  03.00.01    NACL-√›≈ƒ    06/06/07  ªªƒÍÕ˙ŒÚºË§Íπ˛§ﬂ —ππ
+      *  03.00.01    NACL-Ëó§Âéü    06/05/29  Âç∞Âà∑ÊôÇ„ÅÆ„Éó„É™„É≥„Çø„ÉºÊåáÂÆöÂØæÂøú
+      *  03.00.01    NACL-Á´πÁî∞    06/06/07  ÁÆóÂÆöÂ±•Ê≠¥Âèñ„ÇäËæº„ÅøÂ§âÊõ¥
       *
-      *  03.03.01    NACL-ÃÁœ∆    06/09/27  £≤£∞£∞£∂«Ø£±£∞∑Ó≤˛¿µ¬–±˛
+      *  03.03.01    NACL-ÈñÄËÑá    06/09/27  ÔºíÔºêÔºêÔºñÂπ¥ÔºëÔºêÊúàÊîπÊ≠£ÂØæÂøú
       *
-      *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  03.05.02    NACL-∆£∏∂    07/06/01  œ´∫“°¶º´«Â¿’¬–±˛
-      *  03.05.03    NACL-∆£∏∂    07/06/19  º´«Â¿’§ŒÕÕº∞¡™¬Ú¬–±˛
-      *                                     °  ø¿Æ£±£π«Ø£¥∑Ó≤˛¿µÕÕº∞°À
+      *  03.05.01    NACL-Ëó§Âéü    07/04/19  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      *  03.05.02    NACL-Ëó§Âéü    07/06/01  Âä¥ÁÅΩ„ÉªËá™Ë≥†Ë≤¨ÂØæÂøú
+      *  03.05.03    NACL-Ëó§Âéü    07/06/19  Ëá™Ë≥†Ë≤¨„ÅÆÊßòÂºèÈÅ∏ÊäûÂØæÂøú
+      *                                     ÔºàÂπ≥ÊàêÔºëÔºôÂπ¥ÔºîÊúàÊîπÊ≠£ÊßòÂºèÔºâ
       *
-      *  04.01.01    NACL-∆£∏∂    07/10/25  ∏¯Ã≥∫“≥≤¬–±˛
-      *  04.01.02    NACL-∆£∏∂    07/11/22  ∏¯≥≤•Ï•ª•◊•»¬–±˛
+      *  04.01.01    NACL-Ëó§Âéü    07/10/25  ÂÖ¨ÂãôÁÅΩÂÆ≥ÂØæÂøú
+      *  04.01.02    NACL-Ëó§Âéü    07/11/22  ÂÖ¨ÂÆ≥„É¨„Çª„Éó„ÉàÂØæÂøú
       *
-      *  04.02.01    NACL-∆£∏∂    08/03/04   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  04.02.01    NACL-Ëó§Âéü    08/03/04  Âπ≥ÊàêÔºíÔºêÂπ¥ÔºîÊúàÊîπÊ≠£ÂØæÂøú
       *
-      *  04.03.01    NACL-∆£∏∂    08/07/09  ≤æ•Ï•ª∫Ó¿Æ° ±°≥∞ΩË ˝¥ﬁ§‡°À¬–±˛
-      *  04.03.02    NACL-∆£∏∂    08/08/07  œ´∫“§Œœ»∞ı∫˛¡™¬Úµ°«Ω¬–±˛
-      *  04.03.03    NACL-∆£∏∂    08/08/11  •≥•·•Û•»µ≠∫‹≤’ΩÍ¡™¬Úµ°«Ω¬–±˛
+      *  04.03.01    NACL-Ëó§Âéü    08/07/09  ‰ªÆ„É¨„Çª‰ΩúÊàêÔºàÈô¢Â§ñÂá¶ÊñπÂê´„ÇÄÔºâÂØæÂøú
+      *  04.03.02    NACL-Ëó§Âéü    08/08/07  Âä¥ÁÅΩ„ÅÆÊû†Âç∞Âà∑ÈÅ∏ÊäûÊ©üËÉΩÂØæÂøú
+      *  04.03.03    NACL-Ëó§Âéü    08/08/11  „Ç≥„É°„É≥„ÉàË®òËºâÁÆáÊâÄÈÅ∏ÊäûÊ©üËÉΩÂØæÂøú
       *
-      *  04.05.01    NACL-∆£∏∂    11/08/02  œ´∫“ø∑ÕÕº∞¬–±˛
-      *  04.05.02    NACL-∆£∏∂    11/10/24  °÷¿¡µ·§∑§ §§°◊¿ﬂƒÍ§Œ¿¡µ·¥…Õ˝
-      *                                     §Œ∫ÔΩ¸ΩËÕ˝§ŒÕ≠Ãµ¬–±˛
+      *  04.05.01    NACL-Ëó§Âéü    11/08/02  Âä¥ÁÅΩÊñ∞ÊßòÂºèÂØæÂøú
+      *  04.05.02    NACL-Ëó§Âéü    11/10/24  „ÄåË´ãÊ±Ç„Åó„Å™„ÅÑ„ÄçË®≠ÂÆö„ÅÆË´ãÊ±ÇÁÆ°ÁêÜ
+      *                                     „ÅÆÂâäÈô§Âá¶ÁêÜ„ÅÆÊúâÁÑ°ÂØæÂøú
       *
-      *  04.06.01    NACL-∆£∏∂    11/12/12  ≈¿∏°•Ï•ª£∞≈¿∏¯»Ò∞ıª˙¬–±˛
-      *  04.06.02    NACL-ÃÁœ∆    12/10/15  •≥•·•Û•»§Œ§ﬂ§Œ∫ﬁ§Œ•Ï•ª•◊•»
-      *                                     µ≠∫‹¬–±˛
+      *  04.06.01    NACL-Ëó§Âéü    11/12/12  ÁÇπÊ§ú„É¨„ÇªÔºêÁÇπÂÖ¨Ë≤ªÂç∞Â≠óÂØæÂøú
+      *  04.06.02    NACL-ÈñÄËÑá    12/10/15  „Ç≥„É°„É≥„Éà„ÅÆ„Åø„ÅÆÂâ§„ÅÆ„É¨„Çª„Éó„Éà
+      *                                     Ë®òËºâÂØæÂøú
       *
-      *  04.07.01    NACL-∆£∏∂    12/11/20  •Í•¢•Î•ø•§•‡•◊•Ï•”•Â°ºª˛§Œ
-      *                                     ∞Ï≤ËÃÃ¬–±˛
-      *  04.07.02    NACL-∆£∏∂    13/09/20  ¬Ëª∞º‘π‘∞Ÿ¬–±˛
-      *  04.07.03    NACL-∆£∏∂    13/12/04  º´«Â¿’° œ´∫“Ω‡µÚ°À§Œ•Ï•ª•◊•»
-      *                                     ÕÕº∞ƒ…≤√¬–±˛
-      *  04.07.04    NACL-∆£∏∂    13/12/09  ∞ÂŒ≈æ Ûœ¢∑»¥»◊¬–±˛
+      *  04.07.01    NACL-Ëó§Âéü    12/11/20  „É™„Ç¢„É´„Çø„Ç§„É†„Éó„É¨„Éì„É•„ÉºÊôÇ„ÅÆ
+      *                                     ‰∏ÄÁîªÈù¢ÂØæÂøú
+      *  04.07.02    NACL-Ëó§Âéü    13/09/20  Á¨¨‰∏âËÄÖË°åÁÇ∫ÂØæÂøú
+      *  04.07.03    NACL-Ëó§Âéü    13/12/04  Ëá™Ë≥†Ë≤¨ÔºàÂä¥ÁÅΩÊ∫ñÊã†Ôºâ„ÅÆ„É¨„Çª„Éó„Éà
+      *                                     ÊßòÂºèËøΩÂä†ÂØæÂøú
+      *  04.07.04    NACL-Ëó§Âéü    13/12/09  ÂåªÁôÇÊÉÖÂ†±ÈÄ£Êê∫Âü∫Áõ§ÂØæÂøú
       *
-      *  04.08.01    NACL-∆£∏∂    12/01/08   Ò≥Áø«Œ≈ ¨§Œ≈¿∏°Õ—•Ï•ª•◊•»µ≠
-      *                                     ∫‹¬–±˛
-      *  04.08.02    NACL-∆£∏∂    16/07/20  £≈£∆•’•°•§•Î∫Ó¿Æ¬–±˛
-      *  04.08.03    NACL-∆£∏∂    17/04/10  ¥µº‘√±∞Ã§«§Œ≈¿øÙªªƒÍ¿ﬂƒÍ
-      *                                     ° œ´∫“Ω‡µÚÀÙ§œ∑Ú ›Ω‡µÚ°À¬–±˛
+      *  04.08.01    NACL-Ëó§Âéü    12/01/08  ÂåÖÊã¨Ë®∫ÁôÇÂàÜ„ÅÆÁÇπÊ§úÁî®„É¨„Çª„Éó„ÉàË®ò
+      *                                     ËºâÂØæÂøú
+      *  04.08.02    NACL-Ëó§Âéü    16/07/20  Ôº•Ôº¶„Éï„Ç°„Ç§„É´‰ΩúÊàêÂØæÂøú
+      *  04.08.03    NACL-Ëó§Âéü    17/04/10  ÊÇ£ËÄÖÂçò‰Ωç„Åß„ÅÆÁÇπÊï∞ÁÆóÂÆöË®≠ÂÆö
+      *                                     ÔºàÂä¥ÁÅΩÊ∫ñÊã†Âèà„ÅØÂÅ•‰øùÊ∫ñÊã†ÔºâÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -83,11 +83,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  FLG-AREA.
            03  FLG-SYUNOU                              PIC 9(01).
            03  FLG-SYUMEI                              PIC 9(01).
@@ -100,7 +100,7 @@
            03  FLG-PTCOM                               PIC 9(01).
            03  FLG-PRVKANRI                            PIC 9(01).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -215,7 +215,7 @@
            03  WRK-ZAINUM              PIC 9(08).
       *
         01  WRK-CONS-AREA.
-      *    ƒ¢…ºΩ–ŒœÕ—•—•È•·•ø  
+      *    Â∏≥Á•®Âá∫ÂäõÁî®„Éë„É©„É°„Çø  
            03  WRK-CONS-ARG.       
                05  WRK-CONS-ARG-PRTID  PIC X(04)   VALUE   "HC06".
                05  WRK-CONS-ARG-SRYYM  PIC X(06)   VALUE   "999999".
@@ -237,74 +237,74 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„Çø
            COPY    "CPSYSKANRI.INC".
-      *    ∞ÂŒ≈µ°¥ÿæ Û
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
            COPY  "CPSK1001.INC".
-      *    ∞ÂŒ≈µ°¥ÿæ Û
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
            COPY  "CPSK1005.INC".
       *
-      *    ¥µº‘»÷πÊπΩ¿Æ¥…Õ˝æ Û
+      *    ÊÇ£ËÄÖÁï™Âè∑ÊßãÊàêÁÆ°ÁêÜÊÉÖÂ†±
            COPY    "CPSK1009.INC".
       *
-      *    º˝«º
+      *    ÂèéÁ¥ç
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    º˝«ºÃ¿∫Ÿ
+      *    ÂèéÁ¥çÊòéÁ¥∞
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    º˝«ºπÁ∑◊•ﬁ•π•ø
+      *    ÂèéÁ¥çÂêàË®à„Éû„Çπ„Çø
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ºıø«Õ˙ŒÚ•ﬁ•π•ø
+      *    ÂèóË®∫Â±•Ê≠¥„Éû„Çπ„Çø
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ≤Ò∑◊•ﬁ•π•ø
+      *    ‰ºöË®à„Éû„Çπ„Çø
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ≤Ò∑◊…’≤√æ Û•ﬁ•π•ø
+      *    ‰ºöË®à‰ªòÂä†ÊÉÖÂ†±„Éû„Çπ„Çø
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ªªƒÍ•ﬁ•π•ø
+      *    ÁÆóÂÆö„Éû„Çπ„Çø
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ø«Œ≈≤ Õ˙ŒÚ•ﬁ•π•ø
+      *    Ë®∫ÁôÇÁßëÂ±•Ê≠¥„Éû„Çπ„Çø
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    ¥µº‘•≥•·•Û•»•ﬁ•π•ø
+      *    ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ¥µº‘•ﬁ•π•ø
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    •◊•Ï•”•Â°º¥…Õ˝•ﬁ•π•ø
+      *    „Éó„É¨„Éì„É•„ÉºÁÆ°ÁêÜ„Éû„Çπ„Çø
            COPY    "CPPRVKANRI.INC".
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®È†òÂüü
       *****************************************************************
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -319,7 +319,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -330,7 +330,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -338,7 +338,7 @@
                                        FLG-AREA
                                        SPA-AREA
       *
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
            PERFORM 100-DBOPEN-SEC
       *
            UNSTRING    COMMAND-PARAM   DELIMITED BY ","
@@ -418,7 +418,7 @@
            MOVE     WRK-PARA-A9    TO  WRK-PARA4-A9
            MOVE     WRK-PARA-A10   TO  WRK-PARA4-A10
       *
-      *    ∫Ó¿Æ∆¸°¶ª˛¥÷§Œ¿ﬂƒÍ
+      *    ‰ΩúÊàêÊó•„ÉªÊôÇÈñì„ÅÆË®≠ÂÆö
            MOVE    WRK-PARA-A9     TO  WRK-CONS-ARG-CREYMD
            MOVE    WRK-PARA-A10    TO  WRK-CONS-ARG-CREHMS
            MOVE    WRK-PARA-NYUGAIKBN
@@ -442,7 +442,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -472,7 +472,7 @@
            END-EVALUATE
       *
            IF      WRK-PARA-SHORI-KBN  NOT  =  ZERO
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝(§‚§¶æØ§∑¿∞Õ˝)
+      *    Ôº§Ôº¢„Ç™„Éº„Éó„É≥Âá¶ÁêÜ(„ÇÇ„ÅÜÂ∞ë„ÅóÊï¥ÁêÜ)
                    PERFORM 100-DBOPEN-SEC
                    PERFORM 20011-TMPDB-DELETE-SEC
                    PERFORM 900-DBCOMMIT-SEC
@@ -483,7 +483,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∞Â ›° ∆˛±°≥∞°ÀΩËÕ˝
+      *    Âåª‰øùÔºàÂÖ•Èô¢Â§ñÔºâÂá¶ÁêÜ
       *****************************************************************
        2001-IHO-GAIRAI-SEC                SECTION.
       *
@@ -587,7 +587,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -733,7 +733,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∞Â ›° ∆˛±°°ÀΩËÕ˝
+      *    Âåª‰øùÔºàÂÖ•Èô¢ÔºâÂá¶ÁêÜ
       *****************************************************************
        2002-IHO-NYUIN-SEC          SECTION.
       *
@@ -1006,7 +1006,7 @@
            EXIT.
       *
       *****************************************************************
-      *    œ´∫“° ∆˛±°≥∞°ÀΩËÕ˝
+      *    Âä¥ÁÅΩÔºàÂÖ•Èô¢Â§ñÔºâÂá¶ÁêÜ
       *****************************************************************
        2003-ROUSAI-GAIRAI-SEC                SECTION.
       *???
@@ -1130,7 +1130,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
            MOVE     SPACE       TO WRK-ARG
@@ -1307,7 +1307,7 @@
            EXIT.
       *
       *****************************************************************
-      *    œ´∫“° ∆˛±°°ÀΩËÕ˝
+      *    Âä¥ÁÅΩÔºàÂÖ•Èô¢ÔºâÂá¶ÁêÜ
       *****************************************************************
        2004-ROUSAI-NYUIN-SEC                SECTION.
       *???
@@ -1435,7 +1435,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -1639,7 +1639,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º´«Â¿’° ∆˛±°≥∞°ÀΩËÕ˝
+      *    Ëá™Ë≥†Ë≤¨ÔºàÂÖ•Èô¢Â§ñÔºâÂá¶ÁêÜ
       *****************************************************************
        2005-JIBAI-GAIRAI-SEC                SECTION.
       *
@@ -1763,7 +1763,7 @@
            END-STRING
            DISPLAY "ORCR0470 start = [" WRK-ARG "]"
       *
-      *    ΩæÕËÕÕº∞
+      *    ÂæìÊù•ÊßòÂºè
            CALL    "ORCR0470"          USING
                                        WRK-ARG
            CALL    "ORCR0465"          USING
@@ -1773,7 +1773,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
            MOVE     SPACE       TO WRK-ARG
@@ -1798,7 +1798,7 @@
                                            WRK-ARG
            END-IF
       *
-      *    œ´∫“Ω‡µÚ§Œ§»§≠ÀÙ§œ ø¿Æ£≤£π«Ø£∑∑Óø«Œ≈ ¨∞ πﬂ§Œ§»§≠° ø∑ÕÕº∞°À
+      *    Âä¥ÁÅΩÊ∫ñÊã†„ÅÆ„Å®„ÅçÂèà„ÅØÂπ≥ÊàêÔºíÔºôÂπ¥ÔºóÊúàË®∫ÁôÇÂàÜ‰ª•Èôç„ÅÆ„Å®„ÅçÔºàÊñ∞ÊßòÂºèÔºâ
            IF    ( WRK-PARA-A3     =   "1"      )
            OR    ( WRK-PARA0-A8    >=  "201707" )
                PERFORM 100-DBOPEN-SEC
@@ -1937,7 +1937,7 @@
       *
                PERFORM 20010-PRVDATA-DEL-SEC
                PERFORM 900-DBDISCONNECT-SEC
-      *        ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *        ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
                PERFORM 200101-PRVDATA-DEL-SEC
       *
                EVALUATE    WRK-PARA-A38
@@ -2084,7 +2084,7 @@
            EXIT.
       *
       *****************************************************************
-      *    º´«Â¿’° ∆˛±°°ÀΩËÕ˝
+      *    Ëá™Ë≥†Ë≤¨ÔºàÂÖ•Èô¢ÔºâÂá¶ÁêÜ
       *****************************************************************
        2006-JIBAI-NYUIN-SEC                SECTION.
       *???
@@ -2210,7 +2210,7 @@
                                    INTO    WRK-ARG
            END-STRING
            DISPLAY "ORCR0940 start = [" WRK-ARG "]"
-      *    ΩæÕËÕÕº∞
+      *    ÂæìÊù•ÊßòÂºè
            CALL    "ORCR0940"          USING
                                        WRK-ARG
            CALL    "ORCR0920"          USING
@@ -2220,7 +2220,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -2246,7 +2246,7 @@
                                            WRK-ARG
            END-IF
       *
-      *    œ´∫“Ω‡µÚ§Œ§»§≠ÀÙ§œ ø¿Æ£≤£π«Ø£∑∑Óø«Œ≈ ¨∞ πﬂ§Œ§»§≠° ø∑ÕÕº∞°À
+      *    Âä¥ÁÅΩÊ∫ñÊã†„ÅÆ„Å®„ÅçÂèà„ÅØÂπ≥ÊàêÔºíÔºôÂπ¥ÔºóÊúàË®∫ÁôÇÂàÜ‰ª•Èôç„ÅÆ„Å®„ÅçÔºàÊñ∞ÊßòÂºèÔºâ
            IF    ( WRK-PARA-A3     =   "1"      )
            OR    ( WRK-PARA0-A8    >=  "201707" )
                PERFORM 100-DBOPEN-SEC
@@ -2389,7 +2389,7 @@
       *
                PERFORM 20010-PRVDATA-DEL-SEC
                PERFORM 900-DBDISCONNECT-SEC
-      *        ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *        ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
                PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -2537,7 +2537,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∏¯≥≤° ∆˛±°≥∞°ÀΩËÕ˝
+      *    ÂÖ¨ÂÆ≥ÔºàÂÖ•Èô¢Â§ñÔºâÂá¶ÁêÜ
       *****************************************************************
        2007-KOUGAI-GAIRAI-SEC                SECTION.
       *
@@ -2608,7 +2608,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -2709,7 +2709,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∏¯≥≤° ∆˛±°°ÀΩËÕ˝
+      *    ÂÖ¨ÂÆ≥ÔºàÂÖ•Èô¢ÔºâÂá¶ÁêÜ
       *****************************************************************
        2008-KOUGAI-NYUIN-SEC          SECTION.
       *
@@ -2796,7 +2796,7 @@
       *
            PERFORM 20010-PRVDATA-DEL-SEC
            PERFORM 900-DBDISCONNECT-SEC
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
            PERFORM 200101-PRVDATA-DEL-SEC
       *
       *
@@ -2898,7 +2898,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
       *****************************************************************
        20010-PRVDATA-DEL-SEC         SECTION.
       *
@@ -2927,7 +2927,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¡∞≤Û ¨∫ÔΩ¸(¬∏∫ﬂ§π§Ï§–)
+      *    ÂâçÂõûÂàÜÂâäÈô§(Â≠òÂú®„Åô„Çå„Å∞)
       *****************************************************************
        200101-PRVDATA-DEL-SEC        SECTION.
       *
@@ -2956,7 +2956,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(º˝«º)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(ÂèéÁ¥ç)
       *****************************************************************
        20011-SYUNOU-DB-MAKE-SEC      SECTION.
            EVALUATE    SYU-CREYMD
@@ -2981,7 +2981,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(º˝«ºÃ¿∫Ÿ)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(ÂèéÁ¥çÊòéÁ¥∞)
       *****************************************************************
        20011-SYUMEI-DB-MAKE-SEC      SECTION.
            EVALUATE    SMEI-CREYMD
@@ -3006,7 +3006,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(º˝«º•»°º•ø•Î)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(ÂèéÁ¥ç„Éà„Éº„Çø„É´)
       *****************************************************************
        20011-SYUTOTAL-DB-MAKE-SEC      SECTION.
            EVALUATE    SYUTTL-CREYMD
@@ -3034,7 +3034,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(≤Ò∑◊)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(‰ºöË®à)
       *****************************************************************
        20011-SRYACCT-DB-MAKE-SEC      SECTION.
            EVALUATE    ACCT-CREYMD
@@ -3063,7 +3063,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(ºıø«Õ˙ŒÚ)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(ÂèóË®∫Â±•Ê≠¥)
       *****************************************************************
        20011-JYURRK-DB-MAKE-SEC      SECTION.
            EVALUATE    JYURRK-CREYMD
@@ -3088,7 +3088,7 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝(¥µº‘•≥•·•Û•»)
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ(ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà)
       *****************************************************************
        20011-PTCOM-DB-MAKE-SEC      SECTION.
            EVALUATE    PTCOM-CREYMD
@@ -3118,10 +3118,10 @@ grpsys                                  SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        20011-REAL-DB-DELETE-SEC      SECTION.
-      *ºıø«Õ˙ŒÚ∫ÔΩ¸
+      *ÂèóË®∫Â±•Ê≠¥ÂâäÈô§
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -3136,7 +3136,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            DISPLAY "take jyurrk  del "
                                 WRK-PARA-HOSPNUM WRK-PTID
 grpsys     PERFORM 900-ORCDBMAIN-SEC
-      *ø«Œ≈≤Ò∑◊∫ÔΩ¸
+      *Ë®∫ÁôÇ‰ºöË®àÂâäÈô§
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -3150,7 +3150,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
                                 WRK-PARA-HOSPNUM WRK-PTID
 grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 200111-REAL-SRYACY-DB-DELETE2-SEC
-      *ªªƒÍÕ˙ŒÚ∫ÔΩ¸
+      *ÁÆóÂÆöÂ±•Ê≠¥ÂâäÈô§
            DISPLAY "real db(santei) del ed  "
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -3166,7 +3166,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        200111-REAL-SRYACY-DB-DELETE2-SEC   SECTION.
       *
@@ -3210,14 +3210,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    º¬£ƒ£¬ππø∑ΩËÕ˝
+      *    ÂÆüÔº§Ôº¢Êõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        20011-REAL-DB-MAKE-SEC        SECTION.
            PERFORM 20011-REAL-DB-DELETE-SEC
-      *º˝«º•ﬁ•π•ø¥ÿ∑∏§œ°¢…È√¥∂‚§ÚºŒ§∆§Î§»§§§¶§≥§»§«∞Ïª˛•≥•·•Û•»•¢•¶•»
-      *¢® √¢§∑°¢º˝«º∂‚≥€§Ú∏´§∆…È√¥º‘»÷πÊ§ŒΩ–§∑∆˛§Ï§Ú§∑§∆§§§Î§Œ§‚ÃµªÎ
-      *   §µ§Ï§Î°£(§…§¶§π§Î)
-      *º˝«º•ﬁ•π•ø
+      *ÂèéÁ¥ç„Éû„Çπ„ÇøÈñ¢‰øÇ„ÅØ„ÄÅË≤†ÊãÖÈáë„ÇíÊç®„Å¶„Çã„Å®„ÅÑ„ÅÜ„Åì„Å®„Åß‰∏ÄÊôÇ„Ç≥„É°„É≥„Éà„Ç¢„Ç¶„Éà
+      *‚Äª ‰ΩÜ„Åó„ÄÅÂèéÁ¥çÈáëÈ°ç„ÇíË¶ã„Å¶Ë≤†ÊãÖËÄÖÁï™Âè∑„ÅÆÂá∫„ÅóÂÖ•„Çå„Çí„Åó„Å¶„ÅÑ„Çã„ÅÆ„ÇÇÁÑ°Ë¶ñ
+      *   „Åï„Çå„Çã„ÄÇ(„Å©„ÅÜ„Åô„Çã)
+      *ÂèéÁ¥ç„Éû„Çπ„Çø
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYU-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3249,7 +3249,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **   END-IF
       *
       *--------------------------------------------------
-      *º˝«ºÃ¿∫Ÿ•ﬁ•π•ø
+      *ÂèéÁ¥çÊòéÁ¥∞„Éû„Çπ„Çø
       **   MOVE    WRK-PARA-HOSPNUM      TO      SMEI-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3282,7 +3282,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *--------------------------------------------------
       *--------------------------------------------------
-      *º˝«º•»°º•ø•Î•ﬁ•π•ø
+      *ÂèéÁ¥ç„Éà„Éº„Çø„É´„Éû„Çπ„Çø
       **   MOVE    WRK-PARA-HOSPNUM      TO      SYUTTL-HOSPNUM
       **   MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
       **   MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3314,7 +3314,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       **   END-IF
       *
       *--------------------------------------------------
-      *≤Ò∑◊•ﬁ•π•ø
+      *‰ºöË®à„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3344,12 +3344,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_sryacct_prv"    TO  MCP-TABLE
            MOVE    "key40"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *ø«Œ≈π‘∞Ÿ•ﬁ•π•ø
+      *Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
@@ -3382,12 +3382,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_sryact_prv"     TO  MCP-TABLE
            MOVE    "key12"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *ªªƒÍÕ˙ŒÚ•ﬁ•π•ø
+      *ÁÆóÂÆöÂ±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
@@ -3421,12 +3421,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_santei_prv"     TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *ºıø«Õ˙ŒÚ•ﬁ•π•ø
+      *ÂèóË®∫Â±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3456,12 +3456,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_jyurrk_prv"     TO  MCP-TABLE
            MOVE    "key30"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *ø«Œ≈≤ Õ˙ŒÚ•ﬁ•π•ø
+      *Ë®∫ÁôÇÁßëÂ±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
@@ -3501,12 +3501,12 @@ grpsys*            MOVE SPA-HOSPNUM TO -HOSPNUM
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_srykarrk_prv"   TO  MCP-TABLE
            MOVE    "key2"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *--------------------------------------------------
-      *¥µº‘•≥•·•Û•»•ﬁ•π•ø
+      *ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            MOVE    WRK-PARA-PTID        TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
@@ -3564,7 +3564,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                 WRK-PARA-HOSPNUM WRK-PTID
            END-IF
       *--------------------------------------------------
-      * °˙ DBCLOSECURSOR
+      * ‚òÖ DBCLOSECURSOR
            MOVE    "tbl_ptcom_prv"      TO  MCP-TABLE
            MOVE    "key3"               TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
@@ -3575,7 +3575,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    º˝«º∆…π˛
+      *    ÂèéÁ¥çË™≠Ëæº
       *****************************************************************
        900-SYUNOUPRV-READ-SEC           SECTION.
       *
@@ -3593,7 +3593,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    º˝«ºÃ¿∫Ÿ∆…π˛
+      *    ÂèéÁ¥çÊòéÁ¥∞Ë™≠Ëæº
       *****************************************************************
        900-SYUMEIPRV-READ-SEC           SECTION.
       *
@@ -3611,7 +3611,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    º˝«º•»°º•ø•Î∆…π˛
+      *    ÂèéÁ¥ç„Éà„Éº„Çø„É´Ë™≠Ëæº
       *****************************************************************
        900-SYUTTLPRV-READ-SEC           SECTION.
       *
@@ -3629,7 +3629,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ≤Ò∑◊∆…π˛
+      *    ‰ºöË®àË™≠Ëæº
       *****************************************************************
        900-ACCTPRV-READ-SEC            SECTION.
       *
@@ -3647,7 +3647,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ∆…π˛
+      *    Ë®∫ÁôÇË°åÁÇ∫Ë™≠Ëæº
       *****************************************************************
        900-ACTPRV-READ-SEC             SECTION.
       *
@@ -3665,7 +3665,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ºıø«Õ˙ŒÚ∆…π˛
+      *    ÂèóË®∫Â±•Ê≠¥Ë™≠Ëæº
       *****************************************************************
        900-JYURRKPRV-READ-SEC          SECTION.
       *
@@ -3683,7 +3683,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ªªƒÍÕ˙ŒÚ∆…π˛
+      *    ÁÆóÂÆöÂ±•Ê≠¥Ë™≠Ëæº
       *****************************************************************
        900-SANTEIPRV-READ-SEC          SECTION.
       *
@@ -3701,7 +3701,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈≤ Õ˙ŒÚ∆…π˛
+      *    Ë®∫ÁôÇÁßëÂ±•Ê≠¥Ë™≠Ëæº
       *****************************************************************
        900-SRYKARRKPRV-READ-SEC        SECTION.
       *
@@ -3719,7 +3719,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘•≥•·•Û•»∆…π˛
+      *    ÊÇ£ËÄÖ„Ç≥„É°„É≥„ÉàË™≠Ëæº
       *****************************************************************
        900-PTCOMPRV-READ-SEC           SECTION.
       *
@@ -3737,7 +3737,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    À‹¬ŒDBππø∑ΩËÕ˝
+      *    Êú¨‰ΩìDBÊõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        900-REALDB-INS-SEC            SECTION.
       *
@@ -3752,11 +3752,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆•Û•›•È•ÍDB∫ÔΩ¸ΩËÕ˝
+      *    „ÉÜ„É≥„Éù„É©„É™DBÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        20011-TMPDB-DELETE-SEC        SECTION.
            DISPLAY "take tmp db delete st"
-      *º˝«º•ﬁ•π•ø
+      *ÂèéÁ¥ç„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYU-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3770,7 +3770,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYU-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
-      *º˝«ºÃ¿∫Ÿ•ﬁ•π•ø
+      *ÂèéÁ¥çÊòéÁ¥∞„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SMEI-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3782,7 +3782,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SMEI-HOSPNUM
            DISPLAY "take tmp db delete syumei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *º˝«º•»°º•ø•Î•ﬁ•π•ø
+      *ÂèéÁ¥ç„Éà„Éº„Çø„É´„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SYUTTL-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3794,7 +3794,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SYUTTL-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            PERFORM  900-REALDB-INS-SEC
       *
-      *≤Ò∑◊•ﬁ•π•ø
+      *‰ºöË®à„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCT-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3806,7 +3806,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCT-HOSPNUM
            DISPLAY "take tmp db delete acct st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *ø«Œ≈π‘∞Ÿ•ﬁ•π•ø
+      *Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      SRY-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3818,7 +3818,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SRY-HOSPNUM
            DISPLAY "take tmp db delete act st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *ªªƒÍÕ˙ŒÚ•ﬁ•π•ø
+      *ÁÆóÂÆöÂ±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
       *    MOVE    WRK-PARA-NYUGAIKBN   TO      SANTEI-NYUGAIKBN
            MOVE    ZERO                 TO      SANTEI-NYUGAIKBN
@@ -3831,7 +3831,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      SANTEI-HOSPNUM
            DISPLAY "take tmp db delete santei st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *ºıø«Õ˙ŒÚ•ﬁ•π•ø
+      *ÂèóË®∫Â±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      JYURRK-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3843,7 +3843,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      JYURRK-HOSPNUM
            DISPLAY "take tmp db delete jyurr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *ø«Œ≈≤ Õ˙ŒÚ•ﬁ•π•ø
+      *Ë®∫ÁôÇÁßëÂ±•Ê≠¥„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      KARRK-PTID
@@ -3854,7 +3854,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      KARRK-HOSPNUM
            DISPLAY "take tmp db delete srykarr st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *¥µº‘•≥•·•Û•»•ﬁ•π•ø
+      *ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTCOM-PTID
@@ -3865,7 +3865,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTCOM-HOSPNUM
            DISPLAY "take tmp db delete ptcom st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
       *
-      *¥µº‘•ﬁ•π•ø
+      *ÊÇ£ËÄÖ„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
            MOVE    WRK-PTID             TO      PTINF-PTID
@@ -3875,7 +3875,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      PTINF-HOSPNUM
            MOVE    "delprv"             TO  MCP-PATHNAME
            DISPLAY "take tmp db delete ptinf st = " SYU-PTID "," 
            PERFORM  900-REALDB-INS-SEC
-      *ø«Œ≈π‘∞Ÿ…’≤√æ Û•ﬁ•π•ø
+      *Ë®∫ÁôÇË°åÁÇ∫‰ªòÂä†ÊÉÖÂ†±„Éû„Çπ„Çø
 grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
            MOVE    WRK-PARA-NYUGAIKBN   TO      ACCTP-NYUGAIKBN
            MOVE    WRK-PARA-PTID         TO      WRK-PTID-X
@@ -3893,7 +3893,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM     TO      ACCTP-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ∞ı∫˛¥…Õ˝£ƒ£¬∆…§ﬂπ˛§ﬂ
+      *     Âç∞Âà∑ÁÆ°ÁêÜÔº§Ôº¢Ë™≠„ÅøËæº„Åø
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
@@ -3909,7 +3909,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£”£≈£Ã£≈£√£‘ΩËÕ˝
+      *    Ôº§Ôº¢Ôº≥Ôº•Ôº¨Ôº•Ôº£Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -3920,7 +3920,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£∆£≈£‘£√£»ΩËÕ˝
+      *    Ôº§Ôº¢Ôº¶Ôº•Ôº¥Ôº£Ôº®Âá¶ÁêÜ
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -3932,7 +3932,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•Ø•Ì°º•∫ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -3944,7 +3944,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„Ç¢„ÇØ„Çª„ÇπÂá¶ÁêÜ
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -3957,7 +3957,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -3975,7 +3975,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
@@ -3993,7 +3993,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        900-DBCOMMIT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

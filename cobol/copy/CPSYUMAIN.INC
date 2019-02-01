@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,262 +16,262 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����Ǽ�ޥ���         COPY (CPSYUMAIN.INC)             *
+      *    新収納マスタ         COPY (CPSYUMAIN.INC)             *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SYUMAIN-REC.
            03  SYUMAIN-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SYUMAIN-HOSPNUM          PIC 9(2).
-      *������ʬ
+      *入外区分
                05  SYUMAIN-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SYUMAIN-PTID            PIC  9(10).
-      *��ɼ�ֹ�
+      *伝票番号
                05  SYUMAIN-DENPNUM         PIC  9(07).
-      *��ɼ���ֺǽ��ֹ�
+      *伝票枝番最終番号
            03  SYUMAIN-DENPLASTNUM         PIC  9(02).
-      *���Ų�
+      *診療科
            03  SYUMAIN-SRYKA               PIC  X(02).
-      *������
+      *診療日
            03  SYUMAIN-SRYYMD              PIC  X(08).
-      *��ɼ���ֶ�ʬ
+      *伝票状態区分
            03  SYUMAIN-DENPJTIKBN          PIC  X(01).
-      *��ɼ������ʬ�ʶ��򡧳��衡�����ౡ�������������������
-      *              ���������쥻�ץ��ѥ��ߡ���
+      *伝票作成区分（空白：外来　１：退院時作成　２：定期請求
+      *              ３：入院レセプト用ダミー）
            03  SYUMAIN-CREATEKBN           PIC  X(01).
-      *��ɼȯ����
+      *伝票発行日
            03  SYUMAIN-DENPPRTYMD          PIC  X(08).
-      *�������
+      *請求期間
            03  SYUMAIN-SKY-KIKAN.
-      *���ᳫ����
+      *請求開始日
                05  SYUMAIN-SKYSTYMD        PIC  X(08).
-      *���Ὢλ��
+      *請求終了日
                05  SYUMAIN-SKYEDYMD        PIC  X(08).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            03  SYUMAIN-HKNCOMBINUM         PIC  X(04).
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
            03  SYUMAIN-SYUHKNNUM           PIC  X(03).
-      *���ݸ��ݴ�����ô���
+      *主保険−患者負担金額
            03  SYUMAIN-SYUHKNFTNMONEY      PIC S9(07).
-      *���ݸ��ݷ׻���ô��
+      *主保険−計算負担金
            03  SYUMAIN-SYUCOMPFTN          PIC S9(07).
-      *���ݸ��ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *主保険−計算負担金（円単位記録用）
            03  SYUMAIN-SYUCOMPFTN-ENTANI   PIC S9(07)V9(01).
-      *���ݸ��ݷ׻����ް�����ô��
+      *主保険−計算薬剤一部負担金
            03  SYUMAIN-SYUCOMPYKZFTN       PIC S9(07).
-      *���ݸ��ݷ׻���ô���
+      *主保険−計算負担金計
            03  SYUMAIN-SYUCOMPTOTAL        PIC S9(07).
-      *���ݸ���������ô��ʬ
+      *主保険−薬剤負担区分
            03  SYUMAIN-SYUYKZFTNKBN        PIC  X(01).
-      *�������ô����
+      *公費−負担情報
            03  SYUMAIN-KOH-AREA.
-      *���񣱡��ݸ��ֹ�
+      *公費１−保険番号
                05  SYUMAIN-KOH1HKNNUM          PIC  X(03).
-      *���񣱡ݴ�����ô���
+      *公費１−患者負担金額
                05  SYUMAIN-KOH1HKNFTNMONEY     PIC S9(07).
-      *���񣱡ݷ׻���ô��
+      *公費１−計算負担金
                05  SYUMAIN-KOH1COMPFTN         PIC S9(07).
-      *���񣱡ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *公費１−計算負担金（円単位記録用）
                05  SYUMAIN-KOH1COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *���񣱡ݷ׻����ް�����ô��
+      *公費１−計算薬剤一部負担金
                05  SYUMAIN-KOH1COMPYKZFTN      PIC S9(07).
-      *���񣱡ݷ׻���ô���
+      *公費１−計算負担金計
                05  SYUMAIN-KOH1COMPTOTAL       PIC S9(07).
-      *���񣱡�������ô��ʬ
+      *公費１−薬剤負担区分
                05  SYUMAIN-KOH1YKZFTNKBN       PIC  X(01).
-      *���񣲡��ݸ��ֹ�
+      *公費２−保険番号
                05  SYUMAIN-KOH2HKNNUM          PIC  X(03).
-      *���񣲡ݴ�����ô���
+      *公費２−患者負担金額
                05  SYUMAIN-KOH2HKNFTNMONEY     PIC S9(07).
-      *���񣲡ݷ׻���ô��
+      *公費２−計算負担金
                05  SYUMAIN-KOH2COMPFTN         PIC S9(07).
-      *���񣲡ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *公費２−計算負担金（円単位記録用）
                05  SYUMAIN-KOH2COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *���񣲡ݷ׻����ް�����ô��
+      *公費２−計算薬剤一部負担金
                05  SYUMAIN-KOH2COMPYKZFTN      PIC S9(07).
-      *���񣲡ݷ׻���ô���
+      *公費２−計算負担金計
                05  SYUMAIN-KOH2COMPTOTAL       PIC S9(07).
-      *���񣲡�������ô��ʬ
+      *公費２−薬剤負担区分
                05  SYUMAIN-KOH2YKZFTNKBN       PIC  X(01).
-      *���񣳡��ݸ��ֹ�
+      *公費３−保険番号
                05  SYUMAIN-KOH3HKNNUM          PIC  X(03).
-      *���񣳡ݴ�����ô���
+      *公費３−患者負担金額
                05  SYUMAIN-KOH3HKNFTNMONEY     PIC S9(07).
-      *���񣳡ݷ׻���ô��
+      *公費３−計算負担金
                05  SYUMAIN-KOH3COMPFTN         PIC S9(07).
-      *���񣳡ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *公費３−計算負担金（円単位記録用）
                05  SYUMAIN-KOH3COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *���񣳡ݷ׻����ް�����ô��
+      *公費３−計算薬剤一部負担金
                05  SYUMAIN-KOH3COMPYKZFTN      PIC S9(07).
-      *���񣳡ݷ׻���ô���
+      *公費３−計算負担金計
                05  SYUMAIN-KOH3COMPTOTAL       PIC S9(07).
-      *���񣳡�������ô��ʬ
+      *公費３−薬剤負担区分
                05  SYUMAIN-KOH3YKZFTNKBN       PIC  X(01).
-      *���񣴡��ݸ��ֹ�
+      *公費４−保険番号
                05  SYUMAIN-KOH4HKNNUM          PIC  X(03).
-      *���񣴡ݴ�����ô���
+      *公費４−患者負担金額
                05  SYUMAIN-KOH4HKNFTNMONEY     PIC S9(07).
-      *���񣴡ݷ׻���ô��
+      *公費４−計算負担金
                05  SYUMAIN-KOH4COMPFTN         PIC S9(07).
-      *���񣴡ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *公費４−計算負担金（円単位記録用）
                05  SYUMAIN-KOH4COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *���񣴡ݷ׻����ް�����ô��
+      *公費４−計算薬剤一部負担金
                05  SYUMAIN-KOH4COMPYKZFTN      PIC S9(07).
-      *���񣴡ݷ׻���ô���
+      *公費４−計算負担金計
                05  SYUMAIN-KOH4COMPTOTAL       PIC S9(07).
-      *���񣴡�������ô��ʬ
+      *公費４−薬剤負担区分
                05  SYUMAIN-KOH4YKZFTNKBN       PIC  X(01).
-      *������ô��������
+      *公費負担情報再定義
            03  SYUMAIN-KOHFTN-TABLE  REDEFINES   SYUMAIN-KOH-AREA.
                05  SYUMAIN-KOHFTN-TBL          OCCURS  4.
-      *������ݸ��ֹ�
+      *公費−保険番号
                  07  SYUMAIN-KOH-HKNNUM          PIC  X(03).
-      *����ݴ�����ô���
+      *公費−患者負担金額
                  07  SYUMAIN-KOH-HKNFTNMONEY     PIC S9(07).
-      *����ݷ׻���ô��
+      *公費−計算負担金
                  07  SYUMAIN-KOH-COMPFTN         PIC S9(07).
-      *����ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *公費−計算負担金（円単位記録用）
                  07  SYUMAIN-KOH-COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *����ݷ׻����ް�����ô��
+      *公費−計算薬剤一部負担金
                  07  SYUMAIN-KOH-COMPYKZFTN      PIC S9(07).
-      *����ݷ׻���ô���
+      *公費−計算負担金計
                  07  SYUMAIN-KOH-COMPTOTAL       PIC S9(07).
-      *�����������ô��ʬ
+      *公費−薬剤負担区分
                  07  SYUMAIN-KOH-YKZFTNKBN       PIC  X(01).
-      *������ôΨ
+      *患者負担率
            03  SYUMAIN-PTFTNRATE           PIC  9(03).
-      *����������ʬ
+      *請求書作成区分
            03  SYUMAIN-SKYKUKBN            PIC  X(01).
-      *�������оݶ��
+      *消費税対象金額
            03  SYUMAIN-TAX-TAISHOU         PIC S9(07).
-      *�����ǡ����ǡ�
+      *消費税（内税）
            03  SYUMAIN-TAX-MONEY           PIC S9(07).
-      *�����ǡʹ�ס�
+      *消費税（合計）
            03  SYUMAIN-SKYGK               PIC S9(07).
-      *��������
+      *請求内容
            03  SYUMAIN-SKY-NAIYOU.
                05  SYUMAIN-SKY-TBL             OCCURS   17.
-      *    �ݸ�����
+      *    保険点数
                    09  SYUMAIN-HKNTEN          PIC S9(07).
-      *    ���
+      *    金額
                    09  SYUMAIN-MONEY           PIC S9(07).
-      *    Ŭ�ѳ����
+      *    適用外金額
                    09  SYUMAIN-TGMONEY         PIC S9(07).
-      *    Ŭ�ѳ���ۡʾ����Ǥ����
+      *    適用外金額（消費税あり）
                    09  SYUMAIN-TGMONEY-TAX     PIC S9(07).
-      *��������
+      *請求内容
            03  SYUMAIN-SKY-NAIYOU-R    REDEFINES   SYUMAIN-SKY-NAIYOU.
-      *������(01)
+      *診療料(01)
               05  SYUMAIN-SSU.
                   09  SYUMAIN-SSU-HKNTEN          PIC S9(07).
                   09  SYUMAIN-SSU-MONEY           PIC S9(07).
                   09  SYUMAIN-SSU-TGMONEY         PIC S9(07).
                   09  SYUMAIN-SSU-TGMONEY-TAX     PIC S9(07).
-      *��Ƴ��(02)
+      *指導料(02)
               05  SYUMAIN-SDO.
                   09  SYUMAIN-SDO-HKNTEN          PIC S9(07).
                   09  SYUMAIN-SDO-MONEY           PIC S9(07).
                   09  SYUMAIN-SDO-TGMONEY         PIC S9(07).
                   09  SYUMAIN-SDO-TGMONEY-TAX     PIC S9(07).
-      *������(03)
+      *在宅料(03)
               05  SYUMAIN-ZTK.
                   09  SYUMAIN-ZTK-HKNTEN          PIC S9(07).
                   09  SYUMAIN-ZTK-MONEY           PIC S9(07).
                   09  SYUMAIN-ZTK-TGMONEY         PIC S9(07).
                   09  SYUMAIN-ZTK-TGMONEY-TAX     PIC S9(07).
-      *������(04)
+      *投薬料(04)
               05  SYUMAIN-TYK.
                   09  SYUMAIN-TYK-HKNTEN          PIC S9(07).
                   09  SYUMAIN-TYK-MONEY           PIC S9(07).
                   09  SYUMAIN-TYK-TGMONEY         PIC S9(07).
                   09  SYUMAIN-TYK-TGMONEY-TAX     PIC S9(07).
-      *������(05)
+      *注射料(05)
               05  SYUMAIN-CSY.
                   09  SYUMAIN-CSY-HKNTEN          PIC S9(07).
                   09  SYUMAIN-CSY-MONEY           PIC S9(07).
                   09  SYUMAIN-CSY-TGMONEY         PIC S9(07).
                   09  SYUMAIN-CSY-TGMONEY-TAX     PIC S9(07).
-      *������(06)
+      *処置料(06)
               05  SYUMAIN-SYC.
                   09  SYUMAIN-SYC-HKNTEN          PIC S9(07).
                   09  SYUMAIN-SYC-MONEY           PIC S9(07).
                   09  SYUMAIN-SYC-TGMONEY         PIC S9(07).
                   09  SYUMAIN-SYC-TGMONEY-TAX     PIC S9(07).
-      *�����(07)
+      *手術料(07)
               05  SYUMAIN-SJT.
                   09  SYUMAIN-SJT-HKNTEN          PIC S9(07).
                   09  SYUMAIN-SJT-MONEY           PIC S9(07).
                   09  SYUMAIN-SJT-TGMONEY         PIC S9(07).
                   09  SYUMAIN-SJT-TGMONEY-TAX     PIC S9(07).
-      *���(08)
+      *麻酔(08)
               05  SYUMAIN-MSI.
                   09  SYUMAIN-MSI-HKNTEN          PIC S9(07).
                   09  SYUMAIN-MSI-MONEY           PIC S9(07).
                   09  SYUMAIN-MSI-TGMONEY         PIC S9(07).
                   09  SYUMAIN-MSI-TGMONEY-TAX     PIC S9(07).
-      *������(09)
+      *検査料(09)
               05  SYUMAIN-KNS.
                   09  SYUMAIN-KNS-HKNTEN          PIC S9(07).
                   09  SYUMAIN-KNS-MONEY           PIC S9(07).
                   09  SYUMAIN-KNS-TGMONEY         PIC S9(07).
                   09  SYUMAIN-KNS-TGMONEY-TAX     PIC S9(07).
-      *������(10)
+      *Ｘ線料(10)
               05  SYUMAIN-GZU.
                   09  SYUMAIN-GZU-HKNTEN          PIC S9(07).
                   09  SYUMAIN-GZU-MONEY           PIC S9(07).
                   09  SYUMAIN-GZU-TGMONEY         PIC S9(07).
                   09  SYUMAIN-GZU-TGMONEY-TAX     PIC S9(07).
-      *���(11)
+      *リハ(11)
               05  SYUMAIN-ETC.
                   09  SYUMAIN-ETC-HKNTEN          PIC S9(07).
                   09  SYUMAIN-ETC-MONEY           PIC S9(07).
                   09  SYUMAIN-ETC-TGMONEY         PIC S9(07).
                   09  SYUMAIN-ETC-TGMONEY-TAX     PIC S9(07).
-      *������������ˡ(12)
+      *精神科専門療法(12)
               05  SYUMAIN-SSN.
                   09  SYUMAIN-SSN-HKNTEN          PIC S9(07).
                   09  SYUMAIN-SSN-MONEY           PIC S9(07).
                   09  SYUMAIN-SSN-TGMONEY         PIC S9(07).
                   09  SYUMAIN-SSN-TGMONEY-TAX     PIC S9(07).
-      *������(13)
+      *放射線(13)
               05  SYUMAIN-HOU.
                   09  SYUMAIN-HOU-HKNTEN          PIC S9(07).
                   09  SYUMAIN-HOU-MONEY           PIC S9(07).
                   09  SYUMAIN-HOU-TGMONEY         PIC S9(07).
                   09  SYUMAIN-HOU-TGMONEY-TAX     PIC S9(07).
-      *��������(14)
+      *病理診断(14)
               05  SYUMAIN-BYR.
                   09  SYUMAIN-BYR-HKNTEN          PIC S9(07).
                   09  SYUMAIN-BYR-MONEY           PIC S9(07).
                   09  SYUMAIN-BYR-TGMONEY         PIC S9(07).
                   09  SYUMAIN-BYR-TGMONEY-TAX     PIC S9(07).
-      *������(15)
+      *入院料(15)
               05  SYUMAIN-NYN.
                   09  SYUMAIN-NYN-HKNTEN          PIC S9(07).
                   09  SYUMAIN-NYN-MONEY           PIC S9(07).
                   09  SYUMAIN-NYN-TGMONEY         PIC S9(07).
                   09  SYUMAIN-NYN-TGMONEY-TAX     PIC S9(07).
-      *����ô������(16)
+      *療養担当手当(16)
               05  SYUMAIN-RYO.
                   09  SYUMAIN-RYO-HKNTEN          PIC S9(07).
                   09  SYUMAIN-RYO-MONEY           PIC S9(07).
                   09  SYUMAIN-RYO-TGMONEY         PIC S9(07).
                   09  SYUMAIN-RYO-TGMONEY-TAX     PIC S9(07).
-      *���  (17)
+      *合計  (17)
               05  SYUMAIN-TOTAL.
                   09  SYUMAIN-TOTAL-HKNTEN        PIC S9(07).
                   09  SYUMAIN-TOTAL-MONEY         PIC S9(07).
                   09  SYUMAIN-TOTAL-TGMONEY       PIC S9(07).
                   09  SYUMAIN-TOTAL-TGMONEY-TAX   PIC S9(07).
-      *�����������Ʒ�
+      *処方せん料再掲
            03  SYUMAIN-SHOHOU-SAI                 PIC S9(07).
-      *�ݸ�Ŭ�ѳ���ۡݾ����ǡʺƷǡ�
+      *保険適用外金額−消費税（再掲）
            03  SYUMAIN-TGMONEY-TAX-SAI         PIC S9(07).
-      *���񣱤��飱��
+      *自費１から１０
            03  SYUMAIN-JIHI-NAIYOU.
                05  SYUMAIN-JIHI-1              PIC S9(07). 
                05  SYUMAIN-JIHI-1-TAX          PIC S9(07). 
@@ -297,160 +297,160 @@
                05  SYUMAIN-JIHI-TBL            OCCURS   10.
                  07  SYUMAIN-JIHI-TAXNASI        PIC S9(07).
                  07  SYUMAIN-JIHI-TAXARI         PIC S9(07).
-      *���񾮷סʾ����Ǥʤ���
+      *自費小計（消費税なし）
            03  SYUMAIN-JIHI-TOTAL          PIC S9(07).
-      *���񾮷סʾ����Ǥ����
+      *自費小計（消費税あり）
            03  SYUMAIN-JIHI-TOTAL-TAX      PIC S9(07).
-      *�����۾�����
+      *自費金額消費税
            03  SYUMAIN-JIHI-TAX            PIC S9(07).
-      *Ϸ�Ͱ�����ô��
+      *老人一部負担金
            03  SYUMAIN-RJN-FTN             PIC S9(07).
-      *���������ô��
+      *公費一部負担金
            03  SYUMAIN-KOH-FTN             PIC S9(07).
-      *���������ô��ʱ�ñ�̡�
+      *公費一部負担金（円単位）
            03  SYUMAIN-KOH-FTN-ENTANI      PIC S9(07)V9(01).
-      *���ް�����ô��
+      *薬剤一部負担金
            03  SYUMAIN-YKZ-FTN             PIC S9(07).
-      *�쥻�ץȽ��������ް�����ô��
+      *レセプト出力用薬剤一部負担金
            03  SYUMAIN-RESE-YKZ-FTN        PIC S9(07).
-      *�����о����޶�ʬ
+      *公費対象薬剤区分
            03  SYUMAIN-KOHTAIYKZKBN        PIC  X(01).
-      *Ĵ����
+      *調整金
            03  SYUMAIN-CHOSEI              PIC S9(07).
            03  SYUMAIN-CHOSEI-NAIYOU.
-      *Ĵ����������
+      *調整金内訳１
                05  SYUMAIN-CHOSEI1         PIC S9(07).
-      *Ĵ����������
+      *調整金内訳２
                05  SYUMAIN-CHOSEI2         PIC S9(07).
            03  SYUMAIN-CHOSEI-NAIYOU-R REDEFINES  SYUMAIN-CHOSEI-NAIYOU.
                05  SYUMAIN-RCHOSEI         PIC S9(07)
                                            OCCURS  2.
-      *�ޤȤ�������ɼ�ֹ�
+      *まとめ入力伝票番号
            03  SYUMAIN-GRP-DENPNUM         PIC 9(07).
-      *�ޤȤ�����Ϣ��
+      *まとめ入力連番
            03  SYUMAIN-GRP-RENNUM          PIC 9(02).
-      *�ޤȤ����Ϻ���
+      *まとめ入力差額
            03  SYUMAIN-GRP-SGKMONEY        PIC S9(07).
-      *�ޤȤ�ȯ����ˡ�ե饰
+      *まとめ発行方法フラグ
            03  SYUMAIN-GRP-HAKHOUFLG       PIC  9(01).
-      *�ݾڶ��
+      *保証金額
            03  SYUMAIN-SECMONEY            PIC S9(07).
-      *�ݸ�Ŭ�Ѷ��
+      *保険適用金額
            03  SYUMAIN-HKNTEKMONEY         PIC S9(07).
-      *�±����Ȼ�ͳ��ʬ
+      *病院減免事由区分
            03  SYUMAIN-DISCOUNT-KBN        PIC  X(02).
-      *�±����Ȼ�ͳ
+      *病院減免事由
            03  SYUMAIN-DISCOUNT-BODY       PIC  X(160).
-      *���Ψ��ʬ
+      *割引率区分
            03  SYUMAIN-DISCOUNT-RATEKBN    PIC  X(02).
-      *��Ψ��۶�ʬ
+      *定率定額区分
            03  SYUMAIN-DISCOUNT-TEIRITU    PIC  X(01).
-      *���Ψ
+      *割引率
            03  SYUMAIN-DISCOUNT-RATE       PIC S9(07).
-      *���ȶ��
+      *減免金額
            03  SYUMAIN-DISCOUNT-MONEY      PIC S9(07).
-      *ϫ���ݸ��ݽ����
+      *労災保険−初診料
            03  SYUMAIN-RSISHOSHIN-MONEY    PIC S9(07).
-      *ϫ���ݸ��ݺƿ���
+      *労災保険−再診料
            03  SYUMAIN-RSISAISHIN-MONEY    PIC S9(07).
-      *ϫ���ݸ��ݻ�Ƴ��
+      *労災保険−指導料
            03  SYUMAIN-RSISDO-MONEY        PIC S9(07).
-      *ϫ���ݸ��ݤ���¾
+      *労災保険−その他
            03  SYUMAIN-RSIETC-MONEY        PIC S9(07).
-      *ϫ���ݸ��ݾ����ǡʺƷǡ�
+      *労災保険−消費税（再掲）
            03  SYUMAIN-RSI-TAX-SAI         PIC S9(07).
-      *ϫ���ݸ��ݴ�������ʬ�߷��ƹ�׳�
+      *労災保険−患者請求分円建て合計額
            03  SYUMAIN-RSI-TOTAL           PIC S9(07).
-      *ϫ�Ҽ���������ۡ�����ɽ�����ѡ�
+      *労災自賠−請求金額（日計表記載用）
            03  SYUMAIN-RSIJIBAI-SKYMONEY   PIC S9(07).
-      *�����ۡݾ����ǡʺƷǡ�
+      *請求金額−消費税（再掲）
            03  SYUMAIN-SKYMONEY-TAX-SAI    PIC S9(07).
-      *������
+      *請求金額
            03  SYUMAIN-SKYMONEY            PIC S9(07).
-      *�����׳�
+      *入金合計額
            03  SYUMAIN-NYUKIN-TOTAL        PIC S9(07).
-      *������
+      *入金回数
            03  SYUMAIN-NYUKIN-KAISU        PIC S9(07).
-      *̤����ͳ
+      *未収理由
            03  SYUMAIN-MISYURIYU           PIC  X(02).
-      *�ɥ�����
+      *ドクター
            03  SYUMAIN-DRCD-G.
                05  SYUMAIN-DRCD-SIK            PIC  X(01).
                05  SYUMAIN-DRCD                PIC  X(04).
-      *������ǲ��
+      *入院初診回数
            03  SYUMAIN-NYNSHOKAISU         PIC S9(02).
-      *����ȯ���ֹ�
+      *薬剤発券番号
            03  SYUMAIN-YKZKENNUM           PIC  9(05).
-      *������ô����ô���̴����ѡ�
+      *食事負担（負担額別管理用）
            03  SYUMAIN-SKJ-PTFTN           OCCURS 3.
                05  SYUMAIN-SKJ-FTNGAKU     PIC S9(05).
                05  SYUMAIN-SKJ-FTNDAY      PIC S9(02).
-      *�Ʒ׻���ʬ
+      *再計算区分
            03  SYUMAIN-SAIKEISANKBN        PIC  X(01).
-      *����������ʬ
+      *院外処方区分
            03  SYUMAIN-INGAISHOHOKBN       PIC  X(01).
-      *Ʊ��������ɼ�ֹ�
+      *同時診療伝票番号
            03  SYUMAIN-DOUJI-DENPNUM       PIC  9(07).
-      *��³��ʬ
+      *継続区分
            03  SYUMAIN-CONTKBN             PIC  X(01).
-      *ʣ���ʤޤȤἱ����ɼ�ֹ�
+      *複数科まとめ識別伝票番号
            03  SYUMAIN-FUKU-DENPNUM        PIC  9(07).
-      *ʣ���ʤޤȤ��ʬ�ʣ�����³�����������
+      *複数科まとめ区分（１：継続　２：確定）
            03  SYUMAIN-FUKU-KBN            PIC  X(01).
-      *�����Ƕ�ʬ
+      *在総診区分
            03  SYUMAIN-ZAITAKU             PIC  X(01).
-      *���Ŷ�ʬ�̵��ճ�����
+      *診療区分別給付外点数
            03  SYUMAIN-KYUFUGAI.
                05  SYUMAIN-KYUFUGAI-TBL          OCCURS   6.
-      *    �����оݳ�����
+      *    給付対象外点数
                    09  SYUMAIN-KYUFUGAI-TEN      PIC S9(07).
-      *���Ŷ�ʬ�̵��ճ����������
+      *診療区分別給付外点数再定義
            03  SYUMAIN-KYUFUGAI-R      REDEFINES   SYUMAIN-KYUFUGAI.
-      *�����оݳ������ʽ�ǡ�
+      *給付対象外点数（初診）
               05  SYUMAIN-KYUFUGAI-SHOSHIN-TEN    PIC S9(07).
-      *�����оݳ������ʻ�Ƴ��
+      *給付対象外点数（指導）
               05  SYUMAIN-KYUFUGAI-SIDOU-TEN      PIC S9(07).
-      *�����оݳ������ʱ��ǡ�
+      *給付対象外点数（往診）
               05  SYUMAIN-KYUFUGAI-OSIN1-TEN      PIC S9(07).
-      *�����оݳ������ʱ��ǡ���֡�
+      *給付対象外点数（往診／夜間）
               05  SYUMAIN-KYUFUGAI-OSIN2-TEN      PIC S9(07).
-      *�����оݳ������ʱ��ǡ����롿�۵ޡ�
+      *給付対象外点数（往診／深夜／緊急）
               05  SYUMAIN-KYUFUGAI-OSIN3-TEN      PIC S9(07).
-      *�����оݳ������ʹ�ס�
+      *給付対象外点数（合計）
               05  SYUMAIN-KYUFUGAI-GOKEI-TEN      PIC S9(07).
-      *���̼�Ǽ�ե饰
+      *日別収納フラグ
            03  SYUMAIN-DAYINFFLG           PIC  X(01).
-      *ʬ�ڴ����ե饰
+      *分娩管理フラグ
            03  SYUMAIN-BUNBENINFFLG        PIC  X(01).
-      *����ѹ���ʬ
+      *会計変更区分
            03  SYUMAIN-ACCT-UPDKBN         PIC  X(01).
-      *��§�����ݴ�����ô���
+      *変則助成−患者負担金額
            03  SYUMAIN-JYO-HKNFTNMONEY     PIC S9(07).
-      *��§�����ݷ׻���ô��
+      *変則助成−計算負担金
            03  SYUMAIN-JYO-COMPFTN         PIC S9(07).
-      *��§�����ݷ׻���ô��ʱ�ñ�̵�Ͽ�ѡ�
+      *変則助成−計算負担金（円単位記録用）
            03  SYUMAIN-JYO-COMPFTN-ENTANI  PIC S9(07)V9(01).
-      *���������ʬ�ʣ��������ۡ������׳ۡ����������ۡ������׳ۡ�
+      *請求入金区分（０：請求金額＝入金合計額／１：請求金額≠入金合計額）
            03  SYUMAIN-SKYNYUKINKBN        PIC  X(01).
-      *�ݸ�Ŭ�Ѷ�ʬ
+      *保険適用区分
            03  SYUMAIN-HKNTEKKBN           PIC  X(01).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYUMAIN-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYUMAIN-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYUMAIN-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYUMAIN-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  SYUMAIN-UPHMS               PIC  X(06).
       *
-      *����ǯ�����ʸ����ѡ�
+      *診療年月日（検索用）
            03  SYUMAIN-UPSRYYMD            PIC  X(08).
       *
-      *���������ֹ�
+      *入院履歴番号
            03  SYUMAIN-SELNYUIN-RRKNUM     PIC  9(03).
-      *����ǯ�����ʸ����ѡ�
+      *診療年月日（検索用）
            03  SYUMAIN-SELKOHID            PIC  9(10).
-      *������ʬ�ʸ����ѡ�
+      *入外区分（検索用）
            03  SYUMAIN-SELNYUGAIKBN        PIC  X(01).

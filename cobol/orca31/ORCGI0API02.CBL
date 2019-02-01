@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCGI0API02.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½Ð»º°é»ù°ì»þ¶â
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  14/04/09    NACL¡ÝÂÀÅÄ¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å‡ºç”£è‚²å…ä¸€æ™‚é‡‘
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  14/04/09    NACLâˆ’å¤ªç”°ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -60,7 +60,7 @@
            03  IDXE                    PIC 9(05).
            03  IDX-ITM                 PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-ERRCD               PIC X(04).
            03  WRK-ERRMSG              PIC X(100).
@@ -121,54 +121,54 @@
            COPY    "COMMON-SPA"        REPLACING   //SPA-//
                                        BY          //TSPA-//.
       *
-      *    ¥ª¡¼¥À¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚ªãƒ¼ãƒ€ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            COPY    "CPNCLAIMERRCD.INC".
       *
-      *    ¥ª¡¼¥À¹àÌÜ£É£Ä
+      *    ã‚ªãƒ¼ãƒ€é …ç›®ï¼©ï¼¤
            COPY    "CPNCLAIMID.INC".
       *
-      *    ¥ª¡¼¥À£É£Ä
+      *    ã‚ªãƒ¼ãƒ€ï¼©ï¼¤
            COPY    "CPNORDERID.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎòÂàÈò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´é€€é¿
        01  TRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //TRRK-//.
       *
-      *    Ê¬ÊÚ´ÉÍý¾ðÊóÂàÈò
+      *    åˆ†å¨©ç®¡ç†æƒ…å ±é€€é¿
        01  TBBN-REC.
            COPY    "CPBUNBEN.INC"      REPLACING  //BUNBEN-//
                                        BY         //TBBN-//.
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *    æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¥»¥Ã¥ÈÎÎ°è
+      *    ä¿é™ºçµ„åˆã›ã‚»ãƒƒãƒˆé ˜åŸŸ
            COPY    "CPORCSAPIHKN.INC".
       *
-      *    »»Äê²ÄÇ½Æþ±¡ÎÁ¼èÆÀ
+      *    ç®—å®šå¯èƒ½å…¥é™¢æ–™å–å¾—
            COPY    "CPORCSNYUINRYO.INC".
       *
-      *    Æþ±¡¥ª¡¼¥À¡¼¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¼èÆÀ
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å–å¾—
            COPY    "CPORCSODRS03.INC".
       *
-      *    Æþ±¡°ÛÆ°¥Á¥§¥Ã¥¯¥µ¥Ö
+      *    å…¥é™¢ç•°å‹•ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
            COPY    "CPORCSODR.INC".
        01  LNK-ODRITEM-REC.
            02  LNK-ODRITEM-MAX         PIC 9(03).
@@ -176,62 +176,62 @@
            COPY    "CPODRITEM.INC"     REPLACING  //ODRITEM-//
                                        BY         //LNK-ODRITEM-//.
       *
-      *    £Õ£É£Ä¼èÆÀÍÑ¥¨¥ê¥¢
+      *    ï¼µï¼©ï¼¤å–å¾—ç”¨ã‚¨ãƒªã‚¢
        01  SUID-AREA.
            03  SUID-RET                PIC X(2).
            03  SUID-UID                PIC X(36).
        01  SUID-ST                     PIC 9(2).
       *
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPBDV2REQ.INC".
       *
-      *    API XML½ñ¤­¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLæ›¸ãè¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPBDV2RES.INC".
       *
       *ver.4.7
-      *    API XMLÆÉ¤ß¹þ¤ß¶¦ÄÌÄêµÁ
+      *    API XMLèª­ã¿è¾¼ã¿å…±é€šå®šç¾©
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1010.INC".
       *
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    µìÀ«ÍúÎò
+      *    æ—§å§“å±¥æ­´
        01  KYUSEIRRK-REC.
            COPY  "CPKYUSEIRRK.INC".
       *
-      *    ÊÝ¸±¼Ô¾ðÊó
+      *    ä¿é™ºè€…æƒ…å ±
        01  HKNJAINF-REC.
            COPY  "CPHKNJAINF.INC".
       *
-      *    Æþ±¡ÍúÎò
+      *    å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    Ê¬ÊÚ´ÉÍý¾ðÊó
+      *    åˆ†å¨©ç®¡ç†æƒ…å ±
        01  BUNBEN-REC.
            COPY    "CPBUNBEN.INC".
       *
-      *    ¥ª¡¼¥À¡¼¥Æ¡¼¥Ö¥ë
+      *    ã‚ªãƒ¼ãƒ€ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
-      *    ¥ª¡¼¥À¹àÌÜ
+      *    ã‚ªãƒ¼ãƒ€é …ç›®
        01  ODRITEM-REC.
            COPY    "CPODRITEM.INC".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -248,7 +248,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -264,10 +264,10 @@
            INITIALIZE                  TRRK-REC
            INITIALIZE                  TBBN-REC
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF    ( REG-ERR-MAX         =   ZERO )
                PERFORM 200-MAIN-SEC
            ELSE
@@ -276,7 +276,7 @@
                END-IF
            END-IF
       *
-      *    ÊÖµÑÎÎ°èÊÔ½¸
+      *    è¿”å´é ˜åŸŸç·¨é›†
            PERFORM 300-END-SEC
       *
            DISPLAY   "***************"
@@ -288,14 +288,14 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  XML-BDREQ
                                        XML-BDRES
       *
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -308,7 +308,7 @@
            CALL    "orcuidset" USING   SUID-ST
                                        SUID-AREA
       *
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¥»¥Ã¥È 
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ã‚»ãƒƒãƒˆ 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -319,7 +319,7 @@
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *    ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -351,7 +351,7 @@
       *
            MOVE    NORDERID-BUNBENID   TO  REG-ORDERID
       *
-      *    XML¾ðÊó¼è¤ê½Ð¤·
+      *    XMLæƒ…å ±å–ã‚Šå‡ºã—
            PERFORM 900-XML-READ-SEC
            IF    ( WRK-ERRCD           NOT =   SPACE )
                PERFORM 990-ERROR-EDIT-SEC
@@ -377,7 +377,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÅÊ¸¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    é›»æ–‡é …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        1001-INIT-CHECK-SEC         SECTION.
       *
@@ -401,7 +401,7 @@
        1001-INIT-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¥Á¥§¥Ã¥¯½èÍý
+      *    æ‚£è€…ç•ªå·ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        10011-PTNUM-CHECK-SEC       SECTION.
       *
@@ -434,7 +434,7 @@
        10011-PTNUM-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡Æü¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æ—¥ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        10011-NYUINYMD-CHECK-SEC       SECTION.
       *
@@ -509,7 +509,7 @@
        10011-NYUINYMD-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê¬ÊÚ´ÉÍý¸¡º÷½èÍý
+      *    åˆ†å¨©ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        10011-BUNBEN-CHECK-SEC          SECTION.
       *
@@ -531,7 +531,7 @@
        10011-BUNBEN-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅÊ¸¹àÌÜÂàÈò½èÍý¡Ê¾È²ñ»þ¡Ë
+      *    é›»æ–‡é …ç›®é€€é¿å‡¦ç†ï¼ˆç…§ä¼šæ™‚ï¼‰
       *****************************************************************
        1001-SHOKAI-SEC                 SECTION.
       *
@@ -540,7 +540,7 @@
        1001-SHOKAI-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅÊ¸¹àÌÜÂàÈò½èÍý¡ÊÅÐÏ¿»þ¡Ë
+      *    é›»æ–‡é …ç›®é€€é¿å‡¦ç†ï¼ˆç™»éŒ²æ™‚ï¼‰
       *****************************************************************
        1001-TOROKU-SEC             SECTION.
       *
@@ -549,7 +549,7 @@
        1001-TOROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -569,7 +569,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ³ÎÇ§½èÍý
+      *    ç¢ºèªå‡¦ç†
       *****************************************************************
        2001-KAKUNIN-SEC                SECTION.
       *
@@ -579,7 +579,7 @@
        2001-KAKUNIN-EXT.
            EXIT.
       *****************************************************************
-      *    ³ÎÇ§½èÍý
+      *    ç¢ºèªå‡¦ç†
       *****************************************************************
        2001-TOROKU-SEC                 SECTION.
       *
@@ -610,7 +610,7 @@
        2001-TOROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ¶¦ÄÌ¹àÌÜÀßÄê½èÍý
+      *    å…±é€šé …ç›®è¨­å®šå‡¦ç†
       *****************************************************************
        2300-SODR-COMMON-SET-SEC       SECTION.
       *
@@ -643,7 +643,7 @@
        2300-SODR-COMMON-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¶¦ÄÌ¹àÌÜÀßÄê½èÍý
+      *    å…±é€šé …ç›®è¨­å®šå‡¦ç†
       *****************************************************************
        2300-ODRITEM-COMMON-SET-SEC       SECTION.
       *
@@ -658,7 +658,7 @@
        2300-ODRITEM-COMMON-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¥ª¡¼¥À¡¼¥¨¥é¡¼ÊÔ½¸½èÍý
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼ã‚¨ãƒ©ãƒ¼ç·¨é›†å‡¦ç†
       *****************************************************************
        2400-ORDER-ERROR-EDIT-SEC         SECTION.
       *
@@ -683,7 +683,7 @@
        2400-ORDER-ERROR-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥¹¥Ý¥ó¥¹ÊÔ½¸½èÍý
+      *    ãƒ¬ã‚¹ãƒãƒ³ã‚¹ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-RESPONSE-EDIT-SEC          SECTION.
       *
@@ -734,16 +734,16 @@
            MOVE    WRK-DATE        TO  BDRES-TAIINYMD
       *
            IF    ( BUNBEN-RIYOUKBN NOT =   SPACE )
-               MOVE    "Ä¾ÀÜ»ÙÊ§À©ÅÙ"
+               MOVE    "ç›´æŽ¥æ”¯æ‰•åˆ¶åº¦"
                                    TO  BDRES-RIYOUKBN-LBL
                MOVE    BUNBEN-RIYOUKBN
                                    TO  BDRES-RIYOUKBN-DATA
                EVALUATE    BUNBEN-RIYOUKBN
                WHEN    "0"
-                   MOVE    "ÍøÍÑ¤·¤Ê¤¤"
+                   MOVE    "åˆ©ç”¨ã—ãªã„"
                                    TO  BDRES-RIYOUKBN-NAME
                WHEN    "1"
-                   MOVE    "ÍøÍÑ¤¹¤ë"
+                   MOVE    "åˆ©ç”¨ã™ã‚‹"
                                    TO  BDRES-RIYOUKBN-NAME
                END-EVALUATE
            END-IF
@@ -751,7 +751,7 @@
            IF    ( BUNBEN-SKYYM    NOT =   SPACE )
             AND  ( BUNBEN-SKYYM    NOT =   ZERO )
       *
-               MOVE    "ÀÁµáÇ¯·î"      TO  BDRES-SKYYM-LBL
+               MOVE    "è«‹æ±‚å¹´æœˆ"      TO  BDRES-SKYYM-LBL
       *
                MOVE    BUNBEN-SKYYM    TO  WRK-SYMD
                MOVE    "01"            TO  WRK-SYMD (7:2)
@@ -761,59 +761,59 @@
       *
            IF    ( BUNBEN-TEISYUTUBIKBN NOT =   SPACE )
       *
-               MOVE    "Äó½ÐÆü"        TO  BDRES-TEISYUTUBIKBN-LBL
+               MOVE    "æå‡ºæ—¥"        TO  BDRES-TEISYUTUBIKBN-LBL
                MOVE    BUNBEN-TEISYUTUBIKBN
                                        TO  BDRES-TEISYUTUBIKBN-DATA
       *
                EVALUATE    BUNBEN-TEISYUTUBIKBN
                WHEN    "1"
-                   MOVE    "£±£°ÆüÀÁµá" TO BDRES-TEISYUTUBIKBN-NAME
+                   MOVE    "ï¼‘ï¼æ—¥è«‹æ±‚" TO BDRES-TEISYUTUBIKBN-NAME
                WHEN    "2"
-                   MOVE    "£²£µÆüÀÁµá" TO BDRES-TEISYUTUBIKBN-NAME
+                   MOVE    "ï¼’ï¼•æ—¥è«‹æ±‚" TO BDRES-TEISYUTUBIKBN-NAME
                END-EVALUATE
            END-IF
       *
            IF    ( BUNBEN-SKYKBN       NOT =   SPACE )
       *
-               MOVE    "ÀÁµá¶èÊ¬"      TO  BDRES-SKYKBN-LBL
+               MOVE    "è«‹æ±‚åŒºåˆ†"      TO  BDRES-SKYKBN-LBL
                MOVE    BUNBEN-SKYKBN   TO  BDRES-SKYKBN-DATA
       *
                EVALUATE    BUNBEN-SKYKBN
                WHEN    "0"
-                   MOVE    "ÀÁµá¤·¤Ê¤¤" TO BDRES-SKYKBN-NAME
+                   MOVE    "è«‹æ±‚ã—ãªã„" TO BDRES-SKYKBN-NAME
                WHEN    "1"
-                   MOVE    "Ì¤ÀÁµá"    TO  BDRES-SKYKBN-NAME
+                   MOVE    "æœªè«‹æ±‚"    TO  BDRES-SKYKBN-NAME
                WHEN    "2"
-                   MOVE    "ÀÁµáºÑ"    TO  BDRES-SKYKBN-NAME
+                   MOVE    "è«‹æ±‚æ¸ˆ"    TO  BDRES-SKYKBN-NAME
                END-EVALUATE
       *
            END-IF
       *
            IF    ( BUNBEN-BUNBENKBN    NOT =   SPACE )
       *
-               MOVE    "Ê¬ÊÚ¶èÊ¬"      TO  BDRES-BUNBENKBN-LBL
+               MOVE    "åˆ†å¨©åŒºåˆ†"      TO  BDRES-BUNBENKBN-LBL
                MOVE    BUNBEN-BUNBENKBN TO BDRES-BUNBENKBN-DATA
       *
                EVALUATE    BUNBEN-BUNBENKBN
                WHEN    "1"
-                   MOVE    "Àµ¾ïÊ¬ÊÚ"  TO  BDRES-BUNBENKBN-NAME
+                   MOVE    "æ­£å¸¸åˆ†å¨©"  TO  BDRES-BUNBENKBN-NAME
                WHEN    "2"
-                   MOVE    "°Û¾ïÊ¬ÊÚ"  TO  BDRES-BUNBENKBN-NAME
+                   MOVE    "ç•°å¸¸åˆ†å¨©"  TO  BDRES-BUNBENKBN-NAME
                END-EVALUATE
            END-IF
       *
            IF    ( BUNBEN-TEISYUTUSAKI NOT =   SPACE )
       *
-               MOVE    "Äó½ÐÀè"        TO  BDRES-TEISYUTUSAKI-LBL
+               MOVE    "æå‡ºå…ˆ"        TO  BDRES-TEISYUTUSAKI-LBL
                MOVE    BUNBEN-TEISYUTUSAKI
                                        TO  BDRES-TEISYUTUSAKI-DATA
       *
                EVALUATE    BUNBEN-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "»ÙÊ§´ð¶â"
+                   MOVE    "æ”¯æ‰•åŸºé‡‘"
                                        TO  BDRES-TEISYUTUSAKI-NAME
                WHEN    "2"
-                   MOVE    "¹ñÊÝÏ¢¹ç²ñ"
+                   MOVE    "å›½ä¿é€£åˆä¼š"
                                        TO  BDRES-TEISYUTUSAKI-NAME
                END-EVALUATE
       *
@@ -821,15 +821,15 @@
       *
            IF    ( BUNBEN-ZAIWEEK NOT  =   ZERO )
       *
-               MOVE    "ºßÂÛ½µ¿ô"      TO  BDRES-ZAIWEEK-LBL
+               MOVE    "åœ¨èƒŽé€±æ•°"      TO  BDRES-ZAIWEEK-LBL
                MOVE    BUNBEN-ZAIWEEK  TO  WRK-NUM2Z
                MOVE    WRK-NUM2Z       TO  BDRES-ZAIWEEK-DATA
-               MOVE    "½µ"            TO  BDRES-ZAIWEEK-NAME
+               MOVE    "é€±"            TO  BDRES-ZAIWEEK-NAME
       *
            END-IF
       *
            IF    ( BUNBEN-BIRTHDAY NOT =   SPACE )
-               MOVE    "½Ð»ºÇ¯·îÆü"    TO  BDRES-BIRTHDAY-LBL
+               MOVE    "å‡ºç”£å¹´æœˆæ—¥"    TO  BDRES-BIRTHDAY-LBL
                MOVE    BUNBEN-BIRTHDAY TO  WRK-SYMD
                PERFORM 800-DATE-SEC
                MOVE    WRK-DATE        TO  BDRES-BIRTHDAY-DATA
@@ -837,116 +837,116 @@
       *
            IF    ( BUNBEN-SIZANKBN NOT =   SPACE )
       *
-               MOVE    "»à»ºÍ­Ìµ"      TO  BDRES-SIZANKBN-LBL
+               MOVE    "æ­»ç”£æœ‰ç„¡"      TO  BDRES-SIZANKBN-LBL
                MOVE    BUNBEN-SIZANKBN TO  BDRES-SIZANKBN-DATA
       *
                EVALUATE    BUNBEN-SIZANKBN
                WHEN    "1"
-                   MOVE    "»à»º"      TO  BDRES-SIZANKBN-NAME
+                   MOVE    "æ­»ç”£"      TO  BDRES-SIZANKBN-NAME
                WHEN    "2"
-                   MOVE    "»à»º¤Ç¤Ê¤¤" TO  BDRES-SIZANKBN-NAME
+                   MOVE    "æ­»ç”£ã§ãªã„" TO  BDRES-SIZANKBN-NAME
                WHEN    "3"
-                   MOVE    "º®ºß"      TO  BDRES-SIZANKBN-NAME
+                   MOVE    "æ··åœ¨"      TO  BDRES-SIZANKBN-NAME
                END-EVALUATE
       *
            END-IF
       *
            IF    ( BUNBEN-BIRTHCNT NOT =   ZERO )
-               MOVE    "½Ð»º¿ô"        TO  BDRES-BIRTHCNT-LBL
+               MOVE    "å‡ºç”£æ•°"        TO  BDRES-BIRTHCNT-LBL
                MOVE    BUNBEN-BIRTHCNT TO  WRK-NUM2Z
                MOVE    WRK-NUM2Z       TO  BDRES-BIRTHCNT-DATA
-               MOVE    "¿Í"            TO  BDRES-BIRTHCNT-NAME
+               MOVE    "äºº"            TO  BDRES-BIRTHCNT-NAME
            END-IF
       *
            IF    ( BUNBEN-SANKAKBN NOT =   SPACE )
       *
-               MOVE    "»º²Ê°åÎÅÊä½þÀ©ÅÙ"  TO  BDRES-SANKAKBN-LBL
+               MOVE    "ç”£ç§‘åŒ»ç™‚è£œå„Ÿåˆ¶åº¦"  TO  BDRES-SANKAKBN-LBL
                MOVE    BUNBEN-SANKAKBN     TO  BDRES-SANKAKBN-DATA
       *
                EVALUATE    BUNBEN-SANKAKBN
                WHEN    "1"
-                   MOVE    "ÂÐ¾ÝÊ¬ÊÚ"
+                   MOVE    "å¯¾è±¡åˆ†å¨©"
                                    TO  BDRES-SANKAKBN-NAME
                WHEN    "2"
-                   MOVE    "ÂÐ¾ÝÊ¬ÊÚ¤Ç¤Ê¤¤"
+                   MOVE    "å¯¾è±¡åˆ†å¨©ã§ãªã„"
                                    TO  BDRES-SANKAKBN-NAME
                WHEN    "3"
-                   MOVE    "º®ºß"  TO  BDRES-SANKAKBN-NAME
+                   MOVE    "æ··åœ¨"  TO  BDRES-SANKAKBN-NAME
                END-EVALUATE
       *
            END-IF
       *
            IF    ( BUNBEN-UPDKBN       NOT =   "3" )
-               MOVE    "Æþ±¡Æü¿ô"      TO  BDRES-NYUIN-DAY-LBL
+               MOVE    "å…¥é™¢æ—¥æ•°"      TO  BDRES-NYUIN-DAY-LBL
                MOVE    BUNBEN-NYUIN-DAY TO WRK-NUM3Z
                MOVE    WRK-NUM3Z       TO  BDRES-NYUIN-DAY-DATA
-               MOVE    "Æü"            TO  BDRES-NYUIN-DAY-NAME
+               MOVE    "æ—¥"            TO  BDRES-NYUIN-DAY-NAME
       *
-               MOVE    "Æþ±¡ÎÁ"            TO  BDRES-NYU-MONEY-LBL
+               MOVE    "å…¥é™¢æ–™"            TO  BDRES-NYU-MONEY-LBL
                MOVE    BUNBEN-NYU-MONEY    TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-NYU-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-NYU-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-NYU-MONEY-NAME
       *
-               MOVE    "¼¼ÎÁº¹³Û"          TO  BDRES-RMSGK-MONEY-LBL
+               MOVE    "å®¤æ–™å·®é¡"          TO  BDRES-RMSGK-MONEY-LBL
                MOVE    BUNBEN-RMSGK-MONEY  TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-RMSGK-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-RMSGK-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-RMSGK-MONEY-NAME
       *
-               MOVE    "Ê¬ÊÚ²ð½õÎÁ"        TO  BDRES-KAIJO-MONEY-LBL
+               MOVE    "åˆ†å¨©ä»‹åŠ©æ–™"        TO  BDRES-KAIJO-MONEY-LBL
                MOVE    BUNBEN-KAIJO-MONEY  TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-KAIJO-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-KAIJO-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-KAIJO-MONEY-NAME
       *
-               MOVE    "Ê¬ÊÚÎÁ"            TO  BDRES-BUNBEN-MONEY-LBL
+               MOVE    "åˆ†å¨©æ–™"            TO  BDRES-BUNBEN-MONEY-LBL
                MOVE    BUNBEN-BUNBEN-MONEY TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-BUNBEN-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-BUNBEN-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-BUNBEN-MONEY-NAME
       *
-               MOVE    "¿·À¸»ù´ÉÍýÊÝ°éÎÁ"  TO  BDRES-SHIN-MONEY-LBL
+               MOVE    "æ–°ç”Ÿå…ç®¡ç†ä¿è‚²æ–™"  TO  BDRES-SHIN-MONEY-LBL
                MOVE    BUNBEN-SHIN-MONEY   TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-SHIN-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-SHIN-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-SHIN-MONEY-NAME
       *
-               MOVE    "¸¡ºº¡¦ÌôºÞÎÁ"      TO  BDRES-KNS-MONEY-LBL
+               MOVE    "æ¤œæŸ»ãƒ»è–¬å‰¤æ–™"      TO  BDRES-KNS-MONEY-LBL
                MOVE    BUNBEN-KNS-MONEY    TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-KNS-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-KNS-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-KNS-MONEY-NAME
       *
-               MOVE    "½èÃÖ¡¦¼êÅöÎÁ"      TO  BDRES-SYC-MONEY-LBL
+               MOVE    "å‡¦ç½®ãƒ»æ‰‹å½“æ–™"      TO  BDRES-SYC-MONEY-LBL
                MOVE    BUNBEN-SYC-MONEY    TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-SYC-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-SYC-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-SYC-MONEY-NAME
       *
-               MOVE    "»º²Ê°åÎÅÊä½þÀ©ÅÙ³Ý¶â"
+               MOVE    "ç”£ç§‘åŒ»ç™‚è£œå„Ÿåˆ¶åº¦æŽ›é‡‘"
                                            TO  BDRES-SNK-MONEY-LBL
                MOVE    BUNBEN-SNK-MONEY    TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-SNK-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-SNK-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-SNK-MONEY-NAME
       *
-               MOVE    "¤½¤ÎÂ¾"            TO  BDRES-ETC-MONEY-LBL
+               MOVE    "ãã®ä»–"            TO  BDRES-ETC-MONEY-LBL
                MOVE    BUNBEN-ETC-MONEY    TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-ETC-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-ETC-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-ETC-MONEY-NAME
       *
-               MOVE    "°ìÉôÉéÃ´¶âÅù"      TO  BDRES-ICBFTN-MONEY-LBL
+               MOVE    "ä¸€éƒ¨è² æ‹…é‡‘ç­‰"      TO  BDRES-ICBFTN-MONEY-LBL
                MOVE    BUNBEN-ICBFTN-MONEY TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-ICBFTN-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-ICBFTN-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-ICBFTN-MONEY-NAME
       *
-               MOVE    "Ç¥ÉØ¹ç·×ÉéÃ´³Û"    TO  BDRES-NINPUFTN-MONEY-LBL
+               MOVE    "å¦Šå©¦åˆè¨ˆè² æ‹…é¡"    TO  BDRES-NINPUFTN-MONEY-LBL
                MOVE    BUNBEN-NINPUFTN-MONEY TO WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-NINPUFTN-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-NINPUFTN-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-NINPUFTN-MONEY-NAME
       *
-               MOVE    "ÂåÍý¼õ¼è³Û"        TO  BDRES-DAIRI-MONEY-LBL
+               MOVE    "ä»£ç†å—å–é¡"        TO  BDRES-DAIRI-MONEY-LBL
                MOVE    BUNBEN-DAIRI-MONEY  TO  WRK-NUM7Z
                MOVE    WRK-NUM7Z           TO  BDRES-DAIRI-MONEY-DATA
-               MOVE    "±ß"                TO  BDRES-DAIRI-MONEY-NAME
+               MOVE    "å††"                TO  BDRES-DAIRI-MONEY-NAME
       *
            END-IF
       *
            IF    ( BUNBEN-BIKOU        NOT =   SPACE )
-               MOVE    "È÷¹ÍÍó"        TO  BDRES-BIKOU-LBL
+               MOVE    "å‚™è€ƒæ¬„"        TO  BDRES-BIKOU-LBL
                MOVE    BUNBEN-BIKOU    TO  BDRES-BIKOU-DATA
            END-IF
       *
@@ -960,7 +960,7 @@
        2001-RESPONSE-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ª¡¼¥À¡¼ÄÉ²Ã½èÍý
+      *    ã‚ªãƒ¼ãƒ€ãƒ¼è¿½åŠ å‡¦ç†
       *****************************************************************
        290-ORDER-INSERT-SEC          SECTION.
       *
@@ -998,7 +998,7 @@
        290-ORDER-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -1035,7 +1035,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -1064,7 +1064,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-SYMD-SEC                    SECTION.
       *
@@ -1080,7 +1080,7 @@
        800-SYMD-EXT.
            EXIT.
       *****************************************************************
-      *    ¥«¥ì¥ó¥À¡¼½èÍý
+      *    ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å‡¦ç†
       *****************************************************************
        800-CALENDAR-SEC                SECTION.
       *
@@ -1098,7 +1098,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        800-HIZUKE-SEC                      SECTION.
       *
@@ -1125,7 +1125,7 @@
        800-HIZUKE-EXT.
            EXIT.
       *****************************************************************
-      *    »þ¹ïÊÔ½¸½èÍý
+      *    æ™‚åˆ»ç·¨é›†å‡¦ç†
       *****************************************************************
        800-TIME-SEC                    SECTION.
       *
@@ -1141,7 +1141,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ôÃÍÊÑ´¹½èÍý
+      *    æ•°å€¤å¤‰æ›å‡¦ç†
       *****************************************************************
        800-ORCSNUM-SEC                 SECTION.
       *
@@ -1163,7 +1163,7 @@
        800-ORCSNUM-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
@@ -1181,7 +1181,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó¤«¤éÆâÍÆ¤ò¼è¤ê½Ð¤¹
+      *    XMLæƒ…å ±ã‹ã‚‰å†…å®¹ã‚’å–ã‚Šå‡ºã™
       *****************************************************************
        900-XML-READ-SEC             SECTION.
       *
@@ -1211,7 +1211,7 @@
        900-XML-READ-EXT.
            EXIT.
       *****************************************************************
-      *    XML¥Õ¥£¥ë¥¿¥ê¥ó¥°½èÍý
+      *    XMLãƒ•ã‚£ãƒ«ã‚¿ãƒªãƒ³ã‚°å‡¦ç†
       *****************************************************************
        9001-XML-FILTER-SEC             SECTION.
       *
@@ -1222,7 +1222,7 @@
        9001-XML-FILTER-EXT.
            EXIT.
       *****************************************************************
-      *    XML¾ðÊó¤ò½ñ¤­½Ð¤¹
+      *    XMLæƒ…å ±ã‚’æ›¸ãå‡ºã™
       *****************************************************************
        900-XML-WRITE-SEC             SECTION.
       *
@@ -1243,7 +1243,7 @@
            END-PERFORM
       *
            IF    ( BDREQ-REQNUM    NOT =   SPACE )
-               MOVE    "¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ"
+               MOVE    "ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·"
                                TO  BDRES-REQNUM-LBL
       *
                MOVE    BDREQ-REQNUM
@@ -1252,9 +1252,9 @@
       *
            EVALUATE    BDREQ-REQNUM
            WHEN    "01"
-               MOVE    "¾È²ñ"  TO  BDRES-REQNUM-NAME
+               MOVE    "ç…§ä¼š"  TO  BDRES-REQNUM-NAME
            WHEN    "02"
-               MOVE    "ÅÐÏ¿"  TO  BDRES-REQNUM-NAME
+               MOVE    "ç™»éŒ²"  TO  BDRES-REQNUM-NAME
            END-EVALUATE
       *
            PERFORM 9001-XML-WRITE-SEC
@@ -1263,7 +1263,7 @@
        900-XML-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    XML¾ðÊó¤ò½ñ¤­½Ð¤¹
+      *    XMLæƒ…å ±ã‚’æ›¸ãå‡ºã™
       *****************************************************************
        9001-XML-WRITE-SEC             SECTION.
       *
@@ -1290,7 +1290,7 @@
        9001-XML-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -1316,7 +1316,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY2-SEL-SEC           SECTION.
       *
@@ -1338,7 +1338,7 @@
        900-SYSKANRI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýFETCH½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†FETCHå‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC           SECTION.
       *
@@ -1360,7 +1360,7 @@
        900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó¼èÆÀ½èÍý
+      *    æ‚£è€…æƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -1389,7 +1389,7 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY39-SEL-SEC        SECTION.
       *
@@ -1419,7 +1419,7 @@
        900-PTNYUINRRK-KEY39-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¸¡º÷½èÍý
+      *    å…¥é™¢å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-PTNYUINRRK-KEY20-SEL-SEC        SECTION.
       *
@@ -1445,7 +1445,7 @@
        900-PTNYUINRRK-KEY20-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Ê¬ÊÚ´ÉÍý¸¡º÷½èÍý
+      *    åˆ†å¨©ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-BUNBEN-KEY3-SEL-SEC         SECTION.
       *
@@ -1476,7 +1476,7 @@
        900-BUNBEN-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    µìÀ«ÍúÎò¸¡º÷½èÍý
+      *    æ—§å§“å±¥æ­´æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-KYUSEIRRK-KEY3-SEL-SEC          SECTION.
       *
@@ -1505,7 +1505,7 @@
        900-KYUSEIRRK-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    µìÀ«ÍúÎòFETCH½èÍý
+      *    æ—§å§“å±¥æ­´FETCHå‡¦ç†
       *****************************************************************
        900-KYUSEIRRK-KEY3-FET-SEC          SECTION.
       *
@@ -1525,7 +1525,7 @@
        900-KYUSEIRRK-KEY3-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¼Ô¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ä¿é™ºè€…ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-HKNJAINF-KEY-SEL-SEC        SECTION.
       *
@@ -1553,7 +1553,7 @@
        900-HKNJAINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -1571,7 +1571,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFETCH¤Ï¤·¤Ê¤¤¡Ë
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFETCHã¯ã—ãªã„ï¼‰
       *****************************************************************
        911-DBSELECT-SEC               SECTION.
       *
@@ -1586,7 +1586,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1601,7 +1601,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -1616,7 +1616,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼©ï¼®ï¼³ï¼¥ï¼²ï¼´å‡¦ç†
       *****************************************************************
        910-DBINSERT-SEC                 SECTION.
       *
@@ -1631,7 +1631,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ø£Í£ÌÆÉ¹þ½èÍý
+      *    ï¼¸ï¼­ï¼¬èª­è¾¼å‡¦ç†
       *****************************************************************
        910-XMLREAD-SEC                 SECTION.
       *
@@ -1645,7 +1645,7 @@
        910-XMLREAD-EXT.
            EXIT.
       *****************************************************************
-      *    £Ø£Í£Ì½ñ¹þ½èÍý
+      *    ï¼¸ï¼­ï¼¬æ›¸è¾¼å‡¦ç†
       *****************************************************************
        910-XMLWRITE-SEC                SECTION.
       *
@@ -1659,7 +1659,7 @@
        910-XMLWRITE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ç·¨é›†å‡¦ç†
       *****************************************************************
        990-ERROR-EDIT-SEC              SECTION.
       *
@@ -1684,7 +1684,7 @@
        990-ERROR-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý¡Ê¥¨¥é¡¼»þ¡Ë
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†ï¼ˆã‚¨ãƒ©ãƒ¼æ™‚ï¼‰
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *
@@ -1700,7 +1700,7 @@
        990-EXIT-PROGRAM-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý¡Ê¥¨¥é¡¼»þ¡Ë
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†ï¼ˆã‚¨ãƒ©ãƒ¼æ™‚ï¼‰
       *****************************************************************
        9901-EXIT-PROGRAM-SEC            SECTION.
       *

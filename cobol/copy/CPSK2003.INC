@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,55 +16,55 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *         �����ƥ�����ޥ���     (CPSK2003.INC)   
-      *         �ʣ���������                           
-      *         �쥻�ץȺ����ؼ��ʰ�������꣱��        
+      *         システム管理マスタ     (CPSK2003.INC)   
+      *         （２００３）                           
+      *         レセプト作成指示（印刷順指定１）        
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01   MCC-ƣ��      02.02.26  �����ե�������ѹ��ˤ�꽤��
-      *  01.00.02   MCC-ƣ��      02/06/17  ϫ�ҡ������դ˹��ܤ��ѹ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01   MCC-藤原      02.02.26  管理ファイルの変更により修正
+      *  01.00.02   MCC-藤原      02/06/17  労災・自賠責に項目を変更
       *
-      *  01.01.01   NACL-ƣ��     02/09/24  ������ʬ��ɽ������ɲ�
+      *  01.01.01   NACL-藤原     02/09/24  入外区分・表示順の追加
       *****************************************************************
        01  SYS-2003-REC.
            03  SYS-2003-KEY.
                05  SYS-2003-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-2003-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-2003-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-2003-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-2003-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-2003-TBL.
-      *�쥻�ץȼ���̾��
+      *レセプト種類名称
                05  SYS-2003-SYURUINAME  PIC  X(40).
-      *������ʧ����
+      *審査支払機関
                05  SYS-2003-TEISYUTUSAKI
                                         PIC  X(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  SYS-2003-SYUBETU-G.
                    07  SYS-2003-SYUBETU PIC  X(04)  OCCURS 10.
-      *������ʬ
+      *入外区分
                05  SYS-2003-NYUGAIKBN   PIC  X(01).
-      *ɽ����
+      *表示順
                05  SYS-2003-DSPSEQ      PIC  9(03).
-      *ͽ��
+      *予備
            03  SYS-2003-YOBI            PIC  X(415).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-2003-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-2003-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-2003-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-2003-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-2003-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-2003-UPD-KEY.
                05  SYS-2003-UPD-HOSPNUM     PIC 9(2).
                05  SYS-2003-UPD-KANRICD     PIC X(04).

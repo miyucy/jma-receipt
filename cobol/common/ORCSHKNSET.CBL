@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,29 +18,29 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSHKNSET.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : �ݸ��ȹ��Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/02/24    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 共通
+      *  コンポーネント名  : 保険組合編集処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/02/24    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  03/05/12  �����ճ���ѹ��ɲ�
-      * 01.00.02     NACL-¿��Ǽ  03/07/29  ϫ�ҳ���ѹ��ɲ�
-      * 01.00.03     NACL-¿��Ǽ  04/01/06  ���ޤȤ������ɲ�
-      * 01.00.04     NACL-¿��Ǽ  05/08/17  �ݸ����ֹ桢����ɣ��ֵ��ɲ�
-      * 02.07.00     NACL-����    05/10/24   MONFUNC �б�
-      * 03.05.00     NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
-      * 04.01.00     NACL-¿��Ǽ  07/10/19  ��̳�ҳ��ɲ�
-      * 04.01.01     NACL-¿��Ǽ  07/11/12  ��ɽ����ʬ�б��ɲ�
-      * 04.02.00     NACL-¿��Ǽ  08/03/XX  �ȣ������������б�
-      * 04.05.00     NACL-¿��Ǽ  10/01/XX  �����б�
-      * 04.06.00     NACL-����    10/08/30  �����ʬ���ܿͲ�²��ʬ�ɲ�
-      * 04.06.00     NACL-¿��Ǽ  10/09/29  ���������������б�
-      * 04.08.00     NACL-¿��Ǽ  13/07/XX  �軰�Թ԰��б�
-      * 04.08.00     NACL-¿��Ǽ  14/01/XX  ��ô�������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03/05/12  自賠責割合変更追加
+      * 01.00.02     NACL-多々納  03/07/29  労災割合変更追加
+      * 01.00.03     NACL-多々納  04/01/06  包括まとめ入力追加
+      * 01.00.04     NACL-多々納  05/08/17  保険者番号、公費ＩＤ返却追加
+      * 02.07.00     NACL-太田    05/10/24   MONFUNC 対応
+      * 03.05.00     NACL-多々納  07/04/XX  グループ診療対応
+      * 04.01.00     NACL-多々納  07/10/19  公務災害追加
+      * 04.01.01     NACL-多々納  07/11/12  非表示区分対応追加
+      * 04.02.00     NACL-多々納  08/03/XX  Ｈ２０．４改正対応
+      * 04.05.00     NACL-多々納  10/01/XX  治験対応
+      * 04.06.00     NACL-太田    10/08/30  補助区分、本人家族区分追加
+      * 04.06.00     NACL-多々納  10/09/29  入院・外来非該当対応
+      * 04.08.00     NACL-多々納  13/07/XX  第三者行為対応
+      * 04.08.00     NACL-多々納  14/01/XX  負担割合公費対応
       *****************************************************************
       *
       *
@@ -56,7 +56,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -72,15 +72,15 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-HKNCOMBIERR     PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDK                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
-      *    ǯ��׻�
+      *    年齢計算
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
@@ -103,7 +103,7 @@
       *
            03  WRK-JIBAISEKIKBN        PIC X(01).
       *
-      *    ɽ�����ݸ�
+      *    表示用保険
            03  WRK-IDXH                PIC 9(04).
            03  WRK-IDXH2               PIC 9(04).
            03  WRK-CNT-HKN             PIC 9(04).
@@ -122,63 +122,63 @@
                05  WRK-HDD         PIC Z9.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �����å���ǽ����
+      *    チェック機能制御
            COPY  "CPSK1008.INC".
       *
-      *    ϫ�Ұ��ŵ��ؾ���
+      *    労災医療機関情報
            COPY    "CPSK4001.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    �ݸ�����
+      *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    ǯ����ô��祵��
+      *    年齢・負担割合サブ
            COPY    "CPORCSAGECHK.INC".
       *
       *!!
-      *    �ݸ��Ȥ߹�碌��ô����������
+      *    保険組み合わせ負担割合取得サブ
            COPY    "CPORCSFTNRATE.INC".
       *!!
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -187,13 +187,13 @@
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    �ݸ��ȹ礻���å��ΰ�
+      *    保険組合せセット領域
            COPY    "CPORCSHKNSET.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -202,7 +202,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -216,16 +216,16 @@
                MOVE    "01"            TO  WRK-SRYYMD(7:2)
            END-IF
       *
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
       *
-      *    ����ݸ��ɲ��Խ�
+      *    包括保険追加編集
            IF      ORCSHKN-KBN2        =   "1"
                PERFORM 400-HOUKATU-HENSYU-SEC
            END-IF
       *
            IF      ORCSHKN-HKN-MAX     >   ZERO
-      *        �����о��ݸ�
+      *        今回対象保険
                PERFORM 200-HKNCOMBI-SELECT-SEC
            END-IF
       *
@@ -236,13 +236,13 @@
            .
       *
       *****************************************************************
-      *    ǯ��׻�����
+      *    年齢計算処理
       *****************************************************************
        1001-NENREI-SEC            SECTION.
       *
            MOVE    SPA-BIRTHDAY        TO  WRK-BYMD
       *
-      *    �ݸ�����ǯ��
+      *    保険算定年齢
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    SPA-PTID            TO  AGECHK-PTID
@@ -252,7 +252,7 @@
            CALL    "ORCSAGECHK"        USING
                                        ORCSAGECHKAREA
                                        SPA-AREA
-      *    �ݸ�ǯ��
+      *    保険年齢
            MOVE    AGECHK-NENREI       TO  WRK-NENREI
       *
            .
@@ -260,20 +260,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        100-HKNCOMBI-HENSYU-SEC            SECTION.
       *
            INITIALIZE                  ORCSHKN-OUT-AREA
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
       *
-      *    �����ƥ������ϫ�Ҿ���˸���
+      *    システム管理（労災情報）検索
            PERFORM 1002-RSI-SYSKANRI-SEC
       *
-      *    ǯ��׻�����
+      *    年齢計算処理
            PERFORM 1001-NENREI-SEC
       *
-      *    �ݸ��ȹ�ޥ������Խ�
+      *    保険組合マスター編集
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
@@ -296,14 +296,14 @@
                UNTIL      (FLG-HKNCOMBI        =   1      )  OR
                           (IDX                 >=  100    )
       *
-      *        �оݤ��ݸ��ȹ礻�Τ��Խ�
+      *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
                MOVE    ZERO                TO  FLG-HKNCOMBIERR
                IF      COMB-DELKBN         =   "1"
                    MOVE    1                   TO  FLG-HKNCOMBIERR
                ELSE
-      *            ��ɽ��ʬ�Ͻ�����ʬ���ᣱ �ΤȤ��Τ��о�
-      *                      ������ʬ���ᣲ���軰�Թ԰٤Τ��оݳ��ɲ�
+      *            非表示分は処理区分３＝１ のときのみ対象
+      *                      処理区分３＝２　第三者行為のみ対象外追加
                    IF      COMB-HYOJIKBN       =   "1"
                        IF      ORCSHKN-KBN3        =   "1"
                                                    OR  "2"
@@ -312,8 +312,8 @@
                            MOVE    1               TO  FLG-HKNCOMBIERR
                        END-IF
                    END-IF
-      *            ������ɽ��ʬ�ϳ��衦������ʬ���ᣱ �ΤȤ��Τ��о�
-      *                      ������ʬ���ᣲ���軰�Թ԰٤Τ��оݳ��ɲ�
+      *            入院非表示分は外来・処理区分３＝１ のときのみ対象
+      *                      処理区分３＝２　第三者行為のみ対象外追加
                    IF      COMB-HYOJIKBN       =   "2"
                        IF     (ORCSHKN-KBN3        =   "1" )
                          OR   (ORCSHKN-KBN3        =   "2" )
@@ -323,8 +323,8 @@
                            MOVE    1               TO  FLG-HKNCOMBIERR
                        END-IF
                    END-IF
-      *            ������ɽ��ʬ��������������ʬ���ᣱ �ΤȤ��Τ��о�
-      *                      ������ʬ���ᣲ���軰�Թ԰٤Τ��оݳ��ɲ�
+      *            外来非表示分は入院・処理区分３＝１ のときのみ対象
+      *                      処理区分３＝２　第三者行為のみ対象外追加
                    IF      COMB-HYOJIKBN       =   "3"
                        IF     (ORCSHKN-KBN3        =   "1" )
                          OR   (ORCSHKN-KBN3        =   "2" )
@@ -337,10 +337,10 @@
                END-IF
                IF      FLG-HKNCOMBIERR         =   ZERO
                    IF      ORCSHKN-KBN         =   "2"
-      *                ����
+      *                全体
                        MOVE    1               TO  FLG-HKNCOMBICHK
                    ELSE
-      *                ����ǯ��
+      *                診療年月
                        IF      SPA-SRYYMD(7:2) =   ZERO
                            IF      (SPA-SRYYMD(1:6)
                                                >=  COMB-TEKSTYMD(1:6))
@@ -349,7 +349,7 @@
                                MOVE    1           TO  FLG-HKNCOMBICHK
                            END-IF
                        ELSE
-      *                �������оݤΤ�
+      *                診療日対象のみ
                            IF      (SPA-SRYYMD     >=  COMB-TEKSTYMD )
                              AND   (SPA-SRYYMD     <=  COMB-TEKEDYMD )
                                MOVE    1           TO  FLG-HKNCOMBICHK
@@ -358,7 +358,7 @@
                    END-IF
                END-IF
       *H25.7
-      *        ������ʬ���ᣲ�λ����軰�Թ԰٤��оݳ�
+      *        処理区分３＝２の時、第三者行為は対象外
                IF     (FLG-HKNCOMBICHK     =    1    )  AND
                       (ORCSHKN-KBN3        =   "2"   )
                    IF      COMB-KOH1HKNNUM     =   "970" 
@@ -366,7 +366,7 @@
                    END-IF
                END-IF
       *
-      *        ϫ�ҡ��������ݸ�����
+      *        労災・自賠責保険検索
                IF     (FLG-HKNCOMBICHK     =    1    )  AND
                      ((COMB-HKNNUM         =   "971"  OR  "973")
                   OR  (COMB-KOH1HKNNUM     =   "970"   ))
@@ -384,7 +384,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 910-HKNCOMBI-READ-SEC
            END-PERFORM
-      *    ������
+      *    最大件数
            MOVE    IDX                 TO  ORCSHKN-HKN-MAX
       *
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
@@ -397,7 +397,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ϫ���ݸ����󸡺�
+      *    労災保険情報検索
       *****************************************************************
        1100-PTRSIINF-CHK-SEC             SECTION.
       *
@@ -405,7 +405,7 @@
            MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-PTID            TO  PTRSI-PTID
            MOVE    COMB-HKNID          TO  PTRSI-HKNID
-      *    �軰�Թ԰�
+      *    第三者行為
            IF      COMB-KOH1HKNNUM     =   "970"
                MOVE    COMB-KOH1ID         TO  PTRSI-KOHID
                MOVE    ZERO                TO  PTRSI-HKNID
@@ -432,7 +432,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        110-HKNCOMBI-HEN-SEC             SECTION.
       *
@@ -472,7 +472,7 @@
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  ORCSHKN-GMN-TEKEDYMD(IDX)
       *
-      *    �ݸ����ֹ�
+      *    保険者番号
            IF     (COMB-HKNID          =   ZERO )  OR
                   (COMB-HKNNUM         =   "971"
                                        OR  "973" )
@@ -481,11 +481,11 @@
                 PERFORM 1102-HKNJANUM-SET-SEC
            END-IF
       *
-      *    �ݸ�̾���Խ���ϫ���Խ�
+      *    保険名称編集・労災編集
            PERFORM 1101-HKNCOMBIMEI-HEN-SEC
            MOVE    WRK-HKNCOMBI        TO  ORCSHKN-GMN-HKNCOMBIMEI
                                                                 (IDX)
-      *    ��������μ�����ֹ��Խ�����
+      *    特定疾患の受給者番号編集処理
            PERFORM VARYING     IDK     FROM    1   BY  1
                    UNTIL       IDK     >   4
                IF     (COMB-KOHHKNNUM (IDK)    =   "051"
@@ -501,7 +501,7 @@
                OR (COMB-KOH1HKNNUM     =   SPACE )
                CONTINUE
            ELSE
-      *        ���������б���ô�������
+      *        地方公費対応負担割合設定
                INITIALIZE                  ORCSFTNRATEAREA
                MOVE    COMB-HOSPNUM        TO  LNK-FTNRATE-HOSPNUM
                MOVE    COMB-PTID           TO  LNK-FTNRATE-PTID
@@ -520,36 +520,36 @@
       *
       *!!!!
       *
-      *    ��ô���
+      *    負担割合
            IF      SPA-NYUGAIKBN       =   "1"
-      *        ����
+      *        入院
                MOVE    COMB-NYU-KFTNRATE   TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
            ELSE
-      *        ����
+      *        外来
                MOVE    COMB-GAI-KFTNRATE   TO  ORCSHKN-NAI-FTNRATE
                                                                (IDX)
            END-IF
-      *    �ݸ��ֹ�ޥ�������
+      *    保険番号マスタ検索
            PERFORM 3001-HKNNUM-CHK-SEC
-      *    ����Ƚ��
+      *    治験判定
            IF     (COMB-HKNNUM         >=  "900"   AND
                                        <=  "919"   )   AND
                   (HKN-HKNKOHSBTKBN    =   "9"     )
                MOVE    "1"             TO  ORCSHKN-NAI-CHIKENKBN
                                                              (IDX)
            END-IF
-      *    ����̤���λ���������¤Ȥ���
+      *    ３歳未満の時、２割を上限とする
            IF    ((COMB-TEKEDYMD       >=  "20021001") AND
                   (WRK-SRYYMD          >=  "20021001") AND
                   (WRK-NENREI          <   03        ))
-      *    �ȣ�����������
+      *    Ｈ２０．４改正
              OR  ((COMB-TEKEDYMD       >=  "20080401") AND
                   (WRK-SRYYMD          >=  "20080401") AND
                   (AGECHK-SYUGAKUKBN   =   1         ))
-      *        ���񡦼���
+      *        自費・治験
                IF     (HKN-HKNKOHSBTKBN    =   "8"  OR  "9"    )
-      *                ����������
+      *                特別療養費
                    OR (COMB-HKNNUM         =   "068"  OR  "069")
                    CONTINUE
                ELSE
@@ -558,7 +558,7 @@
                    END-IF
                END-IF
            END-IF
-      *    ϫ�Ҥλ��������ѹ�
+      *    労災の時、割合の変更
            IF      COMB-HKNNUM         =   "971"
                IF      SYS-4001-RSIIRYOKBN     =   "1"
                    MOVE    ZERO            TO  ORCSHKN-NAI-FTNRATE
@@ -569,7 +569,7 @@
                END-IF
            END-IF
       *
-      *    �����ա���̳�ҳ��λ��������ʬ��������ꤹ��
+      *    自賠責・公務災害の時、請求区分より割合を決定する
            IF      ORCSHKN-NAI-RSI-HKNKBN(IDX) =   "4"
                                                OR  "5"
                EVALUATE    WRK-JIBAISEKIKBN
@@ -602,7 +602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻̾���Խ�����
+      *    保険組合せ名称編集処理
       *****************************************************************
        1101-HKNCOMBIMEI-HEN-SEC             SECTION.
       *
@@ -619,7 +619,7 @@
                    COMB-KOH4-TANSEIDONAME  DELIMITED  BY  SPACE
                          INTO              WRK-HKNCOMBI
            END-STRING
-      *    ���ݸ����ʤ���
+      *    主保険がない時
            IF      COMB-SYU-TANSEIDONAME   =   SPACE
                MOVE    SPACE               TO  WRK-HKNCOMBI
                STRING  COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
@@ -633,42 +633,42 @@
                END-STRING
            END-IF
       *
-      *    �ݸ���ʬ
+      *    保険区分
            MOVE    ZERO                TO  ORCSHKN-NAI-HKNKBN(IDX)
-      *    ����
+      *    公害
            IF      COMB-HKNNUM         =   "975"
-      *        �ݸ���ʬ
+      *        保険区分
                MOVE    2                   TO  ORCSHKN-NAI-HKNKBN(IDX)
            END-IF
       *H29.5
-      *    ������������ʬ�ȥ����ƥ����Ƚ��
+      *    自賠責点数区分とシステム管理判定
            MOVE    SPACE               TO  WRK-HKNKBN-MEI
            IF      COMB-HKNNUM         =   "973"
                IF      (PTRSI-JIBAIKBN     =   "1"  )
-      *            ϫ�ҽ��
-                   MOVE   "[ϫ]"             TO  WRK-HKNKBN-MEI
+      *            労災準拠
+                   MOVE   "[労]"             TO  WRK-HKNKBN-MEI
                END-IF
                IF      (PTRSI-JIBAIKBN     =   "2"  )
-      *            ���ݽ��
-                   MOVE   "[��]"             TO  WRK-HKNKBN-MEI
+      *            健保準拠
+                   MOVE   "[健]"             TO  WRK-HKNKBN-MEI
                END-IF
            END-IF
       *
-      *    ϫ�Ҥλ��������Ȥ��ɲ�
+      *    労災の時、コメントの追加
            IF      COMB-HKNNUM         =   "971"  OR  "973"
-      *        �ݸ���ʬ
+      *        保険区分
                MOVE    1                   TO  ORCSHKN-NAI-HKNKBN(IDX)
       *
       **       MOVE    SPACE               TO  WRK-HKNKBN-MEI
                EVALUATE    PTRSI-HKNKBN
                    WHEN    "1"
-                       MOVE    "û"        TO  WRK-HKNKBN-MEI
+                       MOVE    "短"        TO  WRK-HKNKBN-MEI
                    WHEN    "2"
-                       MOVE    "��"        TO  WRK-HKNKBN-MEI
+                       MOVE    "傷"        TO  WRK-HKNKBN-MEI
                    WHEN    "3"
-                       MOVE    "��"        TO  WRK-HKNKBN-MEI
+                       MOVE    "ア"        TO  WRK-HKNKBN-MEI
                    WHEN    "5"
-                       MOVE    "��"        TO  WRK-HKNKBN-MEI
+                       MOVE    "公"        TO  WRK-HKNKBN-MEI
                END-EVALUATE
                IF      PTRSI-COMMENT       =   SPACE
                    MOVE    SPACE               TO  WRK-HKNCOMBI
@@ -682,17 +682,17 @@
                    STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
                            " "                     DELIMITED  BY  SIZE
                            WRK-HKNKBN-MEI          DELIMITED  BY  SPACE
-                           "��"                    DELIMITED  BY  SIZE
+                           "（"                    DELIMITED  BY  SIZE
                            PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
-                           "��"                    DELIMITED  BY  SIZE
+                           "）"                    DELIMITED  BY  SIZE
                            INTO              WRK-HKNCOMBI
                    END-STRING
                END-IF
       *
-      *        �ͻ��ʬ
+      *        四肢区分
                MOVE    PTRSI-SISIKBN       TO  ORCSHKN-NAI-RSI-SISIKBN
                                                                  (IDX)
-      *        ����ǯ����
+      *        傷病年月日
                IF      PTRSI-HKNKBN        =   "1"  OR  "2"  OR  "4"
                                            OR  "5"
                    MOVE    PTRSI-SHOBYOYMD     TO
@@ -703,37 +703,37 @@
                                                ORCSHKN-NAI-RSI-SHOBYOYMD
                                                                   (IDX)
                END-IF
-      *        ϫ�Ҷ�ʬ
+      *        労災区分
                MOVE    PTRSI-HKNKBN        TO  ORCSHKN-NAI-RSI-HKNKBN
                                                                   (IDX)
-      *        �����ա���̳�ҳ����������ʬ
+      *        自賠責・公務災害患者請求区分
                IF      PTRSI-HKNKBN        =   "4"
                                            OR  "5"
                    MOVE    PTRSI-JIBAISEIKBN   TO  WRK-JIBAISEKIKBN
                END-IF
            END-IF
       *ver.4.7
-      *    �軰�Թ԰�
+      *    第三者行為
            IF      COMB-KOH1HKNNUM     =   "970"
-      *        �ݸ���ʬ
+      *        保険区分
                MOVE    1               TO  ORCSHKN-NAI-HKNKBN (IDX)
-      *        ϫ���ݸ���ʬ
+      *        労災保険区分
                MOVE    PTRSI-HKNKBN    TO  ORCSHKN-NAI-RSI-HKNKBN
                                                                (IDX)
-      *        ̾���Խ�
+      *        名称編集
                IF      PTRSI-COMMENT   NOT =   SPACE
-      *            �ݸ��ܸ��񣱤ΤߤȤʤ�
+      *            保険＋公費１のみとなる
                    MOVE    SPACE               TO  WRK-HKNCOMBI
                    STRING  COMB-SYU-TANSEIDONAME   DELIMITED  BY  SPACE
                            " "                     DELIMITED  BY  SIZE
                            COMB-KOH1-TANSEIDONAME  DELIMITED  BY  SPACE
-                           "��"                    DELIMITED  BY  SIZE
+                           "（"                    DELIMITED  BY  SIZE
                            PTRSI-COMMENT(1:24)     DELIMITED  BY  SPACE
-                           "��"                    DELIMITED  BY  SIZE
+                           "）"                    DELIMITED  BY  SIZE
                            INTO              WRK-HKNCOMBI
                    END-STRING
                END-IF
-      *        ����ǯ����
+      *        傷病年月日
                MOVE    PTRSI-SHOBYOYMD     TO  ORCSHKN-NAI-RSI-SHOBYOYMD
                                                                   (IDX)
            END-IF
@@ -750,10 +750,10 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ����ֹ��Խ�����
+      *    保険者番号編集処理
       *****************************************************************
        1102-HKNJANUM-SET-SEC             SECTION.
-      *    �ݸ����Խ�
+      *    保険者編集
            INITIALIZE                  PTHKNINF-REC
            MOVE    COMB-HOSPNUM        TO  PTHKN-HOSPNUM
            MOVE    COMB-PTID           TO  PTHKN-PTID
@@ -783,10 +783,10 @@
        1102-HKNJANUM-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ��������μ�����ֹ��Խ�����
+      *    特定疾患の受給者番号編集処理
       *****************************************************************
        1103-JKYSNUM-SET-SEC             SECTION.
-      *    ���Ը������
+      *    患者公費情報
            INITIALIZE                  PTKOHINF-REC
            MOVE    COMB-HOSPNUM        TO  PTKOH-KOHID
            MOVE    COMB-PTID           TO  PTKOH-PTID
@@ -817,18 +817,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �����о��ݸ��Խ�����
+      *    今回対象保険編集処理
       *****************************************************************
        200-HKNCOMBI-SELECT-SEC             SECTION.
       *
            IF      SPA-HKNCOMBINUM     =   SPACE
-      *        ����������������ݸ��ȹ礻����ꤹ��
+      *        受診履歴より前回の保険組合せを指定する
                PERFORM 2001-JYURRK-CHK-SEC
            ELSE
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBINUM
            END-IF
       *
-      *    ������ݸ��ȹ礻�����ѤǤ��뤫�Υ����å�
+      *    前回の保険組合せが使用できるかのチェック
            MOVE    ZERO                TO  FLG-HKNCOMBICHK
            MOVE    ZERO                TO  ORCSHKN-IDX
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -846,7 +846,7 @@
            END-PERFORM
       *
            IF      FLG-HKNCOMBICHK     =   ZERO
-      *        ��ά�����ݸ��ȹ礻����
+      *        省略時の保険組合せ決定
                PERFORM 2002-HKNCOMBI-SET-SEC
            END-IF
       *
@@ -855,7 +855,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�������
+      *    保険組合せ決定処理
       *****************************************************************
        2002-HKNCOMBI-SET-SEC             SECTION.
       *
@@ -887,7 +887,7 @@
                    IF      ORCSHKN-NAI-KOH4HKNNUM(IDX) NOT =   SPACE
                        ADD     1                   TO  WRK-CNT-HKN2
                    END-IF
-      *            �����������¾���ݸ����ʤ�����ͭ���Ȥ���
+      *            治験・自費は他の保険がない時に有効とする
                    IF     (ORCSHKN-NAI-HKNNUM (IDX)(1:2) =   "98"
                                                      OR  "90"
                                                      OR  "91" )
@@ -900,7 +900,7 @@
                            MOVE    WRK-CNT-HKN2        TO  WRK-CNT-HKN
                        END-IF
                    END-IF
-      *            ϫ�ҡ������դ�������оݤȤ���
+      *            労災・自賠責があれば対象とする
                    IF      ORCSHKN-NAI-HKNNUM (IDX)    =   "971"
                                                        OR  "973"
                        MOVE    IDX                 TO  WRK-IDXH
@@ -923,11 +923,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������������ݸ��ȹ礻��������
+      *    受診履歴より前回の保険組合せを指定処理
       *****************************************************************
        2001-JYURRK-CHK-SEC         SECTION.
       *
-      *    ����������������ݸ��ȹ礻����ꤹ��
+      *    受診履歴より前回の保険組合せを指定する
            MOVE    SPACE               TO  JYURRK-REC
            INITIALIZE                  JYURRK-KEY
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
@@ -951,7 +951,7 @@
            END-IF
       *
            PERFORM UNTIL    FLG-JYURRK     =   1
-      *        ����ݸ��ʳ��Ǥ��뤳��
+      *        包括保険以外であること
                IF      JYURRK-HKNCOMBINUM  NOT =   "9999"
                    MOVE    JYURRK-HKNCOMBINUM  TO  WRK-HKNCOMBINUM
                    MOVE    1                   TO  FLG-JYURRK
@@ -970,7 +970,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��������
+      *    保険情報処理
       *****************************************************************
        3001-HKNNUM-CHK-SEC         SECTION.
       *
@@ -1002,11 +1002,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ������ϫ�Ҿ���˸�������
+      *    システム管理（労災情報）検索処理
       *****************************************************************
        1002-RSI-SYSKANRI-SEC             SECTION.
       *
-      *    �����ƥ����������ϫ�Ҿ����
+      *    システム管理検索（労災情報）
            MOVE    SPACE               TO  SYS-4001-REC
            INITIALIZE                  SYS-4001-REC
            MOVE    "4001"              TO  SYS-4001-KANRICD
@@ -1043,11 +1043,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ݸ��ɲ��Խ�����
+      *    包括保険追加編集処理
       *****************************************************************
        400-HOUKATU-HENSYU-SEC             SECTION.
       *
-      *    �����ƥ���������ʥ����å���ǽ��������
+      *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
            INITIALIZE                  SYS-1008-REC
            MOVE    "1008"              TO  SYS-1008-KANRICD
@@ -1078,7 +1078,7 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �����Ͽ
+      *    包括登録
            IF      SYS-1008-HOUKATU-FLG    =   "1"
                CONTINUE
            ELSE
@@ -1089,7 +1089,7 @@
                ADD     1                   TO  ORCSHKN-HKN-MAX
                MOVE    "9999"              TO  ORCSHKN-GMN-HKNCOMBINUM
                                                       (ORCSHKN-HKN-MAX)
-               MOVE    "���ʬ����"        TO  ORCSHKN-GMN-HKNCOMBIMEI
+               MOVE    "包括分入力"        TO  ORCSHKN-GMN-HKNCOMBIMEI
                                                       (ORCSHKN-HKN-MAX)
                MOVE    ZERO                TO  ORCSHKN-NAI-TEKSTYMD
                                                       (ORCSHKN-HKN-MAX)
@@ -1099,7 +1099,7 @@
                                                       (ORCSHKN-HKN-MAX)
                MOVE    "99.99.99"          TO  ORCSHKN-GMN-TEKEDYMD
                                                       (ORCSHKN-HKN-MAX)
-      *        �ݸ���ʬ
+      *        保険区分
                MOVE    ZERO                TO  ORCSHKN-NAI-HKNKBN
                                                       (ORCSHKN-HKN-MAX)
       *
@@ -1109,7 +1109,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
       *
@@ -1132,7 +1132,7 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1148,7 +1148,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�
+      *    保険組合せマスター読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -1166,7 +1166,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -1183,7 +1183,7 @@
        970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����ϫ���ݸ������ɤ߹���
+      *    患者労災保険情報読み込み
       *****************************************************************
        993-PTRSIINF-NEXT-SEC        SECTION.
       *
@@ -1201,7 +1201,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �ݸ��ֹ�ޥ�������������
+      *    保険番号マスタ次検索処理
       ****************************************************************
        921-HKNNUM-NEXT-SEC              SECTION.
       *
@@ -1217,7 +1217,7 @@
        921-HKNNUM-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ޥ������ɤ߹���
+      *    保険マスター読み込み
       *****************************************************************
        910-PTHKNINF-READ-SEC         SECTION.
       *
@@ -1234,7 +1234,7 @@
        910-PTHKNINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը����ɤ߹���
+      *    患者公費読み込み
       *****************************************************************
        910-PTKOHINF-READ-SEC         SECTION.
       *
@@ -1251,7 +1251,7 @@
        910-PTKOHINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1264,7 +1264,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1278,7 +1278,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

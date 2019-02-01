@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBSETSYSBASE.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/10/18    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/10/18    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,13 +39,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-SYSBASE             PIC 9(01).
            03  FLG-OK                  PIC 9(01).
       *
-      *    �ѥ�᡼��
+      *    パラメータ
        01  PARA-AREA.
            03  PARA-COMMAND            PIC X(03).
            03  PARA-GRPNUM             PIC 9(02).
@@ -55,7 +55,7 @@
            03  PARA-HONBUNKBN          PIC X(01).
            03  PARA-HOSPNAME           PIC X(120).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PATH                PIC X(64).
            03  WRK-SYSYMD              PIC X(08).
@@ -72,12 +72,12 @@
        01  WRK-PRT-AREA.
            03  WRK-PRT-TITLE1.
                05  FILLER              PIC X(51)   VALUE
-               "���롼��|���ŵ���| ��  �� |��ʬ��|��ʬ��|���ŵ���̾".
+               "グループ|医療機関| 期  限 |本分院|本分院|医療機関名".
            03  WRK-PRT-TITLE2.
                05  FILLER              PIC X(41)   VALUE
-               "��    ��|�����ֹ�|        |��  ��|��  ʬ|".
+               "番    号|識別番号|        |番  号|区  分|".
                05  FILLER              PIC X(20)   VALUE
-               "(���ʡ������ƥ����)".
+               "(下段：システム管理)".
            03  WRK-PRT-TITLE3.
                05  FILLER              PIC X(41)   VALUE
                "--------+--------+--------+------+------+".
@@ -101,27 +101,27 @@
                05  WRK-PRT-HOSPNAME2          PIC X(40).
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ����
+      *    システム管理（医療機関情報）
            COPY    "CPSK1001.INC".
       *
-      *    �����ƥ����
+      *    システム基本
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -134,11 +134,11 @@
                                    USING
                                    COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                INTO    PARA-COMMAND
                                        PARA-GRPNUM
@@ -156,42 +156,42 @@
            STOP    RUN
            .
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        100-MAIN-SEC                SECTION.
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����Խ�����
+      *    日付編集処理
            PERFORM 800-HIZUKE-SET-SEC
       *
            EVALUATE    PARA-COMMAND
-      *        ����ɽ��
+      *        一覧表示
                WHEN    "lst"
                WHEN    "LST"
                    PERFORM 210-SYSBASE-LIST-SEC
-      *        �ɲ�
+      *        追加
                WHEN    "add"
                WHEN    "ADD"
                    PERFORM 220-SYSBASE-ADD-SEC
-      *        ����
+      *        更新
                WHEN    "mod"
                WHEN    "MOD"
                    PERFORM 230-SYSBASE-MOD-SEC
-      *        ���
+      *        削除
                WHEN    "del"
                WHEN    "DEL"
                    PERFORM 240-SYSBASE-DEL-SEC
            END-EVALUATE
       *
-      *    �ǡ����١�����������
+      *    データベースクローズ
            PERFORM 900-DBDISCONNECT-SEC
            .
        100-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܾ��󡡰���ɽ������
+      *    システム基本情報　一覧表示処理
       *****************************************************************
        210-SYSBASE-LIST-SEC        SECTION.
       *
@@ -207,30 +207,30 @@
                MOVE    "key"           TO  WRK-PATH
            END-IF
       *
-      *    �����ƥ���ܡ��ӣţ̣ţãԽ���
+      *    システム基本　ＳＥＬＥＣＴ処理
            PERFORM 900-SYSBASE-SELECT-SEC
       *
            IF      FLG-SYSBASE     =   1
                GO  TO  210-SYSBASE-LIST-EXT
            END-IF
       *
-      *    ���Ф�����
+      *    見出し処理
            PERFORM 211-LIST-PRINT-TITLE-SEC
       *
            PERFORM UNTIL FLG-SYSBASE   =   1
-      *        ���ٽ���
+      *        明細処理
                PERFORM 212-LIST-PRINT-BODY-SEC
-      *        �����ƥ���ܡ��ƣţԣãȽ���
+      *        システム基本　ＦＥＴＣＨ処理
                PERFORM 900-SYSBASE-FETCH-SEC
            END-PERFORM
       *
-      *    �����ƥ���ܡ��ạ̃ϣӣŽ���
+      *    システム基本　ＣＬＯＳＥ処理
            PERFORM 900-SYSBASE-CLOSE-SEC
            .
        210-SYSBASE-LIST-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ф�����
+      *    見出し処理
       *****************************************************************
        211-LIST-PRINT-TITLE-SEC    SECTION.
       *
@@ -241,7 +241,7 @@
        211-LIST-PRINT-TITLE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ٽ���
+      *    明細処理
       *****************************************************************
        212-LIST-PRINT-BODY-SEC     SECTION.
       *
@@ -262,7 +262,7 @@
       *
            DISPLAY WRK-PRT-BODY1
       *
-      *    �����ƥ���������ɤ߹��߽���
+      *    システム管理情報　読み込み処理
            PERFORM 900-SYS1001-READ-SEC
       *
            IF      FLG-SYSKANRI    =   ZERO
@@ -274,20 +274,20 @@
        212-LIST-PRINT-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܾ����ɲý���
+      *    システム基本情報　追加処理
       *****************************************************************
        220-SYSBASE-ADD-SEC         SECTION.
       *
            IF      PARA-HOSPNUM    =   ZERO
-               DISPLAY "���ŵ��ؼ����ֹ����ꤷ�Ƥ���������"
+               DISPLAY "医療機関識別番号を指定してください。"
                GO  TO  220-SYSBASE-ADD-EXT
            END-IF
       *
-      *    �����ƥ���ܡ��ңţ��Ľ���
+      *    システム基本　ＲＥＡＤ処理
            PERFORM 900-SYSBASE-READ-SEC
       *
            IF      FLG-SYSBASE     =   ZERO
-               DISPLAY "���ꤵ�줿���ŵ��ؼ����ֹ�ϴ��ˤ���ޤ���"
+               DISPLAY "指定された医療機関識別番号は既にあります。"
                GO  TO  220-SYSBASE-ADD-EXT
            END-IF
       *
@@ -297,7 +297,7 @@
            MOVE    "99999999"      TO  SYSBASE-KIGEN
            MOVE    0               TO  SYSBASE-HONBUNGRP
            MOVE    "0"             TO  SYSBASE-HONBUNKBN
-           MOVE    "��"            TO  SYSBASE-HOSPNAME
+           MOVE    "＊"            TO  SYSBASE-HOSPNAME
            MOVE    WRK-SYSYMD      TO  SYSBASE-CREYMD
            MOVE    SPACE           TO  SYSBASE-UPYMD
            MOVE    WRK-SYSTIME     TO  SYSBASE-UPHMS
@@ -318,7 +318,7 @@
                MOVE    PARA-HOSPNAME   TO  SYSBASE-HOSPNAME
            END-IF
       *
-      *    �ɲý���
+      *    追加処理
            MOVE    SYSBASE-REC     TO  MCPDATA-REC
            MOVE    "DBINSERT"      TO  MCP-FUNC
            MOVE    "tbl_sysbase"   TO  MCP-TABLE
@@ -331,15 +331,15 @@
        220-SYSBASE-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܾ��󡡹�������
+      *    システム基本情報　更新処理
       *****************************************************************
        230-SYSBASE-MOD-SEC         SECTION.
       *
-      *    �����ƥ���ܡ��ңţ��Ľ���
+      *    システム基本　ＲＥＡＤ処理
            PERFORM 900-SYSBASE-READ-SEC
       *
            IF      FLG-SYSBASE     =   1
-               DISPLAY "���ꤵ�줿���ŵ��ؼ����ֹ�Ϥ���ޤ���Ǥ�����"
+               DISPLAY "指定された医療機関識別番号はありませんでした。"
                GO  TO  230-SYSBASE-MOD-EXT
            END-IF
       *
@@ -361,7 +361,7 @@
            MOVE    WRK-SYSYMD      TO  SYSBASE-UPYMD
            MOVE    WRK-SYSTIME     TO  SYSBASE-UPHMS
       *
-      *    ��������
+      *    更新処理
            MOVE    SYSBASE-REC     TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
            MOVE    "tbl_sysbase"   TO  MCP-TABLE
@@ -374,19 +374,19 @@
        230-SYSBASE-MOD-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܾ��󡡺������
+      *    システム基本情報　削除処理
       *****************************************************************
        240-SYSBASE-DEL-SEC         SECTION.
       *
-      *    �����ƥ���ܡ��ңţ��Ľ���
+      *    システム基本　ＲＥＡＤ処理
            PERFORM 900-SYSBASE-READ-SEC
       *
            IF      FLG-SYSBASE     =   1
-               DISPLAY "���ꤵ�줿���ŵ��ؼ����ֹ�Ϥ���ޤ���Ǥ�����"
+               DISPLAY "指定された医療機関識別番号はありませんでした。"
                GO  TO  240-SYSBASE-DEL-EXT
            END-IF
       *
-      *    �������
+      *    削除処理
            MOVE    SYSBASE-REC     TO  MCPDATA-REC
            MOVE    "DBDELETE"      TO  MCP-FUNC
            MOVE    "tbl_sysbase"   TO  MCP-TABLE
@@ -399,11 +399,11 @@
        240-SYSBASE-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        800-HIZUKE-SET-SEC         SECTION.
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    ZERO                TO  WRK-SYMD
            MOVE    WRK-SYMD2           TO  WRK-SYMD(3:)
@@ -415,7 +415,7 @@
        800-HIZUKE-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܡ��ңţ��Ľ���
+      *    システム基本　ＲＥＡＤ処理
       *****************************************************************
        900-SYSBASE-READ-SEC        SECTION.
       *
@@ -426,7 +426,7 @@
        900-SYSBASE-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܡ��ӣţ̣ţãԽ���
+      *    システム基本　ＳＥＬＥＣＴ処理
       *****************************************************************
        900-SYSBASE-SELECT-SEC      SECTION.
       *
@@ -439,7 +439,7 @@
            PERFORM 910-DBSELECT-SEC
       *
            IF      MCP-RC          =   ZERO
-      *        �����ƥ���ܡ��ƣţԣãȽ���
+      *        システム基本　ＦＥＴＣＨ処理
                PERFORM 900-SYSBASE-FETCH-SEC
            ELSE
                MOVE    1               TO  FLG-SYSBASE
@@ -448,7 +448,7 @@
        900-SYSBASE-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܡ��ƣţԣãȽ���
+      *    システム基本　ＦＥＴＣＨ処理
       *****************************************************************
        900-SYSBASE-FETCH-SEC      SECTION.
       *
@@ -465,7 +465,7 @@
        900-SYSBASE-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���ܡ��ạ̃ϣӣŽ���
+      *    システム基本　ＣＬＯＳＥ処理
       *****************************************************************
        900-SYSBASE-CLOSE-SEC      SECTION.
       *
@@ -476,7 +476,7 @@
        900-SYSBASE-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���������ɤ߹��߽���
+      *    システム管理情報　読み込み処理
       *****************************************************************
        900-SYS1001-READ-SEC        SECTION.
       *
@@ -512,7 +512,7 @@
        900-SYS1001-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
@@ -525,7 +525,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        920-DBFETCH-SEC             SECTION.
       *
@@ -538,7 +538,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ạ̃ϣӣŽ���
+      *    ＤＢＣＬＯＳＥ処理
       *****************************************************************
        990-DBCLOSE-SEC             SECTION.
       *
@@ -551,7 +551,7 @@
        990-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -574,7 +574,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

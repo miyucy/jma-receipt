@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,24 +15,24 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �ץ�󥿡�̾�����ѥ�᥿      COPY (CPORCSPRTNMGET.INC)
-      *                                  ���ѥץ������ (ORCSPRTNMGET)
-      *    �������
-      *      �о���
+      *    プリンター名取得パラメタ      COPY (CPORCSPRTNMGET.INC)
+      *                                  使用プログラム (ORCSPRTNMGET)
+      *    設定項目
+      *      対象日
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  ORCSPRTNMGETAREA.
       *
-      *    �о���
+      *    対象日
            03  PRTNMGET-YMD                PIC 9(08).
-      *    �ץ�󥿡�̾
+      *    プリンター名
            03  PRTNMGET-PRTNM-TBL              OCCURS  100.
                05  PRTNMGET-PRTNM          PIC X(16).
       *
            03  PRTNMGET-PRTNM-MAX          PIC 9(03).
       *
-      *    ����������
+      *    復帰コード
            03  PRTNMGET-RC                 PIC 9(04).
       *

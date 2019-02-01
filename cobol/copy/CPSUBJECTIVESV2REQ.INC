@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɾɾ��ܵ���Ͽ������� (xml2)
+      *    ＡＰＩ症状詳記登録情報取得 (xml2)
       *                                   COPY (CPSUBJECTIVEV2REQ.INC)
       ******************************************************************
         01  XML-SUBJECTIVESREQ.
@@ -29,56 +29,56 @@
             03  SUBJETREQ-MODE              PIC S9(9)   BINARY.
             03  SUBJETREQ-RECORDNAME        PIC X(128).
             03  SUBJETREQ-MEDICALREQ.
-      *       ������ʬ
+      *       入外区分
               05  SUBJETREQ-OUTPATIENT-CLASS  PIC X(1).
-      *       �����ֹ�
+      *       患者番号
               05  SUBJETREQ-PATIENTID         PIC X(20).
-      *       ����ǯ��
+      *       診療年月
               05  SUBJETREQ-PERFORM-DATE      PIC X(10).
-      *       ���Ų�
+      *       診療科
               05  SUBJETREQ-DEP-CODE          PIC X(02).
-      *       �ݸ��ȹ礻�ֹ�
+      *       保険組合せ番号
               05  SUBJETREQ-COMBINATION-NUMBER     PIC X(04).
-      *       �ݸ��ȹ礻����
+      *       保険組合せ情報
               05  SUBJETREQ-INSURANCE-INFO.
-      *           �ݸ��μ���
+      *           保険の種類
                   07  SUBJETREQ-MAIN-INSURANCE-CLASS    PIC X(03).
-      *           �ݸ��μ���
+      *           保険の種類
                   07  SUBJETREQ-MAIN-INSURANCE-NAME     PIC X(20).
-      *           �ݸ����ֹ�
+      *           保険者番号
                   07  SUBJETREQ-MAIN-INSURANCE-NUMBER   PIC X(08).
-      *           ����
+      *           記号
                   07  SUBJETREQ-MAIN-MARK               PIC X(80).
-      *           �ֹ�
+      *           番号
                   07  SUBJETREQ-MAIN-NUMBER             PIC X(80).
-      *           ��³��ʬ
+      *           継続区分
                   07  SUBJETREQ-MAIN-CONTINUATION      PIC X(01).
-      *           �����ʬ
+      *           補助区分
                   07  SUBJETREQ-MAIN-ASSISTANCE        PIC X(01).
-      *           �ܿͲ�²��ʬ
+      *           本人家族区分
                   07  SUBJETREQ-MAIN-FAMILY            PIC X(01).
-      *           ���ݸ���̾
+      *           被保険者名
                   07  SUBJETREQ-MAIN-POLICYHOLDER      PIC X(100).
-      *           ͭ��������
+      *           有効開始日
                   07  SUBJETREQ-MAIN-START-DATE        PIC X(10).
-      *           ͭ����λ��
+      *           有効終了日
                   07  SUBJETREQ-MAIN-END-DATE          PIC X(10).
-      *           �������
+      *           公費情報
                   07  SUBJETREQ-PUBLIC-INSURANCE-INF  OCCURS  4 TIMES.
-      *             ����μ���
+      *             公費の種類
                     09  SUBJETREQ-INSURANCE-CLASS       PIC X(03).
-      *             ����μ���
+      *             公費の種類
                     09  SUBJETREQ-INSURANCE-NAME        PIC X(20).
-      *             ��ô���ֹ�
+      *             負担者番号
                     09  SUBJETREQ-PROVIDER-NUMBER       PIC X(08).
-      *             ������ֹ�
+      *             受給者番号
                     09  SUBJETREQ-RECIPIENT-NUMBER      PIC X(20).
-      *             ͭ��������
+      *             有効開始日
                     09  SUBJETREQ-INSURANCE-START-DATE  PIC X(10).
-      *             ͭ����λ��
+      *             有効終了日
                     09  SUBJETREQ-INSURANCE-END-DATE    PIC X(10).
-      *       �ɾ��ܵ���ʬ������
+      *       症状詳記区分コード
               05  SUBJETREQ-SUBJECTIVES-CODE       PIC X(02).
-      *       �ɾ��ܵ�
+      *       症状詳記
               05  SUBJETREQ-DETAIL-RECORD          PIC X(4800).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSRIHASTDAY.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ��ϥӥ곫�����������Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : リハビリ開始日コメント編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.01    NACL-����    16/03/28  ʿ������ǯ��������б�
-      *  04.08.02    NACL-����    16/09/15  ��ϥӥ�ޥ����ɲ��б�
-      *  04.08.03    NACL-����    18/04/05  ʿ������ǯ��������б�
-      *  04.08.04    NACL-����    18/06/21  ��ϥӥ곫�������ܽ���
-      *  04.08.05    NACL-����    18/07/02  ��ϥӥ곫�������ܽ���
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-門脇    16/03/28  平成２８年４月改正対応
+      *  04.08.02    NACL-門脇    16/09/15  リハビリマスタ追加対応
+      *  04.08.03    NACL-門脇    18/04/05  平成３０年４月改正対応
+      *  04.08.04    NACL-門脇    18/06/21  リハビリ開始日記載修正
+      *  04.08.05    NACL-門脇    18/07/02  リハビリ開始日記載修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -45,7 +45,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-HKNCOMBI                  PIC 9(01).
            03  FLG-SANTEI                    PIC 9(01).
@@ -66,7 +66,7 @@
            03  FLG-COMARI2                   PIC 9(01).
            03  FLG-ARI                       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                           PIC 9(03).
            03  IDX1                          PIC 9(03).
@@ -90,7 +90,7 @@
            03  RIHA-IDX2                     PIC 9(02).
            03  DAY-IDX2                      PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYCD                     PIC X(09).
            03  WRK-SRYCD2                    PIC X(09).
@@ -129,17 +129,17 @@
                05  WK-FREE-YUKOKETA          PIC 9(03).
                05  WK-FREE-NAME              PIC X(200).
       *
-      *  ���������ɼ���
-      *  ���������ɼ���������������ϲû�
-      *  ����Ǿ��ɼ�����
-      *  �������Ѿɸ���
-      *  �������Ѿɸ���������������ϲû�
-      *  ������ư��
-      *  �����Ƶ۴�
-      *  �����Ƶ۴������������ϲû�
-      *  �����ݿ�
-      *���������´���
-      *�������㳲���ʼԡ�
+      *  １：心大血管疾患
+      *  ２：心大血管疾患の早期・初期リハ加算
+      *  ３：脳血管疾患等
+      *  ４：廃用症候群
+      *  ５：廃用症候群の早期・初期リハ加算
+      *  ６：運動器
+      *  ７：呼吸器
+      *  ８：呼吸器の早期・初期リハ加算
+      *  ９：摂食
+      *１０：難病患者
+      *１１：障害児（者）
        01  WRK-RIHASANTEI-AREA.
            03  WRK-RIHASANTEI-OCC            OCCURS 11.
                05  WRK-RIHASANTEI-FLG        PIC 9(01).
@@ -148,50 +148,50 @@
                05  WRK-RIHASANTEI-SRYCD-TBL.
                    06  WRK-RIHASANTEI-SRYCD  PIC X(09)   OCCURS  50.
       *
-      *    ������
+      *    固定値
        01  CONST-AREA.
       *
-      *    ���������
+      *    定形コメント
            03  CONST-RIHA-SYSCD-VAL.
-      *        �����ϳ�����
+      *        心大リハ開始日
                05  CONS-SINDAI            PIC X(09)   VALUE "099800111".
-      *        �Ƶ۴��ϳ�����
+      *        呼吸器リハ開始日
                05  CONS-KOKYUKI           PIC X(09)   VALUE "099800141".
-      *        Ǿ��ɼ�������ϳ�����
+      *        脳血管疾患等リハ開始日
                05  CONS-NOUKE             PIC X(09)   VALUE "099800121".
-      *        ��ư���ϳ�����
+      *        運動器リハ開始日
                05  CONS-UNDOKI            PIC X(09)   VALUE "099800131".
-      *        ���´��ԥ�ϳ�����
+      *        難病患者リハ開始日
                05  CONS-NANBYO            PIC X(09)   VALUE "099800161".
-      *        �㳲���ʼԡ˥�ϳ�����
+      *        障害児（者）リハ開始日
                05  CONS-SYOGAI            PIC X(09)   VALUE "099800171".
-      *        �ݿ���ˡ������
+      *        摂食療法開始日
                05  CONS-SESSYOKU          PIC X(09)   VALUE "099800151".
-      *        ���Ѿɸ�����ϳ�����
+      *        廃用症候群リハ開始日
                05  CONS-HAIYO             PIC X(09)   VALUE "099800191".
       *
-      *        �����ϲû�������
+      *        心大リハ加算開始日
                05  CONS-SINDAI-K          PIC X(09)   VALUE "099800211".
-      *        �Ƶ۴��ϲû�������
+      *        呼吸器リハ加算開始日
                05  CONS-KOKYUKI-K         PIC X(09)   VALUE "099800241".
-      *        ���Ѿɸ�����ϲû�������
+      *        廃用症候群リハ加算開始日
                05  CONS-HAIYO-K           PIC X(09)   VALUE "099800291".
       *
-      *        �����Ͻ�λ��
+      *        心大リハ終了日
                05  CONS-SINDAI-E          PIC X(09)   VALUE "099800112".
-      *        �Ƶ۴��Ͻ�λ��
+      *        呼吸器リハ終了日
                05  CONS-KOKYUKI-E         PIC X(09)   VALUE "099800142".
-      *        Ǿ��ɼ�������Ͻ�λ��
+      *        脳血管疾患等リハ終了日
                05  CONS-NOUKE-E           PIC X(09)   VALUE "099800122".
-      *        ��ư���Ͻ�λ��
+      *        運動器リハ終了日
                05  CONS-UNDOKI-E          PIC X(09)   VALUE "099800132".
-      *        ���´��ԥ�Ͻ�λ��
+      *        難病患者リハ終了日
                05  CONS-NANBYO-E          PIC X(09)   VALUE "099800162".
-      *        �㳲���ʼԡ˥�Ͻ�λ��
+      *        障害児（者）リハ終了日
                05  CONS-SYOGAI-E          PIC X(09)   VALUE "099800172".
-      *        �ݿ���ˡ��λ��
+      *        摂食療法終了日
                05  CONS-SESSYOKU-E        PIC X(09)   VALUE "099800152".
-      *        ���Ѿɸ�����ϳ�����
+      *        廃用症候群リハ開始日
                05  CONS-HAIYO-E           PIC X(09)   VALUE "099800192".
       *
            03  CONS-RIHA-SYSCD-R REDEFINES CONST-RIHA-SYSCD-VAL.
@@ -199,243 +199,243 @@
            03  CONS-RIHA-SYSCD-MAX     PIC 9(03)   VALUE  19.
       *
       *****
-      *    ��ϥӥ�굻��
+      *    リハビリ手技料
            03  CONS-RIHA-COMMENT-VAL.
-      *        �����ɼ�����ϥӥ�ơ���������ʣ���
+      *        心大血管疾患リハビリテーション料（１）
                05  CONS-SINDAI1-COMMENT   PIC X(09)   VALUE "180027410".
-      *        �����ɼ�����ϥӥ�ơ���������ʣ���
+      *        心大血管疾患リハビリテーション料（２）
                05  CONS-SINDAI2-COMMENT   PIC X(09)   VALUE "180027510".
-      *!       �����ɼ�����ϥӥ�ơ���������ʣ���
+      *!       心大血管疾患リハビリテーション料（１）
                05  CONS-SINDAI7-COMMENT   PIC X(09)   VALUE "101800080".
-      *!       �����ɼ�����ϥӥ�ơ���������ʣ���
+      *!       心大血管疾患リハビリテーション料（２）
                05  CONS-SINDAI8-COMMENT   PIC X(09)   VALUE "101800090".
-      *#       �����ɼ�����ϥӥ�ơ���������ʣ���
+      *#       心大血管疾患リハビリテーション料（１）
                05  CONS-SINDAI9-COMMENT   PIC X(09)   VALUE "101800230".
-      *#       �����ɼ�����ϥӥ�ơ���������ʣ���
+      *#       心大血管疾患リハビリテーション料（２）
                05  CONS-SINDAI10-COMMENT  PIC X(09)   VALUE "101800240".
-      *        �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *        呼吸器リハビリテーション料（１）
                05  CONS-KOKYUKI1-COMMENT  PIC X(09)   VALUE "180028010".
-      *        �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *        呼吸器リハビリテーション料（２）
                05  CONS-KOKYUKI2-COMMENT  PIC X(09)   VALUE "180028110".
-      *!       �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *!       呼吸器リハビリテーション料（１）
                05  CONS-KOKYUKI7-COMMENT  PIC X(09)   VALUE "101800150".
-      *!       �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *!       呼吸器リハビリテーション料（２）
                05  CONS-KOKYUKI8-COMMENT  PIC X(09)   VALUE "101800160".
-      *#       �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *#       呼吸器リハビリテーション料（１）
                05  CONS-KOKYUKI9-COMMENT  PIC X(09)   VALUE "101800340".
-      *#       �Ƶ۴��ϥӥ�ơ���������ʣ���
+      *#       呼吸器リハビリテーション料（２）
                05  CONS-KOKYUKI10-COMMENT PIC X(09)   VALUE "101800350".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *        脳血管疾患等リハビリテーション料（１）
                05  CONS-NOUKE1-COMMENT    PIC X(09)   VALUE "180027610".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *        脳血管疾患等リハビリテーション料（２）
                05  CONS-NOUKE2-COMMENT    PIC X(09)   VALUE "180027710".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *        脳血管疾患等リハビリテーション料（３）
                05  CONS-NOUKE7-COMMENT    PIC X(09)   VALUE "180030810".
-      *!       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *!       脳血管疾患等リハビリテーション料（１）
                05  CONS-NOUKE8-COMMENT    PIC X(09)   VALUE "101800100".
-      *!       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *!       脳血管疾患等リハビリテーション料（２）
                05  CONS-NOUKE9-COMMENT    PIC X(09)   VALUE "101800110".
-      *!       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *!       脳血管疾患等リハビリテーション料（３）
                05  CONS-NOUKE10-COMMENT   PIC X(09)   VALUE "101800120".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（１）（廃用症候群）
                05  CONS-NOUKE11-COMMENT   PIC X(09)   VALUE "180032410".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（２）（廃用症候群）
                05  CONS-NOUKE12-COMMENT   PIC X(09)   VALUE "180032510".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（３）（廃用症候群）
                05  CONS-NOUKE13-COMMENT   PIC X(09)   VALUE "180032610".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ����ʳ���
+      *        脳血管疾患等リハビリテーション料（１）（要介護・廃用症候群以外）
                05  CONS-NOUKE14-COMMENT   PIC X(09)   VALUE "180033910".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（１）（要介護・廃用症候群）
                05  CONS-NOUKE15-COMMENT   PIC X(09)   VALUE "180034010".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ����ʳ���
+      *        脳血管疾患等リハビリテーション料（２）（要介護・廃用症候群以外）
                05  CONS-NOUKE16-COMMENT   PIC X(09)   VALUE "180034110".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（２）（要介護・廃用症候群）
                05  CONS-NOUKE17-COMMENT   PIC X(09)   VALUE "180034210".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ����ʳ���
+      *        脳血管疾患等リハビリテーション料（３）（要介護・廃用症候群以外）
                05  CONS-NOUKE18-COMMENT   PIC X(09)   VALUE "180034310".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ����Ѿɸ�����
+      *        脳血管疾患等リハビリテーション料（３）（要介護・廃用症候群）
                05  CONS-NOUKE19-COMMENT   PIC X(09)   VALUE "180034410".
-      *#       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *#       脳血管疾患等リハビリテーション料（１）
                05  CONS-NOUKE20-COMMENT   PIC X(09)   VALUE "101800250".
-      *#       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *#       脳血管疾患等リハビリテーション料（２）
                05  CONS-NOUKE21-COMMENT   PIC X(09)   VALUE "101800260".
-      *#       Ǿ��ɼ�������ϥӥ�ơ���������ʣ���
+      *#       脳血管疾患等リハビリテーション料（３）
                05  CONS-NOUKE22-COMMENT   PIC X(09)   VALUE "101800270".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        脳血管疾患等リハビリテーション料（１）（要介護・入院）
                05  CONS-NOUKE23-COMMENT   PIC X(09)   VALUE "180044310".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        脳血管疾患等リハビリテーション料（２）（要介護・入院）
                05  CONS-NOUKE24-COMMENT   PIC X(09)   VALUE "180044410".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        脳血管疾患等リハビリテーション料（３）（要介護・入院）
                05  CONS-NOUKE25-COMMENT   PIC X(09)   VALUE "180044510".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɰʳ��˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料１（要介・廃用症以外）基準不適合
                05  CONS-NOUKE26-COMMENT   PIC X(09)   VALUE "180043430".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɡ˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料１（要介・廃用症）基準不適合
                05  CONS-NOUKE27-COMMENT   PIC X(09)   VALUE "180043530".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɰʳ��˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料２（要介・廃用症以外）基準不適合
                05  CONS-NOUKE28-COMMENT   PIC X(09)   VALUE "180043630".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɡ˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料２（要介・廃用症）基準不適合
                05  CONS-NOUKE29-COMMENT   PIC X(09)   VALUE "180043730".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɰʳ��˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料３（要介・廃用症以外）基準不適合
                05  CONS-NOUKE30-COMMENT   PIC X(09)   VALUE "180043830".
-      *        Ǿ��ɼ�������ϥӥ�ơ�������������ײ����Ѿɡ˴����Ŭ��
+      *        脳血管疾患等リハビリテーション料３（要介・廃用症）基準不適合
                05  CONS-NOUKE31-COMMENT   PIC X(09)   VALUE "180043930".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（１）（リ減）
                05  CONS-NOUKE32-COMMENT   PIC X(09)   VALUE "180050330".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（２）（リ減）
                05  CONS-NOUKE33-COMMENT   PIC X(09)   VALUE "180050430".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（３）（リ減）
                05  CONS-NOUKE34-COMMENT   PIC X(09)   VALUE "180050530".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（１）（要介護・入院）（リ減）
                05  CONS-NOUKE35-COMMENT   PIC X(09)   VALUE "180050630".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（１）（要介護・入院外）（リ減）
                05  CONS-NOUKE36-COMMENT   PIC X(09)   VALUE "180050730".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（２）（要介護・入院）（リ減）
                05  CONS-NOUKE37-COMMENT   PIC X(09)   VALUE "180050830".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（２）（要介護・入院外）（リ減）
                05  CONS-NOUKE38-COMMENT   PIC X(09)   VALUE "180050930".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（３）（要介護・入院）（リ減）
                05  CONS-NOUKE39-COMMENT   PIC X(09)   VALUE "180051030".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        脳血管疾患等リハビリテーション料（３）（要介護・入院外）（リ減）
                05  CONS-NOUKE40-COMMENT   PIC X(09)   VALUE "180051130".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        脳血管疾患等リハビリテーション料（１）（要介護）基準不適合・リ減
                05  CONS-NOUKE41-COMMENT   PIC X(09)   VALUE "180051230".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        脳血管疾患等リハビリテーション料（２）（要介護）基準不適合・リ減
                05  CONS-NOUKE42-COMMENT   PIC X(09)   VALUE "180051330".
-      *        Ǿ��ɼ�������ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        脳血管疾患等リハビリテーション料（３）（要介護）基準不適合・リ減
                05  CONS-NOUKE43-COMMENT   PIC X(09)   VALUE "180051430".
-      *        ��ư���ϥӥ�ơ���������ʣ���
+      *        運動器リハビリテーション料（１）
                05  CONS-UNDOKI1-COMMENT   PIC X(09)   VALUE "180027810".
-      *        ��ư���ϥӥ�ơ���������ʣ���
+      *        運動器リハビリテーション料（２）
                05  CONS-UNDOKI2-COMMENT   PIC X(09)   VALUE "180027910".
-      *!       ��ư���ϥӥ�ơ���������ʣ���
+      *!       運動器リハビリテーション料（１）
                05  CONS-UNDOKI7-COMMENT   PIC X(09)   VALUE "101800130".
-      *!       ��ư���ϥӥ�ơ���������ʣ���
+      *!       運動器リハビリテーション料（２）
                05  CONS-UNDOKI8-COMMENT   PIC X(09)   VALUE "101800140".
-      *        ��ư���ϥӥ�ơ���������ʣ���
+      *        運動器リハビリテーション料（１）
                05  CONS-UNDOKI9-COMMENT   PIC X(09)   VALUE "180032710".
-      *!       ��ư���ϥӥ�ơ���������ʣ���
+      *!       運動器リハビリテーション料（１）
                05  CONS-UNDOKI10-COMMENT  PIC X(09)   VALUE "101800125".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ���
+      *        運動器リハビリテーション料（１）（要介護）
                05  CONS-UNDOKI11-COMMENT  PIC X(09)   VALUE "180034510".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ���
+      *        運動器リハビリテーション料（２）（要介護）
                05  CONS-UNDOKI12-COMMENT  PIC X(09)   VALUE "180034610".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ���
+      *        運動器リハビリテーション料（３）（要介護）
                05  CONS-UNDOKI13-COMMENT  PIC X(09)   VALUE "180034710".
-      *#       ��ư���ϥӥ�ơ���������ʣ���
+      *#       運動器リハビリテーション料（１）
                05  CONS-UNDOKI14-COMMENT  PIC X(09)   VALUE "101800280".
-      *#       ��ư���ϥӥ�ơ���������ʣ���
+      *#       運動器リハビリテーション料（２）
                05  CONS-UNDOKI15-COMMENT  PIC X(09)   VALUE "101800290".
-      *#       ��ư���ϥӥ�ơ���������ʣ���
+      *#       運動器リハビリテーション料（３）
                05  CONS-UNDOKI16-COMMENT  PIC X(09)   VALUE "101800330".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        運動器リハビリテーション料（１）（要介護・入院）
                05  CONS-UNDOKI17-COMMENT  PIC X(09)   VALUE "180045810".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        運動器リハビリテーション料（２）（要介護・入院）
                05  CONS-UNDOKI18-COMMENT  PIC X(09)   VALUE "180045910".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        運動器リハビリテーション料（３）（要介護・入院）
                05  CONS-UNDOKI19-COMMENT  PIC X(09)   VALUE "180046010".
-      *#       ��ư���ϥӥ�ơ���������ʣ��ˡʣ������ܡ�
+      *#       運動器リハビリテーション料（１）（１．５倍）
                05  CONS-UNDOKI20-COMMENT  PIC X(09)   VALUE "101801070".
-      *#       ��ư���ϥӥ�ơ���������ʣ��ˡʣ������ܡ�
+      *#       運動器リハビリテーション料（３）（１．５倍）
                05  CONS-UNDOKI21-COMMENT  PIC X(09)   VALUE "101801080".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��ˡʻ��ߴ����Ŭ���
+      *        運動器リハビリテーション料（１）（要介護）（施設基準不適合）
                05  CONS-UNDOKI22-COMMENT  PIC X(09)   VALUE "180044030".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��ˡʻ��ߴ����Ŭ���
+      *        運動器リハビリテーション料（２）（要介護）（施設基準不適合）
                05  CONS-UNDOKI23-COMMENT  PIC X(09)   VALUE "180044130".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��ˡʻ��ߴ����Ŭ���
+      *        運動器リハビリテーション料（３）（要介護）（施設基準不適合）
                05  CONS-UNDOKI24-COMMENT  PIC X(09)   VALUE "180044230".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        運動器リハビリテーション料（１）（リ減）
                05  CONS-UNDOKI25-COMMENT  PIC X(09)   VALUE "180052730".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        運動器リハビリテーション料（２）（リ減）
                05  CONS-UNDOKI26-COMMENT  PIC X(09)   VALUE "180052830".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        運動器リハビリテーション料（３）（リ減）
                05  CONS-UNDOKI27-COMMENT  PIC X(09)   VALUE "180052930".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        運動器リハビリテーション料（１）（要介護・入院）（リ減）
                05  CONS-UNDOKI28-COMMENT  PIC X(09)   VALUE "180053030".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        運動器リハビリテーション料（１）（要介護・入院外）（リ減）
                05  CONS-UNDOKI29-COMMENT  PIC X(09)   VALUE "180053130".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        運動器リハビリテーション料（２）（要介護・入院）（リ減）
                05  CONS-UNDOKI30-COMMENT  PIC X(09)   VALUE "180053230".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        運動器リハビリテーション料（２）（要介護・入院外）（リ減）
                05  CONS-UNDOKI31-COMMENT  PIC X(09)   VALUE "180053330".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        運動器リハビリテーション料（３）（要介護・入院）（リ減）
                05  CONS-UNDOKI32-COMMENT  PIC X(09)   VALUE "180053430".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        運動器リハビリテーション料（３）（要介護・入院外）（リ減）
                05  CONS-UNDOKI33-COMMENT  PIC X(09)   VALUE "180053530".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        運動器リハビリテーション料（１）（要介護）基準不適合・リ減
                05  CONS-UNDOKI34-COMMENT  PIC X(09)   VALUE "180053630".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        運動器リハビリテーション料（２）（要介護）基準不適合・リ減
                05  CONS-UNDOKI35-COMMENT  PIC X(09)   VALUE "180053730".
-      *        ��ư���ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        運動器リハビリテーション料（３）（要介護）基準不適合・リ減
                05  CONS-UNDOKI36-COMMENT  PIC X(09)   VALUE "180053830".
-      *        ���´��ԥ�ϥӥ�ơ��������
+      *        難病患者リハビリテーション料
                05  CONS-NANBYO-COMMENT    PIC X(09)   VALUE "180017910".
-      *        �㳲���ʼԡ˥�ϥӥ�ơ���������ʣ���̤����
+      *        障害児（者）リハビリテーション料（６歳未満）
                05  CONS-SYOGAI1-COMMENT   PIC X(09)   VALUE "180028210".
-      *        �㳲���ʼԡ˥�ϥӥ�ơ���������ʣ��аʾ壱����̤����
+      *        障害児（者）リハビリテーション料（６歳以上１８歳未満）
                05  CONS-SYOGAI2-COMMENT   PIC X(09)   VALUE "180028310".
-      *        �㳲���ʼԡ˥�ϥӥ�ơ���������ʣ����аʾ��
+      *        障害児（者）リハビリテーション料（１８歳以上）
                05  CONS-SYOGAI3-COMMENT   PIC X(09)   VALUE "180028410".
-      *        �ݿ���ǽ��ˡ
+      *        摂食機能療法
                05  CONS-SESYOKU-COMMENT   PIC X(09)   VALUE "180016610".
-      *        �ݿ���ǽ��ˡ�ʣ���ʬ̤����
+      *        摂食機能療法（３０分未満）
                05  CONS-SESYOKU2-COMMENT  PIC X(09)   VALUE "180054310".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *        廃用症候群リハビリテーション料（１）（１単位）
                05  CONS-HAIYO1-COMMENT    PIC X(09)   VALUE "180044610".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *        廃用症候群リハビリテーション料（２）（１単位）
                05  CONS-HAIYO2-COMMENT    PIC X(09)   VALUE "180044710".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *        廃用症候群リハビリテーション料（３）（１単位）
                05  CONS-HAIYO3-COMMENT    PIC X(09)   VALUE "180044810".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        廃用症候群リハビリテーション料（１）（要介護・入院）
                05  CONS-HAIYO4-COMMENT    PIC X(09)   VALUE "180044910".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ���������
+      *        廃用症候群リハビリテーション料（１）（要介護・入院外）
                05  CONS-HAIYO5-COMMENT    PIC X(09)   VALUE "180045010".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        廃用症候群リハビリテーション料（２）（要介護・入院）
                05  CONS-HAIYO6-COMMENT    PIC X(09)   VALUE "180045110".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ���������
+      *        廃用症候群リハビリテーション料（２）（要介護・入院外）
                05  CONS-HAIYO7-COMMENT    PIC X(09)   VALUE "180045210".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ�������
+      *        廃用症候群リハビリテーション料（３）（要介護・入院）
                05  CONS-HAIYO8-COMMENT    PIC X(09)   VALUE "180045310".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ���������
+      *        廃用症候群リハビリテーション料（３）（要介護・入院外）
                05  CONS-HAIYO9-COMMENT    PIC X(09)   VALUE "180045410".
-      *        ���Ѿɸ�����ϥӥ�ơ�������������ײ��˴����Ŭ��
+      *        廃用症候群リハビリテーション料１（要介護）基準不適合
                05  CONS-HAIYO10-COMMENT   PIC X(09)   VALUE "180045530".
-      *        ���Ѿɸ�����ϥӥ�ơ�������������ײ��˴����Ŭ��
+      *        廃用症候群リハビリテーション料２（要介護）基準不適合
                05  CONS-HAIYO11-COMMENT   PIC X(09)   VALUE "180045630".
-      *        ���Ѿɸ�����ϥӥ�ơ�������������ײ��˴����Ŭ��
+      *        廃用症候群リハビリテーション料３（要介護）基準不適合
                05  CONS-HAIYO12-COMMENT   PIC X(09)   VALUE "180045730".
-      *#       ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *#       廃用症候群リハビリテーション料（１）（１単位）
                05  CONS-HAIYO13-COMMENT   PIC X(09)   VALUE "101801110".
-      *#       ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *#       廃用症候群リハビリテーション料（２）（１単位）
                05  CONS-HAIYO14-COMMENT   PIC X(09)   VALUE "101801120".
-      *#       ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʣ�ñ�̡�
+      *#       廃用症候群リハビリテーション料（３）（１単位）
                05  CONS-HAIYO15-COMMENT   PIC X(09)   VALUE "101801130".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        廃用症候群リハビリテーション料（１）（リ減）
                05  CONS-HAIYO16-COMMENT   PIC X(09)   VALUE "180051530".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        廃用症候群リハビリテーション料（２）（リ減）
                05  CONS-HAIYO17-COMMENT   PIC X(09)   VALUE "180051630".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡʥ긺��
+      *        廃用症候群リハビリテーション料（３）（リ減）
                05  CONS-HAIYO18-COMMENT   PIC X(09)   VALUE "180051730".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（１）（要介護・入院）（リ減）
                05  CONS-HAIYO19-COMMENT   PIC X(09)   VALUE "180051830".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（１）（要介護・入院外）（リ減）
                05  CONS-HAIYO20-COMMENT   PIC X(09)   VALUE "180051930".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（２）（要介護・入院）（リ減）
                05  CONS-HAIYO21-COMMENT   PIC X(09)   VALUE "180052030".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（２）（要介護・入院外）（リ減）
                05  CONS-HAIYO22-COMMENT   PIC X(09)   VALUE "180052130".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（３）（要介護・入院）（リ減）
                05  CONS-HAIYO23-COMMENT   PIC X(09)   VALUE "180052230".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��������ˡʥ긺��
+      *        廃用症候群リハビリテーション料（３）（要介護・入院外）（リ減）
                05  CONS-HAIYO24-COMMENT   PIC X(09)   VALUE "180052330".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        廃用症候群リハビリテーション料（１）（要介護）基準不適合・リ減
                05  CONS-HAIYO25-COMMENT   PIC X(09)   VALUE "180052430".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        廃用症候群リハビリテーション料（２）（要介護）基準不適合・リ減
                05  CONS-HAIYO26-COMMENT   PIC X(09)   VALUE "180052530".
-      *        ���Ѿɸ�����ϥӥ�ơ���������ʣ��ˡ��ײ��˴����Ŭ�硦�긺
+      *        廃用症候群リハビリテーション料（３）（要介護）基準不適合・リ減
                05  CONS-HAIYO27-COMMENT   PIC X(09)   VALUE "180052630".
-      *        ����û��ʥ�ϥӥ�ơ����������
+      *        初期加算（リハビリテーション料）
                05  CONS-RIHAKSN1-COMMENT  PIC X(09)   VALUE "180033870".
-      *        �����ϥӥ�ơ������û�
+      *        早期リハビリテーション加算
                05  CONS-RIHAKSN2-COMMENT  PIC X(09)   VALUE "180030770".
       *
            03  CONS-RIHA-COMMENT-R REDEFINES CONS-RIHA-COMMENT-VAL.
@@ -443,54 +443,54 @@
            03  CONS-RIHA-COMMENT-MAX      PIC 9(03)   VALUE  118.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ΰ�
+      *    共通領域
            COPY    "MCPAREA".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ���������ղ�
+      *    算定履歴付加
        01  SANTEIPLUS-REC.
            COPY    "CPSANTEIPLUS.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ����
+      *    点数
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -503,7 +503,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -516,7 +516,7 @@
            INITIALIZE                  WRK-FREE-AREA
            INITIALIZE                  WRK-RIHASANTEI-AREA
       *
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
            PERFORM     100-PRM-CHK-SEC
            IF    LNK-RIHASTDAY-RC  =  ZERO
             AND  LNK-RIHASTDAY-HOSPNUM NOT =   ZERO
@@ -530,11 +530,11 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ���ŵ����ֹ�����å�(=ZERO�λ��ϰ����ֵ�)
+      *    医療機関番号チェック(=ZEROの時は一覧返却)
            IF      LNK-RIHASTDAY-HOSPNUM   =  ZERO
       *
                PERFORM VARYING IDX1    FROM   1 BY 1
@@ -556,20 +556,20 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ���ԣɣĥ����å�
+      *    患者ＩＤチェック
            IF      LNK-RIHASTDAY-PTID      =  ZERO
                MOVE    1                 TO  LNK-RIHASTDAY-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ����ǯ������å�
+      *    診療年月チェック
            IF      LNK-RIHASTDAY-SRYYM     =  SPACE
            OR      LNK-RIHASTDAY-SRYYM     < "200804"
                MOVE    2                 TO  LNK-RIHASTDAY-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻�����å�
+      *    保険組合せチェック
            IF      LNK-RIHASTDAY-HKNCOMBI  =  ZERO
                MOVE    3                 TO  LNK-RIHASTDAY-RC
                GO  TO  100-PRM-CHK-EXT
@@ -608,14 +608,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    ��ϥӥ껻�����μ���
+      *    リハビリ算定情報の取得
            PERFORM     210-RIHASANTEI-HENSYU-SEC
       *
-      *    ��ϥӥ곫�����μ������������Խ�
+      *    リハビリ開始日の取得・コメント編集
            PERFORM     220-RIHAKAISHI-HENSYU-SEC
       *
            .
@@ -623,7 +623,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ껻�����μ���
+      *    リハビリ算定情報の取得
       *****************************************************************
        210-RIHASANTEI-HENSYU-SEC          SECTION.
       *
@@ -691,7 +691,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ껻�����μ���
+      *    リハビリ算定情報の取得
       *****************************************************************
        2101-RIHASANTEI-HANTEI-SEC          SECTION.
       *
@@ -727,7 +727,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ껻�����μ���
+      *    リハビリ算定情報の取得
       *****************************************************************
        21011-RIHASANTEI-HANTEI2-SEC          SECTION.
       *
@@ -1102,7 +1102,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ���ť������Խ�
+      *    リハビリ診療コード編集
       *****************************************************************
        210111-RIHA-SRYCD-HENSYU-SEC          SECTION.
       *
@@ -1125,11 +1125,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫�����μ������������Խ�
+      *    リハビリ開始日の取得・コメント編集
       *****************************************************************
        220-RIHAKAISHI-HENSYU-SEC          SECTION.
       *
-      *    �����ɼ���
+      *    心大血管疾患
            IF   WRK-RIHASANTEI-FLG(1)  =  1
              MOVE      1               TO   IDY
              MOVE      ZERO            TO   FLG-COMOKIKAE
@@ -1150,7 +1150,7 @@
              END-IF
            END-IF
       *
-      *    �����ɼ���������������ϲû�
+      *    心大血管疾患の早期・初期リハ加算
            IF   WRK-RIHASANTEI-FLG(2)  =  1
              MOVE      2               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1171,7 +1171,7 @@
              END-IF
            END-IF
       *
-      *    Ǿ��ɼ�����
+      *    脳血管疾患等
            IF   WRK-RIHASANTEI-FLG(3)  =  1
              MOVE      3               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1192,7 +1192,7 @@
              END-IF
            END-IF
       *
-      *    ���Ѿɸ���
+      *    廃用症候群
            IF   WRK-RIHASANTEI-FLG(4)  =  1
              MOVE      4               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1213,7 +1213,7 @@
              END-IF
            END-IF
       *
-      *    ���Ѿɸ���������������ϲû�
+      *    廃用症候群の早期・初期リハ加算
            IF   WRK-RIHASANTEI-FLG(5)  =  1
              MOVE      5               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1234,7 +1234,7 @@
              END-IF
            END-IF
       *
-      *    ��ư��
+      *    運動器
            IF   WRK-RIHASANTEI-FLG(6)  =  1
              MOVE      6               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1255,7 +1255,7 @@
              END-IF
            END-IF
       *
-      *    �Ƶ۴�
+      *    呼吸器
            IF   WRK-RIHASANTEI-FLG(7)  =  1
              MOVE      7               TO   IDY
              MOVE      ZERO            TO   FLG-COMOKIKAE
@@ -1276,7 +1276,7 @@
              END-IF
            END-IF
       *
-      *    �Ƶ۴������������ϲû�
+      *    呼吸器の早期・初期リハ加算
            IF   WRK-RIHASANTEI-FLG(8)  =  1
              MOVE      8               TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1297,7 +1297,7 @@
              END-IF
            END-IF
       *
-      *    �ݿ�
+      *    摂食
            IF   WRK-RIHASANTEI-FLG(9)  =  1
              MOVE      9               TO   IDY
              MOVE      ZERO            TO   FLG-COMOKIKAE
@@ -1318,7 +1318,7 @@
              END-IF
            END-IF
       *
-      *    ���´���
+      *    難病患者
            IF   WRK-RIHASANTEI-FLG(10)  =  1
              MOVE      10              TO   IDY
              MOVE      1               TO   FLG-COMOKIKAE
@@ -1339,7 +1339,7 @@
              END-IF
            END-IF
       *
-      *    �㳲���ʼԡ�
+      *    障害児（者）
            IF   WRK-RIHASANTEI-FLG(11)  =  1
              MOVE      11              TO   IDY
              MOVE      ZERO            TO   FLG-COMOKIKAE
@@ -1365,7 +1365,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫��������
+      *    リハビリ開始日取得
       *****************************************************************
        2201-RIHAKAISHI-HANTEI-SEC          SECTION.
       *
@@ -1373,9 +1373,9 @@
            MOVE     SPACE    TO     WRK-RIHASANTEI-END
            INITIALIZE               TBL-RIHASANTEI-DAY-END
       *
-      *    ��Ͻ�λ��
+      *    リハ終了日
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                           SANTEI-REC
            MOVE    LNK-RIHASTDAY-HOSPNUM    TO  SANTEI-HOSPNUM
            MOVE    LNK-RIHASTDAY-PTID       TO  SANTEI-PTID
@@ -1432,9 +1432,9 @@
            MOVE     SPACE    TO     WRK-RIHASANTEI-YMD2
            MOVE     ZERO     TO     WRK-RIHASANTEI41-FLG
       *
-      *    ��ϳ�����
+      *    リハ開始日
       *
-      *    �������Ƭ�Υ�ϥӥ껻����
+      *    当月の先頭のリハビリ算定日
            MOVE     ZERO           TO    RIHA-ST2
            PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
                      UNTIL   RIHA-IDX    >   31
@@ -1444,7 +1444,7 @@
               END-IF
            END-PERFORM
       *
-      *    �������򸡺�
+      *    算定履歴検索
            INITIALIZE                           SANTEI-REC
            MOVE    LNK-RIHASTDAY-HOSPNUM    TO  SANTEI-HOSPNUM
            MOVE    LNK-RIHASTDAY-PTID       TO  SANTEI-PTID
@@ -1528,7 +1528,7 @@
       *
       *****
       *
-      *    �������Ƭ�Υ�ϥӥ곫����
+      *    当月の先頭のリハビリ開始日
            MOVE     99             TO    RIHA-ST
            PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
                      UNTIL   RIHA-IDX    >   31
@@ -1538,8 +1538,8 @@
               END-IF
            END-PERFORM
       *
-      *    ������Ƭ�Υ�ϥӥ곫���������������Υ�ϥӥ껻�������ʤ����
-      *    ���������ľ��Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月先頭のリハビリ開始日より前に当月のリハビリ算定日がなければ
+      *    前月以前の直近のリハビリ開始日をクリアする
            MOVE     ZERO           TO    FLG-OK
            IF  WRK-RIHASANTEI-YMD  NOT = SPACE
              PERFORM  VARYING  RIHA-IDX  FROM  1  BY  1
@@ -1554,8 +1554,8 @@
              END-IF
            END-IF
       *
-      *    ������Ƭ�Υ�ϥӥ껻���������������Υ�ϥӥ꽪λ���������
-      *    ���������ľ��Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月先頭のリハビリ算定日より前に当月のリハビリ終了日があれば
+      *    前月以前の直近のリハビリ開始日をクリアする
            IF  WRK-RIHASANTEI-YMD  NOT = SPACE
            AND RIHA-ST2            NOT = ZERO
              PERFORM  VARYING  RIHA-IDX  FROM   1  BY   1
@@ -1567,8 +1567,8 @@
              END-PERFORM
            END-IF
       *
-      *    ����Υ�ϥӥ곫�������������Υ�ϥӥ껻�������ʤ����
-      *    ����Υ�ϥӥ곫�����򥯥ꥢ����
+      *    当月のリハビリ開始日より後に当月のリハビリ算定日がなければ
+      *    当月のリハビリ開始日をクリアする
            PERFORM  VARYING  RIHA-IDX  FROM  31  BY  -1
                      UNTIL   RIHA-IDX    <    1
               IF    TB-RIHASANTEI-DAY(RIHA-IDX)  NOT = ZERO
@@ -1594,8 +1594,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥꡦ���������ղ�Ƚ��
-      *    �ʥ�ϳ������ν�λ���ȿ��ŷ������å��ˡ������ֹ�ᣰ�Υǡ�����
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
        22011-RIHA-SANTEIPLUS-SEC          SECTION.
       *
@@ -1638,8 +1638,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥꡦ���������ղ�Ƚ��
-      *    �ʥ�ϳ������ν�λ���ȿ��ŷ������å��ˡ������ֹ�ᣰ�Υǡ�����
+      *    リハビリ・算定履歴付加判定
+      *    （リハ開始日の終了日と診療月をチェック）（履歴番号＝０のデータ）
       *****************************************************************
        22011-RIHA-SANTEIPLUS2-SEC          SECTION.
       *
@@ -1678,7 +1678,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫�����������Խ�
+      *    リハビリ開始日コメント編集
       *****************************************************************
        2202-RIHAKAISHI-COMMENT-SEC          SECTION.
       *
@@ -1704,7 +1704,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫������Ʊ��ޤΥ����ȼ���
+      *    リハビリ開始日と同一剤のコメント取得
       *****************************************************************
        22021-RIHAKAISHI-COMGET-SEC          SECTION.
       *
@@ -1946,8 +1946,8 @@
                 MOVE    "key2"               TO  MCP-PATHNAME
                 PERFORM  900-SANTEIPLUS-READ-SEC
                 PERFORM  UNTIL  FLG-SANTEIPLUS =  1
-      *           ��ϥ����Ȥν�λ���ȿ��ŷ������å�
-      *           �������ֹ�䣰�Υǡ�����
+      *           リハコメントの終了日と診療月をチェック
+      *           （履歴番号＞０のデータ）
                   IF      SANTEIPLUS-RENNUM   NOT =  ZERO
                     IF  ( SANTEIPLUS-ENDYMD       =  SPACE        )
                     OR  ((SANTEIPLUS-ENDYMD   NOT =  SPACE       ) AND
@@ -1969,7 +1969,7 @@
                      END-IF
                      IF   FLG-COMOKIKAE  =    1
                      AND  FLG-COMARI2    =   ZERO
-                      IF   SANTEIPLUS-COMMENT(1:8)  = "��ѡ���"
+                      IF   SANTEIPLUS-COMMENT(1:8)  = "手術　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    1    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-SRYCD(IDZ)
@@ -1978,7 +1978,7 @@
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
-                      IF   SANTEIPLUS-COMMENT(1:12) = "������������"
+                      IF   SANTEIPLUS-COMMENT(1:12) = "急性増悪　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    2    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-SRYCD(IDZ)
@@ -1987,7 +1987,7 @@
                            COMPUTE  IDZ  =  IDZ - 1
                         END-IF
                       END-IF
-                      IF   SANTEIPLUS-COMMENT(1:8)  = "���ǡ���"
+                      IF   SANTEIPLUS-COMMENT(1:8)  = "診断　日"
                         IF   FLG-COMOKIKAE2 = ZERO
                            MOVE    3    TO  FLG-COMOKIKAE2
                            MOVE  SPACE  TO  WK-FREE-SRYCD(IDZ)
@@ -2014,8 +2014,8 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ϥӥ곫�����ڤӥ�ϥӥ곫������Ʊ��ޤΥ����Ȥ��ֵ�
-      *    ���ꥢ���Խ�
+      *    リハビリ開始日及びリハビリ開始日と同一剤のコメントを返却
+      *    エリアに編集
       *****************************************************************
        22022-RIHAKAISHI-COMHEN-SEC          SECTION.
       *
@@ -2026,7 +2026,7 @@
              EVALUATE    IDY
                WHEN       1
                  MOVE    23   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "�����ɼ�����ϡ����ų��ϡ�����ǯ���������"
+                 MOVE  "心大血管疾患リハ：治療開始　　　年　　月　　日"
                               TO  LNK-RIHASTDAY-COM(IDY IDX)
                  MOVE    29   TO  IDC1
                  MOVE    35   TO  IDC2
@@ -2037,7 +2037,7 @@
                    WHEN       0
                    WHEN       3
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû���ȯ�ɡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2045,7 +2045,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû�����ѡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2054,7 +2054,7 @@
                    WHEN       2
                      MOVE    24   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
                      MOVE
-                      "����������ϲû�����������������ǯ���������"
+                      "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    31   TO  IDC1
                      MOVE    37   TO  IDC2
@@ -2065,7 +2065,7 @@
                  EVALUATE   FLG-COMOKIKAE2
                    WHEN       0
                      MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "Ǿ��ɼ�������ϡ�ȯ�ɡ�����ǯ���������"
+                     MOVE  "脳血管疾患等リハ：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    25   TO  IDC1
                      MOVE    31   TO  IDC2
@@ -2073,7 +2073,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "Ǿ��ɼ�������ϡ���ѡ�����ǯ���������"
+                     MOVE  "脳血管疾患等リハ：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    25   TO  IDC1
                      MOVE    31   TO  IDC2
@@ -2081,7 +2081,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       2
                      MOVE    23   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "Ǿ��ɼ�������ϡ���������������ǯ���������"
+                 MOVE  "脳血管疾患等リハ：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    29   TO  IDC1
                      MOVE    35   TO  IDC2
@@ -2089,7 +2089,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       3
                      MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "Ǿ��ɼ�������ϡ����ǡ�����ǯ���������"
+                     MOVE  "脳血管疾患等リハ：診断　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    25   TO  IDC1
                      MOVE    31   TO  IDC2
@@ -2102,7 +2102,7 @@
                    WHEN       1
                    WHEN       3
                      MOVE    20   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "���Ѿɸ�����ϡ����ǡ�����ǯ���������"
+                     MOVE  "廃用症候群リハ：診断　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    23   TO  IDC1
                      MOVE    29   TO  IDC2
@@ -2110,7 +2110,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       2
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "���Ѿɸ�����ϡ���������������ǯ���������"
+                 MOVE  "廃用症候群リハ：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2122,7 +2122,7 @@
                    WHEN       0
                    WHEN       3
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû���ȯ�ɡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2130,7 +2130,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû�����ѡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2139,7 +2139,7 @@
                    WHEN       2
                      MOVE    24   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
                      MOVE
-                      "����������ϲû�����������������ǯ���������"
+                      "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    31   TO  IDC1
                      MOVE    37   TO  IDC2
@@ -2150,7 +2150,7 @@
                  EVALUATE   FLG-COMOKIKAE2
                    WHEN       0
                      MOVE    18   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "��ư���ϡ�ȯ�ɡ�����ǯ���������"
+                     MOVE  "運動器リハ：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    19   TO  IDC1
                      MOVE    25   TO  IDC2
@@ -2158,7 +2158,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    18   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "��ư���ϡ���ѡ�����ǯ���������"
+                     MOVE  "運動器リハ：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    19   TO  IDC1
                      MOVE    25   TO  IDC2
@@ -2166,7 +2166,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       2
                      MOVE    20   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "��ư���ϡ���������������ǯ���������"
+                     MOVE  "運動器リハ：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    23   TO  IDC1
                      MOVE    29   TO  IDC2
@@ -2174,7 +2174,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       3
                      MOVE    18   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "��ư���ϡ����ǡ�����ǯ���������"
+                     MOVE  "運動器リハ：診断　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    19   TO  IDC1
                      MOVE    25   TO  IDC2
@@ -2183,7 +2183,7 @@
                  END-EVALUATE
                WHEN       7
                  MOVE    20   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "�Ƶ۴��ϡ����ų��ϡ�����ǯ���������"
+                 MOVE  "呼吸器リハ：治療開始　　　年　　月　　日"
                               TO  LNK-RIHASTDAY-COM(IDY IDX)
                  MOVE    23   TO  IDC1
                  MOVE    29   TO  IDC2
@@ -2194,7 +2194,7 @@
                    WHEN       0
                    WHEN       3
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû���ȯ�ɡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2202,7 +2202,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    22   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE "����������ϲû�����ѡ�����ǯ���������"
+                     MOVE "早期・初期リハ加算：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    27   TO  IDC1
                      MOVE    33   TO  IDC2
@@ -2211,7 +2211,7 @@
                    WHEN       2
                      MOVE    24   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
                      MOVE
-                      "����������ϲû�����������������ǯ���������"
+                      "早期・初期リハ加算：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    31   TO  IDC1
                      MOVE    37   TO  IDC2
@@ -2220,7 +2220,7 @@
                  END-EVALUATE
                WHEN       9
                  MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "�ݿ���ǽ��ˡ�����ų��ϡ�����ǯ���������"
+                 MOVE  "摂食機能療法：治療開始　　　年　　月　　日"
                               TO  LNK-RIHASTDAY-COM(IDY IDX)
                  MOVE    25   TO  IDC1
                  MOVE    31   TO  IDC2
@@ -2231,7 +2231,7 @@
                    WHEN       0
                    WHEN       3
                      MOVE    19   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "���´��ԥ�ϡ�ȯ�ɡ�����ǯ���������"
+                     MOVE  "難病患者リハ：発症　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    21   TO  IDC1
                      MOVE    27   TO  IDC2
@@ -2239,7 +2239,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       1
                      MOVE    19   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "���´��ԥ�ϡ���ѡ�����ǯ���������"
+                     MOVE  "難病患者リハ：手術　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    21   TO  IDC1
                      MOVE    27   TO  IDC2
@@ -2247,7 +2247,7 @@
                      PERFORM 220221-RIHA-COM-DATE-SEC
                    WHEN       2
                      MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                     MOVE  "���´��ԥ�ϡ���������������ǯ���������"
+                     MOVE  "難病患者リハ：急性増悪　　　年　　月　　日"
                                   TO  LNK-RIHASTDAY-COM(IDY IDX)
                      MOVE    25   TO  IDC1
                      MOVE    31   TO  IDC2
@@ -2256,7 +2256,7 @@
                  END-EVALUATE
                WHEN       11
                  MOVE    21   TO  LNK-RIHASTDAY-YUKOKETA(IDY IDX)
-                 MOVE  "�㳲���ʼԡ˥�ϡ�ȯ�ɡ�����ǯ���������"
+                 MOVE  "障害児（者）リハ：発症　　　年　　月　　日"
                               TO  LNK-RIHASTDAY-COM(IDY IDX)
                  MOVE    25   TO  IDC1
                  MOVE    31   TO  IDC2
@@ -2265,7 +2265,7 @@
              END-EVALUATE
            END-IF
       *
-      *    ��ϥӥ곫������Ʊ��ޤΥ�����
+      *    リハビリ開始日と同一剤のコメント
            PERFORM  VARYING  IDZ  FROM  1  BY  1
                      UNTIL  (IDZ                >  49   )
                        OR   (WK-FREE-SRYCD(IDZ) =  SPACE)
@@ -2285,7 +2285,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Խ���ǯ������
+      *    コメント日付編集（年月日）
       *****************************************************************
        220221-RIHA-COM-DATE-SEC          SECTION.
       *
@@ -2332,7 +2332,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɤ߹���
+      *    保険組合せマスタ読み込み
       *****************************************************************
        900-HKNCOMBI-READ-SEC           SECTION.
       *
@@ -2350,7 +2350,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    算定履歴マスタ読み込み
       *****************************************************************
        900-SANTEI-READ-SEC             SECTION.
       *
@@ -2368,7 +2368,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ղåޥ����ɤ߹���
+      *    算定履歴付加マスタ読み込み
       *****************************************************************
        900-SANTEIPLUS-READ-SEC         SECTION.
       *
@@ -2386,7 +2386,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ����ɤ߹���
+      *    診療会計マスタ読み込み
       *****************************************************************
        900-SRYACCT-READ-SEC            SECTION.
       *
@@ -2404,7 +2404,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ����ɤ߹���
+      *    診療行為マスタ読み込み
       *****************************************************************
        900-SRYACT-READ-SEC             SECTION.
       *
@@ -2422,7 +2422,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ����ȥޥ����ɤ߹���
+      *    患者コメントマスタ読み込み
       *****************************************************************
        900-PTCOM-READ-SEC              SECTION.
       *
@@ -2460,7 +2460,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ơ��֥�θ���
+      *    点数テーブルの検索
       *****************************************************************
        900-TENSU-READ-SEC              SECTION.
       *
@@ -2499,7 +2499,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                 SECTION.
       *
@@ -2517,7 +2517,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                  SECTION.
       *
@@ -2529,7 +2529,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -2542,7 +2542,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-CLOSE-SEC                    SECTION.
       *

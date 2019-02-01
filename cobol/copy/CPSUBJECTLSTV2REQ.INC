@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɾɾ��ܵ���������� (xml2)
+      *    ＡＰＩ症状詳記情報取得　 (xml2)
       *                                   COPY (CPSUBJECTLSTV2REQ.INC)
       ******************************************************************
         01  XML-SUBJECTLSTREQ.
@@ -29,23 +29,23 @@
             03  SUBJETREQ-MODE              PIC S9(9)   BINARY.
             03  SUBJETREQ-RECORDNAME        PIC X(128).
             03  SUBJETREQ-MEDICALREQ.
-      *       �ꥯ�������ֹ�
+      *       リクエスト番号
               05  SUBJETREQ-REQUEST-NUMBER     PIC X(2).
-      *       �����ֹ�
+      *       患者番号
               05  SUBJETREQ-PATIENTID          PIC X(20).
-      *       ����ǯ��
+      *       診療年月
               05  SUBJETREQ-PERFORM-DATE       PIC X(07).
       *
-      *       ������ʬ
+      *       入外区分
               05  SUBJETREQ-OUTPATIENT-CLASS   PIC X(1).
-      *       ���Ų�
+      *       診療科
               05  SUBJETREQ-DEP-CODE           PIC X(02).
-      *       �ݸ��ȹ礻�ֹ�
+      *       保険組合せ番号
               05  SUBJETREQ-COMBINATION-NUMBER PIC X(04).
-      *       ������
+      *       診療日
               05  SUBJETREQ-PERFORM-DAY        PIC X(02).
-      *       �ɾ��ܵ���ʬ������
+      *       症状詳記区分コード
               05  SUBJETREQ-SUBJECTIVES-CODE   PIC X(02).
-      *       Ϣ��
+      *       連番
               05  SUBJETREQ-RENNUM             PIC X(02).
       *

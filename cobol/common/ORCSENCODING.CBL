@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSENCODING.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶ÈÌ³ÁªÂò
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥¨¥ó¥³¡¼¥É¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  09/12/14    NACL¡ÝÂ¿¡¹Ç¼   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ¥­å‹™é¸æŠž
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  09/12/14    NACLâˆ’å¤šã€…ç´   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.08.00     NACL-Â¿¡¹Ç¼  16/09/01  ¥·¥¹¥Æ¥à´ÉÍýÈ½ÄêÄÉ²Ã
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.08.00     NACL-å¤šã€…ç´  16/09/01  ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†åˆ¤å®šè¿½åŠ 
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -48,28 +48,28 @@
       *    03  IDX                   PIC 9(03).
       *    03  IDY                   PIC 9(03).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-ERRMSG          PIC X(500).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à¥«¥¿¥í¥°
+      *    ã‚·ã‚¹ãƒ†ãƒ ã‚«ã‚¿ãƒ­ã‚°
            COPY    "CPDBCTG.INC".
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       * 
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
            COPY    MCPAREA.
@@ -81,17 +81,17 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            INITIALIZE                     FLG-AREA
            INITIALIZE                     WRK-AREA
       *
-      *    ¥¨¥ó¥³¡¼¥É¼èÆÀ½èÍý
+      *    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
            PERFORM 100-DBCATLG-GET-SEC
       *H28.9
-      *    "UTF8"¤Î»þ¡¢¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    "UTF8"ã®æ™‚ã€ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            IF      SPA-ENCODING        =   2
                PERFORM 1001-SYSKANRI-9901-SEC
            END-IF
@@ -100,12 +100,12 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    DB¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¼èÆÀ½èÍý
+      *    DBã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å–å¾—å‡¦ç†
       *****************************************************************
        100-DBCATLG-GET-SEC        SECTION.
       *
            MOVE    ZERO                TO  SPA-ENCODING
-      *    ¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¼èÆÀ½èÍý
+      *    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å–å¾—å‡¦ç†
            INITIALIZE                      DBCATALOG-REC
            MOVE    DBCATALOG-REC       TO  MCPDATA-REC
            MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
@@ -117,7 +117,7 @@
                PERFORM 910-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-      *            DISPLAY "¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¾ðÊó  = " CPDBCTG-INFO-1
+      *            DISPLAY "ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°æƒ…å ±  = " CPDBCTG-INFO-1
       *
                    EVALUATE    CPDBCTG-INFO-1
                        WHEN    "EUC_JP"
@@ -150,7 +150,7 @@
                CALL    "coblog"    USING   WRK-ERRMSG
            END-IF
       *
-      *  ¥í¥±¡¼¥ë¼èÆÀ½èÍý
+      *  ãƒ­ã‚±ãƒ¼ãƒ«å–å¾—å‡¦ç†
            INITIALIZE                      DBCATALOG-REC
            MOVE    DBCATALOG-REC       TO  MCPDATA-REC
            MOVE    "tbl_dbcatalog"     TO  MCP-TABLE
@@ -162,7 +162,7 @@
                PERFORM 910-DBFETCH-SEC
                IF      MCP-RC              =   ZERO
                   MOVE    MCPDATA-REC         TO  DBCATALOG-REC
-      *           DISPLAY "¥í¥±¡¼¥ë¾ðÊó  = " CPDBCTG-INFO-1
+      *           DISPLAY "ãƒ­ã‚±ãƒ¼ãƒ«æƒ…å ±  = " CPDBCTG-INFO-1
       *        ELSE
       *           DISPLAY "ENCODING GET ERR = " MCP-RC
                END-IF
@@ -177,7 +177,7 @@
        100-DBCATLG-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        1001-SYSKANRI-9901-SEC         SECTION.
       *
@@ -212,7 +212,7 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSKANRI        =   ZERO
-      *        ³ÈÄ¥´Á»úÉÔ²Ä¡¡¡¡"EUC_JP" ¤È¤¹¤ë
+      *        æ‹¡å¼µæ¼¢å­—ä¸å¯ã€€ã€€"EUC_JP" ã¨ã™ã‚‹
                IF      SYS-KANRITBL(1:1)   =   "0"
                    MOVE    1               TO  SPA-ENCODING
                END-IF
@@ -223,7 +223,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -237,7 +237,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëFETCH½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«FETCHå‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -251,7 +251,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *

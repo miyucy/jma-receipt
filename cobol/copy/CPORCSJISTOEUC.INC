@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,22 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ʸ�����Ѵ�(sjis->euc)�ؿ��ѥ�᥿ COPY (CPORCSJISTOEUC.INC)
+      *    文字列変換(sjis->euc)関数パラメタ COPY (CPORCSJISTOEUC.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     
       ************************************************************
       *
        01  ORCSJISTOEUC.
-      *   �Ѵ�ʸ�����(�Х���)
+      *   変換文字列数(バイト)
            03 SJISTOEUC-INLEN           PIC S9(9) BINARY.
-      *   ���ϥХ��ȿ�
+      *   出力バイト数
            03 SJISTOEUC-OUTLEN          PIC S9(9) BINARY.
-      *   �֤���( 0: ���� 1: �ϰϳ�ʸ�� )
+      *   返り値( 0: 正常 1: 範囲外文字 )
            03 SJISTOEUC-RETURN          PIC S9(9) BINARY.
-      *   ����ʸ����
+      *   入力文字列
            03 SJISTOEUC-INDATA          PIC X(10000).
-      *   ����ʸ����
+      *   出力文字列
            03 SJISTOEUC-OUTDATA         PIC X(10000).

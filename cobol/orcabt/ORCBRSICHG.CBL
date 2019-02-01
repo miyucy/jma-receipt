@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBRSICHG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ģɼ
-      *  ����ݡ��ͥ��̾  : ϫ�ҥ쥻�ť������б���������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  13/03/28    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 随時帳票
+      *  コンポーネント名  : 労災レセ電コード対応一覧印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  13/03/28    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,14 +34,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -49,14 +49,14 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    Ģɼ
+      *    帳票
            COPY    "HCPOM2.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -69,7 +69,7 @@
            03  FLG-PRINT               PIC 9(01).
            03  FLG-SETCD               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(03).
            03  CNT-PAGE                PIC 9(05).
@@ -81,13 +81,13 @@
            03  CNT-PAGE2               PIC 9(05).
            03  CNT-PAGE3               PIC 9(05).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDX2                    PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
@@ -99,7 +99,7 @@
                05  SYS-TMM              PIC 9(02).
                05  SYS-TSS              PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -107,7 +107,7 @@
            03  WRK-PARA-HOSPNUM        PIC X(02).
            03  WRK-PARA-SYORIKBN       PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -134,11 +134,11 @@
            03  WRK-HEN-INPUTCD         PIC X(50).
            03  WRK-HEN-INPUTCD-N       PIC X(50).
       *
-      *    ����
+      *    内容
        01  WRK-HEN-AREA.
-      *    Ⱦ��
+      *    半角
            03  WRK-TBL-REC             PIC X(108)  OCCURS   300.
-      *    ����
+      *    全角
            03  WRK-TBL-REC2            PIC X(108)  OCCURS   300.
       *
            03  WRK-PAGE-MAX            PIC 9(03).
@@ -146,19 +146,19 @@
       *
        01  MAX-LINE                    PIC 9(02)  VALUE   69.
       *
-      *    ���ϣã���¸
+      *    入力ＣＤ保存
        01  TBL-INPUTCD-AREA.
            03  TBL-INPUTCD-SRYCD       PIC X(09).
            03  TBL-INPUTCD-TBL         OCCURS   5.
                05  TBL-INPUTCD         PIC X(20).
       *
-      *    ��������
-      *    ���Ф�
+      *    印刷内容
+      *    見出し
        01  HEAD-01.
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  H01-MIDASI              PIC X(68).
            03  FILLER                  PIC X(03)   VALUE   SPACE.
-           03  FILLER                  PIC X(08)   VALUE   "��������".
+           03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-YY                  PIC 9(04).
            03  FILLER                  PIC X(01)   VALUE   ".".
            03  H01-MM                  PIC Z9.
@@ -172,13 +172,13 @@
            03  FILLER                  PIC X(01)   VALUE   ")".
            03  FILLER                  PIC X(04)   VALUE   "  P-".
            03  H01-PCNT                PIC ZZ9.
-      *    ���ϣãİ���
+      *    入力ＣＤ一覧
        01  HEAD1-01.
-           03  FILLER                  PIC X(20)   VALUE  "���ϥ�����".
+           03  FILLER                  PIC X(20)   VALUE  "入力コード".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
-           03  FILLER                  PIC X(10)   VALUE  "ϫ�ҥ�����".
+           03  FILLER                  PIC X(10)   VALUE  "労災コード".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
-           03  FILLER                  PIC X(30)   VALUE  "̾��".
+           03  FILLER                  PIC X(30)   VALUE  "名称".
        01  BODY1-01.
            03  B101-INPUTCD            PIC X(20).
            03  FILLER                  PIC X(01).
@@ -195,17 +195,17 @@
        01  BODY1-01N.
            03  B101N-INPUTCD           PIC X(20).
       *
-      *    ����̾����
+      *    商品名一覧
        01  HEAD2-01.
            03  FILLER              PIC X(40)   VALUE
-               "����̾�����ɡ�̾��".
+               "商品名コード・名称".
            03  FILLER              PIC X(01)   VALUE   SPACE.
            03  FILLER              PIC X(20)   VALUE
-               "ͭ������".
+               "有効期間".
            03  FILLER              PIC X(01)   VALUE   SPACE.
-           03  FILLER              PIC X(10)   VALUE  "ϫ�ҥ�����".
+           03  FILLER              PIC X(10)   VALUE  "労災コード".
            03  FILLER              PIC X(11)   VALUE   SPACE.
-           03  FILLER              PIC X(10)   VALUE  "̾��".
+           03  FILLER              PIC X(10)   VALUE  "名称".
        01  BODY2-01.
            03  B201-SRYCD              PIC X(09).
            03  FILLER                  PIC X(01).
@@ -222,15 +222,15 @@
            03  FILLER                  PIC X(01).
            03  B201-MAE-NAME           PIC X(30).
       *
-      *    ���åȰ���
+      *    セット一覧
        01  HEAD3-01.
            03  FILLER              PIC X(40)   VALUE
-               "���åȥ����ɡ�̾��".
+               "セットコード・名称".
            03  FILLER              PIC X(01)   VALUE   SPACE.
            03  FILLER              PIC X(20)   VALUE
-               "ͭ������".
+               "有効期間".
            03  FILLER              PIC X(01)   VALUE   SPACE.
-           03  FILLER              PIC X(10)   VALUE  "���ϣã�".
+           03  FILLER              PIC X(10)   VALUE  "入力ＣＤ".
            03  FILLER              PIC X(11)   VALUE   SPACE.
       *
        01  BODY3-01.
@@ -260,108 +260,108 @@
       *
        01  COMS-MID1.
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "＊＊　".
            03  FILLER                  PIC X(36)   VALUE
-               "ϫ�ҥ������ѹ�ʬ�����ϣã���Ͽ�ꥹ��".
+               "労災コード変更分の入力ＣＤ登録リスト".
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "　＊＊".
       *
        01  COMS-MID2.
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "＊＊　".
            03  FILLER                  PIC X(34)   VALUE
-               "ϫ�ҥ������ѹ�ʬ�Υ��å���Ͽ�ꥹ��".
+               "労災コード変更分のセット登録リスト".
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "　＊＊".
       *
        01  COMS-MID3.
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "＊＊　".
            03  FILLER                  PIC X(42)   VALUE
-              "ϫ�ҥ������ѹ�ʬ�������ྦ��̾��Ͽ�ꥹ��".
+              "労災コード変更分の特定器材商品名登録リスト".
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "　＊＊".
       *
        01  COMS-MID4.
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "＊＊　".
            03  FILLER                  PIC X(36)   VALUE
-               "ϫ�ҥ������ѹ�ʬ�����ϣãĺ���ꥹ��".
+               "労災コード変更分の入力ＣＤ削除リスト".
            03  FILLER                  PIC X(06)   VALUE
-               "������".
+               "　＊＊".
       *
       *
-      *    ϫ�ҥ������ִ����ơ��֥� 
+      *    労災コード置換えテーブル 
            COPY   "CMRSICNGTBL.INC".
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
       *     COPY    "CPSK1009.INC".
-      *    Ģɼ�Խ���ʬ����
+      *    帳票編集区分情報
       *     COPY    "CPSK1030.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ���ϥ����ɥޥ�����
+      *    入力コードマスタ−
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    ���ϥ����ɥޥ����ݡ���¸��
+      *    入力コードマスタ−（保存）
        01  HZN-INPUTCD-REC.
            COPY    "CPINPUTCD.INC"     REPLACING
                                        //ICD-// BY //HZN-ICD-//.
       *
-      *    ���ϥ��åȥ�����
+      *    入力セットコード
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�
+      *    全角変換
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
       *    COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -370,7 +370,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -384,7 +384,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -397,7 +397,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -431,21 +431,21 @@
                                        WRK-PARA-SYORIKBN
            END-UNSTRING
       *
-      *    �ӣУ�����
+      *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBRSICHG"        TO  JOB-PGID
-           MOVE    "ϫ�ҥ������ѹ�����ɽ"
+           MOVE    "労災コード変更一覧表"
                                        TO  JOB-SHELLMSG
            IF      WRK-PARA-SYORIKBN   =   "9"
-               MOVE    "ϫ�����ϣãĺ������"
+               MOVE    "労災入力ＣＤ削除処理"
                                        TO  JOB-SHELLMSG
            END-IF
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -473,7 +473,7 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
      *
-      *    ����ͥ��å�
+      *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
       *
            .
@@ -481,11 +481,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ͥ��å�
+      *    初期値セット
       *****************************************************************
        110-SYOKI-SET-SEC           SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
            INITIALIZE                  STS-AREA-DAY
@@ -500,7 +500,7 @@
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            END-IF
       *
-      *    ȯ����
+      *    発行日
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY2-AREA
            MOVE    "21"            TO  LNK-DAY2-IRAI
@@ -523,22 +523,22 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
       *
            IF      WRK-PARA-SYORIKBN   =   "9"
-      *        ���ϣãĥꥹ�Ȱ�������
+      *        入力ＣＤリスト印刷処理
                PERFORM 2001-INPUTCD-LIST-SEC
            ELSE
-      *        ���ϣãĥꥹ�Ȱ�������
+      *        入力ＣＤリスト印刷処理
                PERFORM 2001-INPUTCD-LIST-SEC
-      *        ���åȰ�������
+      *        セット一覧印刷
                IF      FLG-END             =   ZERO
                    PERFORM 2002-SET-LIST-SEC
                END-IF
-      *        ����̾��������
+      *        商品名一覧印刷
                IF      FLG-END             =   ZERO
                    PERFORM 2003-SYOHIN-LIST-SEC
                END-IF
@@ -549,45 +549,45 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ�ꥹ�Ȱ�������
+      *    登録リスト印刷処理
       *****************************************************************
        2001-INPUTCD-LIST-SEC                 SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
-      *    ���ϣãİ����������
+      *    入力ＣＤ一覧初期処理
            PERFORM 20001-INPUTCD-PRT-SEC
       *
-      *    ���ť�����
+      *    診療コード
            MOVE    "101%"              TO  WRK-ICD-SRYCD
            PERFORM 20011-INPUTCD-HEN-SEC
            IF      FLG-END             =   1
                GO      TO      2001-INPUTCD-LIST-EXT
            END-IF
-      *    ��ॳ����
+      *    器材コード
            MOVE    "788888%"           TO  WRK-ICD-SRYCD
            PERFORM 20011-INPUTCD-HEN-SEC
            IF      FLG-END             =   1
                GO      TO      2001-INPUTCD-LIST-EXT
            END-IF
-      *    �оݤʤ�
+      *    対象なし
            IF      CNT-CDCNT           =   ZERO
                 MOVE    SPACE              TO  FOOT-01
-                MOVE    "���ϣãĤ�����Ϥ���ޤ���"
+                MOVE    "入力ＣＤの設定はありません"
                                            TO  F01-MIDASI
                ADD     1                   TO  CNT-LINE
                MOVE    FOOT-01             TO  HCPOM2-MOJI (CNT-LINE)
            END-IF
-      *    Ģɼ����
+      *    帳票印刷
            PERFORM 400-PRINT-OUT-SEC
            .
        2001-INPUTCD-LIST-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϣãĸ����Խ�����
+      *    入力ＣＤ検索編集処理
       *****************************************************************
        20011-INPUTCD-HEN-SEC                 SECTION.
       *
-      *    ���ϣãĸ���
+      *    入力ＣＤ検索
            INITIALIZE                      INPUTCD-REC
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    WRK-ICD-SRYCD       TO  ICD-SRYCD
@@ -609,11 +609,11 @@
            PERFORM
                UNTIL    (FLG-INPUTCD       =   1   )
                     OR  (FLG-END           =   1   )
-      *        �оݥ����å�
+      *        対象チェック
                MOVE    ICD-SRYCD           TO  WRK-SRYCD
                PERFORM 290-SRYCD-CHK-SEC
                IF      FLG-OK              =   1
-      *            �����о�
+      *            振替対象
                    IF     (ICD-DSPSEQ          =   1  )
                       OR  (ICD-SRYCD       NOT =   TBL-INPUTCD-SRYCD)
                        IF      IDX             >   ZERO
@@ -649,11 +649,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҥ������о�Ƚ��
+      *    労災コード対象判定
       *****************************************************************
        290-SRYCD-CHK-SEC           SECTION.
       *
-      *    ϫ�ҤΥ����ɤ�Ƚ��
+      *    労災のコードの判定
            SET     TBL-RCN             TO  1
            SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
                AT  END
@@ -676,16 +676,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϣãİ�������
+      *    入力ＣＤ印刷処理
       *****************************************************************
        200111-INPUTCD-TBLHEN-SEC           SECTION.
       *
            INITIALIZE                  WRK-HEN-AREA
-      *    ������
+      *    １行目
            MOVE    SPACE               TO  BODY1-01
            MOVE    SPACE               TO  BODY1-01N
            MOVE    TBL-INPUTCD-SRYCD   TO  B101-SRYCD
-           MOVE    "�ʣ���ޤǡ�"      TO  B101-MIDASI
+           MOVE    "（６月まで）"      TO  B101-MIDASI
            MOVE    TBL-INPUTCD-SRYCD   TO  WRK-SRYCD
            MOVE    "20130601"          TO  WRK-YMD
            PERFORM 910-TENSU-READKEY-SEC
@@ -695,9 +695,9 @@
            MOVE    TBL-INPUTCD (1)     TO  B101-INPUTCD
            MOVE    BODY1-01            TO  WRK-TBL-REC (1)
            MOVE    BODY1-01N           TO  WRK-TBL-REC2(1)
-      *    ������
+      *    ２行目
            MOVE    SPACE               TO  BODY1-02
-           MOVE    "�ʣ�����"      TO  B102-MIDASI
+           MOVE    "（７月から）"      TO  B102-MIDASI
            MOVE    TBL-INPUTCD-SRYCD   TO  WRK-SRYCD
            MOVE    "20130701"          TO  WRK-YMD
            PERFORM 910-TENSU-READKEY-SEC
@@ -706,7 +706,7 @@
            END-IF
            MOVE    TBL-INPUTCD (2)     TO  B102-INPUTCD
            MOVE    BODY1-02            TO  WRK-TBL-REC (2)
-      *    �����ܤ���
+      *    ３行目から
            MOVE    2                   TO  IDY
            PERFORM VARYING     IDX     FROM    3   BY  1
                    UNTIL      (IDX     >   5   )
@@ -716,15 +716,15 @@
                MOVE    TBL-INPUTCD (IDX)   TO  B102-INPUTCD
                MOVE    BODY1-02            TO  WRK-TBL-REC (IDY)
            END-PERFORM
-      *    Ģɼ�Խ�
+      *    帳票編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   IDY )
                           OR  (FLG-END     =   1   )
                ADD     1               TO  CNT-LINE
                IF      CNT-LINE       >   MAX-LINE
-      *            Ģɼ����
+      *            帳票印刷
                    PERFORM 400-PRINT-OUT-SEC
-      *            ���ϣãİ����������
+      *            入力ＣＤ一覧初期処理
                    PERFORM 20001-INPUTCD-PRT-SEC
                END-IF
                MOVE    WRK-TBL-REC (IDX)   TO  HCPOM2-MOJI (CNT-LINE)
@@ -736,7 +736,7 @@
            END-IF
            INITIALIZE                  WRK-HEN-AREA
       *
-      *    ���ϣãĺ��
+      *    入力ＣＤ削除
            IF      WRK-PARA-SYORIKBN   =   "9"
                PERFORM 2009-INPUTCD-DELETE-SEC
            END-IF
@@ -745,13 +745,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϣãĺ������
+      *    入力ＣＤ削除処理
       *****************************************************************
        2009-INPUTCD-DELETE-SEC           SECTION.
       *
            MOVE    INPUTCD-REC         TO  HZN-INPUTCD-REC
       *
-      *    ���ϥ����ɺ��
+      *    入力コード削除
            INITIALIZE                      INPUTCD-REC
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    TBL-INPUTCD-SRYCD   TO  ICD-SRYCD
@@ -765,7 +765,7 @@
                                                SPA-AREA
            IF      MCP-RC          NOT =   ZERO
                DISPLAY "INPUTCD DEL ERR:"  MCP-RC
-               MOVE    "���ϥ����ɤκ�����Ǥ��ޤ���Ǥ���"
+               MOVE    "入力コードの削除ができませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -776,16 +776,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϣãİ����������
+      *    入力ＣＤ一覧初期処理
       *****************************************************************
        20001-INPUTCD-PRT-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
-      *    ���Ф��Խ�
+      *    見出し編集
            ADD     1                   TO  CNT-PAGE1
            MOVE    CNT-PAGE1           TO  H01-PCNT
            MOVE    COMS-MID1           TO  H01-MIDASI
-      *    ���ϣãĺ��
+      *    入力ＣＤ削除
            IF      WRK-PARA-SYORIKBN   =   "9"
                MOVE    COMS-MID4           TO  H01-MIDASI
            END-IF
@@ -799,13 +799,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����̾������������
+      *    商品名一覧印刷処理
       *****************************************************************
        2003-SYOHIN-LIST-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
            MOVE    SPACE               TO  WRK-KEY-SRYCD
-      *    ����̾�����������
+      *    商品名一覧初期処理
            PERFORM 20031-SYOHIN-PRT-SEC
       *
            INITIALIZE                  TNS-TENSU-REC
@@ -827,7 +827,7 @@
            END-IF
            PERFORM UNTIL      (FLG-TENSU   =   1  )
                          OR   (FLG-END     =   1  )
-      *        �оݥ����å�
+      *        対象チェック
                MOVE    TNS-IDOKANREN       TO  WRK-SRYCD
                PERFORM 290-SRYCD-CHK-SEC
                IF     (FLG-OK              =   1 )
@@ -844,28 +844,28 @@
            MOVE    "key32"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �оݤʤ�
+      *    対象なし
            IF      CNT-SYOCNT          =   ZERO
                MOVE    SPACE              TO  FOOT-01
-               MOVE    "����̾������Ϥ���ޤ���"
+               MOVE    "商品名の設定はありません"
                                            TO  F01-MIDASI
                ADD     1                   TO  CNT-LINE
                MOVE    FOOT-01             TO  HCPOM2-MOJI (CNT-LINE)
            ELSE
-      *        �Ǹ�
+      *        最後
                IF      CNT-LINE        <   MAX-LINE
                    ADD     1               TO  CNT-LINE
                    MOVE    ALL "-"         TO  HCPOM2-MOJI (CNT-LINE)
                END-IF
            END-IF
-      *    Ģɼ����
+      *    帳票印刷
            PERFORM 400-PRINT-OUT-SEC
            .
        2003-SYOHIN-LIST-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ����̾������������
+      *    商品名一覧印刷処理
       *****************************************************************
        20032-SYOHIN-HEN-SEC           SECTION.
       *
@@ -900,7 +900,7 @@
                MOVE    TNS-NAME            TO  B201-MAE-NAME
            END-IF
            IF      TNS-YUKOSTYMD       <   "20130701"
-      *        �Ѵ�������Ƚ��
+      *        変換コード判定
                PERFORM 2902-SRYCD-CHK-SEC
                IF      WRK-ATO-SRYCD       NOT =   SPACE
                    MOVE    WRK-ATO-SRYCD       TO  B201-ATO-SRYCD
@@ -910,7 +910,7 @@
            END-IF
       *
            MOVE    BODY2-01            TO  WRK-TBL-REC (1)
-      *    Ģɼ�Խ�
+      *    帳票編集
            IF     (CNT-LINE       >   5  )
               AND (CNT-LINE       <   MAX-LINE  )
               AND (FLG-KEY         =   ZERO  )
@@ -920,9 +920,9 @@
       *
            ADD     1               TO  CNT-LINE
            IF      CNT-LINE       >   MAX-LINE
-      *        Ģɼ����
+      *        帳票印刷
                PERFORM 400-PRINT-OUT-SEC
-      *        ����̾�����������
+      *        商品名一覧初期処理
                PERFORM 20031-SYOHIN-PRT-SEC
            END-IF
            MOVE    WRK-TBL-REC (1)     TO  HCPOM2-MOJI (CNT-LINE)
@@ -933,12 +933,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ����̾�����������
+      *    商品名一覧初期処理
       *****************************************************************
        20031-SYOHIN-PRT-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
-      *    ���Ф��Խ�
+      *    見出し編集
            ADD     1                   TO  CNT-PAGE2
            MOVE    CNT-PAGE2           TO  H01-PCNT
            MOVE    COMS-MID3           TO  H01-MIDASI
@@ -952,11 +952,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҥ������о�Ƚ��
+      *    労災コード対象判定
       *****************************************************************
        2902-SRYCD-CHK-SEC           SECTION.
       *
-      *    ϫ�ҤΥ����ɤ�Ƚ��
+      *    労災のコードの判定
            SET     TBL-RCN             TO  1
            SEARCH  TBL-RSICHG-OCC      VARYING   TBL-RCN
                AT  END
@@ -972,15 +972,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���åȰ�����������
+      *    セット一覧印刷処理
       *****************************************************************
        2002-SET-LIST-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
-      *    ���åȰ����������
+      *    セット一覧初期処理
            PERFORM 20021-SETCD-PRT-SEC
       *
-      *    ���ϥ��åȸ���
+      *    入力セット検索
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
       *
@@ -1000,7 +1000,7 @@
            MOVE    SPACE               TO  WRK-KEY-SET
            PERFORM UNTIL      (FLG-INPUTSET    =   1  )
                          OR   (FLG-END         =   1  )
-      *        �оݥ����å�
+      *        対象チェック
                IF     (ISET-SETCD          =   WRK-KEY-SETCD )
                  AND  (ISET-YUKOSTYMD      =   WRK-KEY-YUKOSTYMD)
                    CONTINUE
@@ -1027,32 +1027,32 @@
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �оݤʤ�
+      *    対象なし
            IF      CNT-SETCNT          =   ZERO
                 MOVE    SPACE              TO  FOOT-01
-                MOVE    "�оݤΥ��åȤϤ���ޤ���"
+                MOVE    "対象のセットはありません"
                                            TO  F01-MIDASI
                ADD     1                   TO  CNT-LINE
                MOVE    FOOT-01             TO  HCPOM2-MOJI (CNT-LINE)
            ELSE
-      *        �Ǹ�
+      *        最後
                IF      CNT-LINE        <   MAX-LINE
                    ADD     1               TO  CNT-LINE
                    MOVE    ALL "-"         TO  HCPOM2-MOJI (CNT-LINE)
                END-IF
            END-IF
-      *    Ģɼ����
+      *    帳票印刷
            PERFORM 400-PRINT-OUT-SEC
            .
        2002-SET-LIST-EXT.
            EXIT.
       *****************************************************************
-      *    ���åȰ����������
+      *    セット一覧初期処理
       *****************************************************************
        20021-SETCD-PRT-SEC           SECTION.
       *
            MOVE    ZERO                TO  CNT-LINE
-      *    ���Ф��Խ�
+      *    見出し編集
            ADD     1                   TO  CNT-PAGE3
            MOVE    CNT-PAGE3           TO  H01-PCNT
            MOVE    COMS-MID2           TO  H01-MIDASI
@@ -1067,12 +1067,12 @@
       *
       *
       *****************************************************************
-      *    ���åȰ�������
+      *    セット一覧処理
       *****************************************************************
        20022-INPUTSET-HEN-SEC          SECTION.
       *
            ADD     1                   TO  CNT-SETCNT
-      *    ���ϥ��åȸ���
+      *    入力セット検索
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
            MOVE    WRK-KEY-SETCD       TO  ISET-SETCD
@@ -1097,10 +1097,10 @@
            PERFORM UNTIL      (FLG-INPUTSET    =   1  )
                          OR   (FLG-END         =   1  )
                IF      ISET-SETSEQ         =   1
-      *            ���å�̾���Խ�
+      *            セット名称編集
                    PERFORM 200321-SETNAME-HEN-SEC
                END-IF
-      *        �����Խ�
+      *        明細編集
                PERFORM 20022-INPUTSET-MEISAI-SEC
       *
                MOVE    "tbl_inputset"      TO  MCP-TABLE
@@ -1112,7 +1112,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            MOVE    ZERO                TO  FLG-INPUTSET
-      *    Ģɼ�Խ�
+      *    帳票編集
            IF     (CNT-LINE       >   5  )
               AND (CNT-LINE       <   MAX-LINE  )
                ADD     1                   TO  CNT-LINE
@@ -1121,14 +1121,14 @@
                END-IF
            END-IF
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM VARYING     IDY     FROM    1   BY  1
                    UNTIL       IDY     >   IDX
                ADD     1               TO  CNT-LINE
                IF      CNT-LINE        >   MAX-LINE
-      *            Ģɼ����
+      *            帳票印刷
                    PERFORM 400-PRINT-OUT-SEC
-      *            ���åȰ����������
+      *            セット一覧初期処理
                    PERFORM 20021-SETCD-PRT-SEC
                END-IF
                MOVE    WRK-TBL-REC (IDY)   TO  HCPOM2-MOJI  (CNT-LINE)
@@ -1139,7 +1139,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���å�̾���Խ�����
+      *    セット名称編集処理
       *****************************************************************
        200321-SETNAME-HEN-SEC           SECTION.
       *
@@ -1148,7 +1148,7 @@
            MOVE    SPACE               TO  WRK-INPUTCD-G
            MOVE    ZERO                TO  IDY
       *
-      *    ���å�̾���Խ�
+      *    セット名称編集
            INITIALIZE                      INPUTCD-REC
            MOVE    SPA-HOSPNUM         TO  ICD-HOSPNUM
            MOVE    ISET-SETCD          TO  ICD-SRYCD
@@ -1168,7 +1168,7 @@
            PERFORM
                UNTIL     FLG-INPUTCD       =   1
                IF      ICD-INPUTCD         =   ISET-SETCD
-      *            ���å�̾�Ρ��Խ�
+      *            セット名称　編集
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
                    MOVE    ICD-DSPNAME         TO  KANACHK-MAE-INPUT
@@ -1202,7 +1202,7 @@
        200321-SETNAME-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϣã��Խ�����
+      *    入力ＣＤ編集処理
       *****************************************************************
        200321-INPUTCD-HEN-SEC          SECTION.
       *
@@ -1228,7 +1228,7 @@
                                                ORCSKANACHKAREA
                    MOVE    KANACHK-MAE-INPUT   TO  WRK-HEN-INPUTCD
                ELSE
-                   STRING  "��"
+                   STRING  "【"
                            WRK-INPUTCD (IDX2)   DELIMITED  BY  SPACE
                                                 INTO   WRK-HEN-INPUTCD
                    END-STRING
@@ -1239,7 +1239,7 @@
                MOVE    WRK-HEN-INPUTCD     TO  WRK-HEN-INPUTCD-N
                MOVE    SPACE               TO  WRK-HEN-INPUTCD
                STRING  WRK-HEN-INPUTCD-N
-                       "��"                DELIMITED   BY  SPACE
+                       "】"                DELIMITED   BY  SPACE
                                                 INTO   WRK-HEN-INPUTCD
                END-STRING
                INITIALIZE                  ORCSKANACHKAREA
@@ -1257,7 +1257,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���å������Խ�����
+      *    セット明細編集処理
       *****************************************************************
        20022-INPUTSET-MEISAI-SEC           SECTION.
       *
@@ -1272,7 +1272,7 @@
            END-IF
       *
            IF     (FLG-OK              =   1 )
-      *        ϫ�ҿ���ʬ
+      *        労災振替分
                IF      ISET-YUKOSTYMD      <   "20130701"
                    MOVE    "20130630"          TO  WRK-YMD
                ELSE
@@ -1282,9 +1282,9 @@
                IF      FLG-TENSU           =   ZERO
                    MOVE    TNS-NAME            TO  B302-MAE-NAME
                END-IF
-               MOVE    "��ϫ��"            TO  B302-RSIKBN
+               MOVE    "（労）"            TO  B302-RSIKBN
                IF      ISET-YUKOSTYMD      <   "20130701"
-      *            �Ѵ�������Ƚ��
+      *            変換コード判定
                    PERFORM 2902-SRYCD-CHK-SEC
                    IF      WRK-ATO-SRYCD       NOT =   SPACE
                        MOVE    WRK-ATO-SRYCD       TO  B302-ATO-SRYCD
@@ -1311,7 +1311,7 @@
                        MOVE    ISET-COMMENT        TO  B302-MAE-NAME
                    END-IF
                    IF      FLG-TENSU           =   1
-                       MOVE    "�ں��"        TO  B302-RSIKBN
+                       MOVE    "【削】"        TO  B302-RSIKBN
                    END-IF
                END-EVALUATE
            END-IF
@@ -1324,11 +1324,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���ż��̽���
+      *   診療種別処理
       *****************************************************************
        20022-SRYSYUKBN-HEN-SEC          SECTION.
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -1345,7 +1345,7 @@
        20022-SRYSYUKBN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��«���åȽ���
+      *    約束セット処理
       *****************************************************************
        20021-YAKUSOKU-HEN-SEC          SECTION.
       *
@@ -1370,7 +1370,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-INPUTCD         =   ZERO
-      *        ���å�̾�Ρ��Խ�
+      *        セット名称　編集
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    ICD-DSPNAME         TO  KANACHK-MAE-INPUT
@@ -1385,7 +1385,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        400-PRINT-OUT-SEC           SECTION.
       *
@@ -1407,10 +1407,10 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCPOM2.red"        TO  SPRT-PRTID
-           MOVE    "ϫ�ҥ������ѹ�ʬ����ɽ"
+           MOVE    "労災コード変更分一覧表"
                                        TO  SPRT-TITLE
            IF      WRK-PARA-SYORIKBN   =   "9"
-               MOVE    "ϫ�ҥ������ѹ�ʬ���ϣãĺ������ɽ"
+               MOVE    "労災コード変更分入力ＣＤ削除一覧表"
                                        TO  SPRT-TITLE
            END-IF
            MOVE    HCPOM2              TO  SPRT-PRTDATA
@@ -1433,12 +1433,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-PAGE            =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1446,7 +1446,7 @@
            DISPLAY "*** ORCBRSICHG PAGE:" CNT-PAGE  " ***"
            DISPLAY "*** ORCBRSICHG END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1466,7 +1466,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1480,7 +1480,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1502,7 +1502,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
@@ -1529,7 +1529,7 @@
        800-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϣã��ɤ߹���
+      *    入力ＣＤ読み込み
       *****************************************************************
        900-INPUTCD-READ-SEC         SECTION.
       *
@@ -1546,7 +1546,7 @@
        900-INPUTCD-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���å��ɤ߹���
+      *    セット読み込み
       *****************************************************************
        900-INPUTSET-READ-SEC         SECTION.
       *
@@ -1563,7 +1563,7 @@
        900-INPUTSET-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ɹ���
+      *    点数マスタ読込み
       *****************************************************************
        900-TENSU-READ-SEC         SECTION.
       *
@@ -1581,7 +1581,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READKEY-SEC         SECTION.
       *
@@ -1610,7 +1610,7 @@
        910-TENSU-READKEY-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1624,7 +1624,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1640,7 +1640,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -1655,7 +1655,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1679,7 +1679,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

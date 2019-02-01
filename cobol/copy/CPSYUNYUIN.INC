@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡¼ýÇ¼¥Þ¥¹¥¿     COPY (CPSYUNYUIN.INC)              *
+      *    å…¥é™¢åŽç´ãƒžã‚¹ã‚¿     COPY (CPSYUNYUIN.INC)              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SYUNYUIN-REC.
            03  SYUNYUIN-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SYUNYUIN-HOSPNUM          PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SYUNYUIN-NYUGAIKBN       PIC  X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SYUNYUIN-PTID            PIC  9(10).
-      *ÅÁÉ¼ÈÖ¹æ
+      *ä¼ç¥¨ç•ªå·
                05  SYUNYUIN-DENPNUM         PIC  9(07).
-      *Éô²°£Î£Ï
+      *éƒ¨å±‹ï¼®ï¼¯
            03  SYUNYUIN-ROOMNUM             PIC  X(08).
-      *ÉÂÅï¥³¡¼¥É
+      *ç—…æ£Ÿã‚³ãƒ¼ãƒ‰
            03  SYUNYUIN-BYOTONUM            PIC  X(02).
-      *¼¼ÎÁº¹³Û
+      *å®¤æ–™å·®é¡
            03  SYUNYUIN-RMSAGAKU            PIC S9(07).
-      *¼¼ÎÁº¹³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *å®¤æ–™å·®é¡âˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  SYUNYUIN-RMSAGAKU-TAX-SAI    PIC S9(07).
-      *¿©»ö£±¤«¤é¿©»ö£±£´
+      *é£Ÿäº‹ï¼‘ã‹ã‚‰é£Ÿäº‹ï¼‘ï¼”
            03  SYUNYUIN-SHOKUJI-NAIYOU.
                05  SYUNYUIN-SHOKUJI1-NISSU  PIC S9(02).
                05  SYUNYUIN-SHOKUJI1        PIC S9(07).
@@ -75,7 +75,7 @@
                05  SYUNYUIN-SYOKUJI-TBL     OCCURS   14.
                  07  SYUNYUIN-SHOKUJI-NISSU   PIC S9(02).
                  07  SYUNYUIN-SHOKUJI         PIC S9(07).
-      *¿©»öÎÅÍÜÈñ¾ðÊó¡Ê¿©»öÆü¿ô¡¦¿©»öÎÅÍÜÈñ¡¦É¸½àÉéÃ´³Û¡Ë
+      *é£Ÿäº‹ç™‚é¤Šè²»æƒ…å ±ï¼ˆé£Ÿäº‹æ—¥æ•°ãƒ»é£Ÿäº‹ç™‚é¤Šè²»ãƒ»æ¨™æº–è² æ‹…é¡ï¼‰
            03  SYUNYUIN-SKJ-AREA.
                05  SYUNYUIN-SYUSKJ-NISSU      PIC S9(02).
                05  SYUNYUIN-SYUSKJ-RYOYOHI    PIC S9(07).
@@ -111,47 +111,47 @@
                  07  SYUNYUIN-SKJ-FTN         PIC S9(07).
                  07  SYUNYUIN-SKJ-FTN-RECE    PIC S9(07).
                  07  SYUNYUIN-SKJ-FTNKBN      PIC  X(01).
-      *¿©»öÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            03  SYUNYUIN-RYOYOHI-SKJ         PIC S9(07).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ        PIC S9(07).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ-TAX    PIC S9(07).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ-KEI    PIC S9(07).
-      *¿©»öÎÅÍÜÈñ¡Ê¼«Èñ¡Ë
+      *é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆè‡ªè²»ï¼‰
            03  SYUNYUIN-RYOYOHI-SKJ-JIHI    PIC S9(07).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ-JIHI   PIC S9(07).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ-JIHI-TAX
                                        PIC S9(07).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYUNYUIN-SKYMONEY-SKJ-JIHI-KEI
                                        PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            03  SYUNYUIN-RYOYOHI-LIFE        PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE       PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE-TAX   PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE-KEI   PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÈñ¡Ê¼«Èñ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è²»ï¼ˆè‡ªè²»ï¼‰
            03  SYUNYUIN-RYOYOHI-LIFE-JIHI   PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE-JIHI  PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE-JIHI-TAX
                                        PIC S9(07).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYUNYUIN-SKYMONEY-LIFE-JIHI-KEI
                                        PIC S9(07).
-      *¿ÇÎÅ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
+      *è¨ºç™‚ãƒ•ãƒ©ã‚°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYUNYUIN-DAY-AREA.
-      *        ¿ÇÎÅ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚ãƒ•ãƒ©ã‚°ãƒ†ãƒ¼ãƒ–ãƒ«
              04  SYUNYUIN-DAY-TBL.
-      *        ¿ÇÎÅ¥Õ¥é¥°¡Ê£±Æü¤«¤é£³£±Æü¡Ë
+      *        è¨ºç™‚ãƒ•ãƒ©ã‚°ï¼ˆï¼‘æ—¥ã‹ã‚‰ï¼“ï¼‘æ—¥ï¼‰
                05  SYUNYUIN-DAY-1           PIC  X(01).
                05  SYUNYUIN-DAY-2           PIC  X(01).
                05  SYUNYUIN-DAY-3           PIC  X(01).
@@ -184,13 +184,13 @@
                05  SYUNYUIN-DAY-30          PIC  X(01).
                05  SYUNYUIN-DAY-31          PIC  X(01).
            03  SYUNYUIN-DAY-AREA-R REDEFINES   SYUNYUIN-DAY-AREA.
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                05  SYUNYUIN-DAY-TBL2.
                    07  SYUNYUIN-DAY         PIC  X(01)
                                          OCCURS   31.
-      *Æþ±¡ÍúÎòÈÖ¹æ
+      *å…¥é™¢å±¥æ­´ç•ªå·
            03  SYUNYUIN-NYUIN-RRKNUM        PIC  9(03).
-      *Æþ±¡¤½¤ÎÂ¾£±¤«¤é£µ
+      *å…¥é™¢ãã®ä»–ï¼‘ã‹ã‚‰ï¼•
            03  SYUNYUIN-NYUINETC-INF.
                05  SYUNYUIN-NYUINETC1       PIC S9(07).
                05  SYUNYUIN-NYUINETC2       PIC S9(07).
@@ -198,10 +198,10 @@
                05  SYUNYUIN-NYUINETC4       PIC S9(07).
                05  SYUNYUIN-NYUINETC5       PIC S9(07).
       *
-      *ÅÁÉ¼ºîÀ®¶èÊ¬¡Ê¸¡º÷ÍÑ¡Ë¡Ê¶õÇò¡§³°Íè¡¡£±¡§Âà±¡»þºîÀ®¡¡£²¡§Äê´üÀÁµá
-      *              £³¡§Æþ±¡¥ì¥»¥×¥ÈÍÑ¥À¥ß¡¼¡Ë
+      *ä¼ç¥¨ä½œæˆåŒºåˆ†ï¼ˆæ¤œç´¢ç”¨ï¼‰ï¼ˆç©ºç™½ï¼šå¤–æ¥ã€€ï¼‘ï¼šé€€é™¢æ™‚ä½œæˆã€€ï¼’ï¼šå®šæœŸè«‹æ±‚
+      *              ï¼“ï¼šå…¥é™¢ãƒ¬ã‚»ãƒ—ãƒˆç”¨ãƒ€ãƒŸãƒ¼ï¼‰
            03  SYUNYUIN-SELCREATEKBN        PIC  X(01).
-      *¿ÇÎÅÆü¡Ê¸¡º÷ÍÑ¡Ë
+      *è¨ºç™‚æ—¥ï¼ˆæ¤œç´¢ç”¨ï¼‰
            03  SYUNYUIN-SELSRYYMD           PIC  X(08).
-      *Æþ³°¶èÊ¬¡Ê¸¡º÷ÍÑ¡Ë
+      *å…¥å¤–åŒºåˆ†ï¼ˆæ¤œç´¢ç”¨ï¼‰
            03  SYUNYUIN-SELNYUGAIKBN        PIC  X(01).

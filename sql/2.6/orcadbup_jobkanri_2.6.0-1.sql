@@ -1,14 +1,14 @@
 --                                    --
--- JOB¥…Õ˝•ﬁ•π•ø                      --
---    ∞Ï≥Á∏ƒ Ã∂Ë ¨ (SYOKBN)           --
---    ø«Œ≈«Ø∑Ó     (SRYYM)            --
---    ∆˛≥∞∂Ë ¨     (NYUGAIKBN)        --
---    §Úƒ…≤√                          --
+-- JOBÁÆ°ÁêÜ„Éû„Çπ„Çø                      --
+--    ‰∏ÄÊã¨ÂÄãÂà•Âå∫ÂàÜ (SYOKBN)           --
+--    Ë®∫ÁôÇÂπ¥Êúà     (SRYYM)            --
+--    ÂÖ•Â§ñÂå∫ÂàÜ     (NYUGAIKBN)        --
+--    „ÇíËøΩÂä†                          --
 --                                    --
 -- Create Date : 2003/08/29           --
 --                                    --
 
--- TBL_JOBKANRIWK  ∫Ó¿Æ              --
+-- TBL_JOBKANRIWK  ‰ΩúÊàê              --
 
 create table TBL_JOBKANRIWK (
 JOBID 			numeric(7,0) DEFAULT 0 NOT NULL,
@@ -37,16 +37,16 @@ PID3	 		numeric(5,0) DEFAULT 0,
 PID4	 		numeric(5,0) DEFAULT 0,
 YOBI 			character varying(500),
 Constraint TBL_JOBKANRIWK_primary_key Primary Key (JOBID, SHELLID, RUN_OPID));
--- TBL_JOBKANRI ¢™ TBL_JOBKANRIWK   --
+-- TBL_JOBKANRI ‚Üí TBL_JOBKANRIWK   --
 
 insert into TBL_JOBKANRIWK
 select * from TBL_JOBKANRI;
 
--- TBL_JOBKANRI ∫ÔΩ¸               --
+-- TBL_JOBKANRI ÂâäÈô§               --
 
 drop table TBL_JOBKANRI;
 
--- TBL_JOBKANRI ∫Ó¿Æ               --
+-- TBL_JOBKANRI ‰ΩúÊàê               --
 
 create table TBL_JOBKANRI (
 JOBID 			numeric(7,0) DEFAULT 0 NOT NULL,
@@ -79,7 +79,7 @@ PID4	 		numeric(5,0) DEFAULT 0,
 YOBI 			character varying(500),
 Constraint TBL_JOBKANRI_primary_key Primary Key (JOBID, SHELLID, RUN_OPID));
 
--- TBL_JOBKANRIWK ¢™ TBL_JOBKANRI   --
+-- TBL_JOBKANRIWK ‚Üí TBL_JOBKANRI   --
 
 insert into TBL_JOBKANRI
 (JOBID,
@@ -143,6 +143,6 @@ YOBI
 from TBL_JOBKANRIWK;
 
 
--- TBL_JOBKANRIWK ∫ÔΩ¸             --
+-- TBL_JOBKANRIWK ÂâäÈô§             --
 
 drop table TBL_JOBKANRIWK;

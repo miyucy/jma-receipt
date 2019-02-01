@@ -21,7 +21,7 @@ CREATE TABLE tbl_chk005 (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_chk005 IS '•¡•ß•√•Ø5';
+COMMENT ON TABLE tbl_chk005 IS '„ÉÅ„Çß„ÉÉ„ÇØ5';
 
 ALTER TABLE ONLY tbl_chk005
     ADD CONSTRAINT tbl_chk005_primary_key PRIMARY KEY (hospnum, chkkbn, id, rennum);

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,18 +16,18 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥¢¥¯¥»¥¹¥­¡¼               COPY (CPACCESSKEY.INC)     *
+      *    ã‚¢ã‚¯ã‚»ã‚¹ã‚­ãƒ¼               COPY (CPACCESSKEY.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ACCESS-KEY-REC.
-      *°åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·
            03  ACCESS-KEY-HOSPNUM      PIC  9(02).
-      *¥¢¥¯¥»¥¹¥­¡¼
+      *ã‚¢ã‚¯ã‚»ã‚¹ã‚­ãƒ¼
            03  ACCESS-KEY-1            PIC  X(128).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  ACCESS-KEY-CREYMD       PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  ACCESS-KEY-UPHMS        PIC  X(06).

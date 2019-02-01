@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ±ÉÍÜ´ÉÍý·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSEIYOUKKS.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSEIYOUKKS)
-      *    ÀßÄê¹àÌÜ
-      *      Æþ±¡ÎÁ¥³¡¼¥É
+      *    æ „é¤Šç®¡ç†çµŒéŽæŽªç½®å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSEIYOUKKS.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSEIYOUKKS)
+      *    è¨­å®šé …ç›®
+      *      å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSEIYOUKKS-AREA.
       *
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-EIYOUKKS-SANTEIYM               PIC  X(06).
-      *Æþ±¡ÎÁ¥³¡¼¥É
+      *å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  LNK-EIYOUKKS-SRYCD                  PIC  X(09).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-EIYOUKKS-HENKYAKU-AREA.
-      *·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É¡ÊÊ¿À®£²£¶Ç¯£³·î¤Þ¤ÇÊÖµÑ¡Ë
+      *çµŒéŽæŽªç½®å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ï¼ˆå¹³æˆï¼’ï¼–å¹´ï¼“æœˆã¾ã§è¿”å´ï¼‰
               05  LNK-EIYOUKKS-CHGSRYCD            PIC  X(09).
-      *·Ð²áÁ¼ÃÖÆþ±¡ÎÁ¥³¡¼¥É¡ÊÊ¿À®£²£¶Ç¯£´·î°Ê¹ß¤Î¥ì¥»¥×¥ÈÎ¬¾Îµ­ºÜÍÑ¤ËÊÖµÑ¡Ë
+      *çµŒéŽæŽªç½®å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ï¼ˆå¹³æˆï¼’ï¼–å¹´ï¼”æœˆä»¥é™ã®ãƒ¬ã‚»ãƒ—ãƒˆç•¥ç§°è¨˜è¼‰ç”¨ã«è¿”å´ï¼‰
               05  LNK-EIYOUKKS-RECE-CHGSRYCD       PIC  X(09).
-      *Éüµ¢¥³¡¼¥É¡Ê£°¡§·Ð²áÁ¼ÃÖÆþ±¡ÎÁÊÖµÑ¤¢¤ê¡¡£±¡§·Ð²áÁ¼ÃÖÆþ±¡ÎÁÊÖµÑ¤Ê¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼ï¼šçµŒéŽæŽªç½®å…¥é™¢æ–™è¿”å´ã‚ã‚Šã€€ï¼‘ï¼šçµŒéŽæŽªç½®å…¥é™¢æ–™è¿”å´ãªã—ï¼‰
            03  LNK-EIYOUKKS-RC                     PIC S9(9) BINARY.
       *

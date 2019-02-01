@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,29 +19,29 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGW18.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : ���ŵ����Խ�����ʣף�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/09/03    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : 医療機関編集情報（Ｗ１８）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/09/03    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  02.06.01    NACL-ƣ��    05/08/22  ��ʬ�����ɤι����������å��ɲ�
-      *  03.04.01    NACL-����    07/01/16  ���ꣶ������
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
-      *  04.01.00    NACL-����    07/12/21  �����쥻�ץ��ɲ�
-      *  04.02.00    NACL-����    08/03/17  ����Ϣ���ɲá�������Ģ�ɲ�
-      *  04.03.01    NACL-����    08/06/24  �쥻�ץ��Ż����ɾ��ܵ��ɲ�
-      *  04.04.00    NACL-����    08/11/21  ���ǥ����������ս��ɲ�
-      *  04.06.00    NACL-¿��Ǽ  10/06/28  ͽ��ɼ�ɲ�
-      *  04.06.01    NACL-����    11/09/12  ����ܥ����ɲ�
-      *  04.06.02    NACL-����    11/09/28  ������������ϫ�ҡ��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  02.06.01    NACL-藤原    05/08/22  区分コードの更新前チェック追加
+      *  03.04.01    NACL-森脇    07/01/16  住所６→１３
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  04.01.00    NACL-森脇    07/12/21  公害レセプト追加
+      *  04.02.00    NACL-森脇    08/03/17  広域連合追加、お薬手帳追加
+      *  04.03.01    NACL-森脇    08/06/24  レセプト電算、症状詳記追加
+      *  04.04.00    NACL-森脇    08/11/21  光ディスク等送付書追加
+      *  04.06.00    NACL-多々納  10/06/28  予約票追加
+      *  04.06.01    NACL-森脇    11/09/12  削除ボタン追加
+      *  04.06.02    NACL-森脇    11/09/28  診療報酬請求書（労災）追加
       *
-      *  04.07.01    NACL-ƣ��    12/05/28  ���֥�٥��б�
-      *  04.07.02    NACL-ƣ��    15/08/18  ���߼�̾�ɲ��б�
-      *  04.08.01    NACL-����    16/08/04  ��ʧ�����񡢼����������ٽ��ɲ�
+      *  04.07.01    NACL-藤原    12/05/28  タブラベル対応
+      *  04.07.02    NACL-藤原    15/08/18  開設者名追加対応
+      *  04.08.01    NACL-太田    16/08/04  支払証明書、自費内訳明細書追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,13 +53,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W18.
            03  SPA-W18-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -137,7 +137,7 @@
            03  FLG-TOUROKU         PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -145,7 +145,7 @@
            03  IDZ                 PIC 9(04).
            03  IDXX                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-WIDMSG          PIC X(70). 
@@ -183,10 +183,10 @@
                05  WRK-HDD         PIC 9(02).
       *         
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
@@ -202,29 +202,29 @@
            COPY    "CPSK1903.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
       *
            COPY    "CPORCSDAY.INC".
       *
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -243,7 +243,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -257,15 +257,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -278,24 +278,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "WERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -319,11 +319,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -344,7 +344,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID-SET-SEC            SECTION.
       *
@@ -354,7 +354,7 @@
                        PERFORM 490-SAKUJYO-SEC
                    WHEN    "1003"
                    WHEN    "1001"
-      *                ��Ͽ���ΰ��ŵ���̤̾���Ϥηٹ�
+      *                登録時の医療機関名未入力の警告
                        IF      SPA-GMN-HOSPNAME-G  =   SPACE
                            MOVE    "1006"              TO  SPA-WIDCD2
                            MOVE    SPACE               TO  SPA-WID1-FLG
@@ -394,14 +394,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̣��ʣףɣģ��ˣϣ˽���
+      *    確認画面２（ＷＩＤ２）ＯＫ処理
       *****************************************************************
        330-WID2-SET-SEC            SECTION.
       *
            IF      SPA-WID2-FLG    =   "OK"
                EVALUATE    SPA-WIDCD2
                    WHEN    "1003"
-      *                ��Ͽ���ΰ��ŵ���̤̾���Ϥηٹ�
+      *                登録時の医療機関名未入力の警告
                        IF      SPA-GMN-HOSPNAME-G  =   SPACE
                            MOVE    "1007"              TO  SPA-WIDCD2
                            MOVE    SPACE               TO  SPA-WID2-FLG
@@ -439,7 +439,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -491,7 +491,7 @@
            MOVE    SYS-1002-TEL        TO  SPA-GMN-HTEL
            MOVE    SYS-1002-FAX        TO  SPA-GMN-HFAX
       *
-      *    ��ʬ�������Խ�����
+      *    区分コード編集処理
            PERFORM 500-KBNCD-HENSYU-SEC
       * 
            MOVE    SPACE               TO  SYS-1900-REC
@@ -525,27 +525,27 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *    ���ꥢ
+      *    クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
       *----(04.06.01)--ADD-START---
-      *    ���
+      *    削除
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM 430-DEL-SEC
       *----(04.06.01)--ADD-END-----
-      *    ��������
+      *    タグ切替
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 480-TAG-CHANGE-SEC
-      *    ��Ͽ
+      *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KOUSHIN-MAE-SEC
            END-EVALUATE
@@ -555,18 +555,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ��ʬ������
+      *        区分コード
                WHEN    "ACTIVATE"       ALSO    "KBNCD"
                    PERFORM 4100-KBNCD-CHK-SEC
-      *        ����
+      *        タグ
                WHEN    "SWITCH"        ALSO    "note3"
                    PERFORM 440-TAG-CHANGE-SEC
-      *        ���ʬ
+      *        一括分
                WHEN    "ACTIVATE"       ALSO    ANY
                    PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
@@ -576,7 +576,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʬ���������Ͻ���
+      *    区分コード入力処理
       *****************************************************************
        4100-KBNCD-CHK-SEC       SECTION.
       *
@@ -677,7 +677,7 @@
        4100-KBNCD-CHK-EXT.
       *
       *****************************************************************
-      *    ���ʬ�����Ͻ���
+      *    一括分　入力処理
       *****************************************************************
        400-ENTRY-SYORI-SEC       SECTION.
       *
@@ -685,26 +685,26 @@
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    ZERO                TO  FLG-TOUROKU
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
        400-ENTRY-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO  TO  410-INPUT-CHK-EXT
            END-IF
       *
-      *    �����������å�����
+      *    更新前チェック処理
            IF      FLG-TOUROKU         =   1   OR  2
                PERFORM 4103-KAKUTEI-CHK-SEC
            END-IF
@@ -714,7 +714,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -738,7 +738,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
@@ -796,7 +796,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ̾�Σ������å�
+      *    名称１チェック
       *****************************************************************
        41021-HOSPNAME1-CHK-SEC         SECTION.
       *
@@ -838,7 +838,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ̾�Σ������å�
+      *    名称２チェック
       *****************************************************************
        41022-HOSPNAME2-CHK-SEC         SECTION.
       *
@@ -865,7 +865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ̾�Σ������å�
+      *    名称３チェック
       *****************************************************************
        41023-HOSPNAME3-CHK-SEC         SECTION.
       *
@@ -892,7 +892,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���߼�̾�����å�
+      *    開設者名チェック
       *****************************************************************
        41024-KAISETUNAME-CHK-SEC         SECTION.
       *
@@ -918,7 +918,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���꣱�����å�����
+      *    住所１チェック処理
       *****************************************************************
        41025-ADRS1-CHK-SEC             SECTION.
       *
@@ -948,7 +948,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꣲ�����å�����
+      *    住所２チェック処理
       *****************************************************************
        41026-ADRS2-CHK-SEC             SECTION.
       *
@@ -975,7 +975,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꣳ�����å�����
+      *    住所３チェック処理
       *****************************************************************
        41027-ADRS3-CHK-SEC             SECTION.
       *
@@ -1002,7 +1002,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�̻�������å�
+      *    帳票別指定チェック
       *****************************************************************
        41028-PRTKBN-CHK-SEC       SECTION.
       *
@@ -1029,7 +1029,7 @@
       *
       *----(04.03.01)--ADD-START---
       *****************************************************************
-      *    �쥻�ť����å�
+      *    レセ電チェック
       *****************************************************************
        41029-RECEDEN-CHK-SEC       SECTION.
       *
@@ -1061,7 +1061,7 @@
       *
       *----(04.03.01)--ADD-END-----
       *****************************************************************
-      *    �����������å�����
+      *    更新前チェック処理
       *****************************************************************
        4103-KAKUTEI-CHK-SEC            SECTION.
       *
@@ -1084,18 +1084,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
            MOVE   W18-PAGENO           TO  WRK-PAGENO
       *
-      *    �������Ѥ�ä��Ȥ����ܥ����å�
+      *    タグが変わったとき項目チェック
       *****IF      IDX              NOT =   W18-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
-      *        ���ϥ����å�����
+      *        入力チェック処理
                MOVE    2                   TO  FLG-TOUROKU
                PERFORM 410-INPUT-CHK-SEC
                IF      SPA-ERRCD            =   SPACE
@@ -1138,7 +1138,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
       *
@@ -1158,7 +1158,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ����
+      *    クリア処理
       *****************************************************************
        420-CLEAR-SEC                   SECTION.
       *
@@ -1174,7 +1174,7 @@
       *
       *----(04.06.01)--ADD-START---
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        430-DEL-SEC                 SECTION.
       *
@@ -1190,11 +1190,11 @@
       *
       *----(04.06.01)--ADD-END-----
       *****************************************************************
-      *    �������ؽ���
+      *    タグ切替処理
       *****************************************************************
        480-TAG-CHANGE-SEC              SECTION.
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            MOVE    2                   TO  FLG-TOUROKU
@@ -1237,11 +1237,11 @@
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ������
+      *       登録前処理
       *****************************************************************
        490-KOUSHIN-MAE-SEC              SECTION.
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            MOVE    1                   TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
@@ -1283,11 +1283,11 @@
       *
       *----(04.06.01)--ADD-START---
       *****************************************************************
-      *       �������
+      *       削除処理
       *****************************************************************
        490-SAKUJYO-SEC             SECTION.
       *
-      *    ���ŵ����Խ�����ݴ��ܾ���
+      *    医療機関編集情報−基本情報
            MOVE    SPACE               TO  SYS-1901-REC
            INITIALIZE                      SYS-1901-REC
            MOVE    "1901"              TO  SYS-1901-KANRICD
@@ -1307,7 +1307,7 @@
                GO  TO  490-SAKUJYO-EXT
            END-IF
       *
-      *    ���ŵ����Խ�����ݴ��ܾ���ʣ���
+      *    医療機関編集情報−基本情報（２）
            MOVE    SPACE               TO  SYS-1903-REC
            INITIALIZE                      SYS-1903-REC
            MOVE    "1903"              TO  SYS-1903-KANRICD
@@ -1327,7 +1327,7 @@
                GO  TO  490-SAKUJYO-EXT
            END-IF
       *
-      *    ���ŵ����Խ�����ݽ���ϡ�Ϣ����
+      *    医療機関編集情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1902-REC
            INITIALIZE                      SYS-1902-REC
            MOVE    "1902"              TO  SYS-1902-KANRICD
@@ -1347,7 +1347,7 @@
                GO  TO  490-SAKUJYO-EXT
            END-IF
       *
-      *    ���Ѿ��������å�
+      *    使用状況チェック
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-PRTKBN-MAX
@@ -1367,7 +1367,7 @@
                END-IF
            END-PERFORM
       *
-      *    Ģɼ�̻������
+      *    帳票別指定情報
            MOVE    SPACE               TO  SYS-1900-REC
            INITIALIZE                      SYS-1900-REC
            MOVE    "1900"              TO  SYS-1900-KANRICD
@@ -1424,10 +1424,10 @@
            END-IF
            END-IF
       *
-      *    ��ʬ�������Խ�����
+      *    区分コード編集処理
            PERFORM 500-KBNCD-HENSYU-SEC
       *
-      *    ���ܥ��ꥢ
+      *    項目クリア
            INITIALIZE                  SPA-GMN-KOUMOKU1
                                        SPA-GMN-KBNCD-G
            MOVE    1                   TO  SPA-GMN-CUR
@@ -1437,7 +1437,7 @@
            EXIT.
       *----(04.06.01)--ADD-END-----
       *****************************************************************
-      *       ��Ͽ����
+      *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
@@ -1447,11 +1447,11 @@
                WHEN    ANY          ALSO    "1003"
                WHEN    ANY          ALSO    "1006"
                WHEN    ANY          ALSO    "1007"
-      *            ���ŵ����Խ�����
+      *            医療機関編集情報
                    IF      SPA-GMN-KBNCD       =   SPACE
                        CONTINUE
                    ELSE 
-      *                ���ŵ����Խ�����ݴ��ܾ���
+      *                医療機関編集情報−基本情報
                        MOVE    SPACE               TO  SYS-1901-REC
                        INITIALIZE                      SYS-1901-REC
                        MOVE    "1901"              TO  SYS-1901-KANRICD
@@ -1515,7 +1515,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                            GO  TO  490-KOUSHIN-EXT
                        END-IF
       *
-      *                ���ŵ����Խ�����ݴ��ܾ���ʣ���
+      *                医療機関編集情報−基本情報（２）
                        MOVE    SPACE               TO  SYS-1903-REC
                        INITIALIZE                      SYS-1903-REC
                        MOVE    "1903"              TO  SYS-1903-KANRICD
@@ -1597,7 +1597,7 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-IF
       *
-      *                ���ŵ����Խ�����ݽ���ϡ�Ϣ����
+      *                医療機関編集情報−所在地、連絡先
                        MOVE    SPACE               TO  SYS-1902-REC
                        INITIALIZE                      SYS-1902-REC
                        MOVE    "1902"              TO  SYS-1902-KANRICD
@@ -1690,15 +1690,15 @@ grpsys                     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF      
       *
-      *            ��ʬ�������Խ�����
+      *            区分コード編集処理
                    PERFORM 500-KBNCD-HENSYU-SEC
       *
-      *            ���ܥ��ꥢ
+      *            項目クリア
                    INITIALIZE                  SPA-GMN-KOUMOKU1
                                                SPA-GMN-KBNCD-G
                    MOVE    1                   TO  SPA-GMN-CUR
                WHEN    OTHER
-      *            Ģɼ�̻������
+      *            帳票別指定情報
                    MOVE    SPACE               TO  SYS-1900-REC
                    INITIALIZE                      SYS-1900-REC
                    MOVE    "1900"              TO  SYS-1900-KANRICD
@@ -1793,7 +1793,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "1003"       ALSO    ANY
                WHEN    "1004"       ALSO    ANY
                WHEN    ANY          ALSO    "1006"
-      *            ���ŵ����Խ�����
+      *            医療機関編集情報
                    MOVE    SPACE               TO  SYSKANRI-REC
                    INITIALIZE                      SYSKANRI-REC
                    MOVE    SPA-W01-STYUKYMD    TO  SYS-STYUKYMD
@@ -1899,12 +1899,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��ʬ�������Խ�����
+      *    区分コード編集処理
       *****************************************************************
        500-KBNCD-HENSYU-SEC            SECTION.
       *
            INITIALIZE                      SPA-GMN-KBNCDLST-G
-      *    �����ƥ�����ɤ߹���
+      *    システム管理読み込み
            INITIALIZE                      SYS-1901-REC
            MOVE    "1901"              TO  SYS-1901-KANRICD
            MOVE    SPA-W01-STYUKYMD    TO  SYS-1901-STYUKYMD
@@ -1965,9 +1965,9 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                ADD     1                   TO  SPA-GMN-KBNCD-MAX
                MOVE    SPA-GMN-KBNCD-MAX   TO  IDY
                MOVE    SYS-1901-KBNCD      TO  SPA-GMN-KBNCDL (IDY)
-               STRING  "̾��"                  DELIMITED  BY SIZE
+               STRING  "名称"                  DELIMITED  BY SIZE
                        WRK-MOJI1               DELIMITED  BY  SPACE
-                       "�����"                DELIMITED  BY SIZE
+                       "所在地"                DELIMITED  BY SIZE
                        WRK-MOJI2               DELIMITED  BY  SPACE
                        INTO                SPA-GMN-KBNCDMEIL (IDY)
                END-STRING
@@ -1976,7 +1976,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1985,7 +1985,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�̻����ʬ�Խ�����
+      *    帳票別指定区分編集処理
       *****************************************************************
        500-PRTKBN-HENSYU-SEC           SECTION.
       *
@@ -2005,7 +2005,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -2036,7 +2036,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -2100,7 +2100,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -2108,67 +2108,67 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "��ʬ���������ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "区分コード入力エラー"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "̾�Ρʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "名称（１段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "̾�Ρʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "名称（２段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "̾�Ρʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "名称（３段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "����ϡʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "所在地（１段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "����ϡʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "所在地（２段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "����ϡʣ����ܡˤ����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "所在地（３段目）は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "���߼�̾�����Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "開設者名は全角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "Ģɼ�̻������ϥ��顼"        TO  SPA-ERRMSG
+                   MOVE    "帳票別指定入力エラー"        TO  SPA-ERRMSG
       *----(04.03.01)--ADD-START---
                WHEN    "0011"
                    MOVE
-              "�쥻�ץ��Ż��ΰ��ŵ���̾�Τϣ�������ʸ������ˤ��Ʋ�����"
+              "レセプト電算の医療機関名称は１〜２０文字以内にして下さい"
                                                          TO  SPA-ERRMSG
       *----(04.03.01)--ADD-END-----
                WHEN    "0100"
                    MOVE
-                   "���Ϲ��ܤ�����Τ˶�ʬ�����ɤ����Ϥ���Ƥ��ޤ���"
+                   "入力項目があるのに区分コードが入力されていません"
                                                          TO  SPA-ERRMSG
                WHEN    "0101"
                    MOVE
-                       "���ܤ�̤���ϤʤΤǹ����Ǥ��ޤ���"
+                       "項目が未入力なので更新できません"
                                                          TO  SPA-ERRMSG
       *----(04.06.01)--ADD-START---
                WHEN    "0102"
                    MOVE
-                       "��ʬ�����ɤ����򤵤�Ƥ��ʤ��ΤǺ���Ǥ��ޤ���"
+                       "区分コードが選択されていないので削除できません"
                                                          TO  SPA-ERRMSG
       *----(04.06.01)--ADD-END-----
                WHEN    "1001"
-                   MOVE    "Ģɼ�̻������ι������Ǥ��ޤ���Ǥ���"
+                   MOVE    "帳票別指定情報の更新ができませんでした"
                                                          TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "Ģɼ�̻������κ�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "帳票別指定情報の削除ができませんでした"
                                                          TO  SPA-ERRMSG
                WHEN    "1003"
-                   MOVE    "���ŵ���̾�ξ���ι������Ǥ��ޤ���Ǥ���"
+                   MOVE    "医療機関名称情報の更新ができませんでした"
                                                          TO  SPA-ERRMSG
                WHEN    "1004"
-                   MOVE    "���ŵ���̾�ξ���κ�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "医療機関名称情報の削除ができませんでした"
                                                          TO  SPA-ERRMSG
                WHEN    "1005"
-                   MOVE    "����Ͼ���ι������Ǥ��ޤ���Ǥ���"
+                   MOVE    "所在地情報の更新ができませんでした"
                                                          TO  SPA-ERRMSG
                WHEN    "1006"
-                   MOVE    "����Ͼ���κ�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "所在地情報の削除ができませんでした"
                                                          TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -2192,7 +2192,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -2200,21 +2200,21 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "���ŵ����Խ��������Ͽ���ޤ�"
+                   MOVE    "医療機関編集情報を登録します"
                                                 TO  WRK-WIDMSG
                WHEN    "1002"
-                   MOVE    "Ģɼ�̻���������Ͽ���ޤ�"
+                   MOVE    "帳票別指定情報を登録します"
                                                 TO  WRK-WIDMSG
                WHEN    "1003"
                WHEN    "1004"
                    MOVE
-                   "Ŭ�������ѹ����ޤ��Τǡ���Ͽ��������̤����ޤ�"
+                   "適用日を変更しますので、登録後選択画面へ戻ります"
                                                 TO  WRK-WIDMSG
                WHEN    "1005"
                    MOVE
-                   "���ŵ����Խ������Ģɼ�̻���ޤ�ˤ������ޤ���"
+                   "医療機関編集情報（帳票別指定含む）を削除します。"
                                                 TO  WRK-WIDMSG(1:48)
-                   MOVE    "��������Ǥ�����"   TO  WRK-WIDMSG(49:16)
+                   MOVE    "よろしいですか？"   TO  WRK-WIDMSG(49:16)
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
@@ -2238,7 +2238,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        530-WID2SET-SEC             SECTION.
       *
@@ -2247,16 +2247,16 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-WIDCD2
                WHEN    "1003"
                    MOVE
-                   "���̤����ؤ��ޤ������ŵ����Խ��������Ͽ���ޤ�����"
+                   "画面を切替えます。医療機関編集情報を登録しますか？"
                                                 TO  WRK-WIDMSG
                WHEN    "1004"
                    MOVE
-                   "���̤����ؤ��ޤ���Ģɼ�̻���������Ͽ���ޤ�����"
+                   "画面を切替えます。帳票別指定情報を登録しますか？"
                                                 TO  WRK-WIDMSG
                WHEN    "1006"
                WHEN    "1007"
                    MOVE
-                   "���ŵ���̾�Τ�̤���ϤǤ��������Τޤ���Ͽ���ޤ�����"
+                   "医療機関名称が未入力ですが、このまま登録しますか？"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -2264,8 +2264,8 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                       WID2
            MOVE    SPA-WIDCD2           TO  WID2-ID1CODE
            MOVE    WRK-WIDMSG           TO  WID2-ID1MSG
-           MOVE    "������"             TO  WID2-B01 
-           MOVE    "��  ��"             TO  WID2-B12 
+           MOVE    "いいえ"             TO  WID2-B01 
+           MOVE    "は  い"             TO  WID2-B12 
            MOVE    "B12"                TO  MCP-WIDGET
       *
            MOVE    "W18"                TO  SPA-MOTOPG
@@ -2283,7 +2283,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���    
+      *    画面カーソルセット処理    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -2391,7 +2391,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    カーソル編集処理
       *****************************************************************
        50011-CUR-SET-SEC         SECTION.
       *
@@ -2479,7 +2479,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
       *
@@ -2511,7 +2511,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -2536,7 +2536,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -2547,7 +2547,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -2575,7 +2575,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -2590,7 +2590,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2603,7 +2603,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2618,7 +2618,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2632,7 +2632,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,60 +16,60 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �Խ�����̾�ޥ����� (CPBYOMEIWK.INC)
+      *  編集用病名マスター (CPBYOMEIWK.INC)
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *01  BYOMEIWK-REC.
       *
-      *������ʬ
+      *処理区分
            03  BYOWK-SYORIKBN          PIC X.
            03  BYOWK-KEY.
-      *��̾������
+      *病名コード
                05  BYOWK-BYOMEICD      PIC X(07).
-      *��̾
+      *病名
            03  BYOWK-BYOMEI            PIC X(200).
-      *��̾ʸ����
+      *病名文字数
            03  BYOWK-BYOMEIMOJI        PIC 9(03).
-      *��ά��̾
+      *省略病名
            03  BYOWK-TANBYOMEI         PIC X(200).
-      *��ά��̾ʸ����
+      *省略病名文字数
            03  BYOWK-TANBYOMEIMOJI     PIC 9(03).
-      *��̾����
+      *病名カナ
            03  BYOWK-BYOMEIKANA        PIC X(200).
-      *�ܹ��襳����
+      *移行先コード
            03  BYOWK-IKOSAKICD         PIC X(07).
-      *�������������
+      *特定疾患コード
            03  BYOWK-TOKSKNCD          PIC 9(02).
-      *�����ե饰
+      *疑いフラグ
            03  BYOWK-UTAGAIFLG         PIC X(01).
-      *ñ�Ȼ��Ѷػ߶�ʬ
+      *単独使用禁止区分
            03  BYOWK-TANDOKUKBN        PIC 9(02).
-      *�ݸ����ᳰ��ʬ
+      *保険請求外区分
            03  BYOWK-HKNSKYKBN         PIC 9(01).
-      *��̾������ʬ
+      *病名管理区分
            03  BYOWK-HYOJUNCD          PIC X(08).
-      *�����ʬ
+      *採択区分
            03  BYOWK-SAITAKUKBN        PIC X(01).
-      *��̾���ѥ�����
+      *病名交換用コード
            03  BYOWK-BYOMEICHGCD       PIC X(04).
-      *�ɣãģ���
+      *ＩＣＤ１０
            03  BYOWK-ICD10             PIC X(05).
-      *����ǯ����
+      *収載年月日
            03  BYOWK-SYUSAIYMD         PIC X(08).
-      *�ѹ�ǯ����
+      *変更年月日
            03  BYOWK-CHGYMD            PIC X(08).
-      *�ѻ�ǯ����
+      *廃止年月日
            03  BYOWK-HAISIYMD          PIC X(08).
-      *ü���ɣ�
+      *端末ＩＤ
            03  BYOWK-TERMID            PIC X(32).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  BYOWK-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  BYOWK-CREYMD            PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  BYOWK-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  BYOWK-UPHMS             PIC X(06).

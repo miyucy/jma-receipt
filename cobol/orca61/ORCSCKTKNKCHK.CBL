@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSCKTKNKCHK.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ޤȤ�����
-      *  ����ݡ��ͥ��̾  : �ش����ޥ����å����Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/03/02    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 外来まとめ入力
+      *  コンポーネント名  : 禁忌薬剤チェック・編集処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/03/02    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.00    NACL-¿��Ǽ  11/10/XX  �����å��ޥ�����ʻ�Ѷش��б�
-      *  04.07.00    NACL-¿��Ǽ  13/07/12  ��ߤξɾ��������Խ��б�
-      *  04.08.00    NACL-¿��Ǽ  16/08/XX  ��ߺ��ѥ����å���ʬ�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  11/10/XX  チェックマスタの併用禁忌対応
+      *  04.07.00    NACL-多々納  13/07/12  相互の症状コード編集対応
+      *  04.08.00    NACL-多々納  16/08/XX  相互作用チェック区分対応
       *****************************************************************
       *
       *
@@ -44,7 +44,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-INTERACT        PIC 9(01).
@@ -64,7 +64,7 @@
            03  FLG-ARI2            PIC 9(01).
            03  FLG-KINKI-CHK       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -81,13 +81,13 @@
       *
            03  IDX-S2              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
                05  WRK-SDD         PIC 9(02).
-      *    �ش�����
+      *    禁忌期間
            03  WRK-KIKAN               PIC 9(02).
            03  WRK-SRYYM.
                05  WRK-SRYYY           PIC 9(04).
@@ -98,7 +98,7 @@
                05  WRK-TOUDD       PIC 9(02).
            03  WRK-SRYYM-CHK           PIC X(06).
            03  WRK-NYUGAIKBN           PIC X(01).
-      *    �ش����ޥ����å�
+      *    禁忌薬剤チェック
            03  WRK-KNKYAK-AREA.
               05  WRK-KNKYAK-TBL             OCCURS   100.
                    09  WRK-KNKYAK-SRYCD           PIC  X(09).
@@ -108,7 +108,7 @@
            03  WRK-SRYYMD              PIC X(08).
            03  WRK-DAY                 PIC 9(02).
       *
-      *    �ش������å��ѥơ��֥�
+      *    禁忌チェック用テーブル
        01  WRK-KNKCHK-AREA.
            03  WRK-KNK-TBL             OCCURS   100.
                05  WRK-KNK-TOUMEI          PIC X(100). 
@@ -150,71 +150,71 @@
       *
        01  WRK-SYSTIME               PIC 9(08).
       *
-      *    ��¸�ӣУ��ΰ���
+      *    保存ＳＰＡ領域ワーク
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
-      *    ��ߺ��ѥޥ���
+      *    相互作用マスタ
        01  INTERACT-REC.
            COPY    "CPINTERACT.INC".
-      *    �����å��ޥ�����
+      *    チェックマスタ−
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ������Ź԰�Ÿ��������
+      *    ワーク診療行為展開・作成
            COPY    "CPORCSCKTWKSRY.INC".
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ѥ�᥿
+      *    パラメタ
            COPY    "CPORCSCKNKCHK.INC".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "KT01SCR-SPA".
       *
-      *    �ӣУ��ѥ�᥿
+      *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
@@ -226,7 +226,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -249,7 +249,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SYORI-SEC           SECTION.
       *
@@ -259,15 +259,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å��������Խ�����
+      *    禁忌薬剤チェック用投薬編集処理
       *****************************************************************
        100-SRYACT-SPASET-SEC           SECTION.
       *
-      *    ��ߺ��ѥ����å�����
+      *    相互作用チェック期間
            INITIALIZE                  SPA-KNKYAK-AREA
            INITIALIZE                  WRK-KNKYAK-AREA
            MOVE    ZERO                TO  IDX
-      *    �о�ǯ��ݣ�������
+      *    対象年月−１月を求める
            MOVE    SPA-SRYYMD(1:6)     TO  WRK-SRYYM
            MOVE    SPA-INTERACT-KIKAN  TO  WRK-KIKAN
            PERFORM UNTIL     WRK-KIKAN     <   12
@@ -289,12 +289,12 @@
            IF     (SPA-LSTYMD          =   SPACE )
                MOVE    1                   TO  FLG-END
            END-IF
-      *    �ش����ޥ����å����Խ�����
+      *    禁忌薬剤チェック用編集処理
            IF      FLG-END              =  ZERO
                PERFORM 1001-KNKYAKSET-HENSYU-SEC
            END-IF
       *
-      *    ��ߺ��ѥ쥳���ɤ�ꡢ�ش�̵ͭ�Υ����å���Ԥ�
+      *    相互作用レコードより、禁忌有無のチェックを行う
            INITIALIZE                  SPA-KNKYAK-AREA
            PERFORM VARYING     IDX3    FROM    1   BY  1
                    UNTIL      (IDX3        >   100 )  OR
@@ -319,7 +319,7 @@
                    MOVE    "tbl_interact"      TO  MCP-TABLE
                    MOVE    "key2"              TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
-      *            �ش�����
+      *            禁忌あり
                    IF      FLG-INTERACT          =   ZERO
                        ADD     1             TO  SPA-KNK-MAX
                        MOVE    WRK-KNKYAK-SRYCD (IDX3)
@@ -330,7 +330,7 @@
                                                 (SPA-KNK-MAX)
       *ver.4.7
                    ELSE
-      *                �����å��ޥ���Ƚ��
+      *                チェックマスタ判定
                        PERFORM 1001-CHK-CHECK-SEC
       *ver.4.7
                    END-IF
@@ -342,7 +342,7 @@
            EXIT.
       *ver.4.7
       *****************************************************************
-      *    �����å��ޥ����о�Ƚ�����
+      *    チェックマスタ対象判定処理
       *****************************************************************
        1001-CHK-CHECK-SEC              SECTION.
       *
@@ -371,7 +371,7 @@
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �����å��ޥ�������
+      *    チェックマスタあり
            IF      FLG-CHKMST          =   ZERO
                ADD     1               TO  SPA-KNK-MAX
                MOVE    WRK-KNKYAK-SRYCD (IDX3)
@@ -387,15 +387,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å����Խ�����
+      *    禁忌薬剤チェック用編集処理
       *****************************************************************
        1001-KNKYAKSET-HENSYU-SEC              SECTION.
       *
-      *    ����ʬ
+      *    外来分
            MOVE    "2"                 TO  WRK-NYUGAIKBN
            PERFORM 10011-KNKYAKSET-HENSYU-02-SEC
       *
-      *    ����
+      *    入院
            IF    ( SPA-NYUGAIKBN       =   "1"  )  OR
                  ((SPA-NYUGAIKBN       =   "2"  )  AND
                   (SPA-K02N-TAIINYMD   NOT =   SPACE ) AND
@@ -408,18 +408,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å����Խ�����
+      *    禁忌薬剤チェック用編集処理
       *****************************************************************
        10011-KNKYAKSET-HENSYU-02-SEC    SECTION.
       *
-      *    ���Ų�ץޥ����������å�����
+      *    診療会計マスタよりチェックする
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    WRK-NYUGAIKBN       TO  ACCT-NYUGAIKBN
            MOVE    SPA-PTID            TO  ACCT-PTID
            MOVE    WRK-SRYYM           TO  ACCT-SRYYM
-      *    ����ǯ����ѹ���
+      *    診療年月検索用項目
            MOVE    WRK-SRYYM           TO  ACCT-STSRYYM
            MOVE    SPA-SRYYMD(1:6)     TO  ACCT-EDSRYYM
       *
@@ -449,11 +449,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش������Խ�����
+      *    禁忌薬剤編集処理
       *****************************************************************
        1002-KNK-KOUISET-SEC              SECTION.
       *
-      *    �ǽ�������
+      *    最終投薬日
            MOVE    ZERO                TO  WRK-TOUYMD
            MOVE    ACCT-SRYYM          TO  WRK-TOUYMD(1:6)
            PERFORM VARYING     IDX-Y2  FROM    31  BY  -1
@@ -468,7 +468,7 @@
                GO      TO      1002-KNK-KOUISET-EXT
            END-IF
       *
-      *    ���Ų�ץޥ�����������Ź԰٥ޥ������򸡺�����
+      *    診療会計マスターから診療行為マスターを検索する
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -502,7 +502,7 @@
                        END-IF
                        IF      WRK-KNKYAK-SRYCD (IDX3)
                                                    =  SRY-SRYCD (IDX2)
-      *                    �ǽ��������Υ��å�
+      *                    最終投薬日のセット
                            IF     (WRK-KNKYAK-TOUYMD(IDX3)
                                                    =   SPACE )  OR
                                   (WRK-KNKYAK-TOUYMD(IDX3)
@@ -533,7 +533,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å�����
+      *    禁忌薬剤チェック処理
       *****************************************************************
        200-KNKCHK-IN-SEC           SECTION.
       *
@@ -549,13 +549,13 @@
                              ((SPA-GMN-INPUTCD(IDX-Z)  =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX-Z)  =   SPACE ))
                IF     (SPA-COM-INPUTCD (IDX-Z)(1:1)    =  "6" )
-      *            �ش����ޥ����å�����
+      *            禁忌薬剤チェック処理
                    IF      (SPA-COM-KNKFLG (IDX-Z)  =   SPACE )  AND
                            (SPA-COM-KNKUMU (IDX-Z)  =   SPACE )
       *H28.8
-      *                ��ߺ��ѥ����å���ʬȽ��
+      *                相互作用チェック区分判定
                        IF      SPA-INTERACT-CHKKBN  =   "1"
-      *                    �����å��ޥ����Τ��о�
+      *                    チェックマスタのみ対象
                            PERFORM 2003-CHKMSTONLY-CHK-SEC
                        ELSE
       *
@@ -565,7 +565,7 @@
                END-IF
            END-PERFORM
       *
-      *    ���顼�����Խ�
+      *    エラー画面編集
            IF      FLG-KINKI           =   1
                PERFORM 2002-KT011-SYORI-SEC
            END-IF
@@ -574,12 +574,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å�����
+      *    禁忌薬剤チェック処理
       *****************************************************************
        2001-KNKYAK-CHK-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-KINKI-ARI2
-      *    ��ߺ��ѥ쥳���ɤ�ꡢ�ش�̵ͭ�Υ����å���Ԥ�
+      *    相互作用レコードより、禁忌有無のチェックを行う
            INITIALIZE                  INTERACT-REC
            MOVE    SPA-COM-INPUTCD (IDX-Z)
                                        TO  INTERACT-DRUGCD
@@ -595,16 +595,16 @@
            ELSE
                MOVE    1                   TO  FLG-INTERACT
            END-IF
-      *    �ش��ʤ�
+      *    禁忌なし
            IF      FLG-INTERACT        =   1
                MOVE    "1"             TO  SPA-COM-KNKUMU (IDX-Z)
            END-IF
-      *    ������
+      *    １回目
            IF     (FLG-INTERACT        =   ZERO )  AND
                   (SPA-KNK-SRYCD (100) =   SPACE )
                PERFORM 2000-KNK-SPASET-SEC
            END-IF
-      *    �ش������å�
+      *    禁忌チェック
            MOVE    ZERO                TO  IDX-K2
            ADD     1                   TO  IDX-K1
            PERFORM
@@ -641,12 +641,12 @@
                MOVE    1                   TO  FLG-ARI2
            END-IF
       *ver.4.7
-      *    �����å��ޥ����ȤΥ����å�
+      *    チェックマスタとのチェック
            PERFORM 2009-KNKYKCHKMST-CHK-SEC
       *
-      *    �ش��ʤ�
+      *    禁忌なし
            IF      FLG-ARI2            =   ZERO
-      *        �ش��ǡ�������
+      *        禁忌データあり
                IF     (SPA-COM-KNKUMU (IDX-Z)  =   SPACE )
                    PERFORM VARYING     IDX-K       FROM    1   BY  1
                            UNTIL      (IDX-K       >     100  )
@@ -672,20 +672,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰������Խ�����
+      *    診療行為薬剤編集処理
       *****************************************************************
        2000-KNK-SPASET-SEC           SECTION.
       *
            MOVE    "tbl_interact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �ش����ޥ����å��������Խ�����
+      *    禁忌薬剤チェック用投薬編集処理
            PERFORM 100-SRYACT-SPASET-SEC
            IF      SPA-KNK-SRYCD (100) =   SPACE
                MOVE    "999999999"         TO  SPA-KNK-SRYCD (100)
            END-IF
       *
-      *    �Ƹ���
+      *    再検索
            INITIALIZE                  INTERACT-REC
            MOVE    SPA-COM-INPUTCD (IDX-Z)
                                        TO  INTERACT-DRUGCD
@@ -704,12 +704,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å�����
+      *    禁忌薬剤チェック処理
       *****************************************************************
        20011-KNKCHK-SYORI-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-KINKI-ARI
-      *    ���Ų�ץޥ����ȤΥ����å�
+      *    診療会計マスタとのチェック
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   SPA-KNK-MAX )  OR
                               (FLG-KINKI-ARI   =   1   ) OR
@@ -719,15 +719,15 @@
                MOVE    ZERO                    TO  FLG-KINKI-CHK
                IF    ( SPA-COM-INPUTCD (IDX-Z)
                                            NOT =   SPA-KNK-SRYCD(IDX-S))
-      *            ��
+      *            前
                    IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD2)
                        MOVE    1                   TO  FLG-KINKI-CHK
                    END-IF
-      *            ��
+      *            後
                    IF     (SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD)
                        MOVE    2                   TO  FLG-KINKI-CHK
                    END-IF
-      *            ��������ʬ���оݳ�
+      *            今回入力分は対象外
                    PERFORM 200111-INPUT-CHK-SEC
                END-IF
       ****     IF    ((SPA-KNK-SRYCD (IDX-S)   =   INTERACT-DRUGCD ) OR
@@ -757,7 +757,7 @@
                                                         (IDX-K1 IDX-K2)
                END-IF
            END-PERFORM
-      *    ���β��̤ȤΥ����å�
+      *    前の画面とのチェック
            PERFORM VARYING     IDX-S       FROM    1   BY  1
                    UNTIL      (IDX-S           >   100  )  OR
                               (WRK-KNK-GSRYCD (IDX-S)  =   SPACE )  OR
@@ -781,7 +781,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��������ʬ�ȤΥ����å�
+      *    画面入力分とのチェック
            IF      FLG-ALLFLG          =   1
                MOVE    1                   TO  IDX-K3
                COMPUTE IDX-K4              =   IDX-Z   -   1
@@ -824,7 +824,7 @@
        20011-KNKCHK-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ʬ�����å�����
+      *    今回入力分チェック処理
       *****************************************************************
        200111-INPUT-CHK-SEC              SECTION.
       *
@@ -846,7 +846,7 @@
       *
       *ver.4.7
       *****************************************************************
-      *    �����å��ޥ����ȤΥ����å�����
+      *    チェックマスタとのチェック処理
       *****************************************************************
        2009-KNKYKCHKMST-CHK-SEC              SECTION.
       *
@@ -871,7 +871,7 @@
            ELSE
                MOVE    1                   TO  FLG-CHKMST
            END-IF
-      *    �����å��ޥ����ζش�����
+      *    チェックマスタの禁忌あり
            IF      FLG-CHKMST          =   ZERO
                MOVE    SPACE               TO  SPA-COM-KNKUMU (IDX-Z)
            END-IF
@@ -889,7 +889,7 @@
                         MOVE    30             TO  IDX-C
                    END-IF
                END-PERFORM
-      *        ������
+      *        １回目
                IF     (FLG-ARI             =   ZERO  )  AND
                       (SPA-KNK-SRYCD (100) =   SPACE )
                    PERFORM 20091-KINCHK-SPASET-SEC
@@ -936,20 +936,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰������Խ������ʥ����å��ޥ�����
+      *    診療行為薬剤編集処理（チェックマスタ）
       *****************************************************************
        20091-KINCHK-SPASET-SEC           SECTION.
       *
            MOVE    "tbl_chk"           TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �ش����ޥ����å��������Խ�����
+      *    禁忌薬剤チェック用投薬編集処理
            PERFORM 100-SRYACT-SPASET-SEC
            IF      SPA-KNK-SRYCD (100) =   SPACE
                MOVE    "999999999"         TO  SPA-KNK-SRYCD (100)
            END-IF
       *
-      *    �Ƹ���
+      *    再検索
            INITIALIZE                  CHK-REC
            MOVE    SPA-HOSPNUM         TO  CHK-HOSPNUM
            MOVE    "4"                 TO  CHK-CHKKBN
@@ -978,18 +978,18 @@
       *
       *H28.8
       *****************************************************************
-      *    �����å��ޥ����Τ��оݽ���
+      *    チェックマスタのみ対象処理
       *****************************************************************
        2003-CHKMSTONLY-CHK-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-KINKI-ARI2
-      *    �ش������å�
+      *    禁忌チェック
            MOVE    ZERO                TO  IDX-K2
            ADD     1                   TO  IDX-K1
            MOVE    ZERO                TO  FLG-ARI2
-      *    �����å��ޥ����ȤΥ����å�
+      *    チェックマスタとのチェック
            PERFORM 2009-KNKYKCHKMST-CHK-SEC
-      *    �ش��ʤ�
+      *    禁忌なし
            IF      FLG-ARI2            =   ZERO
                MOVE    "1"             TO  SPA-COM-KNKUMU (IDX-Z)
       *
@@ -1002,14 +1002,14 @@
       *H28.8
       *
       *****************************************************************
-      *    �ش����顼��å�����ɽ������
+      *    禁忌エラーメッセージ表示処理
       *****************************************************************
        2002-KT011-SYORI-SEC              SECTION.
       *
-      *    Ʊ�����ޤ�������
+      *    同一薬剤を削除する
            PERFORM 20021-KNK-SORT-SEC
       *
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            INITIALIZE                  SPA-KT011GMN-AREA
            MOVE    FLG-ALLFLG          TO  SPA-KT011-SYORI
            MOVE    ZERO                TO  IDX-K
@@ -1031,22 +1031,22 @@
                        MOVE    IDX-K               TO  SPA-KT011-TSEQNO
                                                                (IDX-K)
                    END-IF
-      *            ��������
+      *            方向設定
                    IF     (WRK-KNK-CHKFLG (IDX-K1 IDX-K2)
                                                =  "2"  )
-                       STRING   "��"
+                       STRING   "←"
                                WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
                                DELIMITED  BY  SIZE
                                        INTO    SPA-KT011-TKNKMEI(IDX-K)
                        END-STRING
                    ELSE
-                       STRING   "��"
+                       STRING   "→"
                                WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
                                DELIMITED  BY  SIZE
                                        INTO    SPA-KT011-TKNKMEI(IDX-K)
                        END-STRING
                    END-IF
-      *            �����å��ޥ����������ʤ�
+      *            チェックマスタは方向なし
                    IF      WRK-KNK-SYOJYOUCD (IDX-K1 IDX-K2)
                                                =   ALL "*"
                        MOVE    WRK-KNK-KNKMEI (IDX-K1 IDX-K2)
@@ -1059,7 +1059,7 @@
                                            TO  SPA-KT011-TSYOJYOUCD
                                                                (IDX-K)
                    IF      WRK-KNK-TOUYMD  (IDX-K1 IDX-K2) =   SPACE
-                       MOVE    "��������"  TO  SPA-KT011-TTOUYMDW(IDX-K)
+                       MOVE    "今回入力"  TO  SPA-KT011-TTOUYMDW(IDX-K)
                    ELSE
                        MOVE    WRK-KNK-TOUYMD (IDX-K1 IDX-K2)
                                                TO  WRK-SYMD
@@ -1077,7 +1077,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ش����� Ʊ�����ޤ�������
+      *    全件　禁忌薬剤 同一薬剤を削除処理
       *****************************************************************
        20021-KNK-SORT-SEC           SECTION.
       *
@@ -1125,7 +1125,7 @@
                END-PERFORM
            END-PERFORM
       *
-      *    ��������ʬ�ϣ����٤ΤߤȤ���
+      *    今回入力分は１明細のみとする
            PERFORM VARYING     IDX-K1      FROM    1   BY  1
                    UNTIL       IDX-K1          >   WRK-KNK-MAX
                PERFORM VARYING     IDX-K2      FROM    1   BY  1
@@ -1157,7 +1157,7 @@
        20021-KNK-SORT-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ʬ����
+      *    今回入力分処理
       *****************************************************************
        200211-KNK-KONCHK-SEC             SECTION.
       *
@@ -1192,7 +1192,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ش����ޥ����å����������Ρ�
+      *    禁忌薬剤チェック処理（全体）
       *****************************************************************
        300-KNKCHK-ALL-SEC           SECTION.
       *
@@ -1214,7 +1214,7 @@
                END-IF
            END-PERFORM
       *
-      *    ������̤λ������顼���̤ʤ�
+      *    初期画面の時、エラー画面なし
            IF      FLG-KINKI           =   1
                PERFORM 2002-KT011-SYORI-SEC
            END-IF
@@ -1225,7 +1225,7 @@
        300-KNKCHK-ALL-EXT.
            EXIT.
       *****************************************************************
-      *    �ش����ޥ����å����������Ρ�
+      *    禁忌薬剤チェック処理（全体）
       *****************************************************************
        3001-ALL-DAYCHEK-SEC             SECTION.
       *
@@ -1252,9 +1252,9 @@
                       (SPA-COM-KNKUMU (IDX-Z)  =   SPACE     )
                    MOVE    ZERO                TO  FLG-KINKI-ARI
       *H28.8
-      *            ��ߺ��ѥ����å���ʬȽ��
+      *            相互作用チェック区分判定
                    IF      SPA-INTERACT-CHKKBN  =   "1"
-      *                �����å��ޥ����Τ��о�
+      *                チェックマスタのみ対象
                        PERFORM 2003-CHKMSTONLY-CHK-SEC
                    ELSE
       *
@@ -1267,7 +1267,7 @@
        3001-ALL-DAYCHEK-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
       *
@@ -1291,7 +1291,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        900-SRYACT-NEXT-SEC         SECTION.
       *
@@ -1310,7 +1310,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ����ɤ߹���
+      *    診療会計マスタ読み込み
       *****************************************************************
        940-SRYACCT-READ-SEC         SECTION.
       *
@@ -1328,7 +1328,7 @@
        940-SINACCT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1364,7 +1364,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        919-TENSU-READ2-SEC         SECTION.
       *
@@ -1412,7 +1412,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ߺ��ѥޥ����ɹ�
+      *    相互作用マスタ読込
       *****************************************************************
        990-INTERACT-READ-SEC         SECTION.
       *
@@ -1431,7 +1431,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����å��ޥ����ɹ�
+      *    チェックマスタ読込
       *****************************************************************
        950-CHK-READ-SEC         SECTION.
       *
@@ -1449,7 +1449,7 @@
        950-CHK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1462,7 +1462,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1477,7 +1477,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCSS015.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶¦ÄÌ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÀÁµá³ÎÇ§¥·¥¹¥Æ¥à´ÉÍý¹àÌÜ¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  17/04/28    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…±é€š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : è«‹æ±‚ç¢ºèªã‚·ã‚¹ãƒ†ãƒ ç®¡ç†é …ç›®å–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  17/04/28    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -51,7 +51,7 @@
            03  WRK-TEXT                        PIC X(01).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
@@ -59,10 +59,10 @@
            COPY    "CPSK1041.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
@@ -79,7 +79,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -95,7 +95,7 @@
       *
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -107,7 +107,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -123,7 +123,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅÆâÍÆ¶èÊ¬ÊÔ½¸½èÍý
+      *    è¨ºç™‚å†…å®¹åŒºåˆ†ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SRYITEMLST-EDIT-SEC        SECTION.
       *
@@ -132,59 +132,59 @@
            MOVE    16              TO  SS015-SRYITEMLST-MAX
       *
            MOVE    "A00"           TO  SS015-SRYITEML (1)
-           MOVE    "½é¡¦ºÆ¿ÇÎÁ"    TO  SS015-SRYITEMMEIL (1)
+           MOVE    "åˆãƒ»å†è¨ºæ–™"    TO  SS015-SRYITEMMEIL (1)
       *
            MOVE    "B00"           TO  SS015-SRYITEML (2)
-           MOVE    "°å³Ø´ÉÍýÅù"    TO  SS015-SRYITEMMEIL (2)
+           MOVE    "åŒ»å­¦ç®¡ç†ç­‰"    TO  SS015-SRYITEMMEIL (2)
       *
            MOVE    "C00"           TO  SS015-SRYITEML (3)
-           MOVE    "ºßÂðÎÅÍÜ"      TO  SS015-SRYITEMMEIL (3)
+           MOVE    "åœ¨å®…ç™‚é¤Š"      TO  SS015-SRYITEMMEIL (3)
       *
            MOVE    "F00"           TO  SS015-SRYITEML (4)
-           MOVE    "ÅêÌô"          TO  SS015-SRYITEMMEIL (4)
+           MOVE    "æŠ•è–¬"          TO  SS015-SRYITEMMEIL (4)
       *
            MOVE    "G00"           TO  SS015-SRYITEML (5)
-           MOVE    "Ãí¼Í"          TO  SS015-SRYITEMMEIL (5)
+           MOVE    "æ³¨å°„"          TO  SS015-SRYITEMMEIL (5)
       *
            MOVE    "J00"           TO  SS015-SRYITEML (6)
-           MOVE    "½èÃÖ"          TO  SS015-SRYITEMMEIL (6)
+           MOVE    "å‡¦ç½®"          TO  SS015-SRYITEMMEIL (6)
       *
            MOVE    "K00"           TO  SS015-SRYITEML (7)
-           MOVE    "¼ê½Ñ"          TO  SS015-SRYITEMMEIL (7)
+           MOVE    "æ‰‹è¡“"          TO  SS015-SRYITEMMEIL (7)
       *
            MOVE    "L00"           TO  SS015-SRYITEML (8)
-           MOVE    "Ëã¿ì"          TO  SS015-SRYITEMMEIL (8)
+           MOVE    "éº»é…”"          TO  SS015-SRYITEMMEIL (8)
       *
            MOVE    "D00"           TO  SS015-SRYITEML (9)
-           MOVE    "¸¡ºº"          TO  SS015-SRYITEMMEIL (9)
+           MOVE    "æ¤œæŸ»"          TO  SS015-SRYITEMMEIL (9)
       *
            MOVE    "E00"           TO  SS015-SRYITEML (10)
-           MOVE    "²èÁü¿ÇÃÇ"      TO  SS015-SRYITEMMEIL (10)
+           MOVE    "ç”»åƒè¨ºæ–­"      TO  SS015-SRYITEMMEIL (10)
       *
            MOVE    "H00"           TO  SS015-SRYITEML (11)
-           MOVE    "¥ê¥Ï¥Ó¥ê"      TO  SS015-SRYITEMMEIL (11)
+           MOVE    "ãƒªãƒãƒ“ãƒª"      TO  SS015-SRYITEMMEIL (11)
       *
            MOVE    "I00"           TO  SS015-SRYITEML (12)
-           MOVE    "Àº¿À²ÊÀìÌç"    TO  SS015-SRYITEMMEIL (12)
+           MOVE    "ç²¾ç¥žç§‘å°‚é–€"    TO  SS015-SRYITEMMEIL (12)
       *
            MOVE    "M00"           TO  SS015-SRYITEML (13)
-           MOVE    "Êü¼ÍÀþ¼£ÎÅ"    TO  SS015-SRYITEMMEIL (13)
+           MOVE    "æ”¾å°„ç·šæ²»ç™‚"    TO  SS015-SRYITEMMEIL (13)
       *
            MOVE    "N00"           TO  SS015-SRYITEML (14)
-           MOVE    "ÉÂÍý¿ÇÃÇ"      TO  SS015-SRYITEMMEIL (14)
+           MOVE    "ç—…ç†è¨ºæ–­"      TO  SS015-SRYITEMMEIL (14)
       *
            MOVE    "A10"           TO  SS015-SRYITEML (15)
-           MOVE    "Æþ±¡ÎÁ"        TO  SS015-SRYITEMMEIL (15)
+           MOVE    "å…¥é™¢æ–™"        TO  SS015-SRYITEMMEIL (15)
       *
            MOVE    "001"           TO  SS015-SRYITEML (16)
-           MOVE    "ÎÅÍÜÃ´Åö¼êÅö"  TO  SS015-SRYITEMMEIL (16)
+           MOVE    "ç™‚é¤Šæ‹…å½“æ‰‹å½“"  TO  SS015-SRYITEMMEIL (16)
       *
            .
       *
        2001-SRYITEMLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¼«ÈñÌ¾¾ÎÊÔ½¸½èÍý
+      *    è‡ªè²»åç§°ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-JIHINAME-EDIT-SEC          SECTION.
       *
@@ -229,7 +229,7 @@
        2001-JIHINAME-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ¶âÊýË¡ÊÔ½¸½èÍý
+      *    å…¥é‡‘æ–¹æ³•ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-NYKN-HOHO-EDIT-SEC         SECTION.
       *
@@ -267,7 +267,7 @@
        2001-JIHINAME-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ýÇ¼ÌÀºÙ¾õÂÖÊÔ½¸½èÍý
+      *    åŽç´æ˜Žç´°çŠ¶æ…‹ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SMEIJOTAI-EDIT-SEC         SECTION.
       *
@@ -276,40 +276,40 @@
            MOVE   10               TO  SS015-SMEIJOTAILST-MAX
       *
            MOVE   SPACE            TO  SS015-SMEIJOTAIL   (1)
-           MOVE   "ÀÁµá³Û¤Ê¤·"     TO  SS015-SMEIJOTAIMEIL (1)
+           MOVE   "è«‹æ±‚é¡ãªã—"     TO  SS015-SMEIJOTAIMEIL (1)
       *
            MOVE   "1"              TO  SS015-SMEIJOTAIL   (2)
-           MOVE   "ÀÁµá"           TO  SS015-SMEIJOTAIMEIL (2)
+           MOVE   "è«‹æ±‚"           TO  SS015-SMEIJOTAIMEIL (2)
       *
            MOVE   "2"              TO  SS015-SMEIJOTAIL   (3)
-           MOVE   "Æþ¶â"           TO  SS015-SMEIJOTAIMEIL (3)
+           MOVE   "å…¥é‡‘"           TO  SS015-SMEIJOTAIMEIL (3)
       *
            MOVE   "3"              TO  SS015-SMEIJOTAIL   (4)
-           MOVE   "ºÆ·×»»"         TO  SS015-SMEIJOTAIMEIL (4)
+           MOVE   "å†è¨ˆç®—"         TO  SS015-SMEIJOTAIMEIL (4)
       *
            MOVE   "4"              TO  SS015-SMEIJOTAIL   (5)
-           MOVE   "ÊÖ¶â"           TO  SS015-SMEIJOTAIMEIL (5)
+           MOVE   "è¿”é‡‘"           TO  SS015-SMEIJOTAIMEIL (5)
       *
            MOVE   "5"              TO  SS015-SMEIJOTAIL   (6)
-           MOVE   "ÀÁµá¼è¾Ã"       TO  SS015-SMEIJOTAIMEIL (6)
+           MOVE   "è«‹æ±‚å–æ¶ˆ"       TO  SS015-SMEIJOTAIMEIL (6)
       *
            MOVE   "6"              TO  SS015-SMEIJOTAIL   (7)
-           MOVE   "Æþ¶â¼è¾Ã"       TO  SS015-SMEIJOTAIMEIL (7)
+           MOVE   "å…¥é‡‘å–æ¶ˆ"       TO  SS015-SMEIJOTAIMEIL (7)
       *
            MOVE   "7"              TO  SS015-SMEIJOTAIL   (8)
-           MOVE   "·ÑÂ³"           TO  SS015-SMEIJOTAIMEIL (8)
+           MOVE   "ç¶™ç¶š"           TO  SS015-SMEIJOTAIMEIL (8)
       *
            MOVE   "8"              TO  SS015-SMEIJOTAIL   (9)
-           MOVE   "¿ÇÎÅÄûÀµ"       TO  SS015-SMEIJOTAIMEIL (9)
+           MOVE   "è¨ºç™‚è¨‚æ­£"       TO  SS015-SMEIJOTAIMEIL (9)
       *
            MOVE   "9"              TO  SS015-SMEIJOTAIL   (10)
-           MOVE   "ÀÁµá"           TO  SS015-SMEIJOTAIMEIL (10)
+           MOVE   "è«‹æ±‚"           TO  SS015-SMEIJOTAIMEIL (10)
       *
            .
        2001-SMEIJOTAI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»¡¡½èÍý
+      *    çµ‚äº†ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -318,7 +318,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY2)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-SEL-SEC       SECTION.
       *
@@ -340,7 +340,7 @@
        900-SYSKANRI-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýFETCH½èÍý(KEY2)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†FETCHå‡¦ç†(KEY2)
       *****************************************************************
        900-SYSKANRI-KEY2-FET-SEC       SECTION.
       *
@@ -360,7 +360,7 @@
        900-SYSKANRI-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -378,7 +378,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã¯è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -393,7 +393,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -408,7 +408,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *

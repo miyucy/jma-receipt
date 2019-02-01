@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,52 +16,52 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    »»ÄêÍúÎò          COPY (CPSANTEI.INC)       *
+      *    ç®—å®šå±¥æ­´          COPY (CPSANTEI.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SANTEI-REC.
            03  SANTEI-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SANTEI-HOSPNUM          PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SANTEI-PTID            PIC  9(10).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  SANTEI-SRYYM           PIC  X(06).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SANTEI-SRYCD           PIC  X(09).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SANTEI-NYUGAIKBN       PIC  X(01).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  SANTEI-SRYKA           PIC  X(02).
-      *ÊÝ¸±ÁÈ¹çÈÖ¹æ
+      *ä¿é™ºçµ„åˆç•ªå·
                05  SANTEI-HKNCOMBINUM     PIC  9(04).
-      *½é²ó»»ÄêÆü
+      *åˆå›žç®—å®šæ—¥
            03  SANTEI-FSANTEIYMD       PIC  X(08).
-      *Åö·î½é²ó»»ÄêÆü
+      *å½“æœˆåˆå›žç®—å®šæ—¥
            03  SANTEI-MSANTEID         PIC  X(02).
-      *Åö·î»»Äê²ó¿ô
+      *å½“æœˆç®—å®šå›žæ•°
            03  SANTEI-MSANTEICNT       PIC  9(03).
-      *¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê£±Æü¤«¤é£³£±Æü¡Ë
+      *è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆï¼‘æ—¥ã‹ã‚‰ï¼“ï¼‘æ—¥ï¼‰
            03  SANTEI-DAY-AREA.
                05  SANTEI-DAY          PIC  9(03)
                                        OCCURS   31.
-      *Åö·î»»ÄêÅÀ¿ôÂÐ¾Ý¥Õ¥é¥°
+      *å½“æœˆç®—å®šç‚¹æ•°å¯¾è±¡ãƒ•ãƒ©ã‚°
            03  SANTEI-MSANTEIFLG       PIC  9(01).
-      *Åö·î»»ÄêÅÀ¿ô
+      *å½“æœˆç®—å®šç‚¹æ•°
            03  SANTEI-MSANTEITEN       PIC  9(08).
-      *Åö·î»»ÄêÅÀ¿ô¶èÊ¬
+      *å½“æœˆç®—å®šç‚¹æ•°åŒºåˆ†
            03  SANTEI-MSANTEITENKBN    PIC  9(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SANTEI-TERMID           PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SANTEI-OPID             PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SANTEI-CREYMD           PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SANTEI-UPYMD            PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SANTEI-UPHMS            PIC  X(06).
       *

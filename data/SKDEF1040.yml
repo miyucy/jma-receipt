@@ -1,95 +1,95 @@
 kanri_cd    : "1040"
-name        : "¸øÈñÉéÃ´¼ÔÈÖ¹æ¡¦¼õµë¼ÔÈÖ¹æ¥Á¥§¥¯¾ğÊó"
+name        : "å…¬è²»è² æ‹…è€…ç•ªå·ãƒ»å—çµ¦è€…ç•ªå·ãƒã‚§ã‚¯æƒ…å ±"
 class_cd    : "*"
 item_max    : 15
 item_list   :
 - item_no   : 1
   item      : "FTNJANUMCHK"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯"
+  item_jp   : "è² æ‹…è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "JKYSNUMCHK"
-  item_jp   : "¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯"
+  item_jp   : "å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "FTNJHANKAKUCHK"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æÈ¾³ÑÊ¸»úµö²Ä"
+  item_jp   : "è² æ‹…è€…ç•ªå·åŠè§’æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "FTNJZENKAKUCHK"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æÁ´³ÑÊ¸»úµö²Ä"
+  item_jp   : "è² æ‹…è€…ç•ªå·å…¨è§’æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "JKYSHANKAKUCHK"
-  item_jp   : "¼õµë¼ÔÈÖ¹æÈ¾³ÑÊ¸»úµö²Ä"
+  item_jp   : "å—çµ¦è€…ç•ªå·åŠè§’æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "JKYSZENKAKUCHK"
-  item_jp   : "¼õµë¼ÔÈÖ¹æÁ´³ÑÊ¸»úµö²Ä"
+  item_jp   : "å—çµ¦è€…ç•ªå·å…¨è§’æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "FTNJNUMERICCHK"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æ¿ô»ú°Ê³°¤ÎÊ¸»úµö²Ä"
+  item_jp   : "è² æ‹…è€…ç•ªå·æ•°å­—ä»¥å¤–ã®æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "JKYSNUMERICCHK"
-  item_jp   : "¼õµë¼ÔÈÖ¹æ¿ô»ú°Ê³°¤ÎÊ¸»úµö²Ä"
+  item_jp   : "å—çµ¦è€…ç•ªå·æ•°å­—ä»¥å¤–ã®æ–‡å­—è¨±å¯"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 9
   item      : "FTNJKETACHK"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æ·å¿ô¥Á¥§¥Ã¥¯"
+  item_jp   : "è² æ‹…è€…ç•ªå·æ¡æ•°ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 10
   item      : "FTNJKETAMIN"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æ·å¿ôºÇ¾®"
+  item_jp   : "è² æ‹…è€…ç•ªå·æ¡æ•°æœ€å°"
   type      : "X"
   start     : 10
   length    : 2
 - item_no   : 11
   item      : "FTNJKETAMAX"
-  item_jp   : "ÉéÃ´¼ÔÈÖ¹æ·å¿ôºÇÂç"
+  item_jp   : "è² æ‹…è€…ç•ªå·æ¡æ•°æœ€å¤§"
   type      : "X"
   start     : 12
   length    : 2
 - item_no   : 12
   item      : "JKYSKETACHK"
-  item_jp   : "¼õµë¼ÔÈÖ¹æ·å¿ô¥Á¥§¥Ã¥¯"
+  item_jp   : "å—çµ¦è€…ç•ªå·æ¡æ•°ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 14
   length    : 1
 - item_no   : 13
   item      : "JKYSKETAMIN"
-  item_jp   : "¼õµë¼ÔÈÖ¹æ·å¿ôºÇ¾®"
+  item_jp   : "å—çµ¦è€…ç•ªå·æ¡æ•°æœ€å°"
   type      : "X"
   start     : 15
   length    : 2
 - item_no   : 14
   item      : "JKYSKETAMAX"
-  item_jp   : "¼õµë¼ÔÈÖ¹æ·å¿ôºÇÂç"
+  item_jp   : "å—çµ¦è€…ç•ªå·æ¡æ•°æœ€å¤§"
   type      : "X"
   start     : 17
   length    : 2
 - item_no   : 15
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 19
   length    : 482

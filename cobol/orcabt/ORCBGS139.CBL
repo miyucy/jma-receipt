@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBGS139.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿·ÊÝ¸±ÊÌÀÁµá¥Á¥§¥Ã¥¯É½ Áí³ç
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  11/01/13    NACL-ÂÀÅÄ     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æœˆæ¬¡å¸³ç¥¨
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ–°ä¿é™ºåˆ¥è«‹æ±‚ãƒã‚§ãƒƒã‚¯è¡¨ ç·æ‹¬
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  11/01/13    NACL-å¤ªç”°     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,53 +34,53 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÀÁµá¥Õ¥¡¥¤¥ë
+      *    è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  BGSSKY-FILE     ASSIGN  ASS-BGSSKY
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSSKY-KEY
                                    FILE    STATUS  IS  STS-BGSSKY.
       *
-      *    ¸øÈñ¥Õ¥¡¥¤¥ë
+      *    å…¬è²»ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  BGSKOH-FILE     ASSIGN  ASS-BGSKOH
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSKOH-KEY
                                    FILE    STATUS  IS  STS-BGSKOH.
       *
-      *    ¤½¤ÎÂ¾ÀÁµá¥Õ¥¡¥¤¥ë
+      *    ãã®ä»–è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  BGSETC-FILE     ASSIGN  ASS-BGSETC
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BGSETC-KEY
                                    FILE    STATUS  IS  STS-BGSETC.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  BGS100ERR-FILE  ASSIGN  ASS-BGS100ERR
                                    FILE    STATUS  IS  STS-BGS100ERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ÀÁµá¥Õ¥¡¥¤¥ë
+      *    è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«
        FD  BGSSKY-FILE.
        01  BGSSKY-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSSKY-//.
       *
-      *    ¸øÈñ¥Õ¥¡¥¤¥ë
+      *    å…¬è²»ãƒ•ã‚¡ã‚¤ãƒ«
        FD  BGSKOH-FILE.
        01  BGSKOH-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSKOH-//.
       *
-      *    ¤½¤ÎÂ¾ÀÁµá¥Õ¥¡¥¤¥ë
+      *    ãã®ä»–è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«
        FD  BGSETC-FILE.
        01  BGSETC-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //BGSETC-//.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  BGS100ERR-FILE.
        01  BGS100ERR-REC           PIC X(200).
       *
@@ -171,55 +171,55 @@
            03  CSV-H01-G.
                05  CSV-H01-VAL.
                    07  CSV-H01-PRTKBN          PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†".
                    07  CSV-H01-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬Ì¾".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†å".
                    07  CSV-H01-DATAKBN         PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†".
                    07  CSV-H01-DATAKBNMEI      PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬Ì¾".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†å".
                    07  CSV-H01-SRYYMD          PIC X(50)
-                           VALUE   "¿ÇÎÅÇ¯·î".
+                           VALUE   "è¨ºç™‚å¹´æœˆ".
                    07  CSV-H01-NYUGAIKBN       PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬".
+                           VALUE   "å…¥å¤–åŒºåˆ†".
                    07  CSV-H01-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å…¥å¤–åŒºåˆ†åç§°".
                    07  CSV-H01-SKYSBTKBN       PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†".
                    07  CSV-H01-SKYSBT          PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†åç§°".
                    07  CSV-H01-SRYKA           PIC X(50)
-                           VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
+                           VALUE   "è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰".
                    07  CSV-H01-SRYKAMEI        PIC X(50)
-                           VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
+                           VALUE   "è¨ºç™‚ç§‘åç§°".
                    07  CSV-H01-HKNKBN          PIC X(50)
-                           VALUE   "ÊÝ¸±¶èÊ¬".
+                           VALUE   "ä¿é™ºåŒºåˆ†".
                    07  CSV-H01-KENSU           PIC X(50)
-                           VALUE   "·ï¿ô".
+                           VALUE   "ä»¶æ•°".
                    07  CSV-H01-NISSU           PIC X(50)
-                           VALUE   "Æü¿ô".
+                           VALUE   "æ—¥æ•°".
                    07  CSV-H01-TENSU           PIC X(50)
-                           VALUE   "ÅÀ¿ô".
+                           VALUE   "ç‚¹æ•°".
                    07  CSV-H01-FTNMONEY        PIC X(50)
-                           VALUE   "´µ¼ÔÉéÃ´³Û".
+                           VALUE   "æ‚£è€…è² æ‹…é¡".
                    07  CSV-H01-HKNMONEY        PIC X(50)
-                           VALUE   "ÊÝ¸±ÀÁµá³Û".
+                           VALUE   "ä¿é™ºè«‹æ±‚é¡".
                    07  CSV-H01-KOHMONEY        PIC X(50)
-                           VALUE   "¸øÈñÀÁµá³Û".
+                           VALUE   "å…¬è²»è«‹æ±‚é¡".
                    07  CSV-H01-TTLMONEY        PIC X(50)
-                           VALUE   "ÊÝ¸±¿ÇÎÅ¼ý±×¡Ê£á¡Ë".
+                           VALUE   "ä¿é™ºè¨ºç™‚åŽç›Šï¼ˆï½ï¼‰".
                    07  CSV-H01-SKJKAISU        PIC X(50)
-                           VALUE   "¿©»ö¡¦À¸³è²ó¿ô".
+                           VALUE   "é£Ÿäº‹ãƒ»ç”Ÿæ´»å›žæ•°".
                    07  CSV-H01-SKJTTLMONEY     PIC X(50)
-                           VALUE   "¿©»ö¡¦À¸³èÉ¸½àÉéÃ´³Û".
+                           VALUE   "é£Ÿäº‹ãƒ»ç”Ÿæ´»æ¨™æº–è² æ‹…é¡".
                    07  CSV-H01-SKJHKNMONEY     PIC X(50)
-                           VALUE   "¿©»ö¡¦À¸³èÊÝ¸±ÀÁµá³Û".
+                           VALUE   "é£Ÿäº‹ãƒ»ç”Ÿæ´»ä¿é™ºè«‹æ±‚é¡".
                    07  CSV-H01-SKJKOHMONEY     PIC X(50)
-                           VALUE   "¿©»ö¡¦À¸³è¸øÈñÀÁµá³Û".
+                           VALUE   "é£Ÿäº‹ãƒ»ç”Ÿæ´»å…¬è²»è«‹æ±‚é¡".
                    07  CSV-H01-SKJFTNMONEY     PIC X(50)
-                           VALUE   "¿©»ö¡¦À¸³èÀÁµá±ß¡Ê£â¡Ë".
+                           VALUE   "é£Ÿäº‹ãƒ»ç”Ÿæ´»è«‹æ±‚å††ï¼ˆï½‚ï¼‰".
                    07  CSV-H01-TTLTTLMONEY     PIC X(50)
-                           VALUE   "¡Ê£á¡Ë¡Ü¡Ê£â¡Ë".
+                           VALUE   "ï¼ˆï½ï¼‰ï¼‹ï¼ˆï½‚ï¼‰".
                05  CSV-H01-R   REDEFINES   CSV-H01-VAL.
                    07  CSV-H01-ITEM            PIC X(50)
                                                OCCURS  25.
@@ -228,31 +228,31 @@
            03  CSV-H02-G.
                05  CSV-H02-VAL.
                    07  CSV-H02-PRTKBN          PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†".
                    07  CSV-H02-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬Ì¾".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†å".
                    07  CSV-H02-DATAKBN         PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†".
                    07  CSV-H02-DATAKBNMEI      PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬Ì¾".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†å".
                    07  CSV-H02-SRYYMD          PIC X(50)
-                           VALUE   "¿ÇÎÅÇ¯·î".
+                           VALUE   "è¨ºç™‚å¹´æœˆ".
                    07  CSV-H02-NYUGAIKBN       PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬".
+                           VALUE   "å…¥å¤–åŒºåˆ†".
                    07  CSV-H02-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å…¥å¤–åŒºåˆ†åç§°".
                    07  CSV-H02-SKYSBTKBN       PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†".
                    07  CSV-H02-SKYSBT          PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†åç§°".
                    07  CSV-H02-SRYKA           PIC X(50)
-                           VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
+                           VALUE   "è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰".
                    07  CSV-H02-SRYKAMEI        PIC X(50)
-                           VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
+                           VALUE   "è¨ºç™‚ç§‘åç§°".
                    07  CSV-H02-KOHNAME         PIC X(50)
-                           VALUE   "¸øÈñ·ï¿ô·×".
+                           VALUE   "å…¬è²»ä»¶æ•°è¨ˆ".
                    07  CSV-H02-KENSU           PIC X(50)
-                           VALUE   "·ï¿ô".
+                           VALUE   "ä»¶æ•°".
                05  CSV-H02-R   REDEFINES   CSV-H02-VAL.
                    07  CSV-H02-ITEM            PIC X(50)
                                                OCCURS  13.
@@ -261,39 +261,39 @@
            03  CSV-H03-G.
                05  CSV-H03-VAL.
                    07  CSV-H03-PRTKBN          PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†".
                    07  CSV-H03-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬Ì¾".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†å".
                    07  CSV-H03-DATAKBN         PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†".
                    07  CSV-H03-DATAKBNMEI      PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬Ì¾".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†å".
                    07  CSV-H03-SRYYMD          PIC X(50)
-                           VALUE   "¿ÇÎÅÇ¯·î".
+                           VALUE   "è¨ºç™‚å¹´æœˆ".
                    07  CSV-H03-NYUGAIKBN       PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬".
+                           VALUE   "å…¥å¤–åŒºåˆ†".
                    07  CSV-H03-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å…¥å¤–åŒºåˆ†åç§°".
                    07  CSV-H03-SKYSBTKBN       PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†".
                    07  CSV-H03-SKYSBT          PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†åç§°".
                    07  CSV-H03-SRYKA           PIC X(50)
-                           VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
+                           VALUE   "è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰".
                    07  CSV-H03-SRYKAMEI        PIC X(50)
-                           VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
+                           VALUE   "è¨ºç™‚ç§‘åç§°".
                    07  CSV-H03-ETCNAME         PIC X(50)
-                           VALUE   "¤½¤ÎÂ¾·×".
+                           VALUE   "ãã®ä»–è¨ˆ".
                    07  CSV-H03-JIHIMONEY       PIC X(50)
-                           VALUE   "¼«Èñ".
+                           VALUE   "è‡ªè²»".
                    07  CSV-H03-GENMEN          PIC X(50)
-                           VALUE   "¸ºÌÈ".
+                           VALUE   "æ¸›å…".
                    07  CSV-H03-CHOSEI1         PIC X(50)
-                           VALUE   "Ä´À°¶â£±".
+                           VALUE   "èª¿æ•´é‡‘ï¼‘".
                    07  CSV-H03-CHOSEI2         PIC X(50)
-                           VALUE   "Ä´À°¶â£²".
+                           VALUE   "èª¿æ•´é‡‘ï¼’".
                    07  CSV-H03-HASU            PIC X(50)
-                           VALUE   "Áë¸ýÀÁµáÃ¼¿ô½èÍý³Û".
+                           VALUE   "çª“å£è«‹æ±‚ç«¯æ•°å‡¦ç†é¡".
                05  CSV-H03-R   REDEFINES   CSV-H03-VAL.
                    07  CSV-H03-ITEM            PIC X(50)
                                                OCCURS  17.
@@ -302,43 +302,43 @@
            03  CSV-H04-G.
                05  CSV-H04-VAL.
                    07  CSV-H04-PRTKBN          PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†".
                    07  CSV-H04-PRTKBNMEI       PIC X(50)
-                           VALUE   "Ä¢É¼¶èÊ¬Ì¾".
+                           VALUE   "å¸³ç¥¨åŒºåˆ†å".
                    07  CSV-H04-DATAKBN         PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†".
                    07  CSV-H04-DATAKBNMEI      PIC X(50)
-                           VALUE   "¥Ç¡¼¥¿¶èÊ¬".
+                           VALUE   "ãƒ‡ãƒ¼ã‚¿åŒºåˆ†".
                    07  CSV-H04-SRYYMD          PIC X(50)
-                           VALUE   "¿ÇÎÅÇ¯·î".
+                           VALUE   "è¨ºç™‚å¹´æœˆ".
                    07  CSV-H04-NYUGAIKBN       PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬".
+                           VALUE   "å…¥å¤–åŒºåˆ†".
                    07  CSV-H04-NYUGAIKBNMEI    PIC X(50)
-                           VALUE   "Æþ³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å…¥å¤–åŒºåˆ†åç§°".
                    07  CSV-H04-SKYSBTKBN       PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†".
                    07  CSV-H04-SKYSBT          PIC X(50)
-                           VALUE   "Åö·î¡¦Åö·î³°¶èÊ¬Ì¾¾Î".
+                           VALUE   "å½“æœˆãƒ»å½“æœˆå¤–åŒºåˆ†åç§°".
                    07  CSV-H04-SRYKA           PIC X(50)
-                           VALUE   "¿ÇÎÅ²Ê¥³¡¼¥É".
+                           VALUE   "è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰".
                    07  CSV-H04-SRYKAMEI        PIC X(50)
-                           VALUE   "¿ÇÎÅ²ÊÌ¾¾Î".
+                           VALUE   "è¨ºç™‚ç§‘åç§°".
                    07  CSV-H04-HKNKBN          PIC X(50)
-                           VALUE   "ÊÝ¸±¶èÊ¬".
+                           VALUE   "ä¿é™ºåŒºåˆ†".
                    07  CSV-H04-KENSU           PIC X(50)
-                           VALUE   "·ï¿ô".
+                           VALUE   "ä»¶æ•°".
                    07  CSV-H04-NISSU           PIC X(50)
-                           VALUE   "Æü¿ô".
+                           VALUE   "æ—¥æ•°".
                    07  CSV-H04-TENSU           PIC X(50)
-                           VALUE   "ÅÀ¿ô".
+                           VALUE   "ç‚¹æ•°".
                    07  CSV-H04-FTNMONEY        PIC X(50)
-                           VALUE   "´µ¼ÔÉéÃ´³Û".
+                           VALUE   "æ‚£è€…è² æ‹…é¡".
                    07  CSV-H04-HKNMONEY        PIC X(50)
-                           VALUE   "ÊÝ¸±ÀÁµá³Û".
+                           VALUE   "ä¿é™ºè«‹æ±‚é¡".
                    07  CSV-H04-KOHMONEY        PIC X(50)
-                           VALUE   "¸øÈñÀÁµá³Û".
+                           VALUE   "å…¬è²»è«‹æ±‚é¡".
                    07  CSV-H04-TTLMONEY        PIC X(50)
-                           VALUE   "ÊÝ¸±¿ÇÎÅ¼ý±×".
+                           VALUE   "ä¿é™ºè¨ºç™‚åŽç›Š".
                05  CSV-H04-R   REDEFINES   CSV-H04-VAL.
                    07  CSV-H04-ITEM            PIC X(50)
                                                OCCURS  19.
@@ -452,74 +452,74 @@
       *
            03  CONST-HKNMEI-G.
                05  CONST-HKNMEI01  PIC X(50)
-                                   VALUE "¼ÒÊÝ¹â£¹¸øÈñÊ»ÍÑ".
+                                   VALUE "ç¤¾ä¿é«˜ï¼™å…¬è²»ä½µç”¨".
                05  CONST-HKNMEI02  PIC X(50)
-                                   VALUE "¼ÒÊÝ¹â£¹Ã±ÆÈ".
+                                   VALUE "ç¤¾ä¿é«˜ï¼™å˜ç‹¬".
                05  CONST-HKNMEI03  PIC X(50)
-                                   VALUE "¼ÒÊÝ¹â£·¸øÈñÊ»ÍÑ".
+                                   VALUE "ç¤¾ä¿é«˜ï¼—å…¬è²»ä½µç”¨".
                05  CONST-HKNMEI04  PIC X(50)
-                                   VALUE "¼ÒÊÝ¹â£·Ã±ÆÈ".
+                                   VALUE "ç¤¾ä¿é«˜ï¼—å˜ç‹¬".
                05  CONST-HKNMEI05  PIC X(50)
-                                   VALUE "¼ÒÊÝËÜ¿Í¸øÈñÊ»ÍÑ".
+                                   VALUE "ç¤¾ä¿æœ¬äººå…¬è²»ä½µç”¨".
                05  CONST-HKNMEI06  PIC X(50)
-                                   VALUE "¼ÒÊÝËÜ¿ÍÃ±ÆÈ".
+                                   VALUE "ç¤¾ä¿æœ¬äººå˜ç‹¬".
                05  CONST-HKNMEI07  PIC X(50)
-                                   VALUE "¼ÒÊÝ²ÈÂ²¸øÈñÊ»ÍÑ".
+                                   VALUE "ç¤¾ä¿å®¶æ—å…¬è²»ä½µç”¨".
                05  CONST-HKNMEI08  PIC X(50)
-                                   VALUE "¼ÒÊÝ²ÈÂ²Ã±ÆÈ".
+                                   VALUE "ç¤¾ä¿å®¶æ—å˜ç‹¬".
                05  CONST-HKNMEI09  PIC X(50)
-                                   VALUE "¼ÒÊÝ£¶ºÐ¸øÈñÊ»ÍÑ".
+                                   VALUE "ç¤¾ä¿ï¼–æ­³å…¬è²»ä½µç”¨".
                05  CONST-HKNMEI10  PIC X(50)
-                                   VALUE "¼ÒÊÝ£¶ºÐÃ±ÆÈ".
+                                   VALUE "ç¤¾ä¿ï¼–æ­³å˜ç‹¬".
                05  CONST-HKNMEI11  PIC X(50)
-                                   VALUE "¼ÒÊÝ¸øÈñÃ±ÆÈ¡¦Ê»ÍÑ".
+                                   VALUE "ç¤¾ä¿å…¬è²»å˜ç‹¬ãƒ»ä½µç”¨".
                05  CONST-HKNMEI12  PIC X(50)
-                                   VALUE "¼ÒÊÝ·×".
+                                   VALUE "ç¤¾ä¿è¨ˆ".
                05  CONST-HKNMEI13  PIC X(50)
-                                   VALUE "¹ñÊÝ°ìÈÌ¹â£¹".
+                                   VALUE "å›½ä¿ä¸€èˆ¬é«˜ï¼™".
                05  CONST-HKNMEI14  PIC X(50)
-                                   VALUE "¹ñÊÝ°ìÈÌ¹â£·".
+                                   VALUE "å›½ä¿ä¸€èˆ¬é«˜ï¼—".
                05  CONST-HKNMEI15  PIC X(50)
-                                   VALUE "¹ñÊÝ°ìÈÌ".
+                                   VALUE "å›½ä¿ä¸€èˆ¬".
                05  CONST-HKNMEI16  PIC X(50)
-                                   VALUE "¹ñÊÝ£¶ºÐ".
+                                   VALUE "å›½ä¿ï¼–æ­³".
                05  CONST-HKNMEI17  PIC X(50)
-                                   VALUE "¹ñÊÝÂà¿¦ËÜ¿Í".
+                                   VALUE "å›½ä¿é€€è·æœ¬äºº".
                05  CONST-HKNMEI18  PIC X(50)
-                                   VALUE "¹ñÊÝÂà¿¦²ÈÂ²".
+                                   VALUE "å›½ä¿é€€è·å®¶æ—".
                05  CONST-HKNMEI19  PIC X(50)
-                                   VALUE "¹ñÊÝÂà¿¦£¶ºÐ".
+                                   VALUE "å›½ä¿é€€è·ï¼–æ­³".
                05  CONST-HKNMEI20  PIC X(50)
-                                   VALUE "¹ñÊÝ·×".
+                                   VALUE "å›½ä¿è¨ˆ".
                05  CONST-HKNMEI21  PIC X(50)
-                                   VALUE "¸å´ü¹âÎð¼Ô¹â£¹".
+                                   VALUE "å¾ŒæœŸé«˜é½¢è€…é«˜ï¼™".
                05  CONST-HKNMEI22  PIC X(50)
-                                   VALUE "¸å´ü¹âÎð¼Ô¹â£·".
+                                   VALUE "å¾ŒæœŸé«˜é½¢è€…é«˜ï¼—".
                05  CONST-HKNMEI23  PIC X(50)
-                                   VALUE "¸å´ü¹âÎð¼Ô·×".
+                                   VALUE "å¾ŒæœŸé«˜é½¢è€…è¨ˆ".
                05  CONST-HKNMEI24  PIC X(50)
-                                   VALUE "ÊÝ¸±¹ç·×¡Ê¼Ò¡Ü¹ñ¡Ü¸å¡Ë".
+                                   VALUE "ä¿é™ºåˆè¨ˆï¼ˆç¤¾ï¼‹å›½ï¼‹å¾Œï¼‰".
                05  CONST-HKNMEI25  PIC X(50)
-                                   VALUE "ÆÃÊÌÎÅÍÜÈñ·×".
+                                   VALUE "ç‰¹åˆ¥ç™‚é¤Šè²»è¨ˆ".
                05  CONST-HKNMEI26  PIC X(50)
-                                   VALUE "¼«Èñ·×".
+                                   VALUE "è‡ªè²»è¨ˆ".
                05  CONST-HKNMEI27  PIC X(50)
-                                   VALUE "¼£¸³·×".
+                                   VALUE "æ²»é¨“è¨ˆ".
                05  CONST-HKNMEI28  PIC X(50)
-                                   VALUE "Ï«ºÒ·×".
+                                   VALUE "åŠ´ç½è¨ˆ".
                05  CONST-HKNMEI29  PIC X(50)
-                                   VALUE "¼«ÇåÀÕ·×".
+                                   VALUE "è‡ªè³ è²¬è¨ˆ".
                05  CONST-HKNMEI30  PIC X(50)
-                                   VALUE "¼«ÇåÀÕ¡ÊÂè»°¼Ô¹Ô°Ù¡Ë·×".
+                                   VALUE "è‡ªè³ è²¬ï¼ˆç¬¬ä¸‰è€…è¡Œç‚ºï¼‰è¨ˆ".
                05  CONST-HKNMEI31  PIC X(50)
-                                   VALUE "¸ø³²·×".
+                                   VALUE "å…¬å®³è¨ˆ".
                05  CONST-HKNMEI32  PIC X(50)
-                                   VALUE "¹ç·×".
+                                   VALUE "åˆè¨ˆ".
            03  CONST-HKNMEI-R  REDEFINES   CONST-HKNMEI-G.
                05  CONST-HKNMEI-OCC    OCCURS 32.
                    07  CONST-HKNMEI    PIC X(50).
       *
-      *    ½¸·×ÎÎ°è
+      *    é›†è¨ˆé ˜åŸŸ
        01  TTLHKN-REC.
            COPY    "CPBGSF01.INC"  REPLACING  //BGSF01-//
                                    BY         //TTLHKN-//.
@@ -528,44 +528,44 @@
            COPY    "CPBGSF01.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1005.INC".
       *
-      *    ÀÁµá´ÉÍý
+      *    è«‹æ±‚ç®¡ç†
            COPY    "CPRCF010.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    Ê¸»úÎóÁàºî¥µ¥Ö
+      *    æ–‡å­—åˆ—æ“ä½œã‚µãƒ–
            COPY    "CPORCSSTRING.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °õºþ£Ä£Â¹¹¿·¥µ¥Ö
+      *    å°åˆ·ï¼¤ï¼¢æ›´æ–°ã‚µãƒ–
            COPY    "CPORCSPRT.INC".
       *
-      *    Á´³ÑÈ¾³Ñ¥Á¥§¥Ã¥¯
+      *    å…¨è§’åŠè§’ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    Åý·×£Ã£Ó£ÖÀ©¸æ¥µ¥Ö
+      *    çµ±è¨ˆï¼£ï¼³ï¼¶åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSTOUKEICSV.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
@@ -584,7 +584,7 @@
                                        SPA-AREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -598,7 +598,7 @@
       *
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -615,7 +615,7 @@
       *
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           MOVE    "Áí³çÉ½ºîÀ®Ãæ"
+           MOVE    "ç·æ‹¬è¡¨ä½œæˆä¸­"
                                        TO  JOB-YOBI
            PERFORM 800-ORCSJOB-SEC
       *
@@ -639,7 +639,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -657,7 +657,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        201-MAIN-SEC                SECTION.
       *
@@ -681,7 +681,7 @@
        201-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        2001-MAIN-SEC                SECTION.
       *
@@ -695,9 +695,9 @@
            IF    ( BGS100P-EDITKBN =   "1" )
                EVALUATE    KEY-SKYSBT
                WHEN    "1"
-                   MOVE  "Åö·î¿ÇÎÅÊ¬"  TO      WRK-SKYSBTNAME
+                   MOVE  "å½“æœˆè¨ºç™‚åˆ†"  TO      WRK-SKYSBTNAME
                WHEN    "2"
-                   MOVE  "Åö·î¿ÇÎÅÊ¬°Ê³°¡Ê·îÃÙ¤ìÀÁµá¡¢ÊÖÌáÊ¬ºÆÀÁµá¡Ë"
+                   MOVE  "å½“æœˆè¨ºç™‚åˆ†ä»¥å¤–ï¼ˆæœˆé…ã‚Œè«‹æ±‚ã€è¿”æˆ»åˆ†å†è«‹æ±‚ï¼‰"
                                        TO      WRK-SKYSBTNAME
                END-EVALUATE
            END-IF
@@ -706,9 +706,9 @@
            IF    ( BGS100P-SYUKA   =   1 )
                EVALUATE    KEY-RECEKA
                WHEN    SPACE
-                   MOVE    "Á´²Ê¹ç·×"  TO  WRK-SRYKANAME1
+                   MOVE    "å…¨ç§‘åˆè¨ˆ"  TO  WRK-SRYKANAME1
                WHEN    "00"
-                   MOVE    "¼ç²ÊÀßÄê¤Ê¤·"
+                   MOVE    "ä¸»ç§‘è¨­å®šãªã—"
                                        TO  WRK-SRYKANAME1
                WHEN    OTHER
                    INITIALIZE                  SYSKANRI-REC
@@ -754,7 +754,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SKY-EDIT-SEC           SECTION.
       *
@@ -776,7 +776,7 @@
        2001-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-SKY-EDIT-SEC           SECTION.
       *
@@ -795,7 +795,7 @@
        20011-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SKY-EDIT-SEC           SECTION.
       *
@@ -820,7 +820,7 @@
        200111-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ÒÊÝÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    ç¤¾ä¿è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SYAHO-SKY-EDIT-SEC       SECTION.
       *
@@ -883,7 +883,7 @@
        200111-SYAHO-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¹ñÊÝÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    å›½ä¿è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-KOKUHO-SKY-EDIT-SEC      SECTION.
       *
@@ -928,7 +928,7 @@
        200111-KOKUHO-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¸å´ü¹âÎð¼ÔÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    å¾ŒæœŸé«˜é½¢è€…è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-KOUKI-SKY-EDIT-SEC       SECTION.
       *
@@ -953,7 +953,7 @@
        200111-KOUKI-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá¾ðÊó½¸·×½èÍý
+      *    è«‹æ±‚æƒ…å ±é›†è¨ˆå‡¦ç†
       *****************************************************************
        2001111-SKY-SUM-SEC         SECTION.
       *
@@ -996,7 +996,7 @@
        2001111-SKY-SUM-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾ÀÁµá¾ðÊóÊÔ½¸½èÍý
+      *    ãã®ä»–è«‹æ±‚æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-ETC-SKY-EDIT-SEC           SECTION.
       *
@@ -1102,7 +1102,7 @@
        2001-ETC-SKY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾ÀÁµá¾ðÊó½¸·×½èÍý
+      *    ãã®ä»–è«‹æ±‚æƒ…å ±é›†è¨ˆå‡¦ç†
       *****************************************************************
        20011-ETC-SKY-SUM-SEC           SECTION.
       *
@@ -1203,7 +1203,7 @@
        20011-ETC-SKY-SUM-EXT.
            EXIT.
       *****************************************************************
-      *    ¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *    å…¬è²»æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-KOH-EDIT-SEC           SECTION.
       *
@@ -1225,7 +1225,7 @@
        2001-KOH-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *    å…¬è²»æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-KOH-EDIT-SEC          SECTION.
       *
@@ -1245,7 +1245,7 @@
        20011-KOH-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡Áí³çÉ½ÊÔ½¸½èÍý
+      *    å…¥é™¢ç·æ‹¬è¡¨ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-HCGS139N-EDIT-SEC          SECTION.
       *
@@ -1253,9 +1253,9 @@
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS139N-SRYYM
            IF    ( IDX1                =   1 )
-               MOVE    "Æþ±¡"          TO  HCGS139N-NYUGAI
+               MOVE    "å…¥é™¢"          TO  HCGS139N-NYUGAI
            ELSE
-               MOVE    "Æþ±¡¡¦³°Íè¡¡Áí·×"
+               MOVE    "å…¥é™¢ãƒ»å¤–æ¥ã€€ç·è¨ˆ"
                                        TO  HCGS139N-NYUGAI
            END-IF
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139N-SYSYMD
@@ -1359,36 +1359,36 @@
       *
            END-PERFORM
       *
-           MOVE    "ÆÃÊÌÎÅÍÜÈñ(Ãí)"    TO  HCGS139N-LBLTOKUYO
-           MOVE    "Ï«¡¡¡¡ºÒ ¡ÊÃí¡Ë"   TO  HCGS139N-LBLROUSAI
-           MOVE    "¼« Çå ÀÕ ¡ÊÃí¡Ë"   TO  HCGS139N-LBLJIBAI
-           MOVE    "¸ø¡¡¡¡³² ¡ÊÃí¡Ë"   TO  HCGS139N-LBLKOUGAI
+           MOVE    "ç‰¹åˆ¥ç™‚é¤Šè²»(æ³¨)"    TO  HCGS139N-LBLTOKUYO
+           MOVE    "åŠ´ã€€ã€€ç½ ï¼ˆæ³¨ï¼‰"   TO  HCGS139N-LBLROUSAI
+           MOVE    "è‡ª è³  è²¬ ï¼ˆæ³¨ï¼‰"   TO  HCGS139N-LBLJIBAI
+           MOVE    "å…¬ã€€ã€€å®³ ï¼ˆæ³¨ï¼‰"   TO  HCGS139N-LBLKOUGAI
       *
            IF    ( KEY-RECEKA          =   SPACE )
       *
                IF    ( BGS100P-ETCGETKBN   =   "0" )
-                   MOVE    "ÆÃÊÌÎÅÍÜÈñ" TO HCGS139N-LBLTOKUYO
-                   MOVE    "Ï«¡¡¡¡ºÒ"  TO  HCGS139N-LBLROUSAI
-                   MOVE    "¼« Çå ÀÕ"  TO  HCGS139N-LBLJIBAI
-                   MOVE    "¸ø¡¡¡¡³²"  TO  HCGS139N-LBLKOUGAI
+                   MOVE    "ç‰¹åˆ¥ç™‚é¤Šè²»" TO HCGS139N-LBLTOKUYO
+                   MOVE    "åŠ´ã€€ã€€ç½"  TO  HCGS139N-LBLROUSAI
+                   MOVE    "è‡ª è³  è²¬"  TO  HCGS139N-LBLJIBAI
+                   MOVE    "å…¬ã€€ã€€å®³"  TO  HCGS139N-LBLKOUGAI
                END-IF
       *
                MOVE    SPACE           TO  HCGS139N-ETCHKNMSG
-               STRING  "¡ÊÃí¡Ë¼ÂºÝ¤Î¥ì¥»¥×¥È·ï¿ô"
+               STRING  "ï¼ˆæ³¨ï¼‰å®Ÿéš›ã®ãƒ¬ã‚»ãƒ—ãƒˆä»¶æ•°"
                                            DELIMITED BY SIZE
-                       "¡¦Æü¿ô¤È°ìÃ×¤·¤Ê¤¤¾ì¹ç¤¬¤¢¤ê¤Þ¤¹¡£"
+                       "ãƒ»æ—¥æ•°ã¨ä¸€è‡´ã—ãªã„å ´åˆãŒã‚ã‚Šã¾ã™ã€‚"
                                            DELIMITED BY SIZE
                INTO    HCGS139N-ETCHKNMSG
                END-STRING
            ELSE
                MOVE    SPACE           TO  HCGS139N-ETCHKNMSG
-               STRING    "¡ÊÃí¡ËÁ´²Ê¹ç·×¤ËÊÔ½¸¤µ¤ì¤Þ¤¹¡£"
+               STRING    "ï¼ˆæ³¨ï¼‰å…¨ç§‘åˆè¨ˆã«ç·¨é›†ã•ã‚Œã¾ã™ã€‚"
                                            DELIMITED   BY  SIZE
                INTO    HCGS139N-ETCHKNMSG
                END-STRING
       *
                MOVE    SPACE   TO  HCGS139N-ETCMSG
-               STRING  "¤½¤ÎÂ¾·×¤ÏÁ´²Ê¹ç·×¤ËÊÔ½¸¤µ¤ì¤Þ¤¹¡£"
+               STRING  "ãã®ä»–è¨ˆã¯å…¨ç§‘åˆè¨ˆã«ç·¨é›†ã•ã‚Œã¾ã™ã€‚"
                                        DELIMITED   BY  SIZE
                INTO    HCGS139N-ETCMSG
                END-STRING
@@ -1417,18 +1417,18 @@
        2001-HCGS139N-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë
+      *    å…¥é™¢ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰
       *****************************************************************
        2001-HCGS139N-CSV-SEC           SECTION.
       *
            MOVE    "9"             TO  WRK-PRTKBN
-           MOVE    "Áí³ç"          TO  WRK-PRTKBNMEI
+           MOVE    "ç·æ‹¬"          TO  WRK-PRTKBNMEI
            IF    ( IDX1            =   1 )
                MOVE    "1"         TO  WRK-NYUGAIKBN
-               MOVE    "Æþ±¡"      TO  WRK-NYUGAIKBNMEI
+               MOVE    "å…¥é™¢"      TO  WRK-NYUGAIKBNMEI
            ELSE
                MOVE    " "         TO  WRK-NYUGAIKBN
-               MOVE    "Æþ±¡¡¦³°Íè¡¡Áí·×"
+               MOVE    "å…¥é™¢ãƒ»å¤–æ¥ã€€ç·è¨ˆ"
                                    TO  WRK-NYUGAIKBNMEI
            END-IF
       *
@@ -1450,7 +1450,7 @@
            PERFORM 230-TOUKEICSV-SEC
       *
            MOVE    "1"             TO  WRK-DATAKBN
-           MOVE    "ÊÝ¸±¶èÊ¬ÊÌ"    TO  WRK-DATAKBNMEI
+           MOVE    "ä¿é™ºåŒºåˆ†åˆ¥"    TO  WRK-DATAKBNMEI
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   CONST-KOUTTL )
@@ -1499,8 +1499,8 @@
       *
                MOVE    CSV-H01-ITEM (IDXI)
                                        TO  WRK-ITEM
-               IF    ( WRK-ITEM    =   "ÊÝ¸±¶èÊ¬" )
-                   MOVE    "ÊÝ¸±·×"    TO  WRK-ITEM
+               IF    ( WRK-ITEM    =   "ä¿é™ºåŒºåˆ†" )
+                   MOVE    "ä¿é™ºè¨ˆ"    TO  WRK-ITEM
                END-IF
                IF    ( IDXI   >=   CSV-H01-MAX    )
                    PERFORM 802-CSVDATA-EDIT-SEC
@@ -1513,7 +1513,7 @@
            PERFORM 230-TOUKEICSV-SEC
       *
            MOVE    "3"             TO  WRK-DATAKBN
-           MOVE    "ÊÝ¸±·×"        TO  WRK-DATAKBNMEI
+           MOVE    "ä¿é™ºè¨ˆ"        TO  WRK-DATAKBNMEI
       *
            MOVE    CONST-HKNTTL    TO  IDX2
            PERFORM 20011-HCGS139N-HKN-CSV-SEC
@@ -1604,7 +1604,7 @@
        2001-HCGS139N-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë¡ÊÊÝ¸±¾ðÊó¡Ë
+      *    å…¥é™¢ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰ï¼ˆä¿é™ºæƒ…å ±ï¼‰
       *****************************************************************
        20011-HCGS139N-HKN-CSV-SEC      SECTION.
       *
@@ -1619,8 +1619,8 @@
                INITIALIZE          ORCSSTRINGAREA
                MOVE    "sub"   TO  ORCSSTR-COMMAND
                MOVE    WRK-ITEM TO ORCSSTR-STRING1
-               MOVE    "¹â£¹"  TO  ORCSSTR-STRING2
-               MOVE    "¹â°ì"  TO  ORCSSTR-STRING3
+               MOVE    "é«˜ï¼™"  TO  ORCSSTR-STRING2
+               MOVE    "é«˜ä¸€"  TO  ORCSSTR-STRING3
                CALL    "orcsstring" USING  ORCSSTRINGAREA
                MOVE    ORCSSTR-STRING1
                                TO  WRK-ITEM
@@ -1685,7 +1685,7 @@
        20011-HCGS139N-HKN-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë¡Ê¤½¤ÎÂ¾¾ðÊó¡Ë
+      *    å…¥é™¢ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰ï¼ˆãã®ä»–æƒ…å ±ï¼‰
       *****************************************************************
        20011-HCGS139N-ETC-CSV-SEC      SECTION.
       *
@@ -1723,7 +1723,7 @@
        20011-HCGS139N-ETC-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    £Ã£Ó£Ö¥Õ¥¡¥¤¥ë£Ë£Å£Ù¹àÌÜÊÔ½¸½èÍý
+      *    ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«ï¼«ï¼¥ï¼¹é …ç›®ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-CSV-KEY-EDIT-SEC         SECTION.
       *
@@ -1765,7 +1765,7 @@
        20011-CSV-KEY-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    °õºþ½èÍý
+      *    å°åˆ·å‡¦ç†
       *****************************************************************
        230-HCGS139N-PRINT-SEC         SECTION.
       *
@@ -1780,14 +1780,14 @@
        230-HCGS139N-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ³°ÍèÁí³çÉ½ÊÔ½¸½èÍý
+      *    å¤–æ¥ç·æ‹¬è¡¨ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-HCGS139G-EDIT-SEC          SECTION.
       *
            INITIALIZE                      HCGS139G
       *
            MOVE    WRK-PRT-SRYYM       TO  HCGS139G-SRYYM
-           MOVE    "³°Íè"              TO  HCGS139G-NYUGAI
+           MOVE    "å¤–æ¥"              TO  HCGS139G-NYUGAI
            MOVE    WRK-PRT-SAKYMD      TO  HCGS139G-SYSYMD
            MOVE    WRK-SKYSBTNAME      TO  HCGS139G-SKYSBT
            MOVE    WRK-SRYKANAME1      TO  HCGS139G-SRYKANAME
@@ -1871,36 +1871,36 @@
       *
            END-PERFORM
       *
-           MOVE    "ÆÃÊÌÎÅÍÜÈñ(Ãí)"    TO  HCGS139G-LBLTOKUYO
-           MOVE    "Ï«¡¡¡¡ºÒ ¡ÊÃí¡Ë"   TO  HCGS139G-LBLROUSAI
-           MOVE    "¼« Çå ÀÕ ¡ÊÃí¡Ë"   TO  HCGS139G-LBLJIBAI
-           MOVE    "¸ø¡¡¡¡³² ¡ÊÃí¡Ë"   TO  HCGS139G-LBLKOUGAI
+           MOVE    "ç‰¹åˆ¥ç™‚é¤Šè²»(æ³¨)"    TO  HCGS139G-LBLTOKUYO
+           MOVE    "åŠ´ã€€ã€€ç½ ï¼ˆæ³¨ï¼‰"   TO  HCGS139G-LBLROUSAI
+           MOVE    "è‡ª è³  è²¬ ï¼ˆæ³¨ï¼‰"   TO  HCGS139G-LBLJIBAI
+           MOVE    "å…¬ã€€ã€€å®³ ï¼ˆæ³¨ï¼‰"   TO  HCGS139G-LBLKOUGAI
       *
            IF    ( KEY-RECEKA          =   SPACE )
       *
                IF    ( BGS100P-ETCGETKBN   =   "0" )
-                   MOVE    "ÆÃÊÌÎÅÍÜÈñ" TO HCGS139G-LBLTOKUYO
-                   MOVE    "Ï«¡¡¡¡ºÒ"  TO  HCGS139G-LBLROUSAI
-                   MOVE    "¼« Çå ÀÕ"  TO  HCGS139G-LBLJIBAI
-                   MOVE    "¸ø¡¡¡¡³²"  TO  HCGS139G-LBLKOUGAI
+                   MOVE    "ç‰¹åˆ¥ç™‚é¤Šè²»" TO HCGS139G-LBLTOKUYO
+                   MOVE    "åŠ´ã€€ã€€ç½"  TO  HCGS139G-LBLROUSAI
+                   MOVE    "è‡ª è³  è²¬"  TO  HCGS139G-LBLJIBAI
+                   MOVE    "å…¬ã€€ã€€å®³"  TO  HCGS139G-LBLKOUGAI
                END-IF
       *
                MOVE    SPACE           TO  HCGS139G-ETCHKNMSG
-               STRING  "¡ÊÃí¡Ë¼ÂºÝ¤Î¥ì¥»¥×¥È·ï¿ô"
+               STRING  "ï¼ˆæ³¨ï¼‰å®Ÿéš›ã®ãƒ¬ã‚»ãƒ—ãƒˆä»¶æ•°"
                                            DELIMITED BY SIZE
-                       "¡¦Æü¿ô¤È°ìÃ×¤·¤Ê¤¤¾ì¹ç¤¬¤¢¤ê¤Þ¤¹¡£"
+                       "ãƒ»æ—¥æ•°ã¨ä¸€è‡´ã—ãªã„å ´åˆãŒã‚ã‚Šã¾ã™ã€‚"
                                            DELIMITED BY SIZE
                INTO    HCGS139G-ETCHKNMSG
                END-STRING
            ELSE
                MOVE    SPACE           TO  HCGS139G-ETCHKNMSG
-               STRING    "¡ÊÃí¡ËÁ´²Ê¹ç·×¤ËÊÔ½¸¤µ¤ì¤Þ¤¹¡£"
+               STRING    "ï¼ˆæ³¨ï¼‰å…¨ç§‘åˆè¨ˆã«ç·¨é›†ã•ã‚Œã¾ã™ã€‚"
                                            DELIMITED   BY  SIZE
                INTO    HCGS139G-ETCHKNMSG
                END-STRING
       *
                MOVE    SPACE   TO  HCGS139G-ETCMSG
-               STRING  "¤½¤ÎÂ¾·×¤ÏÁ´²Ê¹ç·×¤ËÊÔ½¸¤µ¤ì¤Þ¤¹¡£"
+               STRING  "ãã®ä»–è¨ˆã¯å…¨ç§‘åˆè¨ˆã«ç·¨é›†ã•ã‚Œã¾ã™ã€‚"
                                        DELIMITED   BY  SIZE
                INTO    HCGS139G-ETCMSG
                END-STRING
@@ -1929,7 +1929,7 @@
        2001-HCGS139G-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    °õºþ½èÍý
+      *    å°åˆ·å‡¦ç†
       *****************************************************************
        230-HCGS139G-PRINT-SEC         SECTION.
       *
@@ -1944,14 +1944,14 @@
        230-HCGS139G-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Íè¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë
+      *    å¤–æ¥ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰
       *****************************************************************
        2001-HCGS139G-CSV-SEC           SECTION.
       *
            MOVE    "9"             TO  WRK-PRTKBN
-           MOVE    "Áí³ç"          TO  WRK-PRTKBNMEI
+           MOVE    "ç·æ‹¬"          TO  WRK-PRTKBNMEI
            MOVE    "2"             TO  WRK-NYUGAIKBN
-           MOVE    "³°Íè"          TO  WRK-NYUGAIKBNMEI
+           MOVE    "å¤–æ¥"          TO  WRK-NYUGAIKBNMEI
       *
            MOVE    SPACE           TO  WRK-CSVDATA
            MOVE    1               TO  IDXP
@@ -1971,7 +1971,7 @@
            PERFORM 230-TOUKEICSV-SEC
       *
            MOVE    "1"             TO  WRK-DATAKBN
-           MOVE    "ÊÝ¸±¶èÊ¬ÊÌ"    TO  WRK-DATAKBNMEI
+           MOVE    "ä¿é™ºåŒºåˆ†åˆ¥"    TO  WRK-DATAKBNMEI
       *
            PERFORM VARYING IDX2    FROM    1   BY  1
                    UNTIL ( IDX2    >   CONST-KOUTTL )
@@ -2020,8 +2020,8 @@
       *
                MOVE    CSV-H04-ITEM (IDXI)
                                        TO  WRK-ITEM
-               IF    ( WRK-ITEM    =   "ÊÝ¸±¶èÊ¬" )
-                   MOVE    "ÊÝ¸±·×"    TO  WRK-ITEM
+               IF    ( WRK-ITEM    =   "ä¿é™ºåŒºåˆ†" )
+                   MOVE    "ä¿é™ºè¨ˆ"    TO  WRK-ITEM
                END-IF
                IF    ( IDXI   >=   CSV-H04-MAX    )
                    PERFORM 802-CSVDATA-EDIT-SEC
@@ -2034,7 +2034,7 @@
            PERFORM 230-TOUKEICSV-SEC
       *
            MOVE    "3"             TO  WRK-DATAKBN
-           MOVE    "ÊÝ¸±·×"        TO  WRK-DATAKBNMEI
+           MOVE    "ä¿é™ºè¨ˆ"        TO  WRK-DATAKBNMEI
       *
            MOVE    CONST-HKNTTL    TO  IDX2
            PERFORM 20011-HCGS139G-HKN-CSV-SEC
@@ -2125,7 +2125,7 @@
        2001-HCGS139G-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Íè¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë¡ÊÊÝ¸±¾ðÊó¡Ë
+      *    å¤–æ¥ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰ï¼ˆä¿é™ºæƒ…å ±ï¼‰
       *****************************************************************
        20011-HCGS139G-HKN-CSV-SEC      SECTION.
       *
@@ -2140,8 +2140,8 @@
                INITIALIZE          ORCSSTRINGAREA
                MOVE    "sub"   TO  ORCSSTR-COMMAND
                MOVE    WRK-ITEM TO ORCSSTR-STRING1
-               MOVE    "¹â£¹"  TO  ORCSSTR-STRING2
-               MOVE    "¹â°ì"  TO  ORCSSTR-STRING3
+               MOVE    "é«˜ï¼™"  TO  ORCSSTR-STRING2
+               MOVE    "é«˜ä¸€"  TO  ORCSSTR-STRING3
                CALL    "orcsstring" USING  ORCSSTRINGAREA
                MOVE    ORCSSTR-STRING1
                                TO  WRK-ITEM
@@ -2182,7 +2182,7 @@
        20011-HCGS139G-HKN-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Íè¥Á¥§¥Ã¥¯É½ÊÔ½¸½èÍý¡Ê£Ã£Ó£Ö¡Ë¡Ê¤½¤ÎÂ¾¾ðÊó¡Ë
+      *    å¤–æ¥ãƒã‚§ãƒƒã‚¯è¡¨ç·¨é›†å‡¦ç†ï¼ˆï¼£ï¼³ï¼¶ï¼‰ï¼ˆãã®ä»–æƒ…å ±ï¼‰
       *****************************************************************
        20011-HCGS139G-ETC-CSV-SEC      SECTION.
       *
@@ -2220,7 +2220,7 @@
        20011-HCGS139G-ETC-CSV-EXT.
            EXIT.
       *****************************************************************
-      *    °õºþ½èÍý
+      *    å°åˆ·å‡¦ç†
       *****************************************************************
        230-PRINT-SEC                   SECTION.
       *
@@ -2255,7 +2255,7 @@
            IF    ( SPRT-RETURN     =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "°õºþ£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å°åˆ·ï¼¤ï¼¢ã«æ›´æ–°ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -2264,7 +2264,7 @@
        230-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ã£Ó£Ö½ÐÎÏ½èÍý
+      *    ï¼£ï¼³ï¼¶å‡ºåŠ›å‡¦ç†
       *****************************************************************
        230-TOUKEICSV-SEC               SECTION.
       *
@@ -2288,7 +2288,7 @@
            MOVE    BGS100P-CSVFNAME TO STOUKEICSV-TO-DATA
            MOVE    "2"             TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-CSVDATA     TO  STOUKEICSV-CSVDATA
-           MOVE    "ÊÝ¸±ÊÌÀÁµá¥Á¥§¥Ã¥¯É½£Ã£Ó£ÖºîÀ®"
+           MOVE    "ä¿é™ºåˆ¥è«‹æ±‚ãƒã‚§ãƒƒã‚¯è¡¨ï¼£ï¼³ï¼¶ä½œæˆ"
                                    TO  STOUKEICSV-TITLE
       *
            CALL    "ORCSTOUKEICSV"     USING
@@ -2297,7 +2297,7 @@
            IF    ( STOUKEICSV-RETURN   =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "Åý·×£Ã£Ó£Ö£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "çµ±è¨ˆï¼£ï¼³ï¼¶ï¼¤ï¼¢ã«æ›´æ–°ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -2307,7 +2307,7 @@
        230-TOUKEICSV-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2318,7 +2318,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -2332,7 +2332,7 @@
                WRITE   BGS100ERR-REC
                CLOSE   BGS100ERR-FILE
       *
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-ERRMSG      TO  JOB-YOBI
@@ -2348,7 +2348,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    CSV¥Ç¡¼¥¿ÊÔ½¸½èÍý
+      *    CSVãƒ‡ãƒ¼ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        800-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2364,7 +2364,7 @@
        800-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    CSV¥Ç¡¼¥¿ÊÔ½¸½èÍý
+      *    CSVãƒ‡ãƒ¼ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        801-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2375,7 +2375,7 @@
        801-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    CSV¥Ç¡¼¥¿ÊÔ½¸½èÍý
+      *    CSVãƒ‡ãƒ¼ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        802-CSVDATA-EDIT-SEC            SECTION.
       *
@@ -2386,7 +2386,7 @@
        802-CSVDATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¹àÌÜ¥µ¥¤¥º¼èÆÀ½èÍý
+      *    é …ç›®ã‚µã‚¤ã‚ºå–å¾—å‡¦ç†
       *****************************************************************
        800-GET-ITEM-SIZE-SEC           SECTION.
       *
@@ -2412,7 +2412,7 @@
        800-GET-ITEM-SIZE-EXT.
            EXIT.
       *****************************************************************
-      *    ¶èÀÚ¤êÊ¸»úÊÔ½¸½èÍý
+      *    åŒºåˆ‡ã‚Šæ–‡å­—ç·¨é›†å‡¦ç†
       *****************************************************************
        800-PUT-DELIMITER-SEC           SECTION.
       *
@@ -2425,7 +2425,7 @@
        800-PUT-DELIMITER-EXT.
            EXIT.
       *****************************************************************
-      *    ²þ¹ÔÊ¸»úÊÔ½¸½èÍý
+      *    æ”¹è¡Œæ–‡å­—ç·¨é›†å‡¦ç†
       *****************************************************************
        800-PUT-CR-SEC                  SECTION.
       *
@@ -2438,7 +2438,7 @@
        800-PUT-CR-EXT.
            EXIT.
       *****************************************************************
-      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *    è¥¿æš¦æ—¥æœ¬èªžå¤‰æ›å‡¦ç†
       *****************************************************************
        800-HIZUKE-EDIT-SEC             SECTION.
       *
@@ -2457,7 +2457,7 @@
                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
                MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-               INSPECT WRK-EDTYMD3 REPLACING  ALL "  "  BY  "¡¡"
+               INSPECT WRK-EDTYMD3 REPLACING  ALL "  "  BY  "ã€€"
            END-IF
       *
       *
@@ -2465,7 +2465,7 @@
        800-HIZUKE-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    Á´³ÑÊÑ´¹½èÍý
+      *    å…¨è§’å¤‰æ›å‡¦ç†
       *****************************************************************
        800-ZENKAKU-SEC                 SECTION.
       *
@@ -2481,7 +2481,7 @@
        800-ZENKAKU-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ã‚µãƒ–
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -2501,7 +2501,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÀÁµá¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-BGSSKY-READ-SEC             SECTION.
       *
@@ -2529,7 +2529,7 @@
        900-BGSSKY-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¸øÈñ¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    å…¬è²»ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-BGSKOH-READ-SEC             SECTION.
       *
@@ -2557,7 +2557,7 @@
        900-BGSKOH-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾ÀÁµá¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    ãã®ä»–è«‹æ±‚ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-BGSETC-READ-SEC             SECTION.
       *
@@ -2585,7 +2585,7 @@
        900-BGSETC-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÉ¤ßÈô¤Ð¤·¥Á¥§¥Ã¥¯½èÍý
+      *    èª­ã¿é£›ã°ã—ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        9001-SKIP-CHK-SEC           SECTION.
       *
@@ -2619,7 +2619,7 @@
        9001-SKIP-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC          SECTION.
       *
@@ -2645,7 +2645,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2663,7 +2663,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤ò¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚’è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -2678,7 +2678,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -2693,7 +2693,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -2708,7 +2708,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *

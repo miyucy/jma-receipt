@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Äê¿ôÄ¶²á¾ðÊó¼èÆÀ¥Ñ¥é¥á¥¿¡¡COPY (CPORCSTEISU.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSTEISU.CBL)
-      *    ÀßÄê¹àÌÜ
-      *      »»ÄêÇ¯·î
-      *      »»ÄêÆþ±¡ÎÁ
-      *      ÆÃÄêÆþ±¡ÎÁ¶èÊ¬
+      *    å®šæ•°è¶…éŽæƒ…å ±å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€COPY (CPORCSTEISU.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSTEISU.CBL)
+      *    è¨­å®šé …ç›®
+      *      ç®—å®šå¹´æœˆ
+      *      ç®—å®šå…¥é™¢æ–™
+      *      ç‰¹å®šå…¥é™¢æ–™åŒºåˆ†
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSTEISU-AREA.
       *
-      *»»ÄêÇ¯·î
+      *ç®—å®šå¹´æœˆ
            03  LNK-TEISU-SANTEIYM                 PIC  X(06).
-      *»»ÄêÆþ±¡ÎÁ
+      *ç®—å®šå…¥é™¢æ–™
            03  LNK-TEISU-SANTEISRYCD              PIC  X(09).
-      *ÆÃÄêÆþ±¡ÎÁ¶èÊ¬¡Ê£°¡§°ìÈÌÆþ±¡ÎÁ¡¡£±¡§ÆÃÄêÆþ±¡ÎÁ¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™åŒºåˆ†ï¼ˆï¼ï¼šä¸€èˆ¬å…¥é™¢æ–™ã€€ï¼‘ï¼šç‰¹å®šå…¥é™¢æ–™ï¼‰
            03  LNK-TEISU-TOKUTEINYUIN-KBN         PIC  X(01).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-TEISU-HENKYAKU-AREA.
-      *Äê¿ôÄ¶²áÊÖµÑ¥Æ¡¼¥Ö¥ë
+      *å®šæ•°è¶…éŽè¿”å´ãƒ†ãƒ¼ãƒ–ãƒ«
              04  LNK-TEISU-HENKYAKU-TBL           OCCURS 2.
-      *Äê¿ôÄ¶²á¥³¡¼¥É
+      *å®šæ•°è¶…éŽã‚³ãƒ¼ãƒ‰
                05  LNK-TEISU-SRYCD                PIC  X(09).
-      *Äê¿ôÄ¶²á³«»ÏÇ¯·î
+      *å®šæ•°è¶…éŽé–‹å§‹å¹´æœˆ
                05  LNK-TEISU-STARTYM              PIC  X(06).
-      *Äê¿ôÄ¶²á½ªÎ»Ç¯·î
+      *å®šæ•°è¶…éŽçµ‚äº†å¹´æœˆ
                05  LNK-TEISU-ENDYM                PIC  X(06).
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§»»ÄêÇ¯·î¥¨¥é¡¼¡¡£²¡§¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÌµ¤·
-      *            £³¡§Äê¿ôÄ¶²áÂÐ¾Ý³°¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šç®—å®šå¹´æœˆã‚¨ãƒ©ãƒ¼ã€€ï¼’ï¼šã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±ç„¡ã—
+      *            ï¼“ï¼šå®šæ•°è¶…éŽå¯¾è±¡å¤–ï¼‰
            03  LNK-TEISU-RC                       PIC S9(9) BINARY.
       *

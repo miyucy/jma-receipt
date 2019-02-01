@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBD004.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����Ģɼ
-      *  ����ݡ��ͥ��̾  : ��Ǽ����ɽ�ʣȣãͣ����˳���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/02/27    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 日次帳票
+      *  コンポーネント名  : 収納一覧表（ＨＣＭ０７）外来
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/02/27    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 00.00.01     NACL-����    03/04/25  NYUGAIKBN�������ɲ�
-      *                                     ���Ѥ���HOSPID���ѹ�
-      * 00.00.02     NACL-����    03/05/02  ��ۤ򥫥���Խ�
-      * 00.00.03     NACL-����    03/06/05  ������ʬ�ɲ�
-      * 00.00.04     NACL-����    03/12/11  ������ʬɽ������
-      * 03.00.00     NACL-����    06/05/23  �¤ӽ����ɼ�ֹ����ɲ�
-      * 03.05.01     NACL-����    07/06/08  ���롼�׿����б�
-      * 04.08.01     NACL-����    14/07/28  ����ե�����ǥ��쥯�ȥ�����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 00.00.01     NACL-森脇    03/04/25  NYUGAIKBNキーに追加
+      *                                     使用するHOSPIDの変更
+      * 00.00.02     NACL-森脇    03/05/02  金額をカンマ編集
+      * 00.00.03     NACL-森脇    03/06/05  印刷区分追加
+      * 00.00.04     NACL-森脇    03/12/11  処理区分表示修正
+      * 03.00.00     NACL-太田    06/05/23  並び順に伝票番号順を追加
+      * 03.05.01     NACL-森脇    07/06/08  グループ診療対応
+      * 04.08.01     NACL-森脇    14/07/28  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,20 +42,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       * 
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
 grpsys*DD  COPY    "CPCOMMONDAT2.INC"
 grpsys*DD                          REPLACING   //RECE01PARA//
 grpsys*DD                          BY          //RECEERR//.
@@ -70,11 +70,11 @@ grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
                                    BY          //HCM07//.
       *----(00.00.03)--UPD-END-----
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -84,27 +84,27 @@ grpsys*DD  03  FILLER              PIC X(04)   VALUE   ".dat".
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTNUM           PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(06).
            03  CNT-DENP            PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
            03  IDX1                PIC 9(04).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -120,7 +120,7 @@ grpsys*     03  RECEERR             PIC X(100).
            03  WRK-PARA-SORTKBN    PIC X(01).
       *----(00.00.03)--ADD-END-----
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
       *
@@ -203,46 +203,46 @@ grpsys*     03  RECEERR             PIC X(100).
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ������
+      *    医療機関情報情報
            COPY    "CPSK1001.INC".
       *
-      *    ���Ų��ܾ������
+      *    診療科目情報情報
            COPY    "CPSK1005.INC".
       *
-      *    ����������
+      *    締め時刻情報
            COPY    "CPSK3005.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
-      *    ��Ǽ�ޥ���
+      *    収納マスタ
        01  SYU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ���٥ޥ���
+      *    収納明細マスタ
        01  SMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    ��Ǽ��������ޥ���
+      *    収納明細履歴マスタ
        01  SMEI2-REC.
            COPY    "CPSYUMEI.INC"  REPLACING   //SMEI//
                                    BY          //SMEI2//.
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ��Ѵ��ޥ���
+      *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -253,28 +253,28 @@ grpsys*     03  RECEERR             PIC X(100).
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ʸ�����Ѵ�
+      *    文字列変換
            COPY    "CPORCXKANACONV.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -291,7 +291,7 @@ grpsys     COPY    "COMMON-SPA".
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -305,7 +305,7 @@ grpsys     COPY    "COMMON-SPA".
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -346,7 +346,7 @@ grpsys                                         RECEERR
 grpsys     END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -354,7 +354,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
                                    TO  JOB-SHELLID
 grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBD004"      TO  JOB-PGID
-           MOVE    "��Ǽ����ɽ"    TO  JOB-SHELLMSG
+           MOVE    "収納一覧表"    TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -372,24 +372,24 @@ grpsys*DD                          TO  RECEERR-TERMID
            MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *----(04.08.01)--ADD-END-----
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
       *
            IF    ( WRK-PARA-DENPPRTYMD =   SPACE )
       *
-      *        ����������
+      *        締め時刻情報
                INITIALIZE                  SYS-3005-REC
                MOVE    "3005"          TO  SYS-3005-KANRICD
                MOVE    "*"             TO  SYS-3005-KBNCD
@@ -423,7 +423,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                    MOVE    WRK-OUT-INPUT       TO  WRK-KIKANEDTIME
       *
                ELSE
-                   MOVE    "��������ˤ��оݴ��֤���Ͽ���Ƥ�������"
+                   MOVE    "締め処理にて対象期間を登録してください"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
@@ -434,11 +434,11 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                MOVE    ALL "0"             TO  WRK-STDAILYKEY-TIME
                MOVE    ALL "9"             TO  WRK-EDDAILYKEY-TIME
       *
-      *        �о�ǯ�����Խ�
+      *        対象年月日編集
                MOVE    WRK-PARA-DENPPRTYMD TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG     TO  WRK-SYORIYMD(1:22)
-               MOVE    "ʬ"            TO  WRK-SYORIYMD(23:2)
+               MOVE    "分"            TO  WRK-SYORIYMD(23:2)
            END-IF
       *
       *----(00.00.03)--ADD-START---
@@ -451,7 +451,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                MOVE    "0"             TO  WRK-PARA-SYORIKBN
            WHEN    OTHER
                MOVE    SPACE           TO  WRK-RECEERR
-               STRING  "������ʬ������Ǥ���["     DELIMITED   BY  SIZE
+               STRING  "処理区分が誤りです：["     DELIMITED   BY  SIZE
                        WRK-PARA-SYORIKBN           DELIMITED   BY  SIZE
                        "]"                         DELIMITED   BY  SIZE
                INTO    WRK-RECEERR
@@ -472,7 +472,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
       *
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
-           STRING  "��������"              DELIMITED   BY  SIZE
+           STRING  "作成日："              DELIMITED   BY  SIZE
                    WRK-HENYMDG             DELIMITED   BY  SIZE
            INTO    WRK-CREYMD
            END-STRING
@@ -482,14 +482,14 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    Ģɼ�������Ͻ���
+      *    帳票印刷開始処理
            PERFORM 900-DBSELECT-SEC
       *
-      *    �������å�
+      *    キーセット
            IF    ( WRK-PARA-SORTKBN    =   "1" )
                MOVE    "00"        TO  KEY-N-SRYKA
            ELSE
@@ -506,7 +506,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYS-3005-HOSPNUM
                IF    ( WRK-PARA-SORTKBN    =   "1" )
                    CONTINUE
                ELSE
-      *            ���Ųʾ���
+      *            診療科情報
                    INITIALIZE                  SYS-1005-REC
                    MOVE    "1005"          TO  SYS-1005-KANRICD
                    MOVE    KEY-N-SRYKA     TO  SYS-1005-KBNCD
@@ -524,13 +524,13 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
                PERFORM UNTIL ( FLG-END         =   1 )
                        OR    ( KEY-N-SRYKA NOT =   KEY-O-SRYKA )
-      *            Ģɼ�Խ�<���Ф�>����
+      *            帳票編集<見出し>処理
                    PERFORM 310-HEAD-HEN-SEC
-      *            Ģɼ�Խ�<����>����
+      *            帳票編集<明細>処理
                    PERFORM 320-BODY-HEN-SEC
-      *            Ģɼ�Խ�<���>����
+      *            帳票編集<合計>処理
                    PERFORM 330-TERM-HEN-SEC
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 390-PRINT-OUT-SEC
                END-PERFORM
       *
@@ -542,7 +542,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HEAD-HEN-SEC            SECTION.
       *
@@ -555,27 +555,27 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *
            IF    ( WRK-PARA-DENPPRTYMD =   SPACE )
                IF    ( SYS-3005-STSRYYMD   =   SYS-3005-EDSRYYMD )
-                   STRING "���֡�"             DELIMITED   BY  SIZE
+                   STRING "期間："             DELIMITED   BY  SIZE
                           WRK-KIKANSTYMD       DELIMITED   BY  SIZE
                           WRK-KIKANSTTIME-HH   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
                           WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "〜"                 DELIMITED   BY  SIZE
                           WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
                           WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE
                    INTO   HCM07-KIKAN
                    END-STRING
                ELSE
-                   STRING "���֡�"             DELIMITED   BY  SIZE
+                   STRING "期間："             DELIMITED   BY  SIZE
                           WRK-KIKANSTYMD       DELIMITED   BY  SIZE
                           WRK-KIKANSTTIME-HH   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
                           WRK-KIKANSTTIME-MM   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "〜"                 DELIMITED   BY  SIZE
                           WRK-KIKANEDYMD       DELIMITED   BY  SIZE
                           WRK-KIKANEDTIME-HH   DELIMITED   BY  SIZE
-                          "��"                 DELIMITED   BY  SIZE
+                          "："                 DELIMITED   BY  SIZE
                           WRK-KIKANEDTIME-MM   DELIMITED   BY  SIZE
                    INTO   HCM07-KIKAN
                    END-STRING
@@ -592,11 +592,11 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
       *----(00.00.03)--ADD-START---
            EVALUATE    WRK-PARA-SYORIKBN
            WHEN    "0"
-               MOVE    "�ʼ�Ǽ�����̡�"    TO  HCM07-SYORIKBN
+               MOVE    "（収納明細別）"    TO  HCM07-SYORIKBN
            WHEN    "1"
-               MOVE    "����ɼ�̡�"        TO  HCM07-SYORIKBN
+               MOVE    "（伝票別）"        TO  HCM07-SYORIKBN
            WHEN    "2"
-               MOVE    "�ʴ����̡�"        TO  HCM07-SYORIKBN
+               MOVE    "（患者別）"        TO  HCM07-SYORIKBN
            END-EVALUATE
       *----(00.00.03)--ADD-END-----
       *
@@ -606,7 +606,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
@@ -621,7 +621,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
                END-IF
       *
       *----(00.00.03)--UPD-START---
-      *        Ģɼ�Խ�<���ٹ�>����
+      *        帳票編集<明細行>処理
                PERFORM 3201-BODY-NAIYO-HEN-SEC
       *----(00.00.03)--UPD-END-----
       *
@@ -632,39 +632,39 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ����Խ���
+      *    帳票編集患者処理
       *****************************************************************
        3201-BODY-PTINF-HEN-SEC     SECTION.
       *
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
            INITIALIZE                  PTINF-REC
 grpsys*DD  MOVE    WRK-PARA-HOSPID TO  PTINF-HOSPID
 grpsys     MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
       *
-      *    �����ֹ��Ѵ������ɤ߹���
+      *    患者番号変換情報読み込み
            INITIALIZE                  PTNUM-REC
 grpsys*DD  MOVE    WRK-PARA-HOSPID TO  PTNUM-HOSPID
 grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            MOVE    KEY-N-PTID      TO  PTNUM-PTID
            PERFORM 900-PTNUM-READ-SEC
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    PTNUM-PTNUM     TO  WRK-PTNUM(1)
       *
-      *    ��̾
+      *    氏名
            MOVE    PTINF-NAME      TO  WRK-NAME(1)
       *
-      *    ����
+      *    性別
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "��"    TO  WRK-SEX(1)
+                   MOVE    "男"    TO  WRK-SEX(1)
                WHEN    "2"
-                   MOVE    "��"    TO  WRK-SEX(1)
+                   MOVE    "女"    TO  WRK-SEX(1)
            END-EVALUATE
       *
-      *    ��ǯ����
+      *    生年月日
            MOVE    PTINF-BIRTHDAY  TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-BIRTHDAY(1)
@@ -676,7 +676,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        3201-BODY-NAIYO-HEN-SEC     SECTION.
       *
@@ -686,7 +686,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  PTNUM-HOSPNUM
                    OR    ( KEY-N-PTID      NOT =   KEY-O-PTID )
                    OR    ( CNT-LINE        =   30 )
       *
-      *        ��Ǽ�ɤ߹���
+      *        収納読み込み
                INITIALIZE                  SYU-REC
 grpsys*DD      MOVE    WRK-PARA-HOSPID TO  SYU-HOSPID
 grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
@@ -695,7 +695,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                MOVE    KEY-N-DENPNUM   TO  SYU-DENPNUM
                PERFORM 900-SYU-READ-SEC
       *
-      *        ��ɼ��������å�
+      *        伝票履歴チェック
                PERFORM 900-SMEI2-SELECT-SEC
                PERFORM UNTIL    FLG-SMEI2  =   1
                    COMPUTE WRK-GSEIKYU(4)  =   WRK-GSEIKYU(4)
@@ -706,7 +706,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                END-PERFORM
                PERFORM 900-SMEI2-CLOSE-SEC
       *
-      *        Ģɼ�Խ�<���ٹ�>����
+      *        帳票編集<明細行>処理
                PERFORM 32012-BODY-NAIYO-HEN-SEC
       *
                IF      WRK-PARA-SYORIKBN   =   "2"
@@ -718,7 +718,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                    IF        ( CNT-DENP    >  IDY )
                        MOVE    30          TO  CNT-LINE
                    ELSE
-      *                Ģɼ�Խ�<���ٹ�>���åȽ���
+      *                帳票編集<明細行>セット処理
                        PERFORM 3202-BODY-NAIYO-SET-SEC
                    END-IF
                END-IF
@@ -730,7 +730,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                IF        ( CNT-DENP    >  IDY )
                    MOVE    30          TO  CNT-LINE
                ELSE
-      *            Ģɼ�Խ�<���ٹ�>���åȽ���
+      *            帳票編集<明細行>セット処理
                    PERFORM 3202-BODY-NAIYO-SET-SEC
                END-IF
            END-IF
@@ -740,7 +740,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        32012-BODY-NAIYO-HEN-SEC     SECTION.
       *
@@ -761,13 +761,13 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                    ADD     1                   TO  CNT-DENP
                END-EVALUATE
       *
-      *        ��ɼ�ֹ�
+      *        伝票番号
                IF        ( WRK-DENPNUM-X(CNT-DENP) =   SPACE )
                    OR    ( WRK-DENPNUM-X(CNT-DENP) =   ZERO )
                    MOVE    SMEI-DENPNUM    TO  WRK-DENPNUM-X(CNT-DENP)
-      *            ���ŷ���
+      *            診療月日
                    IF      SYU-SRYYMD      NOT =   WRK-EDDAILYKEY-YMD
-      *                ���ŷ����Խ�
+      *                診療月日編集
                        MOVE    SYU-SRYYMD          TO  WRK-SYMD
                        PERFORM 31012-SEIWA-HEN-SEC
                        MOVE    WRK-HENYMDG(11:12)
@@ -783,10 +783,10 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                END-IF
       *
                IF          WRK-PARA-SYORIKBN       =   "0"
-      *            ������ʬ
+      *            処理区分
                    EVALUATE    SMEI-JOUTAIKBN
                    WHEN    SPACE
-                       MOVE    "����ۤʤ�"
+                       MOVE    "請求額なし"
                                            TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "1"
       *----(00.00.04)--UPD-START---
@@ -795,24 +795,24 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                        IF   ( SMEI-SKYMONEY
                                        >   SMEI-NYUHEN-MONEY )
       *----(00.00.04)--UPD-END-----
-                           MOVE    "���ᡦ̤��"
+                           MOVE    "請求・未収"
                                            TO  WRK-JYOTAI(CNT-DENP)
                        ELSE
-                           MOVE    "���ᡦ����"
+                           MOVE    "請求・入金"
                                            TO  WRK-JYOTAI(CNT-DENP)
                        END-IF
                    WHEN    "2"
-                       MOVE    "����"      TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "入金"      TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "3"
-                       MOVE    "�Ʒ׻�"    TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "再計算"    TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "4"
-                       MOVE    "�ֶ�"      TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "返金"      TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "5"
-                       MOVE    "������"  TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "請求取消"  TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "6"
-                       MOVE    "������"  TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "入金取消"  TO  WRK-JYOTAI(CNT-DENP)
                    WHEN    "8"
-                       MOVE    "��������"  TO  WRK-JYOTAI(CNT-DENP)
+                       MOVE    "診療訂正"  TO  WRK-JYOTAI(CNT-DENP)
                    END-EVALUATE
                END-IF
       *
@@ -826,20 +826,20 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
                EVALUATE    WRK-PARA-SYORIKBN
                WHEN    "1"
                WHEN    "2"
-      *            ������
+      *            請求金額
                    ADD     SMEI-SKYMONEY   TO  WRK-SEIKYU(CNT-DENP)
-      *            �μ����
+      *            領収金額
                    ADD     SMEI-NYUHEN-MONEY
                                            TO  WRK-RYOSYU(CNT-DENP)
                WHEN    "0"
-      *            ������
+      *            請求金額
                    MOVE    SMEI-SKYMONEY   TO  WRK-SEIKYU(CNT-DENP)
-      *            �μ����
+      *            領収金額
                    MOVE    SMEI-NYUHEN-MONEY
                                            TO  WRK-RYOSYU(CNT-DENP)
                END-EVALUATE
       *
-      *        ̤�����
+      *        未収金額
                MOVE    WRK-GMISYU(4)       TO  WRK-MISYU(CNT-DENP)
       *
                PERFORM 900-DBFETCH-SEC
@@ -851,7 +851,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
       *
       *----(00.00.03)--UPD-END----
       *****************************************************************
-      *    Ģɼ�Խ�<����>���åȽ���
+      *    帳票編集<明細>セット処理
       *****************************************************************
        3202-BODY-NAIYO-SET-SEC     SECTION.
       *
@@ -915,7 +915,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���>����
+      *    帳票編集<合計>処理
       *****************************************************************
        330-TERM-HEN-SEC            SECTION.
       *
@@ -936,17 +936,17 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        331-TOTAL-HENSYU-SEC        SECTION.
       *
            EVALUATE    IDX
                WHEN    1
-                   MOVE    "������"      TO  HCM07-TTLMSG(1)
+                   MOVE    "頁内合計"      TO  HCM07-TTLMSG(1)
                WHEN    2
-                   MOVE    "�ʹ��"        TO  HCM07-TTLMSG(2)
+                   MOVE    "科合計"        TO  HCM07-TTLMSG(2)
                WHEN    3
-                   MOVE    "�����"        TO  HCM07-TTLMSG(3)
+                   MOVE    "総合計"        TO  HCM07-TTLMSG(3)
            END-EVALUATE
       *
            MOVE    WRK-GSEIKYU(IDX)    TO  WRK-Z9
@@ -965,7 +965,7 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �μ���۷��Խ�����
+      *    領収金額計編集処理
       *****************************************************************
        3311-TOTAL-MES-HEN-SEC      SECTION.
       *
@@ -980,12 +980,12 @@ grpsys         MOVE    SPA-HOSPNUM     TO  SYU-HOSPNUM
            MOVE    WRK-Z9 (IDX1 : )    TO  WRK-MAE-INPUT
            PERFORM 800-ZENKAKU-HEN-SEC
       *
-      *    ���ƥå��������
+      *    ステップ途中処理
            MOVE    "STM"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
-           STRING  "�μ���۹�ס�"    DELIMITED   BY  SIZE
+           STRING  "領収金額合計　"    DELIMITED   BY  SIZE
                    WRK-OUT-INPUT       DELIMITED   BY  SPACE
-                   "��"                DELIMITED   BY  SIZE
+                   "円"                DELIMITED   BY  SIZE
            INTO    JOB-YOBI
            END-STRING
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
@@ -1001,7 +1001,7 @@ grpsys                                     SPA-AREA
        3311-TOTAL-MES-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
@@ -1027,7 +1027,7 @@ grpsys                                     SPA-AREA
       *     MOVE   "HCM07.red"      TO  SPRT-PRTID
            MOVE   "HCM07V02.red"   TO  SPRT-PRTID
       *----(00.00.03)--UPD-END-----
-           MOVE    "��Ǽ����ɽ"    TO  SPRT-TITLE
+           MOVE    "収納一覧表"    TO  SPRT-TITLE
            MOVE    HCM07           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  SPRT-TERMID
@@ -1042,7 +1042,7 @@ grpsys                                 SPA-AREA
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1051,7 +1051,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -1063,13 +1063,13 @@ grpsys                                 SPA-AREA
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG     REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
 057400*
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1083,7 +1083,7 @@ grpsys                                 SPA-AREA
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1104,7 +1104,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        800-ZENKAKU-HEN-SEC         SECTION.
       *
@@ -1128,11 +1128,11 @@ grpsys                                     SPA-AREA
        800-ZENKAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1151,7 +1151,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ���ٸ�������
+      *    収納明細検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -1185,7 +1185,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *     ��Ǽ�򸡺�����
+      *     収納を検索処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -1210,7 +1210,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
@@ -1224,7 +1224,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ���٥ޥ������ɹ�����
+      *    収納明細マスター読込処理
       *****************************************************************
        900-SMEI2-SELECT-SEC        SECTION.
       *
@@ -1255,7 +1255,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *     ��Ǽ���٤򸡺�����
+      *     収納明細を検索処理
       *****************************************************************
        900-SMEI2-FETCH-SEC         SECTION.
       *
@@ -1279,7 +1279,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-SMEI2-CLOSE-SEC         SECTION.
       *
@@ -1291,7 +1291,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ޥ������ɹ�����
+      *    収納マスター読込処理
       *****************************************************************
        900-SYU-READ-SEC            SECTION.
       *
@@ -1316,7 +1316,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�����
+      *    患者マスター読込処理
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1341,7 +1341,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ������ɹ�����
+      *    患者番号変換マスター読込処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -1366,7 +1366,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-KEY10-SEL-SEC       SECTION.
       *
@@ -1388,7 +1388,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -1407,7 +1407,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        911-DBSELECT-SEC               SECTION.
       *
@@ -1423,7 +1423,7 @@ grpsys*DD                              MCPDATA-REC
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1439,7 +1439,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                SECTION.
       *
@@ -1455,7 +1455,7 @@ grpsys*DD                              MCPDATA-REC
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1483,7 +1483,7 @@ grpsys*DD                              MCPDATA-REC.
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡����ǽ���
+      *    ＤＢ　切断処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

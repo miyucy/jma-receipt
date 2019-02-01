@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,48 +16,48 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Âà±¡¾ÚÌÀ½ñÍÑÆþ±¡¼èÆÀ¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCHCN02.INC)
-      *                              »ÈÍÑ¥×¥í¥°¥é¥à (ORCHCN02.CBL)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´Ø£É£Ä
-      *      ´µ¼Ô£É£Ä
-      *      Æþ±¡Æü
-      *      Âà±¡Æü
+      *    é€€é™¢è¨¼æ˜Žæ›¸ç”¨å…¥é™¢å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCHCN02.INC)
+      *                              ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCHCN02.CBL)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
+      *      æ‚£è€…ï¼©ï¼¤
+      *      å…¥é™¢æ—¥
+      *      é€€é™¢æ—¥
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCHCN02SUB-AREA.
       *
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            03  LNK-ORCHCN02SUB-HOSPNUM                PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-ORCHCN02SUB-PTID                   PIC  9(10).
-      *Æþ±¡Æü
+      *å…¥é™¢æ—¥
            03  LNK-ORCHCN02SUB-NYUINYMD               PIC  X(08).
-      *Âà±¡Æü
+      *é€€é™¢æ—¥
            03  LNK-ORCHCN02SUB-TAIINYMD               PIC  X(08).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-ORCHCN02SUB-HENKYAKU-AREA.
-      *Æþ±¡ÊÖµÑ¥Æ¡¼¥Ö¥ë
+      *å…¥é™¢è¿”å´ãƒ†ãƒ¼ãƒ–ãƒ«
              04  LNK-ORCHCN02SUB-HENKYAKU-TABLE       OCCURS  20.
-      *Æþ±¡ÎÁ¥³¡¼¥É
+      *å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
                05  LNK-ORCHCN02SUB-SYUBETUCD          PIC  X(09).
-      *Æþ±¡ÎÁÌ¾¾Î
+      *å…¥é™¢æ–™åç§°
                05  LNK-ORCHCN02SUB-SYUBETUMEI         PIC  X(50).
-      *Æþ±¡Æü¿ô
+      *å…¥é™¢æ—¥æ•°
                05  LNK-ORCHCN02SUB-NISSU              PIC  9(05).
-      *Æþ±¡´ü´Ö
+      *å…¥é™¢æœŸé–“
              04  LNK-ORCHCN02SUB-KIKAN                PIC  9(05).
-      *Æþ±¡´ü´Ö³«»ÏÆü
+      *å…¥é™¢æœŸé–“é–‹å§‹æ—¥
              04  LNK-ORCHCN02SUB-KIKANSTRYMD          PIC  X(08).
-      *Æþ±¡´ü´Ö½ªÎ»Æü
+      *å…¥é™¢æœŸé–“çµ‚äº†æ—¥
              04  LNK-ORCHCN02SUB-KIKANENDYMD          PIC  X(08).
-      *ÁªÄêÆþ±¡´ü´Ö
+      *é¸å®šå…¥é™¢æœŸé–“
              04  LNK-ORCHCN02SUB-TKIKAN               PIC  9(05).
       *
-      *Éüµ¢¥³¡¼¥É¡Ê£±¡§¥Ñ¥é¥á¥¿¥¨¥é¡¼¡¡£²¡§Æþ±¡²ñ·×¤Ê¤·
-      *            £³¡§ÄÌ»»¼èÆÀ¥¨¥é¡¼¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šãƒ‘ãƒ©ãƒ¡ã‚¿ã‚¨ãƒ©ãƒ¼ã€€ï¼’ï¼šå…¥é™¢ä¼šè¨ˆãªã—
+      *            ï¼“ï¼šé€šç®—å–å¾—ã‚¨ãƒ©ãƒ¼ï¼‰
            03  LNK-ORCHCN02SUB-RC                     PIC S9(9) BINARY.
       *

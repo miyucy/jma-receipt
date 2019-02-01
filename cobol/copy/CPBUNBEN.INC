@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,103 +16,103 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Ê¬ÊÚ´ÉÍý                   COPY  (CPBUNBEN.INC)       *
+      *    åˆ†å¨©ç®¡ç†                   COPY  (CPBUNBEN.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  BUNBEN-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  BUNBEN-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  BUNBEN-HOSPNUM             PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  BUNBEN-PTID                PIC  9(10).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  BUNBEN-NYUGAIKBN           PIC  X(01).
-      *ÀÁµáÇ¯·î
+      *è«‹æ±‚å¹´æœˆ
                05  BUNBEN-SKYYM               PIC  X(06).
-      *Æþ±¡ÍúÎòÈÖ¹æ
+      *å…¥é™¢å±¥æ­´ç•ªå·
                05  BUNBEN-RRKNUM              PIC  9(07).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  BUNBEN-PTNUM                   PIC  X(20).
-      *ÀÁµá¶èÊ¬
+      *è«‹æ±‚åŒºåˆ†
            03  BUNBEN-SKYKBN                  PIC  X(01).
-      *Ä¾ÀÜ»ÙÊ§À©ÅÙÍøÍÑ¶èÊ¬
+      *ç›´æŽ¥æ”¯æ‰•åˆ¶åº¦åˆ©ç”¨åŒºåˆ†
            03  BUNBEN-RIYOUKBN                PIC  X(01).
-      *Ê¬ÊÚ¶èÊ¬
+      *åˆ†å¨©åŒºåˆ†
            03  BUNBEN-BUNBENKBN               PIC  9(01).
-      *¥Ç¡¼¥¿Äó½ÐÀè¶èÊ¬
+      *ãƒ‡ãƒ¼ã‚¿æå‡ºå…ˆåŒºåˆ†
            03  BUNBEN-TEISYUTUSAKI            PIC  X(01).
-      *²ÃÆþÀ©ÅÙ¶èÊ¬
+      *åŠ å…¥åˆ¶åº¦åŒºåˆ†
            03  BUNBEN-KANYUKBN                PIC  X(01).
-      *ËÜ¿Í²ÈÂ²¶èÊ¬
+      *æœ¬äººå®¶æ—åŒºåˆ†
            03  BUNBEN-HONKZKKBN               PIC  X(01).
-      *ÊÝ¸±¼ÔÈÖ¹æ
+      *ä¿é™ºè€…ç•ªå·
            03  BUNBEN-HKNJANUM                PIC  X(08).
-      *ÈïÊÝ¸±¼Ô¾Úµ­¹æ
+      *è¢«ä¿é™ºè€…è¨¼è¨˜å·
            03  BUNBEN-KIGO                    PIC  X(40).
-      *ÈïÊÝ¸±¼Ô¾ÚÈÖ¹æ
+      *è¢«ä¿é™ºè€…è¨¼ç•ªå·
            03  BUNBEN-NUM                     PIC  X(40).
-      *Ç¥ÉØ»áÌ¾¡Ê¥«¥Ê»áÌ¾¡Ë
+      *å¦Šå©¦æ°åï¼ˆã‚«ãƒŠæ°åï¼‰
            03  BUNBEN-NAME                    PIC  X(40).
-      *ºßÂÛ½µ¿ô
+      *åœ¨èƒŽé€±æ•°
            03  BUNBEN-ZAIWEEK                 PIC  9(02).
-      *½Ð»ºÇ¯·îÆü
+      *å‡ºç”£å¹´æœˆæ—¥
            03  BUNBEN-BIRTHDAY                PIC  X(08).
-      *»à»ºÍ­Ìµ¶èÊ¬
+      *æ­»ç”£æœ‰ç„¡åŒºåˆ†
            03  BUNBEN-SIZANKBN                PIC  X(01).
-      *½Ð»º¿ô
+      *å‡ºç”£æ•°
            03  BUNBEN-BIRTHCNT                PIC  9(01).
-      *Æþ±¡Æü¿ô
+      *å…¥é™¢æ—¥æ•°
            03  BUNBEN-NYUIN-DAY               PIC  9(03).
-      *»º²Ê°åÎÅÊä½þÀ©ÅÙ¶èÊ¬
+      *ç”£ç§‘åŒ»ç™‚è£œå„Ÿåˆ¶åº¦åŒºåˆ†
            03  BUNBEN-SANKAKBN                PIC  X(01).
-      *ÌÀºÙ¾ðÊó
+      *æ˜Žç´°æƒ…å ±
            03  BUNBEN-MEISAI-INF.
-      *Æþ±¡ÎÁ
+      *å…¥é™¢æ–™
                05  BUNBEN-NYU-MONEY           PIC S9(08).
-      *¼¼ÎÁº¹³Û
+      *å®¤æ–™å·®é¡
                05  BUNBEN-RMSGK-MONEY         PIC S9(08).
-      *Ê¬ÊÚ²ð½õÎÁ
+      *åˆ†å¨©ä»‹åŠ©æ–™
                05  BUNBEN-KAIJO-MONEY         PIC S9(08).
-      *Ê¬ÊÚÎÁ
+      *åˆ†å¨©æ–™
                05  BUNBEN-BUNBEN-MONEY        PIC S9(08).
-      *¿·À¸»ù´ÉÍýÊÝ°éÎÁ
+      *æ–°ç”Ÿå…ç®¡ç†ä¿è‚²æ–™
                05  BUNBEN-SHIN-MONEY          PIC S9(08).
-      *¸¡ºº¡¦ÌôºÞÎÁ
+      *æ¤œæŸ»ãƒ»è–¬å‰¤æ–™
                05  BUNBEN-KNS-MONEY           PIC S9(08).
-      *½èÃÖ¡¦¼êÅöÎÁ
+      *å‡¦ç½®ãƒ»æ‰‹å½“æ–™
                05  BUNBEN-SYC-MONEY           PIC S9(08).
-      *»º²Ê°åÎÅÊä½þÀ©ÅÙ
+      *ç”£ç§‘åŒ»ç™‚è£œå„Ÿåˆ¶åº¦
                05  BUNBEN-SNK-MONEY           PIC S9(08).
-      *¤½¤ÎÂ¾
+      *ãã®ä»–
                05  BUNBEN-ETC-MONEY           PIC S9(08).
-      *°ìÉôÉéÃ´¶âÅù
+      *ä¸€éƒ¨è² æ‹…é‡‘ç­‰
                05  BUNBEN-ICBFTN-MONEY        PIC S9(08).
-      *Ç¥ÉØ¹ç·×ÉéÃ´³Û
+      *å¦Šå©¦åˆè¨ˆè² æ‹…é¡
                05  BUNBEN-NINPUFTN-MONEY      PIC S9(08).
-      *ÂåÍý¼õ¼è³Û
+      *ä»£ç†å—å–é¡
                05  BUNBEN-DAIRI-MONEY         PIC S9(08).
-      *ÌÀºÙ¾ðÊó¡ÊºÆÄêµÁ¡Ë
+      *æ˜Žç´°æƒ…å ±ï¼ˆå†å®šç¾©ï¼‰
            03  BUNBEN-MEISAI-R   REDEFINES  BUNBEN-MEISAI-INF.
                05  BUNBEN-MONEY               PIC S9(08)  OCCURS 12.
-      *È÷¹Í
+      *å‚™è€ƒ
            03  BUNBEN-BIKOU                   PIC  X(60).
-      *¹¹¿·¶èÊ¬
+      *æ›´æ–°åŒºåˆ†
            03  BUNBEN-UPDKBN                  PIC  X(01).
-      *ÊÝ¸±¼ÔÈÖ¹æ
+      *ä¿é™ºè€…ç•ªå·
            03  BUNBEN-HKNJANUM-S              PIC  X(08).
-      *Äó½ÐÆü¶èÊ¬¡Ê£±¡§£±£°ÆüÀÁµá¡¡£²¡§£²£µÆüÀÁµá¡Ë
+      *æå‡ºæ—¥åŒºåˆ†ï¼ˆï¼‘ï¼šï¼‘ï¼æ—¥è«‹æ±‚ã€€ï¼’ï¼šï¼’ï¼•æ—¥è«‹æ±‚ï¼‰
            03  BUNBEN-TEISYUTUBIKBN           PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  BUNBEN-TERMID                  PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  BUNBEN-OPID                    PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  BUNBEN-CREYMD                  PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  BUNBEN-UPYMD                   PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  BUNBEN-UPHMS                   PIC  X(06).

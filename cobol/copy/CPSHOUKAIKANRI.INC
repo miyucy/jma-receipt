@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¾È²ñ¸¡º÷¾ò·ï´ÉÍý¾ðÊó    COPY  (CPSHOUKAIKANRI.INC)*
+      *    æ‚£è€…ç…§ä¼šæ¤œç´¢æ¡ä»¶ç®¡ç†æƒ…å ±    COPY  (CPSHOUKAIKANRI.INC)*
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SHOUKAIKANRI-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  SHOKANRI-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  SHOKANRI-HOSPNUM    PIC  9(02).
       *UID
                05  SHOKANRI-UID        PIC  X(36).
-      *Ï¢ÈÖ
+      *é€£ç•ª
            03  SHOKANRI-RENNUM         PIC  S9(05).
-      *¸¡º÷¾ò·ïÌ¾¾Î
+      *æ¤œç´¢æ¡ä»¶åç§°
            03  SHOKANRI-NAME           PIC  X(100).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  SHOKANRI-NYUGAIKBN      PIC  X(01).
-      *É½Âê¶èÊ¬
+      *è¡¨é¡ŒåŒºåˆ†
            03  SHOKANRI-TITLEKBN       PIC  X(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SHOKANRI-TERMID         PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SHOKANRI-OPID           PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SHOKANRI-CREYMD         PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SHOKANRI-UPYMD          PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SHOKANRI-UPHMS          PIC  X(06).
-      *virtual¹àÌÜ
+      *virtualé …ç›®
            03  SHOKANRI-RENNUM-FIRST   PIC  9(05).
            03  SHOKANRI-RENNUM-LAST    PIC  9(05).

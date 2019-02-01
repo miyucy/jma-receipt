@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORHCML09.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������̾�ޥ���
-      *  ����ݡ��ͥ��̾  : ������̾�����ʣȣạ̃ͣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/04/24    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 自院病名マスタ
+      *  コンポーネント名  : 自院病名一覧（ＨＣＭＬ０９）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/04/24    MCC-森脇      新規作成
       *****************************************************************
-      *  00.00.01    NACL-����     �����¤��ؤ�(�ѻ�)
-      *  00.00.02    NACL-����     CSV�����б�
-      *  04.02.01    NACL-����     08/03/04  ������ʬ�ѹ�
-      *  04.08.01    NACL-����     14/08/19  ����ե�����ǥ��쥯�ȥ�����
-      *  04.08.02    NACL-����     16/02/26  ��­�������б�
-      *  05.00.00    NACL-����     17/11/29  ���饤����Ȱ����б�
+      *  00.00.01    NACL-森脇     順番並び替え(廃止)
+      *  00.00.02    NACL-森脇     CSV出力対応
+      *  04.02.01    NACL-森脇     08/03/04  疾患区分変更
+      *  04.08.01    NACL-森脇     14/08/19  一時ファイルディレクトリ設定
+      *  04.08.02    NACL-森脇     16/02/26  補足コメント対応
+      *  05.00.00    NACL-太田     17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,17 +38,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       *----(04.08.01)--UPD-START---
       *     SELECT  PRT-FILE        ASSIGN  HC01PARA
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *----(04.08.01)--UPD-END-----
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  ML09ERR-FILE    ASSIGN  ML09ERR
                                    FILE    STATUS  IS  STS-ML09ERR.
-      *    CSV�ѥǡ���
+      *    CSV用データ
            SELECT  CSV-FILE        ASSIGN  USERCSV
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
@@ -57,9 +57,9 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
            COPY    "CPPRTALL.INC".
       * 01  PRT-REC.
@@ -79,12 +79,12 @@
       *         05  PRT-UUID            PIC X(36).
       *     03  PRT-PRTDATA             PIC X(20000).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  ML09ERR-FILE.
        01  ML09ERR-REC             PIC X(200).
       *
       *----(04.08.02)--UPD-START---
-      *    CSV�ե�����
+      *    CSVファイル
        FD  CSV-FILE.
        01  CSV-REC.
            03  CSV-BYOMEISBT       PIC X(01).
@@ -110,16 +110,16 @@
       *
            COPY    "HCML09.INC".
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
            COPY    "CPSHELLTBL.INC".
       *    COPY    "ORCA-DBPATH".
       *----(04.08.01)--ADD-START---
            COPY    "CPASGNPARA.INC".
       *----(04.08.01)--ADD-END-----
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //ML09ERR//.
        01  USERCSV.
@@ -128,30 +128,30 @@
            03  USERCSV-FILE-ID     PIC X(08).
            03  FILLER              PIC X(04)   VALUE   ".csv".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
            03  STS-ML09ERR         PIC X(02).
            03  STS-CSV             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-BUNRUI          PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-BYOMEI          PIC 9(04).
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA. 
            03  WRK-PARA.
                05  WRK-PARA-TERMID     PIC X(64).
@@ -188,22 +188,22 @@
            03  CONST-FORMID            PIC X(20)   VALUE  "HCML09.red".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
            COPY    "CPSK1044.INC".
       *
-      *    ������̾�ޥ���
+      *    自院病名マスタ
        01  USBYO-REC.
            COPY    "CPUSERBYOMEI.INC".
       *
@@ -213,48 +213,48 @@
                                    BY         //USBUN//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *   �գɣļ����ѥ��ꥢ
+      *   ＵＩＤ取得用エリア
        01 UIDIO-AREA.
            03  UIDIO-RET   PIC X(2).
            03  UIDIO-UID   PIC X(36).
        01  UIDIO-ST        PIC 9(2).
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY    "CPMKPASS.INC".
       *----(04.08.01)--ADD-START---
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -267,7 +267,7 @@
                                    COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -281,7 +281,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -313,7 +313,7 @@
            MOVE    WRK-PARA-SYSYMD     TO  SPA-SYSYMD
            MOVE    MCP-USER            TO  SPA-OPID
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -328,14 +328,14 @@
                                            SPA-AREA
            MOVE    SPA-ENCODING    TO      WRK-ENCODING9
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            MOVE    "ORHCML09"          TO  JOB-PGID
-           MOVE    "������̾����"      TO  JOB-SHELLMSG
+           MOVE    "自院病名一覧"      TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
@@ -360,7 +360,7 @@
                                    UIDIO-ST
                                    UIDIO-AREA
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
            .
@@ -368,11 +368,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -394,7 +394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -410,14 +410,14 @@
            EXIT.
       *
       *****************************************************************
-      *    CSV���åȽ���
+      *    CSVセット処理
       *****************************************************************
        300-CSVSET-SEC              SECTION.
       *
-      *    CSV�ѥե�����򥯥ꥢ����
+      *    CSV用ファイルをクリアする
            OPEN    OUTPUT              CSV-FILE
       *
-      *    ������̾���å�
+      *    自院病名セット
            PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-BYOMEI  =   1
@@ -451,14 +451,14 @@
       *
            PERFORM 900-DBCLOSE-SEC
       *
-      *    CSV�ѥե�������Ĥ���
+      *    CSV用ファイルを閉じる
            CLOSE                       CSV-FILE
            .
        300-CSVSET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���åȽ���
+      *    帳票セット処理
       *****************************************************************
        300-INSATSU-SEC             SECTION.
       *
@@ -484,15 +484,15 @@
            MOVE    ZERO            TO  CNT-PAGE
            MOVE    ZERO            TO  CNT-LINE
       *
-      *    ������̾���å�
+      *    自院病名セット
            PERFORM 900-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-BYOMEI  =   1
-      *        Ģɼ�Խ�<���Ф�>����
+      *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
-      *        Ģɼ�Խ�<����>����
+      *        帳票編集<明細>処理
                PERFORM 320-BODY-HEN-SEC
-      *        Ģɼ��������
+      *        帳票印刷処理
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
       *
@@ -507,7 +507,7 @@
 grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            MOVE    WRK-ENCODING    TO  SHELLTBL-ARG3
            IF    ( SPA-CLIENT-PRT-FLG  =   2 )
-              MOVE    "������̾����"
+              MOVE    "自院病名一覧"
                                    TO  SHELLTBL-ARG5
               MOVE    SPA-CLIENT-SHOWDIALOG
                                    TO  SHELLTBL-ARG6
@@ -525,7 +525,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HEAD-HEN-SEC            SECTION.
       *
@@ -547,7 +547,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
@@ -565,9 +565,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                    MOVE    USBYO-BYOMEI    TO  WRK-BYOMEI
                ELSE
                    STRING  USBYO-BYOMEI            DELIMITED BY SPACE
-                           "��"                    DELIMITED BY SIZE
+                           "（"                    DELIMITED BY SIZE
                            USBYO-HOSOKU-COMMENT    DELIMITED BY SPACE
-                           "��"                    DELIMITED BY SIZE
+                           "）"                    DELIMITED BY SIZE
                                            INTO    WRK-BYOMEI
                    END-STRING
                    MOVE    "*"             TO  WRK-BYOMEI(100:1)
@@ -579,28 +579,28 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                    WHEN    "00"
                        MOVE    SPACE     TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "03"
-                       MOVE   "���棱"   TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "皮膚１"   TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "04"
-                       MOVE   "���棲"   TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "皮膚２"   TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "05"
-                       MOVE   "�������" TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "特定疾患" TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "07"
-                       MOVE   "�Ƥ󤫤�"  TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "てんかん"  TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "08"
-                       MOVE   "�ü��Ƥ�"  TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "特疾てん"  TO  HCML09-MANSEIKBN(CNT-LINE)
                    WHEN    "09"
-                       MOVE   "���³���"  TO  HCML09-MANSEIKBN(CNT-LINE)
+                       MOVE   "難病外来"  TO  HCML09-MANSEIKBN(CNT-LINE)
                END-EVALUATE
       *
                EVALUATE    USBYO-UTAGAIFLG
                    WHEN    "0"
                        MOVE    SPACE     TO  HCML09-UTAGAIFLG(CNT-LINE)
                    WHEN    "1"
-                       MOVE   "����"     TO  HCML09-UTAGAIFLG(CNT-LINE)
+                       MOVE   "疑い"     TO  HCML09-UTAGAIFLG(CNT-LINE)
                    WHEN    "2"
-                       MOVE   "����"     TO  HCML09-UTAGAIFLG(CNT-LINE)
+                       MOVE   "急性"     TO  HCML09-UTAGAIFLG(CNT-LINE)
                    WHEN    "3"
-                       MOVE   "�޵�"     TO  HCML09-UTAGAIFLG(CNT-LINE)
+                       MOVE   "急疑"     TO  HCML09-UTAGAIFLG(CNT-LINE)
                END-EVALUATE
       *
               IF   USBYO-BUNRUICD  NOT  =  SPACE
@@ -617,7 +617,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
@@ -652,7 +652,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
        390-PRINT-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -665,13 +665,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
       *
                MOVE    WRK-ML09ERR         TO  ML09ERR-REC
                WRITE   ML09ERR-REC
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
-               MOVE    "���顼"            TO  JOB-YOBI
+               MOVE    "エラー"            TO  JOB-YOBI
                MOVE    "9999"              TO  JOB-ERRCD
                CALL    "ORCSJOB"               USING
                                                ORCSJOBKANRIAREA
@@ -688,13 +688,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            DISPLAY "*** ORHCML09 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            IF      WRK-PARA-SYUKBN     =   "1"
@@ -717,7 +717,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -729,13 +729,13 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ե��åȼ�������
+      *    オフセット取得処理
       *****************************************************************
        800-OFFSET-GET-SEC              SECTION.
       *
@@ -793,7 +793,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
        800-OFFSET-GET-EXT.
             EXIT.
       *****************************************************************
-      *    ������̾�ޥ��������� 
+      *    自院病名マスタ　検索 
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -817,7 +817,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *     ������̾�ޥ����򸡺�����
+      *     自院病名マスタを検索処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -840,7 +840,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ�����������������
+      *    自院病名マスタ　クローズ処理
       *****************************************************************
        900-DBCLOSE-SEC             SECTION.
       *
@@ -856,7 +856,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ��������� 
+      *    自院病名マスタ　検索 
       *****************************************************************
        900-DBREAD-SEC              SECTION.
       *
@@ -903,7 +903,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹���
+      *    システム管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
@@ -944,7 +944,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        120-DBOPEN-SEC              SECTION.
       *
@@ -968,7 +968,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG2
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

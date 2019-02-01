@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,179 +16,179 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������������     COPY (CPKOHSKY.INC)        *
+      *    地方公費請求書     COPY (CPKOHSKY.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.02.01    NACL-ƣ��    09/03/12  �ե饰���ǡ������ꥢ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-藤原    09/03/12  フラグ、データエリア追加
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       ************************************************************
        01  KOHSKY-REC.
            03  KOHSKY-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  KOHSKY-HOSPNUM          PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  KOHSKY-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  KOHSKY-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  KOHSKY-PTID            PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                05  KOHSKY-RECEKA          PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                05  KOHSKY-TEISYUTUSAKI    PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  KOHSKY-RECESYUBETU     PIC  X(04).
-      *�ݸ����ֹ�        
+      *保険者番号        
                05  KOHSKY-HKNJANUM-KEY    PIC  X(08).
-      *�����ʬ�������ݸ��ΤȤ��Τߡ�
+      *補助区分（船員保険のときのみ）
                05  KOHSKY-HOJOKBN-KEY     PIC  X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                05  KOHSKY-KOHID-KEY       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  KOHSKY-TEKSTYMD        PIC  X(08). 
-      *ʬ���ʬ
+      *分割区分
                05  KOHSKY-RECEIPT-KBN     PIC  X(10).
-      *�����ֹ�
+      *患者番号
            03  KOHSKY-PTNUM               PIC  X(20).
-      *���ʻ�̾
+      *カナ氏名
            03  KOHSKY-KANANAME            PIC  X(50).
-      *������̾
+      *漢字氏名
            03  KOHSKY-NAME                PIC  X(100).
-      *����
+      *性別
            03  KOHSKY-SEX                 PIC  X(01).
-      *��ǯ����
+      *生年月日
            03  KOHSKY-BIRTHDAY            PIC  9(08).
-      *ǯ��
+      *年齢
            03  KOHSKY-AGE                 PIC  9(03).
-      *��˴��ʬ
+      *死亡区分
            03  KOHSKY-DEATHKBN            PIC  X(01).
-      *���Ųʾ���
+      *診療科情報
            03  KOHSKY-SRYKAINF            OCCURS  20.
-      *���Ų�
+      *診療科
                05  KOHSKY-SRYKA           PIC  X(02).
-      *���ݸ�����
+      *主保険情報
            03  KOHSKY-HKN.
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
                05  KOHSKY-HKNID           PIC  9(10).
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
                05  KOHSKY-HKNNUM          PIC  X(03).
-      *���ݸ���ˡ���ֹ�
+      *主保険−法別番号
                05  KOHSKY-HKNHBTNUM       PIC  X(02).
-      *���ݸ����ݸ����ֹ�
+      *主保険−保険者番号
                05  KOHSKY-HKNJANUM        PIC  X(08).
-      *���ݸ����ܿͲ�²��ʬ
+      *主保険−本人家族区分
                05  KOHSKY-HONKZKKBN       PIC  X(01).
-      *���ݸ��������ʬ
+      *主保険−補助区分
                05  KOHSKY-HOJOKBN         PIC  X(01).
-      *���ݸ��ݷ�³��ʬ
+      *主保険−継続区分
                05  KOHSKY-CONTKBN         PIC  X(01).
-      *���ݸ��ݵ���
+      *主保険−記号
                05  KOHSKY-KIGO            PIC  X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
                05  KOHSKY-NUM             PIC  X(80).
-      *���ݸ��ݵ��ճ��
+      *主保険−給付割合
                05  KOHSKY-KYURATE         PIC  9(03).
-      *���ݸ��ݾ������ֹ�
+      *主保険−証明書番号
                05  KOHSKY-CERTNUM         PIC  X(03).
-      *Ϸ���ݷ����
+      *老人保健情報
            03  KOHSKY-RJNHKN.
-      *Ϸ���ݸ����ݸ��ɣ�
+      *老人保険−保険ＩＤ
                05  KOHSKY-RJNHKNID        PIC  9(10).
-      *Ϸ���ݸ����ݸ��ֹ�
+      *老人保険−保険番号
                05  KOHSKY-RJNHKNNUM       PIC  X(03).
-      *Ϸ���ݸ���ˡ���ֹ�
+      *老人保険−法別番号
                05  KOHSKY-RJNHBTNUM       PIC  X(02).
-      *Ϸ���ݸ��ݻ�Į¼�ֹ�
+      *老人保険−市町村番号
                05  KOHSKY-RJNFTNJANUM     PIC  X(08).
-      *Ϸ���ݸ��ݼ�����ֹ�
+      *老人保険−受給者番号
                05  KOHSKY-RJNJKYSNUM      PIC  X(07).
-      *�������
+      *公費情報
            03  KOHSKY-KOHINF              OCCURS  4.
-      *������ݸ��ɣ�
+      *公費−保険ＩＤ
                05  KOHSKY-KOHID           PIC  9(10).
-      *������ݸ��ֹ�
+      *公費−保険番号
                05  KOHSKY-KOHNUM          PIC  X(03).
-      *�����ˡ���ֹ�
+      *公費−法別番号
                05  KOHSKY-KOHHBTNUM       PIC  X(02).
-      *�������ô���ֹ�
+      *公費−負担者番号
                05  KOHSKY-KOHFTNJANUM     PIC  X(20).
-      *����ݼ�����ֹ�
+      *公費−受給者番号
                05  KOHSKY-KOHJKYSNUM      PIC  X(20).
-      *�ݸ��ȹ礻�ֹ����
+      *保険組合せ番号情報
            03  KOHSKY-HKNCOMBIINF         OCCURS  10.
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                05  KOHSKY-HKNCOMBI        PIC  9(04).
-      *���ݸ��ֹ�
+      *主保険番号
                05  KOHSKY-HKNNUMHC        PIC  X(03).
-      *�ȹ礻�����ݸ��ֹ����
+      *組合せ公費保険番号情報
                05  KOHSKY-KOHNUMHCINF     OCCURS  4.
-      *�ȹ礻�����ݸ��ֹ�
+      *組合せ公費保険番号
                    07  KOHSKY-KOHNUMHC    PIC  X(03).
-      *���Ŷ�ʬ����������
+      *診療区分別点数情報
            03  KOHSKY-SRYKBNINF           OCCURS  50.
-      *��������
+      *基本点数
                05  KOHSKY-KHNTEN          PIC  9(08).
-      *���
+      *回数
                05  KOHSKY-KAISU           PIC  9(05).
-      *������������
+      *明細点数情報
                05  KOHSKY-TENSUINF        OCCURS  5.
-      *��������
+      *明細点数
                    07  KOHSKY-TENSU       PIC S9(08).
-      *����������
+      *実日数情報
            03  KOHSKY-JNISSUINF           OCCURS  5.
-      *������
+      *実日数
                05  KOHSKY-JNISSU          PIC  9(02).
-      *�����������
+      *合計点数情報
            03  KOHSKY-TOTALTENINF         OCCURS  5.
-      *�������
+      *合計点数
                05  KOHSKY-TOTALTEN        PIC S9(08).
-      *��ô��۾���
+      *負担金額情報
            03  KOHSKY-FTNMONEYINF         OCCURS  5.
-      *��ô���
+      *負担金額
                05  KOHSKY-FTNMONEY        PIC S9(09).
-      *���ް�����ô�����
+      *薬剤一部負担金情報
            03  KOHSKY-YKZFTNINF           OCCURS  5.
-      *���ް�����ô��
+      *薬剤一部負担金
                05  KOHSKY-YKZFTN          PIC  9(05).
-      *�������������
+      *食事療養費情報
            03  KOHSKY-SHOKUJIINF          OCCURS  5.
-      *��������
+      *食事日数
                05  KOHSKY-SHOKUJINISSU    PIC  9(02).
-      *����������
+      *食事療養費
                05  KOHSKY-SHOKUJIRYOYOHI  PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                05  KOHSKY-SHOKUJIFTN      PIC  9(09).
-      *������ô�⡦����������ɸ����ô�۶�ʬ
+      *一部負担金・食事療養費標準負担額区分
            03  KOHSKY-SHOKUJIFTNKBN       PIC  X(01).
-      *��ǻ��ֶ�ʬ
+      *初診時間区分
            03  KOHSKY-SHOSHINTIME         PIC  X(01).
-      *�������硦���������ե饰
+      *在宅総合・在宅末期フラグ
            03  KOHSKY-ZAITAKU             PIC  X(01).
-      *�������硦��������������ô��Ʒ�
+      *在宅総合・在宅末期一部負担金再掲
            03  KOHSKY-ZAITAKU-SAIKEI      PIC S9(09).
-      *����ǯ��
+      *請求年月
            03  KOHSKY-SKYYM               PIC  X(06).
-      *����ǯ��
+      *返戻年月
            03  KOHSKY-HENREIYM            PIC  X(06).
-      *�����ʬ
+      *請求区分
            03  KOHSKY-SKYKBN              PIC  X(01).
-      *������ʬ
+      *訂正区分
            03  KOHSKY-TEISEIKBN           PIC  X(01).
       *
-      *�ե饰
+      *フラグ
            03  KOHSKY-FLGINF.
                05  KOHSKY-FLG             PIC  9(01)   OCCURS  5.
-      *��Ͽǯ����
+      *登録年月日
            03  KOHSKY-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  KOHSKY-UPDYMD              PIC  X(08).
-      *������ݸ��ֹ渡���ѹ���
+      *公費−保険番号検索用項目
            03  KOHSKY-XXKOHNUM-G.  
                05  KOHSKY-XXKOHNUM        PIC X(03)   OCCURS  4.  

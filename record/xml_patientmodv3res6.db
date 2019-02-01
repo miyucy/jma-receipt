@@ -21,39 +21,39 @@ xml_patientmodv3res6 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
     	};
-#---    ²ğ¸îÊİ¸±¼Ô¾ğÊó
+#---    ä»‹è­·ä¿é™ºè€…æƒ…å ±
 	Care_Insurance_Information	{
 	    Care_Insurance_Info 	{
-#---            Êİ¸±¼ÔÈÖ¹æ
+#---            ä¿é™ºè€…ç•ªå·
                 InsuranceProvider_Number	varchar(06);
-#---            ÈïÊİ¸±¼ÔÈÖ¹æ
+#---            è¢«ä¿é™ºè€…ç•ªå·
                 HealthInsuredPerson_Number	varchar(10);
-#---            ³«»ÏÆü
+#---            é–‹å§‹æ—¥
                 Certificate_StartDate		varchar(10);
                 Certificate_ExpiredDate		varchar(10);
-#---            ¥¨¥é¡¼¥³¡¼¥É
+#---            ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
 	        } [10];
         };
-#---    Í×²ğ¸îÇ§Äê¾ğÊó
+#---    è¦ä»‹è­·èªå®šæƒ…å ±
 	Care_Certification_Information	{
 	    Certification_Info 	{
-#---           Í×²ğ¸î¾õÂÖ¶èÊ¬
+#---           è¦ä»‹è­·çŠ¶æ…‹åŒºåˆ†
                Need_Care_State_Code		varchar(02);
-#---           Í×²ğ¸î¾õÂÖ¶èÊ¬Ì¾¾Î
+#---           è¦ä»‹è­·çŠ¶æ…‹åŒºåˆ†åç§°
                Need_Care_State          	varchar(20);
-#---           Ç§ÄêÆüÉÕ
+#---           èªå®šæ—¥ä»˜
                Certification_Date		varchar(10);
-#---           Í­¸ú³«»ÏÆü
+#---           æœ‰åŠ¹é–‹å§‹æ—¥
                Certificate_StartDate		varchar(10);
                Certificate_ExpiredDate		varchar(10);
-#---            ¥¨¥é¡¼¥³¡¼¥É
+#---            ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Patient_Result			varchar(4);
 		Patient_Result_Message		varchar(100);
 	      	} [50];
         };
-#---    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+#---    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Patient_Message_Information	{
 	Patient_Message_Info	{
 		Patient_Result		varchar(4);

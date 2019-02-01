@@ -1,16 +1,16 @@
 --                                    --
---  ÉÂÌ¾¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                --
+--  ç—…åãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     ºï½ü¥Õ¥é¥°         dltflg      --
---     ºï½ü¥ª¥Ú¥ì¡¼¥¿£É£Ä dlt_opid    --
+-- é …ç›®ã®è¿½åŠ                          --
+--     å‰Šé™¤ãƒ•ãƒ©ã‚°         dltflg      --
+--     å‰Šé™¤ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤ dlt_opid    --
 --                                    --
 -- Create Date : 2006/10/31           --
 --
                                     --
 \set ON_ERROR_STOP
 
--- TBL_PTBYOMEIWK ºîÀ®                --
+-- TBL_PTBYOMEIWK ä½œæˆ                --
 
 CREATE TABLE "tbl_ptbyomeiwk" (
 	"hospid" character(24) NOT NULL,
@@ -75,16 +75,16 @@ CREATE TABLE "tbl_ptbyomeiwk" (
 	Constraint "tbl_ptbyomeiwk_primary_key" Primary Key ("hospid", "ptid", "sryka", "sryymd", "rennum")
 );
 
--- TBL_PTBYOMEI ¢ª TBL_PTBYOMEIWK   --
+-- TBL_PTBYOMEI â†’ TBL_PTBYOMEIWK   --
 
 insert into tbl_ptbyomeiwk
 select * from tbl_ptbyomei;
 
--- TBL_PTBYOMEI ºï½ü               --
+-- TBL_PTBYOMEI å‰Šé™¤               --
 
 drop table tbl_ptbyomei;
 
--- TBL_PTBYOMEI ºîÀ®     --
+-- TBL_PTBYOMEI ä½œæˆ     --
 
 CREATE TABLE "tbl_ptbyomei" (
 	"hospid" character(24) NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE "tbl_ptbyomei" (
 	Constraint "tbl_ptbyomei_primary_key" Primary Key ("hospid", "ptid", "sryka", "sryymd", "rennum")
 );
 
--- TBL_PTBYOMEIWK ¢ª TBL_PTBYOMEI   --
+-- TBL_PTBYOMEIWK â†’ TBL_PTBYOMEI   --
 
 insert into tbl_ptbyomei
 (hospid,
@@ -279,7 +279,7 @@ upymd,
 uphms
 from tbl_ptbyomeiwk;
 
--- TBL_PTBYOMEIWK ºï½ü             --
+-- TBL_PTBYOMEIWK å‰Šé™¤             --
 
 drop table tbl_ptbyomeiwk;
 

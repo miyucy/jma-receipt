@@ -1,59 +1,59 @@
 kanri_cd    : "2012"
-name        : "Êİ¸±¼ÔÉÕ²Ã¾ğÊó"
+name        : "ä¿é™ºè€…ä»˜åŠ æƒ…å ±"
 class_cd    : "*"
 item_max    : 9
 item_list   :
 - item_no   : 1
   item      : "HBTNUM10KBN"
-  item_jp   : "´¶£³£·¤Î£·¡ÊË¡ÊÌ£±£°¡Ë"
+  item_jp   : "æ„Ÿï¼“ï¼—ã®ï¼—ï¼ˆæ³•åˆ¥ï¼‘ï¼ï¼‰"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "HBTNUM10-TAIKBN"
-  item_jp   : "´¶£³£·¤Î£·¡ÊË¡ÊÌ£±£°¡Ë¡İÂĞ¾İ"
+  item_jp   : "æ„Ÿï¼“ï¼—ã®ï¼—ï¼ˆæ³•åˆ¥ï¼‘ï¼ï¼‰âˆ’å¯¾è±¡"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "HBTNUM11KBN"
-  item_jp   : "·ë³ËÆş±¡¡ÊË¡ÊÌ£±£±¡Ë"
+  item_jp   : "çµæ ¸å…¥é™¢ï¼ˆæ³•åˆ¥ï¼‘ï¼‘ï¼‰"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "HBTNUM11-TAIKBN"
-  item_jp   : "·ë³ËÆş±¡¡ÊË¡ÊÌ£±£±¡Ë¡İÂĞ¾İ"
+  item_jp   : "çµæ ¸å…¥é™¢ï¼ˆæ³•åˆ¥ï¼‘ï¼‘ï¼‰âˆ’å¯¾è±¡"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "HBTNUM20KBN"
-  item_jp   : "Àº¿ÀÆş±¡¡ÊË¡ÊÌ£²£°¡Ë"
+  item_jp   : "ç²¾ç¥å…¥é™¢ï¼ˆæ³•åˆ¥ï¼’ï¼ï¼‰"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "HBTNUM20-TAIKBN"
-  item_jp   : "Àº¿ÀÆş±¡¡ÊË¡ÊÌ£²£°¡Ë¡İÂĞ¾İ"
+  item_jp   : "ç²¾ç¥å…¥é™¢ï¼ˆæ³•åˆ¥ï¼’ï¼ï¼‰âˆ’å¯¾è±¡"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "HBTNUM21KBN"
-  item_jp   : "Àº¿ÀÄÌ±¡¡ÊË¡ÊÌ£²£±¡Ë"
+  item_jp   : "ç²¾ç¥é€šé™¢ï¼ˆæ³•åˆ¥ï¼’ï¼‘ï¼‰"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "HBTNUM21-TAIKBN"
-  item_jp   : "Àº¿ÀÄÌ±¡¡ÊË¡ÊÌ£²£±¡Ë¡İÂĞ¾İ"
+  item_jp   : "ç²¾ç¥é€šé™¢ï¼ˆæ³•åˆ¥ï¼’ï¼‘ï¼‰âˆ’å¯¾è±¡"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 9
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 9
   length    : 492

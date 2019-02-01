@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¸øÈñÉéÃ´               COPY  (CPPTKOHFTNETC.INC)  *
+      *    æ‚£è€…å…¬è²»è² æ‹…               COPY  (CPPTKOHFTNETC.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTKOHFTNETC-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTKOHFTNETC-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTKOHFTNETC-HOSPNUM        PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTKOHFTNETC-PTID           PIC  9(10).
-      *¸øÈñ£É£Ä
+      *å…¬è²»ï¼©ï¼¤
                05  PTKOHFTNETC-KOHID          PIC  9(10).
-      *Ç¯·îÆü
+      *å¹´æœˆæ—¥
                05  PTKOHFTNETC-SRYYMD         PIC  X(08).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  PTKOHFTNETC-RENNUM         PIC  9(02).
-      *¸øÈñÊÝ¸±ÈÖ¹æ
+      *å…¬è²»ä¿é™ºç•ªå·
            03  PTKOHFTNETC-KOHNUM             PIC  X(03).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  PTKOHFTNETC-NYUGAIKBN          PIC  X(01).
-      *ÉéÃ´¶â³Û
+      *è² æ‹…é‡‘é¡
            03  PTKOHFTNETC-FTNMONEY           PIC  9(07).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTKOHFTNETC-TERMID             PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTKOHFTNETC-OPID               PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTKOHFTNETC-CREYMD             PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTKOHFTNETC-UPYMD              PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTKOHFTNETC-UPHMS              PIC  X(06).

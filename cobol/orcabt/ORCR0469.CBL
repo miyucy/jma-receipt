@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0469.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ������ա�
-      *  ����ݡ��ͥ��̾  : ���̳��ϫ�Ҽ��������ٽ�ե��������
-      *                      ���Ŧ�����Խ��ʼ����աˡʿ��ͼ��ʣϣã��ͼ��ˡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/07/27    NaCl-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      金額摘要欄編集（自賠責）（新様式（ＯＣＲ様式））
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/07/27    NaCl-門脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -53,7 +53,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE47-KEY
                                    FILE    STATUS  IS  STS-RECE47.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -73,7 +73,7 @@
        01  RECE47-REC. 
            COPY    "CPRCF047.INC".
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
@@ -88,18 +88,18 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE47//.
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE41          PIC X(02).
            03  STS-RECE47          PIC X(02).
            03  STS-RECE46          PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE46          PIC 9(01).
@@ -107,18 +107,18 @@
            03  FLG-HENSYU          PIC 9(01).
            03  FLG-HENSYU2         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE47          PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM              PIC  X(06).
@@ -131,7 +131,7 @@
            03  WRK-PARA-HOSPNUM                PIC  9(02).
       *
            03  WRK-LINENUM         PIC 9(05).
-      *    �ް����Կ�
+      *    剤印字行数
            03  WRK-TBLMAX          PIC 9(03).
       *
            03  WRK-ZAINUM          PIC 9(08).
@@ -151,14 +151,14 @@
            03  WRK-ERR-FILE-MSG    PIC X(100).
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
-      *    �ޡ����Ź԰٥ơ��֥�
+      *    剤・診療行為テーブル
        01  TBL-ZAI-AREA.
            03  TBL-ZAI-OCC                     OCCURS 100.
                05  TBL-ZAI-NAME                PIC X(32).
@@ -171,9 +171,9 @@
            COPY    "CPRCF0461.INC" REPLACING  //RECE461//
                                    BY         //WRK-RECE46//.
       *
-      *    ������
+      *    固定値
        01  CONST-AREA.
-      *    Ŭ�������ʸ�������������
+      *    適用欄最大文字数（点数欄）
            03  CONS-TEKIYOU2-LEN           PIC 9(02)   VALUE   32.
       *
            COPY    "MCPAREA".
@@ -181,25 +181,25 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       ****************************************************************
@@ -212,7 +212,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -230,7 +230,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -241,21 +241,21 @@
            INITIALIZE                  SPA-AREA
            INITIALIZE                  RECEERR
       *
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *
            PERFORM 110-FILE-OPEN-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 120-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0469"      TO  JOB-PGID
-               MOVE    "���Ŧ�����Խ��ʼ����աʣϣã��ͼ��ˡ�"
+               MOVE    "金額摘要欄編集（自賠責（ＯＣＲ様式））"
                                        TO  JOB-SHELLMSG
                PERFORM 900-CALL-ORCSJOB-SEC
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
@@ -265,7 +265,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
@@ -353,18 +353,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO       TO     WRK-LINENUM
            INITIALIZE                TBL-ZAI-AREA
       *
-      *    ��������û������㣵���ˤ��Խ�
+      *    外来管理加算（特例５２）の編集
            IF      RECE41-GAITOKU-PRTKBN1  =   "1"
                INITIALIZE                    TBL-ZAI-AREA
-               MOVE    "�����áˡ�"      TO  TBL-ZAI-NAME(1)(1:10)
-               MOVE    "����������"      TO  WRK-TNSKAI
+               MOVE    "＊（特）　"      TO  TBL-ZAI-NAME(1)(1:10)
+               MOVE    "　　　　　"      TO  WRK-TNSKAI
                MOVE    RECE41-GAITOKU-KAISU1
                                          TO  WRK-ZAIKAISUX
                INITIALIZE                    ORCSKANACHKAREA
@@ -377,7 +377,7 @@
                AND     KANACHK-MAX     >   ZERO
                  MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          TO  WRK-TNSKAI
-                 MOVE    "��"            TO  WRK-TNSKAI(5:2)
+                 MOVE    "×"            TO  WRK-TNSKAI(5:2)
                END-IF
                MOVE    WRK-TNSKAI        TO  TBL-ZAI-NAME(1)(11:10)
       *
@@ -393,11 +393,11 @@
                PERFORM 2002-RECE47-OUT-SEC
            END-IF
       *
-      *    ��������û������㣲���ˤ��Խ�
+      *    外来管理加算（特例２６）の編集
            IF      RECE41-GAITOKU-PRTKBN2  =   "1"
                INITIALIZE                    TBL-ZAI-AREA
-               MOVE    "�����áˡ�"      TO  TBL-ZAI-NAME(1)(1:10)
-               MOVE    "����������"      TO  WRK-TNSKAI
+               MOVE    "＊（特）　"      TO  TBL-ZAI-NAME(1)(1:10)
+               MOVE    "　　　　　"      TO  WRK-TNSKAI
                MOVE    RECE41-GAITOKU-KAISU2
                                          TO  WRK-ZAIKAISUX
                INITIALIZE                    ORCSKANACHKAREA
@@ -410,7 +410,7 @@
                AND     KANACHK-MAX     >   ZERO
                  MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                          TO  WRK-TNSKAI
-                 MOVE    "��"            TO  WRK-TNSKAI(5:2)
+                 MOVE    "×"            TO  WRK-TNSKAI(5:2)
                END-IF
                MOVE    WRK-TNSKAI        TO  TBL-ZAI-NAME(1)(11:10)
       *
@@ -432,7 +432,7 @@
                                              WRK-ZAIKAISU
            INITIALIZE                        TBL-ZAI-AREA
       *
-      *    �ѥ�᡼�������ե��������Խ�
+      *    パラメータ０４ファイルより編集
            INITIALIZE                      RECE46-REC
            MOVE    RECE41-HOSPNUM      TO  RECE46-HOSPNUM
            MOVE    RECE41-SRYYM        TO  RECE46-SRYYM
@@ -475,12 +475,12 @@
                    ADD     RECE46-TEN        TO    WRK-KINGAKU
                    MOVE    RECE46-ZAIKAISU   TO    WRK-ZAIKAISU
       *
-      *            �����Խ������ٷ���׻�
+      *            明細編集・明細桁数計算
                    PERFORM 2003-MEISAI-KETA-HEN-SEC
       *
                    PERFORM 990-RECE46-NEXT-SEC
       *
-      *            ��������������
+      *            処理中止設定処理
                    IF      CNT-IN-CANCEL   =   50
                        MOVE    ZERO            TO  CNT-IN-CANCEL
                        PERFORM 500-CANCEL-HENSYU-SEC
@@ -496,7 +496,7 @@
       *
                PERFORM 990-RECE41-READ-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -508,7 +508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ������Ͻ���
+      *    レセプト０６出力処理
       *****************************************************************
        2002-RECE47-OUT-SEC    SECTION.
       *
@@ -604,7 +604,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ������ٷ���׻�
+      *    明細編集・明細桁数計算
       *****************************************************************
        2003-MEISAI-KETA-HEN-SEC    SECTION.
       *
@@ -624,11 +624,11 @@
                AND   FLG-HENSYU2   =    ZERO
                    EVALUATE  RECE46-SRYCD1(1:5)
                      WHEN   "09591"
-                       MOVE  "��"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                       MOVE  "診"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
                      WHEN   "09592"
-                       MOVE  "��"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                       MOVE  "明"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
                      WHEN    OTHER
-                       MOVE  "��"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
+                       MOVE  "＊"  TO  TBL-ZAI-NAME(WRK-TBLMAX)(1:2)
                    END-EVALUATE
                    MOVE      1     TO  FLG-HENSYU2
                END-IF
@@ -637,7 +637,7 @@
       *
                COMPUTE  WRK-ST  =  WRK-ST  +  CONS-TEKIYOU2-LEN  - 2
       *
-      *        ��ۤ��Խ����ʤ��Ȥ��ޤ���������ʸ�������뤫
+      *        金額の編集がないときまだ印刷する文字があるか
                IF      RECE46-NAME (WRK-ST:)   =   SPACE
                   MOVE    1             TO  FLG-HENSYU
                   IF   (RECE46-ZAILAST     =   1   )
@@ -649,7 +649,7 @@
                     MOVE  WRK-ZAIKAISU  TO  TBL-ZAI-KAISU(WRK-TBLMAX)
                   END-IF
                ELSE
-                  MOVE    "��"    TO    TBL-ZAI-NAME(WRK-TBLMAX)(31:2)
+                  MOVE    "＆"    TO    TBL-ZAI-NAME(WRK-TBLMAX)(31:2)
                   COMPUTE  WRK-ST  =  WRK-ST  -  2
                END-IF
            END-PERFORM
@@ -659,7 +659,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -673,9 +673,9 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ������Ͻ���
+      *            ジョブ管理開始処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -691,7 +691,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -702,26 +702,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -753,7 +753,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -766,7 +766,7 @@
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -779,7 +779,7 @@
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -796,7 +796,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -804,7 +804,7 @@
            CLOSE                       RECE47-FILE
            CLOSE                       RECE46-FILE
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -822,7 +822,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����縡������
+      *    レセプト０２データ順検索処理
       *****************************************************************
        990-RECE41-READ-SEC           SECTION.
       *
@@ -860,7 +860,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０４データ読み
       ****************************************************************
        990-RECE46-NEXT-SEC           SECTION.
       *
@@ -888,7 +888,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -905,7 +905,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -918,7 +918,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
@@ -936,7 +936,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

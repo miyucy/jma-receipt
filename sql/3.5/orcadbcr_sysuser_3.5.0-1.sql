@@ -1,12 +1,12 @@
 \set ON_ERROR_STOP
 
 --				--
--- ¥æ¡¼¥¶¡¼´ÉÍı¥Æ¡¼¥Ö¥ë¤ÎºîÀ®	--
+-- ãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä½œæˆ	--
 --				--
 -- Create Date : 2007/06/26	--
 --				--
 
--- TBL_SYSUSER ºîÀ®		--
+-- TBL_SYSUSER ä½œæˆ		--
 
 CREATE TABLE tbl_sysuser (
 	userid		character varying(16) NOT NULL,

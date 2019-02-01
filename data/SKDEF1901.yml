@@ -1,36 +1,36 @@
 kanri_cd    : "1901"
-name        : "°åÎÅµ¡´ØÊÔ½¸¾ğÊó"
+name        : "åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "HOSPNAME1"
-  item_jp   : "°åÎÅµ¡´ØÌ¾¾Î¡Ê£±¹ÔÌÜ¡Ë"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢åç§°ï¼ˆï¼‘è¡Œç›®ï¼‰"
   type      : "X"
   start     : 1
   length    : 160
 - item_no   : 2
   item      : "HOSPNAME2"
-  item_jp   : "°åÎÅµ¡´ØÌ¾¾Î¡Ê£²¹ÔÌÜ¡Ë"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢åç§°ï¼ˆï¼’è¡Œç›®ï¼‰"
   type      : "X"
   start     : 161
   length    : 160
 - item_no   : 3
   item      : "HOSPNAME3"
-  item_jp   : "°åÎÅµ¡´ØÌ¾¾Î¡Ê£³¹ÔÌÜ¡Ë"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢åç§°ï¼ˆï¼“è¡Œç›®ï¼‰"
   type      : "X"
   start     : 321
   length    : 160
 - item_no   : 4
   item      : "HOSPNAME1MOJI"
-  item_jp   : "°åÎÅµ¡´ØÌ¾¾Î¡Ê£±¹ÔÌÜ¡ËÊ¸»ú¿ô"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢åç§°ï¼ˆï¼‘è¡Œç›®ï¼‰æ–‡å­—æ•°"
   type      : "9"
   start     : 481
   length    : 2
   precision : 0
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 501
   length    : 18

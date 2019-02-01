@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,51 +18,51 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0985.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ�
-      *  ����ݡ��ͥ��̾  : �쥻�ץ��Ż��ե����������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  13/02/07    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災）
+      *  コンポーネント名  : レセプト電算ファイル作成（入院）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  13/02/07    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    13/08/20  �����������ǻϤޤ륳���ɤ���
-      *                                     ��쥻�ץȤ��оݳ��Ȥ���
-      *  04.07.02    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
-      *                                     �����̡�ñ���ξ������ε�Ͽ��
-      *                                     ˡ���ѹ�
-      *                                     �����⡼�ɤη�³���륹�ڡ���
-      *                                     �ε�Ͽ��ˡ���ѹ�
-      *  04.07.03    NACL-ƣ��    15/01/24  Ʊ���������������ౡ����ε�Ͽ
-      *                                     ����
-      *                                    �����������ౡ����Ʊ���Ȥ���
-      *  04.07.04    NACL-ƣ��    15/02/12  �������̶�ʬ�ˤ�뵭Ͽ�����
-      *                                    ����§�û��оݳ���
-      *  04.07.05    NACL-ƣ��    15/04/16  ���û������ɤ����������βû�
-      *                                     ���ܤε�Ͽ��ˡ�ν���
-      *  04.07.06    NACL-ƣ��    15/06/10  �ݸ������оݳ�����̾�������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    13/08/20  ０９５９３で始まるコードがあ
+      *                                     るレセプトは対象外とする
+      *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *                                     使用量、単価の小数部の記録方
+      *                                     法の変更
+      *                                     漢字モードの継続するスペース
+      *                                     の記録方法の変更
+      *  04.07.03    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
+      *                                     を修正
+      *                                    （入院日と退院日が同じとき）
+      *  04.07.04    NACL-藤原    15/02/12  告示等識別区分による記録順を修正
+      *                                    （通則加算対象外）
+      *  04.07.05    NACL-藤原    15/04/16  注加算コードが１４１９の加算
+      *                                     項目の記録方法の修正
+      *  04.07.06    NACL-藤原    15/06/10  保険請求対象外傷病名コード対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-����    14/07/23  ����ʸ���ʾ��ʸ������
-      *                                     �ʥ���ѥ�����Υ�˥󥰽�����
-      *  04.08.03    NACL-ƣ��    16/01/15  �������ؤι���������
-      *  04.08.04    NACL-ƣ��    16/04/01  ʿ������ǯ��������б�
-      *  04.08.05    NACL-����    16/08/23  �������б�
-      *  04.08.06    NACL-����    16/09/06  ���������û���������ޥ�����
-      *                                     ����ϫ����ź�Ǹ�����������
-      *                                     �ޥ������б�
-      *  04.08.07    NACL-����    16/09/20  �����߰ʲ����ޤ�����ѥ쥻�ץȵ���
-      *                                     �ʵ�Ͽ���б�
-      *  04.08.08    NACL-ƣ��    17/03/02  ̤�����ɲ������ॳ�����ѻ��б�
-      *  04.08.09    NACL-����    17/08/28  ʿ������ǯ���������
-      *                                     ���������������ܤθ�ľ����
-      *  04.08.10    NACL-ƣ��    18/05/17  ʿ������ǯ��������б�
-      *                                     �������ʡʻ�̾�ˡ����Ծ��֤��ɲ�
-      *  04.08.11    NACL-����    18/09/27  ���򼰥������б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
+      *                                     （コンパイル時のワーニング修正）
+      *  04.08.03    NACL-藤原    16/01/15  請求情報への更新日設定
+      *  04.08.04    NACL-藤原    16/04/01  平成２８年４月改正対応
+      *  04.08.05    NACL-門脇    16/08/23  持参薬対応
+      *  04.08.06    NACL-門脇    16/09/06  入院室料加算差額請求マスタと
+      *                                     特別労災付添看護料差額請求
+      *                                     マスタの対応
+      *  04.08.07    NACL-門脇    16/09/20  １５円以下薬剤の提出用レセプト記載
+      *                                     （記録）対応
+      *  04.08.08    NACL-藤原    17/03/02  未コード化特定器材コード廃止対応
+      *  04.08.09    NACL-門脇    17/08/28  平成２９年１０月改正
+      *                                     （入院時生活療養の見直し）
+      *  04.08.10    NACL-藤原    18/05/17  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
+      *  04.08.11    NACL-門脇    18/09/27  選択式コメント対応
       *
-      *  05.00.01    NACL-ƣ��    17/07/04  �ȣ��ϣң��б�
-      *  05.00.02    NACL-��ƣ    17/12/22  ���ž��󥷥��ƥ��б�
+      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
+      *  05.00.02    NACL-伊藤    17/12/22  診療情報システム対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -96,13 +96,13 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE855-KEY
                                    FILE    STATUS  IS  STS-RECE855.
-      *    ���ౡ�������
+      *    入退院履歴情報
            SELECT  RECE88-FILE     ASSIGN  RECE88PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE88-KEY
                                    FILE    STATUS  IS  STS-RECE88.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -127,7 +127,7 @@
        01  RECE85-REC.
            COPY    "CPRCF085.INC".
       *
-      *    ��Ϣ�����ȥǡ���
+      *    関連コメントデータ
        FD  RECE855-FILE.
        01  RECE855-REC.
            COPY    "CPRCF0855.INC".
@@ -136,7 +136,7 @@
        01  RECE88-REC.
            COPY    "CPRCF088.INC".
       *     
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -168,11 +168,11 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE88//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE82              PIC X(02).
            03  STS-RECE83              PIC X(02).
@@ -216,7 +216,7 @@
            03  FLG-RECECOM-AA          PIC 9(01).
            03  FLG-NYUINYMD            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
@@ -269,14 +269,14 @@
        01  SUM-AREA                                VALUE   ZERO.
            03  SUM-TOTALKIN           PIC 9(10).
       *
-      *    ���ŵ��ءʴ��ܾ�����������ΰ�
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  100.
                05  TBL-SYS1001         PIC X(610).
      *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
-      *    �ѥ�᥿���ꥢ
+      *    パラメタエリア
            03  WRK-PARA.
                05  WRK-PARA1.
                    07  WRK-PARA-SRYYM  PIC X(06).
@@ -295,11 +295,11 @@
            03  WRK-OPECOM-MCP-PATHNAME PIC X(64).
       *
            03  WRK-KIZAI-SRYCD         PIC X(09).
-      *     ���Ť��Խ���     
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
-      *    ���ϥǡ����Խ���
+      *    出力データ編集用
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(2500).
@@ -316,7 +316,7 @@
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
                05  WRK-MOJI-CHK        PIC 9(01).
-      *    ����̾�쥳�����Խ���
+      *    傷病名レコード編集用
            03  WRK-BYOMEI-AREA.
                05  WRK-BYOMEICD        PIC X(07).
                05  WRK-RECECD-G.
@@ -334,12 +334,12 @@
       *
            03  WRK-CHUKSNCD            PIC X(04).
       *
-      *    ���Ⱦ�ν����
+      *    事業場の所在地
            03  WRK-PREF-AREA.
                05  WRK-PREFKBN         PIC X(02).     
                05  WRK-CITYKBN         PIC X(02).
       *
-      *    Ŧ�ץ쥳�����Խ���
+      *    摘要レコード編集用
            03  WRK-ZAIWMAX             PIC 9(03).
            03  WRK-TBLMAX1             PIC 9(03).
            03  WRK-TBLMAX6             PIC 9(03).
@@ -358,12 +358,12 @@
                                        PIC 9(09)V9(02). 
            03  WRK-RECE84-ZAIKAISU     PIC 9(04).    
            03  WRK-KENSASU             PIC 9(04).    
-      *    ���ֳ��û���ʬ�ʴ��ܹ��ܡ�
+      *    時間外加算区分（基本項目）
            03  WRK-KIHON-TIMEKSNKBN    PIC 9(01).
-      *    ���֤βû����ܤ�̵ͭ�ե饰
+      *    処置の加算項目の有無フラグ
            03  WRK-SRYKBN40-KOKUJISKBKBN1
                                        PIC 9(01).
-      *    �����Ѵ���
+      *    日付変換用
            03  WRK-SYMD.
                05  WRK-SYMD-YM         PIC X(06).
                05  WRK-SYMD-DD         PIC 9(02).
@@ -387,7 +387,7 @@
            03  WRK-CO-COMMENT          PIC X(76).
            03  WRK-CO-SRYCD            PIC X(09).
       *
-      *    �쥻�ץȥ������Խ�
+      *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT         PIC X(50)
                                            OCCURS  48.
@@ -403,10 +403,10 @@
            03  WRK-SJKBN-X.
                05  WRK-SJKBN           PIC 9(02).
       *
-      *    ������Խ�
+      *    手術歴編集
            03  WRK-OPECOM-HEN          PIC X(50).
       *
-      *    ���ౡ�����Խ��ʼ�������������ʬ��
+      *    入退院履歴編集（自院歴−入院中区分）
            03  WRK-NYUINCHUKBN         PIC X(01).
       *
            03  WRK-STYMD               PIC X(08).
@@ -420,10 +420,10 @@
            03  WRK-ERR-FILE-MSG        PIC X(100).
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"    REPLACING  //RECEDAT1PARA//
                                        BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
        01  WRK-HEN-AREA.
@@ -432,14 +432,14 @@
                05  FILLER              PIC 9(01).
                05  WRK-HENYMD          PIC 9(07).
       *
-      *    ��Ϣ�����ȥơ��֥�
+      *    関連コメントテーブル
        01  TBL-RECE855-COMMENT-AREA.
            03  TBL-RECE855-OCC         OCCURS  100.
                05  TBL-RECE855-SRYCD   PIC X(09).
                05  TBL-RECE855-NAME    PIC X(200).
            03  TBL-RECE855-MAX         PIC 9(03).
       *
-      *    �����ʡ��������ѥơ��֥�ʣ������� �������� ���������¤��Ѥ��ѡ�
+      *    医薬品・特定器材用テーブル（１医薬品 ２特定器材 ３特定器材並び変え用）
        01  TBL-ZAIW-AREA.
            03  TBL-ZAIW-TABLE          OCCURS  3.
                05  TBL-ZAIW-REC        OCCURS 100.
@@ -455,41 +455,41 @@
                        09  TBL-ZAIW-RENNUM          PIC 9(02).
                    07  TBL-ZAIW-SHORI-RENNUM        PIC 9(01).
                    07  TBL-ZAIW-SRYACTINF.
-      *                ���ť�����
+      *                診療コード
                        09  TBL-ZAIW-SRYCD           PIC  X(09).
-      *                ���ż��̶�ʬ
+      *                診療種別区分
                        09  TBL-ZAIW-SRYSYUKBN       PIC  X(03).
-      *                ����
+      *                数量
                        09  TBL-ZAIW-SRYSURYO        PIC  9(05)V9(05).
-      *                ���
+      *                回数
                        09  TBL-ZAIW-SRYKAISU        PIC  9(03).
-      *                ñ�̥�����
+      *                単位コード
                        09  TBL-ZAIW-TANICD          PIC  9(03).
-      *                ñ��̾��ͭ�����
+      *                単位名称有効桁数
                        09  TBL-ZAIW-TANIMOJISU      PIC  9(01).
-      *                ñ��̾��
+      *                単位名称
                        09  TBL-ZAIW-TANINAME        PIC  X(24).
-      *                �������̶�ʬ
+      *                点数識別区分
                        09  TBL-ZAIW-TENSIKIBETU     PIC  9(01).
-      *                ����
+      *                点数
                        09  TBL-ZAIW-TEN             PIC  9(09)V9(02).
-      *                ��������ե饰
+      *                明細請求フラグ
                        09  TBL-ZAIW-MEISKYFLG       PIC  X(01).
-      *                ��ư�����ʬ
+      *                自動算定区分
                        09  TBL-ZAIW-AUTOKBN         PIC  X(01).
-      *                ̾�������ֹ�
+      *                名称入力番号
                        09  TBL-ZAIW-INPUTNUM        PIC  9(03).
-      *                �����󽸷��輱��
+      *                点数欄集計先識別
                        09  TBL-ZAIW-TENTTLKBN       PIC  9(03).
-      *                �ǡ�����ʬ
+      *                データ区分
                        09  TBL-ZAIW-DATAKBN         PIC  9(01).
-      *                ����оݸ���
+      *                包括対象検査
                        09  TBL-ZAIW-HOUKNSKBN       PIC  9(02).
-      *                �������»�Ƚ��
+      *                検査等実施判断
                        09  TBL-ZAIW-KNSJISKBN       PIC  9(01).
-      *                �������»�Ƚ�ǥ��롼��
+      *                検査等実施判断グループ
                        09  TBL-ZAIW-KNSJISGRPKBN    PIC  9(02).
-      *                �Ƽ��ֹ���
+      *                各種番号等
                        09  TBL-ZAIW-CDKBNINF.
                            11  TBL-ZAIW-CDKBN-KBN   PIC  X(01).
                            11  TBL-ZAIW-CDKBN-SYO   PIC  9(01).
@@ -498,42 +498,42 @@
                            11  TBL-ZAIW-CDKBN-KBNNUM-EDA PIC  9(02).
                            11  TBL-ZAIW-CDKBN-KOUBAN     PIC  9(02).
                            11  TBL-ZAIW-KOUHYOJYUNNUM    PIC  9(09).
-      *                �������̶�ʬ��
+      *                告示等識別区分１
                        09  TBL-ZAIW-KOKUJISKBKBN1   PIC  9(01).
-      *                �������̶�ʬ��
+      *                告示等識別区分２
                        09  TBL-ZAIW-KOKUJISKBKBN2   PIC  9(01).
-      *                ��§�û��оݳ���ʬ
+      *                通則加算対象外区分
                        09  TBL-ZAIW-TUSOKUGAIKBN    PIC  9(01).
-      *                ���ֳ��û���ʬ
+      *                時間外加算区分
                        09  TBL-ZAIW-TIMEKSNKBN      PIC  9(01).
-      *                �������ͷ׻�����
+      *                きざみ値計算識別
                        09  TBL-ZAIW-KZMCOMPSIKIBETU PIC  9(01).
-      *                ���û�������
+      *                注加算コード
                        09  TBL-ZAIW-CHUKSNINF.
-      *                    ������
+      *                    コード
                            11  TBL-ZAIW-CHUKSNCD    PIC  X(04).
-      *                    ����
+      *                    通番
                            11  TBL-ZAIW-CHUKSNTUBAN PIC  X(01).
-      *                ���θ���������
+      *                検体検査コメント
                        09  TBL-ZAIW-KENTAICOMMENT   PIC  9(01).
-      *                ���ϥ�����
+      *                入力コメント
                        09  TBL-ZAIW-INPUTCOMENT     PIC  X(80).
-      *            ̾�ξ���
+      *            名称情報
                    07  TBL-ZAIW-NAMEINF.
-      *                ����ͭ�����
+      *                漢字有効桁数
                        09  TBL-ZAIW-YUKOKETA        PIC  9(03).
-      *                ����̾��
+      *                漢字名称
                        09  TBL-ZAIW-NAME            PIC  X(200).
-      *            �ǡ�������(�����ե���� �������굡��)
+      *            データ識別(１：フィルム ２：特定機材)
                    07  TBL-ZAIW-DATSKB              PIC  9(01).
-      *            ��������̣�
+      *            特定器材種別１
                    07  TBL-ZAIW-TOKUKIZAISBT1       PIC  9(01).
-      *            ��������ʬ  
+      *            酸素等区分  
                    07  TBL-ZAIW-SANSOKBN            PIC  9(01).
-      *            �쥻���������ྦ��̾
+      *            レセ電用特定器材商品名
                    07  TBL-ZAIW-RECEDENNAME         PIC  X(300).
       *
-      *    ���Ź԰١��������ѥơ��֥�
+      *    診療行為・コメント用テーブル
        01  TBL-KOUI-AREA.
            03  TBL-KOUI-REC                     OCCURS  100.
                05  TBL-KOUI-KEY.
@@ -548,41 +548,41 @@
                    07  TBL-KOUI-RENNUM          PIC  9(02).
                05  TBL-KOUI-SHORI-RENNUM        PIC  9(01).
                05  TBL-KOUI-SRYACTINF.
-      *            ���ť�����
+      *            診療コード
                    07  TBL-KOUI-SRYCD           PIC  X(09).
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                    07  TBL-KOUI-SRYSYUKBN       PIC  X(03).
-      *            ����
+      *            数量
                    07  TBL-KOUI-SRYSURYO        PIC  9(05)V9(05).
-      *            ���
+      *            回数
                    07  TBL-KOUI-SRYKAISU        PIC  9(03).
-      *            ñ�̥�����
+      *            単位コード
                    07  TBL-KOUI-TANICD          PIC  9(03).
-      *            ñ��̾��ͭ�����
+      *            単位名称有効桁数
                    07  TBL-KOUI-TANIMOJISU      PIC  9(01).
-      *            ñ��̾��
+      *            単位名称
                    07  TBL-KOUI-TANINAME        PIC  X(24).
-      *            �������̶�ʬ
+      *            点数識別区分
                    07  TBL-KOUI-TENSIKIBETU     PIC  9(01).
-      *            ����
+      *            点数
                    07  TBL-KOUI-TEN             PIC  9(09)V9(02).
-      *            ��������ե饰
+      *            明細請求フラグ
                    07  TBL-KOUI-MEISKYFLG       PIC  X(01).
-      *            ��ư�����ʬ
+      *            自動算定区分
                    07  TBL-KOUI-AUTOKBN         PIC  X(01).
-      *            ̾�������ֹ�
+      *            名称入力番号
                    07  TBL-KOUI-INPUTNUM        PIC  9(03).
-      *            �����󽸷��輱��
+      *            点数欄集計先識別
                    07  TBL-KOUI-TENTTLKBN       PIC  9(03).
-      *            �ǡ�����ʬ
+      *            データ区分
                    07  TBL-KOUI-DATAKBN         PIC  9(01).
-      *            ����оݸ���
+      *            包括対象検査
                    07  TBL-KOUI-HOUKNSKBN       PIC  9(02).
-      *            �������»�Ƚ��
+      *            検査等実施判断
                    07  TBL-KOUI-KNSJISKBN       PIC  9(01).
-      *            �������»�Ƚ�ǥ��롼��
+      *            検査等実施判断グループ
                    07  TBL-KOUI-KNSJISGRPKBN    PIC  9(02).
-      *            �Ƽ��ֹ���
+      *            各種番号等
                    07  TBL-KOUI-CDKBNINF.
                        09  TBL-KOUI-CDKBN-KBN   PIC  X(01).
                        09  TBL-KOUI-CDKBN-SYO   PIC  9(01).
@@ -591,69 +591,69 @@
                        09  TBL-KOUI-CDKBN-KBNNUM-EDA PIC  9(02).
                        09  TBL-KOUI-CDKBN-KOUBAN     PIC  9(02).
                        09  TBL-KOUI-KOUHYOJYUNNUM    PIC  9(09).
-      *            �������̶�ʬ��
+      *            告示等識別区分１
                    07  TBL-KOUI-KOKUJISKBKBN1   PIC  9(01).
-      *            �������̶�ʬ��
+      *            告示等識別区分２
                    07  TBL-KOUI-KOKUJISKBKBN2   PIC  9(01).
-      *            ��§�û��оݳ���ʬ
+      *            通則加算対象外区分
                    07  TBL-KOUI-TUSOKUGAIKBN    PIC  9(01).
-      *            ���ֳ��û���ʬ
+      *            時間外加算区分
                    07  TBL-KOUI-TIMEKSNKBN      PIC  9(01).
-      *            �������ͷ׻�����
+      *            きざみ値計算識別
                    07  TBL-KOUI-KZMCOMPSIKIBETU PIC  9(01).
-      *            ���û�������
+      *            注加算コード
                    07  TBL-KOUI-CHUKSNINF.
-      *                ������
+      *                コード
                        09  TBL-KOUI-CHUKSNCD    PIC  X(04).
-      *                ����
+      *                通番
                        09  TBL-KOUI-CHUKSNTUBAN PIC  X(01).
-      *            ���θ���������
+      *            検体検査コメント
                    07  TBL-KOUI-KENTAICOMMENT   PIC  9(01).
-      *            ���ϥ�����
+      *            入力コメント
                    07  TBL-KOUI-INPUTCOMENT     PIC  X(80). 
-      *        ̾�ξ���
+      *        名称情報
                05  TBL-KOUI-NAMEINF.
-      *            ����ͭ�����
+      *            漢字有効桁数
                    07  TBL-KOUI-YUKOKETA        PIC  9(03).
-      *            ����̾��
+      *            漢字名称
                    07  TBL-KOUI-NAME            PIC  X(200).
       *
-      *    �����ȥǡ����ѥơ��֥�
+      *    コメントデータ用テーブル
        01  TBL-COMMENT-AREA.
            03  TBL-COMMENT-REC                  OCCURS  100.
                05  TBL-COMMENT-SRYCD            PIC  X(09).
                05  TBL-COMMENT-NAME             PIC  X(200).
       *
-      *    ���Ź԰٥ǡ����ѥơ��֥����§�û����ܤβø��������ɡ�
+      *    診療行為データ用テーブル（通則加算項目の加減算コード）
        01  WRK-KOUI-KASAN-TAIHI-AREA.
            03  WRK-KOUI-KASAN-TAIHI-TABLE       OCCURS  10.
                05  WRK-KOUI-KASAN-TAIHI-REC     PIC X(500).
-      *        ���ֳ��û���ʬ
+      *        時間外加算区分
                05  WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN
                                                 PIC  9(01).
       *
-      *    ���Ź԰٥ǡ����ѥơ��֥�ʹ������̶�ʬ�ˤ�뵭Ͽ���
+      *    診療行為データ用テーブル（告示等識別区分による記録順）
        01  WRK-KOUI-TAIHI-AREA.
            03  WRK-KOUI-TAIHI-TABLE             OCCURS  100.
                05  WRK-KOUI-TAIHI-REC           PIC X(500).
       *
-      *    ���Ź԰٥ǡ����ѥơ��֥�ʹ������̶�ʬ�ˤ�뵭Ͽ���
+      *    診療行為データ用テーブル（告示等識別区分による記録順）
        01  WRK-KOUI-SRY-TAIHI-AREA.
            03  WRK-KOUI-SRY-TAIHI-TABLE             OCCURS  100.
                05  WRK-KOUI-SRY-TAIHI-REC           PIC X(500).
-      *        ���ť�����
+      *        診療コード
                05  WRK-KOUI-SRY-TAIHI-SRYCD         PIC  X(09).
-      *        �������̶�ʬ��
+      *        告示等識別区分１
                05  WRK-KOUI-SRY-TAIHI-KOKUJISKB1    PIC  9(01).
-      *        �������̶�ʬ��
+      *        告示等識別区分２
                05  WRK-KOUI-SRY-TAIHI-KOKUJISKB2    PIC  9(01).
-      *        ��§�û��оݳ���ʬ
+      *        通則加算対象外区分
                05  WRK-KOUI-SRY-TAIHI-TUSOKUGAIKBN  PIC  9(01).
-      *        ���ֳ��û���ʬ
+      *        時間外加算区分
                05  WRK-KOUI-SRY-TAIHI-TIMEKSNKBN    PIC  9(01).
-      *        ���û�������
+      *        注加算コード
                05  WRK-KOUI-SRY-TAIHI-CHUKSNCD      PIC  X(04).
-      *        �������̶�ʬ
+      *        点数識別区分
                05  WRK-KOUI-SRY-TAIHI-TENSIKIBETU   PIC  9(01).
       *
       *   
@@ -674,41 +674,41 @@
                    07  WRK-KOUI-SHORI-RENNUM       PIC 9(01).
       *
                    07  WRK-KOUI-SRYACTINF.
-      *            ���ť�����
+      *            診療コード
                        09  WRK-KOUI-SRYCD           PIC  X(09).
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                        09  WRK-KOUI-SRYSYUKBN       PIC  X(03).
-      *            ����
+      *            数量
                        09  WRK-KOUI-SRYSURYO        PIC  9(05)V9(05).
-      *            ���
+      *            回数
                        09  WRK-KOUI-SRYKAISU        PIC  9(03).
-      *            ñ�̥�����
+      *            単位コード
                        09  WRK-KOUI-TANICD          PIC  9(03).
-      *            ñ��̾��ͭ�����
+      *            単位名称有効桁数
                        09  WRK-KOUI-TANIMOJISU      PIC  9(01).
-      *            ñ��̾��
+      *            単位名称
                        09  WRK-KOUI-TANINAME        PIC  X(24).
-      *            �������̶�ʬ
+      *            点数識別区分
                        09  WRK-KOUI-TENSIKIBETU     PIC  9(01).
-      *            ����
+      *            点数
                        09  WRK-KOUI-TEN             PIC  9(09)V9(02).
-      *            ��������ե饰
+      *            明細請求フラグ
                        09  WRK-KOUI-MEISKYFLG       PIC  X(01).
-      *            ��ư�����ʬ
+      *            自動算定区分
                        09  WRK-KOUI-AUTOKBN         PIC  X(01).
-      *            ̾�������ֹ�
+      *            名称入力番号
                        09  WRK-KOUI-INPUTNUM        PIC  9(03).
-      *            �����󽸷��輱��
+      *            点数欄集計先識別
                        09  WRK-KOUI-TENTTLKBN       PIC  9(03).
-      *            �ǡ�����ʬ
+      *            データ区分
                        09  WRK-KOUI-DATAKBN         PIC  9(01).
-      *            ����оݸ���
+      *            包括対象検査
                        09  WRK-KOUI-HOUKNSKBN       PIC  9(02).
-      *            �������»�Ƚ��
+      *            検査等実施判断
                        09  WRK-KOUI-KNSJISKBN       PIC  9(01).
-      *            �������»�Ƚ�ǥ��롼��
+      *            検査等実施判断グループ
                        09  WRK-KOUI-KNSJISGRPKBN    PIC  9(02).
-      *            �Ƽ��ֹ���
+      *            各種番号等
                        09  WRK-KOUI-CDKBNINF.
                            11  WRK-KOUI-CDKBN-KBN   PIC  X(01).
                            11  WRK-KOUI-CDKBN-SYO   PIC  9(01).
@@ -717,37 +717,37 @@
                            11  WRK-KOUI-CDKBN-KBNNUM-EDA PIC  9(02).
                            11  WRK-KOUI-CDKBN-KOUBAN     PIC  9(02).
                            11  WRK-KOUI-KOUHYOJYUNNUM    PIC  9(09).
-      *            �������̶�ʬ��
+      *            告示等識別区分１
                        09  WRK-KOUI-KOKUJISKBKBN1   PIC  9(01).
-      *            �������̶�ʬ��
+      *            告示等識別区分２
                        09  WRK-KOUI-KOKUJISKBKBN2   PIC  9(01).
-      *            ��§�û��оݳ���ʬ
+      *            通則加算対象外区分
                        09  WRK-KOUI-TUSOKUGAIKBN    PIC  9(01).
-      *            ���ֳ��û���ʬ
+      *            時間外加算区分
                        09  WRK-KOUI-TIMEKSNKBN      PIC  9(01).
-      *            �������ͷ׻�����
+      *            きざみ値計算識別
                        09  WRK-KOUI-KZMCOMPSIKIBETU PIC  9(01).
-      *            ���û�������
+      *            注加算コード
                        09  WRK-KOUI-CHUKSNINF.
-      *                ������
+      *                コード
                            11  WRK-KOUI-CHUKSNCD    PIC  X(04).
-      *                ����
+      *                通番
                            11  WRK-KOUI-CHUKSNTUBAN PIC  X(01).
-      *            ���θ���������
+      *            検体検査コメント
                        09  WRK-KOUI-KENTAICOMMENT   PIC  9(01).
-      *            ���ϥ�����
+      *            入力コメント
                        09  WRK-KOUI-INPUTCOMENT     PIC  X(80). 
-      *        ̾�ξ���
+      *        名称情報
                    07  WRK-KOUI-NAMEINF.
-      *            ����ͭ�����
+      *            漢字有効桁数
                        09  WRK-KOUI-YUKOKETA        PIC  9(03).
-      *            ����̾��
+      *            漢字名称
                        09  WRK-KOUI-NAME            PIC  X(200).
       *
-      *    �¤��ؤ��ѥ��
+      *    並び替え用ワーク
        01  TBL-KOUI-SORT                        PIC X(500).
       *
-      *    ���Ź԰٥ǡ����ѥơ��֥�ʲû����ܰ����δ��ܹ��ܡ�
+      *    診療行為データ用テーブル（加算項目扱いの基本項目）
        01  TBL-KOUI-SRYKBN12-AREA.
            03  TBL-KOUI-SRYKBN12-MAX                 PIC 9(02).
       *
@@ -764,24 +764,24 @@
                    07  TBL-KOUI-SRYKBN12-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN12-SHORI-RENNUM    PIC 9(01).
                05  TBL-KOUI-SRYKBN12-SRYACTINF.
-      *            ���ť�����
+      *            診療コード
                    07  TBL-KOUI-SRYKBN12-SRYCD PIC X(09).
-      *            ���
+      *            回数
                    07  TBL-KOUI-SRYKBN12-KAISU PIC 9(04).
-      *            ����
+      *            点数
                    07  TBL-KOUI-SRYKBN12-TEN   PIC 9(09)V9(02).
-      *            ���û�������
+      *            注加算コード
                    07  TBL-KOUI-SRYKBN12-CHUKSNINF.
-      *            ������
+      *            コード
                        09  TBL-KOUI-SRYKBN12-CHUKSNCD
                                                PIC X(04).
-      *            ����
+      *            通番
                        09  TBL-KOUI-SRYKBN12-CHUKSNTUBAN
                                                PIC X(01).
-      *    �������
+      *    点数合計
            03  TBL-KOUI-SRYKBN12-TEN-G         PIC 9(09)V9(02).
       *
-      *    ���Ź԰٥ǡ����ѥơ��֥�ʲû����ܰ����δ��ܹ��ܤ�Ʊ����������
+      *    診療行為データ用テーブル（加算項目扱いの基本項目と同じ注換算）
        01  TBL-KOUI-SRYKBN12-CHU-AREA.
            03  TBL-KOUI-SRYKBN12-CHU-MAX                 PIC 9(02).
       *
@@ -798,21 +798,21 @@
                    07  TBL-KOUI-SRYKBN12-CHU-RENNUM      PIC 9(02).
                05  TBL-KOUI-SRYKBN12-CHU-SHORI-RENNUM    PIC 9(01).
                05  TBL-KOUI-SRYKBN12-CHU-SRYACTINF.
-      *            ���ť�����
+      *            診療コード
                    07  TBL-KOUI-SRYKBN12-CHU-SRYCD PIC X(09).
-      *            ���
+      *            回数
                    07  TBL-KOUI-SRYKBN12-CHU-KAISU PIC 9(04).
-      *            ����
+      *            点数
                    07  TBL-KOUI-SRYKBN12-CHU-TEN   PIC 9(09)V9(02).
-      *            ���û�������
+      *            注加算コード
                    07  TBL-KOUI-SRYKBN12-CHU-CHUKSNINF.
-      *            ������
+      *            コード
                        09  TBL-KOUI-SRYKBN12-CHU-CHUKSNCD
                                                PIC X(04).
-      *            ����
+      *            通番
                        09  TBL-KOUI-SRYKBN12-CHU-CHUKSNTUBAN
                                                PIC X(01).
-      *    �������
+      *    点数合計
            03  TBL-KOUI-SRYKBN12-CHU-TEN-G     PIC 9(09)V9(02).
       *
        01  WRK-RECE855-REC.
@@ -827,8 +827,8 @@
            COPY    "CPRCF0841.INC"  REPLACING //RECE841//
                                    BY         //WRK-TAIHI4//.
       *
-      *    �������������򥨥ꥢ
-      *    ����������
+      *    画像診断用退避エリア
+      *    撮影料退避
        01  FLG-SRYSYUKBN721        PIC 9(01).
        01  WRK-721-RECE85-REC.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
@@ -839,7 +839,7 @@
            02  WRK-700-RECE85-REC                        OCCURS  5.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-700-RECE85//.
-      *    �����������Ʊ�����ơ�
+      *    撮影料退避（同時撮影）
        01  FLG-SRYSYUKBN721-DOUJI             PIC 9(01).
        01  WRK-721-DOUJI-RECE85-REC.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
@@ -850,20 +850,20 @@
            02  WRK-700-DOUJI-RECE85-REC                  OCCURS  5.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-700-DOU85//.
-      *    ���ܻ��ƤΣ���������
+      *    間接撮影の５０％逓減
        01  WRK-SRYKBN70-RECE85-REC.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-SRY70-RE85//.
-      *    ���θ������û������򥨥ꥢ
+      *    生体検査・加算用退避エリア
        01  WRK-KASAN-RECE85-REC.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-KASAN-RE85//.
-      *    ���θ��������������򥨥ꥢ
+      *    生体検査・逓減用退避エリア
        01  WRK-TEIGEN-RECE85-REC.
            COPY    "CPRCF085.INC"  REPLACING  //RECE85//
                                    BY         //WRK-TEIGE-RE85//.
       *
-      *    ������Ƚ�����������򥨥ꥢ
+      *    検査（判断料）用退避エリア
        01  TBL-KENSA-RECE84-AREA.
          02  TBL-KENSA-RECE84-REC  OCCURS  100.
       *
@@ -884,41 +884,41 @@
               05  TBL-KENSA-RECE85-SHORI-RENNUM        PIC 9(01).
       *
               05  TBL-KENSA-RECE85-SRYACTINF.
-      *            ���ť�����
+      *            診療コード
                    07  TBL-KENSA-RECE85-SRYCD           PIC  X(09).
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                    07  TBL-KENSA-RECE85-SRYSYUKBN       PIC  X(03).
-      *            ����
+      *            数量
                    07  TBL-KENSA-RECE85-SRYSURYO      PIC  9(05)V9(05).
-      *            ���
+      *            回数
                    07  TBL-KENSA-RECE85-SRYKAISU        PIC  9(03).
-      *            ñ�̥�����
+      *            単位コード
                    07  TBL-KENSA-RECE85-TANICD          PIC  9(03).
-      *            ñ��̾��ͭ�����
+      *            単位名称有効桁数
                    07  TBL-KENSA-RECE85-TANIMOJISU      PIC  9(01).
-      *            ñ��̾��
+      *            単位名称
                    07  TBL-KENSA-RECE85-TANINAME        PIC  X(24).
-      *            �������̶�ʬ
+      *            点数識別区分
                    07  TBL-KENSA-RECE85-TENSIKIBETU     PIC  9(01).
-      *            ����
+      *            点数
                    07  TBL-KENSA-RECE85-TEN            PIC 9(09)V9(02).
-      *            ��������ե饰
+      *            明細請求フラグ
                    07  TBL-KENSA-RECE85-MEISKYFLG       PIC  X(01).
-      *            ��ư�����ʬ
+      *            自動算定区分
                    07  TBL-KENSA-RECE85-AUTOKBN         PIC  X(01).
-      *            ̾�������ֹ�
+      *            名称入力番号
                    07  TBL-KENSA-RECE85-INPUTNUM        PIC  9(03).
-      *            �����󽸷��輱��
+      *            点数欄集計先識別
                    07  TBL-KENSA-RECE85-TENTTLKBN       PIC  9(03).
-      *            �ǡ�����ʬ
+      *            データ区分
                    07  TBL-KENSA-RECE85-DATAKBN         PIC  9(01).
-      *            ����оݸ���
+      *            包括対象検査
                    07  TBL-KENSA-RECE85-HOUKNSKBN       PIC  9(02).
-      *            �������»�Ƚ��
+      *            検査等実施判断
                    07  TBL-KENSA-RECE85-KNSJISKBN       PIC  9(01).
-      *            �������»�Ƚ�ǥ��롼��
+      *            検査等実施判断グループ
                    07  TBL-KENSA-RECE85-KNSJISGRPKBN    PIC  9(02).
-      *            �Ƽ��ֹ���
+      *            各種番号等
                    07  TBL-KENSA-RECE85-CDKBNINF.
                        09  TBL-KENSA-RECE85-CDKBN-KBN   PIC  X(01).
                        09  TBL-KENSA-RECE85-CDKBN-SYO   PIC  9(01).
@@ -927,31 +927,31 @@
                        09  TBL-KENSA-RECE85-CDKBN-EDA        PIC 9(02).
                        09  TBL-KENSA-RECE85-CDKBN-KOUBAN     PIC 9(02).
                        09  TBL-KENSA-RECE85-KOUHYOJYUNNUM    PIC 9(09).
-      *            �������̶�ʬ��
+      *            告示等識別区分１
                    07  TBL-KENSA-RECE85-KOKUJISKBKBN1   PIC  9(01).
-      *            �������̶�ʬ��
+      *            告示等識別区分２
                    07  TBL-KENSA-RECE85-KOKUJISKBKBN2   PIC  9(01).
-      *            ��§�û��оݳ���ʬ
+      *            通則加算対象外区分
                    07  TBL-KENSA-RECE85-TUSOKUGAIKBN    PIC  9(01).
-      *            ���ֳ��û���ʬ
+      *            時間外加算区分
                    07  TBL-KENSA-RECE85-TIMEKSNKBN      PIC  9(01).
-      *            �������ͷ׻�����
+      *            きざみ値計算識別
                    07  TBL-KENSA-RECE85-KZMCOMPSKB      PIC  9(01).
-      *            ���û�������
+      *            注加算コード
                    07  TBL-KENSA-RECE85-CHUKSNINF.
-      *                ������
+      *                コード
                        09  TBL-KENSA-RECE85-CHUKSNCD    PIC  X(04).
-      *                ����
+      *                通番
                        09  TBL-KENSA-RECE85-CHUKSNTUBAN PIC  X(01).
-      *            ���θ���������
+      *            検体検査コメント
                    07  TBL-KENSA-RECE85-KENTAICOMMENT   PIC  9(01).
-      *            ���ϥ�����
+      *            入力コメント
                    07  TBL-KENSA-RECE85-INPUTCOMENT     PIC  X(80). 
-      *        ̾�ξ���
+      *        名称情報
                05  TBL-KENSA-RECE85-NAMEINF.
-      *            ����ͭ�����
+      *            漢字有効桁数
                    07  TBL-KENSA-RECE85-YUKOKETA        PIC  9(03).
-      *            ����̾��
+      *            漢字名称
                    07  TBL-KENSA-RECE85-NAME            PIC  X(200).
       *
            03  TBL-KENSA-SRYCD-MAX
@@ -961,106 +961,106 @@
          02  TBL-KENSA-RECE85-MAX PIC 9(03).
       *
        01  WRK-CONS-AREA.
-      *    ����������
+      *    検査日　日
            03  WRK-CONS-COMMENT        PIC X(09)   VALUE   "840000099".
-      *    �����
+      *    カンマ
            03  WRK-KUGIRI             PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO             PIC X(01)   VALUE   X"0D".
-      *    ����������
+      *    薬剤料逓減
            03  WRK-CONS-TEIGEN        PIC X(09)   VALUE   "630010002".
       *
-      *    ���λ��ǡ����¼����λ����ƴ�ʣ̣ǣá�
+      *    液体酸素・可搬式液体酸素容器（ＬＧＣ）
            03  WRK-CONS-SANSO1        PIC X(09)   VALUE   "739210000".
-      *    ���λ��ǡ����¼����λ����ƴ�ʣ̣ǣáˡ�Υ���
+      *    液体酸素・可搬式液体酸素容器（ＬＧＣ）（離島）
            03  WRK-CONS-SANSO2        PIC X(09)   VALUE   "739250000".
-      *    ���λ��ǡ����ּ����λ�������ʣãš�
+      *    液体酸素・定置式液体酸素貯槽（ＣＥ）
            03  WRK-CONS-SANSO3        PIC X(09)   VALUE   "739200000".
-      *    ���λ��ǡ����ּ����λ�������ʣãšˡ�Υ���
+      *    液体酸素・定置式液体酸素貯槽（ＣＥ）（離島）
            03  WRK-CONS-SANSO4        PIC X(09)   VALUE   "739240000".
-      *    ���ǥܥ�١��緿
+      *    酸素ボンベ・大型
            03  WRK-CONS-SANSO5        PIC X(09)   VALUE   "739220000".
-      *    ���ǥܥ�١��緿��Υ���
+      *    酸素ボンベ・大型（離島）
            03  WRK-CONS-SANSO6        PIC X(09)   VALUE   "739260000".
-      *    ���ǥܥ�١�����
+      *    酸素ボンベ・小型
            03  WRK-CONS-SANSO7        PIC X(09)   VALUE   "739230000".
-      *    ���ǥܥ�١�������Υ���
+      *    酸素ボンベ・小型（離島）
            03  WRK-CONS-SANSO8        PIC X(09)   VALUE   "739270000".
       *
-      *    ���ܻ��ƤΣ���������
+      *    間接撮影の５０％逓減
            03  WRK-CONS-SRYKBN70-TEIGEN
                                       PIC X(09)   VALUE   "170020570".
       *
-      *    ���ߴ����Ŭ��ʸ����ˡʣ�����ʬ�Σ�����
+      *    施設基準不適合（検査）（１００分の８０）
            03  WRK-CONS-SISETUKIJYUN-KENSA
                                       PIC X(09)   VALUE   "160174470".
       *
-      *    ���ߴ����Ŭ��ʲ����ˡʣ�����ʬ�Σ�����
+      *    施設基準不適合（画像）（１００分の８０）
            03  WRK-CONS-SISETUKIJYUN-GAZOU
                                       PIC X(09)   VALUE   "170025170".
       *
-      *    ���ߴ����Ŭ����������ˡʣ�����ʬ�Σ�����
+      *    施設基準不適合（放射線）（１００分の７０）
            03  WRK-CONS-SISETUKIJYUN-HOUSYASEN
                                       PIC X(09)   VALUE   "180025270".
       *
-      *    ��������Ψ�������ʣ�������
+      *    酸素補正率１．３（１気圧）
            03  WRK-CONS-SANSO-HOSEI   PIC X(09)   VALUE   "770020070".
       *
-      *    �ǥ����뻣�Ƥȥ��ʥ������Ƥ�Ʊ������
+      *    デジタル撮影とアナログ撮影の同時撮影
            03  WRK-CONS-DOUJI-SATUEI-AREA.
-      *        ñ�㻣�ơʥǥ������Ʊ�����ơˡʥ��ʥ������ơ�
+      *        単純撮影（デジタルと同時撮影）（アナログ撮影）
                05  FILLER              PIC X(09)   VALUE   "170032050".
-      *        ñ�㻣�ơʥ��ʥ�����Ʊ�����ơˡʥǥ����뻣�ơ�
+      *        単純撮影（アナログと同時撮影）（デジタル撮影）
                05  FILLER              PIC X(09)   VALUE   "170032150".
-      *        ñ�㻣�ơʥǥ������Ʊ�����ơˡʥ��ʥ������ơ�
+      *        単純撮影（デジタルと同時撮影）（アナログ撮影）
                05  FILLER              PIC X(09)   VALUE   "170032450".
-      *        ñ�㻣�ơʥ��ʥ�����Ʊ�����ơˡʥǥ����뻣�ơ�
+      *        単純撮影（アナログと同時撮影）（デジタル撮影）
                05  FILLER              PIC X(09)   VALUE   "170032550".
-      *        ¤�ƺ޻��ѻ��ơʥ��ʥ������ơ�
+      *        造影剤使用撮影（アナログ撮影）
                05  FILLER              PIC X(09)   VALUE   "170032250".
-      *        ¤�ƺ޻��ѻ��ơʥǥ����뻣�ơ�
+      *        造影剤使用撮影（デジタル撮影）
                05  FILLER              PIC X(09)   VALUE   "170032350".
-      *        ¤�ƺ޻��ѻ��ơʥ��ʥ������ơ�
+      *        造影剤使用撮影（アナログ撮影）
                05  FILLER              PIC X(09)   VALUE   "170032650".
-      *        ¤�ƺ޻��ѻ��ơʥǥ����뻣�ơ�
+      *        造影剤使用撮影（デジタル撮影）
                05  FILLER              PIC X(09)   VALUE   "170032750".
            03  WRK-CONS-DOUJI-SATIEI-R     REDEFINES
                                        WRK-CONS-DOUJI-SATUEI-AREA.
                05  WRK-CONS-DOUJI-SATUEI
                                        PIC X(09)   OCCURS  8.
       *
-      *    �����оݤΥ�����
+      *    出力対象のコメント
            03  WRK-CONS-COMMENT-G.
-      *        ʣ�����Ųʼ���
+      *        複数診療科受診
                05  WRK-CONS-COMMENT1  PIC X(09)   VALUE   "099999901".
-      *        ¾�ݸ��ˤƿǻ��������
+      *        他保険にて診察料算定済
                05  WRK-CONS-COMMENT2  PIC X(09)   VALUE   "099999902".
-      *********��ʴ�ա�
+      *********（粉砕）
       *********05  WRK-CONS-COMMENT3  PIC X(09)   VALUE   "099209901".
-      *       �ʻ����Ѵ���
+      *       （残量廃棄）
                05  WRK-CONS-COMMENT4  PIC X(09)   VALUE   "099309901".
       *
-      *    ����ǯ����
+      *    入院年月日
            03  WRK-CONS-NYUIN-SRYCD   PIC X(09)   VALUE   "840000088".
-      *    ������ǯ����
+      *    再入院年月日
            03  WRK-CONS-SAINYUIN-SRYCD
                                       PIC X(09)   VALUE   "840000014".
-      *    �ౡǯ����
+      *    退院年月日
            03  WRK-CONS-TAIIN-SRYCD   PIC X(09)   VALUE   "840000013".
       *
-      *    �쥻�ץȥ�����
+      *    レセプトコメント
            03  WRK-CONS-RECECOM-MAX
                                    PIC 9(02)   VALUE   48.
-      *    �쥻�ץȥ�����Ĺ��
+      *    レセプトコメント長さ
            03  WRK-CONS-RECECOM-LENGTH-MAX
                                    PIC 9(04)   VALUE   2400.
       *
-      *    ���ԥ�����
+      *    改行コード
        01  WRK-CONS-RETURN          PIC X(01)   VALUE   X"0A".
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK2005.INC".
@@ -1070,63 +1070,63 @@
       *
            COPY    "CPSK2011.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY   "CPSK1001.INC".
       *
-      *    ��̾
+      *    病名
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    �쥻�ץȥ�����
+      *    レセプトコメント
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
       *
-      *    �쥻�ץ��Ż�
+      *    レセプト電算
            COPY    "CPRECEDEN.INC".
       *
-      *    ����ִ���
+      *    ジョブ管理
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ����򥳥���
+      *    手術歴コメント
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ��̾��Ω����
+      *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    �쥻�����Խ�����
+      *    レセ器材再編集サブ
            COPY    "CPORCSRECESORT.INC".
       *
-      *    ������׺����ѥѥ�᥿
+      *    入院会計作成用パラメタ
            COPY    "CPORCSRNYURECEDEN.INC".
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ��ĥ���������å�����
+      *    拡張漢字チェックサブ
            COPY    "CPORCSKANACHK2.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -1144,7 +1144,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -1157,7 +1157,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -1182,10 +1182,10 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
-           MOVE    "�쥻�ťǡ���������ϫ�ҡ�"
+           MOVE    "レセ電データ作成（労災）"
                                        TO  JOB-SHELLMSG
            MOVE    "ORCR0985"          TO  JOB-PGID
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -1322,12 +1322,12 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����ƥ�����ޥ�������      
+      *    システム管理マスタ取得      
       *****************************************************************
        1001-SYSKANRI-HENSYU-SEC    SECTION.
       *
            IF      WRK-PARA-SRYYM  NOT =   ZERO
-      *        ���ŵ��أɣ��Խ�
+      *        医療機関ＩＤ編集
                INITIALIZE                  SYS-1001-REC
                MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
                MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -1340,7 +1340,7 @@
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    MCPDATA-REC         TO  SYS-1001-REC
                ELSE
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                   MOVE    "医療機関情報が取得できませんでした。"
                                                TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
@@ -1379,13 +1379,13 @@
                PERFORM 900-CLOSE-SEC
       *
                IF      SYSKAN-IDX          =   ZERO
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                   MOVE    "医療機関情報が取得できませんでした。"
                                                TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
            END-IF
       *         
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            MOVE    SPACE               TO  SYS-2005-REC
            INITIALIZE                      SYS-2005-REC
            MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
@@ -1415,14 +1415,14 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ���ܴ����Խ�����
+      *    療養期間編集処理
            PERFORM 2001-SRYYM-HENSYU-SEC
       *
-      *    ������׼�������
+      *    入院会計取得処理
            PERFORM 2001-NYURECEDEN-GET-SEC
       *
            MOVE    ZERO            TO  WRK-RENNUM
@@ -1437,21 +1437,21 @@
                                        TBL-KOUI-SRYKBN12-CHU-AREA
                                        TBL-KENSA-RECE84-AREA
       *
-      *    ��׶�ۤ�����
+      *    合計金額の退避
            MOVE    ZERO            TO  FLG-TOTALKIN
            COMPUTE SUM-TOTALKIN    =   RECE82-TOTALKIN
                                    +   RECE82-KINGAKU2-SYO
                                    +   RECE82-SHOKUJITOTALKIN
       *
-      *    �쥻�ץȶ��̥쥳����
+      *    レセプト共通レコード
            PERFORM 2002-HENSYU-SEC
-      *    ϫ�ҥ쥻�ץȥ쥳����
+      *    労災レセプトレコード
            PERFORM 2003-HENSYU-SEC
-      *    ����̾�쥳����
+      *    傷病名レコード
            PERFORM 2006-HENSYU-SEC
-      *    ϫ�Ұ�ʿ��Ź԰٥쥳����
+      *    労災医科診療行為レコード
            PERFORM 2007-HENSYU-SEC
-      *    �ɾ��ܵ��ʥ쥻�����ȡ�
+      *    症状詳記（レセコメント）
            MOVE    ZERO        TO  FLG-TOYAKUFLG
            PERFORM 2009-COMMENT-HEN-99-SEC
       *
@@ -1468,15 +1468,15 @@
            EXIT.             
       *
       *****************************************************************
-      *    ���ܴ����Խ�����      
+      *    療養期間編集処理      
       *****************************************************************
        2001-SRYYM-HENSYU-SEC           SECTION.
       *     
-      *    ���ܴ��ֳ���
+      *    療養期間開始
            MOVE    RECE82-SRYYM        TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
       *     
-      *    ���ܴ��ֽ�λ
+      *    療養期間終了
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
            MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -1489,7 +1489,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������׼�������
+      *    入院会計取得処理
       *****************************************************************
        2001-NYURECEDEN-GET-SEC         SECTION.
       *
@@ -1509,7 +1509,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    �쥻�ץȶ��̥쥳�����Խ�����
+      *    レセプト共通レコード編集処理
       *****************************************************************
        2002-HENSYU-SEC             SECTION.
       *
@@ -1518,13 +1518,13 @@
       *          
            MOVE    "RE,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    �쥻�ץ��ֹ�
+      *    レセプト番号
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ͽ����
+      *    予備２
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��̾
+      *    氏名
            INITIALIZE                      ORCSKANACHK2AREA
            MOVE    "1"                 TO  KANACHK2-SYORI
            MOVE    "1"                 TO  KANACHK2-SYORIKBN 
@@ -1535,11 +1535,11 @@
                MOVE    KANACHK2-OUT-INPUT (1:KANACHK2-MAX)
                                            TO  RECE82-NAME
       *
-               IF      RECE82-NAME (1:2)   =   "��"
-                   IF      RECE82-KANANAME (1:2)   =   "��"
+               IF      RECE82-NAME (1:2)   =   "　"
+                   IF      RECE82-KANANAME (1:2)   =   "　"
                        PERFORM VARYING IDX FROM    1   BY  2
                                UNTIL   IDX >       49
-                           IF      RECE82-KANANAME (IDX:2) =   "��"
+                           IF      RECE82-KANANAME (IDX:2) =   "　"
                                CONTINUE
                            ELSE     
                                MOVE    RECE82-KANANAME (IDX:)
@@ -1554,10 +1554,10 @@
                    MOVE    RECE82-NAME         TO  WRK-DATA
                END-IF
            ELSE
-               IF      RECE82-KANANAME (1:2)   =   "��"
+               IF      RECE82-KANANAME (1:2)   =   "　"
                    PERFORM VARYING IDX FROM    1   BY  2
                            UNTIL   IDX >       49
-                       IF      RECE82-KANANAME (IDX:2)   =   "��"
+                       IF      RECE82-KANANAME (IDX:2)   =   "　"
                            CONTINUE
                        ELSE     
                            MOVE    RECE82-KANANAME (IDX:) TO  WRK-DATA
@@ -1570,25 +1570,25 @@
            END-IF 
            MOVE    40                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����
+      *    性別
            MOVE    RECE82-SEX          TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��ǯ����
+      *    生年月日
            MOVE    RECE82-BIRTHDAY     TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ͽ����
+      *    予備３
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ����ǯ����
+      *    入院年月日
            MOVE    RECE82-NYUINYMD     TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    �����ʬ
+      *    病棟区分
            MOVE    1               TO  IDZ                  
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       4
@@ -1599,68 +1599,68 @@
            END-PERFORM                            
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ����
+      *    予備４
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ͽ����
+      *    予備５
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    �¾���
+      *    病床数
            PERFORM 5005-NUM-HENSYU-SEC         
-      *    ������ֹ���
+      *    カルテ番号等
            MOVE    RECE82-PTNUM        TO  WRK-DATA     
            MOVE    20                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ����
+      *    予備６
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ����
+      *    予備７
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ����
+      *    予備８
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ����
+      *    予備９
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    �Ż����������ֹ�
+      *    電算処理受付番号
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ��Ͽ������ǯ�����
+      *    記録条件仕様年月情報
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    �������ʺ���������
+      *    請求情報（作成日時）
            STRING  WRK-PARA-CREYMD     DELIMITED  BY SIZE
                    WRK-PARA-CREHMS     DELIMITED  BY SIZE
                                        INTO  WRK-DATA
            END-STRING
            MOVE    14                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ų�̾��
+      *    診療科名１
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Τ���������
+      *    人体の部位等１
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ��������
+      *    性別等１
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Ū���֣�
+      *    医学的処置１
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ������£�
+      *    特定疾病１
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Ų�̾��
+      *    診療科名２
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Τ���������
+      *    人体の部位等２
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ��������
+      *    性別等２
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Ū���֣�
+      *    医学的処置２
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ������£�
+      *    特定疾病２
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Ų�̾��
+      *    診療科名３
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Τ���������
+      *    人体の部位等３
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ��������
+      *    性別等３
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ���Ū���֣�
+      *    医学的処置３
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ������£�
+      *    特定疾病３
            PERFORM 5004-MOJI-HENSYU-SEC         
-      *    ͽ��
+      *    予備
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ծ��� 
+      *    患者状態 
            IF      RECE82-NINPUFLG >   ZERO
                MOVE    "001"           TO  WRK-DATA
            END-IF
@@ -1675,7 +1675,7 @@
            EXIT. 
       * 
       *****************************************************************
-      *    ϫ�ҥ쥻�ץȥ쥳�����Խ�����
+      *    労災レセプトレコード編集処理
       *****************************************************************
        2003-HENSYU-SEC             SECTION.
       *     
@@ -1684,11 +1684,11 @@
       *          
            MOVE    "RR,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���
+      *    回数
            MOVE    RECE82-RECEKAISU    TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��̳�ҳ����̶кҳ�
+      *    業務災害・通勤災害
            EVALUATE    RECE82-SAIGAIKBN
                WHEN    "1"
                    MOVE    "1"                 TO  WRK-DATA
@@ -1697,7 +1697,7 @@
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    Ģɼ����
+      *    帳票種別
            EVALUATE    RECE82-HKNKBN
                WHEN    "1"
                    MOVE    "2"                 TO  WRK-DATA
@@ -1706,13 +1706,13 @@
            END-EVALUATE
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ǯ��ڽ��ֹ�
+      *    年金証書番号
            IF      RECE82-HKNKBN       =   "2"
                MOVE    RECE82-KOFUNUM      TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
             PERFORM 5004-MOJI-HENSYU-SEC
-      *    ϫƯ�ݸ��ֹ�
+      *    労働保険番号
            IF      RECE82-HKNKBN       =   "1"
                IF      RECE82-KOFUNUM  NOT =   SPACE
                    MOVE    RECE82-KOFUNUM      TO  WRK-DATA
@@ -1722,7 +1722,7 @@
                MOVE    14                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ����
+      *    傷病年月日
            IF      RECE82-HKNKBN       =   "1"
                MOVE    RECE82-SHOBYOYMD    TO  WRK-SYMD
                PERFORM 5002-HIZUKE-HEN-SEC
@@ -1730,15 +1730,15 @@
                MOVE    7                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ѻ���
+      *    新継再別
            MOVE    RECE82-SINKEI       TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ž����ͳ
+      *    転帰事由
            MOVE    RECE82-TENKI        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ܴ��֡ݽ���
+      *    療養期間−初日
            MOVE    SPACE               TO  WRK-SYMD 
            IF      RECE82-RYOSTYMD NOT =   SPACE
                IF      RECE82-RYOSTYMD     <   WRK-STYMD
@@ -1760,7 +1760,7 @@
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ܴ��֡�����
+      *    療養期間−末日
            MOVE    SPACE               TO  WRK-SYMD 
            IF      RECE82-RYOEDYMD NOT =  SPACE
                IF      RECE82-RYOEDYMD    >   WRK-EDYMD
@@ -1782,47 +1782,47 @@
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ż�����
+      *    診療実日数
            MOVE    RECE82-JNISSU       TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ϫƯ�Ԥλ�̾�ʥ��ʡ�
+      *    労働者の氏名（カナ）
            MOVE    1                   TO  IDY
            PERFORM VARYING IDX FROM    1   BY  2
                    UNTIL   IDX >       49
                    OR      RECE82-KANANAME (IDX:1) =   SPACE
                IF      RECE82-KANANAME (IDX:2)
-                                           >=  "��"  AND
-                                           <=  "��"
+                                           >=  "ァ"  AND
+                                           <=  "ヶ"
                    EVALUATE    RECE82-KANANAME (IDX:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
-                       WHEN    "��"
-                           MOVE    "��"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ァ"
+                           MOVE    "ア"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ィ"
+                           MOVE    "イ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ゥ"
+                           MOVE    "ウ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ェ"
+                           MOVE    "エ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ォ"
+                           MOVE    "オ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ッ"
+                           MOVE    "ツ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ャ"
+                           MOVE    "ヤ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ュ"
+                           MOVE    "ユ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ョ"
+                           MOVE    "ヨ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヮ"
+                           MOVE    "ワ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヵ"
+                           MOVE    "カ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヶ"
+                           MOVE    "ケ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヰ"
+                           MOVE    "イ"        TO  WRK-DATA (IDY:2)
+                       WHEN    "ヱ"
+                           MOVE    "エ"        TO  WRK-DATA (IDY:2)
                        WHEN    OTHER
                            MOVE    RECE82-KANANAME (IDX:2)
                                                TO  WRK-DATA (IDY:2)
@@ -1831,19 +1831,19 @@
                ELSE    
                    EVALUATE    RECE82-KANANAME (IDX:2)
       *                A8 A1
-                       WHEN    "��"
+                       WHEN    "─"
       *                A1 DD
-                       WHEN    "��"
+                       WHEN    "−"
       *                A1 BE
-                       WHEN    "��"
+                       WHEN    "‐"
       *                A1 BD
-                       WHEN    "��"
+                       WHEN    "—"
       *                    A1 BC
-                           MOVE    "��"            TO  WRK-DATA (IDY:2)
+                           MOVE    "ー"            TO  WRK-DATA (IDY:2)
                            ADD     2               TO  IDY    
-                       WHEN    "��"
+                       WHEN    "　"
       *                    A1 BC
-                       WHEN    "��"
+                       WHEN    "ー"
                            MOVE    RECE82-KANANAME (IDX:2)
                                                    TO  WRK-DATA (IDY:2)
                            ADD     2               TO  IDY    
@@ -1856,37 +1856,37 @@
            MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ȥ�̾��
+      *    事業の名称
            IF      RECE82-HKNKBN       =   "1"
                MOVE    RECE82-JIGYOUNAME   TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ⱦ�ν����
+      *    事業場の所在地
            INITIALIZE                      WRK-PREF-AREA
            IF      RECE82-HKNKBN       =   "1"
                IF      RECE82-PREFNAME NOT =   SPACE
                    EVALUATE    RECE82-PREFKBN
                        WHEN    "1"
-                           MOVE    "��"            TO  WRK-PREFKBN
+                           MOVE    "都"            TO  WRK-PREFKBN
                        WHEN    "2"
-      **********           MOVE    "ƻ"            TO  WRK-PREFKBN
+      **********           MOVE    "道"            TO  WRK-PREFKBN
                            MOVE    SPACE           TO  WRK-PREFKBN
                        WHEN    "3"
-                           MOVE    "��"            TO  WRK-PREFKBN
+                           MOVE    "府"            TO  WRK-PREFKBN
                        WHEN    "4"
-                           MOVE    "��"            TO  WRK-PREFKBN
+                           MOVE    "県"            TO  WRK-PREFKBN
                    END-EVALUATE
                END-IF
                IF      RECE82-CITYNAME NOT =   SPACE
                    EVALUATE    RECE82-CITYKBN
                        WHEN    "1"
-                           MOVE    "��"            TO  WRK-CITYKBN
+                           MOVE    "郡"            TO  WRK-CITYKBN
                        WHEN    "2"
-                           MOVE    "��"            TO  WRK-CITYKBN
+                           MOVE    "市"            TO  WRK-CITYKBN
                        WHEN    "3"
-                           MOVE    "��"            TO  WRK-CITYKBN
+                           MOVE    "区"            TO  WRK-CITYKBN
                    END-EVALUATE
                END-IF
                STRING  RECE82-PREFNAME     DELIMITED  BY  SPACE
@@ -1899,7 +1899,7 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���¤ηв�
+      *    傷病の経過
            MOVE    ZERO                TO  FLG-RECECOM-XX
            MOVE    SPACE               TO  WRK-COMM-BACK
       *
@@ -1968,7 +1968,7 @@
       *
                            IF      WRK-DATA        NOT =   SPACE
                                IF      WRK-DATA (101:) NOT =   SPACE
-      *                            ����ʸ����Ķ���Ƥ�����ɾ��ܵ��˵���
+      *                            ５０文字を超えていたら症状詳記に記載
                                    MOVE    1       TO  FLG-RECECOM-XX
                                    MOVE    1       TO  WRK-RECEHEN
                                    MOVE    1       TO  FLG-RECECOM
@@ -1993,33 +1993,33 @@
            PERFORM 900-CLOSE-SEC
       *
            IF      FLG-RECECOM-XX      =   1
-               MOVE    "�ɾ��ܵ��˵���"    TO  WRK-DATA
+               MOVE    "症状詳記に記載"    TO  WRK-DATA
            END-IF
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��������
+      *    小計点数
            MOVE    RECE82-TOTALTEN     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ����������۴����ʥ���
+      *    小計点数金額換算（イ）
            MOVE    RECE82-TOTALKIN     TO  WRK-NUM
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���׶�ۡʥ���
+      *    小計金額（ロ）
            MOVE    RECE82-KINGAKU2-SYO TO  WRK-NUM
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �������ܹ�ײ��
+      *    食事療養合計回数
            MOVE    RECE82-SHOKUJITOTALDAY
                                        TO  WRK-NUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �������ܹ�׶�ۡʥϡ�
+      *    食事療養合計金額（ハ）
            MOVE    RECE82-SHOKUJITOTALKIN
                                        TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��׳ۡʥ��ˡܡʥ��ˡܡʥϡ�
+      *    合計額（イ）＋（ロ）＋（ハ）
            MOVE    SUM-TOTALKIN        TO  WRK-NUM
            MOVE    9                   TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
@@ -2031,7 +2031,7 @@
            EXIT. 
       * 
       *****************************************************************
-      *    ����̾�쥳�����Խ�����
+      *    傷病名レコード編集処理
       *****************************************************************
        2006-HENSYU-SEC             SECTION.
       *     
@@ -2049,7 +2049,7 @@
            PERFORM UNTIL  ( FLG-RECE83 =   1           )
                    OR     ( RECE82-KEY
                                    NOT =   RECE83-KEY1 )
-      *        ����̾�Խ�����
+      *        傷病名編集処理
                PERFORM 20061-BYOMEI-HENSYU-SEC
       *             
                PERFORM 990-RECE83-NEXT-SEC
@@ -2060,14 +2060,14 @@
       *            
       *
       *****************************************************************
-      *    ����̾�Խ�����
+      *    傷病名編集処理
       *****************************************************************
        20061-BYOMEI-HENSYU-SEC         SECTION.
       *     
-      *    �ѻ�ǯ���������ꤵ��Ƥ���Ȥ��ѻ�ǯ��������ų������ʤ�
-      *    ̤����̾�����ɤˤ���
-      *    �ݸ������оݳ��ΤȤ���̤����̾�����ɤˤ���
-      *    �ݸ������оݳ��ν���̾�����ɤΤߤΤȤ��Ϥ��Τޤ޵�Ͽ����
+      *    廃止年月日が設定されているとき廃止年月日＜診療開始日なら
+      *    未傷病名コードにする
+      *    保険請求対象外のときは未傷病名コードにする
+      *    保険請求対象外の傷病名コードのみのときはそのまま記録する
       *
            IF      RECE83-BYOMEIHENFLG =   "1"
                CONTINUE
@@ -2104,7 +2104,7 @@
                END-PERFORM
            END-IF    
       *
-      *    �����ե饰�����̾���Խ�
+      *    疑いフラグより病名を編集
            IF      RECE83-UTAGAIFLG    NOT =   SPACE
                INITIALIZE                      ORCSMKBYOMEIAREA
                MOVE    RECE83-UTAGAIFLG    TO  SMKBYO-UTAGAIFLG
@@ -2120,11 +2120,11 @@
                MOVE    RECE83-IN-BYOMEI    TO  RECE83-BYOMEI 
            END-IF
       *
-      *    ����̾�����ɡ������쥳���ɤμ���
+      *    傷病名コード／修飾語コードの取得
            MOVE    SPACE               TO  WRK-BYOMEI-AREA
       *
            IF      RECE83-BYOMEIHENFLG =   "1"
-      *        �Խ���̾�ΤȤ�̤����̾�����ɤˤ���
+      *        編集病名のとき未傷病名コードにする
                MOVE    "0000999"           TO  WRK-BYOMEICD
            ELSE
                MOVE    ZERO                TO  IDY
@@ -2153,19 +2153,19 @@
       *          
            MOVE    "SY,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ����̾������
+      *    傷病名コード
            MOVE    WRK-BYOMEICD        TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ų�����
+      *    診療開始日
            MOVE    RECE83-SRYYMD      TO  WRK-SYMD
            PERFORM 5002-HIZUKE-HEN-SEC
            MOVE    WRK-HENYMD          TO  WRK-DATA
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    �����쥳����
+      *    修飾語コード
            EVALUATE    WRK-BYOMEICD 
                WHEN    "0000998"
                WHEN    "0000999"
@@ -2175,14 +2175,14 @@
                    MOVE    80                  TO  WRK-NAGASA
            END-EVALUATE
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����̾��
+      *    傷病名称
            IF      WRK-BYOMEICD        =   "0000999"   OR
                                            "0000998"
                MOVE    RECE83-BYOMEI       TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����
+      *    主傷病
            IF    ( RECE83-SYUBYOFLG-X  =   "1"  )
            AND   ( SYS-2005-SYUBYOHENFLG
                                    NOT =   ZERO )
@@ -2190,7 +2190,7 @@
            END-IF 
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ��­������
+      *    補足コメント
            MOVE    RECE83-HOSOKU-COMMENT
                                        TO  WRK-DATA
            MOVE    40                  TO  WRK-NAGASA
@@ -2203,15 +2203,15 @@
            EXIT.
       * 
       *****************************************************************
-      *    Ŧ�ץ쥳�����Խ�����
+      *    摘要レコード編集処理
       *****************************************************************
        2007-HENSYU-SEC              SECTION.
       *
-      *    �ɾ��ܵ��ʼ�����
+      *    症状詳記（手術歴）
            MOVE    ZERO                TO  FLG-TOYAKUFLG
            PERFORM 2008-COMMENT-HEN-01-SEC
       *                                        
-      *    Ŧ�׾���
+      *    摘要情報
            INITIALIZE                      RECE84-REC
            MOVE    RECE82-KEY          TO  RECE84-KEY1
       *
@@ -2226,8 +2226,8 @@
                        OR     ( RECE82-KEY       NOT =   RECE84-KEY1 )
                        OR     ( RECE84-SRYKBN        >=  "90"        )
       *
-      *        ������Ƚ������������θ����������������θ������������
-      *        ���͡ʤ���¾�ˤ��Խ�
+      *        検査に判断料がある場合の検査、又は薬剤料の減点がある場合の
+      *        注射（その他）の編集
                IF    ( RECE84-SRYKBN       >   "60"    OR  "33" )
                AND   ( TBL-KENSA-RECE84-MAX
                                            >   0                )
@@ -2241,25 +2241,25 @@
                    INITIALIZE                  TBL-KENSA-RECE84-AREA
                END-IF
       *
-      *        ���٥ơ��֥��������
+      *        明細テーブル退避処理
                PERFORM 20071-ZAI-TAIHI-SEC
       *
-      *        ���쥻�ǡ����ե饰����
+      *        仮レセデータフラグ設定
                IF      RECE84-TOYAKUFLG =   SPACE
                    MOVE    ZERO              TO  FLG-TOYAKUFLG
                ELSE
                    MOVE    1                 TO  FLG-TOYAKUFLG
                END-IF 
       *
-      *       Ŧ�ץǡ����Խ�����
+      *       摘要データ編集処理
                PERFORM 20074-ZAI-KOUI-SORT-SEC
                PERFORM 20072-ZAI-HENSYU-SEC
       * 
                PERFORM 990-RECE84-NEXT-SEC
            END-PERFORM
       *
-      *    ������Ƚ������������θ����������������θ������������
-      *    ���͡ʤ���¾�ˤ��Խ�
+      *    検査に判断料がある場合の検査、又は薬剤料の減点がある場合の
+      *    注射（その他）の編集
            IF    ( TBL-KENSA-RECE84-MAX
                                        >   0        )
                PERFORM 20078-KENSA-HANDANRYO-HEN-SEC
@@ -2269,10 +2269,10 @@
       *
            MOVE    ZERO                TO  FLG-TOYAKUFLG
       *
-      *    ���ౡ�����Խ�����
+      *    入退院履歴編集処理
            PERFORM 20079-NYUTAI-RIREKI-HEN-SEC
       *
-      *    ��������Խ�����
+      *    入院会計編集処理
            PERFORM 20077-NYUIN-HENSYU-SEC
       *
            .
@@ -2280,7 +2280,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    ���ౡ�����Խ�����
+      *    入退院履歴編集処理
       *****************************************************************
        20079-NYUTAI-RIREKI-HEN-SEC      SECTION.
       *
@@ -2303,7 +2303,7 @@
            PERFORM UNTIL ( FLG-RECE88       =  1           )
                    OR    ( RECE82-KEY   NOT =  RECE88-KEY1 )
       *
-      *        ������ǯ����������ǯ����
+      *        再入院年月日か入院年月日
                IF    ( WRK-NYUINCHUKBN =   "1"             )
                    CONTINUE
                ELSE
@@ -2316,19 +2316,19 @@
       *
                    MOVE    "CO,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF      FLG-NYUTAI-RIREKI   =   ZERO
                        MOVE    "90"                TO  WRK-DATA
                        MOVE    2                   TO  WRK-NAGASA
                        MOVE    1                   TO  FLG-NYUTAI-RIREKI
                    END-IF    
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ͽ����
+      *            予備１
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ�����
+      *            コメントコード
                    IF    ( RECE88-SHONUM       =   ZERO )
                    AND   ( FLG-NYUIN-SRYCD     =   ZERO )
-      *                ��³���ʤ����ౡ������Ȥ������������ǵ�Ͽ����
+      *                継続しない入退院があるとき初回は入院日で記録する
                        MOVE    WRK-CONS-NYUIN-SRYCD
                                                    TO  WRK-DATA
                        MOVE    1                   TO  FLG-NYUIN-SRYCD                      
@@ -2338,7 +2338,7 @@
                    END-IF
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ���
+      *            文字データ
                    MOVE    RECE88-NYUINYMD     TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    INITIALIZE                  ORCSKANACHKAREA
@@ -2357,7 +2357,7 @@
                  END-IF
                END-IF
       *
-      *        �ౡǯ����                          
+      *        退院年月日                          
                IF    ( RECE88-TAIINYMD (1:6)   
                                            >   RECE82-SRYYM    )
                OR    ( RECE88-NYUINCHUKBN  =   "1"             )
@@ -2368,21 +2368,21 @@
       *
                    MOVE    "CO,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF      FLG-NYUTAI-RIREKI   =   ZERO
                        MOVE    "90"                TO  WRK-DATA
                        MOVE    2                   TO  WRK-NAGASA
                        MOVE    1                   TO  FLG-NYUTAI-RIREKI
                    END-IF    
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ͽ����
+      *            予備１
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ�����
+      *            コメントコード
                    MOVE    WRK-CONS-TAIIN-SRYCD
                                                TO  WRK-DATA
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ���
+      *            文字データ
                    MOVE    RECE88-TAIINYMD     TO  WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    INITIALIZE                  ORCSKANACHKAREA
@@ -2410,7 +2410,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����٥ơ��֥��������
+      *    剤明細テーブル退避処理
       *****************************************************************
        20071-ZAI-TAIHI-SEC    SECTION.
       *
@@ -2450,7 +2450,7 @@
       *                                     
            MOVE    RECE84-SRYKBN      TO  WRK-SRYKBN
       *
-      *    ������Ƚ�����ˤ�����
+      *    検査（判断料）の退避
            IF     ( RECE84-KNSJISKBN   =   2 )
                ADD     1               TO  TBL-KENSA-RECE84-MAX
                MOVE    RECE84-REC      TO  TBL-KENSA-RECE84-REC
@@ -2477,7 +2477,7 @@
                        OR      ( RECE85-SRYCD(IDX) =   SPACE )
       *
                MOVE    ZERO                TO  FLG-TAISYO
-      *        �������ϥ����Ȥ�ϫ�Ҽ��ŷײ�û����°���Ϳ���Τ��оݤȤ���
+      *        入院料はコメントか労災治療計画加算、病衣貸与料のみ対象とする
                IF      RECE84-SRYKBN       >=  "90"
                    IF    ( RECE85-SRYCD (IDX) (1:3)  =   "112" )
                        MOVE    1                     TO  FLG-TAISYO
@@ -2552,7 +2552,7 @@
                    EVALUATE    RECE85-SRYCD (IDX) (1:1)
                        WHEN    "0"
                        WHEN    "8"
-      *                    ����ޤ������ѥ��ڡ����ΤߤΥե꡼�����Ȥϵ��ܤ��ʤ�
+      *                    空白または全角スペースのみのフリーコメントは記載しない
                            MOVE    ZERO                TO  WRK-SJ-CHK
                            IF      RECE85-SRYCD (IDX)  =   "810000001"
                                IF      RECE85-NAME  (IDX)  =   SPACE
@@ -2564,13 +2564,13 @@
                                                            =   SPACE
                                            OR  WRK-SJ-CHK  =   1
                                        IF       RECE85-NAME(IDX) (IDY:2)
-                                                       NOT =   "��"
+                                                       NOT =   "　"
                                            MOVE    1   TO  WRK-SJ-CHK
                                        END-IF
                                    END-PERFORM
                                END-IF
                                IF      WRK-SJ-CHK      =   1
-      *                            ��������Ѷ����������
+      *                            後ろの全角空白を削除する
                                    INITIALIZE          ORCSKANACHKAREA
                                    MOVE    "1"     TO  KANACHK-SYORI
                                    MOVE    "1"     TO  KANACHK-SYORIKBN 
@@ -2593,7 +2593,7 @@
                            IF      WRK-SJ-CHK          =   ZERO
                                CONTINUE
                            ELSE                      
-      *                        ������Ƚ�����ˤξ�������
+      *                        検査（判断料）の場合の退避
                                IF      RECE84-KNSJISKBN   =   2
                                    PERFORM
                                        20013-KENSA-HANDANRYO-TAIHI-SEC
@@ -2611,7 +2611,7 @@
                                END-IF
                            END-IF
                        WHEN    "1"
-      *                    ������Ƚ�����ˤξ�������
+      *                    検査（判断料）の場合の退避
                            IF     ( RECE84-KNSJISKBN   =   2 )
                                PERFORM 20013-KENSA-HANDANRYO-TAIHI-SEC
                            ELSE
@@ -2632,7 +2632,7 @@
              PERFORM 990-RECE85-NEXT-SEC
            END-PERFORM
       *
-      *    �������ǤΤȤ����֤��Ѥ���
+      *    画像診断のとき順番を変える
       *
            IF      FLG-SRYSYUKBN721    >   ZERO
                MOVE     FLG-SRYSYUKBN721   TO  IDX 
@@ -2687,11 +2687,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʥ����ȡ��������
+      *    摘要データ（コメント）退避処理
       *****************************************************************
        200711-COMMENT-TAIHI-SEC       SECTION.
       *
-      *    ���Ź԰٥����ɡ�'��'�ΤȤ��оݳ����Ϥ��ʤ�
+      *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE85-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE85-SRYCD (IDX)(1:3)  =   "002"             )
                OR    ( RECE85-SRYCD (IDX)(1:3)  =   "008"             )
@@ -2720,12 +2720,12 @@
                IF      RECE85-SRYCD (IDX)   =   "810000001"
                    CONTINUE
                ELSE
-      *            ���̡����ޡ��桼����������
+      *            部位／薬剤／ユーザーコメント
                    IF      RECE85-SRYCD (IDX) (1:1)     =   "0"
                        MOVE    "810000001"     TO  
                                            TBL-KOUI-SRYCD (WRK-TBLMAX1)
                    END-IF
-      *            ������
+      *            コメント
                    IF    ( RECE85-SRYCD (IDX) (1:1)     =   "8"   )
                    OR    ( RECE85-SRYCD (IDX) (1:3)     =   "008"  AND
                            RECE85-SRYCD (IDX) (4:1) NOT =   "2"   )
@@ -2733,7 +2733,7 @@
                                            TBL-KOUI-NAME  (WRK-TBLMAX1)
                    END-IF
                END-IF
-      *        �����ȥѥ����󣲣��Υ����ȥ�����
+      *        コメントパターン２０のコメントコード
                IF      RECE85-SRYCD (IDX)(1:2)
                                            =   "82"
                    MOVE    SPACE              TO
@@ -2745,11 +2745,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʥ����ȡ��������
+      *    摘要データ（コメント）退避処理
       *****************************************************************
        200711-SRYKBN13-COM-TAIHI-SEC       SECTION.
       *
-      *    ���Ź԰٥����ɡ�'��'�ΤȤ��оݳ����Ϥ��ʤ�
+      *    診療行為コード＝'０'のとき対象外出力しない
            IF      RECE85-SRYCD (IDX) (1:1) =   "0"
                IF    ( RECE85-SRYCD (IDX)(1:3)  =   "002"             )
                OR    ( RECE85-SRYCD (IDX)(1:3)  =   "008"             )
@@ -2778,12 +2778,12 @@
                IF      RECE85-SRYCD (IDX)   =   "810000001"
                    CONTINUE
                ELSE
-      *            ���̡����ޡ��桼����������
+      *            部位／薬剤／ユーザーコメント
                    IF      RECE85-SRYCD (IDX) (1:1)     =   "0"
                        MOVE    "810000001"     TO  
                                        TBL-COMMENT-SRYCD (WRK-TBLMAX8)
                    END-IF
-      *            ������
+      *            コメント
                    IF    ( RECE85-SRYCD (IDX) (1:1)     =   "8"   )
                    OR    ( RECE85-SRYCD (IDX) (1:3)     =   "008"  AND
                            RECE85-SRYCD (IDX) (4:1) NOT =   "2"   )
@@ -2791,7 +2791,7 @@
                                        TBL-COMMENT-NAME  (WRK-TBLMAX8)
                    END-IF
                END-IF
-      *        �����ȥѥ����󣲣��Υ����ȥ�����
+      *        コメントパターン２０のコメントコード
                IF      RECE85-SRYCD (IDX)(1:2)
                                            =   "82"
                    MOVE    SPACE              TO
@@ -2803,7 +2803,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����������
+      *    摘要データ退避処理
       *****************************************************************
        200711-KOUI-TAIHI-SEC          SECTION.
       *
@@ -2812,7 +2812,7 @@
            IF    ( RECE84-SRYKBN      =   "13"    OR  "14"     )
            AND   ( RECE85-KOKUJISKBKBN1 (IDX)
                                        =   "1" OR  "3" OR  "5" )
-      *        �û����ܤ������ܹ��ܰ����ΤȤ��ޤ��̤ˤ���
+      *        加算項目だが基本項目扱いのとき剤を別にする
                IF    ( RECE85-KOKUJISKBKBN1 (IDX)
                                        =   "1" OR  "3" OR  "5" )
                AND   ( RECE85-DATAKBN (IDX)
@@ -2847,7 +2847,7 @@
                                        =   "7" OR  "9"      )
            AND   ( RECE85-CHUKSNCD      (IDX)
                                        =   "1419"           )
-      *        ���û������ɤ����������βû����ܤΤȤ��ޤ��̤ˤ���
+      *        注加算コードが１４１９の加算項目のとき剤を別にする
                ADD     1               TO  TBL-KOUI-SRYKBN12-CHU-MAX
                MOVE    RECE85-KEY      TO  TBL-KOUI-SRYKBN12-CHU-KEY
                                            (TBL-KOUI-SRYKBN12-CHU-MAX)
@@ -2872,7 +2872,7 @@
                GO  TO  200711-KOUI-TAIHI-EXT
            END-IF
       *
-      *    �������Ǥλ������ΤȤ����֤��Ѥ����Ʊ�����ưʳ���
+      *    画像診断の撮影料のとき順番を変える（同時撮影以外）
            IF     RECE85-SRYSYUKBN-X (IDX)
                                        =   "721"
              MOVE    RECE85-REC          TO  WRK-RECE85-REC
@@ -3007,7 +3007,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʿ��Ź԰١������Խ�����
+      *    摘要データ（診療行為）退避編集処理
       *****************************************************************
        2007111-KOUI-TAIHI-HENSYU-SEC SECTION.
       *
@@ -3034,7 +3034,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ƚ�����ˤξ����������
+      *    検査（判断料）の場合の退避処理
       *****************************************************************
        20013-KENSA-HANDANRYO-TAIHI-SEC           SECTION.
       *
@@ -3057,13 +3057,13 @@
                IF      RECE85-SRYCD (IDX)   =   "810000001"
                    CONTINUE
                ELSE
-      *            ���̡����ޡ��桼����������
+      *            部位／薬剤／ユーザーコメント
                    IF      RECE85-SRYCD (IDX) (1:1)     =   "0"
                        MOVE    "810000001"     TO  
                                        TBL-KENSA-RECE85-SRYCD
                            (TBL-KENSA-RECE84-MAX TBL-KENSA-RECE85-MAX)
                    END-IF
-      *            ������
+      *            コメント
                    IF    ( RECE85-SRYCD (IDX) (1:1)     =   "8"   )
                    OR    ( RECE85-SRYCD (IDX) (1:3)     =   "008"  AND
                            RECE85-SRYCD (IDX) (4:1) NOT =   "2"   )
@@ -3079,7 +3079,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʰ����ʡ��������
+      *    摘要データ（医薬品）退避処理
       *****************************************************************
        200711-YKZ-TAIHI-SEC          SECTION.
       *
@@ -3134,7 +3134,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʤ���¾���������
+      *    摘要データ（その他）退避処理
       *****************************************************************
        200711-KIZAI-TAIHI-SEC          SECTION.
       *
@@ -3145,7 +3145,7 @@
                END-IF
            END-IF
       *
-      *    ��������Ψ�������ʣ������ˤΤȤ�
+      *    酸素補正率１．３（１気圧）のとき
            IF     RECE85-SRYCD (IDX)    =   WRK-CONS-SANSO-HOSEI
                GO  TO  200711-KIZAI-TAIHI-EXT
            END-IF
@@ -3198,7 +3198,7 @@
                END-IF
            END-IF
       *
-      *    ���ǤΤȤ�����Ψ���Խ�
+      *    酸素のとき補正率を編集
            IF    ( RECE85-SRYCD (IDX)  =   WRK-CONS-SANSO1
                                        OR  WRK-CONS-SANSO2
                                        OR  WRK-CONS-SANSO3
@@ -3229,7 +3229,7 @@
       *
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʤ���¾���������������
+      *    摘要データ（その他）特定器材退避処理
       *****************************************************************
        200711-KIZAI-ACCT-TAIHI-SEC          SECTION.
       *
@@ -3281,7 +3281,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʿ��Ź԰١��¤��ؤ�����
+      *    摘要データ（診療行為）並び替え処理
       *****************************************************************
        20074-ZAI-KOUI-SORT-SEC         SECTION.
       *
@@ -3312,7 +3312,7 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       WRK-TBLMAX1
       *
-      *        �ø��������ɡ���§�û����ܡˤ����뤫
+      *        加減算コード（通則加算項目）があるか
                IF    ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
                                            =   "9"         )
                AND   ( TBL-KOUI-TENSIKIBETU   (IDX)
@@ -3326,7 +3326,7 @@
                                                             (IDWW)
                END-IF
       *
-      *        ���֤βû����ܤ�̵ͭ                
+      *        処置の加算項目の有無                
                IF    ( RECE84-SRYKBN      =   "40" )
                AND   ( TBL-KOUI-KOKUJISKBKBN1 (IDX)
                                            =   "7"  )
@@ -3334,7 +3334,7 @@
                                    WRK-SRYKBN40-KOKUJISKBKBN1
                END-IF
       *
-      *        �����Ȥ�ǽ���Խ��ʼ�ѤΤȤ���
+      *        コメントを最初に編集（手術のとき）
                IF      RECE84-SRYKBN      =   "50"
                    EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
                        WHEN    SPACE
@@ -3349,7 +3349,7 @@
                END-IF
            END-PERFORM
       *
-      *    ���ܹ�������¤��ؤ��򤹤�
+      *    基本項目毎に並び替えをする
            MOVE    1                   TO  IDX
            PERFORM UNTIL   IDX >   WRK-TBLMAX1
              MOVE    ZERO                TO  IDYY
@@ -3440,20 +3440,20 @@
                  END-IF
                END-PERFORM
       *
-      *        �����оݤȤʤäƤ��ʤ��ǡ��������� 
+      *        出力対象となっていないデータがある 
                IF      FLG-KOUI            =   1
                    MOVE    1                   TO  IDX
                END-IF
              END-PERFORM
-      *      Ŧ�ץǡ����ʿ��Ź԰١˴��ܹ�������¤��ؤ�����
+      *      摘要データ（診療行為）基本項目毎の並び替え処理
              PERFORM 200741-KIHON-HENSYU-SEC
-      *      �ǡ������ĤäƤ���Ȥ� 
+      *      データが残っているとき 
              IF      FLG-KOUI            =   9
                  MOVE    1                   TO  IDX
              END-IF
            END-PERFORM
       *
-      *    �����Ȥ�Ǹ���Խ�
+      *    コメントを最後に編集
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       WRK-TBLMAX1
                EVALUATE    TBL-KOUI-SRYCD (IDX) (1:1)
@@ -3482,7 +3482,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʿ��Ź԰١˴��ܹ�������¤��ؤ�����
+      *    摘要データ（診療行為）基本項目毎の並び替え処理
       *****************************************************************
        200741-KIHON-HENSYU-SEC          SECTION.
       *
@@ -3505,7 +3505,7 @@
                                            TO  WRK-KOUI-TAIHI-REC (IDY)
                        COMPUTE IDZZ    =   IDZZ    +   1
                    WHEN    OTHER
-      *                ���ܹ��ܡ��û����ܡ���§�û����ܤ�ʬ����
+      *                基本項目・加算項目・通則加算項目に分ける
                        PERFORM UNTIL   IDZZ    >=      100
                                OR      WRK-KOUI-SRY-TAIHI-SRYCD (IDZZ)
                                                        =   SPACE
@@ -3596,11 +3596,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����Խ�����
+      *    摘要データ編集処理
       *****************************************************************
        200741-KASAN-HENSYU-SEC          SECTION.
       *
-      *    ���û����ܤε�Ͽ��
+      *    注加算項目の記録順
            IF      WRK-KOUI-TBLMAX (2)         >   ZERO
                COMPUTE IDYY    =   WRK-KOUI-TBLMAX (2) -   1
                PERFORM VARYING IDY1    FROM    1   BY  1
@@ -3621,7 +3621,7 @@
                END-PERFORM
            END-IF    
       *
-      *    ���ܹ��ܡ����û����ܡ���§�û����ܤν���Խ�
+      *    基本項目・注加算項目・通則加算項目の順に編集
            MOVE    ZERO            TO  WRK-KIHON-TIMEKSNKBN
       *
            PERFORM VARYING IDY1    FROM    1   BY  1
@@ -3629,7 +3629,7 @@
                MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
                PERFORM VARYING IDY2    FROM    1   BY  1
                        UNTIL   IDY2    >       IDYY
-      *            ���ܹ��ܤλ��ֳ��û���ʬ������
+      *            基本項目の時間外加算区分を退避
                    IF    ( IDY1            =   1 ) 
                    AND   ( IDY2            =   1 )
                        MOVE    WRK-KOUI-TIMEKSNKBN  (IDY1 IDY2)
@@ -3643,14 +3643,14 @@
                END-PERFORM
            END-PERFORM
       *
-      *    �ø��������ɤ���§�û����ܤ��Խ�
+      *    加減算コードの通則加算項目の編集
            PERFORM VARYING IDY1    FROM    1   BY  1
                    UNTIL   IDY1    >       IDWW
-      *        ���ֳ��û���ʬ�ˤ���Խ�̵ͭ�����å�
+      *        時間外加算区分による編集有無チェック
                IF    ( WRK-KIHON-TIMEKSNKBN    =   ZERO )
                AND   ( WRK-KOUI-KASAN-TAIHI-TIMEKSNKBN (IDY1)
                                            NOT =   ZERO )
-      *            ���ֳ���ʬ���곰�ΤȤ��û����ܤ�������Խ��ʽ��֡�
+      *            時間外区分算定外のとき加算項目があれば編集（処置）
                    IF      WRK-SRYKBN40-KOKUJISKBKBN1  =   1
                        ADD     1               TO  IDY
                        MOVE    WRK-KOUI-KASAN-TAIHI-REC (IDY1)
@@ -3665,7 +3665,7 @@
                END-IF    
            END-PERFORM
       *
-      *    ϫ�����̲û����ܤ��Խ�
+      *    労災特別加算項目の編集
            MOVE    6                       TO  IDY1
            MOVE    WRK-KOUI-TBLMAX (IDY1)  TO  IDYY
            PERFORM VARYING IDY2    FROM    1   BY  1
@@ -3682,11 +3682,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����Խ�����
+      *    摘要データ編集処理
       *****************************************************************
        20072-ZAI-HENSYU-SEC          SECTION.
       *
-      *    �����ȥǡ������Խ��ʿ��Ŷ�ʬ������
+      *    コメントデータの編集（診療区分７０）
            IF      RECE84-SRYKBN      =   "70"                 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       WRK-TBLMAX8
@@ -3694,7 +3694,7 @@
                END-PERFORM  
            END-IF          
       *     
-      *    ���Ź԰٥ǡ����������ȥǡ������Խ�
+      *    診療行為データ・コメントデータの編集
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX1
       *
@@ -3708,7 +3708,7 @@
                    WHEN    "8"
                        MOVE    "CO,"               TO  WRK-REC
                        MOVE    3                   TO  WRK-REC-LENGTH
-      *                ���ż���
+      *                診療識別
                        IF    ( IDX                 =   1     )
                        AND   ( WRK-SRYKBN      NOT =   SPACE )
                            MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -3716,14 +3716,14 @@
                            MOVE    SPACE               TO  WRK-SRYKBN
                        END-IF    
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ͽ����
+      *                予備１
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                �����ȥ�����
+      *                コメントコード
                        MOVE    TBL-KOUI-SRYCD (IDX)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ʸ���ǡ���
+      *                文字データ
                        MOVE    TBL-KOUI-NAME(IDX)  TO  WRK-DATA
                        MOVE    76                  TO  WRK-NAGASA
                        MOVE    1                   TO  WRK-MOJI-CHK
@@ -3741,7 +3741,7 @@
                            PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
                        END-IF
                    WHEN    OTHER
-      *                ��Ϣ�������������
+      *                関連コメント退避処理
                        IF      RECE84-SETCOMFLG   =   "1"
                            INITIALIZE               WRK-RECE855-REC
                            MOVE    TBL-KOUI-KEY (IDX)
@@ -3755,7 +3755,7 @@
       *  
                        MOVE    "RI,"               TO  WRK-REC
                        MOVE    3                   TO  WRK-REC-LENGTH
-      *                ���ż���
+      *                診療識別
                        IF    ( IDX                 =   1     )
                        AND   ( WRK-SRYKBN      NOT =   SPACE )
                            MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -3763,12 +3763,12 @@
                            MOVE    SPACE               TO  WRK-SRYKBN
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ���Ź԰٥�����
+      *                診療行為コード
                        MOVE    TBL-KOUI-SRYCD (IDX)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ����
+      *                数量
                        IF      TBL-KOUI-SRYSURYO (IDX) >   ZERO
                                IF    ( TBL-KOUI-SRYCD (IDX) (1:1)
                                                        =   "1"        )
@@ -3783,7 +3783,7 @@
                                END-IF
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
-      *                ����
+      *                点数
                        IF    ( IDX                 =   WRK-SRYCD1-MAX )
                          IF      RECE84-ZAI-KINGAKU    >   ZERO
                            IF      RECE84-ZAI-TENSU      >   ZERO
@@ -3832,26 +3832,26 @@
                          END-IF 
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
-      *                ���
+      *                金額
                        IF    ( IDX                 =   WRK-SRYCD1-MAX )
                        AND   ( RECE84-ZAI-KINGAKU  >   ZERO           )
                            MOVE    RECE84-ZAI-KINGAKU  TO  WRK-NUM
                            MOVE    9                   TO  WRK-NAGASA
                        END-IF    
                        PERFORM 5005-NUM-HENSYU-SEC  
-      *                ���
+      *                回数
                        MOVE    RECE84-ZAIKAISU    TO  WRK-KAISU
                        MOVE    WRK-KAISU           TO  WRK-NUM
                        MOVE    3                   TO  WRK-NAGASA
                        PERFORM 5005-NUM-HENSYU-SEC
-      *                �����ȥ����ɣ�
+      *                コメントコード１
                        IF      TBL-RECE855-MAX >   ZERO
                            MOVE    TBL-RECE855-SRYCD (1)
                                                        TO  WRK-DATA
                            MOVE    9                   TO  WRK-NAGASA
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ʸ���ǡ�����
+      *                文字データ１
                        IF      TBL-RECE855-MAX >   ZERO
                            MOVE    TBL-RECE855-NAME  (1)
                                                        TO  WRK-DATA
@@ -3859,14 +3859,14 @@
                            MOVE    1                   TO  WRK-MOJI-CHK
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                �����ȥ����ɣ�
+      *                コメントコード２
                        IF      TBL-RECE855-MAX >   1
                            MOVE    TBL-RECE855-SRYCD (2)
                                                        TO  WRK-DATA
                            MOVE    9                   TO  WRK-NAGASA
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ʸ���ǡ�����
+      *                文字データ２
                        IF      TBL-RECE855-MAX >   1
                            MOVE    TBL-RECE855-NAME  (2)
                                                        TO  WRK-DATA
@@ -3874,14 +3874,14 @@
                            MOVE    1                   TO  WRK-MOJI-CHK
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                �����ȥ����ɣ�
+      *                コメントコード３
                        IF      TBL-RECE855-MAX >   2
                            MOVE    TBL-RECE855-SRYCD (3)
                                                        TO  WRK-DATA
                            MOVE    9                   TO  WRK-NAGASA
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ʸ���ǡ�����
+      *                文字データ３
                        IF      TBL-RECE855-MAX >   2
                            MOVE    TBL-RECE855-NAME  (3)
                                                        TO  WRK-DATA
@@ -3889,7 +3889,7 @@
                            MOVE    1                   TO  WRK-MOJI-CHK
                        END-IF
                        PERFORM 5004-MOJI-HENSYU-SEC  
-      *                ���վ���
+      *                日付情報
                        PERFORM VARYING IDV     FROM    1   BY  1
                                UNTIL   IDV     >       31
                            IF      RECE84-KAISU (1 IDV)  >   ZERO
@@ -3906,16 +3906,16 @@
       *
                PERFORM 5001-FILE-WRITE-SEC
       *
-      *        ��Ϣ�������Խ�����
+      *        関連コメント編集処理
                PERFORM 200798-KANREN-COM-HEN-SEC
            END-PERFORM
       *
-      *    �û����ܰ����δ��ܹ��ܤ��Խ�
+      *    加算項目扱いの基本項目を編集
            IF      TBL-KOUI-SRYKBN12-MAX   >   ZERO
                PERFORM 200725-SRYKBN12-JIKANGAIHEN-SEC
            END-IF
       *
-      *    �����ȥǡ������Խ��ʿ��Ŷ�ʬ������������
+      *    コメントデータの編集（診療区分１１〜１４）
            IF    ( RECE84-SRYKBN       =   "11"    OR  "12"    OR
                                            "13"    OR  "14" ) 
                PERFORM VARYING IDX FROM    1   BY  1
@@ -3924,13 +3924,13 @@
                END-PERFORM  
            END-IF          
       *
-      *    �����ʥǡ������Խ�                 
+      *    医薬品データの編集                 
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-TBLMAX6
                PERFORM 200722-YKZ-HENSYU-SEC
            END-PERFORM            
       *
-      *    ������ǡ������Խ�
+      *    特定器材データの編集
            IF      RECE84-ZAIREQFLG       =   SPACE
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       2
@@ -4026,11 +4026,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʰ����ʡ��Խ�����
+      *    摘要データ（医薬品）編集処理
       *****************************************************************
        200722-YKZ-HENSYU-SEC         SECTION.
       *
-      *    ��Ϣ�������������
+      *    関連コメント退避処理
            INITIALIZE              TBL-RECE855-COMMENT-AREA
            IF      RECE84-SETCOMFLG   =   "1"
                INITIALIZE               WRK-RECE855-REC
@@ -4047,7 +4047,7 @@
       *          
            MOVE    "IY,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            IF      IDX                 =   1
            AND     WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -4055,14 +4055,14 @@
                MOVE    SPACE               TO  WRK-SRYKBN
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ʥ�����
+      *    医薬品コード
            MOVE    TBL-ZAIW-SRYCD (1 IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ������
+      *    使用量
            IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
                CONTINUE
@@ -4077,7 +4077,7 @@
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���� 
+      *    点数 
            IF      IDX                 =   WRK-TBLMAX6
                IF      TBL-ZAIW-SRYCD (1 IDX)
                                        =   WRK-CONS-TEIGEN
@@ -4093,19 +4093,19 @@
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���
+      *    回数
            MOVE    RECE84-ZAIKAISU    TO  WRK-KAISU
            MOVE    WRK-KAISU           TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �����ȥ����ɣ�
+      *    コメントコード１
            IF      TBL-RECE855-MAX >   ZERO
                MOVE    TBL-RECE855-SRYCD (1)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ１
            IF      TBL-RECE855-MAX >   ZERO
                MOVE    TBL-RECE855-NAME (1)
                                            TO  WRK-DATA
@@ -4113,14 +4113,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード２
            IF      TBL-RECE855-MAX >   1
                MOVE    TBL-RECE855-SRYCD (2)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ２
            IF      TBL-RECE855-MAX >   1
                MOVE    TBL-RECE855-NAME  (2)
                                            TO  WRK-DATA
@@ -4128,14 +4128,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード３
            IF      TBL-RECE855-MAX >   2
                MOVE    TBL-RECE855-SRYCD (3)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ３
            IF      TBL-RECE855-MAX >   2
                MOVE    TBL-RECE855-NAME  (3)
                                            TO  WRK-DATA
@@ -4144,7 +4144,7 @@
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
       *    
-      *    ���վ���
+      *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
                IF      RECE84-KAISU (1 IDV)   >   ZERO
@@ -4159,18 +4159,18 @@
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
-      *    ��Ϣ�������Խ�����
+      *    関連コメント編集処理
            PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200722-YKZ-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ��������굡����Խ�����
+      *    摘要データ（特定機材）編集処理
       *****************************************************************
        200723-KIZAI-HENSYU-SEC         SECTION.
       *
-      *    ��Ϣ�������������
+      *    関連コメント退避処理
            INITIALIZE              TBL-RECE855-COMMENT-AREA
            IF      RECE84-SETCOMFLG    =   "1"
                INITIALIZE               WRK-RECE855-REC
@@ -4187,21 +4187,21 @@
       *          
            MOVE    "TO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            IF      WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
                MOVE    SPACE               TO  WRK-SRYKBN
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ॳ����
+      *    特定器材コード
            MOVE    TBL-ZAIW-SRYCD (2 IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ������
+      *    使用量
            IF    ( TBL-ZAIW-SRYSURYO (2 IDX)   >   ZERO )
            AND   ( TBL-ZAIW-TENSIKIBETU (2 IDX)
                                            NOT =   "5"  )    
@@ -4211,7 +4211,7 @@
                MOVE    3                           TO  WRK-SYOSUU
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���� 
+      *    点数 
            IF    ( IDXX                =   1               )
            AND   ( IDX                 =   WRK-SRYCD71-MAX )
            AND   ( RECE84-SRYKBN      =   "70"            )
@@ -4230,17 +4230,17 @@
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���
+      *    回数
            MOVE    RECE84-ZAIKAISU    TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ñ�̥�����
+      *    単位コード
            IF      TBL-ZAIW-TANICD (2 IDX)     >   ZERO
                MOVE    TBL-ZAIW-TANICD (2 IDX) TO  WRK-DATA
                MOVE    3                       TO  WRK-NAGASA
            END-IF        
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ñ��
+      *    単価
            IF    ( TBL-ZAIW-TENSIKIBETU (2 IDX)    =   2               )
            OR    ( TBL-ZAIW-SRYCD       (2 IDX)    =   "777770000"     )
            OR    ( TBL-ZAIW-SRYCD       (2 IDX)    =   WRK-CONS-SANSO1
@@ -4260,14 +4260,14 @@
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ������̾��
+      *    特定器材名称
            IF      TBL-ZAIW-SRYCD (2 IDX)        =   "777770000"
                MOVE    TBL-ZAIW-NAME (2 IDX)     TO  WRK-DATA
            END-IF
            MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����̾�ڤӵ���̾�ڤӥ�����
+      *    商品名及び規格名及びサイズ
            IF      TBL-ZAIW-RECEDENNAME (2 IDX)
                                        NOT =   SPACE
                MOVE    TBL-ZAIW-RECEDENNAME (2 IDX)
@@ -4276,14 +4276,14 @@
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����ȥ����ɣ�
+      *    コメントコード１
            IF      TBL-RECE855-MAX >   ZERO
                MOVE    TBL-RECE855-SRYCD (1)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ１
            IF      TBL-RECE855-MAX >   ZERO
                MOVE    TBL-RECE855-NAME (1)
                                            TO  WRK-DATA
@@ -4291,14 +4291,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード２
            IF      TBL-RECE855-MAX >   1
                MOVE    TBL-RECE855-SRYCD (2)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ２
            IF      TBL-RECE855-MAX >   1
                MOVE    TBL-RECE855-NAME  (2)
                                            TO  WRK-DATA
@@ -4306,14 +4306,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード３
            IF      TBL-RECE855-MAX >   2
                MOVE    TBL-RECE855-SRYCD (3)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ３
            IF      TBL-RECE855-MAX >   2
                MOVE    TBL-RECE855-NAME  (3)
                                            TO  WRK-DATA
@@ -4321,7 +4321,7 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���վ���
+      *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
                IF      RECE84-KAISU (1 IDV)  >    ZERO
@@ -4336,18 +4336,18 @@
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
-      *    ��Ϣ�������Խ�����
+      *    関連コメント編集処理
            PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200723-KIZAI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʺ��Խ����굡����Խ�����
+      *    摘要データ（再編集特定機材）編集処理
       *****************************************************************
        200723-KIZAI-SORT-HENSYU-SEC    SECTION.
       *
-      *    ��Ϣ�������������
+      *    関連コメント退避処理
            INITIALIZE              TBL-RECE855-COMMENT-AREA
            IF      RECE84-SETCOMFLG    =   "1"
                INITIALIZE               WRK-RECE855-REC
@@ -4380,21 +4380,21 @@
       *          
            MOVE    "TO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            IF      WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
                MOVE    SPACE               TO  WRK-SRYKBN
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ॳ����
+      *    特定器材コード
            MOVE    ORCSRECESORT-SRYCD (IDXX IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ������
+      *    使用量
            IF    ( ORCSRECESORT-SRYSURYO (IDXX IDX)
                                        >   ZERO         )
            AND   ( ORCSRECESORT-TENSIKIBETU (IDXX IDX)
@@ -4406,7 +4406,7 @@
                MOVE    3                   TO  WRK-SYOSUU
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���� 
+      *    点数 
            IF      ORCSRECESORT-TBLMAX (IDXX)
                                        =   IDX
                MOVE    ORCSRECESORT-ZAITEN (IDXX)
@@ -4417,11 +4417,11 @@
                END-IF
            END-IF
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���
+      *    回数
            MOVE    RECE84-ZAIKAISU    TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ñ�̥�����
+      *    単位コード
            IF      ORCSRECESORT-TANICD (IDXX IDX)
                                        >   ZERO
                MOVE    ORCSRECESORT-TANICD (IDXX IDX)
@@ -4429,7 +4429,7 @@
                MOVE    3                       TO  WRK-NAGASA
            END-IF        
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ñ��
+      *    単価
            IF    ( ORCSRECESORT-TENSIKIBETU (IDXX IDX)
                                        =   2               )
            OR    ( ORCSRECESORT-SRYCD       (IDXX IDX)
@@ -4452,7 +4452,7 @@
                END-IF
            END-IF        
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ������̾��
+      *    特定器材名称
            IF      ORCSRECESORT-SRYCD (IDXX IDX)
                                        =   "777770000"
                MOVE    ORCSRECESORT-NAME (IDXX IDX)
@@ -4461,7 +4461,7 @@
            MOVE    40                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����̾�ڤӵ���̾�ڤӥ�����
+      *    商品名及び規格名及びサイズ
            IF      ORCSRECESORT-RECEDENNAME (IDXX IDX)
                                    NOT =   SPACE
                MOVE    ORCSRECESORT-RECEDENNAME (IDXX IDX)
@@ -4470,14 +4470,14 @@
            MOVE    300                 TO  WRK-NAGASA
            MOVE    1                   TO  WRK-MOJI-CHK
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����ȥ����ɣ�
+      *    コメントコード１
            IF      TBL-RECE855-MAX     >   ZERO
                MOVE    TBL-RECE855-SRYCD (1)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ１
            IF      TBL-RECE855-MAX     >   ZERO
                MOVE    TBL-RECE855-NAME (1)
                                            TO  WRK-DATA
@@ -4485,14 +4485,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード２
            IF      TBL-RECE855-MAX     >   1
                MOVE    TBL-RECE855-SRYCD (2)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ２
            IF      TBL-RECE855-MAX     >   1
                MOVE    TBL-RECE855-NAME  (2)
                                            TO  WRK-DATA
@@ -4500,14 +4500,14 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ����ɣ�
+      *    コメントコード３
            IF      TBL-RECE855-MAX     >   2
                MOVE    TBL-RECE855-SRYCD (3)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ�����
+      *    文字データ３
            IF      TBL-RECE855-MAX     >   2
                MOVE    TBL-RECE855-NAME  (3)
                                            TO  WRK-DATA
@@ -4515,7 +4515,7 @@
                MOVE    1                   TO  WRK-MOJI-CHK
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ���վ���
+      *    日付情報
            PERFORM VARYING IDV     FROM    1   BY  1
                    UNTIL   IDV     >       31
                IF      RECE84-KAISU (1 IDV)   >   ZERO
@@ -4530,14 +4530,14 @@
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
-      *    ��Ϣ�������Խ�����
+      *    関連コメント編集処理
            PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200723-KIZAI-SORT-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ŧ�ץǡ����ʥ����ȡ��Խ������ʿ��Ŷ�ʬ������������
+      *    摘要データ（コメント）編集処理（診療区分１３・１４）
       *****************************************************************
        200724-COMMENT-HENSYU-SEC       SECTION.
       *
@@ -4546,7 +4546,7 @@
       *
            MOVE    "CO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            IF      IDX                 =   1
            AND     WRK-SRYKBN      NOT =   SPACE     
                MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -4554,14 +4554,14 @@
                MOVE    SPACE               TO  WRK-SRYKBN
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ�����
+      *    コメントコード
            MOVE    TBL-COMMENT-SRYCD (IDX)
                                        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ���
+      *    文字データ
            MOVE    TBL-COMMENT-NAME(IDX)
                                        TO  WRK-DATA
            MOVE    76                  TO  WRK-NAGASA
@@ -4586,15 +4586,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �û����ܰ����δ��ܹ��ܤ��Խ�����
+      *    加算項目扱いの基本項目の編集処理
       *****************************************************************
        200725-SRYKBN12-JIKANGAIHEN-SEC   SECTION.
       *
-      *    ���Ź԰٥ǡ������Խ�
+      *    診療行為データの編集
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       TBL-KOUI-SRYKBN12-MAX
                IF      TBL-KOUI-SRYKBN12-KAISU (IDX)   >   ZERO
-      *            ��Ϣ�������������
+      *            関連コメント退避処理
                    INITIALIZE              TBL-RECE855-COMMENT-AREA
                    IF      RECE84-SETCOMFLG   =   "1"
                        INITIALIZE               WRK-RECE855-REC
@@ -4612,7 +4612,7 @@
       *          
                    MOVE    "RI,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF    ( IDX                 =   1     )
                    AND   ( WRK-SRYKBN      NOT =   SPACE )
                        MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -4620,39 +4620,39 @@
                        MOVE    SPACE               TO  WRK-SRYKBN
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���Ź԰٥�����
+      *            診療行為コード
                    MOVE    TBL-KOUI-SRYKBN12-SRYCD (IDX)
                                                    TO  WRK-DATA
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ����
+      *            数量
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ����
+      *            点数
                    MOVE    TBL-KOUI-SRYKBN12-TEN (IDX)
                                                TO  WRK-TENSU
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            金額
       ********     MOVE    TBL-KOUI-SRYKBN12-TEN (IDX)
       *??                                      TO  WRK-TENSU
       *??          MOVE    WRK-TENSU           TO  WRK-NUM
       ********     MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            回数
                    MOVE    TBL-KOUI-SRYKBN12-KAISU (IDX)
                                                TO  WRK-KAISU
                    MOVE    WRK-KAISU           TO  WRK-NUM
                    MOVE    3                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC
-      *            �����ȥ����ɣ�
+      *            コメントコード１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-SRYCD (1)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-NAME  (1)
                                                    TO  WRK-DATA
@@ -4660,14 +4660,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-SRYCD (2)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-NAME  (2)
                                                    TO  WRK-DATA
@@ -4675,14 +4675,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-SRYCD (3)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-NAME  (3)
                                                    TO  WRK-DATA
@@ -4690,7 +4690,7 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���վ���
+      *            日付情報
                    PERFORM VARYING IDV     FROM    1   BY  1
                            UNTIL   IDV     >       31
                        IF      RECE84-KAISU (1 IDV)   >   ZERO
@@ -4706,10 +4706,10 @@
       *
                    PERFORM 5001-FILE-WRITE-SEC
       *
-      *            ��Ϣ�������Խ�����
+      *            関連コメント編集処理
                    PERFORM 200798-KANREN-COM-HEN-SEC
       *
-      *            ���û������ɤ����������βû����ܤ��Խ�
+      *            注加算コードが１４１９の加算項目を編集
                    IF    ( TBL-KOUI-SRYKBN12-CHUKSNCD (IDX)
                                                    =   "1419" )
                    AND   ( TBL-KOUI-SRYKBN12-CHU-MAX
@@ -4724,16 +4724,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û������ɤ����������βû����ܤ��Խ�����
+      *    注加算コードが１４１９の加算項目を編集処理
       *****************************************************************
        2007251-SRYKBN12-CHUKSN-HENSYU-SEC   SECTION.
       *
-      *    ���Ź԰٥ǡ������Խ�
+      *    診療行為データの編集
            PERFORM VARYING IDY4    FROM    1   BY  1
                    UNTIL   IDY4    >       TBL-KOUI-SRYKBN12-CHU-MAX
                IF      TBL-KOUI-SRYKBN12-CHU-KAISU (IDY4)
                                        >   ZERO
-      *            ��Ϣ�������������
+      *            関連コメント退避処理
                    INITIALIZE              TBL-RECE855-COMMENT-AREA
                    IF      RECE84-SETCOMFLG   =   "1"
                        INITIALIZE               WRK-RECE855-REC
@@ -4751,7 +4751,7 @@
       *          
                    MOVE    "RI,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF    ( IDY4                 =   1     )
                    AND   ( WRK-SRYKBN      NOT =   SPACE )
                        MOVE    WRK-SRYKBN          TO  WRK-DATA
@@ -4759,39 +4759,39 @@
                        MOVE    SPACE               TO  WRK-SRYKBN
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���Ź԰٥�����
+      *            診療行為コード
                    MOVE    TBL-KOUI-SRYKBN12-CHU-SRYCD (IDY4)
                                                    TO  WRK-DATA
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ����
+      *            数量
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ����
+      *            点数
                    MOVE    TBL-KOUI-SRYKBN12-CHU-TEN (IDY4)
                                                TO  WRK-TENSU
                    MOVE    WRK-TENSU           TO  WRK-NUM
                    MOVE    7                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            金額
       ********     MOVE    TBL-KOUI-SRYKBN12-CHU-TEN (IDY4)
       *??                                      TO  WRK-TENSU
       *??          MOVE    WRK-TENSU           TO  WRK-NUM
       ********     MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            回数
                    MOVE    TBL-KOUI-SRYKBN12-CHU-KAISU (IDY4)
                                                TO  WRK-KAISU
                    MOVE    WRK-KAISU           TO  WRK-NUM
                    MOVE    3                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC
-      *            �����ȥ����ɣ�
+      *            コメントコード１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-SRYCD (1)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-NAME  (1)
                                                    TO  WRK-DATA
@@ -4799,14 +4799,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-SRYCD (2)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-NAME  (2)
                                                    TO  WRK-DATA
@@ -4814,14 +4814,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-SRYCD (3)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-NAME  (3)
                                                    TO  WRK-DATA
@@ -4829,7 +4829,7 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���վ���
+      *            日付情報
                    PERFORM VARYING IDV     FROM    1   BY  1
                            UNTIL   IDV     >       31
                        IF      RECE84-KAISU (1 IDV)   >   ZERO
@@ -4845,7 +4845,7 @@
       *
                    PERFORM 5001-FILE-WRITE-SEC
       *
-      *            ��Ϣ�������Խ�����
+      *            関連コメント編集処理
                    PERFORM 200798-KANREN-COM-HEN-SEC
                END-IF
            END-PERFORM
@@ -4854,11 +4854,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������������������������������Խ�����
+      *    入院基本料・特定入院料・食事療養編集処理
       *****************************************************************
        20077-NYUIN-HENSYU-SEC           SECTION.
       *
-      *    ������
+      *    入院料
            PERFORM VARYING IDZ1    FROM    1   BY  1
                    UNTIL   IDZ1    >       3
                PERFORM VARYING IDZ2    FROM    1   BY  1
@@ -4877,21 +4877,21 @@
                                MOVE    "CO,"           TO  WRK-REC
                                MOVE    3               TO
                                                        WRK-REC-LENGTH
-      *                        ���ż���
+      *                        診療識別
                                MOVE    LNK-RNYURECEDEN-SRYSKB
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    2               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        ͽ����
+      *                        予備１
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        �����ȥ�����
+      *                        コメントコード
                                MOVE    LNK-RNYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    9               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        ʸ���ǡ���
+      *                        文字データ
                                MOVE    LNK-RNYURECEDEN-COMMENT
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
@@ -4903,19 +4903,19 @@
                                MOVE    "RI,"           TO  WRK-REC
                                MOVE    3               TO
                                                        WRK-REC-LENGTH
-      *                        ���ż���
+      *                        診療識別
                                MOVE    LNK-RNYURECEDEN-SRYSKB
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    2               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        ���Ź԰٥�����
+      *                        診療行為コード
                                MOVE    LNK-RNYURECEDEN-SRYCD
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-DATA
                                MOVE    9               TO  WRK-NAGASA
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        ����
+      *                        数量
                                IF    ( LNK-RNYURECEDEN-SURYO
                                                     (IDZ1 IDZ2 IDXZ)
                                                        >   ZERO    )
@@ -4926,7 +4926,7 @@
                                    MOVE    8           TO  WRK-NAGASA
                                END-IF
                                PERFORM 5005-NUM-HENSYU-SEC
-      *                        ����
+      *                        点数
                                IF    ( IDZ1            <   3     )
                                AND   ( LNK-RNYURECEDEN-TEN
                                                     (IDZ1 IDZ2 IDXZ)
@@ -4938,7 +4938,7 @@
                                    MOVE    7           TO  WRK-NAGASA
                                END-IF
                                PERFORM 5005-NUM-HENSYU-SEC  
-      *                        ���
+      *                        金額
                                IF    ( IDZ1            =   3     )
                                AND   ( LNK-RNYURECEDEN-TEN
                                                     (IDZ1 IDZ2 IDXZ)
@@ -4950,26 +4950,26 @@
                                    MOVE    9           TO  WRK-NAGASA
                                END-IF
                                PERFORM 5005-NUM-HENSYU-SEC  
-      *                        ���
+      *                        回数
                                MOVE    LNK-RNYURECEDEN-KAISU
                                                        (IDZ1 IDZ2 IDXZ)
                                                        TO  WRK-KAISU
                                MOVE    WRK-KAISU       TO  WRK-NUM
                                MOVE    3               TO  WRK-NAGASA
                                PERFORM 5005-NUM-HENSYU-SEC
-      *                        �����ȥ����ɣ�
+      *                        コメントコード１
                                PERFORM 5005-NUM-HENSYU-SEC
-      *                        ʸ���ǡ�����
+      *                        文字データ１
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        �����ȥ����ɣ�
+      *                        コメントコード２
                                PERFORM 5005-NUM-HENSYU-SEC
-      *                        ʸ���ǡ�����
+      *                        文字データ２
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        �����ȥ����ɣ�
+      *                        コメントコード３
                                PERFORM 5005-NUM-HENSYU-SEC
-      *                        ʸ���ǡ�����
+      *                        文字データ３
                                PERFORM 5004-MOJI-HENSYU-SEC  
-      *                        ���վ���
+      *                        日付情報
                                PERFORM VARYING IDV FROM    1   BY  1
                                        UNTIL   IDV >       31
                                    IF      LNK-RNYURECEDEN-DAY
@@ -4992,11 +4992,11 @@
                    END-PERFORM
                END-PERFORM
       *
-      *        �������ߥ������Խ�
+      *        差し込みコメント編集
                PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
            END-PERFORM
       *
-      *    Ŧ�������������Խ�
+      *    摘要欄下部コメント編集
            MOVE    9                   TO  IDZ1 
            PERFORM 200771-NYUIN-COMMENT-HENSYU-SEC
            .
@@ -5004,7 +5004,7 @@
            EXIT.
       *
       *****************************************************************
-      *        �������ߥ������Խ�����
+      *        差し込みコメント編集処理
       *****************************************************************
        200771-NYUIN-COMMENT-HENSYU-SEC      SECTION.
       *
@@ -5029,17 +5029,17 @@
                AND   (  RECE84-SRYKBN      <   "99" )
                    PERFORM 990-RECE84-NEXT-SEC
                ELSE
-      *            ���٥ơ��֥��������
+      *            明細テーブル退避処理
                    PERFORM 20071-ZAI-TAIHI-SEC
       *
-      *            ���쥻�ǡ����ե饰����
+      *            仮レセデータフラグ設定
                    IF      RECE84-TOYAKUFLG  =  SPACE
                        MOVE    ZERO     TO  FLG-TOYAKUFLG
                    ELSE
                        MOVE    1        TO  FLG-TOYAKUFLG
                    END-IF
       *
-      *            Ŧ�ץǡ����Խ�����
+      *            摘要データ編集処理
                    IF      FLG-END           =   ZERO
                        PERFORM 20072-ZAI-HENSYU-SEC
       * 
@@ -5052,7 +5052,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ƚ������������θ������Խ�����
+      *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
        20078-KENSA-HANDANRYO-HEN-SEC      SECTION.
       *
@@ -5064,14 +5064,14 @@
                                                TO  RECE84-REC
                    MOVE    "60"                TO  WRK-SRYKBN
       *
-      *            ���쥻�ǡ����ե饰����
+      *            仮レセデータフラグ設定
                    IF      RECE84-TOYAKUFLG =   SPACE
                        MOVE    ZERO              TO  FLG-TOYAKUFLG
                    ELSE
                        MOVE    1                 TO  FLG-TOYAKUFLG
                    END-IF 
       *
-      *            ������Ƚ������������θ������Խ�����
+      *            検査に判断料がある場合の検査の編集処理
                    PERFORM VARYING IDZ4    FROM    1   BY  1
                            UNTIL   IDZ4    >       50
                            OR      TBL-KENSA-RECE85-REC  (IDZ3 IDZ4)
@@ -5094,7 +5094,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ƚ������������θ������Խ�����
+      *    検査に判断料がある場合の検査の編集処理
       *****************************************************************
        200781-KENSA-HENSYU-SEC      SECTION.
       *
@@ -5108,21 +5108,21 @@
                WHEN    "8"
                    MOVE    "CO,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF      WRK-SRYKBN      NOT =   SPACE
                        MOVE    WRK-SRYKBN          TO  WRK-DATA
                        MOVE    2                   TO  WRK-NAGASA
                        MOVE    SPACE               TO  WRK-SRYKBN
                    END-IF    
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ͽ����
+      *            予備１
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ�����
+      *            コメントコード
                    MOVE    WRK-RECE85-SRYCD (1)
                                                TO  WRK-DATA
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ���
+      *            文字データ
                    MOVE    WRK-RECE85-NAME (1) TO  WRK-DATA
                    MOVE    76                  TO  WRK-NAGASA
                    MOVE    1                   TO  WRK-MOJI-CHK
@@ -5140,7 +5140,7 @@
                        PERFORM 5010-CO-RECORD-NEXT-HENSYU-SEC
                    END-IF
                WHEN    OTHER     
-      *            ��Ϣ�������������
+      *            関連コメント退避処理
                    IF      RECE84-SETCOMFLG   =   "1"
                        INITIALIZE               WRK-RECE855-REC
                        MOVE    TBL-KENSA-RECE85-KEY (IDZ3 IDZ4)
@@ -5154,19 +5154,19 @@
       *
                    MOVE    "RI,"               TO  WRK-REC
                    MOVE    3                   TO  WRK-REC-LENGTH
-      *            ���ż���
+      *            診療識別
                    IF      WRK-SRYKBN      NOT =   SPACE
                        MOVE    WRK-SRYKBN          TO  WRK-DATA
                        MOVE    2                   TO  WRK-NAGASA
                        MOVE    SPACE               TO  WRK-SRYKBN
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���Ź԰٥�����
+      *            診療行為コード
                    MOVE    WRK-RECE85-SRYCD (1)
                                                TO  WRK-DATA
                    MOVE    9                   TO  WRK-NAGASA
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ����
+      *            数量
                    IF      WRK-RECE85-SRYSURYO (1)
                                            >   ZERO
                        IF    ( WRK-RECE85-SRYCD (1) (1:1)
@@ -5182,7 +5182,7 @@
                        END-IF
                    END-IF
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ����
+      *            点数
                    IF    ( IDZ4            =   IDZ5 )
                    AND   ( RECE84-SYUTEN1  >   ZERO )
                        MOVE    RECE84-SYUTEN1      TO  WRK-TENSU
@@ -5190,21 +5190,21 @@
                        MOVE    7                   TO  WRK-NAGASA
                    END-IF    
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            金額
                    PERFORM 5005-NUM-HENSYU-SEC  
-      *            ���
+      *            回数
                    MOVE    RECE84-ZAIKAISU     TO  WRK-KAISU
                    MOVE    WRK-KAISU           TO  WRK-NUM
                    MOVE    3                   TO  WRK-NAGASA
                    PERFORM 5005-NUM-HENSYU-SEC
-      *            �����ȥ����ɣ�
+      *            コメントコード１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-SRYCD (1)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ１
                    IF      TBL-RECE855-MAX >   ZERO
                        MOVE    TBL-RECE855-NAME  (1)
                                                    TO  WRK-DATA
@@ -5212,14 +5212,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-SRYCD (2)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ２
                    IF      TBL-RECE855-MAX >   1
                        MOVE    TBL-RECE855-NAME  (2)
                                                    TO  WRK-DATA
@@ -5227,14 +5227,14 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            �����ȥ����ɣ�
+      *            コメントコード３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-SRYCD (3)
                                                    TO  WRK-DATA
                        MOVE    9                   TO  WRK-NAGASA
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ʸ���ǡ�����
+      *            文字データ３
                    IF      TBL-RECE855-MAX >   2
                        MOVE    TBL-RECE855-NAME  (3)
                                                    TO  WRK-DATA
@@ -5242,7 +5242,7 @@
                        MOVE    1                   TO  WRK-MOJI-CHK
                    END-IF
                    PERFORM 5004-MOJI-HENSYU-SEC  
-      *            ���վ���
+      *            日付情報
                    PERFORM VARYING IDV     FROM    1   BY  1
                            UNTIL   IDV     >       31
                        IF      RECE84-KAISU (1 IDV)   >   ZERO
@@ -5259,14 +5259,14 @@
       *
            PERFORM 5001-FILE-WRITE-SEC
       *
-      *    ��Ϣ�������Խ�����
+      *    関連コメント編集処理
            PERFORM 200798-KANREN-COM-HEN-SEC
            .
        200781-KENSA-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ��Ϣ�������������
+      *    関連コメント退避処理
       *****************************************************************
        200799-KANREN-COM-TAIHI-SEC     SECTION.
       *
@@ -5295,11 +5295,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ϣ�����ȥ����å��������
+      *    関連コメントチェック退避処理
       *****************************************************************
        2007991-KANREN-COM-TAIHIHEN-SEC    SECTION.
       *
-      *    ���Ź԰٥����ɡ�'��'�ΤȤ��оݳ��Ͻ��Ϥ��ʤ�
+      *    診療行為コード＝'０'のとき対象外は出力しない
            IF      RECE855-SRYCD (1:1) =   "0"
                IF    ( RECE855-SRYCD (1:3) =   "002"             )
                OR    ( RECE855-SRYCD (1:3) =   "008"             )
@@ -5322,13 +5322,13 @@
            IF      RECE855-SRYCD    =   "810000001"
                CONTINUE
            ELSE
-      *        ���̡����ޡ��桼����������
+      *        部位／薬剤／ユーザーコメント
                IF      RECE855-SRYCD (1:1) =   "0"
                    MOVE    "810000001"     TO  
                                            TBL-RECE855-SRYCD
                                                (TBL-RECE855-MAX)   
                END-IF
-      *        ������
+      *        コメント
                IF    ( RECE855-SRYCD (1:1) =   "8"   )
                OR    ( RECE855-SRYCD (1:3) =   "008"  AND
                        RECE855-SRYCD (4:1)
@@ -5338,7 +5338,7 @@
                                                (TBL-RECE855-MAX)
                END-IF
            END-IF
-      *    �����ȥѥ����󣲣��Υ����ȥ�����
+      *    コメントパターン２０のコメントコード
            IF      RECE855-SRYCD (1:2) =   "82"
                MOVE    SPACE              TO
                                            TBL-RECE855-NAME
@@ -5350,13 +5350,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ϣ�������Խ�����
+      *    関連コメント編集処理
       *****************************************************************
        200798-KANREN-COM-HEN-SEC    SECTION.
       *
            GO  TO  200798-KANREN-COM-HEN-EXT
       *
-      *    ��Ϣ�����Ȥ����Ф�Ķ������
+      *    関連コメントが３対を超える場合
            IF      TBL-RECE855-MAX     <=  3
                GO  TO  200798-KANREN-COM-HEN-EXT
            END-IF
@@ -5369,16 +5369,16 @@
       *
                MOVE    "CO,"               TO  WRK-REC
                MOVE    3                   TO  WRK-REC-LENGTH
-      *        ���ż���
+      *        診療識別
                PERFORM 5004-MOJI-HENSYU-SEC  
-      *        ͽ����
+      *        予備１
                PERFORM 5004-MOJI-HENSYU-SEC  
-      *        �����ȥ�����
+      *        コメントコード
                MOVE    TBL-RECE855-SRYCD (IDVV)
                                            TO  WRK-DATA
                MOVE    9                   TO  WRK-NAGASA
                PERFORM 5004-MOJI-HENSYU-SEC  
-      *        ʸ���ǡ���
+      *        文字データ
                MOVE    TBL-RECE855-NAME (IDVV)
                                            TO  WRK-DATA
                MOVE    76                  TO  WRK-NAGASA
@@ -5406,14 +5406,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ��ʼ������Խ�����
+      *    症状詳記（手術歴）編集処理
       *****************************************************************
        2008-COMMENT-HEN-01-SEC      SECTION.
       *
            MOVE    "01"                TO  WRK-COM-SRYKBN
            MOVE    SPACE               TO  WRK-OPECOM-HEN
       *
-      *    ������Խ�
+      *    手術歴編集
            INITIALIZE                      OPECOM-REC
            MOVE    RECE82-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE82-PTID         TO  OPECOM-PTID
@@ -5452,7 +5452,7 @@
                                        TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    �������Խ�
+      *    コメント編集
            INITIALIZE                      OPECOM-REC
            MOVE    RECE82-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE82-PTID         TO  OPECOM-PTID
@@ -5492,23 +5492,23 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ��ʼ����˥����Ȥβ��ԥ����ɺ������
+      *    症状詳記（手術歴）コメントの改行コード削除処理
       *****************************************************************
        200811-OPECOM-HENSYU-SEC    SECTION.
       *
            ADD     1                   TO  WRK-COM-RENNUM
       *          
-      *    �����Խ�����
+      *    キー編集処理
            PERFORM 50011-KEY-HENSYU-SEC
            MOVE    "2"                 TO  RECEDEN-RECKBN
            MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
            INSPECT WRK-OPECOM-HEN      REPLACING   ALL "  "
-                                                   BY  "��"
+                                                   BY  "　"
            MOVE    WRK-OPECOM-HEN      TO  RECEDEN-RECEDATA
       *
            PERFORM 50012-DBINSERT-SEC
       *
-      *    �ɾ��ܵ��ʥ����ȡ��Խ�����
+      *    症状詳記（コメント）編集処理
            PERFORM 20099-COMMENT-HENSYU-SEC
       *
            MOVE    SPACE               TO  WRK-OPECOM-HEN
@@ -5517,7 +5517,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ��ʥ쥻�����ȡ�
+      *    症状詳記（レセコメント）
       *****************************************************************
        2009-COMMENT-HEN-99-SEC      SECTION.
       *
@@ -5525,26 +5525,26 @@
            MOVE   SPACE                TO  WRK-SJ-KBN
                                            WRK-RECECOM-SJKBN
       *     
-      *    �쥻�������Խ�����
+      *    レセコメント編集処理
       *
-      *    Ŭ���󥳥���     
+      *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 2009-RECECOM-HENSYU-SEC
       *     
-      *    �ɾ��ܵ������ȡʣ�����������     
+      *    症状詳記コメント（０１〜０６）     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key8"              TO  WRK-MCP-PATHNAME
            PERFORM 2009-RECECOM-HENSYU-SEC
       *     
-      *    �ɾ��ܵ������ȡʤ���¾��    
+      *    症状詳記コメント（その他）    
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 2009-RECECOM-HENSYU-SEC
       *
-      *    ���¤ηв�ʣ���ʸ����Ķ����Ȥ���
+      *    傷病の経過（５０文字を超えるとき）
            IF      FLG-RECECOM-XX      =   "1"
-      *        ɽ�������
+      *        表題を設定
                 MOVE    1                  TO  FLG-RECECOM-AA
       *
                MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
@@ -5552,7 +5552,7 @@
                PERFORM 2009-RECECOM-HENSYU-SEC
            END-IF
       *     
-      *    �ɾ��ܵ������ȡʣ�����������       
+      *    症状詳記コメント（５０、５１）       
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key12"             TO  WRK-MCP-PATHNAME
            PERFORM 2009-RECECOM-HENSYU-SEC
@@ -5561,7 +5561,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�������ɤ߹��߽���
+      *    レセコメント読み込み処理
       *****************************************************************
        2009-RECECOM-HENSYU-SEC    SECTION.
       *
@@ -5571,7 +5571,7 @@
            MOVE    RECE82-PTID         TO  RECECOM-PTID
            MOVE    RECE82-NYUGAIKBN    TO  RECECOM-NYUGAIKBN
            IF      WRK-MCP-PATHNAME    =   "key16"
-      *        ���¤ηв�
+      *        傷病の経過
                MOVE    "AA"                TO  RECECOM-SJKBN
            END-IF
       * 
@@ -5611,7 +5611,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ŭ���󥳥��ȡʥ쥻�����ȡˤβ��ԥ����ɺ������
+      *    適用欄コメント（レセコメント）の改行コード削除処理
       *****************************************************************
        20091-RECECOM-TEKIYOU-HEN-SEC    SECTION.
       *                                          
@@ -5656,7 +5656,7 @@
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-      *                �����Խ�����
+      *                キー編集処理
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
@@ -5665,7 +5665,7 @@
       *
                        PERFORM 50012-DBINSERT-SEC
       *
-      *                Ŭ���󥳥����Խ�����
+      *                適用欄コメント編集処理
                        PERFORM 20099-COMMENT-HENSYU-SEC
                      END-PERFORM
                    END-IF
@@ -5678,7 +5678,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ������ȡʥ쥻�����ȡˤβ��ԥ����ɺ������
+      *    症状詳記コメント（レセコメント）の改行コード削除処理
       *****************************************************************
        20092-RECECOM-SJ-HENSYU-SEC    SECTION.
       *                                          
@@ -5733,7 +5733,7 @@
       *
                        ADD     1                   TO  WRK-COM-RENNUM
       *          
-      *                �����Խ�����
+      *                キー編集処理
                        PERFORM 50011-KEY-HENSYU-SEC
                        MOVE    "2"                 TO  RECEDEN-RECKBN
                        MOVE    WRK-COM-RENNUM      TO  RECEDEN-RENNUM
@@ -5745,7 +5745,7 @@
       *
                      END-PERFORM
       *
-      *              �ɾ��ܵ��쥳�����Խ�����
+      *              症状詳記レコード編集処理
                      PERFORM 200921-SJ-HENSYU-SEC
                    END-IF
                END-IF  
@@ -5757,11 +5757,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ��쥳�����Խ�����
+      *    症状詳記レコード編集処理
       *****************************************************************
        200921-SJ-HENSYU-SEC       SECTION.
       *
-      *    ���ѥ��ڡ����ΤߤΥ쥳���ɤϵ��ܤ��ʤ�
+      *    全角スペースのみのレコードは記載しない
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    "1"                 TO  KANACHK-SYORIKBN 
@@ -5774,29 +5774,29 @@
            AND   ( KANACHK-MAX         =   ZERO )
                GO  TO  200921-SJ-HENSYU-EXT
            END-IF
-      *    ��������Ѷ����������
+      *    後ろの全角空白を削除する
            IF      KANACHK-RC          =   ZERO
                MOVE    SPACE               TO  WRK-COMMENT-G
                MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
                                            TO  WRK-COMMENT-G
            END-IF
       *
-      *    ���¤ηв�ʤ���Ƭ��ɽ���Ͽ����
+      *    傷病の経過なら先頭に表題を記録する
            IF      FLG-RECECOM-AA      =   1
                MOVE    SPACE               TO  WRK-REC
                MOVE    ZERO                TO  WRK-REC-LENGTH
       *
                MOVE    "SJ,"               TO  WRK-REC
                MOVE    3                   TO  WRK-REC-LENGTH
-      *        �ɾ��ܵ���ʬ
+      *        症状詳記区分
                IF      WRK-SJ-KBN      NOT =   SPACE     
                    MOVE    WRK-SJ-KBN          TO  WRK-DATA
                    MOVE    2                   TO  WRK-NAGASA
                END-IF
                MOVE    SPACE               TO  WRK-SJ-KBN
                PERFORM 5004-MOJI-HENSYU-SEC  
-      *        �ɾ��ܵ��ǡ���
-               MOVE    "�ڽ��¤ηв��"    TO  WRK-DATA
+      *        症状詳記データ
+               MOVE    "【傷病の経過】"    TO  WRK-DATA
                MOVE    2400                TO  WRK-NAGASA
                MOVE    1                   TO  WRK-END 
                PERFORM 5004-MOJI-HENSYU-SEC  
@@ -5811,14 +5811,14 @@
       *
            MOVE    "SJ,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    �ɾ��ܵ���ʬ
+      *    症状詳記区分
            IF      WRK-SJ-KBN      NOT =   SPACE     
                MOVE    WRK-SJ-KBN          TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
            END-IF
            MOVE    SPACE               TO  WRK-SJ-KBN
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �ɾ��ܵ��ǡ���
+      *    症状詳記データ
            MOVE    WRK-COMMENT-G       TO  WRK-DATA
            MOVE    2400                TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
@@ -5830,7 +5830,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ��ʥ����ȡ��Խ�����
+      *    症状詳記（コメント）編集処理
       *****************************************************************
        20099-COMMENT-HENSYU-SEC       SECTION.
       *
@@ -5838,7 +5838,7 @@
                GO  TO  20099-COMMENT-HENSYU-EXT
            END-IF
       *
-      *    ���ѥ��ڡ����ΤߤΥ쥳���ɤϵ��ܤ��ʤ�
+      *    全角スペースのみのレコードは記載しない
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    "1"                 TO  KANACHK-SYORIKBN 
@@ -5851,7 +5851,7 @@
            AND   ( KANACHK-MAX         =   ZERO )
                GO  TO  20099-COMMENT-HENSYU-EXT
            END-IF
-      *    ��������Ѷ����������
+      *    後ろの全角空白を削除する
            IF      KANACHK-RC          =   ZERO
                MOVE    SPACE               TO  RECEDEN-RECEDATA
                MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
@@ -5863,20 +5863,20 @@
       *
            MOVE    "CO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            IF      WRK-COM-SRYKBN      NOT =   SPACE     
                MOVE    WRK-COM-SRYKBN      TO  WRK-DATA
                MOVE    2                   TO  WRK-NAGASA
                MOVE    SPACE               TO  WRK-COM-SRYKBN
            END-IF    
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ͽ����
+      *    予備１
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ�����
+      *    コメントコード
            MOVE    "810000001"         TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ���
+      *    文字データ
            MOVE    RECEDEN-RECEDATA    TO  WRK-DATA
            MOVE    76                  TO  WRK-NAGASA
            MOVE    1                   TO  WRK-END 
@@ -5888,7 +5888,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -5899,10 +5899,10 @@
                    RECE855-FILE
                    RECE88-FILE
       *
-      *    �Уգӣ����ν���
+      *    ＰＵＳＨ通知処理
            PERFORM 3001-PUSH-SEC
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -5918,7 +5918,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգӣ����ν���
+      *    ＰＵＳＨ通知処理
       *****************************************************************
        3001-PUSH-SEC        SECTION.
       *
@@ -5960,7 +5960,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -5983,7 +5983,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -5998,7 +5998,7 @@
            EXIT.
       *            
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -6012,7 +6012,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -6032,7 +6032,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -6043,26 +6043,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -6095,11 +6095,11 @@
       *
       *
       *****************************************************************
-      *    �ե�������Ͻ���
+      *    ファイル出力処理
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
       *
-      *    ���ԥ������Խ� 
+      *    改行コード編集 
            STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
                    WRK-KAIGYO                DELIMITED  BY  SIZE
                    INTO        WRK-REC
@@ -6107,10 +6107,10 @@
       *
            ADD     1                   TO  WRK-RENNUM
       *          
-      *    �����Խ�����
+      *    キー編集処理
            PERFORM 50011-KEY-HENSYU-SEC
       *
-      *    ���쥻�ʱ��������ޤ�ˤ��ɤ����ζ�ʬ����
+      *    仮レセ（院外処方含む）かどうかの区分設定
            IF      FLG-TOYAKUFLG       =   ZERO
                MOVE    "1"                 TO  RECEDEN-RECKBN
            ELSE
@@ -6130,7 +6130,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    キー編集処理
       *****************************************************************
        50011-KEY-HENSYU-SEC        SECTION.
       *          
@@ -6153,11 +6153,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        50012-DBINSERT-SEC          SECTION.
       *
-      *    �ɾ��ܵ��ѤΥǡ����ϵ�Ͽ���ʤ�
+      *    症状詳記用のデータは記録しない
            IF      RECEDEN-RECKBN      =   "2"
                GO  TO  50012-DBINSERT-EXT
            END-IF
@@ -6181,7 +6181,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -6206,7 +6206,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ͤ��Խ�����
+      *    右詰め編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -6232,7 +6232,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -6240,7 +6240,7 @@
                CONTINUE
            ELSE                   
                IF      WRK-MOJI-CHK    =   1
-      *            ��������Ѷ����������
+      *            後ろの全角空白を削除する
                    INITIALIZE                      ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
                    MOVE    "1"                 TO  KANACHK-SYORIKBN
@@ -6284,14 +6284,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ����ʿ�����ZZZZZZZZZ9.99999���Խ�
+      *    出力レコード処理（数字）ZZZZZZZZZ9.99999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE                   
-      *        ��������ΤȤ����������������ξ��
+      *        小数ありのとき、小数部がゼロの場合
                IF      WRK-SYOSUU          >   ZERO
                    IF      WRK-NUM-R-2         =   "00000"
                       MOVE    ZERO                TO  WRK-SYOSUU
@@ -6306,7 +6306,7 @@
                    END-IF
                END-IF
       *
-      *        ���ϰ���
+      *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
                IF      WRK-SYOSUU          >   ZERO
                    COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
@@ -6347,11 +6347,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ȥ쥳���ɵ�Ͽ�����ʣ����Х��Ȥ�Ķ����Ȥ���
+      *    コメントレコード記録処理（７６バイトを超えるとき）
       *****************************************************************
        5010-CO-RECORD-NEXT-HENSYU-SEC  SECTION.
       *
-      *    ���ѥ��ڡ����ΤߤΥ쥳���ɤϵ��ܤ��ʤ�
+      *    全角スペースのみのレコードは記載しない
            INITIALIZE                      ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    "1"                 TO  KANACHK-SYORIKBN 
@@ -6364,7 +6364,7 @@
            AND   ( KANACHK-MAX         =   ZERO )
                GO  TO  5010-CO-RECORD-NEXT-HENSYU-EXT
            END-IF
-      *    ��������Ѷ����������
+      *    後ろの全角空白を削除する
            IF      KANACHK-RC          =   ZERO
                MOVE    SPACE               TO  WRK-CO-COMMENT
                MOVE    KANACHK-OUT-INPUT (1:KANACHK-MAX)
@@ -6376,15 +6376,15 @@
       *
            MOVE    "CO,"               TO  WRK-REC
            MOVE    3                   TO  WRK-REC-LENGTH
-      *    ���ż���
+      *    診療識別
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ��ô��ʬ
+      *    負担区分
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ȥ�����
+      *    コメントコード
            MOVE    WRK-CO-SRYCD        TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    ʸ���ǡ���
+      *    文字データ
            MOVE    WRK-CO-COMMENT      TO  WRK-DATA
            MOVE    76                  TO  WRK-NAGASA
       *****MOVE    1                   TO  WRK-MOJI-CHK
@@ -6398,7 +6398,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -6427,7 +6427,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -6442,7 +6442,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -6476,7 +6476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȥ����ȥޥ����ңţ���
+      *    レセプトコメントマスタＲＥＡＤ
       *****************************************************************
        900-RECECOM-READ-SEC         SECTION.
       *
@@ -6491,7 +6491,7 @@
        900-RECECOM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    手術歴マスター読込
       *****************************************************************
        900-OPECOM-READ-SEC           SECTION.
       *
@@ -6517,7 +6517,7 @@
            EXIT.
       *
      *****************************************************************
-      *    �����ޥ������ɹ�
+      *    手術歴マスター読込
       *****************************************************************
        900-OPECOM-READ-N-SEC           SECTION.
       *
@@ -6535,7 +6535,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ����ٽ��ɹ�
+      *    レセプト明細書読込
       *****************************************************************
        900-RECE82-READ-SEC             SECTION.
       *
@@ -6554,9 +6554,9 @@
                        PERFORM 500-FILE-ERR-ABORT-SEC
                    END-IF
       *
-      *            ��̳�ҳ������������ΤȤ��оݳ�
-      *            ������ŵ��ؤǤϤʤ��Ȥ��оݳ�
-      *            �����������ǻϤޤ륳���ɤ�����Ȥ��оݳ�
+      *            公務災害、種別不明のとき対象外
+      *            指定医療機関ではないとき対象外
+      *            ０９５９３で始まるコードがあるとき対象外
                    IF  (   RECE82-SRYYM        <   201307 )
                    OR  (   RECE82-PTNUM        =   SPACE  )
                    OR  (   RECE82-TSTPTNUMKBN  =   "1"    )
@@ -6572,7 +6572,7 @@
                                                =   1      )
                        GO  TO  900-RECE82-READ-SEC
                    ELSE
-      *                ���ŵ��ؾ������
+      *                医療機関情報取得
                        IF      WRK-PARA-SRYYM  =   ZERO
                            MOVE  RECE82-SRYYM      TO
                                                    WRK-SYS-SRYYMD (1:6)
@@ -6592,11 +6592,11 @@
            EXIT.
       *
       ****************************************************************
-      *    ����ǯ����оݤȤʤ륷������������ʸ��̽����Τ�
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
-      *    ���ŵ��ؾ���ʴ��ܾ����
+      *    医療機関情報（基本情報）
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
@@ -6610,7 +6610,7 @@
                END-IF
            END-PERFORM
            IF      FLG-SET             =   ZERO
-               STRING  "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������ǯ���"
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -6623,7 +6623,7 @@
       *
       *
       ****************************************************************
-      *    ����̾�ɤ߹���
+      *    傷病名読み込み
       ****************************************************************
        990-RECE83-NEXT-SEC           SECTION.
       *
@@ -6650,7 +6650,7 @@
            EXIT.
       *
       ****************************************************************
-      *    Ŧ�׾����ɤ߹���
+      *    摘要情報読み込み
       ****************************************************************
        990-RECE84-NEXT-SEC           SECTION.
       *
@@ -6678,7 +6678,7 @@
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０５データ読み
       ****************************************************************
        990-RECE85-NEXT-SEC           SECTION.
       *
@@ -6705,7 +6705,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ��Ϣ�������ɤ߹���
+      *    関連コメント読み込み
       ****************************************************************
        900-RECE855-NEXT-SEC           SECTION.
       *
@@ -6732,7 +6732,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ���ౡ��������ɤ߹���
+      *    入退院履歴情報読み込み
       ****************************************************************
        900-RECE88-NEXT-SEC           SECTION.
       *
@@ -6759,7 +6759,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -6776,7 +6776,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        900-DBINSERT-SEC                SECTION.
       *
@@ -6789,7 +6789,7 @@
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ¹����������顼��TABLE="
+               STRING  "ＤＢ更新処理エラー　TABLE="
                                            DELIMITED  BY  SIZE
                        MCP-TABLE           DELIMITED  BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -6815,7 +6815,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -6828,7 +6828,7 @@
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -6854,7 +6854,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -6866,7 +6866,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -6878,7 +6878,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -6891,7 +6891,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -6909,7 +6909,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -6927,7 +6927,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -6941,7 +6941,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

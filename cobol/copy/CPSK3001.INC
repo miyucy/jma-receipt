@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,56 +16,56 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK3001.INC)   *
-      *         ��3��������                            *
-      *         �쥻�ץȺ����ؼ�������                  *
+      *         システム管理マスタ     (CPSK3001.INC)   *
+      *         （3００１）                            *
+      *         レセプト作成指示コード                  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/09/06  �ѥ�᥿�����ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/09/06  パラメタ項目追加
       ************************************************************
        01  SYS-3001-REC.
            03  SYS-3001-KEY.
                05  SYS-3001-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-3001-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-3001-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-3001-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-3001-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-3001-TBL.
-      *Ģɼ̾
+      *帳票名
                05  SYS-3001-HCNAME      PIC  X(160).
-      *�ץ������̾
+      *プログラム名
                05  SYS-3001-PRGNAME     PIC  X(24).
-      *�ѥ�᥿
+      *パラメタ
                05  SYS-3001-PARA-AREA.
                    07  SYS-3001-PARA-TBL.
                        09  SYS-3001-PARA-G  OCCURS  10.
                            11  SYS-3001-PARAHYOJI
                                         PIC X(20).
                            11  SYS-3001-PARA    PIC X(10).
-      *ɬ�ܶ�ʬ��SPACE or 1:ɬ��2:Ǥ�ա�
+      *必須区分（SPACE or 1:必須2:任意）
                    07  SYS-3001-HISSU-KBN
                                         OCCURS  10
                                         PIC X(01).
-      *ͽ��
+      *予備
                05  SYS-3001-YOBI        PIC  X(06).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-3001-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-3001-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-3001-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-3001-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-3001-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-3001-UPD-KEY.
                05  SYS-3001-UPD-HOSPNUM     PIC 9(2).
                05  SYS-3001-UPD-KANRICD     PIC X(04).

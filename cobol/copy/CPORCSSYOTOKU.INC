@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,52 +15,52 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ************************************************************
-      *    ���Խ��������Խ��ѥ�᥿
+      *    患者所得情報編集パラメタ
       *    COPY  (CPORCSSYOTOKU.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSSYOTOKUAREA.
-      *������
-      *    ���ŵ��أɣ�
+      *入力値
+      *    医療機関ＩＤ
            03  LNK-SYOTOKU-HOSPNUM         PIC 9(02).
-      *    ���ԣɣ�
+      *    患者ＩＤ
            03  LNK-SYOTOKU-PTID            PIC 9(10).
-      *    ����ǯ��
+      *    処理年月
            03  LNK-SYOTOKU-SRYYM           PIC X(06).
-      *    ������ʬ�����å��ܡڿ����ѡ��ֵѹ����Խ�
+      *    食事区分チェック＋【食事用】返却項目編集
            03  LNK-SYOTOKU-SKJCHKFLG       PIC X(01).
-      *    �ڿ����ѡۿ�����ʬ����ǥå����ʥ쥻�ץ��ѡ˼����Ѥ��ݸ��Ȥ߹�碌
+      *    【食事用】食事区分インデックス（レセプト用）取得用の保険組み合わせ
            03  LNK-SYOTOKU-HKNCOMBIINF.
                05  LNK-SYOTOKU-HKNCOMBI    PIC 9(04)   OCCURS  10.
-      *�ֵѹ���
+      *返却項目
            03  LNK-SYOTOKU-HENKYAKU-AREA.
                05  LNK-SYOTOKU-HENKYAKU-TABLE     OCCURS  31.
-      *���ݸ�����������ʬ
-      *  �ʶ��򡧰��̡������㣱�������㣲�������㣱��Ϸ��ˡ�
+      *主保険・全国公費区分
+      *  （空白：一般　１：低１　２：低２　４：低１（老齢））
                    07  LNK-SYOTOKU-SYUKBN         PIC  X(01).
-      *���������ʬ
-      *  �ʶ��򡧰��̡������㣱�������㣲��
+      *地方公費区分
+      *  （空白：一般　１：低１　２：低２）
                    07  LNK-SYOTOKU-CHIKBN         PIC  X(01).
-      *������ʬ
-      *  �ʶ��򡧰��̡������㣱�������㣲�������㣲�ʣ�����Ķ�ˡ������㣱��Ϸ��ˡ�
+      *食事区分
+      *  （空白：一般　１：低１　２：低２　３：低２（９０日超）　４：低１（老齢））
                    07  LNK-SYOTOKU-SKJKBN         PIC  X(01).
       *
-      *�ڿ����ѡ۶����ض�ʬ
-      *  �ʶ�������������������
+      *【食事用】境界層区分
+      *  （空白：非該当　１：該当）
                    07  LNK-SYOTOKU-KKSKBN         PIC  X(01).
-      *�ڿ����ѡ�ǯ���ʬ
-      *  �ʿ��������ݸ��Ȥ߹�碌��Ʊ��������ʬ��ޤ�ˤ�
-      *    0000��������ϫ�ҡ������ա����������񡦼����ξ��϶����
-      *  �ʶ����оݳ�����������ԡ�����������̤����
+      *【食事用】年齢区分
+      *  （食事算定保険組み合わせ（同日再入院分も含む）が
+      *    0000・特療費・労災・自賠責・公害・自費・治験の場合は空白）
+      *  （空白：対象外　１：高齢者　２：７０歳未満）
                    07  LNK-SYOTOKU-AGEKBN         PIC  X(01).
       *
-      *�ڿ����ѡۿ�����ʬ����ǥå����ʥ쥻�ץ��ѡ�
+      *【食事用】食事区分インデックス（レセプト用）
                05  LNK-SYOTOKU-SKJIDX             PIC  9(02).
       *
-      *���������ɡʣ�������ǯ��顼���������ԣɣĥ��顼��
-      *          �ʣ����㣱���顼�����������㣲���顼������
+      *復帰コード（１：処理年月エラー　２：患者ＩＤエラー）
+      *          （３：低１エラー　　　４：低２エラー　　）
            03  LNK-SYOTOKU-RC                     PIC  S9(9) BINARY.
       *

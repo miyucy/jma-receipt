@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCM35.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �쥻�ץȷ���������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/08/20    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : レセプト件数枚数印刷
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/08/20    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-����    06/01/20  ����ʬ�б�
-      *  03.04.01    NACL-����    06/11/29  �ѥ�᥿�ѹ�
-      *  03.05.00    NACL-����    07/11/05  ���롼�׿����б�
-      *  04.02.01    NACL-����    08/04/16  ʿ������ǯ�������
-      *  04.07.01    NACL-ƣ��    15/06/19  ���Ų�ɽ��������ѹ�
-      *  04.08.01    NACL-����    14/08/20  ����ե�����ǥ��쥯�ȥ�����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-森脇    06/01/20  編綴分対応
+      *  03.04.01    NACL-森脇    06/11/29  パラメタ変更
+      *  03.05.00    NACL-森脇    07/11/05  グループ診療対応
+      *  04.02.01    NACL-森脇    08/04/16  平成２０年４月改正
+      *  04.07.01    NACL-藤原    15/06/19  診療科表示件数の変更
+      *  04.08.01    NACL-森脇    14/08/20  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,7 +40,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       *----(04.08.01)--UPD-START---
       *     SELECT  PRT-FILE            ASSIGN  HC01PARA
            SELECT  PRT-FILE            ASSIGN  ASGNPARA
@@ -50,28 +50,28 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
            COPY    "HCMC001.INC".
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *----(04.08.01)--ADD-START---
            COPY    "CPASGNPARA.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(02).
            03  CNT-PAGE                PIC 9(03).
@@ -85,18 +85,18 @@
            03  CNT-KOUIKI              PIC 9(02).
       *----(04.02.01)--ADD-END-----
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME                PIC 9(08).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
       *----(00.00.01)--ADD-START---
            03  IDY                     PIC 9(04).
       *----(00.00.01)--ADD-END-----
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -115,25 +115,25 @@
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *----(04.08.01)--ADD-START---
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -169,7 +169,7 @@
       *----(03.04.01)--UPD-END-----
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -182,7 +182,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -202,7 +202,7 @@
       *----(03.04.01)--UPD-START---
       *----(04.02.01)--UPD-START---
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -214,10 +214,10 @@
            MOVE    0                   TO  CNT-KOKUHO
            MOVE    0                   TO  CNT-KOUIKI
       *
-      *    Ģɼ�����Խ�����
+      *    帳票見出編集処理
            PERFORM 220-PRT-PAGE-SEC
       *
-      *    ����
+      *    社保
            MOVE    1                   TO  IDY
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   24
@@ -226,17 +226,17 @@
                PERFORM 210-LINE-SET-SEC
            END-PERFORM
       *
-      *    ���ݹ��
+      *    社保合計
            PERFORM 210-GOKEI-SYAHO-SET-SEC
       *
-      *    ���ݡ�����
+      *    国保、広域
            PERFORM VARYING IDY     FROM    2   BY  1
                    UNTIL ( IDY     >   19 )
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL ( IDX     >   36 )
                        OR    ( SPA-GMN-TSYURUINAME(IDY IDX) =  SPACE )
                    IF      SPA-NAI-TEISYUTUSAKI(IDY IDX)  = "6"
-      *                ���ݹ��
+      *                国保合計
                        PERFORM 210-GOKEI-KOKUHO-SET-SEC
                        MOVE    0           TO  CNT-KOKUHO
                        ADD     1           TO  CNT-KOUIKI
@@ -247,37 +247,37 @@
                END-PERFORM
            END-PERFORM
       *
-      *    ���ݹ��
+      *    国保合計
            PERFORM 210-GOKEI-KOKUHO-SET-SEC
       *
-      *    ������
+      *    広域合計
            PERFORM 210-GOKEI-KOUIKI-SET-SEC
       *
-      *    ����������ʹ����
+      *    特別療養費（広域）
            MOVE    1               TO  IDY
            MOVE    33              TO  IDX
            PERFORM 210-LINE-SET-SEC
       *
-      *    ����������ʹ��ݡ�
+      *    特別療養費（国保）
            MOVE    1               TO  IDY
            MOVE    34              TO  IDX
            PERFORM 210-LINE-SET-SEC
       *
-      *    ����
+      *    自費
            MOVE    1               TO  IDY
            MOVE    35              TO  IDX
            PERFORM 210-LINE-SET-SEC
       *
-      *    ����
+      *    不明
            MOVE    1               TO  IDY
            MOVE    36              TO  IDX
            PERFORM 210-LINE-SET-SEC
       *
-      *    ���
+      *    合計
            PERFORM 210-GOKEI-GOKEI-SET-SEC
       *
       *----(00.00.01)--UPD-END-----
-      *    ��������
+      *    印刷処理
            PERFORM 400-PRINT-OUT-SEC
       *
            .
@@ -288,7 +288,7 @@
       *----(03.04.01)--UPD-END-----
       *----(04.02.01)--ADD-START---
       *****************************************************************
-      *    Ģɼ���٥��åȽ���
+      *    帳票明細セット処理
       *****************************************************************
        210-LINE-SET-SEC            SECTION.
       *
@@ -297,9 +297,9 @@
            END-IF
       *
            IF      CNT-LINE    >=  35
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-OUT-SEC
-      *        Ģɼ�����Խ�����
+      *        帳票見出編集処理
                PERFORM 220-PRT-PAGE-SEC
            END-IF
       *
@@ -322,16 +322,16 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��ץ��åȽ���
+      *    帳票合計セット処理
       *****************************************************************
        210-GOKEI-SET-SEC           SECTION.
       *
            ADD     1               TO  CNT-LINE
       *
            IF      CNT-LINE    >=  35
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-OUT-SEC
-      *        Ģɼ�����Խ�����
+      *        帳票見出編集処理
                PERFORM 220-PRT-PAGE-SEC
            END-IF
       *
@@ -347,7 +347,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��ץ��åȽ���
+      *    帳票合計セット処理
       *****************************************************************
        210-GOKEI-GOKEI-SET-SEC     SECTION.
       *
@@ -357,15 +357,15 @@
            ADD     1               TO  CNT-LINE
       *
            IF      CNT-LINE    >=  35
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-OUT-SEC
-      *        Ģɼ�����Խ�����
+      *        帳票見出編集処理
                PERFORM 220-PRT-PAGE-SEC
            END-IF
       *
            ADD     1               TO  CNT-LINE
       *
-           MOVE    "�硡������"    TO  HCMC001-NAME(CNT-LINE)
+           MOVE    "合　　　計"    TO  HCMC001-NAME(CNT-LINE)
            MOVE    CNT-GKENSU      TO  WRK-Z10
            MOVE    WRK-Z10         TO  HCMC001-NAIYO(CNT-LINE 1)
            MOVE    CNT-GPAGE       TO  WRK-Z10
@@ -376,7 +376,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ݹ�ץ��åȽ���
+      *    帳票社保合計セット処理
       *****************************************************************
        210-GOKEI-SYAHO-SET-SEC     SECTION.
       *
@@ -385,7 +385,7 @@
            END-IF
       *
            IF      SPA-GMN-PRTJYUN     =   "01" OR "02" OR "09" OR "10"
-               MOVE    "���ݡ�����"    TO  WRK-NAME
+               MOVE    "社保　小計"    TO  WRK-NAME
                PERFORM 210-GOKEI-SET-SEC
            END-IF
       *
@@ -400,7 +400,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ݹ�ץ��åȽ���
+      *    帳票国保合計セット処理
       *****************************************************************
        210-GOKEI-KOKUHO-SET-SEC    SECTION.
       *
@@ -409,7 +409,7 @@
            END-IF
       *
            IF      SPA-GMN-PRTJYUN1    =   "01" OR "02" OR "09" OR "10"
-               MOVE    "���ݡ�����"    TO  WRK-NAME
+               MOVE    "国保　小計"    TO  WRK-NAME
                PERFORM 210-GOKEI-SET-SEC
            END-IF
       *
@@ -424,7 +424,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�����ץ��åȽ���
+      *    帳票広域合計セット処理
       *****************************************************************
        210-GOKEI-KOUIKI-SET-SEC    SECTION.
       *
@@ -433,7 +433,7 @@
            END-IF
       *
            IF      SPA-GMN-PRTJYUN2    =   "01" OR "02" OR "09" OR "10"
-               MOVE    "���衡����"    TO  WRK-NAME
+               MOVE    "広域　小計"    TO  WRK-NAME
                PERFORM 210-GOKEI-SET-SEC
            END-IF
       *
@@ -449,7 +449,7 @@
       *
       *----(04.02.01)--ADD-END-----
       *****************************************************************
-      *    Ģɼ<����>�Խ�����
+      *    帳票<見出>編集処理
       *****************************************************************
        220-PRT-PAGE-SEC            SECTION.
       *
@@ -458,35 +458,35 @@
            ADD     1                   TO  CNT-PAGE
            MOVE    ZERO                TO  CNT-LINE
       *
-      *    �����ȥ�
+      *    タイトル
       *----(03.04.01)--UPD-START---
            MOVE    SPA-GMN-FILEKBN     TO  HCMC001-DAI
       *     MOVE    PARA-FILEKBN        TO  HCMC001-DAI
       *
-      *    ��������
+      *    印刷日付
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCMC001-YMD
       *
-      *    �ڡ�����
+      *    ページ数
            MOVE    CNT-PAGE            TO  WRK-ZZ9
            MOVE    WRK-ZZ9             TO  HCMC001-PAGE
       *
-      *    ���Ф�
-           MOVE    "�쥻�ץȼ���"      TO  HCMC001-TAI-NAME
-           MOVE    "���Կ�"            TO  HCMC001-TAI-NAIYO(1)
-           MOVE    "�쥻�ץ����"      TO  HCMC001-TAI-NAIYO(2)
+      *    見出し
+           MOVE    "レセプト種別"      TO  HCMC001-TAI-NAME
+           MOVE    "患者数"            TO  HCMC001-TAI-NAIYO(1)
+           MOVE    "レセプト枚数"      TO  HCMC001-TAI-NAIYO(2)
       *
            .
        220-PRT-PAGE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        400-PRINT-OUT-SEC           SECTION.
       *
-      *    �����ѥե��������
+      *    印刷用ファイル作成
       *----(03.05.00)--ADD-START---
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
       *----(03.05.00)--ADD-END-----
@@ -523,7 +523,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -535,13 +535,13 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ����̾���ܥ���       COPY (CPGENERICLOG.INC)     *
+      *         一般名記載ログ       COPY (CPGENERICLOG.INC)     *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  GENERICLOG-REC.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  GENERICLOG-HOSPNUM          PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
            03  GENERICLOG-PTID             PIC  9(10).
-      *������
+      *診療日
            03  GENERICLOG-SRYYMD           PIC  X(08).
-      *ȯ����
+      *発行日
            03  GENERICLOG-PRINTYMD         PIC  X(08).
-      *ȯ�Ի���
+      *発行時間
            03  GENERICLOG-PRINTHMS         PIC  X(06).
-      *�ң��ֹ�
+      *ＲＰ番号
            03  GENERICLOG-RECIPENUM        PIC  9(02).
-      *������ʬ
+      *処理区分
            03  GENERICLOG-SYORIKBN         PIC  9(01).
-      *��ɼ�ֹ�
+      *伝票番号
            03  GENERICLOG-DENPNUM          PIC  9(07).
-      *���ֹ�
+      *剤番号
            03  GENERICLOG-ZAINUM           PIC  9(08).
-      *���ť�����
+      *診療コード
            03  GENERICLOG-SRYCD            PIC  X(09).
-      *������ॳ���ɡʰ���̾�����ɡ�
+      *薬価基準コード（一般名コード）
            03  GENERICLOG-YAKKAKJNCD       PIC  X(12).
-      *����̾��������
+      *一般名記載内容
            03  GENERICLOG-GENERICNAME      PIC  X(200).
       *

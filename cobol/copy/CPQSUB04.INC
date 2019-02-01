@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,10 +16,10 @@
       * 113-8621, Japan.
       ********************************************************************
        01  QSUB04-LNK.
-      *    ¶õÇò:²èÌÌ/1:API
+      *    ç©ºç™½:ç”»é¢/1:API
            03  QSUB04-DATA-TYPE                     PIC X(1).
-      *    0:¿ÇÎÅÆü/1:´ğËÜ¾ğÊó/2:Êİ¸±¡¦¸øÈñ/3:ÉÂÌ¾¡¢¿ÇÎÅ¹Ô°Ù
-      *    4:²ğ¸î/5:ÊÂ¤Ó½ç/A:Á´Éô
+      *    0:è¨ºç™‚æ—¥/1:åŸºæœ¬æƒ…å ±/2:ä¿é™ºãƒ»å…¬è²»/3:ç—…åã€è¨ºç™‚è¡Œç‚º
+      *    4:ä»‹è­·/5:ä¸¦ã³é †/A:å…¨éƒ¨
            03  QSUB04-CHECK-ID                      PIC X(1).
            03  QSUB04-RESULT-TYPE                   PIC X(1).
            03  QSUB04-GMN-KIHON-AREA.

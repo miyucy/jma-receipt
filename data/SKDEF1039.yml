@@ -1,330 +1,330 @@
 kanri_cd    : "1039"
-name        : "¼ıÇ¼µ¡Ç½¾ğÊó"
+name        : "åç´æ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 54
 item_list   :
 - item_no   : 1
   item      : "NYKNKNRKBN"
-  item_jp   : "°ì³çÆş¶â¡İÆş¶â¤Î¼è¤ê°·¤¤"
+  item_jp   : "ä¸€æ‹¬å…¥é‡‘âˆ’å…¥é‡‘ã®å–ã‚Šæ‰±ã„"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SKYPRTGKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İÀÁµá½ñ·óÎÎ¼ı½ñ¡Ê³°Íè¡Ë"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è«‹æ±‚æ›¸å…¼é ˜åæ›¸ï¼ˆå¤–æ¥ï¼‰"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "SKYPRTNKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İÀÁµá½ñ·óÎÎ¼ı½ñ¡ÊÆş±¡¡Ë"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è«‹æ±‚æ›¸å…¼é ˜åæ›¸ï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "STIME"
-  item_jp   : "Äù¤á½èÍı¡İ²áµîÆüÊ¬¤ÎÅĞÏ¿»ş¹ï"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’éå»æ—¥åˆ†ã®ç™»éŒ²æ™‚åˆ»"
   type      : "X"
   start     : 4
   length    : 4
 - item_no   : 5
   item      : "KARIDAY1-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İÆü"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’æ—¥"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 6
   item      : "KARIDAY1-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ·î"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’æœˆ"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 7
   item      : "KARIDAY1-3"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ²Ğ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’ç«"
   type      : "X"
   start     : 10
   length    : 1
 - item_no   : 8
   item      : "KARIDAY1-4"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ¿å"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’æ°´"
   type      : "X"
   start     : 11
   length    : 1
 - item_no   : 9
   item      : "KARIDAY1-5"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İÌÚ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’æœ¨"
   type      : "X"
   start     : 12
   length    : 1
 - item_no   : 10
   item      : "KARIDAY1-6"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ¶â"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’é‡‘"
   type      : "X"
   start     : 13
   length    : 1
 - item_no   : 11
   item      : "KARIDAY1-7"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İÅÚ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’åœŸ"
   type      : "X"
   start     : 14
   length    : 1
 - item_no   : 12
   item      : "KARISTTIME1-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ³«»Ï»ş´Ö£±"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’é–‹å§‹æ™‚é–“ï¼‘"
   type      : "X"
   start     : 15
   length    : 4
 - item_no   : 13
   item      : "KARIEDTIME1-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ½ªÎ»»ş´Ö£±"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’çµ‚äº†æ™‚é–“ï¼‘"
   type      : "X"
   start     : 19
   length    : 4
 - item_no   : 14
   item      : "KARISTTIME1-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ³«»Ï»ş´Ö£²"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’é–‹å§‹æ™‚é–“ï¼’"
   type      : "X"
   start     : 23
   length    : 4
 - item_no   : 15
   item      : "KARIEDTIME1-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£±¡Ë¡İ½ªÎ»»ş´Ö£²"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼‘ï¼‰âˆ’çµ‚äº†æ™‚é–“ï¼’"
   type      : "X"
   start     : 27
   length    : 4
 - item_no   : 16
   item      : "KARIDAY2-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İÆü"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’æ—¥"
   type      : "X"
   start     : 31
   length    : 1
 - item_no   : 17
   item      : "KARIDAY2-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ·î"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’æœˆ"
   type      : "X"
   start     : 32
   length    : 1
 - item_no   : 18
   item      : "KARIDAY2-3"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ²Ğ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’ç«"
   type      : "X"
   start     : 33
   length    : 1
 - item_no   : 19
   item      : "KARIDAY2-4"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ¿å"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’æ°´"
   type      : "X"
   start     : 34
   length    : 1
 - item_no   : 20
   item      : "KARIDAY2-5"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İÌÚ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’æœ¨"
   type      : "X"
   start     : 35
   length    : 1
 - item_no   : 21
   item      : "KARIDAY2-6"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ¶â"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’é‡‘"
   type      : "X"
   start     : 36
   length    : 1
 - item_no   : 22
   item      : "KARIDAY2-7"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İÅÚ"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’åœŸ"
   type      : "X"
   start     : 37
   length    : 1
 - item_no   : 23
   item      : "KARISTTIME2-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ³«»Ï»ş´Ö£±"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’é–‹å§‹æ™‚é–“ï¼‘"
   type      : "X"
   start     : 38
   length    : 4
 - item_no   : 24
   item      : "KARIEDTIME2-1"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ½ªÎ»»ş´Ö£±"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’çµ‚äº†æ™‚é–“ï¼‘"
   type      : "X"
   start     : 42
   length    : 4
 - item_no   : 25
   item      : "KARISTTIME2-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ³«»Ï»ş´Ö£²"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’é–‹å§‹æ™‚é–“ï¼’"
   type      : "X"
   start     : 46
   length    : 4
 - item_no   : 26
   item      : "KARIEDTIME2-2"
-  item_jp   : "Äù¤á½èÍı¡İ²¾Äù¡Ê£²¡Ë¡İ½ªÎ»»ş´Ö£²"
+  item_jp   : "ç· ã‚å‡¦ç†âˆ’ä»®ç· ï¼ˆï¼’ï¼‰âˆ’çµ‚äº†æ™‚é–“ï¼’"
   type      : "X"
   start     : 50
   length    : 4
 - item_no   : 27
   item      : "SRYPRTGKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ¿ÇÎÅÈñÌÀºÙ½ñ¡Ê³°Íè¡Ë"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è¨ºç™‚è²»æ˜ç´°æ›¸ï¼ˆå¤–æ¥ï¼‰"
   type      : "X"
   start     : 54
   length    : 1
 - item_no   : 28
   item      : "SRYPRTNKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ¿ÇÎÅÈñÌÀºÙ½ñ¡ÊÆş±¡¡Ë"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è¨ºç™‚è²»æ˜ç´°æ›¸ï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 55
   length    : 1
 - item_no   : 29
   item      : "S06SKYPRTNKBN"
-  item_jp   : "°ì³çÆş¶â¡İÀÁµá½ñ·óÎÎ¼ı½ñ¡ÊÆş±¡¡Ë"
+  item_jp   : "ä¸€æ‹¬å…¥é‡‘âˆ’è«‹æ±‚æ›¸å…¼é ˜åæ›¸ï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 56
   length    : 1
 - item_no   : 30
   item      : "S06SKYPRTGKBN"
-  item_jp   : "°ì³çÆş¶â¡İÀÁµá½ñ·óÎÎ¼ı½ñ¡Ê³°Íè¡Ë"
+  item_jp   : "ä¸€æ‹¬å…¥é‡‘âˆ’è«‹æ±‚æ›¸å…¼é ˜åæ›¸ï¼ˆå¤–æ¥ï¼‰"
   type      : "X"
   start     : 57
   length    : 1
 - item_no   : 31
   item      : "S02SKYSAIKBN"
-  item_jp   : "°ì³çÆş¶â¡İ³°ÍèÊ¬È¯¹ÔÊıË¡"
+  item_jp   : "ä¸€æ‹¬å…¥é‡‘âˆ’å¤–æ¥åˆ†ç™ºè¡Œæ–¹æ³•"
   type      : "X"
   start     : 58
   length    : 1
 - item_no   : 32
   item      : "S02SKYSAIKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İºÆÈ¯¹ÔÊıË¡¡Ê³°Íè¡Ë"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’å†ç™ºè¡Œæ–¹æ³•ï¼ˆå¤–æ¥ï¼‰"
   type      : "X"
   start     : 59
   length    : 1
 - item_no   : 33
   item      : "S02SKYMISYUPRTKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İºÆÈ¯¹ÔÊıË¡¡Ê³°Íè¡Ë¡İÁ°²óÀÁµá³Û°õ»ú"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’å†ç™ºè¡Œæ–¹æ³•ï¼ˆå¤–æ¥ï¼‰âˆ’å‰å›è«‹æ±‚é¡å°å­—"
   type      : "X"
   start     : 60
   length    : 1
 - item_no   : 34
   item      : "S03SKYMISYUPRTKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İÀÁµá½ñ·óÎÎ¼ı½ñ¡Ê³°Íè¡Ë¡İÁ°²óÀÁµá³Û°õ»ú"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è«‹æ±‚æ›¸å…¼é ˜åæ›¸ï¼ˆå¤–æ¥ï¼‰âˆ’å‰å›è«‹æ±‚é¡å°å­—"
   type      : "X"
   start     : 61
   length    : 1
 - item_no   : 35
   item      : "TUKISKYMISYUPRTKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ·îÊÌÀÁµá½ñ·óÎÎ¼ı½ñ¡İÁ°²óÀÁµá³Û°õ»ú"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’æœˆåˆ¥è«‹æ±‚æ›¸å…¼é ˜åæ›¸âˆ’å‰å›è«‹æ±‚é¡å°å­—"
   type      : "X"
   start     : 62
   length    : 1
 - item_no   : 36
   item      : "S04SHIHARAIKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ»ÙÊ§¾ÚÌÀ½ñ"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’æ”¯æ‰•è¨¼æ˜æ›¸"
   type      : "X"
   start     : 63
   length    : 1
 - item_no   : 37
   item      : "S04NYUGAIKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İÆş³°¶èÊ¬"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’å…¥å¤–åŒºåˆ†"
   type      : "X"
   start     : 64
   length    : 1
 - item_no   : 38
   item      : "S04SRYKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ´ü´Ö»ØÄê"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’æœŸé–“æŒ‡å®š"
   type      : "X"
   start     : 65
   length    : 1
 - item_no   : 39
   item      : "S04KIKANKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ´ü´Ö¶èÊ¬"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’æœŸé–“åŒºåˆ†"
   type      : "X"
   start     : 66
   length    : 1
 - item_no   : 40
   item      : "S04DSPKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İÀÁµáÆâÍÆ¤Î°õ»ú"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’è«‹æ±‚å†…å®¹ã®å°å­—"
   type      : "X"
   start     : 67
   length    : 1
 - item_no   : 41
   item      : "S04SYORIKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’æœŸé–“çµ‚äº†å¾Œã®æ”¯æ‰•ã„"
   type      : "X"
   start     : 68
   length    : 1
 - item_no   : 42
   item      : "S04SUMKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ´ü´Ö³«»ÏÁ°¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’æœŸé–“é–‹å§‹å‰è¨ºç™‚åˆ†ã®æ”¯æ‰•ã„"
   type      : "X"
   start     : 69
   length    : 1
 - item_no   : 43
   item      : "S02SORTKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İÀÁµá°ìÍ÷ÊÂ¤Ó½ç"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è«‹æ±‚ä¸€è¦§ä¸¦ã³é †"
   type      : "X"
   start     : 70
   length    : 1
 - item_no   : 44
   item      : "IKTSORTKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ°ì³çºÆ·×»»½ç"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’ä¸€æ‹¬å†è¨ˆç®—é †"
   type      : "X"
   start     : 71
   length    : 1
 - item_no   : 45
   item      : "IKTKEISANKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ°ì³çºÆ·×»»ÊıË¡"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’ä¸€æ‹¬å†è¨ˆç®—æ–¹æ³•"
   type      : "X"
   start     : 72
   length    : 1
 - item_no   : 46
   item      : "IKTSRYYMKBN"
-  item_jp   : "°ì³çÆş¶â¡İ¿ÇÎÅÇ¯·î»ØÄê"
+  item_jp   : "ä¸€æ‹¬å…¥é‡‘âˆ’è¨ºç™‚å¹´æœˆæŒ‡å®š"
   type      : "X"
   start     : 73
   length    : 1
 - item_no   : 47
   item      : "TUKIGRPKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ·îÊÌÀÁµá½ñ·óÎÎ¼ı½ñ"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’æœˆåˆ¥è«‹æ±‚æ›¸å…¼é ˜åæ›¸"
   type      : "X"
   start     : 74
   length    : 1
 - item_no   : 48
   item      : "TUKISUMKBN"
-  item_jp   : "ÀÁµá°ìÍ÷¡İ·îÊÌÀÁµá½ñ·óÎÎ¼ı½ñ¡İÆş¶âºÑ¤ß½¸·×"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’æœˆåˆ¥è«‹æ±‚æ›¸å…¼é ˜åæ›¸âˆ’å…¥é‡‘æ¸ˆã¿é›†è¨ˆ"
   type      : "X"
   start     : 75
   length    : 1
 - item_no   : 49
   item      : "MISYUKIKANKBN"
-  item_jp   : "Á°²óÀÁµá³Û¡ÊÌ¤¼ı¶â¡Ë¡ÊÆş³°¶¦ÄÌ¡Ë"
+  item_jp   : "å‰å›è«‹æ±‚é¡ï¼ˆæœªåé‡‘ï¼‰ï¼ˆå…¥å¤–å…±é€šï¼‰"
   type      : "X"
   start     : 76
   length    : 1
 - item_no   : 50
   item      : "SAIKEISANSKYCHK"
-  item_jp   : "ÀÁµá°ìÍ÷¡İºÆ·×»»³ºÅö¼Ô¤ÎÂ¸ºß¥Á¥§¥Ã¥¯"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’å†è¨ˆç®—è©²å½“è€…ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯"
   type      : "X"
   start     : 77
   length    : 1
 - item_no   : 51
   item      : "S04JIHIPRTKBN"
-  item_jp   : "»ÙÊ§¾ÚÌÀ½ñ°õºş¡İ¼«ÈñÆâÌõÌÀºÙ½ñ"
+  item_jp   : "æ”¯æ‰•è¨¼æ˜æ›¸å°åˆ·âˆ’è‡ªè²»å†…è¨³æ˜ç´°æ›¸"
   type      : "X"
   start     : 78
   length    : 1
 - item_no   : 52
   item      : "S02MODE"
-  item_jp   : "ÀÁµá°ìÍ÷¡İÀÁµá°ìÍ÷½é´üÉ½¼¨"
+  item_jp   : "è«‹æ±‚ä¸€è¦§âˆ’è«‹æ±‚ä¸€è¦§åˆæœŸè¡¨ç¤º"
   type      : "X"
   start     : 79
   length    : 1
 - item_no   : 53
   item      : "S02LIMIT"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "9"
   start     : 80
   length    : 3
   precision : 0
 - item_no   : 54
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 84
   length    : 418

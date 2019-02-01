@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,29 +16,29 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ģ´�������    �� COPY  (CPPGKANRIC.INC)  *
+      *    ＤＢ管理情報　    　 COPY  (CPPGKANRIC.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PGKANRIC-REC.
-      *�ǥӥ���С������
+      *デビアンバージョン
            03  PGKANRIC-DEBIANVERSION       PIC  X(20).
-      *�����ƥ�С������
+      *システムバージョン
            03  PGKANRIC-SYSTEMVERSION       PIC  X(10).
-      *�ץ�������ֹ�
+      *プログラム番号
            03  PGKANRIC-PGNO                PIC  X(03).
            03  PGKANRIC-YOBI1               PIC  X(01).
-      *��꡼��ǯ����
+      *リリース年月日
            03  PGKANRIC-RELEASEYMD          PIC  X(08).
            03  PGKANRIC-YOBI2               PIC  X(01).
-      *�ץ������̾
+      *プログラム名
            03  PGKANRIC-PGNAME              PIC  X(32).
-      *�Ƶ�ư�ե饰
+      *再起動フラグ
            03  PGKANRIC-RESTARTFLG          PIC  X(01).
            03  PGKANRIC-YOBI3               PIC  X(01).
-      *���󥹥ȡ������
+      *インストール位置
            03  PGKANRIC-INSTALLDIR          PIC  X(64).
-      *����
+      *内容
            03  PGKANRIC-COMMENT             PIC  X(200).

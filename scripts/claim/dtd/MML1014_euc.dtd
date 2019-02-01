@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
 
 <!--***************************************************-->
-<!-- MML¶¦ÄÌ·Á¼°                                       -->
+<!-- MMLå…±é€šå½¢å¼                                       -->
 <!--***************************************************-->
 
 
 <!--***************************************************-->
-<!-- ½»½êÉ½¸½·Á¼°                                      -->
+<!-- ä½æ‰€è¡¨ç¾å½¢å¼                                      -->
 <!-- Address DTD Version 1.0                           -->
 <!--***************************************************-->
 <!ELEMENT mmlAd:Address  ( (mmlAd:full? |  (mmlAd:prefecture? , mmlAd:city? , mmlAd:town? , mmlAd:homeNumber? ) ) , mmlAd:zip? , mmlAd:countryCode? )>
@@ -29,7 +29,7 @@
 <!ELEMENT mmlAd:full  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- ÅÅÏÃÈÖ¹æÉ½¸½·Á¼°                                  -->
+<!-- é›»è©±ç•ªå·è¡¨ç¾å½¢å¼                                  -->
 <!-- Phone DTD Version 1.0                             -->
 <!--***************************************************-->
 <!ELEMENT mmlPh:Phone  (mmlPh:area , mmlPh:city , mmlPh:number , mmlPh:extension? , mmlPh:country? , mmlPh:memo? )>
@@ -48,7 +48,7 @@
 <!ELEMENT mmlPh:area  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- Id·Á¼°¡¤³°Éô»²¾È·Á¼°¤ª¤è¤ÓEmail                   -->
+<!-- Idå½¢å¼ï¼Œå¤–éƒ¨å‚ç…§å½¢å¼ãŠã‚ˆã³Email                   -->
 <!-- MML Common DTD Version 1.0                        -->
 <!--***************************************************-->
 <!ELEMENT mmlCm:Id  (#PCDATA )>
@@ -64,7 +64,7 @@
 <!ELEMENT mmlCm:email  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- ¿ÍÌ¾É½¸½·Á¼°                                      -->
+<!-- äººåè¡¨ç¾å½¢å¼                                      -->
 <!-- Name DTD Version 1.0                              -->
 <!--***************************************************-->
 <!ELEMENT mmlNm:Name  ( ( (mmlNm:family , mmlNm:given , mmlNm:middle? ) | mmlNm:fullname ) , 
@@ -79,7 +79,7 @@
 <!ELEMENT mmlNm:family  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- »ÜÀß¾ðÊó·Á¼°                                      -->
+<!-- æ–½è¨­æƒ…å ±å½¢å¼                                      -->
 <!-- Facility DTD Version 1.0                          -->
 <!--***************************************************-->
 <!ELEMENT mmlFc:Facility  (mmlFc:name+ , mmlCm:Id? )>
@@ -88,7 +88,7 @@
                       mmlFc:tableId CDATA  #IMPLIED >
 
 <!--***************************************************-->
-<!-- ¿ÇÎÅ²Ê¾ðÊó·Á¼°                                    -->
+<!-- è¨ºç™‚ç§‘æƒ…å ±å½¢å¼                                    -->
 <!-- Department DTD Version 1.0                        -->
 <!--***************************************************-->
 <!ELEMENT mmlDp:Department  (mmlDp:name+ , mmlCm:Id? )>
@@ -97,7 +97,7 @@
                       mmlDp:tableId CDATA  #IMPLIED >
 
 <!--***************************************************-->
-<!-- ¸Ä¿Í¾ðÊó·Á¼°                                      -->
+<!-- å€‹äººæƒ…å ±å½¢å¼                                      -->
 <!-- PersonalizedInfo DTD  Version 1.0                 -->
 <!--***************************************************-->
 <!ELEMENT mmlPsi:PersonalizedInfo  (mmlCm:Id , mmlPsi:personName , mmlFc:Facility? , mmlDp:Department? ,
@@ -108,7 +108,7 @@
 <!ELEMENT mmlPsi:personName  (mmlNm:Name+ )>
 
 <!--***************************************************-->
-<!-- ºîÀ®¼Ô¾ðÊó·Á¼°                                    -->
+<!-- ä½œæˆè€…æƒ…å ±å½¢å¼                                    -->
 <!-- CreatorInfo DTD  Version 1.0                      -->
 <!--***************************************************-->
 <!ELEMENT mmlCi:CreatorInfo  (mmlPsi:PersonalizedInfo , mmlCi:creatorLicense+ )>
@@ -116,7 +116,7 @@
 <!ATTLIST mmlCi:creatorLicense  mmlCi:tableId CDATA  #IMPLIED >
 
 <!--***************************************************-->
-<!-- MML´ðËÜ¹½Â¤                                       -->
+<!-- MMLåŸºæœ¬æ§‹é€                                        -->
 <!-- Medical Markup Language DTD Version 2.3           -->
 <!--***************************************************-->
 <!ELEMENT Mml  (MmlHeader , MmlBody )>
@@ -235,11 +235,11 @@
                                mmlSc:tableId        CDATA #IMPLIED >
 
 <!--***************************************************-->
-<!-- MML¥â¥¸¥å¡¼¥ë                                     -->
+<!-- MMLãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«                                     -->
 <!--***************************************************-->
 
 <!--***************************************************-->
-<!-- ´µ¼Ô¾ðÊó                                          -->
+<!-- æ‚£è€…æƒ…å ±                                          -->
 <!-- PatientModule DTD Version 1.0                     -->
 <!--***************************************************-->
 <!ELEMENT mmlPi:PatientModule  (mmlPi:uniqueInfo , mmlPi:personName , mmlPi:birthday , mmlPi:sex , 
@@ -274,7 +274,7 @@
 <!ELEMENT mmlPi:personName  (mmlNm:Name+ )>
 
 <!--***************************************************-->
-<!-- ·ò¹¯ÊÝ¸±¾ðÊó¡ÊÆüËÜÈÇ¡Ë                            -->
+<!-- å¥åº·ä¿é™ºæƒ…å ±ï¼ˆæ—¥æœ¬ç‰ˆï¼‰                            -->
 <!-- HealthInsuranceModule DTD Version 1.1             -->
 <!--***************************************************-->
 <!ELEMENT mmlHi:HealthInsuranceModule  (mmlHi:insuranceClass?, mmlHi:insuranceNumber, 
@@ -314,7 +314,7 @@
 <!ATTLIST mmlHi:paymentRatio  mmlHi:ratioType  CDATA    #REQUIRED>
 
 <!--***************************************************-->
-<!-- ¿ÇÃÇÍúÎò¾ðÊó                                      -->
+<!-- è¨ºæ–­å±¥æ­´æƒ…å ±                                      -->
 <!-- RegisteredDiagnosisModule DTD Version 1.0         -->
 <!--***************************************************-->
 <!ELEMENT mmlRd:RegisteredDiagnosisModule  ( (mmlRd:diagnosis | mmlRd:diagnosisContents) , mmlRd:categories? ,
@@ -340,7 +340,7 @@
 <!ELEMENT mmlRd:categories  (mmlRd:category+ )>
 
 <!--***************************************************-->
-<!-- À¸³è½¬´·¾ðÊó                                      -->
+<!-- ç”Ÿæ´»ç¿’æ…£æƒ…å ±                                      -->
 <!-- LifestyleModule DTD Version 1.0                   -->
 <!--***************************************************-->
 <!ELEMENT mmlLs:LifestyleModule  (mmlLs:occupation , mmlLs:tobacco , mmlLs:alcohol , mmlLs:other? )>
@@ -350,7 +350,7 @@
 <!ELEMENT mmlLs:other  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- ´ðÁÃÅª¿ÇÎÅ¾ðÊó                                    -->
+<!-- åŸºç¤Žçš„è¨ºç™‚æƒ…å ±                                    -->
 <!-- BaseClinicModule DTD Version 1.0                  -->
 <!--***************************************************-->
 <!ELEMENT mmlBc:BaseClinicModule  (mmlBc:allergy? , mmlBc:bloodtype? , mmlBc:infection? )>
@@ -373,7 +373,7 @@
 <!ELEMENT mmlBc:others  (mmlBc:other* )>
 
 <!--***************************************************-->
-<!-- ½é¿Ç»þÆÃÍ­¾ðÊó                                    -->
+<!-- åˆè¨ºæ™‚ç‰¹æœ‰æƒ…å ±                                    -->
 <!-- FirstClinicModule DTD Version 1.0                 -->
 <!--***************************************************-->
 <!ELEMENT mmlFcl:FirstClinicModule  (mmlFcl:familyHistory? , mmlFcl:childhood? , mmlFcl:pastHistory? , 
@@ -411,7 +411,7 @@
 <!ELEMENT mmlFcl:freeNotes  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- ·Ð²áµ­Ï¿¾ðÊó                                      -->
+<!-- çµŒéŽè¨˜éŒ²æƒ…å ±                                      -->
 <!-- ProgressCourseModule DTD Version 1.0              -->
 <!--***************************************************-->
 <!ELEMENT mmlPc:ProgressCourseModule  (mmlPc:FreeExpression | mmlPc:structuredExpression )>
@@ -447,7 +447,7 @@
 <!ELEMENT mmlPc:freeNotes  (#PCDATA )>
 
 <!--***************************************************-->
-<!-- ¼ê½Ñµ­Ï¿¾ðÊó                                      -->
+<!-- æ‰‹è¡“è¨˜éŒ²æƒ…å ±                                      -->
 <!-- SurgeryModule DTD Version 1.0                     -->
 <!--***************************************************-->
 <!ELEMENT mmlSg:SurgeryModule  (mmlSg:surgeryItem+ )>
@@ -486,7 +486,7 @@
 <!ELEMENT mmlSg:anesthesiaDuration  (#PCDATA )>
 
 <!--***************************************************-->
-<!--  Î×¾²¥µ¥Þ¥ê¡¼¾ðÊó                                 -->
+<!--  è‡¨åºŠã‚µãƒžãƒªãƒ¼æƒ…å ±                                 -->
 <!--  SummaryModule DTD Version 1.0                    -->
 <!--***************************************************-->
 <!ELEMENT mmlSm:SummaryModule  (mmlSm:serviceHistory, mmlRd:RegisteredDiagnosisModule*, 
@@ -552,7 +552,7 @@
 <!ATTLIST mmlSm:relatedDoc  mmlSm:relation   CDATA  #IMPLIED >
 
 <!--***************************************************-->
-<!--  ¸¡Îò¾ðÊó                                         -->
+<!--  æ¤œæ­´æƒ…å ±                                         -->
 <!--  TestModule DTD Version 1.0                       -->
 <!--***************************************************-->
 <!ELEMENT mmlLb:TestModule (mmlLb:information, mmlLb:laboTest+)>
@@ -630,7 +630,7 @@
 <!ELEMENT mmlLb:itemMemoF  (#PCDATA )>
 
 <!--***************************************************-->
-<!--  Êó¹ð½ñ¾ðÊó                                       -->
+<!--  å ±å‘Šæ›¸æƒ…å ±                                       -->
 <!--  ReportModule DTD Version 1.0                     -->
 <!--***************************************************-->
 <!ELEMENT mmlRp:ReportModule  (mmlRp:information, mmlRp:reportBody)>
@@ -692,7 +692,7 @@
 <!ELEMENT mmlRp:testMemoF  (#PCDATA )>
 
 <!--***************************************************-->
-<!--  ¾Ò²ð¾õ¾ðÊó                                       -->
+<!--  ç´¹ä»‹çŠ¶æƒ…å ±                                       -->
 <!--  ReferralModule DTD Version 1.0                   -->
 <!--***************************************************-->
 <!ELEMENT mmlRe:ReferralModule (mmlPi:PatientModule, mmlRe:occupation?, mmlRe:referFrom, 
@@ -718,7 +718,7 @@
 <!ELEMENT mmlRe:referToUnknownName (#PCDATA) >
 
 <!--***************************************************-->
-<!--  Í½ÌóÀÁµá¥â¥¸¥å¡¼¥ë                                -->
+<!--  äºˆç´„è«‹æ±‚ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«                                -->
 <!--  ClaimModule DTD Version 2.1                      -->
 <!--***************************************************-->
 <!ELEMENT claim:ClaimModule  (claim:information, claim:bundle+) >
@@ -776,7 +776,7 @@
 
 
 <!--***************************************************-->
-<!--  ÅÀ¿ô¶â³Û¥â¥¸¥å¡¼¥ë                               -->
+<!--  ç‚¹æ•°é‡‘é¡ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«                               -->
 <!--  ClaimAmountModule DTD Version 2.1                -->
 <!--***************************************************-->
 <!ELEMENT claimA:ClaimAmountModule  (claimA:amountInformation, claimA:bundle+) >

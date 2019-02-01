@@ -13,7 +13,7 @@ xml_medicalav3res4 {
 	Api_Result				varchar(3);
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
-#--- ´µ¼Ô¾ğÊó
+#--- æ‚£è€…æƒ…å ±
 	Patient_Information {
 		Patient_ID			varchar(20);
         	WholeName			varchar(100);
@@ -21,18 +21,18 @@ xml_medicalav3res4 {
         	BirthDate			varchar(10);
         	Sex				varchar(1);
     	};
-#--- ³ÎÇ§ÁªÂò¤¢¤ê
+#--- ç¢ºèªé¸æŠã‚ã‚Š
 	Medical_Select_Flag			varchar(05);
-#--- ¿ÇÎÅÆüÉÕ
+#--- è¨ºç™‚æ—¥ä»˜
 	Perform_Date				varchar(10);
-#--- ¿ÇÎÅ²Ê
+#--- è¨ºç™‚ç§‘
         Department_Code				varchar(2);
         Department_Name				varchar(80);
-#--- Ï¢ÈÖ¡ÊÆ±ÆüºÆÆş±¡¶èÊ¬¡Ë
+#--- é€£ç•ªï¼ˆåŒæ—¥å†å…¥é™¢åŒºåˆ†ï¼‰
 	Sequential_Number			varchar(1);
-#--- Æş±¡Æü
+#--- å…¥é™¢æ—¥
 	Admission_Date				varchar(10);
-#--- Âà±¡Æü
+#--- é€€é™¢æ—¥
 	Discharge_Date				varchar(10);
 	HealthInsurance_Information  {
 		Insurance_Combination_Number		varchar(04);
@@ -53,7 +53,7 @@ xml_medicalav3res4 {
                 	PublicInsuredPerson_Number	varchar(20);
             	} [4];
     	};
-#--- ¿ÇÎÅÆâÍÆ
+#--- è¨ºç™‚å†…å®¹
 	Medical_Information  {
 		Medical_Info  {
 			Medical_Class_Group		varchar(02);
@@ -63,37 +63,37 @@ xml_medicalav3res4 {
 			Medical_Point 			varchar(08);
 			Medical_Money			varchar(08);
 			Medical_Inclusion_Class		varchar(05);
-#----->                 Êñ³ç¸¡ºº¤Î¸¡ºº¿ô
+#----->                 åŒ…æ‹¬æ¤œæŸ»ã®æ¤œæŸ»æ•°
 			Medical_Examination_Count	varchar(02);
 			Medication_Info    {
 				Medication_Code	varchar(09);
 				Medication_Name	varchar(80);
 				Medication_Number	varchar(11);
-#----->                         Ã±°Ì¥³¡¼¥É
+#----->                         å˜ä½ã‚³ãƒ¼ãƒ‰
 				Medication_Unit_Code		varchar(3);
 				Medication_Unit_Code_Name	varchar(24);
 				Medication_Money 	varchar(07);
 				Medication_Input_Info {
 					Medication_Input_Code	varchar(08);
 				} [5];
-#----->                         ¥Õ¥£¥ë¥àÊ¬²è¿ô
+#----->                         ãƒ•ã‚£ãƒ«ãƒ åˆ†ç”»æ•°
 				Medication_Film_Comp_Number	varchar(03);
 				Medication_Continue		varchar(01);
 				Medication_Internal_Kinds	varchar(01);
-#----->                         ²Ã»»¼«Æ°»»Äê¤Ê¤·
+#----->                         åŠ ç®—è‡ªå‹•ç®—å®šãªã—
 				Medication_No_Addition_Class	varchar(03);
 				Medication_Auto_Addition 	varchar(01);
 			} [50];
 		}[120] ;
 		};
-#--- ¥á¥Ã¥»¡¼¥¸
+#--- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Medical_Message_Information {
         Medical_Warning_Info {
        		 Medical_Warning        	varchar(3);
        		 Medical_Warning_Message	varchar(100);
             	} [40];
 	        };
-#--- ³ÎÇ§¥á¥Ã¥»¡¼¥¸
+#--- ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Medical_Select_Information {
         Medical_Select			varchar(4);
         Medical_Select_Message		varchar(100);

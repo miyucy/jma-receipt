@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK3103.INC)   *
-      *         ¡Ê£³£±£°£³¡Ë                            *
-      *         ¡Ê¥ê¥Ý¥¸¥È¥ê¡¢¥×¥í¥°¥é¥à¡Ë              *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK3103.INC)   *
+      *         ï¼ˆï¼“ï¼‘ï¼ï¼“ï¼‰                            *
+      *         ï¼ˆãƒªãƒã‚¸ãƒˆãƒªã€ãƒ—ãƒ­ã‚°ãƒ©ãƒ ï¼‰              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-3103-REC.
            03  SYS-3103-KEY.
                05  SYS-3103-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-3103-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É(¸µ¤Î¥·¥¹¥Æ¥à´ÉÍýÈÖ¹æ+Ï¢ÈÖ3·å¡Ë
-      *Îã¡§Äê´üÀÁµá 5010001(5010 + 001)
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰(å…ƒã®ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ç•ªå·+é€£ç•ª3æ¡ï¼‰
+      *ä¾‹ï¼šå®šæœŸè«‹æ±‚ 5010001(5010 + 001)
                05  SYS-3103-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-3103-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-3103-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-3103-TBL.
                05  SYS-3103-REPOS-NAME  PIC  X(256).
                05  SYS-3103-PROGRAM-NAME-G.
@@ -44,17 +44,17 @@
                                         PIC X(20)
                                         OCCURS 5.
                05  SYS-3103-YOBI        PIC  X(144).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-3103-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-3103-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-3103-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-3103-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-3103-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-3103-UPD-KEY.
                05  SYS-3103-UPD-HOSPNUM     PIC 9(2).
                05  SYS-3103-UPD-KANRICD     PIC X(04).

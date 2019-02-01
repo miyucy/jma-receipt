@@ -1,24 +1,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBMIGHKNJAINF.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���åȥ��å׽���
-      *  ����ݡ��ͥ��̾  : �ݸ��ԥޥ�������
-      *                    : �ݸ��ԥޥ���ʬΥ��ȼ���桼����������
-      *                    : �������ƤˤĤ��Ƥϥ桼�����ѤΥơ��֥�Ȥ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/10/31    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : セットアップ処理
+      *  コンポーネント名  : 保険者マスタ更新
+      *                    : 保険者マスタ分離に伴いユーザーが訂正
+      *                    : した内容についてはユーザー用のテーブルとする
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/10/31    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PRF-FILE        ASSIGN
                                    ASS-PRF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -27,29 +27,29 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PRF-FILE.
        01  PRF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PRF                 PIC X(256).
        01  STS-AREA.
            03  STS-PRF                 PIC X(02).
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-HKNJAINFM           PIC 9(01).
            03  FLG-HKNJAINFU           PIC 9(01).
            03  FLG-HKNJAINFO           PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-HKNJAINFO           PIC 9(06).
            03  CNT-HKNJAINFM           PIC 9(06).
            03  CNT-PRF                 PIC 9(06).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -64,14 +64,14 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-PRFCD               PIC 9(02).
-      *    ��ӥơ��֥�
+      *    比較テーブル
        01  TBL-COMP-AREA.
            03  TBL-COMP                PIC 9(01) OCCURS    16.
-      *    �ץ롼���Խ��ΰ�
+      *    プルーフ編集領域
        01  PRF-AREA.
            03  PRF-HEADER1.
                05  FILLER              PIC X(41) VALUE
-                   "�ݸ��ԥޥ����ܹԽ�����ORCBMIGHKNJAINF��".
+                   "保険者マスタ移行処理【ORCBMIGHKNJAINF】".
                05  PRF-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE "/".
                05  PRF-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -83,17 +83,17 @@
                05  FILLER              PIC X(01) VALUE "]".
                05  PRF-HOSPNAME        PIC X(120) VALUE SPACE.
            03  PRF-HEADER3.
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "処理".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "�ݸ����ֹ�".
+               05  FILLER              PIC X(10) VALUE "保険者番号".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(16) VALUE
-                               "�桼�������ݸ���".
+                               "ユーザ設定保険者".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(14) VALUE
-                               "ɸ�����ݸ���".
+                               "標準提供保険者".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "内容".
            03  PRF-DETAIL.
                05  PRF-COMMAND         PIC X(20).
                05  PRF-HKNJANUM        PIC X(08).
@@ -102,46 +102,46 @@
                05  PRF-COMMENT         PIC X(200).
        01  CONST-AREA.
            03  CONST-COMM1             PIC X(40) VALUE
-           "�桼�������ݸ��Ԥ����Ƥ��ѹ�����ޤ�����".
+           "ユーザ設定保険者の内容に変更されました。".
            03  CONST-COMM2.
                05  CONST-COMM2-1       PIC X(38) VALUE
-               "�桼�������ݸ��Ԥ����Ƥ��ɲä���ޤ���".
+               "ユーザ設定保険者の内容を追加されました".
                05  CONST-COMM2-2       PIC X(28) VALUE
-               "��ɸ���󶡤ˤϤ���ޤ���ˡ�".
+               "（標準提供にはありません）。".
       *****************************************************************
-      *    ���֥ץ������
+      *    サブプロ用定義
       *****************************************************************
-      *    �ޥ������ռ���
+      *    マシン日付取得
            COPY    "CPORCSMCNDATE.INC".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
       *     COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
-      *    �ݸ��԰ܹ����ơ��֥�
+      *    保険者移行前テーブル
        01  HKNJAINFO-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAO-//.
-      *    �ݸ��ԥޥ������ơ��֥�
+      *    保険者マスターテーブル
        01  HKNJAINFM-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAM-//.
-      *    �ݸ��ԥ桼�����ơ��֥�
+      *    保険者ユーザーテーブル
        01  HKNJAINFU-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAU-//.
-      *    �ݸ��ԥ��
+      *    保険者ワーク
        01  HKNJAINFW-REC.
            COPY    "CPHKNJAINF.INC"    REPLACING
                                        //HKNJA-// BY //HKNJAW-//.
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
@@ -150,7 +150,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       ****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -159,10 +159,10 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-           DISPLAY "*(ORCBMIGHKNJAINF)* �ݸ��԰ܹԽ�������"
+           DISPLAY "*(ORCBMIGHKNJAINF)* 保険者移行処理開始"
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  CNT-AREA
            INITIALIZE  WRK-AREA
@@ -214,14 +214,14 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
            INITIALIZE  PRF-DETAIL
-      *    �ޥ������ơ��֥�¸�߳�ǧ
+      *    マスターテーブル存在確認
            PERFORM 900-HKNJAINFM-READ-SEC
            IF      FLG-HKNJAINFM       =   ZERO
-      *        ɸ��ȹ�������ӡ����ξ��桼�����ơ��֥���ɲ�
+      *        標準と項目別比較、相違の場合ユーザーテーブルに追加
                PERFORM 220-COMPARE-SEC
                IF      TBL-COMP-AREA       =   ZERO
                    MOVE    ZERO                TO  WRK-PRFCD
@@ -233,7 +233,7 @@
                    END-IF
                END-IF
            ELSE
-      *        �ޥ������ˤʤ����桼�����ơ��֥���ɲ�
+      *        マスターになし、ユーザーテーブルに追加
                MOVE    HKNJAINFO-REC       TO  HKNJAINFW-REC
                PERFORM 210-HKNJAINFU-INSERT-SEC
            END-IF
@@ -243,15 +243,15 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ԥ桼�����ơ��֥��ɲ�
+      *    保険者ユーザーテーブル追加
       *****************************************************************
        210-HKNJAINFU-INSERT-SEC    SECTION.
            PERFORM 900-HKNJAINFU-READ-SEC
            IF      FLG-HKNJAINFU       =   ZERO
-      *        �桼�����ơ��֥��ͭ��
+      *        ユーザーテーブルに有る
                MOVE    ZERO                TO  WRK-PRFCD
            ELSE
-      *        �������ϸ��ΤޤޤȤ���
+      *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
       *                                        CHGW-UPYMD
       *        MOVE    LNK-MNTHMS          TO  CHGW-UPHMS
@@ -270,81 +270,81 @@
        210-HKNJAINFU-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������
+      *    項目別比較
       *****************************************************************
        220-COMPARE-SEC             SECTION.
            MOVE    ZERO                TO  TBL-COMP-AREA
       *
-      *�ݸ����ֹ�
-      *�ݸ���̾
+      *保険者番号
+      *保険者名
            IF      HKNJAO-HKNJANAME
                                    NOT =   HKNJAM-HKNJANAME
                MOVE    1                   TO  TBL-COMP (1)
            END-IF
-      *�ݸ���̾ά�Σ�
+      *保険者名略称１
            IF      HKNJAO-HKNJANAME-TAN1
                                    NOT =   HKNJAM-HKNJANAME-TAN1
                MOVE    1                   TO  TBL-COMP (2)
            END-IF
-      *�ݸ���̾ά�Σ�
+      *保険者名略称２
            IF      HKNJAO-HKNJANAME-TAN2
                                    NOT =   HKNJAM-HKNJANAME-TAN2
                MOVE    1                   TO  TBL-COMP (3)
            END-IF
-      *�ݸ���̾ά�Σ�
+      *保険者名略称３
            IF      HKNJAO-HKNJANAME-TAN3
                                    NOT =   HKNJAM-HKNJANAME-TAN3
                MOVE    1                   TO  TBL-COMP (4)
            END-IF
-      *�ݸ��ֹ�
+      *保険番号
            IF      HKNJAO-HKNNUM   NOT =   HKNJAM-HKNNUM
                MOVE    1                   TO  TBL-COMP (5)
            END-IF
-      *���ճ����ܿ͡������
+      *給付割合（本人・外来）
            IF      HKNJAO-HON-GAIKYURATE
                                    NOT =   HKNJAM-HON-GAIKYURATE
                MOVE    1                   TO  TBL-COMP (6)
            END-IF
-      *���ճ����ܿ͡�������
+      *給付割合（本人・入院）
            IF      HKNJAO-HON-NYUKYURATE
                                    NOT =   HKNJAM-HON-NYUKYURATE
                MOVE    1                   TO  TBL-COMP (7)
            END-IF
-      *���ճ��ʲ�²�������
+      *給付割合（家族・外来）
           IF      HKNJAO-KZK-GAIKYURATE
                                    NOT =   HKNJAM-KZK-GAIKYURATE
                MOVE    1                   TO  TBL-COMP (8)
            END-IF
-      *���ճ��ʲ�²��������
+      *給付割合（家族・入院）
            IF      HKNJAO-KZK-NYUKYURATE
                                    NOT =   HKNJAM-KZK-NYUKYURATE
                MOVE    1                   TO  TBL-COMP (9)
            END-IF
-      *͹���ֹ�
+      *郵便番号
            IF      HKNJAO-POST     NOT =   HKNJAM-POST
                MOVE    1                   TO  TBL-COMP(10)
            END-IF
-      *����
+      *住所
            IF      HKNJAO-ADRS     NOT =   HKNJAM-ADRS
                MOVE    1                   TO  TBL-COMP(11)
            END-IF
-      *��������
+      *番地方書
            IF      HKNJAO-BANTI    NOT =   HKNJAM-BANTI
                MOVE    1                   TO  TBL-COMP(12)
            END-IF
-      *�����ֹ�
+      *電話番号
            IF      HKNJAO-TEL      NOT =   HKNJAM-TEL
                MOVE    1                   TO  TBL-COMP(13)
            END-IF
-      *����
+      *記号
            IF      HKNJAO-KIGO     NOT =   HKNJAM-KIGO
                MOVE    1                   TO  TBL-COMP(14)
            END-IF
-      *��ư��ʬ
+      *異動区分
            IF      HKNJAO-IDOKBN   NOT =   HKNJAM-IDOKBN
                MOVE    1                   TO  TBL-COMP(15)
            END-IF
-      *��ưǯ����
+      *異動年月日
            IF      HKNJAO-IDOYMD   NOT =   HKNJAM-IDOYMD
                MOVE    1                   TO  TBL-COMP(16)
            END-IF
@@ -352,23 +352,23 @@
        220-COMPARE-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        290-PRF-SEC                 SECTION.
            EVALUATE    WRK-PRFCD
                WHEN    1
-                   MOVE    "�ɲ�"              TO  PRF-COMMAND
+                   MOVE    "追加"              TO  PRF-COMMAND
                    MOVE    CONST-COMM2         TO  PRF-COMMENT
                    MOVE    HKNJAW-HKNJANUM     TO  PRF-HKNJANUM
                    MOVE    HKNJAW-HKNJANAME    TO  PRF-HKNJANAMEU
                WHEN    2
-                   MOVE    "�ѹ�"              TO  PRF-COMMAND
+                   MOVE    "変更"              TO  PRF-COMMAND
                    MOVE    CONST-COMM1         TO  PRF-COMMENT
                    MOVE    HKNJAW-HKNJANUM     TO  PRF-HKNJANUM
                    MOVE    HKNJAW-HKNJANAME    TO  PRF-HKNJANAMEU
                    MOVE    HKNJAM-HKNJANAME    TO  PRF-HKNJANAMEM
                WHEN    91
-                   MOVE    "�ɲå��顼"        TO  PRF-COMMAND
+                   MOVE    "追加エラー"        TO  PRF-COMMAND
                    MOVE    HKNJAW-HKNJANUM     TO  PRF-HKNJANUM
                    MOVE    HKNJAW-HKNJANAME    TO  PRF-HKNJANAMEU
            END-EVALUATE
@@ -379,7 +379,7 @@
        290-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        2901-PRF-SEC                SECTION.
            IF      CNT-PRF             =   ZERO
@@ -410,7 +410,7 @@
        2901-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
            MOVE    "tbl_hknjainf_org"  TO  MCP-TABLE
@@ -423,12 +423,12 @@
            MOVE    CNT-PRF             TO  WRK-MSG-CNT
            DISPLAY "*(ORCBMIGHKNJAINF)* Proof Data [ " WRK-MSG-CNT " ]"
            DISPLAY " "
-           DISPLAY "*(ORCBMIGHKNJAINF)* �ݸ��԰ܹԽ�����λ"
+           DISPLAY "*(ORCBMIGHKNJAINF)* 保険者移行処理終了"
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��԰ܹ����ơ��֥��ɹ�
+      *    保険者移行前テーブル読込
       *****************************************************************
        900-HKNJAINFO-SELECT-SEC    SECTION.
            INITIALIZE  HKNJAINFO-REC
@@ -444,7 +444,7 @@
        900-HKNJAINFO-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��԰ܹ����ơ��֥��ɹ�
+      *    保険者移行前テーブル読込
       *****************************************************************
        900-HKNJAINFO-FETCH-SEC     SECTION.
            MOVE    "tbl_hknjainf_org"  TO  MCP-TABLE
@@ -466,7 +466,7 @@
        900-HKNJAINFO-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ԥޥ����ơ��֥��ɹ�
+      *    保険者マスタテーブル読込
       *****************************************************************
        900-HKNJAINFM-READ-SEC      SECTION.
            INITIALIZE  HKNJAINFM-REC
@@ -498,7 +498,7 @@
        900-HKNJAINFM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ԥ桼�����ơ��֥��ɹ�
+      *    保険者ユーザーテーブル読込
       *****************************************************************
        900-HKNJAINFU-READ-SEC      SECTION.
            INITIALIZE  HKNJAINFU-REC
@@ -527,7 +527,7 @@
        900-HKNJAINFU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -560,7 +560,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -574,7 +574,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �쥳������н���
+      *    レコード抽出処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -583,7 +583,7 @@
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -592,7 +592,7 @@
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -607,7 +607,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -622,7 +622,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
            CALL    "ORCDBMAIN"     USING   MCPAREA
@@ -632,7 +632,7 @@
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹�����顼������λ����
+      *    テーブル更新エラー強制終了処理
       *****************************************************************
        900-DBABORT-SEC             SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG

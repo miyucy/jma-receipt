@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,27 +18,27 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC95SUB.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ������̣ӣУ��Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  10/09/16    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 初期共通ＳＰＡ編集処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  10/09/16    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.07.00     NACL=¿��Ǽ  12/03/XX  ʿ������ǯ��������б�
-      * 04.08.00     NACL=¿��Ǽ  12/12/14  ���Ծ��������б�
-      * 04.08.00     NACL-¿��Ǽ  13/06/XX  ϫ�ҥ쥻���б�
-      * 04.08.00     NACL-¿��Ǽ  13/07/XX  ���ֳ��۵ޱ�������å��ɲ�
-      * 04.08.00     NACL-¿��Ǽ  14/03/XX  ʿ������ǯ��������б�
-      * 04.07.00     NACL-¿��Ǽ  14/09/XX  ��绻�ꥨ�顼�б�
-      * 04.08.00     NACL-¿��Ǽ  14/12/XX  ʿ������ǯ��������б�
-      * 04.08.00     NACL-¿��Ǽ  15/03/XX  ʿ������ǯ��������б�
-      * 04.08.00     NACL-¿��Ǽ  16/08/XX  ��ߺ��ѥ����å���ʬ�ɲ�
-      * 04.08.00     NACL-¿��Ǽ  16/10/04  �ײ�����ɽ���б�
-      * 04.08.00     NACL-¿��Ǽ  17/07/XX  ������ˡ����̤���û���ʬ�ɲ�
-      * 04.08.00     NACL-¿��Ǽ  17/09/XX  ���񥳡���ü��������ʬ�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL=多々納  12/03/XX  平成２４年４月改正対応
+      * 04.08.00     NACL=多々納  12/12/14  患者情報通知対応
+      * 04.08.00     NACL-多々納  13/06/XX  労災レセ電対応
+      * 04.08.00     NACL-多々納  13/07/XX  時間外緊急院内チェック追加
+      * 04.08.00     NACL-多々納  14/03/XX  平成２６年４月改正対応
+      * 04.07.00     NACL-多々納  14/09/XX  包括算定エラー対応
+      * 04.08.00     NACL-多々納  14/12/XX  平成２７年１月改正対応
+      * 04.08.00     NACL-多々納  15/03/XX  平成２７年４月改正対応
+      * 04.08.00     NACL-多々納  16/08/XX  相互作用チェック区分追加
+      * 04.08.00     NACL-多々納  16/10/04  要介護状態表示対応
+      * 04.08.00     NACL-多々納  17/07/XX  心身療法２０未満加算区分追加
+      * 04.08.00     NACL-多々納  17/09/XX  自費コード端数処理区分追加
       *****************************************************************
       *
       *
@@ -53,17 +53,17 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -78,7 +78,7 @@
            03  WRK-LINECNT-G.
                05  WRK-GLINECNT        PIC 9(02).
                05  WRK-NLINECNT        PIC 9(02).
-      *H28.10  ��ϥӥꡦ���Ծ��󡦲��ɽ����ʬ
+      *H28.10  リハビリ・患者情報・介護表示区分
            03  WRK-GMNHYOKBN-G.
                05  WRK-GMNHYOKBN-G2.
                    07  WRK-GMNHYOKBN           PIC X(01)
@@ -86,9 +86,9 @@
                05  WRK-GMNHYOKBN-6             PIC X(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
@@ -111,39 +111,39 @@
       *
            COPY    "CPSK1050.INC".
       *
-      *    ����������
+      *    点数算定基準
            COPY    "CPSK1201.INC".
       *
-      *    ���Ծ�������
+      *    患者情報通知
            COPY    "CPSK1920.INC".
-      *    �ạ̃��ɣ���³���� 
+      *    ＣＬＡＩＭ接続情報 
            COPY    "CPSK9000.INC".
       *
-      *    �쥻�ץȰ�������
+      *    レセプト印刷情報
            COPY  "CPSK200501.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "K01COMMON-SPA".
       *
-      *    ����ӣУ��Խ������ѥ�᥿
+      *    初期ＳＰＡ編集処理パラメタ
            COPY    "CPORCSC95.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -153,7 +153,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -162,11 +162,11 @@
            INITIALIZE                  WRK-AREA
       *
            EVALUATE    LNK-SC95-KBN
-      *        ������̣ӣУ��Խ�
+      *        初期共通ＳＰＡ編集
                WHEN    "1"
                WHEN    "9"
                    PERFORM 100-K01KYOUTU-SEC
-      *        �������������ѹ�
+      *        訂正時診療日変更
                WHEN    "4"
                    PERFORM 200-TEISEISYORI-SEC
             END-EVALUATE
@@ -178,11 +178,11 @@
            .
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    共通ＳＰＡ編集処理
       *****************************************************************
        100-K01KYOUTU-SEC            SECTION.
       *
-      *    �����ƥ���������ʰ��ŵ��ؾ����
+      *    システム管理検索（医療機関情報）
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -195,32 +195,32 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1001-REC
-      *        �����ȯ��
+      *        請求書発行
                MOVE    SYS-1001-SKYPRTFLG  TO  SPA-SKYPRTFLG-SYS
-      *        ���������ٽ�ȯ��
+      *        診療費明細書発行
                MOVE    SYS-1001-MEIPRTFLG  TO  SPA-MEIPRTFLG
-      *        ������������ȯ�ԥե饰
+      *        院外処方せん発行フラグ
                MOVE    SYS-1001-SYOHOPRTFLG    TO  SPA-SYOHOPRTFLG
-      *        �������ɽ���ե饰
+      *        前回処方表示フラグ
                MOVE    SYS-1001-ZENSYOHOFLG    TO  SPA-ZENSYOHOFLG
-      *        ������ʬ
+      *        処方区分
                MOVE    SYS-1001-SYOHOKBN       TO  SPA-SYOHOKBN
       *
                IF      SPA-NYUGAIKBN       =   "1"
-      *            �������ɽ���ե饰�ʤ��ʤ��Ȥ����
+      *            前回処方表示フラグ（しないとする）
                    MOVE    "1"                     TO  SPA-ZENSYOHOFLG
-      *            ������ʬ�ʤ��٤Ʊ���Ȥ����
+      *            処方区分（すべて院内とする）
                    MOVE    "0"                     TO  SPA-SYOHOKBN
                END-IF
       *
-      *        �±�����
+      *        病院種別
                MOVE    SYS-1001-HOSPSBT        TO  SPA-HOSPSBT
                IF      SPA-BEDKBN              =   ZERO
                    CONTINUE
                ELSE
-      *        �¾���
+      *        病床数
                    MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
-      *        �¾����ʰ��̡�
+      *        病床数（一般）
                    IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
                           (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
                        MOVE    ZERO                TO  SPA-BEDSUIPN
@@ -229,30 +229,30 @@
                    END-IF
                END-IF
       *
-      *        ���޾���ȯ�ԥե饰
+      *        薬剤情報発行フラグ
                MOVE    SYS-1001-YAKUJYOPRTFLG  TO  SPA-YAKJYOPRTFLG
                IF      SYS-1001-YAKUJYOPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-YAKJYOPRTFLG
                END-IF
-      *        ������Ģȯ�ԥե饰
+      *        お薬手帳発行フラグ
                MOVE    SYS-1001-OKUSURIPRTFLG  TO  SPA-OKUSURIPRTFLG
                IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
                    MOVE    ZERO                TO  SPA-OKUSURIPRTFLG
                END-IF
-      *        ͽ��ɼĢȯ�ԥե饰
+      *        予約票帳発行フラグ
                MOVE    SYS-1001-YYKHYOPRTFLG   TO  SPA-YYKHYOPRTFLG
                IF      SYS-1001-YYKHYOPRTFLG   =   SPACE
                    MOVE    ZERO                TO  SPA-YYKHYOPRTFLG
                END-IF
-      *        ������ü������
+      *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
       *H29.9
-      *        ���񥳡���ü������
+      *        自費コード端数設定
                MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
            END-IF
       *
       *H29.9
-      *    ü���ھ夲�����
+      *    端数切上げが初期
            IF      SPA-JIHI-HASU-KBN   =   SPACE
                MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
@@ -260,13 +260,13 @@
                MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
       *
-      *    ����������ȯ�ԥե饰������
+      *    職員情報より発行フラグ再設定
            IF     (LNK-SC95-PG         =   "K02" )
               AND (SPA-NYUGAIKBN       =   "2"   )
                PERFORM 1001-PRTFLG-HEN-SEC
            END-IF
       *
-      *    �����ƥ���������ʥ����å���ǽ��������
+      *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
            INITIALIZE                  SYS-1008-REC
            MOVE    "1008"              TO  SYS-1008-KANRICD
@@ -280,55 +280,55 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1008-REC
       *
-      *        ��ߺ��ѥ����å�����
+      *        相互作用チェック期間
                MOVE    SYS-1008-INTERACT-KIKAN TO  SPA-INTERACT-KIKAN
       *H28.8
-      *        ��ߺ��ѥ����å���ʬ
+      *        相互作用チェック区分
                MOVE    SYS-1008-INTERACT-CHKKBN
                                            TO  SPA-INTERACT-CHKKBN
       *
-      *        ��������û������å�
+      *        外来管理加算チェック
                MOVE    SYS-1008-GAIKANRIKBN-CHK
                                            TO  SPA-GAIKANRIKBN-CHK
-      *        ����ϡ������å�����Ȥ���
+      *        初期は、チェックありとする
                IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
                    MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
                END-IF
       *
-      *        ������ܲû���ư����
+      *        育児栄養加算自動算定
                MOVE    SYS-1008-IKUJIEIYO-FLG
                                            TO  SPA-IKUJIEIYO-FLG
-      *        ������ܲû���ư�����
+      *        育児栄養加算自動算定科
                MOVE    SYS-1008-IKUJIEIYO-SRYKA
                                            TO  SPA-IKUJIEIYO-SRYKA
-      *        ���襫�������ư
+      *        外来カーソル移動
                MOVE    SYS-1008-GAI-CURSOR-SET-1
                                            TO  SPA-GAI-CURSOR-SET
-      *        �����������ưȯ��
+      *        入院初診料自動発生
                MOVE    SYS-1008-NYU-SYOSIN
                                            TO  SPA-NYU-SYOSIN
-      *        ���̥�������
+      *        数量ゼロ入力
                IF      SYS-1008-SURYOZERO-FLG  =   SPACE
                    MOVE    ZERO            TO  SPA-SURYOZERO-FLG
                ELSE
                    MOVE    SYS-1008-SURYOZERO-FLG
                                            TO  SPA-SURYOZERO-FLG
                END-IF
-      *        ����Ĵ�޵��Ѵ����������å�
+      *        入院調剤技術基本料チェック
                IF      SYS-1008-CHOKICHK-FLG   =   SPACE
                    MOVE    ZERO            TO  SPA-CHOKICHK-FLG
                ELSE
                    MOVE    SYS-1008-CHOKICHK-FLG
                                            TO  SPA-CHOKICHK-FLG
                END-IF
-      *        ���ֳ��û��������Ļ�
+      *        時間外加算特例乳幼児
                IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
                    MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
                ELSE
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  SPA-JIKANTOKU-NYU
       *H30.4
-      *            H30.4���黺�ؿͲ������б�
+      *            H30.4から産婦人科特例対応
                    IF     (SPA-SRYYMD          <   "20180401" )
                        IF      SPA-JIKANTOKU-NYU   =   "2"
                            MOVE    "1"             TO  SPA-JIKANTOKU-NYU
@@ -339,21 +339,21 @@
                    END-IF
                END-IF
       *
-      *        �������Ǵ����û����ʼ̿����ǡ�
+      *        画像診断管理加算１（写真診断）
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
                    MOVE    "1"             TO  SPA-GAZOUKSN1
                ELSE
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
                END-IF
-      *        �ǽ��象������δ���
+      *        最終来院日からの期間
                IF      SYS-1008-LAST-KIKAN-X   =   SPACE
                    MOVE    ZERO            TO  SPA-LAST-KIKAN
                ELSE
                    MOVE    SYS-1008-LAST-KIKAN
                                            TO  SPA-LAST-KIKAN
                END-IF
-      *        ���ֳ��û����Ļ������å�
+      *        時間外加算乳幼児チェック
                IF      SYS-1008-JIKANTOKU-CHK  =   SPACE
                    MOVE    ZERO            TO  SPA-JIKANTOKU-CHK
                ELSE
@@ -361,15 +361,15 @@
                                            TO  SPA-JIKANTOKU-CHK
                END-IF
                IF      SPA-JIKANTOKU-CHK   =   "1"
-      *            �����ˤ��Ƚ��
+      *            曜日により判定
                    IF      SPA-SYSYMD-YOBI     =   "6"
-      *                ����
+      *                土曜
                        MOVE    SYS-1008-JIKANCHK-SAT (1)
                                                TO  SPA-JIKANCHK-TIME (1)
                        MOVE    SYS-1008-JIKANCHK-SAT (2)
                                                TO  SPA-JIKANCHK-TIME (2)
                    ELSE
-      *                ���˰ʳ�
+      *                土曜以外
                        MOVE    SYS-1008-JIKANCHK-WEEK(1)
                                                TO  SPA-JIKANCHK-TIME (1)
                        MOVE    SYS-1008-JIKANCHK-WEEK (2)
@@ -378,29 +378,29 @@
                ELSE
                    MOVE    ZERO            TO  SPA-JIKANCHK-TIME-G
                END-IF
-      *        ���Լ�ó�ǧ�����å�
+      *        患者取消確認チェック
                IF      SYS-1008-CLEARCHK-FLG   =   SPACE
                    MOVE    ZERO            TO  SPA-CLEARCHK-FLG
                ELSE
                    MOVE    SYS-1008-CLEARCHK-FLG
                                            TO  SPA-CLEARCHK-FLG
                END-IF
-      *        ���ӽ�λŸ�����μ�ưȯ��
+      *        中途終了展開時の自動発生
                IF      SYS-1008-CHUTOTENKAI-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-CHUTOTENKAI-FLG
                ELSE
                    MOVE    SYS-1008-CHUTOTENKAI-FLG
                                            TO  SPA-CHUTOTENKAI-FLG
                END-IF
-      *        ���޾������������å�
+      *        薬剤情報提供料チェック
                IF      SYS-1008-YAKJYOCHK-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
                ELSE
                    MOVE    SYS-1008-YAKJYOCHK-FLG
                                            TO  SPA-YAKJYOCHK-FLG
                END-IF
-      *        �������μ�ưȯ��
-      *        ����
+      *        訂正時の自動発生
+      *        外来
                IF      SPA-NYUGAIKBN       =   "2"
                    IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
                        MOVE    "1"             TO  SPA-TEISEI-FLG
@@ -409,9 +409,9 @@
                                                TO  SPA-TEISEI-FLG
                    END-IF
                ELSE
-      *        ����
+      *        入院
                    IF      SYS-1008-TEINYUAUTO-FLG =   SPACE
-      *            ̤����ϳ��褫��
+      *            未設定は外来から
                        IF      SYS-1008-TEISEIAUTO-FLG =   SPACE
                            MOVE    "1"             TO  SPA-TEISEI-FLG
                        ELSE
@@ -423,70 +423,70 @@
                                                TO  SPA-TEISEI-FLG
                    END-IF
                END-IF
-      *        �������μ�ưȯ���������������������
+      *        訂正時の自動発生（特定疾患処方管理）
                IF      SYS-1008-TEISEITOKU-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                ELSE
                    MOVE    SYS-1008-TEISEITOKU-FLG
                                            TO  SPA-TEISEITOKU-FLG
                END-IF
-      *        ʿ������ǯ����ʹ�ͭ���Ȥ���
+      *        平成１７年４月以降有効とする
                IF      SPA-SRYYMD          <   "20050401"
                    MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
                    MOVE    "1"             TO  SPA-TEISEI-FLG
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                END-IF
-      *        ��̾ɽ����ʬ
+      *        病名表示区分
                IF      SYS-1008-BYOHYOKBN-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-BYOHYOKBN-FLG
                ELSE
                    MOVE    SYS-1008-BYOHYOKBN-FLG
                                            TO  SPA-BYOHYOKBN-FLG
                END-IF
-      *        ���θ����û���ưȯ��
+      *        検体検査加算自動発生
                IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-KENSAAUTO-FLG
                ELSE
                    MOVE    SYS-1008-KENSAAUTO-FLG
                                            TO  SPA-KENSAAUTO-FLG
                END-IF
-      *        �����ݸ��ȹ礻�������å�
+      *        前回保険組合せ相違チェック
                IF      SYS-1008-ZENHKNCHK-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-ZENHKNCHK-FLG
                ELSE
                    MOVE    SYS-1008-ZENHKNCHK-FLG
                                            TO  SPA-ZENHKNCHK-FLG
                END-IF
-      *        ��̾������ʬ����μ�ưȯ��
+      *        病名疾患区分からの自動発生
                IF      SYS-1008-BYOMEIAUTO-FLG   =   SPACE
-      *            ̤����ϻ��ꤹ��
+      *            未設定は算定する
                    MOVE    "1"             TO  SPA-BYOMEIAUTO-FLG
                ELSE
                    MOVE    SYS-1008-BYOMEIAUTO-FLG
                                            TO  SPA-BYOMEIAUTO-FLG
                END-IF
-      *        ���������û��μ�ưȯ��
+      *        入院時初回加算の自動発生
                IF      SYS-1008-NYUKENSA-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-NYUKENSA-FLG
                ELSE
                    MOVE    SYS-1008-NYUKENSA-FLG
                                            TO  SPA-NYUKENSA-FLG
                END-IF
-      *        �ǻ�����ưȯ��
+      *        診察料自動発生
                IF      SYS-1008-INITAUTO-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-INITAUTO-FLG
                ELSE
                    MOVE    SYS-1008-INITAUTO-FLG
                                            TO  SPA-INITAUTO-FLG
                END-IF
-      *        ��Ģ�û���ǧ�����å�
+      *        手帳加算確認チェック
                IF      SYS-1008-TECHOKBN-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TECHOKBN-FLG
                ELSE
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
-      *        ���ֳ��۵ޱ�������å�
+      *        時間外緊急院内チェック
                IF      SYS-1008-JGAIKEIKBN-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-JGAIKEIKBN-FLG
                ELSE
@@ -494,7 +494,7 @@
                                            TO  SPA-JGAIKEIKBN-FLG
                END-IF
       *H28.11
-      *        ������Ϳ�̥����å�
+      *        薬剤投与量チェック
                IF      SYS-1008-TOUYOCHK-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TOUYOCHK-FLG
                ELSE
@@ -502,19 +502,19 @@
                                            TO  SPA-TOUYOCHK-FLG
                END-IF
       *H29.3
-      *        ��������Ÿ���ʽ�������
+      *        訂正時の展開（処方料）
                IF      SYS-1008-TEISHOHOU-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                ELSE
                    MOVE    SYS-1008-TEISHOHOU-FLG
                                            TO  SPA-TEISHOHOU-FLG
                END-IF
-      *        ʿ������ǯ����ʹ�ͭ���Ȥ���
+      *        平成２９年４月以降有効とする
                IF      SPA-SRYYMD          <   "20160401"
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                END-IF
       *H29.4
-      *        ����������Ķ�����å�
+      *        投薬３０日超チェック
                IF      SYS-1008-SHOHOU30CHK    =   SPACE
                    MOVE    "0"             TO  SPA-SHOHOU30CHK
                ELSE
@@ -525,7 +525,7 @@
                MOVE    ZERO                TO  SPA-INTERACT-KIKAN
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
       *H28.8
-      *        ��ߺ��ѥ����å���ʬ
+      *        相互作用チェック区分
                MOVE    ZERO                TO  SPA-INTERACT-CHKKBN
       *
                MOVE    ZERO                TO  SPA-IKUJIEIYO-FLG
@@ -545,31 +545,31 @@
                MOVE    "1"                 TO  SPA-TEISEI-FLG
                MOVE    "0"                 TO  SPA-TEISEITOKU-FLG
                MOVE    "1"                 TO  SPA-BYOHYOKBN-FLG
-      *        ���θ����û���ưȯ��
+      *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-ZENHKNCHK-FLG
                MOVE    "1"                 TO  SPA-BYOMEIAUTO-FLG
                MOVE    "0"                 TO  SPA-NYUKENSA-FLG
-      *        �ǻ�����ưȯ��
+      *        診察料自動発生
                MOVE    "1"                 TO  SPA-INITAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
-      *        ���ֳ��۵ޱ�������å�
+      *        時間外緊急院内チェック
                MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
       *H28.11
-      *        ������Ϳ�̥����å�
+      *        薬剤投与量チェック
                MOVE    "0"                 TO  SPA-TOUYOCHK-FLG
       *H29.3
-      *        ��������Ÿ���ʽ�������
+      *        訂正時の展開（処方料）
                MOVE    "0"                 TO  SPA-TEISHOHOU-FLG
-      *        ����������Ķ�����å�
+      *        投薬３０日超チェック
                MOVE    "0"                 TO  SPA-SHOHOU30CHK
            END-IF
-      *    �ǻ�����ưȯ���ʤ��ϡ����ֳ��û��ʤ�
+      *    診察料自動発生なしは、時間外加算なし
            IF      SPA-INITAUTO-FLG    =   "0"
                MOVE    0                    TO  SPA-GAI-JIKANKBN
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            INITIALIZE                  SPA-GMN-SRYKA-AREA
       *
            MOVE    SPACE               TO  SYS-KEY
@@ -578,7 +578,7 @@
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -603,35 +603,35 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ������ʬ
+      *    入外区分
       ***  MOVE    "2"                 TO  SPA-NYUGAIKBN
-      *    ʬ��
+      *    分散
            MOVE    "0"                 TO  SPA-BUNSAN
-      *    ����������ʬ
+      *    院外処方区分
            MOVE    SPA-SYOHOKBN        TO  SPA-INGAIKBN
       *
-      *    ���ߴ�ม��
+      *    施設基準検索
            PERFORM 1009-SISETU-KIJUN-SEC
-      *    ���ƥ�������̡�1007,1038)
+      *    ステム管理共通（1007,1038)
            PERFORM 1002-SYSKANRI-KYOTU-SEC
       *H27.1
-      *    ���ƥ�������ŷ�Ψ��
+      *    ステム管理（妥結率）
            PERFORM 1003-SYSKANRI-DAKETU-SEC
       *
-      *    �����Ź԰ٻ���
+      *    包括診療行為算定
            PERFORM 10010-HKTSANTEI-SEC
       *
-      *    �ạ̃��ɣ�Ÿ���οǻ����Ѵ�
+      *    ＣＬＡＩＭ展開の診察料変換
            IF     (SPA-NYUGAIKBN       =   "2"   )
                PERFORM 10011-CLAIM-HEN-SEC
            END-IF
       *ver.4.8
-      *    ���Ծ�������
+      *    患者情報通知
            MOVE    SPACE               TO  SYS-1920-REC
            INITIALIZE                  SYS-1920-REC
            MOVE    "1920"              TO  SYS-1920-KANRICD
@@ -643,21 +643,21 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1920-REC
-      *        ɽ�����֡�̤���ѡ�
+      *        表示時間（未使用）
       *********MOVE    SYS-1920-POPUP-TIMEOUT  TO  SPA-POPUP-TIMEOUT
                MOVE    ZERO                    TO  SPA-POPUP-TIMEOUT
-      *        �ݸ���ǧ��
+      *        保険確認日
                MOVE    SYS-1920-POPUP-HKNCHK   TO  SPA-POPUP-HKNCHK
-      *        ��⣱
+      *        メモ１
                MOVE    SYS-1920-POPUP-MEMO1    TO  SPA-POPUP-MEMO1
-      *        ��⣲
+      *        メモ２
                MOVE    SYS-1920-POPUP-MEMO2    TO  SPA-POPUP-MEMO2
            END-IF
       *
-      *    �������������ϥ�������������
+      *    職員情報より入力スクロール設定
            IF     (SPA-TERMID          =   ALL "*")
              OR   (SPA-TERMID (1:4)    =   "API+" )
-      *        API�����������Ͽ���оݳ�
+      *        API、入院一括登録は対象外
                CONTINUE
            ELSE
                PERFORM 10050-LINECNT-HEN-SEC
@@ -667,11 +667,11 @@
        100-K01KYOUTU-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�������Ź԰پ����ʬ�Խ�����
+      *    システム管理診療行為情報区分編集処理
       *****************************************************************
        1002-SYSKANRI-KYOTU-SEC         SECTION.
       *
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPACE               TO  SYS-1007-REC
            INITIALIZE                  SYS-1007-REC
            MOVE    "1007"              TO  SYS-1007-KANRICD
@@ -689,13 +689,13 @@
                MOVE    SYS-1007-SANTEI (2:1)   TO  SPA-YAKJYO-1
                MOVE    SYS-1007-SANTEI (3:1)   TO  SPA-YAKJYO-2
                MOVE    SYS-1007-SANTEI (4:1)   TO  SPA-YAKJYO-3
-      *        ����ô������
+      *        療養担当手当
                MOVE    SYS-1007-SANTEI (5:1)   TO  SPA-RYOYOU-FLG
-      *        �������޼��Ŵ�����̵ͭ
+      *        特定薬剤治療管理料有無
                MOVE    SYS-1007-SANTEI (6:1)   TO  SPA-TOKUTEI-FLG
-      *        ʿ������ǯ����ʹ�ͭ���Ȥ���
+      *        平成１７年４月以降有効とする
                IF      SPA-SRYYMD          <   "20050401"
-      *            ���޾�������
+      *            薬剤情報提供料
                    IF      SPA-YAKJYO-1    =   2
                        MOVE    1               TO  SPA-YAKJYO-1
                    END-IF
@@ -708,7 +708,7 @@
                END-IF
            END-IF
       *
-      *    �����ƥ���������ʿ��Ź԰ٰ��������������
+      *    システム管理検索（診療行為一括入金管理情報）
            MOVE    SPACE               TO  SYS-1038-REC
            INITIALIZE                  SYS-1038-REC
            MOVE    "1038"              TO  SYS-1038-KANRICD
@@ -717,53 +717,53 @@
            MOVE    SPA-SRYYMD          TO  SYS-1038-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1038-HOSPNUM
            MOVE    SYS-1038-REC        TO  SYSKANRI-REC
-      *    �����ƥ������������
+      *    システム管理キー検索
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1038-REC
-      *        ʣ���ʤޤȤὸ��
+      *        複数科まとめ集計
                MOVE    SYS-1038-KAGRPFLG       TO  SPA-KAGRPFLG
-      *        �ģϽ��ɽ��
+      *        ＤＯ初期表示
                MOVE    SYS-1038-DOSRYKBNFLG    TO  SPA-DOSRYKBNFLG
-      *        ����ɽ������
+      *        中途表示一覧
                MOVE    SYS-1038-WKSRYHYOFLG    TO  SPA-WKSRYHYOFLG
-      *        Ʊ���ƿǡ���������
+      *        同日再診・訂正選択
                MOVE    SYS-1038-TEISEIFLG      TO  SPA-TEISEIFLG
-      *        �鲼�����������Ѵ�����
+      *        皮下筋肉注射料変換選択
                MOVE    SYS-1038-CHG310FLG      TO  SPA-CHG310FLG
-      *        ����ޡ�������ɽ��
+      *        腫瘍マーカ一覧表示
                MOVE    SYS-1038-AKUSEIHYOFLG   TO  SPA-AKUSEIHYOFLG
-      *        �������Ŷ�ʬ�Ѵ�����
+      *        投薬診療区分変換選択
                MOVE    SYS-1038-CHGSRYSYU-FLG  TO  SPA-CHGSRYSYU-FLG
-      *        �����Ѵ���ʬ
+      *        残量廃棄区分
                MOVE    SYS-1038-HAIKIKBN       TO  SPA-HAIKIKBN-FLG
-      *        ������ˡ����̤���û���ʬ
+      *        精神療法２０未満加算区分
                MOVE    SYS-1038-SEI20KSNKBN    TO  SPA-SEI20KSNKBN
-      *        ������ˡ����̤���û���ʬ
+      *        心身療法２０未満加算区分
                MOVE    SYS-1038-SIN20KSNKBN    TO  SPA-SIN20KSNKBN
       *H28.10
-      *        ��ϥӥꡦ���Ծ��󡦲��ɽ����ʬ
+      *        リハビリ・患者情報・介護表示区分
       ****     MOVE    SYS-1038-GMNHYOKBN-G    TO  SPA-GMNHYOKBN-G
                MOVE    SYS-1038-GMNHYOKBN-G    TO  WRK-GMNHYOKBN-G2
                MOVE    SYS-1038-GMNHYOKBN-6    TO  WRK-GMNHYOKBN-6
                MOVE    WRK-GMNHYOKBN-G         TO  SPA-GMNHYOKBN-G
       *
-      *        ���ϥ����������طʿ�
+      *        入力スクロール背景色
                MOVE    SYS-1038-BGCOLORS       TO  SPA-BGCOLORS
-      *        ���ϥ����������طʿ�
+      *        入力スクロール背景色
                MOVE    SYS-1038-BGLINEKBN      TO  SPA-BGLINEKBN
-      *        ���顼�طʿ�
+      *        エラー背景色
                MOVE    SYS-1038-ERRCOLORS      TO  SPA-ERRCOLORS
-      *        �ٹ��طʿ�
+      *        警告背景色
                MOVE    SYS-1038-KEICOLORS      TO  SPA-KEICOLORS
-      *H28.6   ���å�Ÿ����ʬ
+      *H28.6   セット展開区分
                MOVE    SYS-1038-SETALLKBN      TO  SPA-SETALLKBN
-      *H28.4   ����̾ɽ��
+      *H28.4   一般名表示
                IF      SYS-1038-GENERICFLG     =   "2"
                    MOVE    "1"                 TO  SPA-GENERICFLG
                END-IF
       *H30.9
-      *        ���򼰥�����ɽ����ʬ
+      *        選択式コメント表示区分
                MOVE    SYS-1038-RECEKISAIFLG   TO  SPA-RECEKISAIFLG
            END-IF
            IF      SPA-KAGRPFLG        =   SPACE
@@ -784,32 +784,32 @@
            IF      SPA-AKUSEIHYOFLG    =   SPACE
                MOVE    "0"                 TO  SPA-AKUSEIHYOFLG
            END-IF
-      *    �������Ŷ�ʬ�Ѵ�����
+      *    投薬診療区分変換選択
            IF      SPA-CHGSRYSYU-FLG   =   SPACE
                MOVE    "0"                 TO  SPA-CHGSRYSYU-FLG
            END-IF
-      *    �����Ѵ���ʬ
+      *    残量廃棄区分
            IF      SPA-HAIKIKBN-FLG    =   SPACE
                MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
-      *    �ȣ���ǯ�����ȿ��
+      *    Ｈ２２年４月から反映
            IF      SPA-SRYYMD          <   "20100401"
                MOVE    "1"                 TO  SPA-HAIKIKBN-FLG
            END-IF
-      *    ������ˡ����̤���û���ʬ
+      *    精神療法２０未満加算区分
            IF     (SPA-SEI20KSNKBN     =   SPACE )
-      *       �ȣ���ǯ�����ȿ��
+      *       Ｈ２２年４月から反映
               OR  (SPA-SRYYMD          <   "20100401")
                MOVE    "0"                 TO  SPA-SEI20KSNKBN
            END-IF
       *H29.7
-      *    ������ˡ����̤���û���ʬ
+      *    心身療法２０未満加算区分
            IF     (SPA-SIN20KSNKBN     =   SPACE )
-      *       �ȣ���ǯ�����ȿ��
+      *       Ｈ２９年７月から反映
               OR  (SPA-SRYYMD          <   "20170701")
                MOVE    "0"                 TO  SPA-SIN20KSNKBN
            END-IF
-      *    ��ϥӥꡦ���Ծ���ɽ����ʬ
+      *    リハビリ・患者情報表示区分
            IF     (SYS-1038-GMNHYOKBN-G    =   SPACE )
              AND  (SYS-1038-GMNHYOKBN-6    =   SPACE )
                MOVE    "1"                 TO  SPA-GMNHYOKBN (1)
@@ -820,42 +820,42 @@
       *H28.10
                MOVE    "6"                 TO  SPA-GMNHYOKBN (6)
            END-IF
-      *    ���ϥ����������طʿ�
+      *    入力スクロール背景色
            IF      SPA-BGCOLORS        =   SPACE
       *******  MOVE    "AntiqueWhite"      TO  SPA-BGCOLORS
                MOVE    "#FAEBD7"           TO  SPA-BGCOLORS
            END-IF
-      *    ���ϥ����������طʿ�
+      *    入力スクロール背景色
            IF      SPA-BGLINEKBN       =   SPACE
                MOVE    "0"                 TO  SPA-BGLINEKBN
            END-IF
-      *    ���ϥ����������طʿ�
+      *    入力スクロール背景色
            IF      SPA-ERRCOLORS       =   SPACE
       ******** MOVE    "pink1"             TO  SPA-ERRCOLORS
                MOVE    "#FFB5C5"           TO  SPA-ERRCOLORS
            END-IF
-      *    �ٹ��طʿ�
+      *    警告背景色
            IF      SPA-KEICOLORS       =   SPACE
       *******  MOVE    "pink1"             TO  SPA-KEICOLORS
                MOVE    "#FFB5C5"           TO  SPA-KEICOLORS
            END-IF
-      *H28.4   ����̾ɽ��
+      *H28.4   一般名表示
            IF      SPA-GENERICFLG      =   SPACE
                MOVE    "0"                 TO  SPA-GENERICFLG
             END-IF
-      *H28.6   ���å�Ÿ����ʬ
+      *H28.6   セット展開区分
            IF      SPA-SETALLKBN      =   SPACE
                MOVE    "0"                 TO  SPA-SETALLKBN
            END-IF
       *
-      *H30.9   ���򼰥�����ɽ����ʬ
+      *H30.9   選択式コメント表示区分
            IF      SPA-RECEKISAIFLG   =   SPACE
-      *        ɽ���������
+      *        表示するを初期
                MOVE    "1"                 TO  SPA-RECEKISAIFLG
            END-IF
       *
       *ver.4.8
-      *    ϫ�ҥ쥻���б�
+      *    労災レセ電対応
            IF      SPA-SRYYMD          >=  "20130801"
                MOVE    SPACE               TO  SYS-200501-REC
                INITIALIZE                      SYS-200501-REC
@@ -883,11 +883,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ạ̃��ɣ�Ÿ���οǻ����Ѵ��������
+      *    ＣＬＡＩＭ展開の診察料変換設定処理
       *****************************************************************
        10011-CLAIM-HEN-SEC            SECTION.
       *
-      *    �ạ̃��ɣ�Ÿ���οǻ����Ѵ�
+      *    ＣＬＡＩＭ展開の診察料変換
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                  SYS-9000-REC
            MOVE    "9000"              TO  SYS-9000-KANRICD
@@ -896,11 +896,11 @@
            MOVE    SPA-SRYYMD          TO  SYS-9000-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SYS-9000-REC        TO  SYSKANRI-REC
-      *    �����ƥ������������
+      *    システム管理キー検索
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-9000-REC
-      *        ����ǻ���Ÿ��
+      *        外来診察料展開
                MOVE   SYS-9000-SINSATU-FLG TO  SPA-SINSATU-FLG
            END-IF
       *
@@ -912,7 +912,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ߴ���������
+      *    施設基準設定処理
       *****************************************************************
        1009-SISETU-KIJUN-SEC            SECTION.
       *
@@ -924,7 +924,7 @@
            MOVE    "1006"              TO  SYS-1006-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1006-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1006-EDYUKYMD
-      *    �����ƥ���������ʻ��ߴ���
+      *    システム管理検索（施設基準）
            MOVE    SPA-HOSPNUM         TO  SYS-1006-HOSPNUM
            MOVE    SYS-1006-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -941,66 +941,66 @@
            PERFORM UNTIL   FLG-SYSKANRI    =   1
                MOVE    MCPDATA-REC         TO  SYS-1006-REC
                IF      SYS-1006-KBNCD      =   "1"
-      *            �����ʳ�����Ų�
+      *            小児科外来診療科
                    IF      SYS-1006-SSTKIJUN (121) =   1
                        MOVE    1               TO  SPA-SYONIKA
                    ELSE
                        MOVE    0               TO  SPA-SYONIKA
                    END-IF
-      *            Ϸ�ͳ�������ǻ�
+      *            老人外来総合診察
                    IF      SYS-1006-SSTKIJUN (128) =   1
                        MOVE    1               TO  SPA-ROUMANSEI
                    ELSE
                        MOVE    0               TO  SPA-ROUMANSEI
                    END-IF
-      *            ���ֳ�������ŵ���
+      *            時間外特例医療機関
                    IF      SYS-1006-SSTKIJUN (011) =   1
                        MOVE    1               TO  SPA-JIKANTOKU
                    END-IF
                END-IF
                IF      SYS-1006-KBNCD      =   "2"
-      *            �ŻҲ��û�
+      *            電子化加算
                    IF      SYS-1006-SSTKIJUN (100) =   1
                        MOVE    1               TO  SPA-DENSIKA
                    ELSE
                        MOVE    0               TO  SPA-DENSIKA
                    END-IF
-      *            ��֡���ī�û�
+      *            夜間・早朝加算
                    IF      SYS-1006-SSTKIJUN (172) =   1
                        MOVE    1               TO  SPA-YAKANKBN
                    ELSE
                        MOVE    0               TO  SPA-YAKANKBN
                    END-IF
-      *�ȣ���ǯ�������
-      *            �ϰ���Ź׸��û�(754 - 500)
+      *Ｈ２２年４月改正
+      *            地域医療貢献加算(754 - 500)
                    IF      SYS-1006-SSTKIJUN (254) =   1
                        MOVE    1               TO  SPA-CHIIKKBN
-      *H24.4����
+      *H24.4改正
                        IF      SPA-SRYYMD      >=  "20120401"
                            MOVE    0               TO  SPA-CHIIKKBN
                        END-IF
                    ELSE
                        MOVE    0               TO  SPA-CHIIKKBN
                    END-IF
-      *            ���ٽ�ȯ���������û�(755 - 500 )
+      *            明細書発行体制等加算(755 - 500 )
                    IF      SYS-1006-SSTKIJUN (255) =   1
                        MOVE    1               TO  SPA-MEISAKBN
                    ELSE
                        MOVE    0               TO  SPA-MEISAKBN
                    END-IF
                END-IF
-      *H24.4����
+      *H24.4改正
                IF      SYS-1006-KBNCD      =   "7"
                    IF      SPA-SRYYMD      >=  "20120401"
-      *            ���ֳ��б��û�
+      *            時間外対応加算
                        EVALUATE    TRUE
-      *                    ���ֳ��б��û���(3001)
+      *                    時間外対応加算１(3001)
                            WHEN    SYS-1006-SSTKIJUN (001) =   1
                                MOVE    1               TO  SPA-CHIIKKBN
-      *                    ���ֳ��б��û���(3155)
+      *                    時間外対応加算２(3155)
                            WHEN    SYS-1006-SSTKIJUN (155) =   1
                                MOVE    2               TO  SPA-CHIIKKBN
-      *                    ���ֳ��б��û���(3002)
+      *                    時間外対応加算３(3002)
                            WHEN    SYS-1006-SSTKIJUN (002) =   1
                                IF      SPA-CHIIKKBN    =   ZERO
                                    MOVE    3           TO  SPA-CHIIKKBN
@@ -1009,7 +1009,7 @@
                    END-IF
       *H26.4
                    IF      SPA-SRYYMD      >=  "20140401"
-      *                �ϰ������Ųû���3195)
+      *                地域包括診療加算（3195)
                        IF      SYS-1006-SSTKIJUN (195) =   1
                            MOVE    1               TO  SPA-CHKHTKKSN
       **               ELSE
@@ -1018,13 +1018,13 @@
                    END-IF
       *H28.4
                    IF      SPA-SRYYMD      >=  "20160401"
-      *                ǧ�ξ��ϰ������Ųû���3339)
+      *                認知症地域包括診療加算（3339)
                        IF      SYS-1006-SSTKIJUN (339) =   1
                            MOVE    1               TO  SPA-NNCHIHKJN
       **               ELSE
       **                   MOVE    ZERO            TO  SPA-NNCHIHKJN
                        END-IF
-      *                ����������Ĥ���3467)
+      *                小児かかりつけ（3467)
                        IF      SYS-1006-SSTKIJUN (467) =   1
                            MOVE    1               TO  SPA-SYOUNIKJN
                        ELSE
@@ -1035,11 +1035,11 @@
       *H30.4
                IF      SYS-1006-KBNCD      =   "8"
                    IF      SPA-SRYYMD      >=  "20180401"
-      *                �ϰ������Ųû���(3523��
+      *                地域包括診療加算１(3523）
                        IF     (SYS-1006-SSTKIJUN (023) =   1 )
                            MOVE    1               TO  SPA-CHKHTKKSN
                        END-IF
-      *                ǧ�ξ��ϰ�������������3585)
+      *                認知症地域包括診療料１（3585)
                        IF     (SYS-1006-SSTKIJUN (085) =   1 )
                            MOVE    1               TO  SPA-NNCHIHKJN
                        END-IF
@@ -1049,7 +1049,7 @@
       *H30.4
       *        IF      SYS-1006-KBNCD      =   "1"
       *            IF      SPA-SRYYMD      >=  "20180401"
-      *                ��ǽ�����û��ʽ�ǡˡ�????)
+      *                機能強化加算（初診）（????)
       *                IF      SYS-1006-SSTKIJUN (001) =   1
       *                    MOVE    1               TO  SPA-KYOUKAKSN
       *                ELSE
@@ -1065,10 +1065,10 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ���ֳ�������ŵ��ؤλ��ߴ��Ϥ��٤Ƥ���Ȥ���
+      *    時間外特例医療機関の施設基準はすべてありとする
            MOVE    1                   TO  SPA-JIKANTOKU
       *
-      *    ��ȯ�����ʤؤ��ѹ��Ľ�̾
+      *    後発医薬品への変更可署名
            MOVE    SPACE               TO  SYS-1030-REC
            INITIALIZE                  SYS-1030-REC
            MOVE    "1030"              TO  SYS-1030-KANRICD
@@ -1091,11 +1091,11 @@
        1009-SISETU-KIJUN-EXT.
       *
       *****************************************************************
-      *    �����Ź԰ٻ������
+      *    包括診療行為算定処理
       *****************************************************************
        10010-HKTSANTEI-SEC            SECTION.
       *
-      *    �����Ź԰ٻ���
+      *    包括診療行為算定
            MOVE    SPACE               TO  SYS-1014-REC
            INITIALIZE                  SYS-1014-REC
            MOVE    "1014"              TO  SYS-1014-KANRICD
@@ -1126,45 +1126,45 @@
                MOVE    MCPDATA-REC         TO  SYS-1014-REC
                IF      SYS-1014-SANTEI-HOU     =   "1"
                                                OR  "2"
-      *            �����������
+      *            入院料の包括
                    IF      SYS-1014-KBNCD      >=  "501"
                        MOVE    1               TO  SPA-HKTNYUIN-FLG
       *H27.9
-      *                û�������������礢��Ȥ���
+      *                短期３　外来の包括ありとする
                        IF      SYS-1014-KBNCD      =   "526"
                            MOVE    1               TO  SPA-HKTSANTEI-FLG
                        END-IF
                    ELSE
                        MOVE    1               TO  SPA-HKTSANTEI-FLG
-      *                �����ʳ���ǻ���
+      *                小児科外来診察料
                        IF      SYS-1014-KBNCD      =   "202"
                            MOVE    1               TO  SPA-HKTSANTEI-202
       *H26.9
                            MOVE    SYS-1014-SANTEI-HOU
                                                    TO  SPA-HKTSANTEI-202
                        END-IF
-      *                ���转���´�����
+      *                生活習慣病管理料
                        IF      SYS-1014-KBNCD      =   "203"
       *                    MOVE    1               TO  SPA-HKTSANTEI-203
       *H26.9
                            MOVE    SYS-1014-SANTEI-HOU
                                                    TO  SPA-HKTSANTEI-203
                        END-IF
-      *                �����������������
+      *                在宅時医学総合管理料
                        IF      SYS-1014-KBNCD      =   "204"
       *                    MOVE    1               TO  SPA-HKTSANTEI-204
       *H26.9
                            MOVE    SYS-1014-SANTEI-HOU
                                                    TO  SPA-HKTSANTEI-204
                        END-IF
-      *                ����������������ش�����
+      *                特定施設入居時等医学管理料
                        IF      SYS-1014-KBNCD      =   "205"
       *                    MOVE    1               TO  SPA-HKTSANTEI-205
       *H26.9
                            MOVE    SYS-1014-SANTEI-HOU
                                                    TO  SPA-HKTSANTEI-205
                        END-IF
-      *                ����������������ǻ���
+      *                在宅末期医療総合診察料
                        IF      SYS-1014-KBNCD      =   "206"
       *                    MOVE    1               TO  SPA-HKTSANTEI-206
       *H26.9
@@ -1172,7 +1172,7 @@
                                                    TO  SPA-HKTSANTEI-206
                        END-IF
       *H28.4
-      *                ����������Ĥ�������
+      *                小児かかりつけ診療料
                        IF      SYS-1014-KBNCD      =   "209"
                            MOVE    SYS-1014-SANTEI-HOU
                                                    TO  SPA-HKTSANTEI-209
@@ -1191,11 +1191,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������ȯ�ԥե饰���������
+      *    職員情報より発行フラグ再設定処理
       *****************************************************************
        1001-PRTFLG-HEN-SEC            SECTION.
       *
-      *    �����ο����������̳���̤�Ƚ��
+      *    当日の職員情報より業務識別の判定
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -1205,7 +1205,7 @@
            END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1221,20 +1221,20 @@
            PERFORM UNTIL   FLG-SYSKANRI        =   1
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                IF      SYS-1010-USERID     =   SPA-OPID
-      *            �����ȯ�ԥե饰
+      *            請求書発行フラグ
                    IF      SYS-1010-SKYPRTFLG  NOT =   SPACE
                        MOVE    SYS-1010-SKYPRTFLG  TO  SPA-SKYPRTFLG-SYS
                    END-IF
-      *            ������������ȯ�ԥե饰
+      *            院外処方せん発行フラグ
                    IF      SYS-1010-SYOHOPRTFLG  NOT =   SPACE
                        MOVE    SYS-1010-SYOHOPRTFLG  TO  SPA-SYOHOPRTFLG
                    END-IF
-      *            ���޾���ȯ�ԥե饰
+      *            薬剤情報発行フラグ
                    IF      SYS-1010-YAKUJYOPRTFLG  NOT =   SPACE
                        MOVE    SYS-1010-YAKUJYOPRTFLG
                                                    TO  SPA-YAKJYOPRTFLG
                    END-IF
-      *            ���������ٽ�ȯ��
+      *            診療費明細書発行
                    IF      SYS-1010-MEIPRTFLG  NOT =   SPACE
                        MOVE    SYS-1010-MEIPRTFLG
                                                    TO  SPA-MEIPRTFLG
@@ -1254,14 +1254,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ꥹ��������Կ��������
+      *    職員情報よりスクロール行数設定処理
       *****************************************************************
        10050-LINECNT-HEN-SEC            SECTION.
       *
-      *    �������
+      *    初期設定
            MOVE    24                  TO  WRK-GLINECNT
            MOVE    28                  TO  WRK-NLINECNT
-      *    �����ο����������̳���̤�Ƚ��
+      *    当日の職員情報より業務識別の判定
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -1271,7 +1271,7 @@
            END-STRING
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1287,7 +1287,7 @@
            PERFORM UNTIL   FLG-SYSKANRI        =   1
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                IF      SYS-1010-USERID     =   SPA-OPID
-      *            ���ϥ�������������
+      *            入力スクロール設定
                    MOVE    SPACE               TO  SYS-1050-REC
                    INITIALIZE                      SYS-1050-REC
                    MOVE    "1050"              TO  SYS-1050-KANRICD
@@ -1326,11 +1326,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������Ź԰ٺ�������
+      *    訂正ワーク診療行為作成処理
       *****************************************************************
        200-TEISEISYORI-SEC              SECTION.
       *
-      *    �����ƥ���������ʰ��ŵ��ؾ����
+      *    システム管理検索（医療機関情報）
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -1343,14 +1343,14 @@
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1001-REC
-      *        �±�����
+      *        病院種別
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                IF      SPA-BEDKBN          =   ZERO
                    CONTINUE
                ELSE
-      *        �¾���
+      *        病床数
                    MOVE    SYS-1001-BEDSU          TO  SPA-BEDSU
-      *        �¾����ʰ��̡�
+      *        病床数（一般）
                    IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
                           (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
                        MOVE    ZERO                TO  SPA-BEDSUIPN
@@ -1358,10 +1358,10 @@
                        MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
                    END-IF
                END-IF
-      *        ������ü������
+      *        消費税端数設定
                MOVE    SYS-1001-TAX-HASU-KBN   TO  SPA-TAX-HASU-KBN
       *H29.9
-      *        ���񥳡���ü������
+      *        自費コード端数設定
                MOVE    SYS-1001-JIHI-HASU-KBN  TO  SPA-JIHI-HASU-KBN
            ELSE
                MOVE    SPACE                   TO  SPA-TAX-HASU-KBN
@@ -1369,7 +1369,7 @@
            END-IF
       *
       *H29.9
-      *    ü���ھ夲�����
+      *    端数切上げが初期
            IF      SPA-JIHI-HASU-KBN   =   SPACE
                MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
@@ -1377,7 +1377,7 @@
                MOVE    "2"                 TO  SPA-JIHI-HASU-KBN
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            INITIALIZE                  SPA-GMN-SRYKA-AREA
       *
            MOVE    SPACE               TO  SYS-KEY
@@ -1386,7 +1386,7 @@
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SRYYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SRYYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1411,23 +1411,23 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
       *
-      *    ���ߴ�ม��
+      *    施設基準検索
            PERFORM 1009-SISETU-KIJUN-SEC
-      *    ���ƥ�������̡�1007,1038)
+      *    ステム管理共通（1007,1038)
            PERFORM 1002-SYSKANRI-KYOTU-SEC
       *H27.1
-      *    ���ƥ�������̡��ŷ�Ψ����Ҳ�Ψ��
+      *    ステム管理共通（妥結率・低紹介率）
            PERFORM 1003-SYSKANRI-DAKETU-SEC
       *
-      *    �����ƥ��������ʬ(1008��
+      *    システム管理訂正分(1008）
            PERFORM 2001-SYSKANRI-SAISET-SEC
-      *    �����Ź԰ٻ���
+      *    包括診療行為算定
            PERFORM 10010-HKTSANTEI-SEC
       *
           .
@@ -1435,11 +1435,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Τ���¾�����ƥ�����Խ�
+      *    訂正日のその他システム管理編集
       *****************************************************************
        2001-SYSKANRI-SAISET-SEC               SECTION.
       *
-      *    �����ƥ���������ʥ����å���ǽ��������
+      *    システム管理検索（チェック機能制御情報）
            MOVE    SPACE               TO  SYS-1008-REC
            INITIALIZE                  SYS-1008-REC
            MOVE    "1008"              TO  SYS-1008-KANRICD
@@ -1453,35 +1453,35 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1008-REC
       *
-      *        ��������û������å�
+      *        外来管理加算チェック
                MOVE    SYS-1008-GAIKANRIKBN-CHK
                                            TO  SPA-GAIKANRIKBN-CHK
-      *        ����ϡ������å�����Ȥ���
+      *        初期は、チェックありとする
                IF      SYS-1008-GAIKANRIKBN-CHK    =   SPACE
                    MOVE    "1"             TO  SPA-GAIKANRIKBN-CHK
                END-IF
-      *        ���θ����û���ưȯ��
+      *        検体検査加算自動発生
                IF      SYS-1008-KENSAAUTO-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-KENSAAUTO-FLG
                ELSE
                    MOVE    SYS-1008-KENSAAUTO-FLG
                                            TO  SPA-KENSAAUTO-FLG
                END-IF
-      *        ����Ĵ�޵��Ѵ����������å�
+      *        入院調剤技術基本料チェック
                IF      SYS-1008-CHOKICHK-FLG   =   SPACE
                    MOVE    ZERO            TO  SPA-CHOKICHK-FLG
                ELSE
                    MOVE    SYS-1008-CHOKICHK-FLG
                                            TO  SPA-CHOKICHK-FLG
                END-IF
-      *        ���ֳ��û��������Ļ�
+      *        時間外加算特例乳幼児
                IF      SYS-1008-JIKANTOKU-NYU-FLG  =   SPACE
                    MOVE    ZERO            TO  SPA-JIKANTOKU-NYU
                ELSE
                    MOVE    SYS-1008-JIKANTOKU-NYU-FLG
                                            TO  SPA-JIKANTOKU-NYU
       *H30.4
-      *            H30.4���黺�ؿͲ������б�
+      *            H30.4から産婦人科特例対応
                    IF     (SPA-SRYYMD          <   "20180401" )
                        IF      SPA-JIKANTOKU-NYU   =   "2"
                            MOVE    "1"             TO  SPA-JIKANTOKU-NYU
@@ -1492,29 +1492,29 @@
                    END-IF
                END-IF
       *
-      *        �������Ǵ����û����ʼ̿����ǡ�
+      *        画像診断管理加算１（写真診断）
                IF      SYS-1008-GAZOUKSN1-FLG  =   SPACE
                    MOVE    "1"             TO  SPA-GAZOUKSN1
                ELSE
                    MOVE    SYS-1008-GAZOUKSN1-FLG
                                            TO  SPA-GAZOUKSN1
                END-IF
-      *        ���޾������������å�
+      *        薬剤情報提供料チェック
                IF      SYS-1008-YAKJYOCHK-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
                ELSE
                    MOVE    SYS-1008-YAKJYOCHK-FLG
                                            TO  SPA-YAKJYOCHK-FLG
                END-IF
-      *!!!!!!  �������μ�ưȯ��
+      *!!!!!!  訂正時の自動発生
       *        IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
       *            MOVE    "1"             TO  SPA-TEISEI-FLG
       *        ELSE
       *            MOVE    SYS-1008-TEISEIAUTO-FLG
       *                                    TO  SPA-TEISEI-FLG
       *!!!!!   END-IF
-      *        �������μ�ưȯ��
-      *        ����
+      *        訂正時の自動発生
+      *        外来
                IF      SPA-NYUGAIKBN       =   "2"
                    IF      SYS-1008-TEISEIAUTO-FLG   =   SPACE
                        MOVE    "1"             TO  SPA-TEISEI-FLG
@@ -1523,9 +1523,9 @@
                                                TO  SPA-TEISEI-FLG
                    END-IF
                ELSE
-      *        ����
+      *        入院
                    IF      SYS-1008-TEINYUAUTO-FLG =   SPACE
-      *            ̤����ϳ��褫��
+      *            未設定は外来から
                        IF      SYS-1008-TEISEIAUTO-FLG =   SPACE
                            MOVE    "1"             TO  SPA-TEISEI-FLG
                        ELSE
@@ -1538,27 +1538,27 @@
                    END-IF
                END-IF
       *!!!
-      *        �������μ�ưȯ���������������������
+      *        訂正時の自動発生（特定疾患処方管理）
                IF      SYS-1008-TEISEITOKU-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                ELSE
                    MOVE    SYS-1008-TEISEITOKU-FLG
                                            TO  SPA-TEISEITOKU-FLG
                END-IF
-      *        ʿ������ǯ����ʹ�ͭ���Ȥ���
+      *        平成１７年４月以降有効とする
                IF      SPA-SRYYMD          <   "20050401"
                    MOVE    "1"             TO  SPA-YAKJYOCHK-FLG
                    MOVE    "1"             TO  SPA-TEISEI-FLG
                    MOVE    "0"             TO  SPA-TEISEITOKU-FLG
                END-IF
-      *        ��Ģ�û���ǧ�����å�
+      *        手帳加算確認チェック
                IF      SYS-1008-TECHOKBN-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TECHOKBN-FLG
                ELSE
                    MOVE    SYS-1008-TECHOKBN-FLG
                                            TO  SPA-TECHOKBN-FLG
                END-IF
-      *        ���ֳ��۵ޱ�������å�
+      *        時間外緊急院内チェック
                IF      SYS-1008-JGAIKEIKBN-FLG   =   SPACE
                    MOVE    "1"             TO  SPA-JGAIKEIKBN-FLG
                ELSE
@@ -1566,7 +1566,7 @@
                                            TO  SPA-JGAIKEIKBN-FLG
                END-IF
       *H28.11
-      *        ������Ϳ�̥����å�
+      *        薬剤投与量チェック
                IF      SYS-1008-TOUYOCHK-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TOUYOCHK-FLG
                ELSE
@@ -1574,19 +1574,19 @@
                                            TO  SPA-TOUYOCHK-FLG
                END-IF
       *H29.3
-      *        ��������Ÿ���ʽ�������
+      *        訂正時の展開（処方料）
                IF      SYS-1008-TEISHOHOU-FLG   =   SPACE
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                ELSE
                    MOVE    SYS-1008-TEISHOHOU-FLG
                                            TO  SPA-TEISHOHOU-FLG
                END-IF
-      *        ʿ������ǯ����ʹ�ͭ���Ȥ���
+      *        平成２９年３月以降有効とする
                IF      SPA-SRYYMD          <   "20160401"
                    MOVE    "0"             TO  SPA-TEISHOHOU-FLG
                END-IF
       *H29.4
-      *        ����������Ķ�����å�
+      *        投薬３０日超チェック
                IF      SYS-1008-SHOHOU30CHK    =   SPACE
                    MOVE    "0"             TO  SPA-SHOHOU30CHK
                ELSE
@@ -1595,14 +1595,14 @@
                END-IF
            ELSE
                MOVE    "1"                 TO  SPA-GAIKANRIKBN-CHK
-      *        ���θ����û���ưȯ��
+      *        検体検査加算自動発生
                MOVE    "0"                 TO  SPA-KENSAAUTO-FLG
                MOVE    "0"                 TO  SPA-TECHOKBN-FLG
-      *        ���ֳ��۵ޱ�������å�
+      *        時間外緊急院内チェック
                MOVE    "1"                 TO  SPA-JGAIKEIKBN-FLG
                MOVE    "0"                 TO  SPA-TOUYOCHK-FLG
       *H29.3
-      *        ��������Ÿ���ʽ�������
+      *        訂正時の展開（処方料）
                MOVE    "0"                 TO  SPA-TEISHOHOU-FLG
                MOVE    "0"                 TO  SPA-SHOHOU30CHK
            END-IF
@@ -1611,14 +1611,14 @@
        2001-SYSKANRI-SAISET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ƥ�������ŷ�Ψ���������
+      *    ステム管理（妥結率）設定処理
       *****************************************************************
        1003-SYSKANRI-DAKETU-SEC         SECTION.
       *
            MOVE    ZERO                TO  SPA-DAKT50-KBN
            MOVE    ZERO                TO  SPA-TEIRITU-KBN
       *
-      *    �±��������¾����������ʾ�
+      *    病院・許可病床数２００以上
            IF     (SPA-HOSPSBT         =   1  )
               AND (SPA-BEDSU           >=  200)
               AND (SPA-SRYYMD          >=  "20150101")
@@ -1634,24 +1634,24 @@
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
                    MOVE    SYSKANRI-REC        TO  SYS-1201-REC
-      *            �ŷ�Ψ�ʲ�
+      *            妥結率以下
                    IF      SYS-1201-DAKETUKBN  =   "1"
                        MOVE    1                   TO  SPA-DAKT50-KBN
                    END-IF
                END-IF
            END-IF
       *
-      *    �±��������¾����������ʾ�
+      *    病院・許可病床数５００以上
            IF     (SPA-HOSPSBT         =   1  )
       *       AND (SPA-BEDSU           >=  500)
       *       AND (SPA-SRYYMD          >=  "20150401")
-      *H30.9  H30.10����400��
+      *H30.9  H30.10から400床
             IF   ((SPA-BEDSU           >=  500   )    AND
                   (SPA-SRYYMD          >=  "20150401"))
               OR ((SPA-BEDSU           >=  400   )    AND
                   (SPA-SRYYMD          >=  "20181001"))
       *
-      *        ��Ҳ�Ψ
+      *        低紹介率
                MOVE    SPACE               TO  SYSKANRI-REC
                INITIALIZE                  SYSKANRI-REC
                MOVE    "1202"              TO  SYS-KANRICD
@@ -1662,7 +1662,7 @@
       *
                PERFORM 900-SYSKANRI-INV-SEC
                IF      FLG-SYSKANRI        =   ZERO
-      *            ��Ҳ�Ψ�Ǥ���
+      *            低紹介率である
                    IF      SYS-KANRITBL(1:1)   =   "1"
                        MOVE    1               TO  SPA-TEIRITU-KBN
                    END-IF
@@ -1674,7 +1674,7 @@
        1003-SYSKANRI-DAKETU-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1691,7 +1691,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -1723,7 +1723,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1736,7 +1736,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1751,7 +1751,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

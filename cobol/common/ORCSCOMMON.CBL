@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCOMMON.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶ÈÌ³ÁªÂò
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¶¦ÄÌ£Ó£Ð£ÁÀßÄê
-      *  ´ÉÍý¼Ô            : 
-      *  09/01/26    NACL¡ÝÂ¿¡¹Ç¼   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ¥­å‹™é¸æŠž
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…±é€šï¼³ï¼°ï¼¡è¨­å®š
+      *  ç®¡ç†è€…            : 
+      *  09/01/26    NACLâˆ’å¤šã€…ç´   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.05.00     NACL-Â¿¡¹Ç¼  09/12/14  ¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°ÄÉ²Ã
-      * 04.06.01     NACL-°ËÆ£    11/01/28  ¥ê¥¢¥ë¥¿¥¤¥àÁ÷¿®
-      * 04.07.01     NACL-ÃÝÅÄ    11/06/29  ¥¯¥é¥¤¥¢¥ó¥È°õºþ¾ðÊóÀßÄê
-      * 04.08.00     NACL-ÂÀÅÄ    14/02/08  GinbeeÂÐ±þ(¥æ¡¼¥¶¡¼ÅÐÏ¿¤Ê¤·¤òµö²Ä¡Ë
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.05.00     NACL-å¤šã€…ç´  09/12/14  ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°è¿½åŠ 
+      * 04.06.01     NACL-ä¼Šè—¤    11/01/28  ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ é€ä¿¡
+      * 04.07.01     NACL-ç«¹ç”°    11/06/29  ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå°åˆ·æƒ…å ±è¨­å®š
+      * 04.08.00     NACL-å¤ªç”°    14/02/08  Ginbeeå¯¾å¿œ(ãƒ¦ãƒ¼ã‚¶ãƒ¼ç™»éŒ²ãªã—ã‚’è¨±å¯ï¼‰
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,7 +44,7 @@
       *
            COPY    "ENUM-VALUE".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-OK              PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -54,14 +54,14 @@
        01  IDX-AREA.
            03  IDX                   PIC 9(03).
            03  IDY                   PIC 9(03).
-      *    ¥·¥¹¥Æ¥àÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ é ˜åŸŸ
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -93,59 +93,59 @@
            03  WRK-ERRMSG          PIC X(500).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÎÎ°è
-      *    ¿¦°÷¾ðÊó
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿é ˜åŸŸ
+      *    è·å“¡æƒ…å ±
            COPY  "CPSK1010.INC".
            COPY  "CPSK1050.INC".
-      *    °åÎÅµ¡´Ø¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±
            COPY  "CPSK1001.INC".
-      *    ¼«Æ°»»Äê¾ðÊó
+      *    è‡ªå‹•ç®—å®šæƒ…å ±
            COPY  "CPSK1007.INC".
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±
            COPY  "CPSK1009.INC".
-      *    ÇÓÂ¾´ÉÍý¾ðÊó
+      *    æŽ’ä»–ç®¡ç†æƒ…å ±
            COPY  "CPSK9800.INC".
-      *    ¼ç²ÊÀßÄê¾ðÊó
+      *    ä¸»ç§‘è¨­å®šæƒ…å ±
            COPY  "CPSK2009.INC".
-      *    ¹­¹ð¾ðÊó
+      *    åºƒå‘Šæƒ…å ±
            COPY  "CPSK1003.INC".
       *
            COPY  "CPSK1038.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ðËÜ
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
       *
-      *    ¥·¥¹¥Æ¥à¥æ¡¼¥¶¡¼
+      *    ã‚·ã‚¹ãƒ†ãƒ ãƒ¦ãƒ¼ã‚¶ãƒ¼
        01  SYSUSER-REC.
            COPY    "CPSYSUSER.INC".
       *
-      *    ¥·¥¹¥Æ¥à¥«¥¿¥í¥°
+      *    ã‚·ã‚¹ãƒ†ãƒ ã‚«ã‚¿ãƒ­ã‚°
            COPY    "CPDBCTG.INC".
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       * 
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
            COPY    MCPAREA.
            COPY    COMMON-SPA.
            COPY    "CPORCSCOMMON.INC".
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            COPY  "CPSK1010.INC"        REPLACING
                                        //SYS-// BY //LNK-SYS-//.
       *
@@ -157,7 +157,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -166,36 +166,36 @@
       *
            EVALUATE    ORCSCOMMON-PG
                WHEN    "M00"
-      *            ¥Þ¥¹¥¿¡¼¥á¥Ë¥å¥¦¡¼
+      *            ãƒžã‚¹ã‚¿ãƒ¼ãƒ¡ãƒ‹ãƒ¥ã‚¦ãƒ¼
                    PERFORM 100-SPA-INIT-SEC
                WHEN    "M01"
                WHEN    "M01N"
-      *            ¶ÈÌ³¥á¥Ë¥å¡¼
+      *            æ¥­å‹™ãƒ¡ãƒ‹ãƒ¥ãƒ¼
                    PERFORM 200-M01-SPAHEN-SEC
                WHEN    OTHER
-      *            ËÜ±¡Ê¬±¡ÀÚÂØ½èÍý
+      *            æœ¬é™¢åˆ†é™¢åˆ‡æ›¿å‡¦ç†
                    PERFORM 300-HOSPNUM-CHANGE-SEC
            END-EVALUATE
            .
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ¥Þ¥¹¥¿¡¼¥á¥Ë¥å¡¼½èÍý
+      *    ãƒžã‚¹ã‚¿ãƒ¼ãƒ¡ãƒ‹ãƒ¥ãƒ¼å‡¦ç†
       *****************************************************************
        100-SPA-INIT-SEC                SECTION.
       *
-      *    ¥ß¥É¥ë¥¦¥§¥¢
+      *    ãƒŸãƒ‰ãƒ«ã‚¦ã‚§ã‚¢
            EVALUATE    MCP-MIDDLEWARE-NAME
            WHEN    "panda"
                MOVE    SPA-PANDA       TO  SPA-MW
            WHEN    "ginbee"
                MOVE    SPA-GINBEE      TO  SPA-MW
-      *    ¼èÆÀ¤Ç¤­¤Ê¤¤¾ì¹ç¤Ïpanda¤È¤ß¤Ê¤¹
+      *    å–å¾—ã§ããªã„å ´åˆã¯pandaã¨ã¿ãªã™
            WHEN    OTHER
                MOVE    SPA-PANDA       TO  SPA-MW
            END-EVALUATE
       *
-      *    Ã¼Ëö£É£Ä
+      *    ç«¯æœ«ï¼©ï¼¤
            MOVE    MCP-TERM            TO  SPA-TERMID
            PERFORM VARYING IDX     FROM    64  BY  -1
                    UNTIL   IDX     <       1
@@ -206,36 +206,36 @@
                END-IF
            END-PERFORM 
       *
-      *    ¥ª¥Ú¥ì¡¼¥¿£É£Ä
-      *****Åö¥â¥¸¥å¡¼¥ë¤òCALL¤¹¤ëÁ°¤ËSPA-OPID¤Ë¥»¥Ã¥È¤¹¤ë
+      *    ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
+      *****å½“ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã‚’CALLã™ã‚‹å‰ã«SPA-OPIDã«ã‚»ãƒƒãƒˆã™ã‚‹
       *****MOVE    MCP-USER            TO  SPA-OPID
       *
-      *    °åÎÅµ¡´Ø´ðËÜ¾ðÊóÊÔ½¸
+      *    åŒ»ç™‚æ©Ÿé–¢åŸºæœ¬æƒ…å ±ç·¨é›†
            PERFORM 1001-SYS1001-SPA-SEC
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó¡¦ÇÓÂ¾À©¸æ¾ðÊó
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ãƒ»æŽ’ä»–åˆ¶å¾¡æƒ…å ±
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1002-SYS1009-SPA-SEC
            END-IF
-      *    ¿¦°÷¾ðÊóÊÔ½¸
+      *    è·å“¡æƒ…å ±ç·¨é›†
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1003-SYS1010-SPA-SEC
            END-IF
-      *    ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼¡©
+      *    ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼ï¼Ÿ
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-SUPERVISOR          =   "F" )
                AND   ( SYS-1010-KANRIAUTHFLG   =   "T" )
                    PERFORM 1004-SUPERVISOR-SPA-SEC
                END-IF
            END-IF
-      *    ¼ç²ÊÀßÄê¾ðÊó
+      *    ä¸»ç§‘è¨­å®šæƒ…å ±
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1005-SYS2009-SPA-SEC
            END-IF
-      *    ËÜ±¡¡¦Ê¬±¡ÊÔ½¸½èÍý
+      *    æœ¬é™¢ãƒ»åˆ†é™¢ç·¨é›†å‡¦ç†
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1007-GRPHOSPNUM-SET-SEC
            END-IF
-      *    ¥¨¥ó¥³¡¼¥É¼èÆÀ½èÍý
+      *    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
            IF      SPA-ERRCD           =   SPACE
                PERFORM 1008-DBCATLG-GET-SEC
            END-IF
@@ -244,11 +244,11 @@
        100-SPA-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    °åÎÅµ¡´Ø´ðËÜ¾ðÊó¤«¤é¤Î£Ó£Ð£ÁÊÔ½¸½èÍý
+      *    åŒ»ç™‚æ©Ÿé–¢åŸºæœ¬æƒ…å ±ã‹ã‚‰ã®ï¼³ï¼°ï¼¡ç·¨é›†å‡¦ç†
       *****************************************************************
        1001-SYS1001-SPA-SEC         SECTION.
       *
-      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+      *    åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤ç·¨é›†
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -263,9 +263,9 @@
                MOVE    SYS-1001-HOSPID     TO  SPA-HOSPID
                MOVE    SYS-1001-HOSPSBT    TO  SPA-HOSPSBT
                MOVE    SYS-1001-ROUPAYKBN  TO  SPA-ROUPAYKBN
-      *        ÉÂ¾²¿ô
+      *        ç—…åºŠæ•°
                MOVE    SYS-1001-BEDSU      TO  SPA-BEDSU
-      *        ÉÂ¾²¿ô¡Ê°ìÈÌ¡Ë
+      *        ç—…åºŠæ•°ï¼ˆä¸€èˆ¬ï¼‰
                IF     (SYS-1001-BEDSUIPN(1:4)  =   SPACE )  OR
                       (SYS-1001-BEDSUIPN(1:4)  NOT NUMERIC)
                    MOVE    ZERO                TO  SPA-BEDSUIPN
@@ -273,7 +273,7 @@
                    MOVE    SYS-1001-BEDSUIPN   TO  SPA-BEDSUIPN
                END-IF
       *
-      *        ¥Ç¡¼¥¿ºîÀ®¥Õ¥é¥°
+      *        ãƒ‡ãƒ¼ã‚¿ä½œæˆãƒ•ãƒ©ã‚°
                IF     (SYS-1001-DATACREATEFLG  =   SPACE )  OR
                       (SYS-1001-DATACREATEFLG  NOT NUMERIC)
                    MOVE    ZERO            TO  SPA-DATACREATEFLG
@@ -281,7 +281,7 @@
                    MOVE    SYS-1001-DATACREATEFLG
                                                TO  SPA-DATACREATEFLG
                END-IF
-      *        ¥Ç¡¼¥¿Äó½ÐÊýË¡¶èÊ¬
+      *        ãƒ‡ãƒ¼ã‚¿æå‡ºæ–¹æ³•åŒºåˆ†
                IF     (SYS-1001-DATATEISYUTUKBN  =   SPACE )  OR
                       (SYS-1001-DATATEISYUTUKBN  NOT NUMERIC)
                    MOVE    ZERO            TO  SPA-DATATEISYUTUKBN
@@ -289,7 +289,7 @@
                    MOVE    SYS-1001-DATATEISYUTUKBN
                                            TO  SPA-DATATEISYUTUKBN
                END-IF
-      *        ¥Ç¡¼¥¿´¶À÷¾É¶èÊ¬
+      *        ãƒ‡ãƒ¼ã‚¿æ„ŸæŸ“ç—‡åŒºåˆ†
                IF     (SYS-1001-DATAINFECTIONKBN  =   SPACE )  OR
                       (SYS-1001-DATAINFECTIONKBN  NOT NUMERIC)
                    IF      SPA-DATACREATEFLG   =   1
@@ -302,11 +302,11 @@
                                            TO  SPA-DATAINFECTIONKBN
                END-IF
       *
-      *        ¸©ÈÖ¹æ
+      *        çœŒç•ªå·
                MOVE    SYS-1001-PREFNUM    TO  SPA-PREFNUM
-      *        Í­¾²¶èÊ¬
+      *        æœ‰åºŠåŒºåˆ†
                MOVE    1                   TO  SPA-BEDKBN
-      *        °åÎÅµ¡´ØÌ¾¾Î
+      *        åŒ»ç™‚æ©Ÿé–¢åç§°
                MOVE    SYS-1001-HOSPNAME   TO  ORCSCOMMON-HOSPNAME
                MOVE    SYS-1001-HOSPNAME   TO  SPA-HOSPNAME
       *
@@ -314,7 +314,7 @@
                MOVE    "1002"              TO  SPA-ERRCD
            END-IF
       *
-      *    ÉÂ¾²¿ô¥Õ¥é¥°
+      *    ç—…åºŠæ•°ãƒ•ãƒ©ã‚°
            IF     (SPA-BEDKBN          =   ZERO )  OR
                   (SPA-BEDSU           =   ZERO )
                MOVE    ZERO            TO  SPA-BEDFLG
@@ -326,11 +326,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó¤«¤é¤Î£Ó£Ð£ÁÊÔ½¸½èÍý
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ã‹ã‚‰ã®ï¼³ï¼°ï¼¡ç·¨é›†å‡¦ç†
       *****************************************************************
        1002-SYS1009-SPA-SEC       SECTION.
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊóÊÔ½¸
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ç·¨é›†
            MOVE    SPACE               TO  SYS-1009-REC
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
@@ -356,7 +356,7 @@
                                        TO  SPA-1009-HJNKSIRENNUMKBN
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  SPA-1009-HJNKSIRENNUMKETA
-      *³ÈÄ¥¹½À®¶èÊ¬
+      *æ‹¡å¼µæ§‹æˆåŒºåˆ†
                MOVE    SYS-1009-KKCKSIKBN
                                        TO  SPA-1009-KKCKSIKBN
                MOVE    SYS-1009-KKCKSIMAEKETA
@@ -369,7 +369,7 @@
                MOVE    "1005"          TO  SPA-ERRCD
            END-IF
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®¤ÎÇ¯ÀÚÂØ¤¨¥Á¥§¥Ã¥¯
+      *    æ‚£è€…ç•ªå·æ§‹æˆã®å¹´åˆ‡æ›¿ãˆãƒã‚§ãƒƒã‚¯
            IF      SYS-1009-NENTUKI        =   SPACE
                MOVE    "01"                TO  SYS-1009-NENTUKI
            END-IF
@@ -378,8 +378,8 @@
                                            OR  "2" )  AND
                   (SYS-1009-NEN        NOT =   SPA-SYSYMD (1:4)) AND
                   (SYS-1009-NENTUKI        <=  SPA-SYSYMD (5:2))
-               STRING  "¡Ú´µ¼ÔÈÖ¹æ¹½À®¤ÎÇ¯ÀÚÂØ¤¨·î¤Ë¤Ê¤ê¤Þ¤·¤¿¡£"
-                       "¥·¥¹¥Æ¥à´ÉÍý¾ðÊó¤ò¹¹¿·¤·¤Æ²¼¤µ¤¤¡£¡Û"
+               STRING  "ã€æ‚£è€…ç•ªå·æ§‹æˆã®å¹´åˆ‡æ›¿ãˆæœˆã«ãªã‚Šã¾ã—ãŸã€‚"
+                       "ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±ã‚’æ›´æ–°ã—ã¦ä¸‹ã•ã„ã€‚ã€‘"
                                            DELIMITED  BY  SIZE
                                            INTO    ORCSCOMMON-LABLMSG
                END-STRING
@@ -387,7 +387,7 @@
                MOVE    SPACE               TO  ORCSCOMMON-LABLMSG
            END-IF
       *
-      *    ÇÓÂ¾´ÉÍý¾ðÊóÊÔ½¸
+      *    æŽ’ä»–ç®¡ç†æƒ…å ±ç·¨é›†
            MOVE    SPACE               TO  SYS-9800-REC
            INITIALIZE                  SYS-9800-REC
            MOVE    "9800"              TO  SYS-9800-KANRICD
@@ -408,11 +408,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿¦°÷¾ðÊó¤«¤é¤Î£Ó£Ð£ÁÊÔ½¸½èÍý
+      *    è·å“¡æƒ…å ±ã‹ã‚‰ã®ï¼³ï¼°ï¼¡ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-SYS1010-SPA-SEC       SECTION.
       *
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -458,7 +458,7 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ¿¦°÷¾ðÊó¤Ê¤·
+      *    è·å“¡æƒ…å ±ãªã—
            IF     FLG-OK               =   ZERO
       *
                INITIALIZE                  SYS-1010-REC
@@ -490,9 +490,9 @@
                MOVE    "1"             TO  SYS-1050-PRTCONF
            END-IF
       *
-      *    ¿¦°÷¥³¡¼¥ÉÀßÄê
+      *    è·å“¡ã‚³ãƒ¼ãƒ‰è¨­å®š
            MOVE    SYS-1010-KBNCD(1:5) TO  SPA-STAFFCD
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþ¾ðÊó¥»¥Ã¥È
+      *    ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå°åˆ·æƒ…å ±ã‚»ãƒƒãƒˆ
            IF      SYS-1010-CLIENT-PRT =   "1"
                MOVE  2                 TO  SPA-CLIENT-PRT-FLG
            ELSE
@@ -509,20 +509,20 @@
                MOVE    "1"             TO  SPA-PRTCONF
            END-IF
       *
-      *2001.9.27 ¶¯À©¥×¥í¥Æ¥¯¥È¡Ê£Ð£ÇÌ¤ºîÀ®¡Ë
-      *   ¡Ê¥Þ¥¹¥¿¡¼¥á¥Ë¥å¡¼É½¼¨ÍÑ¡Ë
+      *2001.9.27 å¼·åˆ¶ãƒ—ãƒ­ãƒ†ã‚¯ãƒˆï¼ˆï¼°ï¼§æœªä½œæˆï¼‰
+      *   ï¼ˆãƒžã‚¹ã‚¿ãƒ¼ãƒ¡ãƒ‹ãƒ¥ãƒ¼è¡¨ç¤ºç”¨ï¼‰
       **** MOVE    "0"                 TO  LNK-SYS-1010-GSRAUTH(3:1)
            MOVE    "0"                 TO  LNK-SYS-1010-GSRAUTH(4:1)
                                            LNK-SYS-1010-GSRAUTH(4:1)
                                            LNK-SYS-1010-GSRAUTH(46:1)
-      *2001.9.27 ¶¯À©¥×¥í¥Æ¥¯¥È¡Ê£Ð£ÇÌ¤ºîÀ®¡ËEND
+      *2001.9.27 å¼·åˆ¶ãƒ—ãƒ­ãƒ†ã‚¯ãƒˆï¼ˆï¼°ï¼§æœªä½œæˆï¼‰END
       *
            .
        1003-SYS1010-SPA-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼ÀßÄê½èÍý
+      *    ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼è¨­å®šå‡¦ç†
       *****************************************************************
        1004-SUPERVISOR-SPA-SEC         SECTION.
       *
@@ -556,11 +556,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç²ÊÀßÄê¾ðÊóÀßÄê½èÍý
+      *    ä¸»ç§‘è¨­å®šæƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        1005-SYS2009-SPA-SEC       SECTION.
       *
-      *    ¼ç²ÊÀßÄê¾ðÊó
+      *    ä¸»ç§‘è¨­å®šæƒ…å ±
            INITIALIZE                      SPA-SYUKA-INFO
            MOVE    SPACE               TO  SYS-2009-REC
            INITIALIZE                  SYS-2009-REC
@@ -589,11 +589,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ËÜ±¡¡¦Ê¬±¡ÊÔ½¸½èÍý
+      *    æœ¬é™¢ãƒ»åˆ†é™¢ç·¨é›†å‡¦ç†
       *****************************************************************
        1007-GRPHOSPNUM-SET-SEC       SECTION.
       *
-      *    ¥·¥¹¥Æ¥à´ðËÜ¥Æ¡¼¥Ö¥ë
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬ãƒ†ãƒ¼ãƒ–ãƒ«
            INITIALIZE                      SYSBASE-REC
            MOVE    SPA-HOSPNUM         TO  SYSBASE-HOSPNUM
       *
@@ -614,7 +614,7 @@
            PERFORM 990-DBCLOSE-SEC
            IF     (FLG-SYSBASE             =   ZERO  )  AND
                   (SYSBASE-HONBUNGRP   NOT =   ZERO  )
-      *        ËÜ±¡¡¦Ê¬±¡¤¢¤ê
+      *        æœ¬é™¢ãƒ»åˆ†é™¢ã‚ã‚Š
                MOVE    SYSBASE-REC         TO  MCPDATA-REC
                MOVE    "tbl_sysbase"       TO  MCP-TABLE 
                MOVE    "key2"              TO  MCP-PATHNAME 
@@ -664,7 +664,7 @@
                END-IF
            END-IF
       *
-      *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸
+      *    åŒ»ç™‚æ©Ÿé–¢åç§°ç·¨é›†
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   9   )
                          OR   (SPA-GRPHOSPNUM(IDX) =   ZERO )
@@ -696,11 +696,11 @@
            EXIT.
       *
       *****************************************************************
-      *    DB¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¼èÆÀ½èÍý
+      *    DBã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å–å¾—å‡¦ç†
       *****************************************************************
        1008-DBCATLG-GET-SEC        SECTION.
       *
-      *    ¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¼èÆÀ½èÍý
+      *    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å–å¾—å‡¦ç†
            CALL    "ORCSENCODING"      USING    MCPAREA
                                                 SPA-AREA
       *
@@ -709,14 +709,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ¶ÈÌ³¥á¥Ë¥å¡¼£Ó£Ð£ÁÀßÄê½èÍý
+      *    æ¥­å‹™ãƒ¡ãƒ‹ãƒ¥ãƒ¼ï¼³ï¼°ï¼¡è¨­å®šå‡¦ç†
       *****************************************************************
        200-M01-SPAHEN-SEC       SECTION.
       *
-      *    ¿¦°÷¾ðÊóÊÔ½¸
+      *    è·å“¡æƒ…å ±ç·¨é›†
            PERFORM 2002-SYS1010-SPA02-SEC
       *
-      *    ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨
+      *    æ¤œæŸ»æ­£å¼åç§°è¡¨ç¤º
            MOVE    SYS-1010-FORMALFLG  TO  SPA-FORMALFLG
            IF      SYS-1010-FORMALFLG  =   SPACE
                PERFORM 2001-SYS1038-SPA-SEC
@@ -728,15 +728,15 @@
        200-M01-SPAHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿¦°÷¾ðÊóÊÔ½¸½èÍý
+      *    è·å“¡æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2002-SYS1010-SPA02-SEC          SECTION.
       *
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
-      *    ¿¦°÷¥³¡¼¥É
+      *    è·å“¡ã‚³ãƒ¼ãƒ‰
            MOVE    SPA-STAFFCD         TO  SYS-1010-KBNCD(1:5)
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
@@ -749,30 +749,30 @@
                INITIALIZE                  SYS-1010-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *2001.9.27 ¶¯À©¥×¥í¥Æ¥¯¥È¡Ê£Ð£ÇÌ¤ºîÀ®¡Ë
+      *2001.9.27 å¼·åˆ¶ãƒ—ãƒ­ãƒ†ã‚¯ãƒˆï¼ˆï¼°ï¼§æœªä½œæˆï¼‰
       *
       **** MOVE    "0"                 TO  SYS-1010-GSRAUTH(3:1)
            MOVE    "0"                 TO  SYS-1010-GSRAUTH(4:1)
                                            SYS-1010-GSRAUTH(46:1)
-      *2001.9.27 ¶¯À©¥×¥í¥Æ¥¯¥È¡Ê£Ð£ÇÌ¤ºîÀ®¡ËEND
-      *¶ÈÌ³½èÍý¸¢¸ÂÀßÄê
-      *    ¼õÉÕ
+      *2001.9.27 å¼·åˆ¶ãƒ—ãƒ­ãƒ†ã‚¯ãƒˆï¼ˆï¼°ï¼§æœªä½œæˆï¼‰END
+      *æ¥­å‹™å‡¦ç†æ¨©é™è¨­å®š
+      *    å—ä»˜
            MOVE    SYS-1010-GSRAUTH(16:1)  TO  SPA-GSRAUTH-11
-      *    ´µ¼ÔÅÐÏ¿
+      *    æ‚£è€…ç™»éŒ²
            MOVE    SYS-1010-GSRAUTH(17:1)  TO  SPA-GSRAUTH-12
-      *    Í½ÌóÅÐÏ¿
+      *    äºˆç´„ç™»éŒ²
            MOVE    SYS-1010-GSRAUTH(19:1)  TO  SPA-GSRAUTH-14
-      *    ¿ÇÎÅ¹Ô°Ù
+      *    è¨ºç™‚è¡Œç‚º
            MOVE    SYS-1010-GSRAUTH(21:1)  TO  SPA-GSRAUTH-21
-      *    ÉÂÌ¾ÅÐÏ¿
+      *    ç—…åç™»éŒ²
            MOVE    SYS-1010-GSRAUTH(22:1)  TO  SPA-GSRAUTH-22
-      *    ¼ýÇ¼ÅÐÏ¿
+      *    åŽç´ç™»éŒ²
            MOVE    SYS-1010-GSRAUTH(23:1)  TO  SPA-GSRAUTH-23
-      *    ²ñ·×¾È²ñ
+      *    ä¼šè¨ˆç…§ä¼š
            MOVE    SYS-1010-GSRAUTH(24:1)  TO  SPA-GSRAUTH-24
-      *    ÆþÂà±¡ÅÐÏ¿
+      *    å…¥é€€é™¢ç™»éŒ²
            MOVE    SYS-1010-GSRAUTH(36:1)  TO  SPA-GSRAUTH-31
-      *    Æþ±¡²ñ·×¾È²ñ
+      *    å…¥é™¢ä¼šè¨ˆç…§ä¼š
            MOVE    SYS-1010-GSRAUTH(37:1)  TO  SPA-GSRAUTH-32
       *
            MOVE    SYS-1010-REC        TO  LNK-SYS-1010-REC
@@ -781,7 +781,7 @@
        2002-SYS1010-SPA02-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨½èÍý
+      *    æ¤œæŸ»æ­£å¼åç§°è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        2001-SYS1038-SPA-SEC          SECTION.
       *
@@ -796,7 +796,7 @@
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1038-REC
-      *        ¸¡ººÀµ¼°Ì¾¾ÎÉ½¼¨
+      *        æ¤œæŸ»æ­£å¼åç§°è¡¨ç¤º
                MOVE    SYS-1038-FORMALFLG  TO  SPA-FORMALFLG
            END-IF
            .
@@ -804,25 +804,25 @@
            EXIT.
       *
       *****************************************************************
-      *    °åÎÅÈÖ¹æÊÑ¹¹½èÍý
+      *    åŒ»ç™‚ç•ªå·å¤‰æ›´å‡¦ç†
       *****************************************************************
        300-HOSPNUM-CHANGE-SEC       SECTION.
       *
-      *!!  ORCSCOMMON-HOSPNUM ¤È SPA-STAFFCD ¤«¤é 
-      *!!  ORCSCOMMON-HOSPNUM ¤Î MCP-USER ¤ò ·èÄê¤¹¤ë
+      *!!  ORCSCOMMON-HOSPNUM ã¨ SPA-STAFFCD ã‹ã‚‰ 
+      *!!  ORCSCOMMON-HOSPNUM ã® MCP-USER ã‚’ æ±ºå®šã™ã‚‹
       *
       *****INITIALIZE                      SPA-AREA
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¼èÆÀ
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜å–å¾—
            PERFORM 3001-SYSYMD-SET-SEC
            MOVE    ORCSCOMMON-HOSPNUM  TO  SPA-HOSPNUM
-      *    SYSUSER ¤«¤é ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼
+      *    SYSUSER ã‹ã‚‰ ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼
            PERFORM 3002-SUPERVISOR-SET-SEC
       *
-      *    ¥Þ¥¹¥¿¡¼¥á¥Ë¥å¥¦¡¼½é´üÀßÄê
+      *    ãƒžã‚¹ã‚¿ãƒ¼ãƒ¡ãƒ‹ãƒ¥ã‚¦ãƒ¼åˆæœŸè¨­å®š
            IF      SPA-ERRCD           =   SPACE
                PERFORM 100-SPA-INIT-SEC
            END-IF
-      *    ¶ÈÌ³¥Ë¥å¥¦¡¼½é´üÀßÄê
+      *    æ¥­å‹™ãƒ‹ãƒ¥ã‚¦ãƒ¼åˆæœŸè¨­å®š
            IF      SPA-ERRCD           =   SPACE
                PERFORM 200-M01-SPAHEN-SEC
            END-IF
@@ -831,11 +831,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¼èÆÀ½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜å–å¾—å‡¦ç†
       *****************************************************************
        3001-SYSYMD-SET-SEC       SECTION.
       *
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¥»¥Ã¥È
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã‚»ãƒƒãƒˆ
            ACCEPT  SYS-YMD         FROM    DATE
            COMPUTE WRK-SYSYY       =   SYS-YY      +   2000
            MOVE    SYS-MM              TO  WRK-SYSMM
@@ -862,7 +862,7 @@
            IF      STS-DAY-RC1     NOT =   ZERO 
                MOVE    "1003"              TO  SPA-ERRCD
            END-IF
-      *    ÍËÆü»ØÄê
+      *    æ›œæ—¥æŒ‡å®š
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY3-AREA
            MOVE    "31"                TO  LNK-DAY3-IRAI
@@ -877,7 +877,7 @@
            EXIT.
       *
       *****************************************************************
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æÀßÄê½èÍý
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·è¨­å®šå‡¦ç†
       *****************************************************************
        3002-SUPERVISOR-SET-SEC       SECTION.
       *
@@ -899,9 +899,9 @@
            MOVE    "key"               TO  MCP-PATHNAME 
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SYSUSER         =   ZERO
-      *        °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ
+      *        åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·
                IF      SYSUSER-HOSPNUM     =   SPA-HOSPNUM
-      *            ¥¹¡¼¥Ñ¡¼¥Ð¥¤¥¶¡¼
+      *            ã‚¹ãƒ¼ãƒ‘ãƒ¼ãƒã‚¤ã‚¶ãƒ¼
                    MOVE    SYSUSER-SUPERVISOR  TO  SPA-SUPERVISOR
                END-IF
            ELSE
@@ -914,7 +914,7 @@
        3002-SUPERVISOR-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        900-SYSKANRI-KEY10-SEC     SECTION.
       *
@@ -944,7 +944,7 @@
        900-SYSKANRI-KEY10-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        910-SYSKANRI-READ-SEC       SECTION.
       *
@@ -958,7 +958,7 @@
        910-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ðËÜÆÉ¹þ½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬èª­è¾¼å‡¦ç†
       *****************************************************************
        900-SYSBASE-READ-SEC            SECTION.
       *
@@ -973,7 +973,7 @@
        900-SYSBASE-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ðËÜÆÉ¹þ½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬èª­è¾¼å‡¦ç†
       *****************************************************************
        900-SYSUSER-READ-SEC            SECTION.
       *
@@ -989,7 +989,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1003,7 +1003,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëFETCH½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«FETCHå‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1017,7 +1017,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *

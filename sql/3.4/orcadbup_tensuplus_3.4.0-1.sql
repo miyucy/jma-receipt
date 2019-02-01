@@ -1,22 +1,22 @@
 --                                    --
--- ÅÀ¿ôÉí²Ã¾ðÊó¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹         --
+-- ç‚¹æ•°é™„åŠ æƒ…å ±ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´         --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   »»ÄêÍúÎò¶èÊ¬(SANTEIRRKKBN)       --
---   ·î¾å¸Â²ó¿ô(JGNCNT)               --
---   Æü¾å¸Â²ó¿ô(JGNCNT1D)             --
---   ¥¨¥é¡¼½èÍý(JGNCNTERR)            --
---   ÁíÎÌÊÔ½¸¶èÊ¬(SOURYOHENKBN)            --
---   °ìÈÌÌ¾µ­ºÜ¶èÊ¬(IPNKISAIKBN)      --
---   °ìÈÌÌ¾µ­ºÜÃ±°Ì(IPNKANZANTANICD)  --
---   °ìÈÌÌ¾µ­ºÜÃ±°ÌÌ¾(IPNKANZANTANINAME) --
---   °ìÈÌÌ¾µ­ºÜ´¹»»ÃÍ(IPNKANZANCHI)   --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ç®—å®šå±¥æ­´åŒºåˆ†(SANTEIRRKKBN)       --
+--   æœˆä¸Šé™å›žæ•°(JGNCNT)               --
+--   æ—¥ä¸Šé™å›žæ•°(JGNCNT1D)             --
+--   ã‚¨ãƒ©ãƒ¼å‡¦ç†(JGNCNTERR)            --
+--   ç·é‡ç·¨é›†åŒºåˆ†(SOURYOHENKBN)            --
+--   ä¸€èˆ¬åè¨˜è¼‰åŒºåˆ†(IPNKISAIKBN)      --
+--   ä¸€èˆ¬åè¨˜è¼‰å˜ä½(IPNKANZANTANICD)  --
+--   ä¸€èˆ¬åè¨˜è¼‰å˜ä½å(IPNKANZANTANINAME) --
+--   ä¸€èˆ¬åè¨˜è¼‰æ›ç®—å€¤(IPNKANZANCHI)   --
 --                                    --
 -- Create Date : 2006/12/18           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table tbl_tensuplus
    add column SANTEIRRKKBN  numeric(1);
 alter table tbl_tensuplus
@@ -36,7 +36,7 @@ alter table tbl_tensuplus
 alter table tbl_tensuplus
    add column IPNKANZANCHI   numeric(10,5);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table tbl_tensuplus
    alter SANTEIRRKKBN set default 0;
 alter table tbl_tensuplus

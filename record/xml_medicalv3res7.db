@@ -14,14 +14,14 @@ xml_medicalv3res7 {
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
 	Delete_Information  {
-#---    °ì³ç²ò½ü
+#---    ä¸€æ‹¬è§£é™¤
 		Delete_Class		varchar(3);
-#---    ºï½ü¡¡¥«¥ë¥Æ£Õ£É£Ä
+#---    å‰Šé™¤ã€€ã‚«ãƒ«ãƒ†ï¼µï¼©ï¼¤
 		Delete_Karte_Uid	varchar(36);
-#---    ºï½ü¡¡¥ª¥ë¥«£Õ£É£Ä
+#---    å‰Šé™¤ã€€ã‚ªãƒ«ã‚«ï¼µï¼©ï¼¤
 		Delete_Orca_Uid		varchar(64);
 	};
-#---    ÇÓÂ¾À©¸æ°ìÍ÷
+#---    æ’ä»–åˆ¶å¾¡ä¸€è¦§
 	Lock_Information {
 		Lock_Karte_Uid		varchar(36);
 		Lock_Orca_Uid		varchar(64);
@@ -32,7 +32,7 @@ xml_medicalv3res7 {
 		Lock_Date		varchar(10);
 		Lock_Time		varchar(8);
 	} [100];
-#--- ³ÎÇ§¥á¥Ã¥»¡¼¥¸
+#--- ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Delete_Select_Information {
         Delete_Select			varchar(4);
         Delete_Select_Message		varchar(100);

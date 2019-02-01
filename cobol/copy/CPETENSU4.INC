@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      ÅÅ»ÒÅÀ¿ôÉ½¡¡Æþ±¡´ðËÜÎÁ¥Æ¡¼¥Ö¥ë COPY (CPETENSU4.INC) *
+      *      é›»å­ç‚¹æ•°è¡¨ã€€å…¥é™¢åŸºæœ¬æ–™ãƒ†ãƒ¼ãƒ–ãƒ« COPY (CPETENSU4.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  ETENSU4-REC.
            03  ETENSU4-KEY.
-      *        ¥°¥ë¡¼¥×ÈÖ¹æ
+      *        ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·
                05  ETENSU4-N-GROUP             PIC  9(03).
-      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *        è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  ETENSU4-SRYCD               PIC  X(09).
-      *        Í­¸ú³«»ÏÆü
+      *        æœ‰åŠ¹é–‹å§‹æ—¥
                05  ETENSU4-YUKOSTYMD           PIC  X(08).
-      *        Í­¸ú½ªÎ»Æü
+      *        æœ‰åŠ¹çµ‚äº†æ—¥
                05  ETENSU4-YUKOEDYMD           PIC  X(08).
-      *    ²Ã»»¼±ÊÌ
+      *    åŠ ç®—è­˜åˆ¥
            03  ETENSU4-KASAN                   PIC  9(02).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  ETENSU4-CHGYMD                  PIC  X(08).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  ETENSU4-UP-KEY.
                05  ETENSU4-UPN-GROUP           PIC  9(03).
                05  ETENSU4-UPSRYCD             PIC  X(09).

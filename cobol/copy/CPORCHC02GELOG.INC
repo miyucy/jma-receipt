@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    °ìÈÌÌ¾µ­ºÜ¥í¥°ºîÀ®¥µ¥Ö   COPY (CPORCHC02GELOG.INC)     *
+      *    ä¸€èˆ¬åè¨˜è¼‰ãƒ­ã‚°ä½œæˆã‚µãƒ–   COPY (CPORCHC02GELOG.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCHC02GELOGAREA.
       *
-      *    ½èÍý¶èÊ¬
+      *    å‡¦ç†åŒºåˆ†
            03  ORCHC02GELOG-SYORIKBN       PIC  X(01).
-      *    ÆâÍÆ¥Æ¡¼¥Ö¥ë
+      *    å†…å®¹ãƒ†ãƒ¼ãƒ–ãƒ«
            03  ORCHC02GELOG-TBL-AREA.
                05  ORCHC02GELOG-TBL        OCCURS  100.
-      *            ÅÁÉ¼ÈÖ¹æ
+      *            ä¼ç¥¨ç•ªå·
                    07  ORCHC02GELOG-DENPNUM        PIC  9(07).
-      *            ºÞÈÖ¹æ
+      *            å‰¤ç•ªå·
                    07  ORCHC02GELOG-ZAINUM         PIC  9(08).
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  ORCHC02GELOG-SRYCD          PIC  X(09).
-      *            Ìô²Á´ð½à¥³¡¼¥É¡Ê°ìÈÌÌ¾¥³¡¼¥É¡Ë
+      *            è–¬ä¾¡åŸºæº–ã‚³ãƒ¼ãƒ‰ï¼ˆä¸€èˆ¬åã‚³ãƒ¼ãƒ‰ï¼‰
                    07  ORCHC02GELOG-YAKKAKJNCD     PIC  X(12).
-      *            °ìÈÌÌ¾µ­ºÜÆâÍÆ
+      *            ä¸€èˆ¬åè¨˜è¼‰å†…å®¹
                    07  ORCHC02GELOG-GENERICNAME    PIC  X(200).
       *
            03  ORCHC02GELOG-RCD            PIC 9(01).

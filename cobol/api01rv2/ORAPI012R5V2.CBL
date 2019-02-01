@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI012R5V2.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿¡ÊÊÝ¸±¸øÈñ¤Î¼ïÎà¡Ë¡¢Êä½õ¶èÊ¬¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  15/12/XX    NACL¡ÝÂ¿¡¹Ç¼¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ä¿é™ºç•ªå·ãƒžã‚¹ã‚¿ï¼ˆä¿é™ºå…¬è²»ã®ç¨®é¡žï¼‰ã€è£œåŠ©åŒºåˆ†å–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  15/12/XX    NACLâˆ’å¤šã€…ç´ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *
       *****************************************************************
       *
@@ -39,7 +39,7 @@
       *FILE                    SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -50,14 +50,14 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-OK                  PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDH                     PIC 9(04).
            03  IDH2                    PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -69,7 +69,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    »þ´ÖÊÔ½¸
+      *    æ™‚é–“ç·¨é›†
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -85,7 +85,7 @@
                05  WRK-YY-01               PIC 9(04).
                05  WRK-MM-01               PIC 9(02).
                05  WRK-DD-01               PIC 9(02).
-      *    ¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -109,23 +109,23 @@
       *
            03  WRK-HJO-TBL.
                05  WRK-HJO-MAX         PIC 9(04).
-      *        Á¥°÷¡ÊÁ°´ü¹âÎð¼Ô¡Ë
+      *        èˆ¹å“¡ï¼ˆå‰æœŸé«˜é½¢è€…ï¼‰
                05  WRK-HJO-002-REC-G.
-                   07  FILLER          PIC X(10) VALUE "1 ¿¦Ì³".
-                   07  FILLER          PIC X(10) VALUE "2 ²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "3 ÄÌ¶Ð".
-                   07  FILLER          PIC X(10) VALUE "7 £³³ä".
-                   07  FILLER          PIC X(10) VALUE "8 £²³ä".
-                   07  FILLER          PIC X(10) VALUE "9 £±³ä".
-                   07  FILLER          PIC X(10) VALUE "A £±³ä¿¦Ì³".
-                   07  FILLER          PIC X(10) VALUE "B £±³ä²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "C £±³äÄÌ¶Ð".
-                   07  FILLER          PIC X(10) VALUE "D £²³ä¿¦Ì³".
-                   07  FILLER          PIC X(10) VALUE "E £²³ä²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "F £²³äÄÌ¶Ð".
-                   07  FILLER          PIC X(10) VALUE "G £³³ä¿¦Ì³".
-                   07  FILLER          PIC X(10) VALUE "H £³³ä²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "I £³³äÄÌ¶Ð".
+                   07  FILLER          PIC X(10) VALUE "1 è·å‹™".
+                   07  FILLER          PIC X(10) VALUE "2 ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "3 é€šå‹¤".
+                   07  FILLER          PIC X(10) VALUE "7 ï¼“å‰²".
+                   07  FILLER          PIC X(10) VALUE "8 ï¼’å‰²".
+                   07  FILLER          PIC X(10) VALUE "9 ï¼‘å‰²".
+                   07  FILLER          PIC X(10) VALUE "A ï¼‘å‰²è·å‹™".
+                   07  FILLER          PIC X(10) VALUE "B ï¼‘å‰²ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "C ï¼‘å‰²é€šå‹¤".
+                   07  FILLER          PIC X(10) VALUE "D ï¼’å‰²è·å‹™".
+                   07  FILLER          PIC X(10) VALUE "E ï¼’å‰²ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "F ï¼’å‰²é€šå‹¤".
+                   07  FILLER          PIC X(10) VALUE "G ï¼“å‰²è·å‹™".
+                   07  FILLER          PIC X(10) VALUE "H ï¼“å‰²ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "I ï¼“å‰²é€šå‹¤".
                05  WRK-HJO-002-REC-R   REDEFINES   WRK-HJO-002-REC-G.
                    07  WRK-HJO-002-REC     OCCURS  15.
                        09  WRK-HOJO-002        PIC X(01).
@@ -133,18 +133,18 @@
                        09  WRK-HOJO-002MEI     PIC X(08).
                05  WRK-HOJO02-MAX          PIC 9(02)   VALUE  15.
       *
-      *        ¹ñÊÝ
+      *        å›½ä¿
                05  WRK-HJO-060-REC-G.
-                   07  FILLER          PIC X(16) VALUE "0 Ìµ¤·".
-                   07  FILLER          PIC X(16) VALUE "1 £±³ä".
-                   07  FILLER          PIC X(16) VALUE "2 £²³ä".
-                   07  FILLER          PIC X(16) VALUE "3 £³³ä".
+                   07  FILLER          PIC X(16) VALUE "0 ç„¡ã—".
+                   07  FILLER          PIC X(16) VALUE "1 ï¼‘å‰²".
+                   07  FILLER          PIC X(16) VALUE "2 ï¼’å‰²".
+                   07  FILLER          PIC X(16) VALUE "3 ï¼“å‰²".
                    07  FILLER          PIC X(16) VALUE
-                                                 "4 ³°£±³ä Æþ£°³ä".
+                                                 "4 å¤–ï¼‘å‰² å…¥ï¼å‰²".
                    07  FILLER          PIC X(16) VALUE
-                                                 "5 ³°£²³ä Æþ£±³ä".
+                                                 "5 å¤–ï¼’å‰² å…¥ï¼‘å‰²".
                    07  FILLER          PIC X(16) VALUE
-                                                 "6 ³°£³³ä Æþ£²³ä".
+                                                 "6 å¤–ï¼“å‰² å…¥ï¼’å‰²".
                05  WRK-HJO-060-REC-R   REDEFINES   WRK-HJO-060-REC-G.
                    07  WRK-HJO-060-REC     OCCURS  7.
                        09  WRK-HOJO-060        PIC X(01).
@@ -152,10 +152,10 @@
                        09  WRK-HOJO-060MEI     PIC X(14).
                05  WRK-HOJ060-MAX          PIC 9(02)   VALUE  7.
       *
-      *        ¼«Èñ 
+      *        è‡ªè²» 
                05  WRK-HJO-980-REC-G.
-                   07  FILLER          PIC X(10) VALUE "1 ²ÝÀÇ".
-                   07  FILLER          PIC X(10) VALUE "2 Èó²Ý".
+                   07  FILLER          PIC X(10) VALUE "1 èª²ç¨Ž".
+                   07  FILLER          PIC X(10) VALUE "2 éžèª²".
                05  WRK-HJO-980-REC-R   REDEFINES   WRK-HJO-980-REC-G.
                    07  WRK-HJO-980-REC     OCCURS  2.
                        09  WRK-HOJO-980        PIC X(01).
@@ -163,11 +163,11 @@
                        09  WRK-HOJO-980MEI     PIC X(08).
                05  WRK-HOJ980-MAX          PIC 9(02)   VALUE  2.
       *
-      *        Á°´ü¹âÎð¼Ô(¶¨²ñÂ¾¡Ë
+      *        å‰æœŸé«˜é½¢è€…(å”ä¼šä»–ï¼‰
                05  WRK-HJO-009-REC-G.
-                   07  FILLER          PIC X(10) VALUE "7 £³³ä".
-                   07  FILLER          PIC X(10) VALUE "8 £²³ä".
-                   07  FILLER          PIC X(10) VALUE "9 £±³ä".
+                   07  FILLER          PIC X(10) VALUE "7 ï¼“å‰²".
+                   07  FILLER          PIC X(10) VALUE "8 ï¼’å‰²".
+                   07  FILLER          PIC X(10) VALUE "9 ï¼‘å‰²".
                05  WRK-HJO-009-REC-R   REDEFINES   WRK-HJO-009-REC-G.
                    07  WRK-HJO-009-REC     OCCURS  3.
                        09  WRK-HOJO-009        PIC X(01).
@@ -175,10 +175,10 @@
                        09  WRK-HOJO-009MEI     PIC X(08).
                05  WRK-HOJ009-MAX          PIC 9(02)   VALUE  3.
       *
-      *        ¸å´ü¹âÎð¼Ô¤ÎÊä½õ¶èÊ¬¡Ê£È£²£°¡¥£´°Ê¹ß¡Ë
+      *        å¾ŒæœŸé«˜é½¢è€…ã®è£œåŠ©åŒºåˆ†ï¼ˆï¼¨ï¼’ï¼ï¼Žï¼”ä»¥é™ï¼‰
                05  WRK-HJO-039-REC-G.
-                   07  FILLER          PIC X(10) VALUE "1 £±³ä".
-                   07  FILLER          PIC X(10) VALUE "3 £³³ä".
+                   07  FILLER          PIC X(10) VALUE "1 ï¼‘å‰²".
+                   07  FILLER          PIC X(10) VALUE "3 ï¼“å‰²".
                05  WRK-HJO-039-REC-R   REDEFINES   WRK-HJO-039-REC-G.
                    07  WRK-HJO-039-REC     OCCURS  2.
                        09  WRK-HOJO-039        PIC X(01).
@@ -186,15 +186,15 @@
                        09  WRK-HOJO-039MEI     PIC X(08).
                05  WRK-HOJ039-MAX          PIC 9(02)   VALUE  2.
       *
-      *        ¶¦ºÑ¤Î²¼Á¥¸åÊä½õ¶èÊ¬ÄÉ²Ã¡ÊÁ°´ü¹âÎð¼Ô¡Ë
+      *        å…±æ¸ˆã®ä¸‹èˆ¹å¾Œè£œåŠ©åŒºåˆ†è¿½åŠ ï¼ˆå‰æœŸé«˜é½¢è€…ï¼‰
                05  WRK-HJO-032-REC-G.
-                   07  FILLER          PIC X(10) VALUE "2 ²¼Á¥£³·î".
-                   07  FILLER          PIC X(10) VALUE "7 £³³ä".
-                   07  FILLER          PIC X(10) VALUE "8 £²³ä".
-                   07  FILLER          PIC X(10) VALUE "9 £±³ä".
-                   07  FILLER          PIC X(10) VALUE "B £±³ä²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "E £²³ä²¼Á¥".
-                   07  FILLER          PIC X(10) VALUE "H £³³ä²¼Á¥".
+                   07  FILLER          PIC X(10) VALUE "2 ä¸‹èˆ¹ï¼“æœˆ".
+                   07  FILLER          PIC X(10) VALUE "7 ï¼“å‰²".
+                   07  FILLER          PIC X(10) VALUE "8 ï¼’å‰²".
+                   07  FILLER          PIC X(10) VALUE "9 ï¼‘å‰²".
+                   07  FILLER          PIC X(10) VALUE "B ï¼‘å‰²ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "E ï¼’å‰²ä¸‹èˆ¹".
+                   07  FILLER          PIC X(10) VALUE "H ï¼“å‰²ä¸‹èˆ¹".
                05  WRK-HJO-032-REC-R   REDEFINES   WRK-HJO-032-REC-G.
                    07  WRK-HJO-032-REC     OCCURS  7.
                        09  WRK-HOJO-032        PIC X(01).
@@ -203,50 +203,50 @@
                05  WRK-HOJ032-MAX          PIC 9(02)   VALUE  7.
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ÆüÉÕ¥µ¥Ö¥ë¡¼¥Á¥óÎÎ°è
+      *    æ—¥ä»˜ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³é ˜åŸŸ
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ²èÌÌÆüÉÕÊÑ´¹¥µ¥Ö
+      *    ç”»é¢æ—¥ä»˜å¤‰æ›ã‚µãƒ–
       *    COPY    "CPORCSGDAY.INC".
       *
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
       *    COPY    "CPORCSKANACHK.INC".
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿¡Ê³ÈÄ¥¡Ë
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿ï¼ˆæ‹¡å¼µï¼‰
       *    COPY    "CPORCSKANACHK2.INC".
       *
-      *    ³ÈÄ¥Ê¸»úÂÐ±þ
+      *    æ‹¡å¼µæ–‡å­—å¯¾å¿œ
       *    COPY    "CPORCSSTRING.INC".
-      *    Êä½õ¶èÊ¬Ì¾¾Î¥Ñ¥é¥á¥¿
+      *    è£œåŠ©åŒºåˆ†åç§°ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORAPI012SUB1.INC".
       *
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPINSURANCEINF1V2REQ.INC".
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPINSURANCEINF1V2RES.INC".
       *
-      *    API XMLÆÉ¤ß¹þ¤ß¶¦ÄÌÄêµÁ
+      *    API XMLèª­ã¿è¾¼ã¿å…±é€šå®šç¾©
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
       *    COPY    "CPSYSKANRI.INC".
       *
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            COPY  "CPSK1010.INC".
       *
-      *    ÊÝ¸±ÈÖ¹æ
+      *    ä¿é™ºç•ªå·
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
@@ -255,7 +255,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -272,7 +272,7 @@
       *
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -286,18 +286,18 @@
       ***  INITIALIZE                      CNT-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        ¥æ¡¼¥¶£É£Ä¥¨¥é¡¼
+      *        ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤ã‚¨ãƒ©ãƒ¼
                MOVE   404                  TO  APILST21-HTTPSTATUS
            ELSE
-      *        ÊÖµÑÎÎ°èÊÔ½¸
+      *        è¿”å´é ˜åŸŸç·¨é›†
                PERFORM 300-PTXMLMAKE-SEC
            END-IF
       *
@@ -310,14 +310,14 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-INSURANCEINFRES
            INITIALIZE                      XML-APIREQ
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -326,14 +326,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ÆüÉÕ¡¦»þ´Ö½ÐÎÏÊÔ½¸
+      *    æ—¥ä»˜ãƒ»æ™‚é–“å‡ºåŠ›ç·¨é›†
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  INSUINFS-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  INSUINFS-INFORMATION-TIME
       *
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¥»¥Ã¥È 
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ã‚»ãƒƒãƒˆ 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -342,7 +342,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *    ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -360,11 +360,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML¾ðÊó¼è¤ê½Ð¤·
+      *    XMLæƒ…å ±å–ã‚Šå‡ºã—
            PERFORM 1000-APTLSTREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -381,12 +381,12 @@
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
-      *    ÆþÎÏ¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›é …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
       *
-      *    ÊÖµÑ½èÍý
+      *    è¿”å´å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2002-HKNNM-LIST-SEC
            END-IF
@@ -396,7 +396,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó¤«¤éÆâÍÆ¤ò¼è¤ê½Ð¤¹
+      *    XMLæƒ…å ±ã‹ã‚‰å†…å®¹ã‚’å–ã‚Šå‡ºã™
       *****************************************************************
        1000-APTLSTREAD-SEC   SECTION.
       *
@@ -404,7 +404,7 @@
                DISPLAY "ACPLSTRES-OBJECT not low_value"
                 ",APILST21-BODY:"  APILST21-BODY
            END-IF
-      * XML¾ðÊó¼è¤ê½Ð¤·
+      * XMLæƒ…å ±å–ã‚Šå‡ºã—
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_insuranceinf1v2req"
                                        TO  MCP-TABLE
@@ -447,7 +447,7 @@
        1000-APTLSTREAD-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÉ¤ß¹þ¤ó¤ÀXML¤ÎLOW-VALUE ¤ò  SPACE ¤ËÃÖ´¹
+      *    èª­ã¿è¾¼ã‚“ã XMLã®LOW-VALUE ã‚’  SPACE ã«ç½®æ›
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -455,17 +455,17 @@
        10001-XML-REMAKE-EXT.
            EXIT.
       *****************************************************************
-      *    ÀßÄêÆâÍÆ¥Á¥§¥Ã¥¯
+      *    è¨­å®šå†…å®¹ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
            MOVE    INSUINFQ-BASE-DATE  TO  WRK-BASE-DATE
-      *    ½èÍýÆü
+      *    å‡¦ç†æ—¥
            MOVE    INSUINFQ-BASE-DATE  TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-BASE-YMD
-      *    ³«»ÏÆüÌ¤ÀßÄê¤Ï¥·¥¹¥Æ¥àÆüÉÕ
+      *    é–‹å§‹æ—¥æœªè¨­å®šã¯ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜
            IF      WRK-BASE-DATE       =   SPACE
                MOVE    SPA-SYSYMD          TO  WRK-BASE-YMD
                MOVE    WRK-BASE-YMD        TO  WRK-SYMD
@@ -475,7 +475,7 @@
            END-IF
            MOVE    WRK-BASE-DATE       TO  INSUINFS-BASE-DATE
       *
-      *    ´ð½àÆü¥Á¥§¥Ã¥¯
+      *    åŸºæº–æ—¥ãƒã‚§ãƒƒã‚¯
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-BASEDATE-CHK-SEC
            END-IF
@@ -485,11 +485,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ð½àÆü¥Á¥§¥Ã¥¯
+      *    åŸºæº–æ—¥ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-BASEDATE-CHK-SEC    SECTION.
       *
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯¥µ¥Ö
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -507,14 +507,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÈÖ¹æ¥Þ¥¹¥¿°ìÍ÷½èÍý
+      *    ä¿é™ºç•ªå·ãƒžã‚¹ã‚¿ä¸€è¦§å‡¦ç†
       *****************************************************************
        2002-HKNNM-LIST-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDX
            MOVE    ZERO                TO  IDY
       *
-      *    ´ð½àÆüÉÕ¡Ü£±·î
+      *    åŸºæº–æ—¥ä»˜ï¼‹ï¼‘æœˆ
            MOVE    WRK-BASE-YMD        TO  WRK-YMD-01
            COMPUTE WRK-MM-01           =   WRK-MM-01    +   1
            IF      WRK-MM-01           >   12
@@ -539,17 +539,17 @@
            END-IF
       *
            PERFORM UNTIL       FLG-HKNNUM  =   1
-      *        ´ð½àÆüÉÕ¤«¤é¡Ü£±¤Þ¤Ç¤òÈÏ°Ï¤È¤¹¤ë
+      *        åŸºæº–æ—¥ä»˜ã‹ã‚‰ï¼‹ï¼‘ã¾ã§ã‚’ç¯„å›²ã¨ã™ã‚‹
                IF    ((HKN-TEKSTYMD    <=  WRK-BASE-YMD ) AND
                       (HKN-TEKEDYMD    >=  WRK-BASE-YMD ))
                  OR  ((HKN-TEKSTYMD    <=  WRK-YMD-01   ) AND
                       (HKN-TEKEDYMD    >=  WRK-YMD-01   ))
                    IF      HKN-HKNKOHSBTKBN    =   "1"  OR  "4"
                                                OR  "8"  OR  "9"
-      *                ÊÝ¸±
+      *                ä¿é™º
                        PERFORM 20021-HKNNUM-HEN-SEC
                    ELSE
-      *                ¸øÈñ
+      *                å…¬è²»
                        PERFORM 20022-KOHNUM-HEN-SEC
                    END-IF
                END-IF
@@ -569,12 +569,12 @@
        2002-HKNNM-LIST-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÊÔ½¸½èÍý
+      *    ä¿é™ºç·¨é›†å‡¦ç†
       *****************************************************************
        20021-HKNNUM-HEN-SEC               SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
-      *    Æ±¤¸ÊÝ¸±¤Ï´ð½àÆüÍ­¸ú¤òÂÐ¾Ý
+      *    åŒã˜ä¿é™ºã¯åŸºæº–æ—¥æœ‰åŠ¹ã‚’å¯¾è±¡
            IF     (IDX                 >   ZERO )  AND
                   (HKN-HKNNUM          =   INSUINFS-INSURANCE-CLASS
                                                     (IDX))
@@ -589,16 +589,16 @@
       *
            IF     (FLG-OK              =   1   )
               AND (IDX                 <=  99  )
-      *        ÊÝ¸±¾ðÊóÊÔ½¸
+      *        ä¿é™ºæƒ…å ±ç·¨é›†
                MOVE    HKN-HKNNUM      TO  INSUINFS-INSURANCE-CLASS
                                                         (IDX)
                MOVE    HKN-TANSEIDONAME
                                        TO  INSUINFS-INSURANCE-NAME
                                                         (IDX)
-      *        ÊÝ¸±Ë¡ÊÌÈÖ¹æ
+      *        ä¿é™ºæ³•åˆ¥ç•ªå·
                MOVE    HKN-HBTNUM      TO  INSUINFS-INSURANCE-HKNHBTNUM
                                                         (IDX)
-      *        Êä½õ¶èÊ¬
+      *        è£œåŠ©åŒºåˆ†
                MOVE    HKN-HKNNUM      TO  WRK-HKNNUM
                PERFORM 200211-HOJOKBN-HEN-SEC
            END-IF
@@ -607,14 +607,14 @@
            EXIT.
       *
       *****************************************************************
-      *    Êä½õ¶èÊ¬ÊÔ½¸½èÍý
+      *    è£œåŠ©åŒºåˆ†ç·¨é›†å‡¦ç†
       *****************************************************************
        200211-HOJOKBN-HEN-SEC     SECTION.
       *
       *
            EVALUATE    WRK-HKNNUM
            WHEN    "002"
-      *        Á¥°÷
+      *        èˆ¹å“¡
                PERFORM VARYING     IDH     FROM    1   BY  1
                        UNTIL       IDH     >   WRK-HOJO02-MAX
                    MOVE    WRK-HOJO-002 (IDH)
@@ -626,15 +626,15 @@
                    IF     WRK-HOJO-002 (IDH)   =   "1"
                                                OR  "2"
                                                OR  "3"
-      *                   °ìÈÌ
+      *                   ä¸€èˆ¬
                        CONTINUE
                    ELSE
-      *                ¹âÎð¼Ô¶èÊ¬
+      *                é«˜é½¢è€…åŒºåˆ†
                        MOVE    "1"    TO  INSUINFS-ASSISTANCE-MODE
                                                               (IDX IDH)
                    END-IF
                END-PERFORM
-      *    ¸å´ü¹âÎð¼Ô
+      *    å¾ŒæœŸé«˜é½¢è€…
            WHEN    "039"
            WHEN    "040"
                PERFORM VARYING     IDH     FROM    1   BY  1
@@ -645,11 +645,11 @@
                    MOVE    WRK-HOJO-039MEI(IDH)
                                        TO  INSUINFS-ASSISTANCE-NAME
                                                               (IDX IDH)
-      *            ¹âÎð¼Ô¶èÊ¬
+      *            é«˜é½¢è€…åŒºåˆ†
                    MOVE    "1"         TO  INSUINFS-ASSISTANCE-MODE
                                                               (IDX IDH)
                END-PERFORM
-      *    ¶¦ºÑ
+      *    å…±æ¸ˆ
            WHEN    "031"
            WHEN    "032"
            WHEN    "033"
@@ -663,15 +663,15 @@
                                        TO  INSUINFS-ASSISTANCE-NAME
                                                               (IDX IDH)
                    IF     WRK-HOJO-032 (IDH)   =   "2"
-      *                   °ìÈÌ
+      *                   ä¸€èˆ¬
                        CONTINUE
                    ELSE
-      *                ¹âÎð¼Ô¶èÊ¬
+      *                é«˜é½¢è€…åŒºåˆ†
                        MOVE    "1"    TO  INSUINFS-ASSISTANCE-MODE
                                                               (IDX IDH)
                    END-IF
                END-PERFORM
-      *    ¹ñÊÝ
+      *    å›½ä¿
            WHEN    "060"
            WHEN    "068"
                PERFORM VARYING     IDH     FROM    1   BY  1
@@ -683,10 +683,10 @@
                                        TO  INSUINFS-ASSISTANCE-NAME
                                                               (IDX IDH)
                END-PERFORM
-      *    ¼£¸³
+      *    æ²»é¨“
            WHEN    "900"
            WHEN    "901"
-      *    ¼«Èñ
+      *    è‡ªè²»
            WHEN    "980"   THRU   "989"
                PERFORM VARYING     IDH     FROM    1   BY  1
                        UNTIL       IDH     >   WRK-HOJ980-MAX
@@ -702,7 +702,7 @@
                IF      WRK-HKNNUM(1:1)     =   "9"
                    CONTINUE
                ELSE
-      *        ¶¨²ñÅù
+      *        å”ä¼šç­‰
                    PERFORM VARYING     IDH     FROM    1   BY  1
                            UNTIL       IDH     >   WRK-HOJ009-MAX
                        MOVE    WRK-HOJO-009 (IDH)
@@ -711,7 +711,7 @@
                        MOVE    WRK-HOJO-009MEI(IDH)
                                        TO  INSUINFS-ASSISTANCE-NAME
                                                               (IDX IDH)
-      *                ¹âÎð¼Ô¶èÊ¬
+      *                é«˜é½¢è€…åŒºåˆ†
                        MOVE    "1"     TO  INSUINFS-ASSISTANCE-MODE
                                                               (IDX IDH)
                    END-PERFORM
@@ -722,12 +722,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ¸øÈñ¾ðÊóÊÔ½¸½èÍý
+      *    å…¬è²»æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20022-KOHNUM-HEN-SEC     SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
-      *    Æ±¤¸ÊÝ¸±¤Ï´ð½àÆüÍ­¸ú¤òÂÐ¾Ý
+      *    åŒã˜ä¿é™ºã¯åŸºæº–æ—¥æœ‰åŠ¹ã‚’å¯¾è±¡
            IF     (IDY                 >   ZERO )  AND
                   (HKN-HKNNUM          =   INSUINFS-INSURANCE-CLASS
                                                     (IDY))
@@ -735,7 +735,7 @@
                       (HKN-TEKEDYMD    >=  WRK-BASE-YMD )
                    MOVE    1               TO  FLG-OK
                END-IF
-      *        Ï·¿Í¤Î»þ
+      *        è€äººã®æ™‚
                IF    ((HKN-HKNNUM      =   "027"  )  AND
                       (HKN-PAYKBN      =   "01"  OR
                                            "02"  OR
@@ -758,10 +758,10 @@
                MOVE    HKN-TANSEIDONAME
                                        TO  INSUINFS-PUBLIC-CLASS-NAME
                                                           (IDY)
-      *        Ë¡ÊÌÈÖ¹æ
+      *        æ³•åˆ¥ç•ªå·
                MOVE    HKN-HBTNUM      TO  INSUINFS-PUBLIC-HKNHBTNUM
                                                           (IDY)
-      *        »ÙÊ§¶èÊ¬¡ÊÏ·¿Í¤Î¤ß¡Ê¸½ºßÇÑ»ß¡Ë¡Ë
+      *        æ”¯æ‰•åŒºåˆ†ï¼ˆè€äººã®ã¿ï¼ˆç¾åœ¨å»ƒæ­¢ï¼‰ï¼‰
                IF     (HKN-HKNNUM      =   "027"  )
                    MOVE    HKN-PAYKBN      TO  INSUINFS-PUBLIC-PAYKBN
                                                           (IDY)
@@ -773,19 +773,19 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        Àµ¾ï½ªÎ»
-               MOVE    "½èÍý½ªÎ»"          TO  INSUINFS-API-RESULT-MSG
+      *        æ­£å¸¸çµ‚äº†
+               MOVE    "å‡¦ç†çµ‚äº†"          TO  INSUINFS-API-RESULT-MSG
            ELSE
-      *        ¥¨¥é¡¼¡¦·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *        ã‚¨ãƒ©ãƒ¼ãƒ»è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  INSUINFS-API-RESULT
                MOVE    WRK-ERRMSG          TO  INSUINFS-API-RESULT-MSG
@@ -834,7 +834,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -863,7 +863,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÑ´¹ÊÔ½¸½èÍý
+      *    æ—¥ä»˜å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -885,56 +885,56 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "10"
-               MOVE    "´ð½àÆü¤¬ÎñÆü¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "åŸºæº–æ—¥ãŒæš¦æ—¥ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "³ºÅöÆâÍÆ¤¬Â¸ºß¤·¤Þ¤»¤ó¡£"
+               MOVE    "è©²å½“å†…å®¹ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚"
                                                TO  WRK-ERRMSG
-      *¶¦ÄÌ¥¨¥é¡¼
+      *å…±é€šã‚¨ãƒ©ãƒ¼
            WHEN    "89"
-      *        ORCSCOMMON ¤Î¥¨¥é¡¼
+      *        ORCSCOMMON ã®ã‚¨ãƒ©ãƒ¼
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "¿¦°÷¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "è·å“¡æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "¥·¥¹¥Æ¥àÆüÉÕ¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "´µ¼ÔÈÖ¹æ¹½À®¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "æ‚£è€…ç•ªå·æ§‹æˆæƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "¥°¥ë¡¼¥×°åÎÅµ¡´Ø¤¬ÉÔÀ°¹ç¤Ç¤¹¡£"
-                           "½èÍý¤ò½ªÎ»¤·¤Æ²¼¤µ¤¤¡£"
+                   STRING  "ã‚°ãƒ«ãƒ¼ãƒ—åŒ»ç™‚æ©Ÿé–¢ãŒä¸æ•´åˆã§ã™ã€‚"
+                           "å‡¦ç†ã‚’çµ‚äº†ã—ã¦ä¸‹ã•ã„ã€‚"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "¥·¥¹¥Æ¥à¹àÌÜ¤¬ÀßÄê¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ é …ç›®ãŒè¨­å®šã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "Â¾Ã¼Ëö»ÈÍÑÃæ"          TO  WRK-ERRMSG
+               MOVE    "ä»–ç«¯æœ«ä½¿ç”¨ä¸­"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "½èÍý¶èÊ¬Ì¤ÀßÄê"        TO  WRK-ERRMSG
+               MOVE    "å‡¦ç†åŒºåˆ†æœªè¨­å®š"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE    "Á÷¿®ÆâÍÆ¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹¡£"
+               MOVE    "é€ä¿¡å†…å®¹ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE    "Á÷¿®ÆâÍÆ¤ÎÆÉ¹þ¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "é€ä¿¡å†…å®¹ã®èª­è¾¼ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "¥æ¡¼¥¶£É£ÄÌ¤ÅÐÏ¿¡£"
+               MOVE    "ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤æœªç™»éŒ²ã€‚"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -942,7 +942,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¸øÈñÍúÎòÆÉ¤ß¹þ¤ß
+      *    å…¬è²»å±¥æ­´èª­ã¿è¾¼ã¿
       *****************************************************************
        930-HKNNUM-READ-SEC         SECTION.
       *
@@ -959,7 +959,7 @@
        930-HKNNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -973,7 +973,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -987,7 +987,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

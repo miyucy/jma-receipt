@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ∆˛±°ø«Œ≈π‘∞Ÿæ»≤Ò•∆°º•÷•Î    COPY (CPNSRYSRH.INC)      *
+      *    ÂÖ•Èô¢Ë®∫ÁôÇË°åÁÇ∫ÁÖß‰ºö„ÉÜ„Éº„Éñ„É´    COPY (CPNSRYSRH.INC)      *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’     ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò     ÂÜÖÂÆπ
       ************************************************************
       *01  NSRYSRH-REC.
            03  NSRYSRH-HOSPNUM         PIC 9(02).
@@ -39,6 +39,6 @@
            03  NSRYSRH-CREYMD          PIC X(08).
            03  NSRYSRH-UPYMD           PIC X(08).
            03  NSRYSRH-UPHMS           PIC X(06).
-      *    ∞ ≤º virtual
+      *    ‰ª•‰∏ã virtual
            03  NSRYSRH-SELRRKNUM       PIC 9(03).
            03  NSRYSRH-SELSRYYMD       PIC X(08).

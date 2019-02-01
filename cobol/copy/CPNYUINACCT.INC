@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,58 +16,58 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿    COPY (CPNYUINACCT.INC)       *
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿    COPY (CPNYUINACCT.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  NYUIN-SRYACCT-REC.
            03  NACCT-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  NACCT-HOSPNUM          PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  NACCT-NYUGAIKBN       PIC  X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  NACCT-PTID            PIC  9(10).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  NACCT-SRYKA           PIC  X(02).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  NACCT-SRYYM           PIC  X(06).
-      *¿ÇÎÅ¶èÊ¬
+      *è¨ºç™‚åŒºåˆ†
                05  NACCT-SRYKBN          PIC  X(02).
-      *ºÞÈÖ¹æ
+      *å‰¤ç•ªå·
                05  NACCT-ZAINUM          PIC  9(08).
-      *ºÞ¼±ÊÌ¶èÊ¬¡Ê£±¡§Æþ±¡ÎÁ¡¡£²¡§³°Çñ¡¡£³¡§¼¼ÎÁº¹³Û¡¡£´¡§¿©»ö
-      *            £µ¡§ÊÝ¸±ÁÈ¹ç¤»¡¡£¶¡§Æþ±¡ÎÁ²Ã»»¡¡£·¡§ÎÅÍÜÃ´Åö¼êÅö¡Ë
+      *å‰¤è­˜åˆ¥åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢æ–™ã€€ï¼’ï¼šå¤–æ³Šã€€ï¼“ï¼šå®¤æ–™å·®é¡ã€€ï¼”ï¼šé£Ÿäº‹
+      *            ï¼•ï¼šä¿é™ºçµ„åˆã›ã€€ï¼–ï¼šå…¥é™¢æ–™åŠ ç®—ã€€ï¼—ï¼šç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼‰
            03  NACCT-ZAISKBKBN           PIC  X(01).           
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  NACCT-HKNCOMBI            PIC  9(04).
-      *ºÞÅÀ¿ô
+      *å‰¤ç‚¹æ•°
            03  NACCT-ZAITEN              PIC  9(08).
-      *¿ÇÎÅ¥³¡¼¥É·×
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆ
            03  NACCT-SRYCDTOTAL          PIC  9(14).
-      *¿ôÎÌ·×
+      *æ•°é‡è¨ˆ
            03  NACCT-SURYOUTOTAL         PIC  9(07)V9(03).
-      *ÌÀºÙ¿ô
+      *æ˜Žç´°æ•°
            03  NACCT-MEISAISU            PIC  9(07).
-      *ºÞ²ó¿ô
+      *å‰¤å›žæ•°
            03  NACCT-ZAIKAISU            PIC  9(07).
-      *¼êµ»ÅÀ¿ô£±
+      *æ‰‹æŠ€ç‚¹æ•°ï¼‘
            03  NACCT-SYUTEN1             PIC  9(07).
-      *¼êµ»ÅÀ¿ô£²
+      *æ‰‹æŠ€ç‚¹æ•°ï¼’
            03  NACCT-SYUTEN2             PIC  9(07).
-      *ÌôºÞÅÀ¿ô
+      *è–¬å‰¤ç‚¹æ•°
            03  NACCT-YKZTEN              PIC  9(07).
-      *´ïºàÅÀ¿ô
+      *å™¨æç‚¹æ•°
            03  NACCT-KIZAITEN            PIC  9(07).
-      *¥É¥¯¥¿¡¼¥³¡¼¥É
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  NACCT-DRCD                PIC  X(05).
-      *¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  NACCT-DAY-AREA.
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
              04  NACCT-DAY-TBL.
-      *        ¿ÇÎÅ²ó¿ô¡Ê£±Æü¤«¤é£³£±Æü¡Ë
+      *        è¨ºç™‚å›žæ•°ï¼ˆï¼‘æ—¥ã‹ã‚‰ï¼“ï¼‘æ—¥ï¼‰
                05  NACCT-DAY-1           PIC  9(03).
                05  NACCT-DAY-2           PIC  9(03).
                05  NACCT-DAY-3           PIC  9(03).
@@ -100,18 +100,18 @@
                05  NACCT-DAY-30          PIC  9(03).
                05  NACCT-DAY-31          PIC  9(03).
            03  NACCT-DAY-AREA-R          REDEFINES   NACCT-DAY-AREA.
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                05  NACCT-DAY-TBL2.
                    07  NACCT-DAY         PIC  9(03)
                                          OCCURS   31.
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  NACCT-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  NACCT-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  NACCT-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  NACCT-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  NACCT-UPHMS               PIC  X(06).
       *

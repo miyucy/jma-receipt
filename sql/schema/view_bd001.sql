@@ -22,5 +22,5 @@ CREATE VIEW view_bd001 AS
        AND (c.tstptnumkbn <> '1'::bpchar));
 
 
-COMMENT ON VIEW view_bd001 IS '��Ǽ�ӥ塼';
+COMMENT ON VIEW view_bd001 IS '収納ビュー';
 

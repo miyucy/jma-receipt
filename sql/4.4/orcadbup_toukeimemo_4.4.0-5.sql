@@ -1,6 +1,6 @@
 --                                    --
--- Åý·×³Ð¤¨½ñ¤­¥Ç¡¼¥¿¹¹¿·             --
--- Æü¼¡¡¦·î¼¡Åý·×¥×¥í¥°¥é¥à           --
+-- çµ±è¨ˆè¦šãˆæ›¸ããƒ‡ãƒ¼ã‚¿æ›´æ–°             --
+-- æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ            --
 --                                    --
 -- Create Date : 2009/09/11           --
 --                                    --
@@ -12,8 +12,8 @@ delete from tbl_toukeimemo where pgid = 'ORCBGCHILDLST' and kanricd = '0000' and
 delete from tbl_toukeimemo where hospnum = 0;
 
 COPY tbl_toukeimemo FROM stdin;
-ORCBGCHILDBIRTH	0000	000     	00000000	99999999									ÀÁµáÇ¯·î¡¡»ØÄê¤µ¤ì¤¿ÀÁµáÇ¯·î¤Î´µ¼Ô¤ò½èÍý¤·¤Þ¤¹¡£\n\nÄó½ÐÀè¡¡¡¡Äó½ÐÀè¤ò»ØÄê¤·¤Æ²¼¤µ¤¤¡££°¡§¼ÒÊÝµÚ¤Ó¹ñÊÝ\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡£±¡§¼ÒÊÝ\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡£²¡§¹ñÊÝ\n\n\n			20090911	20090911	140000	0	 		
-ORCBGCHILDLST	0000	000     	00000000	99999999									ÀÁµáÇ¯·î¡¡»ØÄê¤µ¤ì¤¿ÀÁµáÇ¯·î¤Î´µ¼Ô¤ò½èÍý¤·¤Þ¤¹¡£¡ÊÀÁµáÇ¯·î¤Î»ØÄê¤¬Ìµ¤¤¾ì¹ç¤Ï½Ð»º°é»ù°ì»þ¶â²èÌÌ¤Î\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ÀÁµáÇ¯·î¤¬Ì¤ÀßÄê¤Î´µ¼Ô¤ò½èÍý¤·¤Þ¤¹¡£¡Ë\n\n½èÍý¶èÊ¬¡¡ÂÐ¾Ý´µ¼Ô¤ò»ØÄê¤·¤Æ²¼¤µ¤¤¡££°¡§Á´´µ¼Ô\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡£±¡§ÀÁµáºÑ¤ß\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡£²¡§Ì¤ÀÁµá\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡£³¡§ÀÁµá¤·¤Ê¤¤\n\n¢¨½èÍý¶èÊ¬¤ÏÀÁµáÇ¯·î¤¬»ØÄê¤µ¤ì¤¿¾ì¹ç¤Î¤ßÍ­¸ú¤Ç¤¹\n\n\n			20090911	20090911	140000	0	 		
+ORCBGCHILDBIRTH	0000	000     	00000000	99999999									è«‹æ±‚å¹´æœˆã€€æŒ‡å®šã•ã‚ŒãŸè«‹æ±‚å¹´æœˆã®æ‚£è€…ã‚’å‡¦ç†ã—ã¾ã™ã€‚\n\næå‡ºå…ˆã€€ã€€æå‡ºå…ˆã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚ï¼ï¼šç¤¾ä¿åŠã³å›½ä¿\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ï¼‘ï¼šç¤¾ä¿\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ï¼’ï¼šå›½ä¿\n\n\n			20090911	20090911	140000	0	 		
+ORCBGCHILDLST	0000	000     	00000000	99999999									è«‹æ±‚å¹´æœˆã€€æŒ‡å®šã•ã‚ŒãŸè«‹æ±‚å¹´æœˆã®æ‚£è€…ã‚’å‡¦ç†ã—ã¾ã™ã€‚ï¼ˆè«‹æ±‚å¹´æœˆã®æŒ‡å®šãŒç„¡ã„å ´åˆã¯å‡ºç”£è‚²å…ä¸€æ™‚é‡‘ç”»é¢ã®\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€è«‹æ±‚å¹´æœˆãŒæœªè¨­å®šã®æ‚£è€…ã‚’å‡¦ç†ã—ã¾ã™ã€‚ï¼‰\n\nå‡¦ç†åŒºåˆ†ã€€å¯¾è±¡æ‚£è€…ã‚’æŒ‡å®šã—ã¦ä¸‹ã•ã„ã€‚ï¼ï¼šå…¨æ‚£è€…\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ï¼‘ï¼šè«‹æ±‚æ¸ˆã¿\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ï¼’ï¼šæœªè«‹æ±‚\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ï¼“ï¼šè«‹æ±‚ã—ãªã„\n\nâ€»å‡¦ç†åŒºåˆ†ã¯è«‹æ±‚å¹´æœˆãŒæŒ‡å®šã•ã‚ŒãŸå ´åˆã®ã¿æœ‰åŠ¹ã§ã™\n\n\n			20090911	20090911	140000	0	 		
 \.
 
 insert into tbl_toukeimemo select a.pgid,a.kanricd,a.kbncd,a.styukymd,a.edyukymd,a.para1,a.para2,a.para3,a.para4,a.para5,

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCDTCHK005.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ǡ��������å�
-      *  ����ݡ��ͥ��̾  : ���Ź԰پ������
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  05/03/31    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : データチェック
+      *  コンポーネント名  : 診療行為情報抽出
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  05/03/31    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07/06/04  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -36,12 +36,12 @@
        FILE-CONTROL.
       *
       *
-      *    �ǡ��������å���֥ե�����ʼ��Ǵ��ԡ�
+      *    データチェック中間ファイル（受診患者）
            SELECT  DTCHK002-FILE   ASSIGN  DTCHK002PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰�:������
+      *    データチェック中間ファイル（診療行為:入院）
            SELECT  DTCHK006N-FILE
                                    ASSIGN  DTCHK006NPARA
                                    ORGANIZATION    IS  INDEXED
@@ -49,7 +49,7 @@
                                    RECORD  KEY     IS  DTCHK006N-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰�:�����
+      *    データチェック中間ファイル（診療行為:外来）
            SELECT  DTCHK006G-FILE
                                    ASSIGN  DTCHK006GPARA
                                    ORGANIZATION    IS  INDEXED
@@ -57,7 +57,7 @@
                                    RECORD  KEY     IS  DTCHK006G-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    �ǡ��������å����Ź԰�
+      *    データチェック診療行為
            SELECT  DCSRY-FILE
                                    ASSIGN  DTCHKSRYPARA
                                    ORGANIZATION    IS  INDEXED
@@ -65,58 +65,58 @@
                                    RECORD  KEY     IS  DCSRY-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    �ǡ��������å���������
+      *    データチェック算定履歴
            SELECT  DCSANTEI-FILE
                                    ASSIGN  DTCHKSANTEIPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  DCSANTEI-KEY
                                    FILE    STATUS  IS  STS-COMMON.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    �ǡ��������å���֥ե�����ʼ��Ǵ��ԡ�
+      *    データチェック中間ファイル（受診患者）
        FD  DTCHK002-FILE.
            COPY    "CPDTCHK002.INC".
       *
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰�:������
+      *    データチェック中間ファイル（診療行為:入院）
        FD  DTCHK006N-FILE.
            COPY    "CPDTCHK006.INC"
                                    REPLACING  //DTCHK006//
                                    BY         //DTCHK006N//.
       *
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰�:�����
+      *    データチェック中間ファイル（診療行為:外来）
        FD  DTCHK006G-FILE.
            COPY    "CPDTCHK006.INC"
                                    REPLACING  //DTCHK006//
                                    BY         //DTCHK006G//.
       *
-      *    �ǡ��������å����Ź԰�
+      *    データチェック診療行為
        FD  DCSRY-FILE.
        01  DCSRY-REC.
            COPY    "CPDCSRY.INC".
       *
-      *    �ǡ��������å���������
+      *    データチェック算定履歴
        FD  DCSANTEI-FILE.
        01  DCSANTEI-REC.
            COPY    "CPSANTEI.INC"  REPLACING  //SANTEI-//
                                    BY         //DCSANTEI-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    ���顼�ե�����ե�����̾���ΰ� 
+      *    エラーファイルファイル名称領域 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
-      *    ��֥ե�����ե�����̾���ΰ� 
+      *    中間ファイルファイル名称領域 
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHK002PARA//.
@@ -133,7 +133,7 @@
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHKSANTEIPARA//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
@@ -145,7 +145,7 @@
            03  FLG-SANTEI                              PIC 9(01).
            03  FLG-DTCHK002                            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-DCSRY                               PIC 9(08). 
       *
@@ -164,7 +164,7 @@
       *
            COPY    "CPDTCHK006.INC".
       *
-      *    �������ΰ�
+      *    固定値領域
        01  CONST-AREA.
            03  CONST-SRYCD-MAX                         PIC 9(05)
                                                        VALUE   5.
@@ -172,54 +172,54 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
-      *    ���顼�ե�����ե�����̾���ΰ� 
+      *    エラーファイルファイル名称領域 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
-      *    �ǡ��������å��������ѥ�᡼��
+      *    データチェック一括処理パラメータ
            COPY    "CPORCBSD01PARA.INC".
       ****************************************************************
        PROCEDURE                       DIVISION
@@ -230,7 +230,7 @@
                                                ORCBSD01PARA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -248,7 +248,7 @@
       *
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -266,13 +266,13 @@
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
                PERFORM 900-DBSTART-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
                MOVE    "ORCDTCHK005"       TO  JOB-PGID
-               MOVE    "���Ź԰پ������"
+               MOVE    "診療行為情報抽出"
                                            TO  JOB-SHELLMSG
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
@@ -281,7 +281,7 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-      *    �ǡ��������å���֥ե�����̾
+      *    データチェック中間ファイル名
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK002PARA-HOSPNUM
            MOVE    "DTCHK002"          TO  DTCHK002PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK002PARA-TERMID
@@ -327,14 +327,14 @@
            MOVE    SGETTEMP-FULLNAMES (5)
                                        TO  DTCHKSANTEIPARA-FULLNAME
       *
-      *    ������������
+      *    初期値設定処理
            PERFORM 1001-INIT-VAL-SET-SEC
       *
            .
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������������
+      *    初期値設定処理
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
@@ -345,13 +345,13 @@
        1001-INIT-VAL-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            MOVE    ZERO            TO  FLG-SRYACT
       *
-      *    ���Ź԰��Խ�����
+      *    診療行為編集処理
            IF    ( ORCBSD01-IKTKBT     =   "2" )
             OR   ( ORCBSD01-SRYYMDKBN  =   "1" )
                PERFORM 2002-SRYACT-EDIT-SEC
@@ -361,7 +361,7 @@
                PERFORM 2001-DCSANTEI-EDIT-SEC
            END-IF
       *
-      *    �ǡ��������å����Ź԰��ɲý���
+      *    データチェック診療行為追加処理
            PERFORM 2001-DCSRY-INS-SEC
       *
            MOVE    1               TO  FLG-END
@@ -370,7 +370,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰��Խ�����
+      *    診療行為編集処理
       *****************************************************************
        2001-SRYACT-EDIT-SEC            SECTION.
       *
@@ -398,7 +398,7 @@
        2001-SRYACT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰��Խ�����
+      *    診療行為編集処理
       *****************************************************************
        20011-SRYACT-EDIT-SEC           SECTION.
       *
@@ -442,7 +442,7 @@
        20011-SRYACT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰��Խ�����
+      *    診療行為編集処理
       *****************************************************************
        2002-SRYACT-EDIT-SEC            SECTION.
       *
@@ -480,7 +480,7 @@
        2002-SRYACT-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    算定履歴編集処理
       *****************************************************************
        2001-DCSANTEI-EDIT-SEC          SECTION.
       *
@@ -509,7 +509,7 @@
        2001-DCSANTEI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    算定履歴編集処理
       *****************************************************************
        2002-DCSANTEI-EDIT-SEC          SECTION.
       *
@@ -546,7 +546,7 @@
        2002-DCSANTEI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ��������å����Ź԰٥ơ��֥��ɲý���
+      *    データチェック診療行為テーブル追加処理
       *****************************************************************
        2001-DCSRY-INS-SEC              SECTION.
       *
@@ -584,7 +584,7 @@
        2001-DCSRY-INS-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ��������å����Ź԰٥ơ��֥��ɲý���
+      *    データチェック診療行為テーブル追加処理
       *****************************************************************
        20011-DCSRY-INS-SEC              SECTION.
       *
@@ -615,7 +615,7 @@
        20011-DCSRY-INS-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -630,7 +630,7 @@
                CLOSE   DTCHKERR-FILE
              IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -650,12 +650,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -673,7 +673,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������в�ɽ������
+      *    ジョブ管理途中経過表示処理
       *****************************************************************
        800-ORCSJOB-STM-SEC             SECTION.
       *
@@ -683,7 +683,7 @@
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCDTCHK004"       TO  JOB-PGID
-           MOVE    "���Ź԰پ������"  TO  JOB-SHELLMSG
+           MOVE    "診療行為情報抽出"  TO  JOB-SHELLMSG
       *
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
@@ -691,7 +691,7 @@
        800-ORCSJOB-STM-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -702,7 +702,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -717,7 +717,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰١��������ɹ�����
+      *    データチェック中間ファイル（診療行為：入院）読込処理
       *****************************************************************
        900-DTCHK006N-READ-SEC          SECTION.
       *
@@ -733,7 +733,7 @@
        900-DTCHK006N-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ��������å���֥ե�����ʿ��Ź԰١�������ɹ�����
+      *    データチェック中間ファイル（診療行為：外来）読込処理
       *****************************************************************
        900-DTCHK006G-READ-SEC          SECTION.
       *
@@ -749,7 +749,7 @@
        900-DTCHK006G-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ǡ��������å���֥ե�����ʼ��Ǵ��ԡ��ɹ�����
+      *    データチェック中間ファイル（受診患者）読込処理
       *****************************************************************
        900-DTCHK002-READ-SEC           SECTION.
       *
@@ -767,7 +767,7 @@
        900-DTCHK002-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰ٸ�������(ALL2)
+      *    診療行為検索処理(ALL2)
       *****************************************************************
        900-SRYACT-ALL2-SEL-SEC         SECTION.
       *
@@ -791,7 +791,7 @@
        900-SRYACT-ALL2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰�FETCH����(ALL2)
+      *    診療行為FETCH処理(ALL2)
       *****************************************************************
        900-SRYACT-ALL2-FET-SEC         SECTION.
       *
@@ -812,7 +812,7 @@
        900-SRYACT-ALL2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰ٸ�������
+      *    診療行為検索処理
       *****************************************************************
        900-SRYACT-KEY15-SEL-SEC       SECTION.
       *
@@ -837,7 +837,7 @@
        900-SRYACT-KEY15-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰�FETCH����
+      *    診療行為FETCH処理
       *****************************************************************
        900-SRYACT-KEY15-FET-SEC       SECTION.
       *
@@ -858,7 +858,7 @@
        900-SRYACT-KEY15-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �������򸡺�����
+      *    算定履歴検索処理
       *****************************************************************
        900-SANTEI-KEY10-SEL-SEC        SECTION.
       *
@@ -883,7 +883,7 @@
        900-SANTEI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������FETCH����
+      *    算定履歴FETCH処理
       *****************************************************************
        900-SANTEI-KEY10-FET-SEC        SECTION.
       *
@@ -903,7 +903,7 @@
        900-SANTEI-KEY10-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �������򸡺�����
+      *    算定履歴検索処理
       *****************************************************************
        900-SANTEI-ALL2-SEL-SEC        SECTION.
       *
@@ -927,7 +927,7 @@
        900-SANTEI-ALL2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������FETCH����
+      *    算定履歴FETCH処理
       *****************************************************************
        900-SANTEI-ALL2-FET-SEC        SECTION.
       *
@@ -947,7 +947,7 @@
        900-SANTEI-ALL2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -965,7 +965,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -980,7 +980,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -995,7 +995,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC               SECTION.
       *
@@ -1010,7 +1010,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -1025,7 +1025,7 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -1040,7 +1040,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£գУģ��ԣŽ���
+      *    ＤＢＵＰＤＡＴＥ処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -1055,7 +1055,7 @@
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
@@ -1070,7 +1070,7 @@
        900-DBSTART-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *

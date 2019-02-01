@@ -1,11 +1,11 @@
 --                                    --
--- ¥·¥¹¥Æ¥à´ğËÜ¥Æ¡¼¥Ö¥ë¤ÎºîÀ®         --
+-- ã‚·ã‚¹ãƒ†ãƒ åŸºæœ¬ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä½œæˆ         --
 --                                    --
 --                                    --
 -- Create Date : 2007/1/24            --
 --                                    --
 
--- TBL_SYSBASE ºîÀ®                   --
+-- TBL_SYSBASE ä½œæˆ                   --
 
 create	table	tbl_sysbase	(
 	GRPNUM		numeric(2,0) not null,
@@ -22,4 +22,4 @@ create	table	tbl_sysbase	(
 	)
 );
 
-insert into tbl_sysbase values (1, 1, '¡ö', '99999999', 0, '0', to_char(now(),'yyyymmdd'), '', to_char(now(),'hh24miss'));
+insert into tbl_sysbase values (1, 1, 'ï¼Š', '99999999', 0, '0', to_char(now(),'yyyymmdd'), '', to_char(now(),'hh24miss'));

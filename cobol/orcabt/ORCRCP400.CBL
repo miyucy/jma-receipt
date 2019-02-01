@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,103 +19,103 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCRCP400.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : •Ï•ª•◊•»
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : •Ï•ª•◊•»∞ı∫˛Õ—•’•°•§•Î∫Ó¿Æ°  °≤¨°¶∆˛±°≥∞°À
-      *                      £≤£∞£∞£≥«Ø£¥∑Ó≤˛¿µ∞ πﬂ
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  03/10/07    NACL-∆£∏∂     ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : „É¨„Çª„Éó„Éà
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : „É¨„Çª„Éó„ÉàÂç∞Âà∑Áî®„Éï„Ç°„Ç§„É´‰ΩúÊàêÔºàÁ¶èÂ≤°„ÉªÂÖ•Èô¢Â§ñÔºâ
+      *                      ÔºíÔºêÔºêÔºìÂπ¥ÔºîÊúàÊîπÊ≠£‰ª•Èôç
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  03/10/07    NACL-Ëó§Âéü     Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  01.00.01    NACL-∆£∏∂    03/11/10  ∏¯»Ò ¨≈¿ÕÛ§Œø«Œ≈∂Ë ¨§Œ…Ωº®§Ú§π§Î
-      *  01.00.02    NACL-∆£∏∂    04/01/07  §Ω§Œ¬æ§Œ≈¿øÙÕÛ…Ωº®
-      *  01.00.03    NACL-∆£∏∂    04/01/19  …¬æ≤øÙ§Œµ≠∫‹§ŒΩ§¿µ
-      *  01.00.04    NACL-ÃÁœ∆    04/01/26  •´• ª·Ãæ§Œƒπ§µ≈˘Ω§¿µ
-      *  01.00.05    NACL-∆£∏∂    04/02/18  º“ ›£œ£√£“∂Ë ¨§Œƒ…≤√
-      *  01.00.06    NACL-∆£∏∂    04/03/05   ›∏±Õ˙ŒÚ§À ›∏±º‘»÷πÊ§Úƒ…≤√
-      *  01.00.07    NACL-∆£∏∂    04/03/05  ºÁ…¬Ãæ§Œ§ﬂ§Œ§»§≠•∑•π¥…§Œ¿ﬂƒÍ
-      *                                     §À§Ë§Í∂Ë¿⁄§Í¿˛§ÚΩ–Œœ§π§Î
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  01.00.01    NACL-Ëó§Âéü    03/11/10  ÂÖ¨Ë≤ªÂàÜÁÇπÊ¨Ñ„ÅÆË®∫ÁôÇÂå∫ÂàÜ„ÅÆË°®Á§∫„Çí„Åô„Çã
+      *  01.00.02    NACL-Ëó§Âéü    04/01/07  „Åù„ÅÆ‰ªñ„ÅÆÁÇπÊï∞Ê¨ÑË°®Á§∫
+      *  01.00.03    NACL-Ëó§Âéü    04/01/19  ÁóÖÂ∫äÊï∞„ÅÆË®òËºâ„ÅÆ‰øÆÊ≠£
+      *  01.00.04    NACL-ÈñÄËÑá    04/01/26  „Ç´„ÉäÊ∞èÂêç„ÅÆÈï∑„ÅïÁ≠â‰øÆÊ≠£
+      *  01.00.05    NACL-Ëó§Âéü    04/02/18  Á§æ‰øùÔºØÔº£Ôº≤Âå∫ÂàÜ„ÅÆËøΩÂä†
+      *  01.00.06    NACL-Ëó§Âéü    04/03/05  ‰øùÈô∫Â±•Ê≠¥„Å´‰øùÈô∫ËÄÖÁï™Âè∑„ÇíËøΩÂä†
+      *  01.00.07    NACL-Ëó§Âéü    04/03/05  ‰∏ªÁóÖÂêç„ÅÆ„Åø„ÅÆ„Å®„Åç„Ç∑„ÇπÁÆ°„ÅÆË®≠ÂÆö
+      *                                     „Å´„Çà„ÇäÂå∫Âàá„ÇäÁ∑ö„ÇíÂá∫Âäõ„Åô„Çã
       *
-      *  £≤£∞£∞£¥«Ø£¥∑Ó≤˛¿µ
-      *  01.01.01    NACL-∆£∏∂    04/03/26  ºÍΩ—ŒÚ§Œµ≠∫‹
-      *  01.01.02    NACL-∆£∏∂    04/03/29  ¬≥ªÊ°¶Ωƒ•ø•§•◊° ƒπ°À§Œƒ…≤√
-      *                                     ¬≥ªÊ§Œ•ø•§•»•Î…Ωº® 
-      *  01.01.03    NACL-∆£∏∂    04/04/07  •´•π•ø•ﬁ•§•∫π‡Ã‹§À•≥•·•Û•»ÕÛ
-      *                                     °¶ø«Œ≈≤ Ãæ§Úƒ…≤√
-      *  01.01.04    NACL-ÃÁœ∆    04/05/13  ΩÈø«ª˛§Àª˛¥÷≥∞°¶øºÃÎ°¶µŸ∆¸§¨
-      *                                     £≤§ƒ∞ æÂ§¢§√§øæÏπÁ§Œµ≠∫‹¬–±˛
-      *  01.01.05    NACL-æÆ∆¶¬Ù  04/05/19  £ƒ£¬ΩÒ§≠π˛§ﬂª˛§Œ•≥•ﬂ•√•»ƒ…≤√
-      *  01.01.06    NACL-∆£∏∂    04/06/22  ∞ı∫˛ΩÁ§Œƒ…≤√° ∏ƒ Ã∫Ó¿Æª˛§Œ§ﬂ°À
-      *  01.01.07    NACL-∆£∏∂    04/07/12  µÎ…’≥‰πÁ§Œ ‘Ω∏æÚ∑Ô§Ú —ππ
-      *  01.01.08    NACL-∆£∏∂    04/08/18  ∏¯»Ò£≤§Œ¿¡µ·≈¿§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
-      *  01.01.09    NACL-∆£∏∂    04/09/13  ƒ¢…º ÃªÿƒÍ ‘Ω∏æ Û§´§È§Œ ‘Ω∏
-      *  01.01.10    NACL-ÃÁœ∆    04/09/16  ∏¯»Ò£≤§Œº¬∆¸øÙ§Œ ‘Ω∏æÚ∑Ô§ÚΩ§¿µ
-      *  01.01.11    NACL-∆£∏∂    04/09/17  £œ£√£“∂Ë ¨§Œ¿ﬂƒÍ§Àƒ…≤√
+      *  ÔºíÔºêÔºêÔºîÂπ¥ÔºîÊúàÊîπÊ≠£
+      *  01.01.01    NACL-Ëó§Âéü    04/03/26  ÊâãË°ìÊ≠¥„ÅÆË®òËºâ
+      *  01.01.02    NACL-Ëó§Âéü    04/03/29  Á∂öÁ¥ô„ÉªÁ∏¶„Çø„Ç§„ÉóÔºàÈï∑Ôºâ„ÅÆËøΩÂä†
+      *                                     Á∂öÁ¥ô„ÅÆ„Çø„Ç§„Éà„É´Ë°®Á§∫ 
+      *  01.01.03    NACL-Ëó§Âéü    04/04/07  „Ç´„Çπ„Çø„Éû„Ç§„Ç∫È†ÖÁõÆ„Å´„Ç≥„É°„É≥„ÉàÊ¨Ñ
+      *                                     „ÉªË®∫ÁôÇÁßëÂêç„ÇíËøΩÂä†
+      *  01.01.04    NACL-ÈñÄËÑá    04/05/13  ÂàùË®∫ÊôÇ„Å´ÊôÇÈñìÂ§ñ„ÉªÊ∑±Â§ú„Éª‰ºëÊó•„Åå
+      *                                     Ôºí„Å§‰ª•‰∏ä„ÅÇ„Å£„ÅüÂ†¥Âêà„ÅÆË®òËºâÂØæÂøú
+      *  01.01.05    NACL-Â∞èË±ÜÊ≤¢  04/05/19  Ôº§Ôº¢Êõ∏„ÅçËæº„ÅøÊôÇ„ÅÆ„Ç≥„Éü„ÉÉ„ÉàËøΩÂä†
+      *  01.01.06    NACL-Ëó§Âéü    04/06/22  Âç∞Âà∑È†Ü„ÅÆËøΩÂä†ÔºàÂÄãÂà•‰ΩúÊàêÊôÇ„ÅÆ„ÅøÔºâ
+      *  01.01.07    NACL-Ëó§Âéü    04/07/12  Áµ¶‰ªòÂâ≤Âêà„ÅÆÁ∑®ÈõÜÊù°‰ª∂„ÇíÂ§âÊõ¥
+      *  01.01.08    NACL-Ëó§Âéü    04/08/18  ÂÖ¨Ë≤ªÔºí„ÅÆË´ãÊ±ÇÁÇπ„ÅÆÁ∑®ÈõÜÊù°‰ª∂„Çí‰øÆÊ≠£
+      *  01.01.09    NACL-Ëó§Âéü    04/09/13  Â∏≥Á•®Âà•ÊåáÂÆöÁ∑®ÈõÜÊÉÖÂ†±„Åã„Çâ„ÅÆÁ∑®ÈõÜ
+      *  01.01.10    NACL-ÈñÄËÑá    04/09/16  ÂÖ¨Ë≤ªÔºí„ÅÆÂÆüÊó•Êï∞„ÅÆÁ∑®ÈõÜÊù°‰ª∂„Çí‰øÆÊ≠£
+      *  01.01.11    NACL-Ëó§Âéü    04/09/17  ÔºØÔº£Ôº≤Âå∫ÂàÜ„ÅÆË®≠ÂÆö„Å´ËøΩÂä†
       *
       *  ver.2.5.0
-      *  01.01.12    NACL-∆£∏∂    04/10/25  …È√¥∂‚≥€≈˘§Œ•´•π•ø•ﬁ•§•∫π‡Ã‹
-      *                                     §Œ ‘Ω∏ ˝À°§Ú —ππ
-      *  01.01.13    NACL-æÆ∆¶¬Ù  04/12/06  √œ ˝∏¯»Ò° ∆˝æ„ Ï°À§Œ ¨≈¿µ≠∫‹
-      *                                     Ω§¿µ
-      *  01.01.14    NACL-∆£∏∂    04/11/01  µ≠∫‹§ §∑§Œ∏¯»Ò(∏∂«˙)§ŒΩËÕ˝
-      *  01.01.15    NACL-ÃÁœ∆    04/12/15  ∏¯»Ò§Œ∞Ï…Ù…È√¥∂‚≥€£∞µ≠∫‹¬–±˛°¢
-      *                                     æ Œ¨…‘≤ƒ ¨§Œ¬–±˛
-      *  01.01.16    NACL-ÃÁœ∆    04/12/21  º¬∆¸øÙ£∞µ≠∫‹¬–±˛
-      *  01.01.17    NACL-ÃÁœ∆    05/01/13  ∏¯»Ò¿¡µ·•∆°º•÷•Î ›∏±¡»πÁ§ª
-      *                                     »÷πÊæ Û ‘Ω∏Ω§¿µ
-      *  01.01.18    NACL-∆£∏∂    05/01/14  ºıø«∆¸ªÿƒÍ¬–±˛
-      *  01.01.19    NACL-∆£∏∂    05/01/30  ƒ˚¿µ∆¸ªÿƒÍ¬–±˛
-      *  01.01.20    NACL-ÃÁœ∆    05/02/14  π‚Œº‘∞Ï…Ù…È√¥≥€µ≠∫‹Ω§¿µ
-      *  01.01.21    NACL-ÃÁœ∆    05/03/17  ∏¯»Ò¿¡µ·°¶¿¡µ·¥…Õ˝§Œ…È√¥∂‚≥€
-      *                                      ‘Ω∏Ω§¿µ
-      *  01.01.22    NACL-∆£∏∂    05/03/18  •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§À§Ë
-      *                                     §Î•Ï•ª•◊•» ‘Ω∏
+      *  01.01.12    NACL-Ëó§Âéü    04/10/25  Ë≤†ÊãÖÈáëÈ°çÁ≠â„ÅÆ„Ç´„Çπ„Çø„Éû„Ç§„Ç∫È†ÖÁõÆ
+      *                                     „ÅÆÁ∑®ÈõÜÊñπÊ≥ï„ÇíÂ§âÊõ¥
+      *  01.01.13    NACL-Â∞èË±ÜÊ≤¢  04/12/06  Âú∞ÊñπÂÖ¨Ë≤ªÔºà‰π≥ÈöúÊØçÔºâ„ÅÆÂàÜÁÇπË®òËºâ
+      *                                     ‰øÆÊ≠£
+      *  01.01.14    NACL-Ëó§Âéü    04/11/01  Ë®òËºâ„Å™„Åó„ÅÆÂÖ¨Ë≤ª(ÂéüÁàÜ)„ÅÆÂá¶ÁêÜ
+      *  01.01.15    NACL-ÈñÄËÑá    04/12/15  ÂÖ¨Ë≤ª„ÅÆ‰∏ÄÈÉ®Ë≤†ÊãÖÈáëÈ°çÔºêË®òËºâÂØæÂøú„ÄÅ
+      *                                     ÁúÅÁï•‰∏çÂèØÂàÜ„ÅÆÂØæÂøú
+      *  01.01.16    NACL-ÈñÄËÑá    04/12/21  ÂÆüÊó•Êï∞ÔºêË®òËºâÂØæÂøú
+      *  01.01.17    NACL-ÈñÄËÑá    05/01/13  ÂÖ¨Ë≤ªË´ãÊ±Ç„ÉÜ„Éº„Éñ„É´‰øùÈô∫ÁµÑÂêà„Åõ
+      *                                     Áï™Âè∑ÊÉÖÂ†±Á∑®ÈõÜ‰øÆÊ≠£
+      *  01.01.18    NACL-Ëó§Âéü    05/01/14  ÂèóË®∫Êó•ÊåáÂÆöÂØæÂøú
+      *  01.01.19    NACL-Ëó§Âéü    05/01/30  Ë®ÇÊ≠£Êó•ÊåáÂÆöÂØæÂøú
+      *  01.01.20    NACL-ÈñÄËÑá    05/02/14  È´òÈΩ¢ËÄÖ‰∏ÄÈÉ®Ë≤†ÊãÖÈ°çË®òËºâ‰øÆÊ≠£
+      *  01.01.21    NACL-ÈñÄËÑá    05/03/17  ÂÖ¨Ë≤ªË´ãÊ±Ç„ÉªË´ãÊ±ÇÁÆ°ÁêÜ„ÅÆË≤†ÊãÖÈáëÈ°ç
+      *                                     Á∑®ÈõÜ‰øÆÊ≠£
+      *  01.01.22    NACL-Ëó§Âéü    05/03/18  „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†ÖÁ∑®ÈõÜÊÉÖÂ†±„Å´„Çà
+      *                                     „Çã„É¨„Çª„Éó„ÉàÁ∑®ÈõÜ
       *
-      *  02.06.01    NACL-ÃÁœ∆    05/04/05  •Ï•ª•◊•»∆√µ≠ªˆπ‡"12¥Ôº£"¬–±˛
-      *                                     °  ø¿Æ£±£∑«Ø£¥∑Ó∞ πﬂ°À
-      *  02.06.02    NACL-√›≈ƒ    05/05/31  •◊•Ï•”•Â°ºΩËÕ˝ƒ…≤√
-      *  02.06.03    NACL-∆£∏∂    05/07/20  •Ï•ª•≥•·•Û•»§Œ•≥•·•Û•»§Œƒπ§µ
-      *                                      —ππ§À§Ë§Î¬–±˛
-      *  02.06.04    NACL-∆£∏∂    05/07/28  •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û§Œ
-      *                                     …È√¥º‘»÷πÊ§ÀæÚ∑Ô§Úƒ…≤√
-      *  02.06.05    NACL-∆£∏∂    05/09/05   £øÙÀÁ•Ï•ª§Œœ¢»÷µ≠∫‹
+      *  02.06.01    NACL-ÈñÄËÑá    05/04/05  „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†Ö"12Âô®Ê≤ª"ÂØæÂøú
+      *                                     ÔºàÂπ≥ÊàêÔºëÔºóÂπ¥ÔºîÊúà‰ª•ÈôçÔºâ
+      *  02.06.02    NACL-Á´πÁî∞    05/05/31  „Éó„É¨„Éì„É•„ÉºÂá¶ÁêÜËøΩÂä†
+      *  02.06.03    NACL-Ëó§Âéü    05/07/20  „É¨„Çª„Ç≥„É°„É≥„Éà„ÅÆ„Ç≥„É°„É≥„Éà„ÅÆÈï∑„Åï
+      *                                     Â§âÊõ¥„Å´„Çà„ÇãÂØæÂøú
+      *  02.06.04    NACL-Ëó§Âéü    05/07/28  „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†ÖÁ∑®ÈõÜÊÉÖÂ†±„ÅÆ
+      *                                     Ë≤†ÊãÖËÄÖÁï™Âè∑„Å´Êù°‰ª∂„ÇíËøΩÂä†
+      *  02.06.05    NACL-Ëó§Âéü    05/09/05  Ë§áÊï∞Êûö„É¨„Çª„ÅÆÈÄ£Áï™Ë®òËºâ
       *
-      *  02.07.01    NACL-∆£∏∂    05/08/20  ∆√ ÃŒ≈Õ‹»Ò¬–±˛
-      *  02.07.02    NACL-æÆ∆¶¬Ù  05/10/28  ∆√µ≠ªˆπ‡°°¿Ëø °¢¿©ƒ∂°°¬–±˛
-      *  02.07.03    NACL-∆£∏∂    05/12/12   ›∏±Õ˙ŒÚ§Ú«Ø∑Ó∆¸µ≠∫‹§ÿ —ππ
-      *  02.07.04    NACL-∆£∏∂    05/12/12  πÒ ›•Ï•ª•◊•» ‘ƒ÷ΩÁ¬–±˛
+      *  02.07.01    NACL-Ëó§Âéü    05/08/20  ÁâπÂà•ÁôÇÈ§äË≤ªÂØæÂøú
+      *  02.07.02    NACL-Â∞èË±ÜÊ≤¢  05/10/28  ÁâπË®ò‰∫ãÈ†Ö„ÄÄÂÖàÈÄ≤„ÄÅÂà∂Ë∂Ö„ÄÄÂØæÂøú
+      *  02.07.03    NACL-Ëó§Âéü    05/12/12  ‰øùÈô∫Â±•Ê≠¥„ÇíÂπ¥ÊúàÊó•Ë®òËºâ„Å∏Â§âÊõ¥
+      *  02.07.04    NACL-Ëó§Âéü    05/12/12  ÂõΩ‰øù„É¨„Çª„Éó„ÉàÁ∑®Á∂¥È†ÜÂØæÂøú
       *
-      *  £≤£∞£∞£∂«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *  02.09.01    NACL-∆£∏∂    06/04/14  °÷£±£≥ªÿ∆≥°◊°÷∆¸°◊§Œ∫π§∑π˛§ﬂ
-      *                                      ª∞ºÔ§Œ∏¯»Ò ªÕ—§À∑∏§Ô§Îµ≠∫‹Õ◊
-      *                                      π‡§Œ∆√Œ„¬–±˛
+      *  ÔºíÔºêÔºêÔºñÂπ¥ÔºîÊúàÊîπÊ≠£ÂØæÂøú
+      *  02.09.01    NACL-Ëó§Âéü    06/04/14  „ÄåÔºëÔºìÊåáÂ∞é„Äç„ÄåÊó•„Äç„ÅÆÂ∑Æ„ÅóËæº„Åø
+      *                                      ‰∏âÁ®Æ„ÅÆÂÖ¨Ë≤ª‰ΩµÁî®„Å´‰øÇ„Çè„ÇãË®òËºâË¶Å
+      *                                      È†Ö„ÅÆÁâπ‰æãÂØæÂøú
       *  3.0.0
-      *  03.00.01    NACL-∆£∏∂    06/05/15  ∆˛¬‡±°Õ˙ŒÚµ≠∫‹¬–±˛
-      *  03.00.02    NACL-∆£∏∂    06/06/13  •Ï•ª•≥•·•Û•»§Œæ…æıæ‹µ≠∂Ë ¨§´§È
-      *                                     §Œ…Ω¬Íµ≠∫‹¬–±˛
+      *  03.00.01    NACL-Ëó§Âéü    06/05/15  ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥Ë®òËºâÂØæÂøú
+      *  03.00.02    NACL-Ëó§Âéü    06/06/13  „É¨„Çª„Ç≥„É°„É≥„Éà„ÅÆÁóáÁä∂Ë©≥Ë®òÂå∫ÂàÜ„Åã„Çâ
+      *                                     „ÅÆË°®È°åË®òËºâÂØæÂøú
       *
-      *  03.01.01    NACL-∆£∏∂    06/07/03  µÏ¡ÌπÁ…¬±°§Œ≤ …Ωº®
-      *  03.01.02    NACL-ÃÁœ∆    06/07/13  π‡Ã‹•Ø•Í•¢ƒ…≤√
+      *  03.01.01    NACL-Ëó§Âéü    06/07/03  ÊóßÁ∑èÂêàÁóÖÈô¢„ÅÆÁßëË°®Á§∫
+      *  03.01.02    NACL-ÈñÄËÑá    06/07/13  È†ÖÁõÆ„ÇØ„É™„Ç¢ËøΩÂä†
       *
-      *  03.02.01    NACL-ÃÁœ∆    06/08/10  π‚Œº‘æÂ∏¬≥€∑–≤·¡º√÷¬–±˛
-      *  03.02.02    NACL-∆£∏∂    06/07/31  πÒ ›ºÁ≤ ¬–±˛
-      *  03.02.03    NACL-∆£∏∂    06/09/07   °≤¨√œ ˝∏¯»Ò¬–±˛
+      *  03.02.01    NACL-ÈñÄËÑá    06/08/10  È´òÈΩ¢ËÄÖ‰∏äÈôêÈ°çÁµåÈÅéÊé™ÁΩÆÂØæÂøú
+      *  03.02.02    NACL-Ëó§Âéü    06/07/31  ÂõΩ‰øù‰∏ªÁßëÂØæÂøú
+      *  03.02.03    NACL-Ëó§Âéü    06/09/07  Á¶èÂ≤°Âú∞ÊñπÂÖ¨Ë≤ªÂØæÂøú
       *
-      *  03.04.01    NACL-∆£∏∂    06/11/01  æ»≤Òµ°«Ωœ¢∑»¬–±˛
-      *  03.04.02    NACL-∆£∏∂    07/02/27  ¿¡µ·¥…Õ˝§ÿ ›∏±£…£ƒ°¢
-      *                                     œ∑øÕ ›∏±£…£ƒ°¢∏¯»Ò£…£ƒ§Œƒ…≤√
+      *  03.04.01    NACL-Ëó§Âéü    06/11/01  ÁÖß‰ºöÊ©üËÉΩÈÄ£Êê∫ÂØæÂøú
+      *  03.04.02    NACL-Ëó§Âéü    07/02/27  Ë´ãÊ±ÇÁÆ°ÁêÜ„Å∏‰øùÈô∫Ôº©Ôº§„ÄÅ
+      *                                     ËÄÅ‰∫∫‰øùÈô∫Ôº©Ôº§„ÄÅÂÖ¨Ë≤ªÔº©Ôº§„ÅÆËøΩÂä†
       *
-      *  03.05.01    NACL-∆£∏∂    07/04/19  •∞•Î°º•◊ø«Œ≈¬–±˛
-      *  03.05.02    NACL-ÃÁœ∆    07/07/17  ∏ƒ Ãª˛§Œ•∑•π•∆•‡¥…Õ˝ ‘Ω∏Ω§¿µ
+      *  03.05.01    NACL-Ëó§Âéü    07/04/19  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
+      *  03.05.02    NACL-ÈñÄËÑá    07/07/17  ÂÄãÂà•ÊôÇ„ÅÆ„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜÁ∑®ÈõÜ‰øÆÊ≠£
       *
-      *  04.02.01    NACL-∆£∏∂    08/03/04   ø¿Æ£≤£∞«Ø£¥∑Ó≤˛¿µ¬–±˛
-      *                                     •’•È•∞°¢•«°º•ø•®•Í•¢ƒ…≤√
+      *  04.02.01    NACL-Ëó§Âéü    08/03/04  Âπ≥ÊàêÔºíÔºêÂπ¥ÔºîÊúàÊîπÊ≠£ÂØæÂøú
+      *                                     „Éï„É©„Ç∞„ÄÅ„Éá„Éº„Çø„Ç®„É™„Ç¢ËøΩÂä†
       *
-      *  04.07.01    NACL-∆£∏∂    12/01/24  monpe-0.6.20¬–±˛
+      *  04.07.01    NACL-Ëó§Âéü    12/01/24  monpe-0.6.20ÂØæÂøú
       *
-      *  04.08.01    NACL-∆£∏∂    14/07/07  ∞Ïª˛•«•£•Ï•Ø•»•Í¬–±˛
+      *  04.08.01    NACL-Ëó§Âéü    14/07/07  ‰∏ÄÊôÇ„Éá„Ç£„É¨„ÇØ„Éà„É™ÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -123,26 +123,26 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    •Ï•ª•◊•»£∞£≤•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„Çø
            SELECT  RECE02-FILE     ASSIGN  RECE01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE02-KEY
                                    FILE    STATUS  IS  STS-RECE.
       *
-      *    •Ï•ª•◊•»£∞£≤•«°º•ø° ∏¯»Ò¿¡µ·ΩÒ°À
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„ÇøÔºàÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏Ôºâ
            SELECT  RECE02X-FILE    ASSIGN  RECE02XPARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE02X-KEY
                                    FILE    STATUS  IS  STS-RECE02X.
-      *    •Ï•ª•◊•»£∞£≥£±•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºìÔºë„Éá„Éº„Çø
            SELECT  RECE031-FILE     ASSIGN  RECE031PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE031-KEY
                                    FILE    STATUS  IS  STS-RECE.
-      *    •Ï•ª•◊•»£∞£∂£±•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºñÔºë„Éá„Éº„Çø
            SELECT  RECE061-FILE     ASSIGN  RECE061PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  SEQUENTIAL
@@ -154,53 +154,53 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE09-KEY
                                    FILE    STATUS  IS  STS-RECE09.
-      *    •Ï•ª•◊•»° ∏©√±Õ—π‡Ã‹°À•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºàÁúåÂçòÁî®È†ÖÁõÆÔºâ„Éá„Éº„Çø
            SELECT  RECE11-FILE     ASSIGN  RECE11PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE11-KEY
                                    FILE    STATUS  IS  STS-RECE11.
-      *    ∆˛¬‡±°Õ˙ŒÚæ Û
+      *    ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥ÊÉÖÂ†±
            SELECT  RECE12-FILE     ASSIGN  RECE12PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE12-KEY
                                    FILE    STATUS  IS  STS-RECE12.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    •Ï•ª•◊•»£∞£≤•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„Çø
        FD  RECE02-FILE.
        01  RECE02-REC.
            COPY    "CPRCF002.INC".
       *
-      *    •Ï•ª•◊•»£∞£≤•«°º•ø° ∏¯»Ò¿¡µ·ΩÒ°À
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„ÇøÔºàÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏Ôºâ
        FD  RECE02X-FILE.
        01  RECE02X-REC. 
            COPY    "CPRCF002.INC"  REPLACING  //RECE02//
                                    BY         //RECE02X//.
       *
-      *    •Ï•ª•◊•»£∞£≥£±•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºìÔºë„Éá„Éº„Çø
        FD  RECE031-FILE.
        01  RECE031-REC.
            COPY    "CPRCF0031.INC".
       *
-      *    •Ï•ª•◊•»£∞£∂£±•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºñÔºë„Éá„Éº„Çø
        FD  RECE061-FILE.
        01  RECE061-REC. 
            COPY    "CPRCF0061.INC".
       *
-      *    •Ï•ª•◊•»£∞£π•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºêÔºô„Éá„Éº„Çø
        FD  RECE09-FILE.
        01  RECE09-REC. 
            COPY    "CPRCF009.INC".
       *
-      *    •Ï•ª•◊•»° ∏©√±Õ—π‡Ã‹°À•«°º•ø
+      *    „É¨„Çª„Éó„ÉàÔºàÁúåÂçòÁî®È†ÖÁõÆÔºâ„Éá„Éº„Çø
        FD  RECE11-FILE.
        01  RECE11-REC. 
            COPY    "CPRCF011.INC".
@@ -210,17 +210,17 @@
            COPY    "CPRCF068.INC"  REPLACING  //RECE68//
                                    BY         //RECE12//.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
 grpsys*
 grpsys     COPY    "COMMON-SPA".
-      *    •∑•ß•ÎÕ—ŒŒ∞Ë
+      *    „Ç∑„Çß„É´Áî®È†òÂüü
            COPY    "CPCOMMONSHELL.INC".
       *
-      *     •Ï•ª•◊•»Ã¿∫Ÿ•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *     „É¨„Çª„Éó„ÉàÊòéÁ¥∞„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE01PARA//.
       *
@@ -239,15 +239,15 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE11PARA//.
       *
-      *     ∆˛¬‡±°Õ˙ŒÚæ Û•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *     ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥ÊÉÖÂ†±„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE12PARA//.
       *
-      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
       *
-      *    •’•°•§•ÎÃæºË∆¿
+      *    „Éï„Ç°„Ç§„É´ÂêçÂèñÂæó
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *     
@@ -272,7 +272,7 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "HCN063V02.INC" REPLACING   //HCN063V02//
                                    BY         //HC063//.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  STS-AREA.
            03  STS-RECE            PIC X(02).
            03  STS-RECE09          PIC X(02).
@@ -281,7 +281,7 @@ grpsys     COPY    "COMMON-SPA".
            03  STS-RECEERR         PIC X(02).
            03  STS-RECE02X         PIC X(02).  
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(03).
            03  FLG-RECE02          PIC 9(01).
@@ -316,7 +316,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-RECECOM-SJKBN   PIC 9(01).
            03  FLG-STS             PIC 9(04).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-RECE02          PIC 9(06).
@@ -330,7 +330,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-KENSU           PIC 9(03). 
            03  CNT-COMMIT          PIC 9(03). 
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
            03  IDW1                PIC 9(04).
@@ -380,20 +380,20 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  KEY-O-RECESYUBETU   PIC  9(04).
                05  KEY-O-HKNJANUM-KEY  PIC  X(08).
       *
-      *    ∞ÂŒ≈µ°¥ÿ° ¥À‹æ Û°À¬‡»ÚÕ—ŒŒ∞Ë
+      *    ÂåªÁôÇÊ©üÈñ¢ÔºàÂü∫Êú¨ÊÉÖÂ†±ÔºâÈÄÄÈÅøÁî®È†òÂüü
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  100.
                05  TBL-SYS1001         PIC  X(610).
-      *    ∞ÂŒ≈µ°¥ÿ° ΩªΩÍ≈˘æ Û°À¬‡»ÚÕ—ŒŒ∞Ë
+      *    ÂåªÁôÇÊ©üÈñ¢Ôºà‰ΩèÊâÄÁ≠âÊÉÖÂ†±ÔºâÈÄÄÈÅøÁî®È†òÂüü
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC         OCCURS  100.
                05  TBL-SYS1002         PIC  X(610).
-      *    ƒ¢…º ÃªÿƒÍ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û¬‡»ÚÕ—ŒŒ∞Ë
+      *    Â∏≥Á•®Âà•ÊåáÂÆöÂåªÁôÇÊ©üÈñ¢Á∑®ÈõÜÊÉÖÂ†±ÈÄÄÈÅøÁî®È†òÂüü
        01  TBL-SYS1900-T.
            03  TBL-SYS1900-OCC         OCCURS  100.
                05  TBL-SYS1900         PIC  X(610).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-CREYMD  PIC  X(08).
@@ -445,7 +445,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).                                       
       *
-      *    ∏©√±Õ—π‡Ã‹•’•°•§•ÎÕ—•Ô°º•Ø     
+      *    ÁúåÂçòÁî®È†ÖÁõÆ„Éï„Ç°„Ç§„É´Áî®„ÉØ„Éº„ÇØ     
            COPY    "HC06.INC"     REPLACING  //HC06//
                                    BY         //RECE11-HC06//.
       *
@@ -470,45 +470,45 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-BO-TENKIKBN             PIC X(01).
                05  WRK-BO-TENKIYMD             PIC X(08).
       *
-      *    1∑ÂÃ‹:¿∏ › 2∑ÂÃ‹:∑Î≥À 3∑ÂÃ‹:¿∫ø¿
+      *    1Ê°ÅÁõÆ:Áîü‰øù 2Ê°ÅÁõÆ:ÁµêÊ†∏ 3Ê°ÅÁõÆ:Á≤æÁ•û
            03  WRK-3SYU-KBN.
                05  WRK-3SYU        PIC X(03).
       *
            03  WRK-EDIT-AREA.
-      *        Ω˝…¬Ãæœ¢»÷     
+      *        ÂÇ∑ÁóÖÂêçÈÄ£Áï™     
                05  WRK-LINE                    PIC 9(02).
-      *         ‘Ω∏Ω˝…¬Ãæ ∏ª˙øÙ 
+      *        Á∑®ÈõÜÂÇ∑ÁóÖÂêçÊñáÂ≠óÊï∞ 
                05  WRK-CLM                     PIC 9(03).
-      *        •Ô°º•Ø ‘Ω∏Ω˝…¬Ãæ ∏ª˙øÙ 
+      *        „ÉØ„Éº„ÇØÁ∑®ÈõÜÂÇ∑ÁóÖÂêçÊñáÂ≠óÊï∞ 
                05  WRK-WCLM                    PIC 9(03).
-      *        …¬Ãæ ∏ª˙øÙ         
+      *        ÁóÖÂêçÊñáÂ≠óÊï∞         
                05  WRK-MOJISU                  PIC 9(03).
-      *         ‘Ω∏≥´ªœ∞Ã√÷         
+      *        Á∑®ÈõÜÈñãÂßã‰ΩçÁΩÆ         
                05  WRK-STCLM                   PIC 9(03).
-      *        Ω˝…¬ÃæÕÛ ‘Ω∏π‘         
+      *        ÂÇ∑ÁóÖÂêçÊ¨ÑÁ∑®ÈõÜË°å         
                05  WRK-LINEBYO                 PIC 9(02).
-      *        ≈¨Õ—ÕÛ ‘Ω∏π‘         
+      *        ÈÅ©Áî®Ê¨ÑÁ∑®ÈõÜË°å         
                05  WRK-LINETEK                 PIC 9(03).
-      *        ¡∞π‘§Œ¬≥§≠§Œ§»§≠° Ω˝…¬Ãæ°À         
+      *        ÂâçË°å„ÅÆÁ∂ö„Åç„ÅÆ„Å®„ÅçÔºàÂÇ∑ÁóÖÂêçÔºâ         
                05  WRK-CONTINUE                PIC 9(01).
-      *    ≈¨Õ—ÕÛ∫«¬Áπ‘øÙ
+      *    ÈÅ©Áî®Ê¨ÑÊúÄÂ§ßË°åÊï∞
            03  WRK-TEKIYOU-LINE                PIC 9(03).
-      *    ≈¨Õ—ÕÛπ‘øÙ
+      *    ÈÅ©Áî®Ê¨ÑË°åÊï∞
            03  WRK-TEKIYOU-LINE-GYO            PIC 9(03).
-      *    Ω˝…¬Ãæ ‘Ω∏
+      *    ÂÇ∑ÁóÖÂêçÁ∑®ÈõÜ
            03  WRK-BYOMEI                      PIC X(150).
            03  WRK-BYOMEIW                     PIC X(150).
-      *    Ω˝…¬Ãæ ‘Ω∏•’•È•∞° µø§§°À
+      *    ÂÇ∑ÁóÖÂêçÁ∑®ÈõÜ„Éï„É©„Ç∞ÔºàÁñë„ÅÑÔºâ
            03  WRK-HENFLG1                     PIC X(01).
-      *    Ω˝…¬Ãæ ‘Ω∏•’•È•∞° µﬁ¿≠°À
+      *    ÂÇ∑ÁóÖÂêçÁ∑®ÈõÜ„Éï„É©„Ç∞ÔºàÊÄ•ÊÄßÔºâ
            03  WRK-HENFLG2                     PIC X(01). 
-      *    Ω˝…¬Ãæ ‘Ω∏° Ω˝…¬ÃæÕÛ°À
+      *    ÂÇ∑ÁóÖÂêçÁ∑®ÈõÜÔºàÂÇ∑ÁóÖÂêçÊ¨ÑÔºâ
            03  WRK-BYOMEI1                     PIC X(54).
            03  WRK-BYOMEI1-W   REDEFINES       WRK-BYOMEI1.
                05  WRK-BYOMEI1-NO              PIC X(06).
                05  WRK-BYOMEI1-NAME            PIC X(48).
                
-      *    Ω˝…¬Ãæ ‘Ω∏° ≈¨Õ—ÕÛ°À
+      *    ÂÇ∑ÁóÖÂêçÁ∑®ÈõÜÔºàÈÅ©Áî®Ê¨ÑÔºâ
            03  WRK-BYOMEI2                     PIC X(52).
            03  WRK-BYOMEI2-W   REDEFINES       WRK-BYOMEI2.
                05  WRK-BYOMEI2-NO              PIC X(08).
@@ -526,7 +526,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                        09  WRK-BYOMEI2R-TENKIYMD
                                                PIC X(06).
       *                 
-      *    ∆˛¬‡±°Õ˙ŒÚ ‘Ω∏° ≈¨Õ—ÕÛ°À
+      *    ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥Á∑®ÈõÜÔºàÈÅ©Áî®Ê¨ÑÔºâ
            03  WRK-NYUTAI-RIREKI-AREA.
                05  WRK-NYUTAI-RIREKI           PIC X(52).
                05  WRK-NYUTAI-RIREKI-W         REDEFINES
@@ -537,10 +537,10 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                    07  WRK-NYUTAI-TAIINYMD     PIC X(18).
                    07  WRK-NYUTAI-FL2          PIC X(02).
       *
-      *    ∆˛¬‡±°Õ˙ŒÚ ‘Ω∏° º´±°ŒÚ°›∆˛±°√Ê∂Ë ¨°À
+      *    ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥Á∑®ÈõÜÔºàËá™Èô¢Ê≠¥‚àíÂÖ•Èô¢‰∏≠Âå∫ÂàÜÔºâ
            03  WRK-NYUINCHUKBN                 PIC X(01).
       *                 
-      *     ›∏±Õ˙ŒÚ ‘Ω∏° ≈¨Õ—ÕÛ°À
+      *    ‰øùÈô∫Â±•Ê≠¥Á∑®ÈõÜÔºàÈÅ©Áî®Ê¨ÑÔºâ
            03  WRK-HKN-RIREKI-AREA.
                05  WRK-HKN-RIREKI-TBL          OCCURS  50.  
                    07  WRK-HKN-RIREKI          PIC X(52).
@@ -580,7 +580,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-KGK5                        PIC ZZZZ9.
            03  WRK-KGK2                        PIC Z9.
       *
-      *    •Ï•ª•◊•»•≥•·•Û•» ‘Ω∏
+      *    „É¨„Çª„Éó„Éà„Ç≥„É°„É≥„ÉàÁ∑®ÈõÜ
            03  WRK-COMMENT-G.
                05  WRK-COMMENT                 PIC X(50)
                                                OCCURS  16.
@@ -594,11 +594,11 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-SJKBN       PIC 9(02).
            03  WRK-RECECOM-SJKBN   PIC X(02).
       *
-      *    ºÍΩ—ŒÚ ‘Ω∏
+      *    ÊâãË°ìÊ≠¥Á∑®ÈõÜ
            03  WRK-OPECOM          PIC 9(01).
            03  WRK-OPECOM-HEN      PIC X(50).
       *
-      *     £øÙÀÁ•Ï•ªÕ—œ¢»÷
+      *    Ë§áÊï∞Êûö„É¨„ÇªÁî®ÈÄ£Áï™
            03  WRK-HEN-PAGE-AREA.
                05  WRK-PAGE1       PIC Z9.
                05  WRK-PAGE-HEN    PIC X(01).
@@ -607,7 +607,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            03  WRK-MCP-TABLE       PIC X(64).
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
-      *    •Ï•ª•◊•»≥ «ºÕ—
+      *    „É¨„Çª„Éó„ÉàÊ†ºÁ¥çÁî®
        01  TABLE-AREA                          VALUE   SPACE.
            03  TBL-RECE-MAX        PIC 9(02).
            03  TBL-RECE-OCC            OCCURS  99.
@@ -617,121 +617,121 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  TBL-RECE-RENNUM PIC 9(02).
       *
        01  WRK-BYOMEI-AREA.     
-      *    Ω˝…¬Ãæ∫«¬Á ∏ª˙øÙ° Ω˝…¬ÃæÕÛ°À
+      *    ÂÇ∑ÁóÖÂêçÊúÄÂ§ßÊñáÂ≠óÊï∞ÔºàÂÇ∑ÁóÖÂêçÊ¨ÑÔºâ
            03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   48.
-      *    Ω˝…¬Ãæ∫«¬Á ∏ª˙øÙ° ≈¨Õ—ÕÛ°À
+      *    ÂÇ∑ÁóÖÂêçÊúÄÂ§ßÊñáÂ≠óÊï∞ÔºàÈÅ©Áî®Ê¨ÑÔºâ
            03  WRK-BYOMEI2-MAX     PIC 9(02)   VALUE   44.
-      *    Ω˝…¬ÃæÕÛ∫«¬Áπ‘øÙ
+      *    ÂÇ∑ÁóÖÂêçÊ¨ÑÊúÄÂ§ßË°åÊï∞
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   5.
-      *    ≈¨Õ—ÕÛ∫«¬Áπ‘øÙ
+      *    ÈÅ©Áî®Ê¨ÑÊúÄÂ§ßË°åÊï∞
            03  WRK-TEKIYOU1-LINE   PIC 9(02)   VALUE   35.
-      *    ≈¨Õ—ÕÛ° ¬≥ªÊ°À∫«¬Áπ‘øÙ° ≤£•ø•§•◊°À
+      *    ÈÅ©Áî®Ê¨ÑÔºàÁ∂öÁ¥ôÔºâÊúÄÂ§ßË°åÊï∞ÔºàÊ®™„Çø„Ç§„ÉóÔºâ
            03  WRK-TEKIYOU2-LINE   PIC 9(03)   VALUE   140.
-      *    ≈¨Õ—ÕÛ° ¬≥ªÊ°À∫«¬Áπ‘øÙ° Ωƒ•ø•§•◊°À
+      *    ÈÅ©Áî®Ê¨ÑÔºàÁ∂öÁ¥ôÔºâÊúÄÂ§ßË°åÊï∞ÔºàÁ∏¶„Çø„Ç§„ÉóÔºâ
            03  WRK-TEKIYOU3-LINE   PIC 9(03)   VALUE   110.
-      *    ≈¨Õ—ÕÛ° ¬≥ªÊ°À∫«¬Áπ‘øÙ° Ωƒ•ø•§•◊°¶ƒπ°À
+      *    ÈÅ©Áî®Ê¨ÑÔºàÁ∂öÁ¥ôÔºâÊúÄÂ§ßË°åÊï∞ÔºàÁ∏¶„Çø„Ç§„Éó„ÉªÈï∑Ôºâ
            03  WRK-TEKIYOU4-LINE   PIC 9(03)   VALUE   138.
-      *    ≈¨Õ—ÕÛ° ¬≥ªÊ°À§Œπ‘ Ãπ‘øÙ° ≤£•ø•§•◊°À
+      *    ÈÅ©Áî®Ê¨ÑÔºàÁ∂öÁ¥ôÔºâ„ÅÆË°åÂà•Ë°åÊï∞ÔºàÊ®™„Çø„Ç§„ÉóÔºâ
            03  WRK-TEKIYOU2-LINE-GYO
                                    PIC 9(03)   VALUE   35.
-      *    ≈¨Õ—ÕÛ° ¬≥ªÊ°Àπ‘ Ãπ‘øÙ° Ωƒ•ø•§•◊°À
+      *    ÈÅ©Áî®Ê¨ÑÔºàÁ∂öÁ¥ôÔºâË°åÂà•Ë°åÊï∞ÔºàÁ∏¶„Çø„Ç§„ÉóÔºâ
            03  WRK-TEKIYOU3-LINE-GYO
                                    PIC 9(03)   VALUE   55.
       *
-      *   ∆√µ≠ªˆπ‡
+      *   ÁâπË®ò‰∫ãÈ†Ö
        01  TBL-TOKKI-AREA.
            03  FILLER          PIC X(02)   VALUE   "01".
-           03  FILLER          PIC X(10)   VALUE   "£∞£±∏¯".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºëÂÖ¨".
            03  FILLER          PIC X(02)   VALUE   "02".
-           03  FILLER          PIC X(10)   VALUE   "£∞£≤ƒπ".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºíÈï∑".
            03  FILLER          PIC X(02)   VALUE   "03".
-           03  FILLER          PIC X(10)   VALUE   "£∞£≥ƒπΩË".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºìÈï∑Âá¶".
            03  FILLER          PIC X(02)   VALUE   "04".
-           03  FILLER          PIC X(10)   VALUE   "£∞£¥œ∑ ›".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºîËÄÅ‰øù".
            03  FILLER          PIC X(02)   VALUE   "05".
-           03  FILLER          PIC X(10)   VALUE   "£∞£µπ‚≈Ÿ".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºïÈ´òÂ∫¶".
            03  FILLER          PIC X(02)   VALUE   "07".
-           03  FILLER          PIC X(10)   VALUE   "£∞£∑œ∑ ª".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºóËÄÅ‰Ωµ".
            03  FILLER          PIC X(02)   VALUE   "08".
-           03  FILLER          PIC X(10)   VALUE   "£∞£∏œ∑∑Ú".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºòËÄÅÂÅ•".
            03  FILLER          PIC X(02)   VALUE   "09".
-           03  FILLER          PIC X(10)   VALUE   "£∞£πª‹".
+           03  FILLER          PIC X(10)   VALUE   "ÔºêÔºôÊñΩ".
            03  FILLER          PIC X(02)   VALUE   "10".
-           03  FILLER          PIC X(10)   VALUE   "£±£∞¬Ëª∞".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºêÁ¨¨‰∏â".
            03  FILLER          PIC X(02)   VALUE   "11".
-           03  FILLER          PIC X(10)   VALUE   "£±£±ÃÙº£".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºëËñ¨Ê≤ª".
            03  FILLER          PIC X(02)   VALUE   "12".
-           03  FILLER          PIC X(10)   VALUE   "£±£≤∫‡º£".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºíÊùêÊ≤ª".
            03  FILLER          PIC X(02)   VALUE   "13".
-           03  FILLER          PIC X(10)   VALUE   "£±£≥¿Ëø ".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºìÂÖàÈÄ≤".
            03  FILLER          PIC X(02)   VALUE   "14".
-           03  FILLER          PIC X(10)   VALUE   "£±£¥¿©ƒ∂".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºîÂà∂Ë∂Ö".
            03  FILLER          PIC X(02)   VALUE   "15".
-           03  FILLER          PIC X(10)   VALUE   "£±£µ∑–≤·".
+           03  FILLER          PIC X(10)   VALUE   "ÔºëÔºïÁµåÈÅé".
        01  TBL-TOKKI-R         REDEFINES   TBL-TOKKI-AREA.
            03  TBL-TOKKI       OCCURS   14.
                05  TBL-TOKKICD             PIC X(02).
                05  TBL-TOKKINAME           PIC X(10).
       *
-      *   æ…æıæ‹µ≠∂Ë ¨§Œ…Ω¬Í
+      *   ÁóáÁä∂Ë©≥Ë®òÂå∫ÂàÜ„ÅÆË°®È°å
        01  TBL-RECECOM-AREA.
            03  FILLER              PIC X(52)   VALUE
-               "°⁄ºÁ§ø§Îº¿¥µ§Œø«√«∫¨µÚ§»§ §ÎŒ◊æ≤æ…æı°€".
+               "„Äê‰∏ª„Åü„ÇãÁñæÊÇ£„ÅÆË®∫Êñ≠Ê†πÊã†„Å®„Å™„ÇãËá®Â∫äÁóáÁä∂„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄ºÁ§ø§Îº¿¥µ§Œø«√«∫¨µÚ§»§ §ÎŒ◊æ≤æ…æı§Œø«ª°∏°∫∫ΩÍ∏´°€".
+               "„Äê‰∏ª„Åü„ÇãÁñæÊÇ£„ÅÆË®∫Êñ≠Ê†πÊã†„Å®„Å™„ÇãËá®Â∫äÁóáÁä∂„ÅÆË®∫ÂØüÊ§úÊüªÊâÄË¶ã„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄ºÁ§ º£Œ≈π‘∞Ÿ° ºÍΩ—°¢ΩË√÷°¢ÃÙ ™º£Œ≈≈˘°À§Œ…¨Õ◊¿≠°€".
+               "„Äê‰∏ª„Å™Ê≤ªÁôÇË°åÁÇ∫ÔºàÊâãË°ì„ÄÅÂá¶ÁΩÆ„ÄÅËñ¨Áâ©Ê≤ªÁôÇÁ≠âÔºâ„ÅÆÂøÖË¶ÅÊÄß„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄ºÁ§ º£Œ≈π‘∞Ÿ° ºÍΩ—°¢ΩË√÷°¢ÃÙ ™º£Œ≈≈˘°À§Œ∑–≤·°€".
+               "„Äê‰∏ª„Å™Ê≤ªÁôÇË°åÁÇ∫ÔºàÊâãË°ì„ÄÅÂá¶ÁΩÆ„ÄÅËñ¨Áâ©Ê≤ªÁôÇÁ≠âÔºâ„ÅÆÁµåÈÅé„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄πÁ∑◊≈¿øÙ§¨£±£∞£∞À¸≈¿∞ æÂ§ŒÃÙ∫ﬁ§À∑∏§Îæ…æı≈˘°€".
+               "„ÄêÂêàË®àÁÇπÊï∞„ÅåÔºëÔºêÔºê‰∏áÁÇπ‰ª•‰∏ä„ÅÆËñ¨Ââ§„Å´‰øÇ„ÇãÁóáÁä∂Á≠â„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄πÁ∑◊≈¿øÙ§¨£±£∞£∞À¸≈¿∞ æÂ§ŒΩË√÷§À∑∏§Îæ…æı≈˘°€".
+               "„ÄêÂêàË®àÁÇπÊï∞„ÅåÔºëÔºêÔºê‰∏áÁÇπ‰ª•‰∏ä„ÅÆÂá¶ÁΩÆ„Å´‰øÇ„ÇãÁóáÁä∂Á≠â„Äë".
            03  FILLER              PIC X(52)   VALUE
-               "°⁄§Ω§Œ¬æ°€".
+               "„Äê„Åù„ÅÆ‰ªñ„Äë".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
            03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   7.
       *
-      *   ¬‡ø¶º‘ ›∏±»÷πÊ
+      *   ÈÄÄËÅ∑ËÄÖ‰øùÈô∫Áï™Âè∑
        01  WRK-RETIRE-AREA.
-      *        ¡»πÁ
+      *        ÁµÑÂêà
            03  WRK-RETIRE1         PIC X(03)   VALUE  "063".
-      *        πÒ∏¯
+      *        ÂõΩÂÖ¨
            03  WRK-RETIRE2         PIC X(03)   VALUE  "072".
-      *        √œ∏¯
+      *        Âú∞ÂÖ¨
            03  WRK-RETIRE3         PIC X(03)   VALUE  "073".
-      *        ∑Ÿª°
+      *        Ë≠¶ÂØü
            03  WRK-RETIRE4         PIC X(03)   VALUE  "074".
-      *        ∏¯≥ÿ°¶ª‰≥ÿ
+      *        ÂÖ¨Â≠¶„ÉªÁßÅÂ≠¶
            03  WRK-RETIRE5         PIC X(03)   VALUE  "075".
-      *        πÒ ›
+      *        ÂõΩ‰øù
            03  WRK-RETIRE6         PIC X(03)   VALUE  "067".
       *
-      *    µø§§ ‘Ω∏
+      *    Áñë„ÅÑÁ∑®ÈõÜ
        01  WRK-UTAGAI-AREA.
-      *    µø§§
-           03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "§Œµø§§".
+      *    Áñë„ÅÑ
+           03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "„ÅÆÁñë„ÅÑ".
            03  WRK-CONS-UTAGAI-MOJISU
                                    PIC 9(02)   VALUE   6.       
-      *    µﬁ¿≠
-           03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "µﬁ¿≠".      
+      *    ÊÄ•ÊÄß
+           03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "ÊÄ•ÊÄß".      
            03  WRK-CONS-KYUSEI-MOJISU
                                    PIC 9(02)   VALUE   4.       
       *
-      *    ∂Ë¿⁄§Í¿˛
+      *    Âå∫Âàá„ÇäÁ∑ö
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "°Ω".
+               ALL "‚Äî".
            03  WRK-KUGIRI2.
                05  FILLER          PIC X(22)   VALUE
-                                   "°·°·°·°·°·°·°·°°∞ ≤º°°".
+                                   "ÔºùÔºùÔºùÔºùÔºùÔºùÔºù„ÄÄ‰ª•‰∏ã„ÄÄ".
                05  WRK-KUGIRI2-KOHNAME         PIC X(10).
                05  FILLER          PIC X(20)   VALUE
-                                   "°°≈¨Õ— ¨°°°·°·°·°·°·".
+                                   "„ÄÄÈÅ©Áî®ÂàÜ„ÄÄÔºùÔºùÔºùÔºùÔºù".
            03  WRK-KUGIRI3         PIC X(52)   VALUE
-               ALL "°Ω".
+               ALL "‚Äî".
            03  WRK-KUGIRI4         PIC X(52)   VALUE
-               ALL "°·".
+               ALL "Ôºù".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTEN.
@@ -749,7 +749,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
        01  WRK-CNT                 PIC  9(5).
       *
-      *    £œ£√£“ ‘Ω∏ŒŒ∞Ë
+      *    ÔºØÔº£Ôº≤Á∑®ÈõÜÈ†òÂüü
        01  OCR1-AREA.
            03  OCR1-HKNJANUM                           PIC 9(08).
            03  OCR1-HOSPCD                             PIC 9(07).
@@ -816,48 +816,48 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
                05  WRK-ERR-HKNCOMBINUM-1
                                    PIC X(08).
                05  FILLER          PIC X(32)   VALUE
-                   "§Œ ›∏±¡»πÁ§ª§¨¬∏∫ﬂ§∑§ﬁ§ª§Û". 
+                   "„ÅÆ‰øùÈô∫ÁµÑÂêà„Åõ„ÅåÂ≠òÂú®„Åó„Åæ„Åõ„Çì". 
       *
            03  WRK-ERR-MSG-2.
                05  WRK-ERR-DAY-2   PIC X(04).
                05  FILLER          PIC X(04)   VALUE
-                   "∆¸§Œ". 
+                   "Êó•„ÅÆ". 
                05  WRK-ERR-MSG-21.
                    07  FILLER          PIC X(10)   VALUE
-                   " ›∏±¡»πÁ§ª". 
+                   "‰øùÈô∫ÁµÑÂêà„Åõ". 
                    07  WRK-ERR-HKNCOMBINUM-2
                                        PIC X(08).
                    07  FILLER          PIC X(14)   VALUE
-                   "§œ≈¨Õ—≥´ªœ∆¸§¨". 
+                   "„ÅØÈÅ©Áî®ÈñãÂßãÊó•„Åå". 
                    07  WRK-ERR-TEKSTYMD-2
                                        PIC X(20).
                    07  FILLER          PIC X(14)   VALUE
-                   "§»§ §√§∆§§§ﬁ§π". 
+                   "„Å®„Å™„Å£„Å¶„ÅÑ„Åæ„Åô". 
       *
            03  WRK-ERR-MSG-3.
                05  WRK-ERR-DAY-3       PIC X(04).
                05  FILLER              PIC X(04)   VALUE
-                   "∆¸§Œ". 
+                   "Êó•„ÅÆ". 
                05  WRK-ERR-MSG-31.
                    07  FILLER          PIC X(10)   VALUE
-                   " ›∏±¡»πÁ§ª". 
+                   "‰øùÈô∫ÁµÑÂêà„Åõ". 
                    07  WRK-ERR-HKNCOMBINUM-3
                                        PIC X(08).
                    07  FILLER          PIC X(14)   VALUE
-                   "§œ≈¨Õ—Ω™Œª∆¸§¨". 
+                   "„ÅØÈÅ©Áî®ÁµÇ‰∫ÜÊó•„Åå". 
                    07  WRK-ERR-TEKEDYMD-3
                                        PIC X(20).
                    07  FILLER          PIC X(14)   VALUE
-                   "§»§ §√§∆§§§ﬁ§π". 
+                   "„Å®„Å™„Å£„Å¶„ÅÑ„Åæ„Åô". 
       *
            03  WRK-ERR-MSG-4           PIC X(48)  VALUE
-               "√œ ˝∏¯»Ò§Œ§ﬂ¡™¬Ú§µ§Ï§∆§§§ﬁ§π°£ºÁ ›∏±§¨§¢§Í§ﬁ§ª§Û".
+               "Âú∞ÊñπÂÖ¨Ë≤ª„ÅÆ„ÅøÈÅ∏Êäû„Åï„Çå„Å¶„ÅÑ„Åæ„Åô„ÄÇ‰∏ª‰øùÈô∫„Åå„ÅÇ„Çä„Åæ„Åõ„Çì".
       *
        01  WRK-CONS-AREA.
-      *    ∏«ƒÍ√ºÀˆ£…£ƒ
+      *    Âõ∫ÂÆöÁ´ØÊú´Ôº©Ôº§
            03  WRK-CONS-TERMID         PIC X(32)   VALUE
                                    "0100007FZZZZZZZZZZZZZZZZZZZZZZZZ". 
-      *    ≤˛π‘•≥°º•…
+      *    ÊîπË°å„Ç≥„Éº„Éâ
            03  WRK-CONS-RETURN         PIC X(01)   VALUE   X"0A".
       *
            03  WRK-CONS-SRYYM         PIC 9(06)   VALUE   200304. 
@@ -867,10 +867,10 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            COPY    "ORCA-DBMETA".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„Çø
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK2005.INC".
@@ -879,14 +879,14 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            COPY    "CPSK2009.INC".
       *     
-      *    ∏©∆‚∞∑§§ ›∏±º‘æ Û
+      *    ÁúåÂÜÖÊâ±„ÅÑ‰øùÈô∫ËÄÖÊÉÖÂ†±
            COPY    "CPSK1033.INC".
       *
-      *    ∞ÂŒ≈µ°¥ÿæ Û
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
       *
-      *    ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
+      *    ÂåªÁôÇÊ©üÈñ¢Á∑®ÈõÜÊÉÖÂ†±
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
@@ -895,64 +895,64 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
       *
            COPY    "CPRCF010.INC".
       *
-      *     ›∏±•ﬁ•π•ø
+      *    ‰øùÈô∫„Éû„Çπ„Çø
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    •Ï•ª•◊•»•≥•·•Û•»•ﬁ•π•ø
+      *    „É¨„Çª„Éó„Éà„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
       *
-      *    •Ï•ª•◊•»¥…Õ˝     
+      *    „É¨„Çª„Éó„ÉàÁÆ°ÁêÜ     
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
-      *    ∏¯»Ò¿¡µ·ΩÒ
+      *    ÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏
            COPY    "CPKOHSKY.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    º˝«º
+      *    ÂèéÁ¥ç
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ºÍΩ—ŒÚ•Ï•ª•◊•»•≥•·•Û•»•ﬁ•π•ø°º
+      *    ÊâãË°ìÊ≠¥„É¨„Çª„Éó„Éà„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø„Éº
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
-      *    •—•È•·•ø
+      *    „Éë„É©„É°„Çø
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    »æ≥—•¡•ß•√•Ø•µ•÷
+      *    ÂçäËßí„ÉÅ„Çß„ÉÉ„ÇØ„Çµ„Éñ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    øÙ√Õ —¥π•µ•÷
+      *    Êï∞ÂÄ§Â§âÊèõ„Çµ„Éñ
            COPY    "CPORCSNUM.INC".
       *
-      *    •¡•ß•√•Ø•«•£•∏•√•»° •‚•∏•Â•È•π£±£±Õ—°ÀªªΩ–•µ•÷
+      *    „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºà„É¢„Ç∏„É•„É©„ÇπÔºëÔºëÁî®ÔºâÁÆóÂá∫„Çµ„Éñ
            COPY    "CPORCCHKDGT11.INC".
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
-      *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *   „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ∏¯»Ò…’≤√æ ÛºË∆¿•µ•÷
+      *    ÂÖ¨Ë≤ª‰ªòÂä†ÊÉÖÂ†±ÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSKOHPLUS.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
@@ -967,7 +967,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -985,7 +985,7 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            END-IF 
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -1008,19 +1008,19 @@ grpsys             07  KEY-O-HOSPNUM   PIC  9(02).
            PERFORM 100-DBOPEN-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+      *        „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCRCP400"     TO  JOB-PGID
-               MOVE    "∞ı∫˛•«°º•ø ‘Ω∏°  °≤¨°À"
+               MOVE    "Âç∞Âà∑„Éá„Éº„ÇøÁ∑®ÈõÜÔºàÁ¶èÂ≤°Ôºâ"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
-      *    •’•°•§•Î£œ£–£≈£ŒΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´ÔºØÔº∞Ôº•ÔºÆÂá¶ÁêÜ
            PERFORM 110-FILE-OPEN-SEC
       *
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø° ∞ÂŒ≈µ°¥ÿæ Û°À
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„ÇøÔºàÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±Ôºâ
            PERFORM 120-HOSPINF-GET-SEC
       *
            MOVE    ZERO                TO  WRK-RECENUM
@@ -1033,7 +1033,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    •’•°•§•Î£œ£–£≈£ŒΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´ÔºØÔº∞Ôº•ÔºÆÂá¶ÁêÜ
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
@@ -1135,12 +1135,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ∞ÂŒ≈µ°¥ÿæ Û∏°∫˜
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±Ê§úÁ¥¢
       *****************************************************************
        120-HOSPINF-GET-SEC            SECTION.
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ∞ÂŒ≈µ°¥ÿæ Û
+      *       ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1001"           TO  SYS-KANRICD
               MOVE    "*"              TO  SYS-KBNCD
@@ -1153,7 +1153,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
               IF      FLG-KANRIMST     =   ZERO
                   MOVE    MCPDATA-REC   TO  SYS-1001-REC
               ELSE
-                  MOVE    "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+                  MOVE    "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                         TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    2               TO  FLG-STS
@@ -1196,7 +1196,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
       *
               IF      SYSKAN-IDX          =   ZERO
-                   MOVE    "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+                   MOVE    "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                                TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    2            TO  FLG-STS
@@ -1205,7 +1205,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ∞ÂŒ≈µ°¥ÿæ Û° ΩÍ∫ﬂ√œ§€§´°À
+      *       ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÊâÄÂú®Âú∞„Åª„ÅãÔºâ
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1002"           TO  SYS-KANRICD
               MOVE    "*"              TO  SYS-KBNCD
@@ -1218,7 +1218,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               IF      FLG-KANRIMST     =   ZERO
                   MOVE    MCPDATA-REC  TO  SYS-1002-REC
               ELSE
-               MOVE    "∞ÂŒ≈µ°¥ÿæ Û° ΩÍ∫ﬂ√œ°À§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+               MOVE    "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÊâÄÂú®Âú∞Ôºâ„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   MOVE    2            TO  FLG-STS
@@ -1262,7 +1262,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
       *
                IF      SYSKAN-IDX          =   ZERO
                    MOVE
-                       "∞ÂŒ≈µ°¥ÿæ Û° ΩÍ∫ﬂ√œ°À§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+                       "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÊâÄÂú®Âú∞Ôºâ„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                                TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    2            TO  FLG-STS
@@ -1270,7 +1270,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    ƒ¢…º ÃªÿƒÍæ Û
+      *    Â∏≥Á•®Âà•ÊåáÂÆöÊÉÖÂ†±
            IF   WRK-PARA-SRYYM     NOT =  ZERO
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1900"           TO  SYS-KANRICD
@@ -1358,7 +1358,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
            END-IF 
       *         
-      *    •Ï•ª•◊•» ‘Ω∏∂Ë ¨æ Û
+      *    „É¨„Çª„Éó„ÉàÁ∑®ÈõÜÂå∫ÂàÜÊÉÖÂ†±
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
            MOVE    "2005"           TO  SYS-KANRICD
@@ -1397,7 +1397,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                MOVE    "0"             TO  SYS-2005-NYUTAIINREKI-KSIKBN
            END-IF
       *         
-      *    •Ï•ª•◊•» ‘ƒ÷ΩÁæ Û
+      *    „É¨„Çª„Éó„ÉàÁ∑®Á∂¥È†ÜÊÉÖÂ†±
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
            MOVE    "2008"           TO  SYS-KANRICD
@@ -1417,7 +1417,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                MOVE    1                TO  FLG-SYS-2008
            END-IF
       *         
-      *    •Ï•ª•◊•» ‘Ω∏∂Ë ¨æ Û
+      *    „É¨„Çª„Éó„ÉàÁ∑®ÈõÜÂå∫ÂàÜÊÉÖÂ†±
            MOVE    SPACE           TO  SYSKANRI-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    "2009"          TO  SYS-KANRICD
@@ -1450,7 +1450,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                MOVE    "0"             TO  SYS-2009-SYUKA-KOKUHO
            END-IF
       * 
-      *    ∏©∆‚∞∑§§ ›∏±º‘æ Û
+      *    ÁúåÂÜÖÊâ±„ÅÑ‰øùÈô∫ËÄÖÊÉÖÂ†±
            MOVE    SPACE            TO  WRK-1033-TABLE
       *     
            MOVE    SPACE            TO  SYSKANRI-REC
@@ -1490,12 +1490,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 900-KANRIMST-NEXT-SEC
            END-PERFORM
-      *    •´°º•Ω•Î•Ø•Ì°º•π
+      *    „Ç´„Éº„ÇΩ„É´„ÇØ„É≠„Éº„Çπ
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    •—•È•·•ø£ƒ£¬∆…§ﬂπ˛§ﬂ
+      *    „Éë„É©„É°„ÇøÔº§Ôº¢Ë™≠„ÅøËæº„Åø
            INITIALIZE                      BTPARA-REC
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
@@ -1504,7 +1504,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                PERFORM 900-BTPARA-READ-SEC
                IF      FLG-BTPARA          =   1
                    MOVE
-                   "•—•È•·•øæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£"
+                   "„Éë„É©„É°„ÇøÊÉÖÂ†±„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇ"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    2               TO  FLG-STS
@@ -1515,20 +1515,20 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            PERFORM         UNTIL   FLG-RECE02     =   1
                            OR      FLG-STS        =   2 
       *
-      *        ¥µº‘»÷πÊ Ã ›∏±Õ˙ŒÚæ Û ‘Ω∏ΩËÕ˝      
+      *        ÊÇ£ËÄÖÁï™Âè∑Âà•‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ      
                PERFORM 2001-RIREKI-HEN-SEC 
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM         UNTIL   FLG-RECE02     =   1
                                OR      FLG-STS        =   2
                                OR      KEY-NEW1   NOT =   KEY-OLD1
-      *            •Ï•ª•◊•»ºÔ Ã Ã∑ÔøÙ•´•¶•Û•»
+      *            „É¨„Çª„Éó„ÉàÁ®ÆÂà•Âà•‰ª∂Êï∞„Ç´„Ç¶„É≥„Éà
                    MOVE    ZERO            TO  CNT-KENSU
                    MOVE    KEY-NEW         TO  KEY-OLD
                    PERFORM         UNTIL   FLG-RECE02     =   1
@@ -1551,7 +1551,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                END-PERFORM    
            END-PERFORM
       *
-      *    ∏¯»Ò¿¡µ·ΩÒΩ–Œœ
+      *    ÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏Âá∫Âäõ
            IF      FLG-STS         =   2
                CONTINUE
            ELSE
@@ -1565,11 +1565,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘»÷πÊ Ã ›∏±Õ˙ŒÚæ Û ‘Ω∏ΩËÕ˝
+      *    ÊÇ£ËÄÖÁï™Âè∑Âà•‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-RIREKI-HEN-SEC      SECTION.
       *
-      *    ø«Œ≈«Ø∑Ó ‘Ω∏
+      *    Ë®∫ÁôÇÂπ¥ÊúàÁ∑®ÈõÜ
            MOVE    RECE02-SRYYM        TO  WRK-SYMD (1:6)
            MOVE    "01"                TO  WRK-SYMD (7:2)
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1615,7 +1615,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
                ADD     1                  TO  WRK-RIREKI-MAX
                IF      WRK-RIREKI-MAX     >   50
-                   MOVE    " ›∏±Õ˙ŒÚæ Û§¨•∆°º•÷•Î•™°º•–°º§∑§ﬁ§∑§ø"
+                   MOVE    "‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±„Åå„ÉÜ„Éº„Éñ„É´„Ç™„Éº„Éê„Éº„Åó„Åæ„Åó„Åü"
                                               TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    2               TO  FLG-STS
@@ -1624,7 +1624,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
                EVALUATE    RECE09-TEISYUTUSAKI
                    WHEN    "1"
-                       MOVE    "º“ ›"     TO  WRK-HKN-TEISYUTUSAKI
+                       MOVE    "Á§æ‰øù"     TO  WRK-HKN-TEISYUTUSAKI
                    WHEN    OTHER
                        MOVE    SPACE      TO  WRK-HKN-TEISYUTUSAKI   
                END-EVALUATE          
@@ -1672,11 +1672,11 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                    MOVE    SPACE                  TO  WRK-HKN-RIREKI-X
                    STRING  WRK-HKN-TEISYUTUSAKI   DELIMITED  BY  SPACE
                            RECE09-TANSEIDONAME    DELIMITED  BY  SPACE
-                           "°°"                   DELIMITED  BY  SIZE
+                           "„ÄÄ"                   DELIMITED  BY  SIZE
                            WRK-HKN-HKNJANUM       DELIMITED  BY  SPACE
-                           "°°"                   DELIMITED  BY  SIZE
+                           "„ÄÄ"                   DELIMITED  BY  SIZE
                            WRK-HKN-KIGO           DELIMITED  BY  SPACE
-                           "°Ω"                   DELIMITED  BY  SIZE
+                           "‚Äî"                   DELIMITED  BY  SIZE
                            WRK-HKN-NUM            DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI-X
                    END-STRING
@@ -1685,21 +1685,21 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                                                   DELIMITED  BY  SPACE
                                RECE09-TANSEIDONAME
                                                   DELIMITED  BY  SPACE
-                               "°°"               DELIMITED  BY  SIZE
+                               "„ÄÄ"               DELIMITED  BY  SIZE
                                WRK-HKN-HKNJANUM   DELIMITED  BY  SPACE
                               INTO    WRK-HKN-RIREKI (WRK-RIREKI-MAX)
                        END-STRING
                        ADD     1                   TO  WRK-RIREKI-MAX
                        IF      WRK-RIREKI-MAX     >   50
                            MOVE
-                               " ›∏±Õ˙ŒÚæ Û§¨•∆°º•÷•Î•™°º•–°º§∑§ﬁ§∑§ø"
+                               "‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±„Åå„ÉÜ„Éº„Éñ„É´„Ç™„Éº„Éê„Éº„Åó„Åæ„Åó„Åü"
                                                    TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                            MOVE    2               TO  FLG-STS
                            GO  TO  2001-RIREKI-HEN-EXT
                        END-IF    
                        STRING  WRK-HKN-KIGO       DELIMITED  BY  SPACE
-                               "°Ω"               DELIMITED  BY  SIZE
+                               "‚Äî"               DELIMITED  BY  SIZE
                                WRK-HKN-NUM        DELIMITED  BY  SPACE
                                INTO
                                    WRK-HKN-RIREKI (WRK-RIREKI-MAX)(13:)
@@ -1713,7 +1713,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                                           NOT =   SPACE
                    ADD     1                   TO  WRK-RIREKI-MAX
                    IF      WRK-RIREKI-MAX     >   50
-                       MOVE    " ›∏±Õ˙ŒÚæ Û§¨•∆°º•÷•Î•™°º•–°º§∑§ﬁ§∑§ø"
+                       MOVE    "‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±„Åå„ÉÜ„Éº„Éñ„É´„Ç™„Éº„Éê„Éº„Åó„Åæ„Åó„Åü"
                                                    TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    2               TO  FLG-STS
@@ -1742,12 +1742,12 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                                   WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)(1:2)
                    MOVE    LNK-DAY2-EDTYMD3(5:18)     TO  
                                   WRK-HKN-TEKEDYMD(WRK-RIREKI-MAX)(3:)
-                   MOVE    "§´§È"             TO
+                   MOVE    "„Åã„Çâ"             TO
                                       WRK-HKN-FL1     (WRK-RIREKI-MAX)
-                   MOVE    "§ﬁ§«"             TO
+                   MOVE    "„Åæ„Åß"             TO
                                       WRK-HKN-FL2     (WRK-RIREKI-MAX)
                ELSE
-                   MOVE    "§´§ÈÕ≠∏˙"         TO
+                   MOVE    "„Åã„ÇâÊúâÂäπ"         TO
                                       WRK-HKN-FL      (WRK-RIREKI-MAX) 
                END-IF                                    
       *
@@ -1764,7 +1764,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            EXIT.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
@@ -1772,7 +1772,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            MOVE    WRK-TEKIYOU1-LINE  TO  WRK-TEKIYOU-LINE
            INITIALIZE                     TABLE-AREA
       *
-      *    ∞ÂŒ≈ ›∏±°¶∏¯»Ò°¶√œ ˝∏¯»Ò§Œ•’•È•∞
+      *    ÂåªÁôÇ‰øùÈô∫„ÉªÂÖ¨Ë≤ª„ÉªÂú∞ÊñπÂÖ¨Ë≤ª„ÅÆ„Éï„É©„Ç∞
            MOVE    SPACE              TO  WRK-3SYU-KBN
            MOVE    ZERO               TO  SEIHIDX
            MOVE    ZERO               TO  KAKKIDX
@@ -1782,32 +1782,32 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            PERFORM   VARYING   IDX  FROM    1   BY  1
                      UNTIL   ( IDX                     >    4    )
                      OR      ( RECE02-KOHNUM (IDX)     =   SPACE )
-      *        ¿∏ ›
+      *        Áîü‰øù
                IF  RECE02-KOHNUM (IDX)  =   "012"
                    MOVE    "1"          TO  WRK-3SYU (1:1)
                    MOVE     IDX         TO  SEIHIDX
                END-IF
-      *        ∑Î≥À
+      *        ÁµêÊ†∏
                IF  RECE02-KOHNUM (IDX)  =   "010"  OR  "011"
                    MOVE    "1"          TO  WRK-3SYU (2:1)
                    MOVE     IDX         TO  KAKKIDX
                END-IF
       *
                IF      RECE02-SRYYM     <   WRK-CONS-SRYYM-200604
-      *            ¿∫ø¿
+      *            Á≤æÁ•û
                    IF  RECE02-KOHNUM (IDX)  =   "020"  OR  "021"
                        MOVE    "1"          TO  WRK-3SYU (3:1)
                        MOVE     IDX         TO  SESNIDX
                    END-IF
                ELSE
-      *            º´Œ©ªŸ±ÁÀ°
+      *            Ëá™Á´ãÊîØÊè¥Ê≥ï
                    IF  RECE02-KOHNUM (IDX)  =   "021"  OR
                                                 "015"  OR  "016"
                        MOVE    "1"          TO  WRK-3SYU (3:1)
                        MOVE     IDX         TO  SESNIDX
                    END-IF
                END-IF
-      *        √œ ˝∏¯»Ò
+      *        Âú∞ÊñπÂÖ¨Ë≤ª
                EVALUATE    RECE02-KOHNUM (IDX)  (1:1)
                    WHEN    "1" THRU    "2"
                        IF      RECE02-KOHHBTNUM (IDX) =   "41"
@@ -1819,27 +1819,27 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                END-EVALUATE
            END-PERFORM
       *
-      *     °≤¨√œ ˝∏¯»Ò§¨§¢§ÎæÏπÁµÎ…’≥∞≈¿øÙ§Ú ‘Ω∏
+      *    Á¶èÂ≤°Âú∞ÊñπÂÖ¨Ë≤ª„Åå„ÅÇ„ÇãÂ†¥ÂêàÁµ¶‰ªòÂ§ñÁÇπÊï∞„ÇíÁ∑®ÈõÜ
            IF      KOHIDX          >   ZERO
                PERFORM 300-KYUFUGAI-HENSYU-SEC
            END-IF 
       *
-      *    ∏©√±Õ—π‡Ã‹•’•°•§•Î∆…π˛ΩËÕ˝
+      *    ÁúåÂçòÁî®È†ÖÁõÆ„Éï„Ç°„Ç§„É´Ë™≠ËæºÂá¶ÁêÜ
            PERFORM 301-RECE11-HENSYU-SEC
       *
-      *    ƒ¢…º ‘Ω∏<•ÿ•√•¿°º…Ù>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<„Éò„ÉÉ„ÉÄ„ÉºÈÉ®>Âá¶ÁêÜ
            PERFORM 310-HC101-HEAD-HEN-SEC
       *
-      *    ƒ¢…º ‘Ω∏<≈¿øÙ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÁÇπÊï∞>Âá¶ÁêÜ
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
-      *    ƒ¢…º ‘Ω∏< ‰¬≠>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Ë£úË∂≥>Âá¶ÁêÜ
            PERFORM 350-HC101-HOSOKU-HEN-SEC
       *
-      *    ƒ¢…º ‘Ω∏<Ω˝…¬Ãæ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÂÇ∑ÁóÖÂêç>Âá¶ÁêÜ
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
-      *    ƒ¢…º ‘Ω∏<∆˛¬‡±°Õ˙ŒÚ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥>Âá¶ÁêÜ
            IF    ( SYS-2005-NYUTAIINREKI-KSIKBN
                                    =   "1" )               
            AND   ( RECE02-NYUINRRK-FLG
@@ -1847,22 +1847,22 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
                PERFORM 380-HC101-NYUTAI-RIREKI-HEN-SEC
            END-IF
       *
-      *    ƒ¢…º ‘Ω∏<ºÍΩ—ŒÚ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÊâãË°ìÊ≠¥>Âá¶ÁêÜ
            PERFORM 380-HC101-OPECOM-HEN-SEC 
       *
-      *    ƒ¢…º ‘Ω∏<∫ﬁ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Ââ§>Âá¶ÁêÜ
            PERFORM 340-HC101-ZAI-HEN-SEC
       *
-      *    ƒ¢…º ‘Ω∏<•≥•·•Û•»>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<„Ç≥„É°„É≥„Éà>Âá¶ÁêÜ
            PERFORM 360-HC101-COMMENT-HEN-SEC 
       *
-      *    ƒ¢…º ‘Ω∏< ›∏±Õ˙ŒÚæ Û>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±>Âá¶ÁêÜ
            PERFORM 370-HC101-HKN-RIREKI-HEN-SEC 
       *
-      *    ƒ¢…º∞ı∫˛ΩËÕ˝
+      *    Â∏≥Á•®Âç∞Âà∑Âá¶ÁêÜ
            PERFORM 390-PRINT-OUT-SEC
       *
-      *    ƒ¢…ºππø∑ΩËÕ˝
+      *    Â∏≥Á•®Êõ¥Êñ∞Âá¶ÁêÜ
            PERFORM 391-DB-WRITE-SEC
       *
            .
@@ -1871,7 +1871,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
       *
       *
       *****************************************************************
-      *    ∏¯»Ò¿¡µ·ΩÒΩ–ŒœΩËÕ˝
+      *    ÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        2002-KOHSKY-WRITE-SEC           SECTION.
       *
@@ -1892,7 +1892,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =   RECE09-HOSPNUM   )
            EXIT.
       *
       *****************************************************************
-      *    ∏¯»Ò¿¡µ·ΩÒ ‘Ω∏ΩËÕ˝
+      *    ÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        20022-KOHSKY-WRITE-SEC          SECTION.
       *
@@ -1924,7 +1924,7 @@ grpsys     MOVE    RECE02X-HOSPNUM     TO  KOHSKY-HOSPNUM
                MOVE    RECE02X-TEKSTYMD    TO  KOHSKY-TEKSTYMD
            END-IF
       *
-      *    •Ï•ª•◊•»ºÔ Ã§Ú¿¡µ·¥…Õ˝§Ë§Í ‘Ω∏
+      *    „É¨„Çª„Éó„ÉàÁ®ÆÂà•„ÇíË´ãÊ±ÇÁÆ°ÁêÜ„Çà„ÇäÁ∑®ÈõÜ
            INITIALIZE                      RECE10-REC
            MOVE    KOHSKY-KEY          TO  RECE10-KEY
            MOVE    "tbl_seikyu"        TO  WRK-MCP-TABLE
@@ -1936,7 +1936,7 @@ grpsys     MOVE    RECE02X-HOSPNUM     TO  KOHSKY-HOSPNUM
                MOVE    RECE10-RECEKA       TO  KOHSKY-RECEKA
            ELSE
                 GO  TO  20022-KOHSKY-WRITE-EXT
-      **********STRING  "•Ï•ª•◊•»ºÔ Ã§¨¿ﬂƒÍ…‘«Ω PTNUM="
+      **********STRING  "„É¨„Çª„Éó„ÉàÁ®ÆÂà•„ÅåË®≠ÂÆö‰∏çËÉΩ PTNUM="
       *                                     DELIMITED  BY  SIZE
       *                 RECE02X-PTNUM       DELIMITED  BY  SIZE 
       *                                     INTO  WRK-RECEERR
@@ -2034,7 +2034,7 @@ grpsys     MOVE    RECE02X-HOSPNUM     TO  KOHSKY-HOSPNUM
            MOVE    RECE02X-ZAITAKU     TO  KOHSKY-ZAITAKU
            MOVE    RECE02X-ZAITAKU-SAIKEI
                                        TO  KOHSKY-ZAITAKU-SAIKEI
-      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+      *    ‰∏ÄÈÉ®Ë≤†ÊãÖÈáë„ÉªÈ£ü‰∫ãÁôÇÈ§äË≤ªÊ®ôÊ∫ñË≤†ÊãÖÈ°çÂå∫ÂàÜ
            MOVE    RECE02X-SHOKUJIFTNKBN
                                        TO  KOHSKY-SHOKUJIFTNKBN
       *
@@ -2053,10 +2053,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                DISPLAY "ORCRCP400 KOHSKY MCP-RC= "  MCP-RC   
                IF      FLG-KOHSKY          =   1    
-                   MOVE    "∏¯»Ò¿¡µ·£ƒ£¬§Àƒ…≤√§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   MOVE    "ÂÖ¨Ë≤ªË´ãÊ±ÇÔº§Ôº¢„Å´ËøΩÂä†„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                ELSE
-                   MOVE    "∏¯»Ò¿¡µ·£ƒ£¬§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   MOVE    "ÂÖ¨Ë≤ªË´ãÊ±ÇÔº§Ôº¢„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                END-IF 
                PERFORM 500-ERR-HENSYU-SEC
@@ -2068,7 +2068,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    √œ ˝∏¯»Ò§ŒµÎ…’≥∞≈¿øÙ§Œ ‘Ω∏
+      *    Âú∞ÊñπÂÖ¨Ë≤ª„ÅÆÁµ¶‰ªòÂ§ñÁÇπÊï∞„ÅÆÁ∑®ÈõÜ
       *****************************************************************
        300-KYUFUGAI-HENSYU-SEC         SECTION.
       *
@@ -2140,7 +2140,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ∏©√±Õ—π‡Ã‹•’•°•§•Î∆…π˛ΩËÕ˝
+      *    ÁúåÂçòÁî®È†ÖÁõÆ„Éï„Ç°„Ç§„É´Ë™≠ËæºÂá¶ÁêÜ
       *****************************************************************
        301-RECE11-HENSYU-SEC           SECTION.
       *
@@ -2151,7 +2151,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            PERFORM 990-RECE11-READ-SEC
            IF      FLG-RECE11          =   ZERO
                MOVE    RECE11-PRTDATA      TO  RECE11-HC06
-      *        •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
+      *        „Ç´„Çπ„Çø„Éû„Ç§„Ç∫È†ÖÁõÆ„Åå„ÅÇ„Çã„Å®„ÅçÔºØÔº£Ôº≤„Å´ÂèçÊò†„Åï„Åõ„Çã 
                IF ( ( RECE02-TEISYUTUSAKI   =   1               )  AND
                     ( SYS-2005-SYAOCRKBN    =   ZERO    OR  "2" )      )
                OR ( ( RECE02-TEISYUTUSAKI   =   2               )  AND
@@ -2165,7 +2165,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
        301-RECE11-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<•ÿ•√•¿°º…Ù>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<„Éò„ÉÉ„ÉÄ„ÉºÈÉ®>Âá¶ÁêÜ
       *****************************************************************
        310-HC101-HEAD-HEN-SEC          SECTION.
       *
@@ -2173,29 +2173,29 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE               TO  HC06
       *
            IF      RECE02-SRYYM        <   WRK-CONS-SRYYM-200604
-               MOVE    "ªÿ°°°°∆≥"          TO  HC06-TITLE
+               MOVE    "Êåá„ÄÄ„ÄÄÂ∞é"          TO  HC06-TITLE
            ELSE
-               MOVE    "∞Â≥ÿ¥…Õ˝"          TO  HC06-TITLE
+               MOVE    "ÂåªÂ≠¶ÁÆ°ÁêÜ"          TO  HC06-TITLE
            END-IF
       *
-      *    ¥µº‘»÷πÊ
+      *    ÊÇ£ËÄÖÁï™Âè∑
            MOVE    RECE02-PTNUM        TO  HC06-PTNUM
       *
-      *    ƒÛΩ–¿Ë
+      *    ÊèêÂá∫ÂÖà
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                MOVE    SPACE           TO  HC06-TEISYUTUSAKI
            ELSE    
                EVALUATE    RECE02-TEISYUTUSAKI
                    WHEN    1
-                       MOVE    "£±º“"          TO  HC06-TEISYUTUSAKI
+                       MOVE    "ÔºëÁ§æ"          TO  HC06-TEISYUTUSAKI
                    WHEN    2
-                       MOVE    "£≤πÒ"          TO  HC06-TEISYUTUSAKI
+                       MOVE    "ÔºíÂõΩ"          TO  HC06-TEISYUTUSAKI
                    WHEN    OTHER
                        MOVE    SPACE           TO  HC06-TEISYUTUSAKI
                END-EVALUATE
            END-IF    
       *
-      *    ø«Œ≈«Ø∑Ó° ø«Œ≈«Ø∑Ó∆¸§»§∑§∆¬‡»Ú°À
+      *    Ë®∫ÁôÇÂπ¥ÊúàÔºàË®∫ÁôÇÂπ¥ÊúàÊó•„Å®„Åó„Å¶ÈÄÄÈÅøÔºâ
            MOVE    RECE02-SRYYM        TO  WRK-SYMD
            MOVE    1                   TO  WRK-SDD
            MOVE    WRK-SYMD            TO  WRK-SRYYMD
@@ -2203,54 +2203,54 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            MOVE    LNK-DAY2-EDTYMD1-Y  TO  HC06-SRYY 
            MOVE    LNK-DAY2-EDTYMD1-M  TO  HC06-SRYM 
       *
-      *    ∏©»÷
+      *    ÁúåÁï™
            MOVE    SYS-1001-PREFNUM    TO  HC06-PREFNUM
       *
-      *    ∞ÂŒ≈µ°¥ÿ•≥°º•…
+      *    ÂåªÁôÇÊ©üÈñ¢„Ç≥„Éº„Éâ
            MOVE    SYS-1001-HOSPCDN    TO  HC06-HOSPCDN
       *
-      *     ›∏±ºÔ Ã£±
+      *    ‰øùÈô∫Á®ÆÂà•Ôºë
            PERFORM 3110-HKNSBT1-SET-SEC
       *
-      *     ›∏±ºÔ Ã£≤
+      *    ‰øùÈô∫Á®ÆÂà•Ôºí
            PERFORM 3110-HKNSBT2-SET-SEC
       *
-      *    À‹øÕ°¶≤»¬≤
+      *    Êú¨‰∫∫„ÉªÂÆ∂Êóè
            PERFORM 3110-HONKZK-SET-SEC
       *
-      *    œ∑øÕ ›∏±°›ª‘ƒÆ¬º»÷πÊ
+      *    ËÄÅ‰∫∫‰øùÈô∫‚àíÂ∏ÇÁî∫ÊùëÁï™Âè∑
            MOVE    RECE02-RJNFTNJANUM  TO  HC06-RJNFTNJANUM
       *
-      *    œ∑øÕ ›∏±°›ºıµÎº‘»÷πÊ
+      *    ËÄÅ‰∫∫‰øùÈô∫‚àíÂèóÁµ¶ËÄÖÁï™Âè∑
            MOVE    RECE02-RJNJKYSNUM   TO  HC06-RJNJKYSNUM
       *
-      *     ›∏±º‘»÷πÊ°¶∏¯»Ò°›…È√¥º‘»÷πÊ°¶ºıµÎº‘»÷πÊ°¶ø«Œ≈º¬∆¸øÙ°¶µ≠πÊ»÷πÊ
+      *    ‰øùÈô∫ËÄÖÁï™Âè∑„ÉªÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑„ÉªÂèóÁµ¶ËÄÖÁï™Âè∑„ÉªË®∫ÁôÇÂÆüÊó•Êï∞„ÉªË®òÂè∑Áï™Âè∑
            PERFORM 3110-KANREN-NUM-SET-SEC
       *
-      *    µÎ…’≥‰πÁ
+      *    Áµ¶‰ªòÂâ≤Âêà
            PERFORM 3110-KYURATE-SET-SEC
       *
-      *    •´• ª·Ãæ
+      *    „Ç´„ÉäÊ∞èÂêç
            IF     RECE02-KANANAME (41:)    NOT =   SPACE
                 MOVE    RECE02-KANANAME    TO  HC06-KANANAME2
            ELSE
                 MOVE    RECE02-KANANAME    TO  HC06-KANANAME
            END-IF
       *
-      *    ª·Ãæ
+      *    Ê∞èÂêç
            MOVE    RECE02-NAME         TO  HC06-NAME
       *
-      *    ¿≠ Ã
+      *    ÊÄßÂà•
            EVALUATE    RECE02-SEX
            WHEN    "1"
-               MOVE    "£±"            TO  HC06-SEXNUM
-               MOVE    "√À"            TO  HC06-SEXN
+               MOVE    "Ôºë"            TO  HC06-SEXNUM
+               MOVE    "Áî∑"            TO  HC06-SEXN
            WHEN    "2"
-               MOVE    "£≤"            TO  HC06-SEXNUM
-               MOVE    "Ω˜"            TO  HC06-SEXN
+               MOVE    "Ôºí"            TO  HC06-SEXNUM
+               MOVE    "Â•≥"            TO  HC06-SEXN
            END-EVALUATE
       *
-      *    ¿∏«Ø∑Ó∆¸
+      *    ÁîüÂπ¥ÊúàÊó•
            MOVE    RECE02-BIRTHDAY     TO  WRK-SYMD
            PERFORM 31012-SE-WA-YMDEDIT-SEC
            INITIALIZE              ORCSKANACHKAREA
@@ -2269,10 +2269,10 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            MOVE    LNK-DAY2-EDTYMD2 (5:)
                                        TO  HC06-BIRTHDAY(5:)
       *
-      *    ∆√µ≠ªˆπ‡
+      *    ÁâπË®ò‰∫ãÈ†Ö
            PERFORM 3110-TOKKI-SET-SEC
       *
-      *    ø¶Ã≥æÂ§ŒªˆÕ≥
+      *    ËÅ∑Âãô‰∏ä„ÅÆ‰∫ãÁî±
       *****IF      RECE02-HKNNUM       =   "002"
            EVALUATE    RECE02-HKNNUM
                WHEN    "002"
@@ -2281,64 +2281,64 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        WHEN    "1"
                        WHEN    "A"
                        WHEN    "D"
-                           MOVE    "ø¶Ã≥æÂ"              TO  HC06-JIYU
+                           MOVE    "ËÅ∑Âãô‰∏ä"              TO  HC06-JIYU
                        WHEN    "2"
                        WHEN    "B"
                        WHEN    "E"
-                           MOVE    "≤º¡•∏Â£≥•ˆ∑Ó∞ ∆‚"    TO  HC06-JIYU
+                           MOVE    "‰∏ãËàπÂæåÔºì„É∂Êúà‰ª•ÂÜÖ"    TO  HC06-JIYU
                        WHEN    "3"
                        WHEN    "C"
                        WHEN    "F"
-                           MOVE    "ƒÃ∂–∫“≥≤"            TO  HC06-JIYU
+                           MOVE    "ÈÄöÂã§ÁÅΩÂÆ≥"            TO  HC06-JIYU
                    END-EVALUATE
            END-EVALUATE        
       *****END-IF                 
       *
-      *    ∞ÂŒ≈µ°¥ÿΩÍ∫ﬂ√œ
+      *    ÂåªÁôÇÊ©üÈñ¢ÊâÄÂú®Âú∞
            IF      FLG-SYS-1902        =   1
                MOVE    SYS-1902-ADRS1      TO  HC06-HOSPADRS (1:)
                MOVE    SYS-1902-ADRS2      TO  HC06-HOSPADRS (51:)
            ELSE
                MOVE    SYS-1002-ADRS       TO  HC06-HOSPADRS
            END-IF
-           INSPECT HC06-HOSPADRS   REPLACING   ALL "  "    BY  "°°"
+           INSPECT HC06-HOSPADRS   REPLACING   ALL "  "    BY  "„ÄÄ"
       *
-      *    ∞ÂŒ≈µ°¥ÿÃææŒ
+      *    ÂåªÁôÇÊ©üÈñ¢ÂêçÁß∞
            IF      FLG-SYS-1901        =   1
                MOVE    SYS-1901-HOSPNAME1  TO  HC06-HOSPNAME (1:)
                MOVE    SYS-1901-HOSPNAME2  TO  HC06-HOSPNAME (41:)
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HC06-HOSPNAME
            END-IF
-           INSPECT HC06-HOSPNAME   REPLACING   ALL "  "    BY  "°°"
+           INSPECT HC06-HOSPNAME   REPLACING   ALL "  "    BY  "„ÄÄ"
       *
-      *    ∞ÂŒ≈µ°¥ÿ£‘£≈£Ã
+      *    ÂåªÁôÇÊ©üÈñ¢Ôº¥Ôº•Ôº¨
            IF      FLG-SYS-1902        =   1
                MOVE    SYS-1902-TEL        TO  HC06-HOSPTEL
            ELSE
                MOVE    SYS-1002-TEL        TO  HC06-HOSPTEL
            END-IF
       *
-      *    µÏ¡ÌπÁ…¬±°§Œ§»§≠§Œø«Œ≈≤ §Œµ≠∫‹
+      *    ÊóßÁ∑èÂêàÁóÖÈô¢„ÅÆ„Å®„Åç„ÅÆË®∫ÁôÇÁßë„ÅÆË®òËºâ
            IF      RECE02-RECEKA   NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI 
                MOVE    RECE02-RECEKA       TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"       USING   ORCSKANACHKAREA
                IF      KANACHK-RC          =   ZERO
-                   STRING  "° "            DELIMITED   BY  SIZE
+                   STRING  "Ôºà"            DELIMITED   BY  SIZE
                            KANACHK-OUT-INPUT(1:KANACHK-MAX)    
                                            DELIMITED   BY  SIZE
                            RECE02-SYUKANAME
                                            DELIMITED   BY  SPACE 
-                           "°À"            DELIMITED   BY  SIZE
+                           "Ôºâ"            DELIMITED   BY  SIZE
                                            INTO  HC06-SRYKA
                    END-STRING
                END-IF
            ELSE
                MOVE    SPACE           TO  HC06-SRYKA
            END-IF
-      *    ºÁ≤ ¿ﬂƒÍ§¢§Í§Œ§»§≠§Œµ≠∫‹
+      *    ‰∏ªÁßëË®≠ÂÆö„ÅÇ„Çä„ÅÆ„Å®„Åç„ÅÆË®òËºâ
            IF      RECE02-SYUKA     NOT =   SPACE  AND "XX"
                IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
                      AND ( SYS-2009-SYUKA-SYAHO  =   "1" ) )
@@ -2351,33 +2351,33 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        CALL    "ORCSKANACHK"       USING
                                                        ORCSKANACHKAREA
                        IF      KANACHK-RC      =   ZERO
-                           STRING  "° "            DELIMITED   BY  SIZE
+                           STRING  "Ôºà"            DELIMITED   BY  SIZE
                                    KANACHK-OUT-INPUT(1:KANACHK-MAX)    
                                                    DELIMITED   BY  SIZE
                                    RECE02-SYUKANAME
                                                    DELIMITED   BY  SPACE
-                                   "°À"            DELIMITED   BY  SIZE
+                                   "Ôºâ"            DELIMITED   BY  SIZE
                                                    INTO  HC06-SRYKA
                            END-STRING
                        END-IF
                    ELSE
-                       STRING  "° "            DELIMITED   BY  SIZE
+                       STRING  "Ôºà"            DELIMITED   BY  SIZE
                                RECE02-SYUKANAME
                                                DELIMITED   BY  SPACE 
-                               "°À"            DELIMITED   BY  SIZE
+                               "Ôºâ"            DELIMITED   BY  SIZE
                                                INTO  HC06-SRYKA
                        END-STRING
                    END-IF 
                END-IF
            END-IF    
-      *    ∏©√±Õ—π‡Ã‹
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
            IF      FLG-RECE11         =   ZERO
                IF      RECE11-SRYKA   NOT =   SPACE
                    MOVE    RECE11-SRYKA   TO  HC06-SRYKA
                END-IF
            END-IF    
       *
-      *    …¬æ≤øÙ
+      *    ÁóÖÂ∫äÊï∞
            IF    ( SYS-1001-BEDSU      >   ZERO )
            AND   ( SYS-1001-HOSPSBT    =   "1"  ) 
                IF      RECE02-BEDSUFLG     =   "1" 
@@ -2391,9 +2391,9 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    £œ£√£“
+      *    ÔºØÔº£Ôº≤
            IF  CNT-PAGE                =   1
-      *        •´•π•ø•ﬁ•§•∫π‡Ã‹§¨§¢§Î§»§≠£œ£√£“§À»ø±«§µ§ª§Î 
+      *        „Ç´„Çπ„Çø„Éû„Ç§„Ç∫È†ÖÁõÆ„Åå„ÅÇ„Çã„Å®„ÅçÔºØÔº£Ôº≤„Å´ÂèçÊò†„Åï„Åõ„Çã 
                IF      FLG-RECE11          =   ZERO
                    IF ( ( RECE02-TEISYUTUSAKI   =   1            )  AND
                         ( SYS-2005-SYAOCRKBN    =   ZERO OR  "2" )     )
@@ -2411,26 +2411,26 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                MOVE    RECE02-OCR1     TO  HC06-OCR3
            END-IF
       *
-      *     °≤¨∆√ Ã∏¯»Ò§ŒµÎ…’≥∞≈¿øÙ§Œ…Ωº®
+      *    Á¶èÂ≤°ÁâπÂà•ÂÖ¨Ë≤ª„ÅÆÁµ¶‰ªòÂ§ñÁÇπÊï∞„ÅÆË°®Á§∫
            IF      KOHIDX               >   ZERO
-               MOVE    "∆˝°¶æ„°¶ Ï"         TO  HC06-KYUFUGAI1
+               MOVE    "‰π≥„ÉªÈöú„ÉªÊØç"         TO  HC06-KYUFUGAI1
            END-IF
       *
-      *    ∏©√±Õ—π‡Ã‹
-      *    √¢§∑°¢•Ï•ª•◊•»ºÔ Ã…‘Ã¿§Œ§»§≠§œ∏∂∞¯§Ú ‘Ω∏§π§Î
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
+      *    ‰ΩÜ„Åó„ÄÅ„É¨„Çª„Éó„ÉàÁ®ÆÂà•‰∏çÊòé„ÅÆ„Å®„Åç„ÅØÂéüÂõ†„ÇíÁ∑®ÈõÜ„Åô„Çã
            IF      CNT-PAGE            =   1
                IF      RECE02-RECESYUBETU  =    ZERO
                    PERFORM 3101-FUMEI-HENSYU-SEC
                ELSE 
                    IF      FLG-RECE11          =   ZERO
                        INSPECT RECE11-HC06-HEAD1-G  REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                        INSPECT RECE11-HC06-HEAD2-G  REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                        INSPECT RECE11-HC06-HEAD3-G  REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                        INSPECT RECE11-HEAD4-G      REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                        MOVE    RECE11-HC06-HEAD1-G TO  HC06-HEAD1-G
                        MOVE    RECE11-HC06-HEAD2-G TO  HC06-HEAD2-G
                        MOVE    RECE11-HC06-HEAD3-G TO  HC06-HEAD3-G
@@ -2444,7 +2444,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»ºÔ Ã…‘Ã¿§Œ§»§≠…‘Ã¿§Œ∏∂∞¯§Ú ‘Ω∏ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÁ®ÆÂà•‰∏çÊòé„ÅÆ„Å®„Åç‰∏çÊòé„ÅÆÂéüÂõ†„ÇíÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3101-FUMEI-HENSYU-SEC              SECTION.
       *
@@ -2528,14 +2528,14 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                WHEN    6
                    MOVE    WRK-ERR-MSG-4   TO   HC06-HEAD1-G
            END-EVALUATE        
-           INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "°°"
+           INSPECT HC06-HEAD1-G  REPLACING ALL "  "    BY  "„ÄÄ"
       *
            .
        3101-FUMEI-HENSYU-EXT.
            EXIT.
       *     
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<¬≥ªÊ•ÿ•√•¿°º…Ù>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Á∂öÁ¥ô„Éò„ÉÉ„ÉÄ„ÉºÈÉ®>Âá¶ÁêÜ
       *****************************************************************
        310-HCN061-HEAD-HEN-SEC          SECTION.
       *
@@ -2544,45 +2544,45 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                    INITIALIZE                      HC061
                    MOVE    SPACE               TO  HC061
       *
-                   MOVE    "° ∞Â≤ ∆˛±°≥∞°À"    TO  HC061-TYTLE
+                   MOVE    "ÔºàÂåªÁßëÂÖ•Èô¢Â§ñÔºâ"    TO  HC061-TYTLE
       *
-      *            ¥µº‘»÷πÊ
+      *            ÊÇ£ËÄÖÁï™Âè∑
                    MOVE    RECE02-PTNUM        TO  HC061-PTNUM
       *
-      *            ƒÛΩ–¿Ë
+      *            ÊèêÂá∫ÂÖà
                    MOVE    HC06-TEISYUTUSAKI   TO  HC061-TEISYUTUSAKI
       *
-      *            ø«Œ≈«Ø∑Ó
+      *            Ë®∫ÁôÇÂπ¥Êúà
                    MOVE    HC06-SRYY           TO  HC061-SRYY 
                    MOVE    HC06-SRYM           TO  HC061-SRYM 
       *
-      *            ∏©»÷
+      *            ÁúåÁï™
                    MOVE    SYS-1001-PREFNUM    TO  HC061-PREFNUM
       *
-      *            ∞ÂŒ≈µ°¥ÿ•≥°º•…
+      *            ÂåªÁôÇÊ©üÈñ¢„Ç≥„Éº„Éâ
                    MOVE    SYS-1001-HOSPCDN    TO  HC061-HOSPCDN
       *
-      *             ›∏±ºÔ Ã£±
+      *            ‰øùÈô∫Á®ÆÂà•Ôºë
                    MOVE    HC06-HKNSBT1        TO  HC061-HKNSBT1  
       *
-      *             ›∏±ºÔ Ã£≤
+      *            ‰øùÈô∫Á®ÆÂà•Ôºí
                    MOVE    HC06-HKNSBT2        TO  HC061-HKNSBT2  
       *
-      *            À‹øÕ°¶≤»¬≤
+      *            Êú¨‰∫∫„ÉªÂÆ∂Êóè
                    MOVE    HC06-HONKZK         TO  HC061-HONKZK
       *
-      *            œ∑øÕ ›∏±°›ª‘ƒÆ¬º»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂ∏ÇÁî∫ÊùëÁï™Âè∑
                    MOVE    HC06-RJNFTNJANUM    TO  HC061-RJNFTNJANUM
       *
-      *            œ∑øÕ ›∏±°›ºıµÎº‘»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂèóÁµ¶ËÄÖÁï™Âè∑
                    MOVE    HC06-RJNJKYSNUM     TO  HC061-RJNJKYSNUM
       * 
-      *             ›∏±º‘»÷πÊ°¶µ≠πÊ»÷πÊ
+      *            ‰øùÈô∫ËÄÖÁï™Âè∑„ÉªË®òÂè∑Áï™Âè∑
                    MOVE    HC06-HKNJANUM       TO  HC061-HKNJANUM
                    MOVE    HC06-KIGO           TO  HC061-KIGO
                    MOVE    HC06-NUM            TO  HC061-NUM
       *     
-      *            ∏¯»Ò°›…È√¥º‘»÷πÊ°¶ºıµÎº‘»÷πÊ
+      *            ÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑„ÉªÂèóÁµ¶ËÄÖÁï™Âè∑
                    IF      HC06-KOHJKYSNUM1N   =   SPACE
                        MOVE    HC06-KOHJKYSNUM1
                                                TO  HC061-KOHJKYSNUM1
@@ -2612,54 +2612,54 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                                                TO  HC061-KOHFTNJANUM2N
                    END-IF
       *
-      *            µÎ…’≥‰πÁ
+      *            Áµ¶‰ªòÂâ≤Âêà
                    MOVE    HC06-KYURATE        TO  HC061-KYURATE
       *
-      *           ª·Ãæ
+      *           Ê∞èÂêç
                    MOVE    HC06-NAME           TO  HC061-NAME
                WHEN    "2"
                    INITIALIZE                      HC062
                    MOVE    SPACE               TO  HC062
       *
-                   MOVE    "° ∞Â≤ ∆˛±°≥∞°À"    TO  HC062-TYTLE
+                   MOVE    "ÔºàÂåªÁßëÂÖ•Èô¢Â§ñÔºâ"    TO  HC062-TYTLE
       *
-      *            ¥µº‘»÷πÊ
+      *            ÊÇ£ËÄÖÁï™Âè∑
                    MOVE    RECE02-PTNUM        TO  HC062-PTNUM
       *
-      *            ƒÛΩ–¿Ë
+      *            ÊèêÂá∫ÂÖà
                    MOVE    HC06-TEISYUTUSAKI   TO  HC062-TEISYUTUSAKI
       *
-      *            ø«Œ≈«Ø∑Ó
+      *            Ë®∫ÁôÇÂπ¥Êúà
                    MOVE    HC06-SRYY           TO  HC062-SRYY 
                    MOVE    HC06-SRYM           TO  HC062-SRYM 
       *
-      *            ∏©»÷
+      *            ÁúåÁï™
                    MOVE    SYS-1001-PREFNUM    TO  HC062-PREFNUM
       *
-      *            ∞ÂŒ≈µ°¥ÿ•≥°º•…
+      *            ÂåªÁôÇÊ©üÈñ¢„Ç≥„Éº„Éâ
                    MOVE    SYS-1001-HOSPCDN    TO  HC062-HOSPCDN
       *
-      *             ›∏±ºÔ Ã£±
+      *            ‰øùÈô∫Á®ÆÂà•Ôºë
                    MOVE    HC06-HKNSBT1        TO  HC062-HKNSBT1  
       *
-      *             ›∏±ºÔ Ã£≤
+      *            ‰øùÈô∫Á®ÆÂà•Ôºí
                    MOVE    HC06-HKNSBT2        TO  HC062-HKNSBT2  
       *
-      *            À‹øÕ°¶≤»¬≤
+      *            Êú¨‰∫∫„ÉªÂÆ∂Êóè
                    MOVE    HC06-HONKZK         TO  HC062-HONKZK
       *
-      *            œ∑øÕ ›∏±°›ª‘ƒÆ¬º»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂ∏ÇÁî∫ÊùëÁï™Âè∑
                    MOVE    HC06-RJNFTNJANUM    TO  HC062-RJNFTNJANUM
       *
-      *            œ∑øÕ ›∏±°›ºıµÎº‘»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂèóÁµ¶ËÄÖÁï™Âè∑
                    MOVE    HC06-RJNJKYSNUM     TO  HC062-RJNJKYSNUM
       * 
-      *             ›∏±º‘»÷πÊ°¶µ≠πÊ»÷πÊ
+      *            ‰øùÈô∫ËÄÖÁï™Âè∑„ÉªË®òÂè∑Áï™Âè∑
                    MOVE    HC06-HKNJANUM       TO  HC062-HKNJANUM
                    MOVE    HC06-KIGO           TO  HC062-KIGO
                    MOVE    HC06-NUM            TO  HC062-NUM
       *     
-      *            ∏¯»Ò°›…È√¥º‘»÷πÊ°¶ºıµÎº‘»÷πÊ
+      *            ÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑„ÉªÂèóÁµ¶ËÄÖÁï™Âè∑
                    IF      HC06-KOHJKYSNUM1N   =   SPACE
                        MOVE    HC06-KOHJKYSNUM1
                                                TO  HC062-KOHJKYSNUM1
@@ -2689,54 +2689,54 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                                                TO  HC062-KOHFTNJANUM2N
                    END-IF
       *
-      *            µÎ…’≥‰πÁ
+      *            Áµ¶‰ªòÂâ≤Âêà
                    MOVE    HC06-KYURATE        TO  HC062-KYURATE
       *
-      *           ª·Ãæ
+      *           Ê∞èÂêç
                    MOVE    HC06-NAME           TO  HC062-NAME
                WHEN    "3"
                    INITIALIZE                      HC063
                    MOVE    SPACE               TO  HC063
       *
-                   MOVE    "° ∞Â≤ ∆˛±°≥∞°À"    TO  HC063-TYTLE
+                   MOVE    "ÔºàÂåªÁßëÂÖ•Èô¢Â§ñÔºâ"    TO  HC063-TYTLE
       *
-      *            ¥µº‘»÷πÊ
+      *            ÊÇ£ËÄÖÁï™Âè∑
                    MOVE    RECE02-PTNUM        TO  HC063-PTNUM
       *
-      *            ƒÛΩ–¿Ë
+      *            ÊèêÂá∫ÂÖà
                    MOVE    HC06-TEISYUTUSAKI   TO  HC063-TEISYUTUSAKI
       *
-      *            ø«Œ≈«Ø∑Ó
+      *            Ë®∫ÁôÇÂπ¥Êúà
                    MOVE    HC06-SRYY           TO  HC063-SRYY 
                    MOVE    HC06-SRYM           TO  HC063-SRYM 
       *
-      *            ∏©»÷
+      *            ÁúåÁï™
                    MOVE    SYS-1001-PREFNUM    TO  HC063-PREFNUM
       *
-      *            ∞ÂŒ≈µ°¥ÿ•≥°º•…
+      *            ÂåªÁôÇÊ©üÈñ¢„Ç≥„Éº„Éâ
                    MOVE    SYS-1001-HOSPCDN    TO  HC063-HOSPCDN
       *
-      *             ›∏±ºÔ Ã£±
+      *            ‰øùÈô∫Á®ÆÂà•Ôºë
                    MOVE    HC06-HKNSBT1        TO  HC063-HKNSBT1  
       *
-      *             ›∏±ºÔ Ã£≤
+      *            ‰øùÈô∫Á®ÆÂà•Ôºí
                    MOVE    HC06-HKNSBT2        TO  HC063-HKNSBT2  
       *
-      *            À‹øÕ°¶≤»¬≤
+      *            Êú¨‰∫∫„ÉªÂÆ∂Êóè
                    MOVE    HC06-HONKZK         TO  HC063-HONKZK
       *
-      *            œ∑øÕ ›∏±°›ª‘ƒÆ¬º»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂ∏ÇÁî∫ÊùëÁï™Âè∑
                    MOVE    HC06-RJNFTNJANUM    TO  HC063-RJNFTNJANUM
       *
-      *            œ∑øÕ ›∏±°›ºıµÎº‘»÷πÊ
+      *            ËÄÅ‰∫∫‰øùÈô∫‚àíÂèóÁµ¶ËÄÖÁï™Âè∑
                    MOVE    HC06-RJNJKYSNUM     TO  HC063-RJNJKYSNUM
       * 
-      *             ›∏±º‘»÷πÊ°¶µ≠πÊ»÷πÊ
+      *            ‰øùÈô∫ËÄÖÁï™Âè∑„ÉªË®òÂè∑Áï™Âè∑
                    MOVE    HC06-HKNJANUM       TO  HC063-HKNJANUM
                    MOVE    HC06-KIGO           TO  HC063-KIGO
                    MOVE    HC06-NUM            TO  HC063-NUM
       *     
-      *            ∏¯»Ò°›…È√¥º‘»÷πÊ°¶ºıµÎº‘»÷πÊ
+      *            ÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑„ÉªÂèóÁµ¶ËÄÖÁï™Âè∑
                    IF      HC06-KOHJKYSNUM1N   =   SPACE
                        MOVE    HC06-KOHJKYSNUM1
                                                TO  HC063-KOHJKYSNUM1
@@ -2766,10 +2766,10 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                                                TO  HC063-KOHFTNJANUM2N
                    END-IF
       *
-      *            µÎ…’≥‰πÁ
+      *            Áµ¶‰ªòÂâ≤Âêà
                    MOVE    HC06-KYURATE        TO  HC063-KYURATE
       *
-      *           ª·Ãæ
+      *           Ê∞èÂêç
                    MOVE    HC06-NAME           TO  HC063-NAME
            END-EVALUATE
            .
@@ -2777,11 +2777,11 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  < ›∏±ºÔ Ã£±> ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  <‰øùÈô∫Á®ÆÂà•Ôºë>Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-HKNSBT1-SET-SEC              SECTION.
       *
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
+      *    ‰∏çÊòéÂàÜ„ÉªËá™Ë≤ª„ÅØÁ∑®ÈõÜ„Åó„Å™„ÅÑ
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                CONTINUE
            ELSE                                        
@@ -2789,16 +2789,16 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                    WHEN    "1"
                        EVALUATE    RECE02-TEISYUTUSAKI
                            WHEN    1
-                               MOVE    "£±º“"      TO  HC06-HKNSBT1
+                               MOVE    "ÔºëÁ§æ"      TO  HC06-HKNSBT1
                            WHEN    2
-                               MOVE    "£±πÒ"      TO  HC06-HKNSBT1
+                               MOVE    "ÔºëÂõΩ"      TO  HC06-HKNSBT1
                        END-EVALUATE
                    WHEN    "2"
-                       MOVE    "£≤∏¯»Ò"        TO  HC06-HKNSBT1
+                       MOVE    "ÔºíÂÖ¨Ë≤ª"        TO  HC06-HKNSBT1
                    WHEN    "3"
-                       MOVE    "£≥œ∑øÕ"        TO  HC06-HKNSBT1
+                       MOVE    "ÔºìËÄÅ‰∫∫"        TO  HC06-HKNSBT1
                    WHEN    "4"
-                       MOVE    "£¥¬‡ø¶"        TO  HC06-HKNSBT1
+                       MOVE    "ÔºîÈÄÄËÅ∑"        TO  HC06-HKNSBT1
                END-EVALUATE
            END-IF    
       *
@@ -2807,21 +2807,21 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  < ›∏±ºÔ Ã£≤> ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  <‰øùÈô∫Á®ÆÂà•Ôºí>Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-HKNSBT2-SET-SEC              SECTION.
       *
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
+      *    ‰∏çÊòéÂàÜ„ÉªËá™Ë≤ª„ÅØÁ∑®ÈõÜ„Åó„Å™„ÅÑ
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                CONTINUE
            ELSE                                        
                EVALUATE    RECE02-RECESYUBETU (3:1)
                    WHEN    "1"
-                       MOVE    "£±√±∆»"        TO  HC06-HKNSBT2
+                       MOVE    "ÔºëÂçòÁã¨"        TO  HC06-HKNSBT2
                    WHEN    "2"
-                       MOVE    "£≤£≤ ª"        TO  HC06-HKNSBT2
+                       MOVE    "ÔºíÔºí‰Ωµ"        TO  HC06-HKNSBT2
                    WHEN    "3"
-                       MOVE    "£≥£≥ ª"        TO  HC06-HKNSBT2
+                       MOVE    "ÔºìÔºì‰Ωµ"        TO  HC06-HKNSBT2
                END-EVALUATE
            END-IF    
       *
@@ -2830,25 +2830,25 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  <À‹øÕ°¶≤»¬≤> ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  <Êú¨‰∫∫„ÉªÂÆ∂Êóè>Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-HONKZK-SET-SEC             SECTION.
       *
-      *    …‘Ã¿ ¨°¶º´»Ò§œ ‘Ω∏§∑§ §§
+      *    ‰∏çÊòéÂàÜ„ÉªËá™Ë≤ª„ÅØÁ∑®ÈõÜ„Åó„Å™„ÅÑ
            IF      RECE02-RECESYUBETU  =    ZERO    OR  8888
                CONTINUE
            ELSE                                        
                EVALUATE    RECE02-RECESYUBETU (4:1)
                    WHEN    "0"
-                       MOVE    "£∞π‚≥∞£∏"     TO  HC06-HONKZK
+                       MOVE    "ÔºêÈ´òÂ§ñÔºò"     TO  HC06-HONKZK
                    WHEN    "2"
-                       MOVE    "£≤À‹≥∞"       TO  HC06-HONKZK
+                       MOVE    "ÔºíÊú¨Â§ñ"       TO  HC06-HONKZK
                    WHEN    "4"
-                       MOVE    "£¥ª∞≥∞"       TO  HC06-HONKZK
+                       MOVE    "Ôºî‰∏âÂ§ñ"       TO  HC06-HONKZK
                    WHEN    "6"
-                       MOVE    "£∂≤»≥∞"       TO  HC06-HONKZK
+                       MOVE    "ÔºñÂÆ∂Â§ñ"       TO  HC06-HONKZK
                    WHEN    "8"
-                       MOVE    "£∏π‚≥∞£π"     TO  HC06-HONKZK
+                       MOVE    "ÔºòÈ´òÂ§ñÔºô"     TO  HC06-HONKZK
                END-EVALUATE
            END-IF    
       *
@@ -2857,45 +2857,45 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  ºÁ ›∏±°› ›∏±º‘»÷πÊ£∏∑Â
-      *          ∏¯»Ò°›…È√¥º‘»÷πÊ  £∏∑Â
-      *          µ≠πÊ°¶»÷πÊ°°ø«Œ≈º¬∆¸øÙ      ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  ‰∏ª‰øùÈô∫‚àí‰øùÈô∫ËÄÖÁï™Âè∑ÔºòÊ°Å
+      *          ÂÖ¨Ë≤ª‚àíË≤†ÊãÖËÄÖÁï™Âè∑  ÔºòÊ°Å
+      *          Ë®òÂè∑„ÉªÁï™Âè∑„ÄÄË®∫ÁôÇÂÆüÊó•Êï∞     Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-KANREN-NUM-SET-SEC        SECTION.
       *
-      *    < ›∏±º‘»÷πÊ>
+      *    <‰øùÈô∫ËÄÖÁï™Âè∑>
            MOVE    SPACE              TO  WRK-HKNJANUM
       *     
            IF      WRK-3SYU-KBN           =   ALL "1" AND 
                    RECE02-HKNNUM          =   SPACE            
-      *        £≥ºÔ§ŒæÏπÁ° £∏∑Â°À
+      *        ÔºìÁ®Æ„ÅÆÂ†¥ÂêàÔºàÔºòÊ°ÅÔºâ
                MOVE    RECE02-KOHFTNJANUM(SEIHIDX)  TO  WRK-HKNJANUM
            ELSE
                IF  RECE02-TEISYUTUSAKI    =   "2"
                    IF      RECE02-HKNJANUM (1:2)  =   "67"
                        MOVE    RECE02-HKNJANUM  TO  WRK-HKNJANUM
                    ELSE
-      *            πÒ ›§ŒæÏπÁ° £∂∑Â±¶µÕ§À ‘Ω∏°À
+      *            ÂõΩ‰øù„ÅÆÂ†¥ÂêàÔºàÔºñÊ°ÅÂè≥Ë©∞„Å´Á∑®ÈõÜÔºâ
                        MOVE    SPACE              TO  WRK-HKNJANUM(1:2)
                        MOVE    RECE02-HKNJANUM    TO  WRK-HKNJANUM(3:)
                    END-IF
                ELSE
                    IF  RECE02-HKNNUM      =   "001"
-      *                ¿Ø…‹¥…æ∏§ŒæÏπÁ° £¥∑Â±¶µÕ§À ‘Ω∏°À
+      *                ÊîøÂ∫úÁÆ°Êéå„ÅÆÂ†¥ÂêàÔºàÔºîÊ°ÅÂè≥Ë©∞„Å´Á∑®ÈõÜÔºâ
                        MOVE    SPACE            TO  WRK-HKNJANUM(1:4)
                        MOVE    RECE02-HKNJANUM  TO  WRK-HKNJANUM(5:)
                    ELSE
-      *                ¬æ§Œ ›∏±§ŒæÏπÁ° £∏∑Â°À
+      *                ‰ªñ„ÅÆ‰øùÈô∫„ÅÆÂ†¥ÂêàÔºàÔºòÊ°ÅÔºâ
                        MOVE    RECE02-HKNJANUM  TO  WRK-HKNJANUM
                    END-IF
                END-IF
            END-IF
              MOVE   WRK-HKNJANUM    TO    HC06-HKNJANUM
       *
-      *    <µ≠πÊ°¶»÷πÊ>
+      *    <Ë®òÂè∑„ÉªÁï™Âè∑>
            IF      WRK-3SYU-KBN           =   ALL "1" AND 
                    RECE02-HKNNUM          =   SPACE            
-      *        £≥ºÔ§ŒæÏπÁ° £∏∑Â°À
+      *        ÔºìÁ®Æ„ÅÆÂ†¥ÂêàÔºàÔºòÊ°ÅÔºâ
                IF      RECE02-KOHJKYSNUM(SEIHIDX)
                                        NOT =   SPACE
                    INITIALIZE              ORCSKANACHKAREA
@@ -2931,11 +2931,11 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF    
            END-IF
       *
-      *    <∏¯»Ò…È√¥º‘»÷πÊ°¶∏¯»ÒºıµÎº‘»÷πÊ>
+      *    <ÂÖ¨Ë≤ªË≤†ÊãÖËÄÖÁï™Âè∑„ÉªÂÖ¨Ë≤ªÂèóÁµ¶ËÄÖÁï™Âè∑>
       *    
            IF      WRK-3SYU-KBN           =   ALL "1" AND 
                    RECE02-HKNNUM          =   SPACE            
-      *        £≥ºÔ§ŒæÏπÁ
+      *        ÔºìÁ®Æ„ÅÆÂ†¥Âêà
                IF  KAKKIDX         >   SESNIDX
                    MOVE    SESNIDX     TO  IDA
                    MOVE    KAKKIDX     TO  IDB
@@ -2947,14 +2947,14 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                COMPUTE IDX2     =   IDA        +   1
                COMPUTE IDX3     =   IDB        +   1
            ELSE    
-      *        £≥ºÔ∞ ≥∞§ŒæÏπÁ
+      *        ÔºìÁ®Æ‰ª•Â§ñ„ÅÆÂ†¥Âêà
                MOVE    1               TO  IDA
                MOVE    2               TO  IDB
                MOVE    1               TO  IDX1
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
            END-IF
-      *    ∏¯…È£±
+      *    ÂÖ¨Ë≤†Ôºë
            IF      RECE02-KOHFTNJANUM (IDA)
                                    NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
@@ -2972,7 +2972,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF                           
            END-IF    
-      *    ∏¯…È£≤
+      *    ÂÖ¨Ë≤†Ôºí
            IF      RECE02-KOHFTNJANUM(IDB)
                                    NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
@@ -2990,7 +2990,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF                         
            END-IF    
-      *    ∏¯ºı£±
+      *    ÂÖ¨ÂèóÔºë
            IF      RECE02-KOHJKYSNUM(IDA)
                                    NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
@@ -3008,7 +3008,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF                        
            END-IF    
-      *    ∏¯ºı£≤
+      *    ÂÖ¨ÂèóÔºí
            IF      RECE02-KOHJKYSNUM(IDB)
                                    NOT =   SPACE
                INITIALIZE              ORCSKANACHKAREA
@@ -3027,8 +3027,8 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF                    
            END-IF    
       *
-      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
-      *    ∏¯…È£±
+      *    „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†ÖÁ∑®ÈõÜÊÉÖÂ†±
+      *    ÂÖ¨Ë≤†Ôºë
            EVALUATE    RECE02-2006-FTNJANUMKBN  (IDA)
                WHEN    SPACE
                    CONTINUE
@@ -3064,7 +3064,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-IF
            END-EVALUATE
-      *    ∏¯ºı£±
+      *    ÂÖ¨ÂèóÔºë
            EVALUATE    RECE02-2006-JKYSNUMKBN  (IDA)
                WHEN    SPACE
                    CONTINUE
@@ -3083,7 +3083,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        MOVE    SPACE           TO  HC06-KOHJKYSNUM1N
                    END-IF
            END-EVALUATE
-      *    ∏¯…È£≤
+      *    ÂÖ¨Ë≤†Ôºí
            EVALUATE    RECE02-2006-FTNJANUMKBN  (IDB)
                WHEN    SPACE
                    CONTINUE
@@ -3119,7 +3119,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-IF
            END-EVALUATE
-      *    ∏¯ºı£≤
+      *    ÂÖ¨ÂèóÔºí
            EVALUATE    RECE02-2006-JKYSNUMKBN  (IDB)
                WHEN    SPACE
                    CONTINUE
@@ -3138,11 +3138,11 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                        MOVE    SPACE           TO  HC06-KOHJKYSNUM2N
                    END-IF
            END-EVALUATE
-      *        ∏©√±Õ—π‡Ã‹
+      *        ÁúåÂçòÁî®È†ÖÁõÆ
            IF      FLG-RECE11              =   ZERO
                IF      RECE11-KOHINF (IDA) NOT =   SPACE
                    MOVE    SPACE               TO   HC06-KOH-TBL1
-      *            ∏¯…È£±
+      *            ÂÖ¨Ë≤†Ôºë
                    IF      RECE11-KOHFTNJANUM(IDA)
                                        NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -3160,7 +3160,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                            END-IF
                        END-IF
                    END-IF
-      *            ∏¯ºı£±
+      *            ÂÖ¨ÂèóÔºë
                    IF      RECE11-KOHJKYSNUM(IDA)
                                        NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -3182,7 +3182,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
       *
                IF      RECE11-KOHINF (IDB) NOT =   SPACE
                    MOVE    SPACE               TO   HC06-KOH-TBL2
-      *            ∏¯…È£≤
+      *            ÂÖ¨Ë≤†Ôºí
                    IF      RECE11-KOHFTNJANUM(IDB)
                                        NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -3200,7 +3200,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                            END-IF
                        END-IF                        
                    END-IF
-      *            ∏¯ºı£≤
+      *            ÂÖ¨ÂèóÔºí
                    IF      RECE11-KOHJKYSNUM(IDB)
                                            NOT =   SPACE
                        INITIALIZE              ORCSKANACHKAREA
@@ -3221,7 +3221,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF                        
            END-IF    
       *
-      *    <ø«Œ≈º¬∆¸øÙ>
+      *    <Ë®∫ÁôÇÂÆüÊó•Êï∞>
            IF      CNT-PAGE        =   1
                IF      RECE02-TOTALTEN (IDX1)     >   ZERO
                   MOVE    RECE02-JNISSU (IDX1)
@@ -3244,7 +3244,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                       MOVE    WRK-JINISSU2    TO  HC06-JINISSU2
                   END-IF
                END-IF
-      *        ∏©√±Õ—π‡Ã‹
+      *        ÁúåÂçòÁî®È†ÖÁõÆ
                IF      FLG-RECE11           =   ZERO
                    IF      RECE11-JNISSU (IDX1) >   ZERO
                        IF      RECE11-JNISSU (IDX1) =   99
@@ -3281,19 +3281,19 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  <µÎ…’≥‰πÁ>°° ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  <Áµ¶‰ªòÂâ≤Âêà>„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-KYURATE-SET-SEC        SECTION.
       *
            MOVE   SPACE              TO  HC06-KYURATE
       *          
-      *    πÒ ›§Œ§ﬂ∞ıª˙
+      *    ÂõΩ‰øù„ÅÆ„ÅøÂç∞Â≠ó
            IF    ( RECE02-TEISYUTUSAKI =   "2"   )
            AND   ( RECE02-RJNHKNNUM    =   SPACE )
                COMPUTE WRK-KYURATE-9   =   (100 -   RECE02-KYURATE)
                                            / 10 
                IF      WRK-KYURATE-9       >   ZERO
-                   MOVE   "µÎ≥‰"               TO  HC06-KYURATE
+                   MOVE   "Áµ¶Ââ≤"               TO  HC06-KYURATE
                    MOVE    WRK-KYURATE-9       TO  WRK-KYURATE
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI 
@@ -3307,11 +3307,11 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+      *    „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†ÖÁ∑®ÈõÜÊÉÖÂ†±
            IF      RECE02-2006-KYURATE >   ZERO
                COMPUTE WRK-KYURATE-9   =
                                        RECE02-2006-KYURATE /   10 
-               MOVE   "µÎ≥‰"           TO  HC06-KYURATE
+               MOVE   "Áµ¶Ââ≤"           TO  HC06-KYURATE
                MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI
@@ -3325,7 +3325,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    ∏©√±Õ—π‡Ã‹
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
            IF    ( FLG-RECE11          =   ZERO )
            AND   ( RECE11-KYURATE      >   ZERO )
                IF      RECE11-KYURATE      =   999
@@ -3335,7 +3335,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                                                / 10
                END-IF
                IF      WRK-KYURATE-9       >   ZERO
-                   MOVE   "µÎ≥‰"           TO  HC06-KYURATE
+                   MOVE   "Áµ¶Ââ≤"           TO  HC06-KYURATE
                    MOVE    WRK-KYURATE-9   TO  WRK-KYURATE
                    INITIALIZE              ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI 
@@ -3353,7 +3353,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º  <∆√µ≠ªˆπ‡>°° ‘Ω∏ΩËÕ˝
+      *    Â∏≥Á•®  <ÁâπË®ò‰∫ãÈ†Ö>„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3110-TOKKI-SET-SEC          SECTION.
       *
@@ -3372,14 +3372,14 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                                                 TO  HC06-TOKKI (IDZ)
                        IF   IDY                =   11
                        AND  RECE02-SRYYM      >=  "200504"
-                          MOVE   "£±£≤¥Ôº£"     TO  HC06-TOKKI (IDZ)
+                          MOVE   "ÔºëÔºíÂô®Ê≤ª"     TO  HC06-TOKKI (IDZ)
                        END-IF
                        MOVE    14               TO  IDY
                    END-IF
                END-PERFORM
            END-PERFORM
       *
-      *    •Ï•ª•◊•»∆√µ≠ªˆπ‡ ‘Ω∏æ Û
+      *    „É¨„Çª„Éó„ÉàÁâπË®ò‰∫ãÈ†ÖÁ∑®ÈõÜÊÉÖÂ†±
            IF      RECE02-2006-TOKKIINF    NOT =   SPACE
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX                 >   4
@@ -3391,7 +3391,7 @@ grpsys                     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-IF
       *
-      *    ∏©√±Õ—π‡Ã‹
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
            IF      FLG-RECE11           =   ZERO
                PERFORM VARYING IDX     FROM    1   BY  1
                        UNTIL   IDX                 >   4
@@ -3408,11 +3408,11 @@ grpsys                     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<Ω˝…¬Ãæ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÂÇ∑ÁóÖÂêç>Âá¶ÁêÜ
       *****************************************************************
        320-HC101-BYOMEI-HEN-SEC      SECTION.
       *
-      *    •—•È•·°º•ø£∞£≥•’•°•§•Î§Ë§Í ‘Ω∏
+      *    „Éë„É©„É°„Éº„ÇøÔºêÔºì„Éï„Ç°„Ç§„É´„Çà„ÇäÁ∑®ÈõÜ
            MOVE    LOW-VALUE           TO  WRK-BYO-OLD
       *     
            INITIALIZE                  WRK-EDIT-AREA
@@ -3457,7 +3457,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                          NOT =   RECE031-HOJOKBN      )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE031-TEKSTYMD     )
       *    
-      *        …¬Ãæ ‘Ω∏ΩËÕ˝
+      *        ÁóÖÂêçÁ∑®ÈõÜÂá¶ÁêÜ
                PERFORM 3210-BYOMEI-SET-SEC
       *
            END-PERFORM
@@ -3476,7 +3476,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                END-IF
            END-IF
       *
-      *    ºÁ…¬Ãæ§»§Œ∂Ë¿⁄§Í¿˛ ‘Ω∏ΩËÕ˝     
+      *    ‰∏ªÁóÖÂêç„Å®„ÅÆÂå∫Âàá„ÇäÁ∑öÁ∑®ÈõÜÂá¶ÁêÜ     
            IF    ( SYS-2005-SYUBYOHENFLG   =   "3" )
            AND   ( WRK-BO-SYUBYOFLG        =   "1" )
                IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE
@@ -3496,19 +3496,19 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        320-HC101-BYOMEI-HEN-EXT.
            EXIT.
       ****************************************************************
-      *     …¬Ãæ ‘Ω∏ΩËÕ˝
+      *     ÁóÖÂêçÁ∑®ÈõÜÂá¶ÁêÜ
       ****************************************************************
        3210-BYOMEI-SET-SEC           SECTION.
       * 
-      *    œ¢∑Î…Ωº®§Œ§»§≠
+      *    ÈÄ£ÁµêË°®Á§∫„ÅÆ„Å®„Åç
            IF      SYS-2005-BYOMEIHENKBN    =   "0"
-      *        ¡∞§Œ•«°º•ø§»∆±∞ÏºÁ…¬Ãæ•’•È•∞°¶ø«Œ≈≥´ªœ∆¸°¶≈æµ¢∂Ë ¨
+      *        Ââç„ÅÆ„Éá„Éº„Çø„Å®Âêå‰∏Ä‰∏ªÁóÖÂêç„Éï„É©„Ç∞„ÉªË®∫ÁôÇÈñãÂßãÊó•„ÉªËª¢Â∏∞Âå∫ÂàÜ
                IF  ( RECE031-SYUBYOFLG    =   WRK-BO-SYUBYOFLG )  AND
                    ( RECE031-SRYYMD       =   WRK-BO-SRYYMD    )  AND
                    ( RECE031-TENKIKBN     =   WRK-BO-TENKIKBN  )  AND 
                    ( RECE031-TENKIYMD     =   WRK-BO-TENKIYMD  )   
       *
-      *            …¬Ãæ§Ú§ƒ§ §≤§Î§»≤ø∑Â§À§ §Î§´§Ú∑◊ªª° °§°‹…¬Ãæ°À
+      *            ÁóÖÂêç„Çí„Å§„Å™„Åí„Çã„Å®‰ΩïÊ°Å„Å´„Å™„Çã„Åã„ÇíË®àÁÆóÔºàÔºåÔºãÁóÖÂêçÔºâ
                    IF  WRK-CLM           =   ZERO
                        MOVE    WRK-CLM   TO  WRK-WCLM
                    ELSE
@@ -3519,22 +3519,22 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                                     +   WRK-WCLM
       *
                    EVALUATE    TRUE
-      *                Ω˝…¬ÃæÕÛ§À ‘Ω∏
+      *                ÂÇ∑ÁóÖÂêçÊ¨Ñ„Å´Á∑®ÈõÜ
                        WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
                            IF  WRK-WCLM          >   WRK-BYOMEI1-MAX
                                PERFORM 3221-BYOMEI1-OUT-SEC
                            ELSE
                                IF  WRK-CLM       >   ZERO
-      *                            ¡∞§Œ…¬Ãæ§Œƒæ∏Â§À ‘Ω∏
+      *                            Ââç„ÅÆÁóÖÂêç„ÅÆÁõ¥Âæå„Å´Á∑®ÈõÜ
                                    COMPUTE WRK-STCLM =   WRK-CLM   +
                                                          1
-                                   MOVE    "°§"  TO  WRK-BYOMEI1-NAME
+                                   MOVE    "Ôºå"  TO  WRK-BYOMEI1-NAME
                                                            (WRK-STCLM:)
                                    COMPUTE WRK-CLM   =   WRK-CLM   +
                                                          2
                                END-IF
                            END-IF
-      *                ≈¨Õ—ÕÛ§À ‘Ω∏
+      *                ÈÅ©Áî®Ê¨Ñ„Å´Á∑®ÈõÜ
                        WHEN    WRK-LINEBYO     >=  WRK-BYOMEI-LINE
                            IF  WRK-WCLM          >   WRK-BYOMEI2-MAX
                                MOVE    1             TO  FLG-TENKI
@@ -3542,10 +3542,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                MOVE    ZERO          TO  FLG-TENKI
                            ELSE
                                IF  WRK-CLM       >   ZERO
-      *                        ¡∞§Œ…¬Ãæ§Œƒæ∏Â§À ‘Ω∏
+      *                        Ââç„ÅÆÁóÖÂêç„ÅÆÁõ¥Âæå„Å´Á∑®ÈõÜ
                                    COMPUTE WRK-STCLM =   WRK-CLM   +
                                                          1
-                                   MOVE    "°§"  TO  WRK-BYOMEI2-NAME
+                                   MOVE    "Ôºå"  TO  WRK-BYOMEI2-NAME
                                                        (WRK-STCLM:)
                                    COMPUTE WRK-CLM   =   WRK-CLM   +
                                                          2
@@ -3553,7 +3553,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                            END-IF
                    END-EVALUATE
                ELSE
-      *            ºÁ…¬Ãæ•’•È•∞°¶ø«Œ≈≥´ªœ∆¸°¶≈æµ¢∂Ë ¨ §¨∞€§ §ÎæÏπÁ
+      *            ‰∏ªÁóÖÂêç„Éï„É©„Ç∞„ÉªË®∫ÁôÇÈñãÂßãÊó•„ÉªËª¢Â∏∞Âå∫ÂàÜ „ÅåÁï∞„Å™„ÇãÂ†¥Âêà
                    IF      WRK-BYO-OLD        =   LOW-VALUE
                        CONTINUE
                    ELSE
@@ -3584,18 +3584,18 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                 END-IF
            END-IF
       *
-      *    ºÁ…¬Ãæ§»§Œ∂Ë¿⁄§Í¿˛ ‘Ω∏ΩËÕ˝     
+      *    ‰∏ªÁóÖÂêç„Å®„ÅÆÂå∫Âàá„ÇäÁ∑öÁ∑®ÈõÜÂá¶ÁêÜ     
            PERFORM 3211-SYUBYOFLG-HENSYU-SEC
       *
-      *    ¬–æ›…¬Ãæ§Ú ‘Ω∏
+      *    ÂØæË±°ÁóÖÂêç„ÇíÁ∑®ÈõÜ
            COMPUTE     WRK-STCLM         =   WRK-CLM   +   1
-      *    √±…¬Ãæ ∏ª˙øÙ§Ú∑◊ªª
+      *    ÂçòÁóÖÂêçÊñáÂ≠óÊï∞„ÇíË®àÁÆó
            COMPUTE WRK-MOJISU          =   RECE031-BYOMEIMOJI   *   2
            MOVE    RECE031-BYOMEI      TO  WRK-BYOMEI
       *
       *
            EVALUATE    TRUE
-      *        Ω˝…¬ÃæÕÛ§À ‘Ω∏
+      *        ÂÇ∑ÁóÖÂêçÊ¨Ñ„Å´Á∑®ÈõÜ
                WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
                    MOVE    WRK-BYOMEI      TO  WRK-BYOMEI1-NAME
                                                           (WRK-STCLM:)
@@ -3616,7 +3616,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                            MOVE    1               TO  WRK-CONTINUE    
                        END-IF                                   
                    END-IF    
-      *        ≈¨Õ—ÕÛ§À ‘Ω∏
+      *        ÈÅ©Áî®Ê¨Ñ„Å´Á∑®ÈõÜ
                WHEN    WRK-LINEBYO     >=  WRK-BYOMEI-LINE
                    MOVE    WRK-BYOMEI      TO  WRK-BYOMEI2-NAME
                                                           (WRK-STCLM:)
@@ -3647,13 +3647,13 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        3210-BYOMEI-SET-EXT.
            EXIT.
       ****************************************************************
-      *      ºÁ…¬Ãæ§»…˚…¬Ãæ§Œ∂Ë¿⁄§Í¿˛§Œ ‘Ω∏
+      *      ‰∏ªÁóÖÂêç„Å®ÂâØÁóÖÂêç„ÅÆÂå∫Âàá„ÇäÁ∑ö„ÅÆÁ∑®ÈõÜ
       ****************************************************************
        3211-SYUBYOFLG-HENSYU-SEC         SECTION.
       *
-      *    ºÁ…¬Ãæ ‘Ω∏•’•È•∞§¨∂Ë¿⁄§ÍÕ≠§Œ§»§≠§Œ§ﬂΩËÕ˝§Úπ‘§¶
+      *    ‰∏ªÁóÖÂêçÁ∑®ÈõÜ„Éï„É©„Ç∞„ÅåÂå∫Âàá„ÇäÊúâ„ÅÆ„Å®„Åç„ÅÆ„ÅøÂá¶ÁêÜ„ÇíË°å„ÅÜ
            IF      SYS-2005-SYUBYOHENFLG   =   "1" OR  "3"
-      *        ºÁ…¬Ãæ§»§Œ∂Ë¿⁄§Í¿˛° …˚Ω˝…¬Ãæ§¨§¢§Î§»§≠§Œ§ﬂ°À     
+      *        ‰∏ªÁóÖÂêç„Å®„ÅÆÂå∫Âàá„ÇäÁ∑öÔºàÂâØÂÇ∑ÁóÖÂêç„Åå„ÅÇ„Çã„Å®„Åç„ÅÆ„ÅøÔºâ     
                IF      WRK-BYO-OLD        =   LOW-VALUE
                    CONTINUE
                ELSE
@@ -3680,18 +3680,18 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        3210-BYOMEI-SET-EXT.
            EXIT.
       ****************************************************************
-      *     Ω˝…¬Ãæ£±Ω–ŒœΩËÕ˝
-      *      WRK-CONTINUE = 1 §ŒæÏπÁ°¢£≤π‘ ‘Ω∏§Œ£≤π‘Ã‹
+      *     ÂÇ∑ÁóÖÂêçÔºëÂá∫ÂäõÂá¶ÁêÜ
+      *      WRK-CONTINUE = 1 „ÅÆÂ†¥Âêà„ÄÅÔºíË°åÁ∑®ÈõÜ„ÅÆÔºíË°åÁõÆ
       ****************************************************************
        3221-BYOMEI1-OUT-SEC        SECTION.
       *
-      *    Ω˝…¬ÃæÕÛ§Œπ‘•´•¶•Û•»
+      *    ÂÇ∑ÁóÖÂêçÊ¨Ñ„ÅÆË°å„Ç´„Ç¶„É≥„Éà
            ADD     1               TO  WRK-LINEBYO
       *
            IF  WRK-CONTINUE        =   ZERO
-      *        …¬Ãæ§Œπ‡»÷•´•¶•Û•»
+      *        ÁóÖÂêç„ÅÆÈ†ÖÁï™„Ç´„Ç¶„É≥„Éà
                ADD     1                   TO  WRK-LINE
-      *        π‡»÷
+      *        È†ÖÁï™
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
                MOVE    "("             TO  KANACHK-MAE-INPUT (1:1)
@@ -3702,7 +3702,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    KANACHK-OUT-INPUT(1:KANACHK-MAX)
                                            TO  WRK-BYOMEI1-NO 
                END-IF    
-      *        ø«Œ≈≥´ªœ∆¸
+      *        Ë®∫ÁôÇÈñãÂßãÊó•
                MOVE    WRK-BYOMEI1-NO      TO  HC06-SRYYMD
                                                     (WRK-LINEBYO)
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
@@ -3710,19 +3710,19 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    LNK-DAY2-EDTYMD3 (5:)
                                            TO  HC06-SRYYMD
                                                     (WRK-LINEBYO)(7:)
-      *        ≈æµ¢
+      *        Ëª¢Â∏∞
                MOVE    WRK-BYOMEI1-NO    TO  HC06-TENKI(WRK-LINEBYO)
                EVALUATE    WRK-BO-TENKIKBN
                WHEN    "1"
-                   MOVE    "º£§Ê"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "Ê≤ª„ÇÜ"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    "2"
-                   MOVE    "ª‡À¥"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "Ê≠ª‰∫°"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    "3"
-                   MOVE    "√Êªﬂ"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
+                   MOVE    "‰∏≠Ê≠¢"    TO  HC06-TENKI(WRK-LINEBYO)(7:)
                WHEN    OTHER
                    MOVE    SPACE     TO  HC06-TENKI(WRK-LINEBYO)
                END-EVALUATE
-      *        ≈æµ¢∆¸
+      *        Ëª¢Â∏∞Êó•
                IF      WRK-BO-TENKIYMD     =   SPACE
                    CONTINUE 
                ELSE
@@ -3733,10 +3733,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                                                     (WRK-LINEBYO)
                END-IF                                     
            END-IF
-      *    …¬Ãæ
+      *    ÁóÖÂêç
            MOVE    WRK-BYOMEI1     TO  HC06-BYOMEI(WRK-LINEBYO)
       *
-      *    •Ø•Í•¢
+      *    „ÇØ„É™„Ç¢
            MOVE    SPACE           TO  WRK-BYOMEI1
            MOVE    ZERO            TO  WRK-CLM
            MOVE    ZERO            TO  WRK-CONTINUE
@@ -3745,12 +3745,12 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        3221-BYOMEI1-OUT-EXT.
            EXIT.
       ****************************************************************
-      *     Ω˝…¬Ãæ£≤Ω–ŒœΩËÕ˝
-      *      WRK-CONTINUE = 0 §ŒæÏπÁ°¢£≤π‘ ‘Ω∏§Œ£±π‘Ã‹
+      *     ÂÇ∑ÁóÖÂêçÔºíÂá∫ÂäõÂá¶ÁêÜ
+      *      WRK-CONTINUE = 0 „ÅÆÂ†¥Âêà„ÄÅÔºíË°åÁ∑®ÈõÜ„ÅÆÔºëË°åÁõÆ
       ****************************************************************
        3222-BYOMEI2-OUT-SEC        SECTION.
       *
-      *    ≈¨Õ—ÕÛ§Œπ‘•´•¶•Û•»
+      *    ÈÅ©Áî®Ê¨Ñ„ÅÆË°å„Ç´„Ç¶„É≥„Éà
            IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
                PERFORM 34120-PAGE-SEC
            END-IF    
@@ -3758,9 +3758,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
       
       *
            IF  WRK-CONTINUE        =   ZERO
-      *        …¬Ãæ§Œπ‡»÷•´•¶•Û•»
+      *        ÁóÖÂêç„ÅÆÈ†ÖÁï™„Ç´„Ç¶„É≥„Éà
                ADD     1                   TO  WRK-LINE
-      *        π‡»÷
+      *        È†ÖÁï™
                INITIALIZE              ORCSKANACHKAREA
                MOVE    "2"             TO  KANACHK-SYORI 
                IF  WRK-LINE            <   10
@@ -3779,23 +3779,23 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                END-IF    
            END-IF    
       *
-      *    ø«Œ≈≥´ªœ∆¸°¶≈æµ¢§Ú∞ıª˙§π§Î•π•⁄°º•π§¨Õ≠§ÎæÏπÁ
+      *    Ë®∫ÁôÇÈñãÂßãÊó•„ÉªËª¢Â∏∞„ÇíÂç∞Â≠ó„Åô„Çã„Çπ„Éö„Éº„Çπ„ÅåÊúâ„ÇãÂ†¥Âêà
            IF      SYS-2005-TENKIHENKBN    =   ZERO
                IF  WRK-BYOMEI2-ELSE    =   SPACE
-      *            ø«Œ≈«Ø∑Ó∆¸°¶≈æµ¢°° ‘Ω∏ΩËÕ˝
+      *            Ë®∫ÁôÇÂπ¥ÊúàÊó•„ÉªËª¢Â∏∞„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
                    PERFORM 32221-SRYYMD-TENKI-HEN-SEC
                    MOVE    ZERO            TO  FLG-TENKI
                END-IF
            ELSE
                IF  WRK-BYOMEI2R-ELSE   =   SPACE
-      *            ø«Œ≈«Ø∑Ó∆¸°¶≈æµ¢°° ‘Ω∏ΩËÕ˝
+      *            Ë®∫ÁôÇÂπ¥ÊúàÊó•„ÉªËª¢Â∏∞„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
                    PERFORM 32221-SRYYMD-TENKI-HEN-SEC
                    MOVE    ZERO            TO  FLG-TENKI
                END-IF
            END-IF    
       *
            INSPECT WRK-BYOMEI2
-                           REPLACING    ALL   "  "   BY   "°°"
+                           REPLACING    ALL   "  "   BY   "„ÄÄ"
            IF      CNT-PAGE        =   1
                MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO  (WRK-LINETEK)
            ELSE
@@ -3811,18 +3811,18 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                END-EVALUATE
            END-IF    
       *
-      *    ∫«∏Â§Œ…¬Ãæ§À∞ıª˙§π§Î•π•⁄°º•π§¨§ §´§√§ø§»§≠ 
+      *    ÊúÄÂæå„ÅÆÁóÖÂêç„Å´Âç∞Â≠ó„Åô„Çã„Çπ„Éö„Éº„Çπ„Åå„Å™„Åã„Å£„Åü„Å®„Åç 
            IF       FLG-TENKI              =   1     
-      *        ø«Œ≈«Ø∑Ó∆¸°¶≈æµ¢°° ‘Ω∏ΩËÕ˝
+      *        Ë®∫ÁôÇÂπ¥ÊúàÊó•„ÉªËª¢Â∏∞„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
                MOVE    SPACE           TO  WRK-BYOMEI2
                PERFORM 32221-SRYYMD-TENKI-HEN-SEC
-      *        ≈¨Õ—ÕÛ§Œπ‘•´•¶•Û•»
+      *        ÈÅ©Áî®Ê¨Ñ„ÅÆË°å„Ç´„Ç¶„É≥„Éà
                IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
                INSPECT WRK-BYOMEI2
-                           REPLACING    ALL   "  "   BY   "°°"
+                           REPLACING    ALL   "  "   BY   "„ÄÄ"
                IF      CNT-PAGE        =   1
                    MOVE    WRK-BYOMEI2 TO  HC06-TEKIYO  (WRK-LINETEK)
                ELSE
@@ -3844,7 +3844,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            END-IF
       *
       *
-      *    •Ø•Í•¢
+      *    „ÇØ„É™„Ç¢
            MOVE    SPACE           TO  WRK-BYOMEI2
            MOVE    ZERO            TO  WRK-CLM
            MOVE    ZERO            TO  WRK-CONTINUE
@@ -3853,46 +3853,46 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        3222-BYOMEI2-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈«Ø∑Ó∆¸°¶≈æµ¢°° ‘Ω∏ΩËÕ˝
+      *    Ë®∫ÁôÇÂπ¥ÊúàÊó•„ÉªËª¢Â∏∞„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        32221-SRYYMD-TENKI-HEN-SEC    SECTION.
       *
-      *    ≈æµ¢∆¸§Ú ‘Ω∏§∑§ §§§»§≠
+      *    Ëª¢Â∏∞Êó•„ÇíÁ∑®ÈõÜ„Åó„Å™„ÅÑ„Å®„Åç
            IF      SYS-2005-TENKIHENKBN    =   ZERO
-      *        ø«Œ≈≥´ªœ∆¸
+      *        Ë®∫ÁôÇÈñãÂßãÊó•
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD3 (5:)
                                            TO  WRK-BYOMEI2-YMD
-      *        ≈æµ¢
+      *        Ëª¢Â∏∞
                EVALUATE    WRK-BO-TENKIKBN
                WHEN    "1"
-                   MOVE    "º£§Ê"          TO  WRK-BYOMEI2-TENKI
+                   MOVE    "Ê≤ª„ÇÜ"          TO  WRK-BYOMEI2-TENKI
                WHEN    "2"
-                   MOVE    "ª‡À¥"          TO  WRK-BYOMEI2-TENKI
+                   MOVE    "Ê≠ª‰∫°"          TO  WRK-BYOMEI2-TENKI
                WHEN    "3"
-                   MOVE    "√Êªﬂ"          TO  WRK-BYOMEI2-TENKI
+                   MOVE    "‰∏≠Ê≠¢"          TO  WRK-BYOMEI2-TENKI
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-BYOMEI2-TENKI
                END-EVALUATE
            ELSE
-      *        ø«Œ≈≥´ªœ∆¸
+      *        Ë®∫ÁôÇÈñãÂßãÊó•
                MOVE    WRK-BO-SRYYMD       TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD3 (5:)
                                            TO  WRK-BYOMEI2R-YMD
-      *        ≈æµ¢
+      *        Ëª¢Â∏∞
                EVALUATE    WRK-BO-TENKIKBN
                WHEN    "1"
-                   MOVE    "º£§Ê"          TO  WRK-BYOMEI2R-TENKI
+                   MOVE    "Ê≤ª„ÇÜ"          TO  WRK-BYOMEI2R-TENKI
                WHEN    "2"
-                   MOVE    "ª‡À¥"          TO  WRK-BYOMEI2R-TENKI
+                   MOVE    "Ê≠ª‰∫°"          TO  WRK-BYOMEI2R-TENKI
                WHEN    "3"
-                   MOVE    "√Êªﬂ"          TO  WRK-BYOMEI2R-TENKI
+                   MOVE    "‰∏≠Ê≠¢"          TO  WRK-BYOMEI2R-TENKI
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-BYOMEI2R-TENKI
                END-EVALUATE
-      *        ≈æµ¢∆¸
+      *        Ëª¢Â∏∞Êó•
                IF      WRK-BO-TENKIYMD     =   SPACE
                    CONTINUE 
                ELSE
@@ -3907,25 +3907,25 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
        32221-SRYYMD-TENKI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<≈¿øÙ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÁÇπÊï∞>Âá¶ÁêÜ
       *****************************************************************
        330-HC101-TENSU-HEN-SEC      SECTION.
       *
            EVALUATE  RECE02-SHOSHINTIME
                WHEN  "1"
-                     MOVE  "° ª˛¥÷≥∞°À"   TO  HC06-SHOSHINTIME
+                     MOVE  "ÔºàÊôÇÈñìÂ§ñÔºâ"   TO  HC06-SHOSHINTIME
                WHEN  "2"
-                     MOVE  "° øºÃÎ°À"     TO  HC06-SHOSHINTIME
+                     MOVE  "ÔºàÊ∑±Â§úÔºâ"     TO  HC06-SHOSHINTIME
                WHEN  "3"
-                     MOVE  "° µŸ∆¸°À"     TO  HC06-SHOSHINTIME
+                     MOVE  "Ôºà‰ºëÊó•Ôºâ"     TO  HC06-SHOSHINTIME
                WHEN  "4"
-                     MOVE  "ª˛≥∞°¶øºÃÎ"   TO  HC06-SHOSHINTIME
+                     MOVE  "ÊôÇÂ§ñ„ÉªÊ∑±Â§ú"   TO  HC06-SHOSHINTIME
                WHEN  "5"
-                     MOVE  "ª˛≥∞°¶µŸ∆¸"   TO  HC06-SHOSHINTIME
+                     MOVE  "ÊôÇÂ§ñ„Éª‰ºëÊó•"   TO  HC06-SHOSHINTIME
                WHEN  "6"
-                     MOVE  "µŸ∆¸°¶øºÃÎ"   TO  HC06-SHOSHINTIME
+                     MOVE  "‰ºëÊó•„ÉªÊ∑±Â§ú"   TO  HC06-SHOSHINTIME
                WHEN  "7"
-                     MOVE  "≥∞°¶µŸ°¶øº"   TO  HC06-SHOSHINTIME
+                     MOVE  "Â§ñ„Éª‰ºë„ÉªÊ∑±"   TO  HC06-SHOSHINTIME
            END-EVALUATE
       *     
            IF      RECE02-HKNNUM      =   SPACE
@@ -3947,9 +3947,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
       *            
            PERFORM   VARYING   IDX   FROM    1   BY  1
                      UNTIL     IDX       >   35
-      *        <√±≤¡>
+      *        <Âçò‰æ°>
                EVALUATE    IDX
-      *        ∫∆ø«
+      *        ÂÜçË®∫
                WHEN    2
                WHEN    3
                WHEN    4
@@ -3959,7 +3959,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE02-KHNTEN (IDX)   TO  WRK-KHNTENZ
                    MOVE    WRK-KHNTEN            TO  HC06-KHNTEN
                                                          (WRK-TNSIDX)
-      *        ≈ÍÃÙ
+      *        ÊäïËñ¨
                WHEN    15
                    MOVE    RECE02-KHNTEN (IDX)   TO  WRK-KHNTENZ
                    MOVE    WRK-KHNTEN            TO  HC06-KHNTEN1
@@ -3972,10 +3972,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                WHEN    OTHER
                    CONTINUE
                END-EVALUATE
-      *        <≤ÛøÙ>
+      *        <ÂõûÊï∞>
                MOVE    RECE02-KAISU(IDX)         TO  WRK-KAISUZ
                MOVE    WRK-KAISU                 TO  HC06-KAISU   (IDX)
-      *        <≈¿øÙ°¶∏¯»Ò≈¿øÙ>
+      *        <ÁÇπÊï∞„ÉªÂÖ¨Ë≤ªÁÇπÊï∞>
                MOVE    RECE02-TENSU(IDX IDX1)    TO  WRK-TENSUZ
                MOVE    WRK-TENSU                 TO  HC06-TENSU   (IDX)
                IF      IDX2                      >   ZERO
@@ -3985,7 +3985,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                END-IF
            END-PERFORM
       *
-      *        <¿¡µ·≈¿°¶∞Ï…Ù…È√¥∂‚>
+      *        <Ë´ãÊ±ÇÁÇπ„Éª‰∏ÄÈÉ®Ë≤†ÊãÖÈáë>
       *
            IF  WRK-3SYU-KBN           =   ALL "1" AND 
                RECE02-HKNNUM          =   SPACE            
@@ -4004,7 +4004,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    2               TO  IDX2
                MOVE    3               TO  IDX3
            END-IF    
-      *     ›∏±
+      *    ‰øùÈô∫
            IF      RECE02-TOTALTEN (IDX1)     >   ZERO
                MOVE    RECE02-TOTALTEN (IDX1) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(1)
@@ -4020,13 +4020,13 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE   WRK-KGK7                TO  HC06-FTNMONEYSAI(3:8)
                MOVE    ")"                    TO  HC06-FTNMONEYSAI(11:1)
            END-IF    
-      *    ∏¯»Ò£±
+      *    ÂÖ¨Ë≤ªÔºë
            IF      IDX2                =   KOHIDX1
                MOVE    WRK-KYUFUGAITEN     TO  WRK-KGK5
                MOVE    WRK-KGK5            TO  HC06-KYUFUGAI-TEN
-               MOVE    "∆˝°¶æ„°¶ Ï"        TO  HC06-KYUFUGAI2
-               MOVE    "µÎ…’≥∞≈¿øÙ"        TO  HC06-KYUFUGAI3
-               MOVE    "≈¿"                TO  HC06-KYUFUGAI4
+               MOVE    "‰π≥„ÉªÈöú„ÉªÊØç"        TO  HC06-KYUFUGAI2
+               MOVE    "Áµ¶‰ªòÂ§ñÁÇπÊï∞"        TO  HC06-KYUFUGAI3
+               MOVE    "ÁÇπ"                TO  HC06-KYUFUGAI4
            ELSE
                IF    ( RECE02-TOTALTEN (IDX2) >   ZERO             )
                AND   ((RECE02-TOTALTEN (IDX2)
@@ -4060,13 +4060,13 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    RECE02-TOTALTEN (IDX2) TO  WRK-KGK6
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(2)
            END-IF
-      *    ∏¯»Ò£≤
+      *    ÂÖ¨Ë≤ªÔºí
            IF      IDX3                =   KOHIDX1
                MOVE    WRK-KYUFUGAITEN     TO  WRK-KGK5
                MOVE    WRK-KGK5            TO  HC06-KYUFUGAI-TEN
-               MOVE    "∆˝°¶æ„°¶ Ï"        TO  HC06-KYUFUGAI2
-               MOVE    "µÎ…’≥∞≈¿øÙ"        TO  HC06-KYUFUGAI3
-               MOVE    "≈¿"                TO  HC06-KYUFUGAI4
+               MOVE    "‰π≥„ÉªÈöú„ÉªÊØç"        TO  HC06-KYUFUGAI2
+               MOVE    "Áµ¶‰ªòÂ§ñÁÇπÊï∞"        TO  HC06-KYUFUGAI3
+               MOVE    "ÁÇπ"                TO  HC06-KYUFUGAI4
            ELSE
                IF    (RECE02-TOTALTEN (IDX3) >   ZERO              )
                AND   ((RECE02-TOTALTEN (IDX3)
@@ -4106,9 +4106,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                MOVE    WRK-KGK6               TO  HC06-TOTALTEN(3)
            END-IF
       *
-      *    ∏©√±Õ—π‡Ã‹
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
            IF      FLG-RECE11          =   ZERO
-      *         ›∏±
+      *        ‰øùÈô∫
                IF      RECE11-TOTALTEN (IDX1)  >   ZERO
                    IF      RECE11-TOTALTEN (IDX1)  =   99999999
                        MOVE    ZERO                    TO  WRK-KGK6
@@ -4125,7 +4125,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    END-IF
                    MOVE    WRK-KGK7                TO  HC06-FTNMONEY(1)
                END-IF
-      *        ∏¯»Ò£±
+      *        ÂÖ¨Ë≤ªÔºë
                IF      RECE11-TOTALTEN (IDX2)  >   ZERO                     
                    IF      RECE11-TOTALTEN (IDX2)  =   99999999
                        MOVE    ZERO                    TO  WRK-KGK6
@@ -4142,7 +4142,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    END-IF
                    MOVE    WRK-KGK7                TO  HC06-FTNMONEY(2)
                END-IF
-      *        ∏¯»Ò£≤
+      *        ÂÖ¨Ë≤ªÔºí
                IF      RECE11-TOTALTEN (IDX3)  >   ZERO                      
                    IF      RECE11-TOTALTEN (IDX3)  =   99999999
                        MOVE    ZERO                    TO  WRK-KGK6
@@ -4166,12 +4166,12 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            EXIT.
       * 
       *****************************************************************
-      *     ‘Ω∏ΩËÕ˝
+      *    Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3301-OCR-HENSYU-SEC              SECTION.
       *
            IF      RECE11-KOHINF (IDA) NOT =   SPACE
-      *        ∏¯»Ò£±…È√¥º‘»÷πÊ
+      *        ÂÖ¨Ë≤ªÔºëË≤†ÊãÖËÄÖÁï™Âè∑
                IF      RECE11-KOHFTNJANUM(IDA) =      SPACE
                    MOVE  ZERO               TO      OCR2-FTNJANUM
                ELSE
@@ -4186,7 +4186,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                        MOVE   ZERO      TO      OCR2-FTNJANUM
                    END-IF
                END-IF
-      *        ∏¯»Ò£±ºıµÎº‘»÷πÊ
+      *        ÂÖ¨Ë≤ªÔºëÂèóÁµ¶ËÄÖÁï™Âè∑
                IF      RECE11-KOHJKYSNUM(IDA) =       SPACE
                    MOVE  ZERO               TO      OCR2-JKYSNUM
                ELSE
@@ -4204,7 +4204,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            END-IF 
       *
            IF      RECE11-KOHINF (IDB) NOT =   SPACE
-      *        ∏¯»Ò£≤…È√¥º‘»÷πÊ
+      *        ÂÖ¨Ë≤ªÔºíË≤†ÊãÖËÄÖÁï™Âè∑
                IF      RECE11-KOHFTNJANUM(IDB) =      SPACE
                    MOVE  ZERO               TO      OCR3-FTNJANUM
                ELSE
@@ -4219,7 +4219,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                        MOVE   ZERO      TO      OCR3-FTNJANUM
                    END-IF
                END-IF
-      *        ∏¯»Ò£≤ºıµÎº‘»÷πÊ
+      *        ÂÖ¨Ë≤ªÔºíÂèóÁµ¶ËÄÖÁï™Âè∑
                IF      RECE11-KOHJKYSNUM(IDB) =       SPACE
                    MOVE  ZERO               TO      OCR3-JKYSNUM
                ELSE
@@ -4236,7 +4236,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                END-IF
            END-IF    
       *  
-      *    ø«Œ≈º¬∆¸øÙ
+      *    Ë®∫ÁôÇÂÆüÊó•Êï∞
            IF      RECE11-JNISSU (IDX1) >   ZERO
                IF      RECE11-JNISSU   (IDX1)  =   99
                    MOVE    ZERO                    TO  OCR1-JNISSU
@@ -4244,7 +4244,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE11-JNISSU(IDX1)     TO  OCR1-JNISSU
                END-IF
            END-IF
-      *    ∏¯»Ò£±ø«Œ≈º¬∆¸øÙ
+      *    ÂÖ¨Ë≤ªÔºëË®∫ÁôÇÂÆüÊó•Êï∞
            IF      RECE11-JNISSU (IDX2) >   ZERO
                IF      RECE11-JNISSU   (IDX2)  =   99
                    MOVE    ZERO                    TO  OCR2-JNISSU
@@ -4252,7 +4252,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE11-JNISSU  (IDX2)   TO  OCR2-JNISSU
                END-IF
            END-IF
-      *    ∏¯»Ò£≤ø«Œ≈º¬∆¸øÙ
+      *    ÂÖ¨Ë≤ªÔºíË®∫ÁôÇÂÆüÊó•Êï∞
            IF      RECE11-JNISSU (IDX3) >   ZERO
                IF      RECE11-JNISSU   (IDX3)  =   99
                    MOVE    ZERO                    TO  OCR3-JNISSU
@@ -4260,7 +4260,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE11-JNISSU  (IDX3)   TO  OCR3-JNISSU
                END-IF
            END-IF
-      *    ¿¡µ·≈¿øÙ
+      *    Ë´ãÊ±ÇÁÇπÊï∞
            IF      RECE11-TOTALTEN (IDX1)  >   ZERO
                IF      RECE11-TOTALTEN (IDX1)  =   99999999
                    MOVE    ZERO                    TO  OCR1-SKYTENSU
@@ -4275,7 +4275,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE11-FTNMONEY(IDX1)   TO  OCR1-FTNMONEY
                END-IF
            END-IF
-      *    ∏¯»Ò°¶¿¡µ·≈¿øÙ£±
+      *    ÂÖ¨Ë≤ª„ÉªË´ãÊ±ÇÁÇπÊï∞Ôºë
            IF      RECE11-TOTALTEN (IDX2)  >   ZERO                     
                IF      RECE11-TOTALTEN (IDX2)  =   99999999
                    MOVE    ZERO                    TO  OCR2-TENSU
@@ -4290,7 +4290,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                    MOVE    RECE11-FTNMONEY(IDX2)   TO  OCR2-FTNMONEY
                END-IF
            END-IF
-      *    ∏¯»Ò°¶¿¡µ·≈¿øÙ£≤
+      *    ÂÖ¨Ë≤ª„ÉªË´ãÊ±ÇÁÇπÊï∞Ôºí
            IF      RECE11-TOTALTEN (IDX3)  >   ZERO                      
                IF      RECE11-TOTALTEN (IDX3)  =   99999999
                    MOVE    ZERO                    TO  OCR3-TENSU
@@ -4314,11 +4314,11 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£±° £∆£∞£∞£≤°À
+      *    „É¨„Çª„Éó„ÉàÔºØÔº£Ôº≤È†òÂüü„ÅÆ„Çª„ÉÉ„ÉàÔºëÔºàÔº¶ÔºêÔºêÔºíÔºâ
       *****************************************************************
        3301-OCR1-HENSYU-SEC                   SECTION.
       *
-      *•¡•ß•√•Ø•«•£•∏•√•»£±
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºë
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR1-SKYTENSU        TO      LNK-I-CODE
@@ -4328,7 +4328,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR1-CHKDGT1
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£≥
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºì
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR1-FTNMONEY        TO      LNK-I-CODE
@@ -4338,7 +4338,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR1-CHKDGT3
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£¥
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºî
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR1-AREA(1:35)      TO      LNK-I-CODE
@@ -4348,7 +4348,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR1-CHKDGT4
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£µ
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºï
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR1-AREA(37:6)      TO      LNK-I-CODE
@@ -4366,11 +4366,11 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£≤° £∆£∞£∞£≤°À
+      *    „É¨„Çª„Éó„ÉàÔºØÔº£Ôº≤È†òÂüü„ÅÆ„Çª„ÉÉ„ÉàÔºíÔºàÔº¶ÔºêÔºêÔºíÔºâ
       *****************************************************************
        3302-OCR2-HENSYU-SEC                   SECTION.
       *
-      *•¡•ß•√•Ø•«•£•∏•√•»£≤
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºí
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR2-AREA(6:20)      TO      LNK-I-CODE
@@ -4388,7 +4388,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                INSPECT OCR2-AREA-X
                            REPLACING    ALL   " "   BY   "0"
       *
-      *        •¡•ß•√•Ø•«•£•∏•√•»£≥
+      *        „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºì
                INITIALIZE                           LNK-CHKDGT-AREA
                MOVE    1                    TO      LNK-I-SYORIKBN
                MOVE    OCR2-AREA(27:15)     TO      LNK-I-CODE
@@ -4398,7 +4398,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                ELSE
                    MOVE  ZERO           TO      OCR2-CHKDGT3
                END-IF
-      *        •¡•ß•√•Ø•«•£•∏•√•»£¥
+      *        „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºî
                INITIALIZE                           LNK-CHKDGT-AREA
                MOVE    1                    TO      LNK-I-SYORIKBN
                MOVE    OCR2-AREA(45:7)      TO      LNK-I-CODE
@@ -4408,7 +4408,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                ELSE
                    MOVE  ZERO           TO      OCR2-CHKDGT4
                END-IF
-      *        •¡•ß•√•Ø•«•£•∏•√•»£∂
+      *        „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºñ
                INITIALIZE                           LNK-CHKDGT-AREA
                MOVE    1                    TO      LNK-I-SYORIKBN
                MOVE    OCR2-AREA(59:5)      TO      LNK-I-CODE
@@ -4418,7 +4418,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                ELSE
                    MOVE  ZERO           TO      OCR2-CHKDGT6
                END-IF
-      *        •¡•ß•√•Ø•«•£•∏•√•»£∑
+      *        „ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºó
                INITIALIZE                           LNK-CHKDGT-AREA
                MOVE    1                    TO      LNK-I-SYORIKBN
                MOVE    OCR2-AREA(43:22)     TO      LNK-I-CODE
@@ -4441,7 +4441,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£œ£√£“ŒŒ∞Ë§Œ•ª•√•»£≥° £∆£∞£∞£≤°À
+      *    „É¨„Çª„Éó„ÉàÔºØÔº£Ôº≤È†òÂüü„ÅÆ„Çª„ÉÉ„ÉàÔºìÔºàÔº¶ÔºêÔºêÔºíÔºâ
       *****************************************************************
        3303-OCR3-HENSYU-SEC                   SECTION.
       *
@@ -4452,7 +4452,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            INSPECT OCR3-AREA-X
                            REPLACING    ALL   " "   BY   "0"
       *
-      *•¡•ß•√•Ø•«•£•∏•√•»£±
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºë
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR3-AREA(1:15)      TO      LNK-I-CODE
@@ -4462,7 +4462,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR3-CHKDGT1
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£≤
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºí
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR3-AREA(19:7)      TO      LNK-I-CODE
@@ -4472,7 +4472,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR3-CHKDGT2
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£¥
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºî
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR3-AREA(33:5)      TO      LNK-I-CODE
@@ -4482,7 +4482,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            ELSE
                    MOVE  ZERO           TO      OCR3-CHKDGT4
            END-IF
-      *•¡•ß•√•Ø•«•£•∏•√•»£µ
+      *„ÉÅ„Çß„ÉÉ„ÇØ„Éá„Ç£„Ç∏„ÉÉ„ÉàÔºï
            INITIALIZE                           LNK-CHKDGT-AREA
            MOVE    1                    TO      LNK-I-SYORIKBN
            MOVE    OCR3-AREA(17:22)     TO      LNK-I-CODE
@@ -4504,13 +4504,13 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<∫ﬁ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Ââ§>Âá¶ÁêÜ
       *****************************************************************
        340-HC101-ZAI-HEN-SEC      SECTION.
       *
            MOVE    ZERO            TO  FLG-LINE
       *
-      *****≈¶Õ◊ÕÛ§À…¬Ãæ§¨…Ωº®§µ§Ï§∆§§§ÎæÏπÁ°¢£±π‘§¢§±§Î
+      *****ÊëòË¶ÅÊ¨Ñ„Å´ÁóÖÂêç„ÅåË°®Á§∫„Åï„Çå„Å¶„ÅÑ„ÇãÂ†¥Âêà„ÄÅÔºëË°å„ÅÇ„Åë„Çã
       *****IF  WRK-LINETEK             >   ZERO
       *
       *****    IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
@@ -4525,7 +4525,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            OR      RECE02-ZAITAKU      =   SPACE
                CONTINUE
            ELSE
-      *        ≈¶Õ◊ÕÛ§À…¬Ãæ§¨…Ωº®§µ§Ï§∆§§§ÎæÏπÁ°¢£±π‘§¢§±§Î
+      *        ÊëòË¶ÅÊ¨Ñ„Å´ÁóÖÂêç„ÅåË°®Á§∫„Åï„Çå„Å¶„ÅÑ„ÇãÂ†¥Âêà„ÄÅÔºëË°å„ÅÇ„Åë„Çã
                IF  WRK-LINETEK             >   ZERO
       *
                    IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
@@ -4544,10 +4544,10 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                IF      CNT-PAGE        =   1   
                    EVALUATE    RECE02-TEISYOTOKU
                        WHEN    "1"
-                           MOVE    "ƒ„ΩÍ∆¿£±"
+                           MOVE    "‰ΩéÊâÄÂæóÔºë"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                        WHEN    "2"
-                           MOVE    "ƒ„ΩÍ∆¿£≤"
+                           MOVE    "‰ΩéÊâÄÂæóÔºí"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                    END-EVALUATE        
                ELSE
@@ -4555,37 +4555,37 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
                        WHEN    "0"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
-                                   MOVE    "ƒ„ΩÍ∆¿£±"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºë"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
-                                   MOVE    "ƒ„ΩÍ∆¿£≤"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºí"
                                        TO  HC06-TEKIYO(WRK-LINETEK)
                            END-EVALUATE        
                        WHEN    "1"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
-                                   MOVE    "ƒ„ΩÍ∆¿£±"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºë"
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
-                                   MOVE    "ƒ„ΩÍ∆¿£≤"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºí"
                                        TO  HC061-TEKIYO(WRK-LINETEK)
                            END-EVALUATE        
                        WHEN    "2"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
-                                   MOVE    "ƒ„ΩÍ∆¿£±"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºë"
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
-                                   MOVE    "ƒ„ΩÍ∆¿£≤"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºí"
                                        TO  HC062-TEKIYO(WRK-LINETEK)
                            END-EVALUATE        
                        WHEN    "3"   
                            EVALUATE    RECE02-TEISYOTOKU
                                WHEN    "1"
-                                   MOVE    "ƒ„ΩÍ∆¿£±"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºë"
                                        TO  HC063-TEKIYO(WRK-LINETEK)
                                WHEN    "2"
-                                   MOVE    "ƒ„ΩÍ∆¿£≤"
+                                   MOVE    "‰ΩéÊâÄÂæóÔºí"
                                        TO  HC063-TEKIYO(WRK-LINETEK)
                            END-EVALUATE        
                    END-EVALUATE
@@ -4598,7 +4598,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE031-HOSPNUM      )
            MOVE    ZERO                TO  CNT-RECE061
            MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
-      *    •—•È•·°º•ø£∞£∂•’•°•§•Î§Ë§Í ‘Ω∏
+      *    „Éë„É©„É°„Éº„ÇøÔºêÔºñ„Éï„Ç°„Ç§„É´„Çà„ÇäÁ∑®ÈõÜ
            INITIALIZE                      RECE061-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  RECE061-HOSPNUM
            MOVE    RECE02-SRYYM        TO  RECE061-SRYYM
@@ -4635,9 +4635,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
                                          NOT =   RECE061-HOJOKBN     )
                OR     ( RECE02-TEKSTYMD  NOT =   RECE061-TEKSTYMD    )
       *
-      *        ≈¨Õ—ÕÛ§À∫ﬁ§Œµ≠∫‹§¨…¨Õ◊§ §»§≠∂Ë¿⁄§Í¿˛§¨§ﬁ§¿µ≠∫‹§µ§Ï§∆§§§ §§§»§≠
+      *        ÈÅ©Áî®Ê¨Ñ„Å´Ââ§„ÅÆË®òËºâ„ÅåÂøÖË¶Å„Å™„Å®„ÅçÂå∫Âàá„ÇäÁ∑ö„Åå„Åæ„Å†Ë®òËºâ„Åï„Çå„Å¶„ÅÑ„Å™„ÅÑ„Å®„Åç
                IF      FLG-LINE            =   ZERO
-      *            ≈¶Õ◊ÕÛ§Àµ≠∫‹§¨§¢§ÎæÏπÁ°¢£±π‘§¢§±§Î
+      *            ÊëòË¶ÅÊ¨Ñ„Å´Ë®òËºâ„Åå„ÅÇ„ÇãÂ†¥Âêà„ÄÅÔºëË°å„ÅÇ„Åë„Çã
                    IF  WRK-LINETEK             >   ZERO
       *
                        IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
@@ -4656,7 +4656,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
                END-IF
                ADD     1                     TO  CNT-ZAIMEISAISU
       *
-      *        •Ï•ª•◊•»£∞£∂•’•°•§•Î ‘Ω∏ΩËÕ˝
+      *        „É¨„Çª„Éó„ÉàÔºêÔºñ„Éï„Ç°„Ç§„É´Á∑®ÈõÜÂá¶ÁêÜ
                PERFORM 3410-RECE061-HENSYU-SEC
       *
                MOVE    RECE061-ZAINUM        TO  WRK-R061-ZAINUM-O
@@ -4671,7 +4671,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£∞£∂•’•°•§•Î ‘Ω∏ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÔºêÔºñ„Éï„Ç°„Ç§„É´Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3410-RECE061-HENSYU-SEC           SECTION.
       *
@@ -4679,11 +4679,11 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
       *
            IF  CNT-ZAIMEISAISU           =   1
                IF  CNT-RECE061           >   1
-      *            ∏¯»Ò ¨Œ•∂Ë ¨§¨ —ππ§∑§∆§§§ÎæÏπÁ°¢∏¯»Ò∂Ë¿⁄§Í¿˛ ¨§Úƒ…≤√
+      *            ÂÖ¨Ë≤ªÂàÜÈõ¢Âå∫ÂàÜ„ÅåÂ§âÊõ¥„Åó„Å¶„ÅÑ„ÇãÂ†¥Âêà„ÄÅÂÖ¨Ë≤ªÂå∫Âàá„ÇäÁ∑öÂàÜ„ÇíËøΩÂä†
                    IF  RECE061-KOHBUNRI  NOT =   WRK-R061-KOHBUNRI-O
                        MOVE    2             TO  FLG-KUGIRI
                    ELSE
-      *                ø«Œ≈∂Ë ¨§¨ —ππ§∑§∆§§§ÎæÏπÁ°¢ø«Œ≈∂Ë¿⁄§Í¿˛ ¨§Úƒ…≤√
+      *                Ë®∫ÁôÇÂå∫ÂàÜ„ÅåÂ§âÊõ¥„Åó„Å¶„ÅÑ„ÇãÂ†¥Âêà„ÄÅË®∫ÁôÇÂå∫Âàá„ÇäÁ∑öÂàÜ„ÇíËøΩÂä†
                        IF  RECE061-SRYKBN    NOT =   WRK-R061-SRYKBN-O
                            MOVE    1             TO  FLG-KUGIRI
                        END-IF
@@ -4694,18 +4694,18 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
            IF      WRK-LINETEK          >=   WRK-TEKIYOU-LINE
                PERFORM 34120-PAGE-SEC
       *
-      *        ∂Ë¿⁄§Í¿˛° ≤˛ «∏Â§À§œø«Œ≈∂Ë¿⁄§Í¿˛§œ…Ωº®§∑§ §§°À
+      *        Âå∫Âàá„ÇäÁ∑öÔºàÊîπÈ†ÅÂæå„Å´„ÅØË®∫ÁôÇÂå∫Âàá„ÇäÁ∑ö„ÅØË°®Á§∫„Åó„Å™„ÅÑÔºâ
                IF      FLG-KUGIRI        =   2
                    PERFORM 34110-KUGIRI-LINE-SEC
                END-IF
            ELSE
-      *        ∂Ë¿⁄§Í¿˛
+      *        Âå∫Âàá„ÇäÁ∑ö
                IF      FLG-KUGIRI    NOT =   ZERO
                    PERFORM 34110-KUGIRI-LINE-SEC
                END-IF
            END-IF    
       *
-      *    ø«Œ≈∂Ë ¨
+      *    Ë®∫ÁôÇÂå∫ÂàÜ
            IF  WRK-LINETEK          >=   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
            END-IF
@@ -4757,9 +4757,9 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
                END-IF
            END-IF                                    
       *
-      *    Ã¿∫Ÿ
+      *    ÊòéÁ¥∞
            INSPECT RECE061-TEKIYO-INF
-                           REPLACING    ALL   "  "   BY   "°°"
+                           REPLACING    ALL   "  "   BY   "„ÄÄ"
            IF      CNT-PAGE        =   1   
                MOVE    RECE061-TEKIYO-INF  TO  HC06-TEKIYO (WRK-LINETEK)
            ELSE    
@@ -4784,7 +4784,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë¿⁄§Í¿˛°° ‘Ω∏ΩËÕ˝
+      *    Âå∫Âàá„ÇäÁ∑ö„ÄÄÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        34110-KUGIRI-LINE-SEC       SECTION.
       *
@@ -4838,14 +4838,14 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
       *
       *
       *****************************************************************
-      *    ≤˛•⁄°º•∏ΩËÕ˝
+      *    Êîπ„Éö„Éº„Ç∏Âá¶ÁêÜ
       *****************************************************************
        34120-PAGE-SEC       SECTION.
       *
-      *    ƒ¢…º∞ı∫˛ΩËÕ˝
+      *    Â∏≥Á•®Âç∞Âà∑Âá¶ÁêÜ
            PERFORM 390-PRINT-OUT-SEC
       *     
-      *    ƒ¢…º ‘Ω∏<•ÿ•√•¿°º…Ù>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<„Éò„ÉÉ„ÉÄ„ÉºÈÉ®>Âá¶ÁêÜ
            ADD     1             TO  CNT-PAGE
            EVALUATE    SYS-2005-NEXTPRTKBN-G
                WHEN    "0"
@@ -4855,7 +4855,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
            END-EVALUATE
            MOVE    ZERO          TO  WRK-LINETEK
       *
-      *    ¬≥ªÊ§Œ∫«¬Áπ‘§Ú•ª•√•»     
+      *    Á∂öÁ¥ô„ÅÆÊúÄÂ§ßË°å„Çí„Çª„ÉÉ„Éà     
            IF      CNT-PAGE        =   1   
                MOVE    WRK-TEKIYOU1-LINE TO  WRK-TEKIYOU-LINE
            ELSE    
@@ -4876,7 +4876,7 @@ grpsys         OR     ( RECE02-HOSPNUM   NOT =   RECE061-HOSPNUM     )
            EXIT.
       *
       *****************************************************************
-      *    ∂Ë¿⁄§Í¿˛°°∏¯»ÒÃæ•ª•√•»ΩËÕ˝
+      *    Âå∫Âàá„ÇäÁ∑ö„ÄÄÂÖ¨Ë≤ªÂêç„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        34110-KOHNAME-SET-SEC          SECTION.
       *
@@ -4907,7 +4907,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF      FLG-HKNNUM         =   ZERO   
                MOVE    HKN-TANSEIDONAME  TO  WRK-KUGIRI2-KOHNAME
                INSPECT WRK-KUGIRI2-KOHNAME
-                       REPLACING    ALL   "  "   BY   "°°"
+                       REPLACING    ALL   "  "   BY   "„ÄÄ"
            END-IF
       *
            .
@@ -4915,16 +4915,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏< ‰¬≠>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Ë£úË∂≥>Âá¶ÁêÜ
       *****************************************************************
        350-HC101-HOSOKU-HEN-SEC      SECTION.
       *
-      *    ∏©√±Õ—π‡Ã‹
+      *    ÁúåÂçòÁî®È†ÖÁõÆ
            IF      FLG-RECE11           =   ZERO
                INSPECT RECE11-HC06-BODY     REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                INSPECT RECE11-HC06-FOOT-G   REPLACING   ALL "  "
-                                                        BY  "°°" 
+                                                        BY  "„ÄÄ" 
                MOVE    RECE11-HC06-BODY     TO  HC06-BODY
                MOVE    RECE11-HC06-FOOT-G   TO  HC06-FOOT-G
            END-IF
@@ -4934,7 +4934,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<•≥•·•Û•»>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<„Ç≥„É°„É≥„Éà>Âá¶ÁêÜ
       *****************************************************************
        360-HC101-COMMENT-HEN-SEC      SECTION.
       *
@@ -4943,17 +4943,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPACE               TO  WRK-RECECOM-NAME 
                                            WRK-RECECOM-SJKBN
       *     
-      *    ≈¨Õ—ÕÛ•≥•·•Û•»     
+      *    ÈÅ©Áî®Ê¨Ñ„Ç≥„É°„É≥„Éà     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    æ…æıæ‹µ≠•≥•·•Û•»     
+      *    ÁóáÁä∂Ë©≥Ë®ò„Ç≥„É°„É≥„Éà     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key8"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *     
-      *    æ…æıæ‹µ≠•≥•·•Û•»° §Ω§Œ¬æ°À    
+      *    ÁóáÁä∂Ë©≥Ë®ò„Ç≥„É°„É≥„ÉàÔºà„Åù„ÅÆ‰ªñÔºâ    
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
@@ -4962,7 +4962,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•≥•·•Û•»∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    „É¨„Çª„Ç≥„É°„É≥„ÉàË™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        3601-RECECOM-HENSYU-SEC    SECTION.
       *
@@ -5008,7 +5008,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•»§Œ≤˛π‘•≥°º•…∫ÔΩ¸ΩËÕ˝
+      *    „Ç≥„É°„É≥„Éà„ÅÆÊîπË°å„Ç≥„Éº„ÉâÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        3601-COMMENT-HENSYU-SEC    SECTION.
       *
@@ -5016,7 +5016,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO            TO  WRK-RECEHEN                      
            MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
-      *    æ…æıæ‹µ≠∂Ë ¨§Œ∏´Ω–§∑§Úµ≠∫‹
+      *    ÁóáÁä∂Ë©≥Ë®òÂå∫ÂàÜ„ÅÆË¶ãÂá∫„Åó„ÇíË®òËºâ
            IF      RECECOM-SJKBN   =   "07"    OR  "08"    OR  "09"
                MOVE    "07"            TO  RECECOM-SJKBN
            END-IF 
@@ -5064,7 +5064,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *                                       
       *                                       
                    IF      WRK-COMMENT-G   >   SPACE
-      *                ≈¶Õ◊ÕÛ§À£±π‘§¢§±§Î
+      *                ÊëòË¶ÅÊ¨Ñ„Å´ÔºëË°å„ÅÇ„Åë„Çã
                      IF      WRK-RECECOM         =   ZERO
                        MOVE    1               TO  WRK-RECECOM
                        IF  WRK-LINETEK         >   ZERO
@@ -5078,7 +5078,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
                      END-IF
       *
-      *              æ…æıæ‹µ≠∂Ë ¨§Œ∏´Ω–§∑§Úµ≠∫‹
+      *              ÁóáÁä∂Ë©≥Ë®òÂå∫ÂàÜ„ÅÆË¶ãÂá∫„Åó„ÇíË®òËºâ
                      IF      FLG-RECECOM-SJKBN   =   1
                        IF      WRK-LINETEK      >=
                                                 WRK-TEKIYOU-LINE
@@ -5145,13 +5145,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏< ›∏±Õ˙ŒÚæ Û>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<‰øùÈô∫Â±•Ê≠¥ÊÉÖÂ†±>Âá¶ÁêÜ
       *****************************************************************
        370-HC101-HKN-RIREKI-HEN-SEC      SECTION.
       *
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-RIREKI-MAX  
-      *        ≈¶Õ◊ÕÛ§À£±π‘§¢§±§Î
+      *        ÊëòË¶ÅÊ¨Ñ„Å´ÔºëË°å„ÅÇ„Åë„Çã
                IF      IDXX                =   1
                    IF  WRK-LINETEK             >   ZERO
                        IF      WRK-LINETEK         >=  WRK-TEKIYOU-LINE
@@ -5170,7 +5170,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
                ADD     1               TO  WRK-LINETEK
                INSPECT WRK-HKN-RIREKI-TBL (IDXX)   REPLACING   ALL "  "
-                                                               BY  "°°"
+                                                               BY  "„ÄÄ"
                IF      CNT-PAGE        =   1   
                    MOVE    WRK-HKN-RIREKI-TBL (IDXX)
                                        TO  HC06-TEKIYO (WRK-LINETEK)
@@ -5197,11 +5197,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<∆˛¬‡±°Õ˙ŒÚæ Û>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥ÊÉÖÂ†±>Âá¶ÁêÜ
       *****************************************************************
        380-HC101-NYUTAI-RIREKI-HEN-SEC      SECTION.
       *
-      *    ∫«ΩÈ§Œπ‘§Œ§»§≠£≤π‘§¢§±§Î
+      *    ÊúÄÂàù„ÅÆË°å„ÅÆ„Å®„ÅçÔºíË°å„ÅÇ„Åë„Çã
            COMPUTE WRK-WLINETEK    =   WRK-LINETEK +   2                                       
            IF  WRK-WLINETEK        >   WRK-TEKIYOU-LINE
                PERFORM 34120-PAGE-SEC
@@ -5210,9 +5210,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                TO  WRK-NYUINCHUKBN
       * 
-      *    ∫«ΩÈ§Œπ‘§Œ•≥•·•Û•»§Œ•ª•√•»
+      *    ÊúÄÂàù„ÅÆË°å„ÅÆ„Ç≥„É°„É≥„Éà„ÅÆ„Çª„ÉÉ„Éà
            MOVE    SPACE               TO  WRK-NYUTAI-RIREKI-AREA
-           MOVE    "∆˛¬‡±°Õ˙ŒÚ"        TO  WRK-NYUTAI-MSG
+           MOVE    "ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥"        TO  WRK-NYUTAI-MSG
       *          
            INITIALIZE                      RECE12-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  RECE12-HOSPNUM
@@ -5255,7 +5255,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
                    PERFORM 31012-SEIWA-HEN-SEC
                    MOVE    LNK-DAY2-EDTYMD3(5:18)    TO  
                                                WRK-NYUTAI-NYUINYMD
-                   MOVE    "°¡"                TO  WRK-NYUTAI-FL1
+                   MOVE    "„Äú"                TO  WRK-NYUTAI-FL1
                END-IF
       *                          
                IF      RECE12-TAIINYMD (1:6)   
@@ -5276,7 +5276,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
                    ADD     1                   TO  WRK-LINETEK
       *
                    INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
-                                                               BY  "°°"  
+                                                               BY  "„ÄÄ"  
                    IF      CNT-PAGE        =   1   
                        MOVE    WRK-NYUTAI-RIREKI-AREA
                                            TO  HC06-TEKIYO (WRK-LINETEK)
@@ -5304,7 +5304,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
                PERFORM 900-RECE12-NEXT-SEC
            END-PERFORM
       *
-      *    ∫«∏Â§ŒÕ˙ŒÚ§¨∆˛±°√Ê§Œ§»§≠§À ‘Ω∏§π§Î
+      *    ÊúÄÂæå„ÅÆÂ±•Ê≠¥„ÅåÂÖ•Èô¢‰∏≠„ÅÆ„Å®„Åç„Å´Á∑®ÈõÜ„Åô„Çã
            IF      WRK-NYUTAI-RIREKI-AREA
                                        NOT =   SPACE                   
                IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
@@ -5313,7 +5313,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
                ADD     1                   TO  WRK-LINETEK
       *
                INSPECT WRK-NYUTAI-RIREKI-AREA  REPLACING   ALL "  "
-                                                           BY  "°°"  
+                                                           BY  "„ÄÄ"  
                IF      CNT-PAGE        =   1   
                    MOVE    WRK-NYUTAI-RIREKI-AREA
                                        TO  HC06-TEKIYO (WRK-LINETEK)
@@ -5336,7 +5336,7 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
                MOVE    SPACE           TO  WRK-NYUTAI-RIREKI-AREA
            END-IF
       *
-      *    ∫«∏Â§Œπ‘§Œ∏Â§À£±π‘§¢§±§Î
+      *    ÊúÄÂæå„ÅÆË°å„ÅÆÂæå„Å´ÔºëË°å„ÅÇ„Åë„Çã
            IF      WRK-NYUTAI-RIREKI-AREA
                                        =   SPACE                   
                IF  WRK-LINETEK         >=  WRK-TEKIYOU-LINE
@@ -5350,14 +5350,14 @@ grpsys             OR    ( RECE02-HOSPNUM   NOT =  RECE12-HOSPNUM      )
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<ºÍΩ—ŒÚ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÊâãË°ìÊ≠¥>Âá¶ÁêÜ
       *****************************************************************
        380-HC101-OPECOM-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-OPECOM
                                            WRK-OPECOM-HEN
       *
-      *    ºÍΩ—ŒÚ ‘Ω∏
+      *    ÊâãË°ìÊ≠¥Á∑®ÈõÜ
            INITIALIZE                      OPECOM-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE02-PTID         TO  OPECOM-PTID
@@ -5421,7 +5421,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
                                        TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    •≥•·•Û•» ‘Ω∏
+      *    „Ç≥„É°„É≥„ÉàÁ∑®ÈõÜ
            INITIALIZE                      OPECOM-REC
 grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE02-PTID         TO  OPECOM-PTID
@@ -5486,12 +5486,12 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•»§Œ≤˛π‘•≥°º•…∫ÔΩ¸ΩËÕ˝
+      *    „Ç≥„É°„É≥„Éà„ÅÆÊîπË°å„Ç≥„Éº„ÉâÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        3801-OPECOM-HENSYU-SEC    SECTION.
       *
            IF      WRK-OPECOM          =   ZERO
-      *        Ω˝…¬Ãæ§»§Œ¥÷§À∂Ë¿⁄§Í¿˛§ÚΩ–Œœ
+      *        ÂÇ∑ÁóÖÂêç„Å®„ÅÆÈñì„Å´Âå∫Âàá„ÇäÁ∑ö„ÇíÂá∫Âäõ
                IF      WRK-LINETEK         >   ZERO
                    IF      WRK-LINETEK >=  WRK-TEKIYOU-LINE
                        PERFORM 34120-PAGE-SEC
@@ -5502,7 +5502,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
                    END-IF
                END-IF
            ELSE
-      *        ºÍΩ—ŒÚ§»•≥•·•Û•»§Œ¥÷§À≤˛π‘
+      *        ÊâãË°ìÊ≠¥„Å®„Ç≥„É°„É≥„Éà„ÅÆÈñì„Å´ÊîπË°å
                IF    ( WRK-OPECOM-MCP-PATHNAME
                                            =   "key5" )
                AND   ( WRK-OPECOM          =   1             )
@@ -5549,7 +5549,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…º≥ «ºΩËÕ˝
+      *    Â∏≥Á•®Ê†ºÁ¥çÂá¶ÁêÜ
       *****************************************************************
        390-PRINT-OUT-SEC               SECTION.
       *
@@ -5596,7 +5596,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ƒ¢…ºππø∑ΩËÕ˝
+      *    Â∏≥Á•®Êõ¥Êñ∞Âá¶ÁêÜ
       *****************************************************************
        391-DB-WRITE-SEC                SECTION.
       *
@@ -5608,17 +5608,17 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
       *
                ADD     1                   TO  WRK-RECENUM
       * 
-      *        •Ï•ª•◊•»Ã¿∫Ÿ¥…Õ˝£ƒ£¬
+      *        „É¨„Çª„Éó„ÉàÊòéÁ¥∞ÁÆ°ÁêÜÔº§Ôº¢
                PERFORM 3901-RECE08-INSERT-SEC
       *
-      *        •Ï•ª•◊•»ƒ¢…º¥…Õ˝•’•°•§•ÎΩ–Œœ
+      *        „É¨„Çª„Éó„ÉàÂ∏≥Á•®ÁÆ°ÁêÜ„Éï„Ç°„Ç§„É´Âá∫Âäõ
                IF    ( FLG-ERR              =   ZERO     )
                AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                    PERFORM 3903-RECE07-WRITE-SEC
                END-IF
            END-PERFORM
       *
-      *    ¿¡µ·¥…Õ˝£ƒ£¬ππø∑
+      *    Ë´ãÊ±ÇÁÆ°ÁêÜÔº§Ôº¢Êõ¥Êñ∞
       *****IF    ( FLG-ERR              =   ZERO )  AND 
       *****      ( CNT-PAGE             =   1    )
            IF      FLG-ERR              =   ZERO
@@ -5634,7 +5634,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  OPECOM-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»Ã¿∫Ÿ£ƒ£¬
+      *    „É¨„Çª„Éó„ÉàÊòéÁ¥∞Ôº§Ôº¢
       *****************************************************************
        3901-RECE08-INSERT-SEC        SECTION.
       *
@@ -5726,7 +5726,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            MOVE    "9"                 TO  RECE08-HKNJANUM-SRT
                                            RECE08-ZAITAKU
                                            RECE08-CHOUKI
-      *     ºÁ≤ ¿ﬂƒÍ
+      *     ‰∏ªÁßëË®≠ÂÆö
            IF    ( SYS-2009-SYUKA-KBN  =   "1"                )
            AND   ( RECE02-RECESYUBETU  
                                    NOT =   "8888"             )
@@ -5742,7 +5742,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                END-IF
            END-IF
       *
-      *     ‘ƒ÷ΩÁπ‡Ã‹§Œ¿ﬂƒÍ° πÒ ›∆√ ÃŒ≈Õ‹»Ò∞ ≥∞°À
+      *    Á∑®Á∂¥È†ÜÈ†ÖÁõÆ„ÅÆË®≠ÂÆöÔºàÂõΩ‰øùÁâπÂà•ÁôÇÈ§äË≤ª‰ª•Â§ñÔºâ
            IF    ( FLG-SYS-2008        =   ZERO   )
            OR    ( RECE02-TEISYUTUSAKI =   "1"    )
            OR    ( RECE02-RECESYUBETU  =   "6666"  OR  "8888"  OR
@@ -5750,7 +5750,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                CONTINUE
            ELSE
       *
-      *        ∏°∫˜Õ— ›∏±º‘»÷πÊ
+      *        Ê§úÁ¥¢Áî®‰øùÈô∫ËÄÖÁï™Âè∑
                IF      RECE08-HKNJANUM(1:2)    =   "67"
                    MOVE    RECE08-HKNJANUM(3:) TO  RECE08-HKNJANUM-S
                ELSE
@@ -5769,7 +5769,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                        MOVE    "10"            TO  RECE08-PREFKBN-SRT
                END-EVALUATE
       *
-      *        ° ∏©∆‚ ¨§Œ§ﬂ°À
+      *        ÔºàÁúåÂÜÖÂàÜ„ÅÆ„ÅøÔºâ
                IF      RECE08-PREFKBN      =   "1"     
                    EVALUATE    SYS-2008-HKNJANUM-PRTJYUN
                        WHEN    "1"
@@ -5835,7 +5835,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    END-EVALUATE
                END-IF
       *
-      *        ΩÍ¬∞ ›∏±º‘§À§Ë§Î ›∏±º‘∞ı∫˛∂Ë ¨§Œ¿ﬂƒÍ
+      *        ÊâÄÂ±û‰øùÈô∫ËÄÖ„Å´„Çà„Çã‰øùÈô∫ËÄÖÂç∞Âà∑Âå∫ÂàÜ„ÅÆË®≠ÂÆö
                MOVE    "1"             TO  RECE08-HKNJANUM-SRT
                IF    ( SYS-2008-HKNJANUM   =   RECE08-HKNJANUM-S )
                AND   ( RECE08-PREFKBN      =   "1"               )
@@ -5847,7 +5847,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                    END-EVALUATE
                END-IF
       *
-      *        •Ï•ª•◊•»ºÔ Ã∞ı∫˛∂Ë ¨
+      *        „É¨„Çª„Éó„ÉàÁ®ÆÂà•Âç∞Âà∑Âå∫ÂàÜ
                EVALUATE    SYS-2008-RECESYUBETU-PRTJYUN
                                    ALSO    RECE02-RECESYUBETU (2:1)
                    WHEN    "1"     ALSO    "1"
@@ -5900,7 +5900,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
                DISPLAY "ORCRCP400 MCP-RC=" MCP-RC " " RECE08-KEY 
-               STRING   "•Ï•ª•◊•»Ã¿∫Ÿ§Àππø∑§«§≠§ﬁ§ª§Û°°¥µº‘»÷πÊ°·"
+               STRING   "„É¨„Çª„Éó„ÉàÊòéÁ¥∞„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„ÄÄÊÇ£ËÄÖÁï™Âè∑Ôºù"
                                                DELIMITED  BY  SIZE
                         RECE02-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
@@ -5938,7 +5938,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                                            TO  RECE08-FORMID
                MOVE    TBL-RECE-PRTDATA (IDXY)
                                            TO  RECE08-PRTDATA
-      *         £øÙÀÁ•Ï•ª§ŒæÏπÁœ¢»÷§Úµ≠∫‹
+      *        Ë§áÊï∞Êûö„É¨„Çª„ÅÆÂ†¥ÂêàÈÄ£Áï™„ÇíË®òËºâ
                IF      TBL-RECE-MAX        >   1
                    MOVE    SPACE               TO  WRK-HEN-PAGE-AREA
                    MOVE    TBL-RECE-RENNUM (IDXY) 
@@ -5984,7 +5984,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                ELSE 
                    DISPLAY "ORCRCP400 RECE08=" MCP-RC " " RECE08-KEY 
                    STRING
-                        "•Ï•ª•◊•»Ã¿∫Ÿ§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø°°¥µº‘»÷πÊ°·"
+                        "„É¨„Çª„Éó„ÉàÊòéÁ¥∞„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÄÊÇ£ËÄÖÁï™Âè∑Ôºù"
                                                DELIMITED  BY  SIZE
                         RECE02-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
@@ -5998,7 +5998,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ω–ŒœΩËÕ˝
+      *    Âá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        3903-RECE07-WRITE-SEC        SECTION.
       *
@@ -6119,10 +6119,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                DISPLAY "ORCRCP400 RECEKANRI MCP-RC= "  MCP-RC   
                IF      FLG-RECE07          =   1    
-               MOVE    "•Ï•ª•◊•»¥…Õ˝£ƒ£¬§Àƒ…≤√§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "„É¨„Çª„Éó„ÉàÁÆ°ÁêÜÔº§Ôº¢„Å´ËøΩÂä†„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                ELSE
-               MOVE    "•Ï•ª•◊•»¥…Õ˝£ƒ£¬§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "„É¨„Çª„Éó„ÉàÁÆ°ÁêÜÔº§Ôº¢„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                END-IF 
                PERFORM 500-ERR-HENSYU-SEC
@@ -6133,21 +6133,21 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¿¡µ·¥…Õ˝£ƒ£¬ππø∑
+      *    Ë´ãÊ±ÇÁÆ°ÁêÜÔº§Ôº¢Êõ¥Êñ∞
       *****************************************************************
        3904-RECE10-HENSYU-SEC        SECTION.
       * 
-      *    •∆•π•»¥µº‘§Œ§»§≠ππø∑§∑§ §§
+      *    „ÉÜ„Çπ„ÉàÊÇ£ËÄÖ„ÅÆ„Å®„ÅçÊõ¥Êñ∞„Åó„Å™„ÅÑ
            IF      RECE02-TSTPTNUMKBN   =   "1"
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       * 
-      *    •Ï•ª•◊•»ºÔ Ã…‘Ã¿§ﬁ§ø§œº´»Ò§Œ§»§≠ππø∑§∑§ §§
+      *    „É¨„Çª„Éó„ÉàÁ®ÆÂà•‰∏çÊòé„Åæ„Åü„ÅØËá™Ë≤ª„ÅÆ„Å®„ÅçÊõ¥Êñ∞„Åó„Å™„ÅÑ
            IF      RECE02-RECESYUBETU      =   ZERO    OR  8888
                GO  TO  3904-RECE10-HENSYU-EXT
            END-IF
       *
-      *     ºÁ≤ ¿ﬂƒÍ§Œ§»§≠Ã§¿ﬂƒÍ§ §Èππø∑§∑§ §§
+      *     ‰∏ªÁßëË®≠ÂÆö„ÅÆ„Å®„ÅçÊú™Ë®≠ÂÆö„Å™„ÇâÊõ¥Êñ∞„Åó„Å™„ÅÑ
            IF    ( SYS-2009-SYUKA-KBN  =   "1"  )
            AND   ( RECE02-SYUKA        =   "XX" )
                IF  (     ( RECE02-TEISYUTUSAKI   =   "1" )
@@ -6255,7 +6255,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                MOVE    ZERO                TO  RECE10-UPDYMD
            END-IF
       *
-      *    º£∏≥§œ¿¡µ·∂Ë ¨§Ú£∞°ß¿¡µ·§∑§ §§§»§π§Î
+      *    Ê≤ªÈ®ì„ÅØË´ãÊ±ÇÂå∫ÂàÜ„ÇíÔºêÔºöË´ãÊ±Ç„Åó„Å™„ÅÑ„Å®„Åô„Çã
            IF      RECE10-HKNNUM       >=  "900"
            AND     RECE10-HKNNUM       <=  "969"
                    MOVE    ZERO            TO  RECE10-SKYKBN
@@ -6275,7 +6275,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                MOVE    RECE02-SRYKBNINF (IDX)  TO
                                        RECE10-SRYKBNINF (IDX)
            END-PERFORM
-      *    µÎ…’≥‰πÁ
+      *    Áµ¶‰ªòÂâ≤Âêà
            IF      RECE02-KYURATE  >   ZERO
                COMPUTE WRK-KYURATE-9   =
                               (100     -   RECE02-KYURATE)
@@ -6308,7 +6308,7 @@ grpsys     MOVE    RECE02-HOSPNUM      TO  RECE10-HOSPNUM
                MOVE    RECE02-ETC-FTNMONEY-KOJ (IDX)   TO
                                        RECE10-ETC-FTNMONEY-KOJ (IDX)
            END-PERFORM
-      *    ∞Ï…Ù…È√¥∂‚°¶ø©ªˆŒ≈Õ‹»Ò…∏Ω‡…È√¥≥€∂Ë ¨
+      *    ‰∏ÄÈÉ®Ë≤†ÊãÖÈáë„ÉªÈ£ü‰∫ãÁôÇÈ§äË≤ªÊ®ôÊ∫ñË≤†ÊãÖÈ°çÂå∫ÂàÜ
            MOVE    RECE02-SHOKUJIFTNKBN
                                        TO  RECE10-SHOKUJIFTNKBN
       *
@@ -6330,10 +6330,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                DISPLAY "ORCRCP400 SEIKYU MCP-RC= "  MCP-RC   
                IF      FLG-SEIKYU          =   1    
-               MOVE    "¿¡µ·¥…Õ˝£ƒ£¬§Àƒ…≤√§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Ë´ãÊ±ÇÁÆ°ÁêÜÔº§Ôº¢„Å´ËøΩÂä†„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                ELSE
-               MOVE    "¿¡µ·¥…Õ˝£ƒ£¬§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Ë´ãÊ±ÇÁÆ°ÁêÜÔº§Ôº¢„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  WRK-RECEERR
                END-IF 
                PERFORM 500-ERR-HENSYU-SEC
@@ -6344,7 +6344,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¿æŒÒ∆¸À‹∏Ï —¥πΩËÕ˝
+      *    Ë•øÊö¶Êó•Êú¨Ë™ûÂ§âÊèõÂá¶ÁêÜ
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -6360,7 +6360,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¿æŒÒ¢™œ¬ŒÒ∆¸…’ ‘Ω∏
+      *    Ë•øÊö¶‚ÜíÂíåÊö¶Êó•‰ªòÁ∑®ÈõÜ
       *****************************************************************
        31012-SE-WA-YMDEDIT-SEC        SECTION.
       *
@@ -6380,7 +6380,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -6395,7 +6395,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            •∏•Á•÷¥…Õ˝Ω™ŒªΩËÕ˝
+      *            „Ç∏„Éß„ÉñÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -6411,11 +6411,11 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ω™Œª°°°°ΩËÕ˝
+      *    ÁµÇ‰∫Ü„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    •’•°•§•Î£√£Ã£œ£”£≈ΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´Ôº£Ôº¨ÔºØÔº≥Ôº•Âá¶ÁêÜ
            CLOSE                       RECE02-FILE
            CLOSE                       RECE02X-FILE
            CLOSE                       RECE031-FILE
@@ -6430,7 +6430,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCRCP400 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+      *        „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
@@ -6444,7 +6444,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ∞Ïª˛•’•°•§•ÎÃæºË∆¿ΩËÕ˝
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -6455,7 +6455,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£∞£≤•«°º•øΩÁ∏°∫˜ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„ÇøÈ†ÜÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        990-RECE02-READ-SEC           SECTION.
       *
@@ -6503,7 +6503,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
                            MOVE    RECE02-HKNJANUM-KEY
                                                TO KEY-N-HKNJANUM-KEY
                            IF   WRK-PARA-SRYYM     =  ZERO
-      *                          ∞ÂŒ≈µ°¥ÿ£…£ƒ ‘Ω∏
+      *                          ÂåªÁôÇÊ©üÈñ¢Ôº©Ôº§Á∑®ÈõÜ
                                  MOVE  RECE02-SRYYM   TO
                                                    WRK-SYS-SRYYMD(1:6)
                                  MOVE  "01"           TO
@@ -6520,7 +6520,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»£∞£≤•«°º•ø° ∏¯»Ò¿¡µ·ΩÒ°ÀΩÁ∏°∫˜ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÔºêÔºí„Éá„Éº„ÇøÔºàÂÖ¨Ë≤ªË´ãÊ±ÇÊõ∏ÔºâÈ†ÜÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        990-RECE02X-READ-SEC           SECTION.
       *
@@ -6528,16 +6528,16 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
                AT  END
                    MOVE    1                   TO  FLG-RECE02X
                NOT AT  END
-      *           £≤£∞£∞£≥«Ø£≥∑Ó∞ ¡∞§Œ§»§≠∆…§ﬂ»Ù§–§π
+      *           ÔºíÔºêÔºêÔºìÂπ¥ÔºìÊúà‰ª•Ââç„ÅÆ„Å®„ÅçË™≠„ÅøÈ£õ„Å∞„Åô
                    IF      RECE02X-SRYYM       <   WRK-CONS-SRYYM
                        GO  TO  990-RECE02X-READ-SEC
                    END-IF
-      *            •∆•π•»¥µº‘°¶•Ï•ª•◊•»ºÔ Ã…‘Ã¿§Œ§»§≠∆…§ﬂ»Ù§–§π
+      *            „ÉÜ„Çπ„ÉàÊÇ£ËÄÖ„Éª„É¨„Çª„Éó„ÉàÁ®ÆÂà•‰∏çÊòé„ÅÆ„Å®„ÅçË™≠„ÅøÈ£õ„Å∞„Åô
                    IF    ( RECE02X-TSTPTNUMKBN     =   "1"    )
                    OR    ( RECE02X-RECESYUBETU     =   ZERO   )
                        GO  TO  990-RECE02X-READ-SEC
                    END-IF
-      *            ≈¿øÙ§¨¡¥§∆•º•Ì§Œ§»§≠∆…§ﬂ»Ù§–§π
+      *            ÁÇπÊï∞„ÅåÂÖ®„Å¶„Çº„É≠„ÅÆ„Å®„ÅçË™≠„ÅøÈ£õ„Å∞„Åô
       *************IF      RECE02X-TOTALTEN (1) =   ZERO
       *            AND     RECE02X-TOTALTEN (2) =   ZERO 
       *            AND     RECE02X-TOTALTEN (3) =   ZERO 
@@ -6556,14 +6556,14 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    ø«Œ≈«Ø∑Ó§Œ¬–æ›§»§ §Î•∑•π¥…Õ˝§ÚºË∆¿° ∏ƒ ÃΩËÕ˝§Œ§ﬂ
+      *    Ë®∫ÁôÇÂπ¥Êúà„ÅÆÂØæË±°„Å®„Å™„Çã„Ç∑„ÇπÁÆ°ÁêÜ„ÇíÂèñÂæóÔºàÂÄãÂà•Âá¶ÁêÜ„ÅÆ„Åø
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-SYS-1901
                                            FLG-SYS-1902
       *
-      *    ∞ÂŒ≈µ°¥ÿæ Û° ¥À‹æ Û°À
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÂü∫Êú¨ÊÉÖÂ†±Ôºâ
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
@@ -6577,7 +6577,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
                END-IF
            END-PERFORM
            IF      FLG-SET             =   ZERO
-               STRING  "∞ÂŒ≈µ°¥ÿæ Û§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£ø«Œ≈«Ø∑Ó°·"
+               STRING  "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇË®∫ÁôÇÂπ¥ÊúàÔºù"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -6587,7 +6587,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
                GO  TO  900-SYSKANRI-HENSYU-EXT
            END-IF
       *
-      *    ∞ÂŒ≈µ°¥ÿæ Û° ΩÍ∫ﬂ√œ§€§´°À
+      *    ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÊâÄÂú®Âú∞„Åª„ÅãÔºâ
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
@@ -6602,7 +6602,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            END-PERFORM
            IF      FLG-SET             =   ZERO
                STRING
-              "∞ÂŒ≈µ°¥ÿæ Û° ΩÍ∫ﬂ√œ°À§¨ºË∆¿§«§≠§ﬁ§ª§Û§«§∑§ø°£ø«Œ≈«Ø∑Ó°·"
+              "ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±ÔºàÊâÄÂú®Âú∞Ôºâ„ÅåÂèñÂæó„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü„ÄÇË®∫ÁôÇÂπ¥ÊúàÔºù"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -6611,7 +6611,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
                MOVE    2                   TO  FLG-STS
            END-IF
       *
-      *    ƒ¢…º ÃªÿƒÍ∞ÂŒ≈µ°¥ÿ ‘Ω∏æ Û
+      *    Â∏≥Á•®Âà•ÊåáÂÆöÂåªÁôÇÊ©üÈñ¢Á∑®ÈõÜÊÉÖÂ†±
            IF      FLG-SYS-1900        =   1
                MOVE    ZERO                TO  FLG-SET
       *
@@ -6659,7 +6659,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    •Ï•ª•◊•»£∞£≥£±•«°º•ø∆…§ﬂ
+      *    „É¨„Çª„Éó„ÉàÔºêÔºìÔºë„Éá„Éº„ÇøË™≠„Åø
       ****************************************************************
        990-RECE031-NEXT-SEC           SECTION.
       *
@@ -6678,7 +6678,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    •Ï•ª•◊•»£∞£∂£±•«°º•ø∆…§ﬂ
+      *    „É¨„Çª„Éó„ÉàÔºêÔºñÔºë„Éá„Éº„ÇøË™≠„Åø
       ****************************************************************
        990-RECE061-NEXT-SEC           SECTION.
       *
@@ -6698,7 +6698,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    •Ï•ª•◊•»£∞£π•«°º•ø∆…§ﬂ
+      *    „É¨„Çª„Éó„ÉàÔºêÔºô„Éá„Éº„ÇøË™≠„Åø
       ****************************************************************
        990-RECE09-NEXT-SEC           SECTION.
       *
@@ -6714,7 +6714,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    •Ï•ª•◊•»£±£±•«°º•ø∆…§ﬂ
+      *    „É¨„Çª„Éó„ÉàÔºëÔºë„Éá„Éº„ÇøË™≠„Åø
       ****************************************************************
        990-RECE11-READ-SEC           SECTION.
       *
@@ -6730,7 +6730,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *    ∆˛¬‡±°Õ˙ŒÚæ Û•«°º•ø∆…§ﬂ
+      *    ÂÖ•ÈÄÄÈô¢Â±•Ê≠¥ÊÉÖÂ†±„Éá„Éº„ÇøË™≠„Åø
       ****************************************************************
        900-RECE12-NEXT-SEC           SECTION.
       *
@@ -6746,7 +6746,7 @@ grpsys                     MOVE    RECE02-HOSPNUM  TO  KEY-N-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»¥…Õ˝∆…π˛ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÁÆ°ÁêÜË™≠ËæºÂá¶ÁêÜ
       *****************************************************************
        900-RECE07-READ-SEC           SECTION.
       *
@@ -6776,7 +6776,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»∞ı∫˛∆…π˛ΩËÕ˝
+      *    „É¨„Çª„Éó„ÉàÂç∞Âà∑Ë™≠ËæºÂá¶ÁêÜ
       *****************************************************************
        900-RECE08-READ-SEC           SECTION.
       *
@@ -6805,7 +6805,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø∆…π˛
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       *
@@ -6830,7 +6830,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„ÇøË™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        900-KANRIMST-NEXT-SEC         SECTION.
       *
@@ -6846,7 +6846,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *     ›∏±»÷πÊ•ﬁ•π•øº°∏°∫˜ΩËÕ˝
+      *    ‰øùÈô∫Áï™Âè∑„Éû„Çπ„ÇøÊ¨°Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-HKNMST-NEXT-SEC              SECTION.
       *
@@ -6863,7 +6863,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¿¡µ·•ﬁ•π•ø°º∆…π˛° ºÁ•≠°º°À
+      *    Ë´ãÊ±Ç„Éû„Çπ„Çø„ÉºË™≠ËæºÔºà‰∏ª„Ç≠„ÉºÔºâ
       *****************************************************************
        900-SEIKYU-INV-SEC         SECTION.
       *
@@ -6888,7 +6888,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ∏¯»Ò¿¡µ·•ﬁ•π•ø°º∆…π˛° ºÁ•≠°º°À
+      *    ÂÖ¨Ë≤ªË´ãÊ±Ç„Éû„Çπ„Çø„ÉºË™≠ËæºÔºà‰∏ª„Ç≠„ÉºÔºâ
       *****************************************************************
        900-KOHSKY-INV-SEC         SECTION.
       *
@@ -6918,7 +6918,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¿¡µ·•ﬁ•π•ø°º∆…π˛
+      *    Ë´ãÊ±Ç„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        900-SEIKYU-READ-SEC           SECTION.
       *
@@ -6934,7 +6934,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    º˝«º∆…π˛
+      *    ÂèéÁ¥çË™≠Ëæº
       *****************************************************************
        900-SYUNOU-READ-SEC             SECTION.
       *
@@ -6952,7 +6952,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    •Ï•ª•◊•»•≥•·•Û•»•ﬁ•π•ø°°£“£≈£¡£ƒ
+      *    „É¨„Çª„Éó„Éà„Ç≥„É°„É≥„Éà„Éû„Çπ„Çø„ÄÄÔº≤Ôº•Ôº°Ôº§
       *****************************************************************
        900-RECECOM-READ-SEC         SECTION.
       *
@@ -6968,7 +6968,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ºÍΩ—ŒÚ•ﬁ•π•ø°º∆…π˛
+      *    ÊâãË°ìÊ≠¥„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        900-OPECOM-READ-SEC           SECTION.
       *
@@ -6994,7 +6994,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
      *****************************************************************
-      *    ºÍΩ—ŒÚ•ﬁ•π•ø°º∆…π˛
+      *    ÊâãË°ìÊ≠¥„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        900-OPECOM-READ-N-SEC           SECTION.
       *
@@ -7012,7 +7012,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    •—•È•·•ø∆…π˛
+      *    „Éë„É©„É°„ÇøË™≠Ëæº
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
@@ -7038,7 +7038,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    •—•È•·•ø∆…π˛
+      *    „Éë„É©„É°„ÇøË™≠Ëæº
       *****************************************************************
        900-BTPARA-READ-N-SEC          SECTION.
       *
@@ -7056,7 +7056,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏ÊΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°Âá¶ÁêÜ
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -7073,7 +7073,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£”£≈£Ã£≈£√£‘ΩËÕ˝
+      *    Ôº§Ôº¢Ôº≥Ôº•Ôº¨Ôº•Ôº£Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -7084,7 +7084,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£∆£≈£‘£√£»ΩËÕ˝
+      *    Ôº§Ôº¢Ôº¶Ôº•Ôº¥Ôº£Ôº®Âá¶ÁêÜ
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -7096,7 +7096,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•Ø•Ì°º•∫ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -7108,7 +7108,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„Ç¢„ÇØ„Çª„ÇπÂá¶ÁêÜ
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -7121,7 +7121,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    £ƒ£¬•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -7139,7 +7139,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -7157,7 +7157,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°£√£œ£Õ£Õ£…£‘ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄÔº£ÔºØÔº≠Ôº≠Ôº©Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -7171,7 +7171,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *      
       *****************************************************************
-      *    £ƒ£¬°°£”£‘£¡£“£‘ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄÔº≥Ôº¥Ôº°Ôº≤Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

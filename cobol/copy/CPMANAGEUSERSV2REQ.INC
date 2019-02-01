@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Í•Ø•®•π•»•Ê°º•∂¥…Õ˝æ Û  COPY (CPMANAGEUSERSV2RES.INC)
+      *    Ôº°Ôº∞Ôº©„É™„ÇØ„Ç®„Çπ„Éà„É¶„Éº„Ç∂ÁÆ°ÁêÜÊÉÖÂ†±  COPY (CPMANAGEUSERSV2RES.INC)
       ******************************************************************
         01  XML-MUREQ.
             02  MUREQ-CONTEXT                  PIC S9(9)   BINARY.

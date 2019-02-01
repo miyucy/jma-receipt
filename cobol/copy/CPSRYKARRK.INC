@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ÇÎÅ²ÊÍúÎò¡¡  ¡¡¡¡¡¡ COPY  (CPSRYKARRK.INC)  *
+      *    è¨ºç™‚ç§‘å±¥æ­´ã€€  ã€€ã€€ã€€ COPY  (CPSRYKARRK.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SRYKARRK-REC.
-      *¼õ¿ÇÍúÎò
+      *å—è¨ºå±¥æ­´
            03  KARRK-KEY.
-      *  °åÎÅµ¡´Ø£É£Ä
+      *  åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  KARRK-HOSPNUM            PIC 9(2).
-      *  ´µ¼Ô£É£Ä
+      *  æ‚£è€…ï¼©ï¼¤
                05  KARRK-PTID              PIC  9(10).
-      *  ¿ÇÎÅ²Ê
+      *  è¨ºç™‚ç§‘
                05  KARRK-SRYKA             PIC  X(02).
       *
-      *  ½é¿ÇÆü£±
+      *  åˆè¨ºæ—¥ï¼‘
            03  KARRK-SYOSINYMD1            PIC  X(08).
-      *  ½é¿ÇÆü£²
+      *  åˆè¨ºæ—¥ï¼’
            03  KARRK-SYOSINYMD2            PIC  X(08).
-      *  ºÇ½ª¼õ¿ÇÆü
+      *  æœ€çµ‚å—è¨ºæ—¥
            03  KARRK-LASTYMD               PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  KARRK-TERMID                PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  KARRK-OPID                  PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  KARRK-CREYMD                PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  KARRK-UPYMD                 PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  KARRK-UPHMS                 PIC  X(06).

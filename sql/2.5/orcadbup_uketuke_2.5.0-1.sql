@@ -1,13 +1,13 @@
 --                                    --
---  ¼õÉÕ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                --
+--  å—ä»˜ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     Êİ¸±ÁÈ¹ç¤»ÈÖ¹æ HKNCOMBI        --
+-- é …ç›®ã®è¿½åŠ                          --
+--     ä¿é™ºçµ„åˆã›ç•ªå· HKNCOMBI        --
 --                                    --
 -- Update Date : 2005/02/21           --
 --                                    --
 
--- TBL_UKETUKEWK ºîÀ®                 --
+-- TBL_UKETUKEWK ä½œæˆ                 --
 
 CREATE TABLE "tbl_uketukewk" (
 	"hospid" character(24) NOT NULL,
@@ -33,16 +33,16 @@ CREATE TABLE "tbl_uketukewk" (
 	Constraint "tbl_uketukewk_primary_key" Primary Key ("hospid", "ukeymd", "ukeid")
 );
 
--- TBL_UKETUKE ¢ª TBL_UKETUKEWK      --
+-- TBL_UKETUKE â†’ TBL_UKETUKEWK      --
 
 insert into tbl_uketukewk
 select * from tbl_uketuke;
 
--- TBL_UKETUKE ºï½ü                  --
+-- TBL_UKETUKE å‰Šé™¤                  --
 
 drop table tbl_uketuke;
 
--- TBL_UKETUKE ºîÀ®                  --
+-- TBL_UKETUKE ä½œæˆ                  --
 
 CREATE TABLE "tbl_uketuke" (
 	"hospid" character(24) NOT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE "tbl_uketuke" (
 	Constraint "tbl_uketuke_primary_key" Primary Key ("hospid", "ukeymd", "ukeid")
 );
 
--- TBL_UKETUKEWK ¢ª TBL_UKETUKE   --
+-- TBL_UKETUKEWK â†’ TBL_UKETUKE   --
 
 insert into tbl_uketuke
 (hospid,
@@ -117,7 +117,7 @@ upymd,
 uphms
  from tbl_uketukewk;
 
--- TBL_UKETUKEWK ºï½ü             --
+-- TBL_UKETUKEWK å‰Šé™¤             --
 
 drop table tbl_uketukewk;
 

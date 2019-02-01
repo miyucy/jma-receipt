@@ -9,10 +9,10 @@ fi
 
 . $JMARECEIPT_ENV
 
-#monitor╨ф╣╞ф╟║йёсёиёгёхёуёп║к
+#monitorЕ├█Х╣╥Е▀∙О╪┬О╪ЁО╪╘О╪╖О╪╗О╪╣О╪╟О╪┴
 echo `cat /var/run/jma-receipt/monitor.pid`
 	kill -HUP `cat /var/run/jma-receipt/monitor.pid`
-#╧╧©╥╦╣╔у╔║╔╓╔К╨О╫Эди╡ц
+#Ф⌡╢Ф√╟Е┘┐Ц┐∙Ц┌║Ц┌╓Ц┐╚Е┴┼И≥╓Х©╫Е┼═
 	rm -fr $1
 exit
 

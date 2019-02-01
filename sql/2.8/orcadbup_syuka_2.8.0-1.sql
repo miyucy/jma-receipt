@@ -1,18 +1,18 @@
 --                                    --
---  ¼ç²Ê¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                --
+--  ä¸»ç§‘ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     Êİ¸±ÈÖ¹æ       HKNNUM          --
---     ¥·¥¹¥Æ¥à¼ç²Ê   SRYKA_AUTO      --
+-- é …ç›®ã®è¿½åŠ                          --
+--     ä¿é™ºç•ªå·       HKNNUM          --
+--     ã‚·ã‚¹ãƒ†ãƒ ä¸»ç§‘   SRYKA_AUTO      --
 --                                    --
 -- Create Date : 2006/03/08           --
 --                                    --
 
--- tbl_syuka ºï½ü               --
+-- tbl_syuka å‰Šé™¤               --
 
 drop table tbl_syuka;
 
--- tbl_syuka ºîÀ®               --
+-- tbl_syuka ä½œæˆ               --
 create	table	tbl_syuka	(
 	HOSPID	    char(24),
 	NYUGAIKBN	char(1),

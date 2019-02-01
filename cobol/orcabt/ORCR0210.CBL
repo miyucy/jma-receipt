@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,31 +18,31 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0210.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ����ݡ��ͥ��̾  : �쥻�ץ��Ż��ե��������
-      *                      ����̾�ǡ������¤��ؤ����� 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/11/17    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  コンポーネント名  : レセプト電算ファイル作成
+      *                      傷病名データの並び替え処理 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/11/17    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    04.07.12  �ե����륯�ꥢ�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04.07.12  ファイルクリア追加
       *
-      *  02.07.01    NACL-ƣ��    05/08/20  �����������б�
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.02.01    NACL-ƣ��    08/03/25  ʿ������ǯ��������б�
-      *                                     ����Ϣ���б�
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     広域連合対応
       *
-      *  04.07.01    NACL-ƣ��    15/02/18  ���ž���Ϣ���б�
-      *                                     ����쥻�ץȤ��оݤȤ���
+      *  04.07.01    NACL-藤原    15/02/18  医療情報連携対応
+      *                                     自費レセプトを対象とする
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *
-      *  05.00.01    NACL-ƣ��    18/06/11  �ե�����Υ��顼��������
-      *                                      Warning �б�
+      *  05.00.01    NACL-藤原    18/06/11  ファイルのエラー処理修正
+      *                                      Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -50,7 +50,7 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    �쥻�ץ����ٽ�  
+      *    レセプト明細書  
       *
            SELECT  RECE03-FILE     ASSIGN  RECE03PARA
                                    ORGANIZATION    IS  INDEXED
@@ -63,14 +63,14 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE039-KEY
                                    FILE    STATUS  IS  STS-RECE039.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
-      *    �쥻�ץ����ٽ�  
+      *    レセプト明細書  
        FD  RECE03-FILE.
        01  RECE031-REC. 
            COPY    "CPRCF0031.INC".
@@ -81,7 +81,7 @@
                                    BY          //RECE039//.
            03  RECE039-SYUBYOFLG-X PIC X(01).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -89,7 +89,7 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *     �쥻�ץ����٥ե����� ̾���ΰ� 
+      *     レセプト明細ファイル 名称領域 
       *
             COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE03PARA//.
@@ -97,15 +97,15 @@ grpsys     COPY    "COMMON-SPA".
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE039PARA//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
             COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե�����̾����
+      *    ファイル名取得
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE039                             PIC X(02).
            03  STS-RECE03                              PIC X(02).
@@ -117,12 +117,12 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-END                                 PIC 9(01).
            03  FLG-READ                                PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA1.
@@ -148,17 +148,17 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-ERR-FILE-MSG                    PIC X(100).
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -167,18 +167,18 @@ grpsys     COPY    "COMMON-SPA".
                                    BY         //SYS-25//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -192,7 +192,7 @@ grpsys     COPY    "COMMON-SPA".
                            USING       COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -205,7 +205,7 @@ grpsys     COPY    "COMMON-SPA".
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -229,14 +229,14 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCR0210"      TO  JOB-PGID
-           MOVE    "����̾�¤��Ѥ�"    TO  JOB-SHELLMSG
+           MOVE    "傷病名並び変え"    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            MOVE    SPACE               TO  SYS-25-REC
            INITIALIZE                      SYS-25-REC
            MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
@@ -296,14 +296,14 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
            OPEN    OUTPUT              RECE039-FILE
       *
-      *        �쥻�ץ����٣����ɤ߹���
+      *        レセプト明細０３読み込み
            PERFORM 900-RECE03-READ-SEC
            .
        100-INIT-EXT.
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -333,7 +333,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -347,7 +347,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -362,7 +362,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -373,26 +373,26 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -424,14 +424,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            CLOSE   RECE03-FILE
            CLOSE   RECE039-FILE
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
@@ -446,7 +446,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ե�����̾��������
+      *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -457,7 +457,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ����ٽ񣰣��ɹ�
+      *    レセプト明細書０２読込
       *****************************************************************
        900-RECE03-READ-SEC             SECTION.
       *
@@ -510,7 +510,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -539,7 +539,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -556,7 +556,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -567,7 +567,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -579,7 +579,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -591,7 +591,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -604,7 +604,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -622,7 +622,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

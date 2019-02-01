@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    �����å��ޥ���        COPY (CPCHK.INC)                     *
+      *    チェックマスタ        COPY (CPCHK.INC)                     *
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02.03.14  �祭�������ѹ��ܤ��ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02.03.14  主キー更新用項目の追加
       *****************************************************************
       *01  CHK-REC.
            03  CHK-KEY.
                05  CHK-HOSPNUM         PIC 9(2).
-      *�����å���ʬ
+      *チェック区分
                05  CHK-CHKKBN          PIC  X(01).
-      *���ť�����
+      *診療コード
                05  CHK-SRYCD           PIC  X(09).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  CHK-YUKOSTYMD       PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  CHK-YUKOEDYMD       PIC  X(08).
-      *�����ɶ�ʬ
+      *コード区分
                05  CHK-CDKBN           PIC  X(01).
-      *Ϣ�ֹ�
+      *連番号
                05  CHK-RENNUM          PIC  9(02).
-      *Ŭ�ѥ����ɸĿ�
+      *適用コード個数
            03  CHK-TEKCDNUM            PIC  9(03).
-      *�����ɣ����飱��
+      *コード１から１０
            03  CHK-CD-G.
                05  CHK-CD1             PIC  X(09).
                05  CHK-CD2             PIC  X(09).
@@ -56,17 +56,17 @@
            03  CHK-CD-R                REDEFINES   CHK-CD-G.
                05  CHK-CD              PIC  X(09)
                                        OCCURS   10.
-      *ü���ɣ�
+      *端末ＩＤ
            03  CHK-TERMID              PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  CHK-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  CHK-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  CHK-UPYMD               PIC  X(08).
-      *�������� 
+      *更新時間 
            03  CHK-UPHMS               PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  CHKUP-KEY.
                05  CHKUP-HOSPNUM       PIC  9(02).
                05  CHKUP-CHKKBN        PIC  X(01).
@@ -76,5 +76,5 @@
                05  CHKUP-CDKBN         PIC  X(01).
                05  CHKUP-RENNUM        PIC  9(02).
       *
-      *�����ѹ���
+      *検索用項目
            03  CHK-SELNAME             PIC  X(200).

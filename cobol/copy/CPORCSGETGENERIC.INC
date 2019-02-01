@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,57 +16,57 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ������������̾�Խ��ѥ�᥿����COPY (CPORCSGETGERIC.INC)
+      *    院外処方一般名編集パラメタ　　COPY (CPORCSGETGERIC.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSGETGENERICAREA.
       *
-      *����
+      *入力
            03  ORCSGETGE-IN-AREA.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  ORCSGETGE-HOSPNUM         PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
                05  ORCSGETGE-PTID            PIC  9(10).
-      *����ǯ��
+      *診療年月
                05  ORCSGETGE-SRYYM           PIC  X(06).
-      *������ʬ
+      *入外区分
                05  ORCSGETGE-NYUGAIKBN       PIC  X(01).
-      *���ֹ�
+      *剤番号
                05  ORCSGETGE-ZAINUM          PIC  9(08).
       *
-      *��ȯ�����ʤؤ��ѹ��Ľ�̾(SYS-1030-KOUHATUKA)
+      *後発医薬品への変更可署名(SYS-1030-KOUHATUKA)
                05  ORCSGETGE-KOUHATUKA       PIC  X(01).
-      *����
+      *出力
            03  ORCSGETGE-OUT-AREA.
-      *�ͣ���
+      *ＭＡＸ
                05  ORCSGETGE-TBLMAX         PIC  9(03).
                05  ORCSGETGE-SRYCD-G        OCCURS   50.
-      *            ���ť�����
+      *            診療コード
                    07  ORCSGETGE-SRYCD          PIC X(09).
-      *            ����̾�����ɡ�������ॳ���ɡ�
+      *            一般名コード（薬価基準コード）
                    07  ORCSGETGE-YAKKAKJNCD     PIC X(12).
-      *            ����̾��ʬ�ʣ�������̾�û���
+      *            一般名区分（１：一般名加算）
                    07  ORCSGETGE-GENERIC-KBN    PIC X(01).
-      *            ����̾��
+      *            一般名称
                    07  ORCSGETGE-GENERICNAME    PIC X(200).
-      *            ����̾̾�ζ�ʬ��1:����̾,2������̾�Ρ�
+      *            一般名名称区分（1:一般名,2：処方名称）
                    07  ORCSGETGE-NAME-KBN       PIC X(01).
-      *            ����̾ñ�̥�����
+      *            一般名単位コード
                    07  ORCSGETGE-GEN-TANICD     PIC 9(03).
-      *            ����̾ñ��̾��
+      *            一般名単位名称
                    07  ORCSGETGE-GEN-TANINAME   PIC X(24).
-      *            ������
+      *            換算値
                    07  ORCSGETGE-KANZANCHI      PIC 9(05)V9(05).
-      *            �����ͤ�ñ��
+      *            換算値の単位
                    07  ORCSGETGE-KNS-TANICD     PIC 9(03).
-      *            �����ͤ�ñ��
+      *            換算値の単位
                    07  ORCSGETGE-KNS-TANINAME   PIC X(24).
-      *        ��ȯ���ѹ��Բġʽ����ˤ���
+      *        後発品変更不可（処方）あり
                05  ORCSGETGE-GENEFLG            PIC X(01).
-      *���顼������
+      *エラーコード
            03  ORCSGETGE-ERRCD           PIC 9(01).
       *
       *

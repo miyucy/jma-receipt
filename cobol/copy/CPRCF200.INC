@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,254 +15,254 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ¸ø³²¥ì¥»¥×¥È¡ÊÆþ±¡¡Ë¡¦´ðËÜ¾ðÊó     COPY (CPRCF200.INC) 
+      *    å…¬å®³ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰ãƒ»åŸºæœ¬æƒ…å ±     COPY (CPRCF200.INC) 
       ********************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.04.01    NACL-Æ£¸¶    09/03/10  ÆÃÊÌ¤Ê´Ø·¸¤Ë¤¢¤ëÂ¾±¡Îò¤ò½é²ó
-      *                                     Æþ±¡Æü¤È¤·¤Æµ¯»»¤·¥ì¥»¥×¥Èµ­
-      *                                     ºÜ¤ò¹Ô¤Ê¤¦ÂÐ±þ
-      *  04.05.01    NACL-ÌçÏÆ    10/02/16  Í½È÷¹àÌÜÄÉ²Ã
-      *  04.05.02    NACL-Æ£¸¶    11/11/22  Æ±ÆüºÆÆþ±¡ÂÐ±þ
-      *  04.05.03    NACL-ÌçÏÆ    12/04/09  Æþ±¡Î¬¾Î¤ÎÊ¸»ú¿ô³ÈÄ¥
-      *  04.07.01    NACL-ÌçÏÆ    12/10/12  ¹ç·×Æü¿ô¡Ê¿©»ö¡ËÄÉ²Ã
-      *  04.07.02    NACL-ÌçÏÆ    14/05/13  Ä¶½Å¾É»ù¡Ê¼Ô¡ËÆþ±¡¿ÇÎÅ²Ã»»Åù¤Î
-      *                                     »»Äê¥Õ¥é¥°ÄÉ²Ã
-      *  04.08.01    NACL-ÌçÏÆ    16/04/15  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.02    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    18/04/06  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.04.01    NACL-è—¤åŽŸ    09/03/10  ç‰¹åˆ¥ãªé–¢ä¿‚ã«ã‚ã‚‹ä»–é™¢æ­´ã‚’åˆå›ž
+      *                                     å…¥é™¢æ—¥ã¨ã—ã¦èµ·ç®—ã—ãƒ¬ã‚»ãƒ—ãƒˆè¨˜
+      *                                     è¼‰ã‚’è¡Œãªã†å¯¾å¿œ
+      *  04.05.01    NACL-é–€è„‡    10/02/16  äºˆå‚™é …ç›®è¿½åŠ 
+      *  04.05.02    NACL-è—¤åŽŸ    11/11/22  åŒæ—¥å†å…¥é™¢å¯¾å¿œ
+      *  04.05.03    NACL-é–€è„‡    12/04/09  å…¥é™¢ç•¥ç§°ã®æ–‡å­—æ•°æ‹¡å¼µ
+      *  04.07.01    NACL-é–€è„‡    12/10/12  åˆè¨ˆæ—¥æ•°ï¼ˆé£Ÿäº‹ï¼‰è¿½åŠ 
+      *  04.07.02    NACL-é–€è„‡    14/05/13  è¶…é‡ç—‡å…ï¼ˆè€…ï¼‰å…¥é™¢è¨ºç™‚åŠ ç®—ç­‰ã®
+      *                                     ç®—å®šãƒ•ãƒ©ã‚°è¿½åŠ 
+      *  04.08.01    NACL-é–€è„‡    16/04/15  å¹³æˆï¼’ï¼˜å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.08.02    NACL-é–€è„‡    18/03/27  å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.08.03    NACL-é–€è„‡    18/04/06  å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
       ********************************************************************
       *01  RECE200-REC.
            03  RECE200-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  RECE200-HOSPNUM         PIC 9(2).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  RECE200-SRYYM           PIC 9(06).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  RECE200-NYUGAIKBN       PIC X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  RECE200-PTID            PIC 9(10).
-      *¥ì¥»¥×¥È¿ÇÎÅ²Ê
+      *ãƒ¬ã‚»ãƒ—ãƒˆè¨ºç™‚ç§‘
                05  RECE200-RECEKA          PIC X(02).
-      *¸øÈñ£É£Ä
+      *å…¬è²»ï¼©ï¼¤
                05  RECE200-HKNID           PIC 9(10).
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                05  RECE200-TEKSTYMD        PIC X(08). 
       *
-      *¥ì¥»¥×¥È¼ïÊÌ
+      *ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥
            03  RECE200-RECESYUBETU         PIC 9(04).
       *
-      *¥ì¥»¥×¥ÈÂÐ¾ÝÇ¯·îÆü¾ðÊó
+      *ãƒ¬ã‚»ãƒ—ãƒˆå¯¾è±¡å¹´æœˆæ—¥æƒ…å ±
            03  RECE200-TEKYMD.
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                05  RECE200-TEKSTYMD-X      PIC X(08). 
-      *Å¬ÍÑ½ªÎ»Ç¯·îÆü
+      *é©ç”¨çµ‚äº†å¹´æœˆæ—¥
                05  RECE200-TEKEDYMD-X      PIC X(08).
       *
-      *´µ¼Ô¾ðÊó
+      *æ‚£è€…æƒ…å ±
            03  RECE200-PTINF.
-      *´µ¼ÔÈÖ¹æ  
+      *æ‚£è€…ç•ªå·  
                05  RECE200-PTNUM           PIC X(20).
-      *¥«¥Ê»áÌ¾
+      *ã‚«ãƒŠæ°å
                05  RECE200-KANANAME        PIC X(50).
-      *´Á»ú»áÌ¾
+      *æ¼¢å­—æ°å
                05  RECE200-NAME            PIC X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
                05  RECE200-SEX             PIC X(01).
-      *À¸Ç¯·îÆü
+      *ç”Ÿå¹´æœˆæ—¥
                05  RECE200-BIRTHDAY        PIC 9(08).
-      *»àË´¶èÊ¬
+      *æ­»äº¡åŒºåˆ†
                05  RECE200-DEATHKBN        PIC X(01).
-      *Ç¯Îð
+      *å¹´é½¢
                05  RECE200-AGE             PIC 9(03).
-      *¥Æ¥¹¥È´µ¼ÔÈÖ¹æ¶èÊ¬
+      *ãƒ†ã‚¹ãƒˆæ‚£è€…ç•ªå·åŒºåˆ†
                05  RECE200-TSTPTNUMKBN     PIC X(01).
       *
-      *¼çÊÝ¸±¾ðÊó
+      *ä¸»ä¿é™ºæƒ…å ±
            03  RECE200-HKNINF.
-      *¼çÊÝ¸±¡ÝÊÝ¸±ÈÖ¹æ
+      *ä¸»ä¿é™ºâˆ’ä¿é™ºç•ªå·
                05  RECE200-HKNNUM          PIC X(03).
-      *¼çÊÝ¸±¡ÝÊÝ¸±¼ÔÈÖ¹æ
+      *ä¸»ä¿é™ºâˆ’ä¿é™ºè€…ç•ªå·
                05  RECE200-HKNJANUM        PIC X(08).
-      *¼çÊÝ¸±¡Ýµ­¹æ
+      *ä¸»ä¿é™ºâˆ’è¨˜å·
                05  RECE200-KIGO            PIC X(80).
-      *¼çÊÝ¸±¡ÝÈÖ¹æ
+      *ä¸»ä¿é™ºâˆ’ç•ªå·
                05  RECE200-NUM             PIC X(80).
       *
-      *¿ÇÎÅ²Ê¾ðÊó
+      *è¨ºç™‚ç§‘æƒ…å ±
            03  RECE200-SRYKAINF            OCCURS  20.
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  RECE200-SRYKA           PIC X(02).
       *
-      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *ä¿é™ºçµ„åˆã›ç•ªå·
            03  RECE200-HKNCOMBI            PIC 9(04).
       *
-      *¼ÂÆü¿ô
+      *å®Ÿæ—¥æ•°
            03  RECE200-JNISSU              PIC 9(03).
       *
-      *¿ÇÎÅ¶èÊ¬ÊÌÅÀ¿ô¾ðÊó
+      *è¨ºç™‚åŒºåˆ†åˆ¥ç‚¹æ•°æƒ…å ±
            03  RECE200-SRYKBNINF           OCCURS  21.
-      *´ðËÜÅÀ¿ô
+      *åŸºæœ¬ç‚¹æ•°
                05  RECE200-KHNTEN          PIC 9(08).
-      *²ó¿ô
+      *å›žæ•°
                05  RECE200-KAISU           PIC 9(05).
-      *ÅÀ¿ô
+      *ç‚¹æ•°
                05  RECE200-TENSU           PIC 9(08)   OCCURS  2.
       *
-      *¾®·×¾ðÊó
+      *å°è¨ˆæƒ…å ±
            03  RECE200-SYOUKEIINF-AREA.
                05  RECE200-SYOUKEIINF      OCCURS  3.
-      *¾®·×ÅÀ¿ô
+      *å°è¨ˆç‚¹æ•°
                    07  RECE200-SYOUKEI     PIC 9(08).
       *
-      *¹ç·×¾ðÊó
+      *åˆè¨ˆæƒ…å ±
            03  RECE200-TOTALTENINF-AREA.
                05  RECE200-TOTALTENINF     OCCURS  4.
-      *¹ç·×ÅÀ¿ô
+      *åˆè¨ˆç‚¹æ•°
                    07  RECE200-TOTALTEN    PIC 9(08).
       *
-      *Æþ±¡´ðËÜÎÁ¼ïÊÌ¾ðÊó
+      *å…¥é™¢åŸºæœ¬æ–™ç¨®åˆ¥æƒ…å ±
            03  RECE200-NYUSYUINF           OCCURS  20.
-      *Æþ±¡´ðËÜÎÁ¼ïÊÌ
+      *å…¥é™¢åŸºæœ¬æ–™ç¨®åˆ¥
                05  RECE200-NYUSYUBETU      PIC X(20).
       *
-      *Æþ±¡´ðËÜÎÁ¾ðÊó
+      *å…¥é™¢åŸºæœ¬æ–™æƒ…å ±
            03  RECE200-NYUKHNINF           OCCURS  20.
-      *Æþ±¡´ðËÜÎÁ¡¦²Ã»»
+      *å…¥é™¢åŸºæœ¬æ–™ãƒ»åŠ ç®—
                05  RECE200-NYUKHNRYO       PIC 9(09).
-      *Æþ±¡Æü¿ô
+      *å…¥é™¢æ—¥æ•°
                05  RECE200-NYUKHNNISSU     PIC 9(02).
-      *¹ç·×¶â³Û
+      *åˆè¨ˆé‡‘é¡
                05  RECE200-NYUKHNKEI       PIC 9(09).
       *
-      *Æþ±¡´ðËÜÎÁ¾ðÊó£²
+      *å…¥é™¢åŸºæœ¬æ–™æƒ…å ±ï¼’
            03  RECE200-NYUKHNINF2.
-      *¹ç·×¶â³Û£²
+      *åˆè¨ˆé‡‘é¡ï¼’
                05  RECE200-NYUKHNKEI2      PIC S9(09).
       *
-      *ÆÃÄêÆþ±¡´ðËÜÎÁ¾ðÊó
+      *ç‰¹å®šå…¥é™¢åŸºæœ¬æ–™æƒ…å ±
            03  RECE200-NYUTOKINF           OCCURS  20.
-      *ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾¡ÊÅÀ¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™ãƒ»ãã®ä»–ï¼ˆç‚¹ï¼‰
                05  RECE200-NYUTOKRYO       PIC 9(09).
-      *ÆÃÄêÆþ±¡ÎÁ¡¦¤½¤ÎÂ¾¡ÊÎ¬¾Î¡Ë
+      *ç‰¹å®šå…¥é™¢æ–™ãƒ»ãã®ä»–ï¼ˆç•¥ç§°ï¼‰
                05  RECE200-NYUTOKRYO-RYAKU PIC X(20).
-      *Æþ±¡Æü¿ô
+      *å…¥é™¢æ—¥æ•°
                05  RECE200-NYUTOKNISSU     PIC 9(02).
-      *¹ç·×¶â³Û
+      *åˆè¨ˆé‡‘é¡
                05  RECE200-NYUTOKKEI       PIC 9(09).
       *
-      *ÆÃÄêÆþ±¡´ðËÜÎÁ¾ðÊó£²
+      *ç‰¹å®šå…¥é™¢åŸºæœ¬æ–™æƒ…å ±ï¼’
            03  RECE200-NYUTOKINF2.
-      *¹ç·×¶â³Û£²
+      *åˆè¨ˆé‡‘é¡ï¼’
                05  RECE200-NYUTOKKEI2      PIC S9(09).
       *
-      *¸ø³²Æþ±¡ÎÅÍÜ»ØÆ³
+      *å…¬å®³å…¥é™¢ç™‚é¤ŠæŒ‡å°Ž
            03  RECE200-KOGAISIDOINF        OCCURS   3.
-      *´ðËÜÎÁ
+      *åŸºæœ¬æ–™
                05  RECE200-KOGAISIDORYO    PIC 9(09).
-      *Æü¿ô
+      *æ—¥æ•°
                05  RECE200-KOGAISIDONISSU  PIC 9(02).
-      *¹ç·×¶â³Û
+      *åˆè¨ˆé‡‘é¡
                05  RECE200-KOGAISIDOKEI    PIC 9(09).
       *
-      *À¶¾ô¶õµ¤¼¼´ÉÍýÎÁ
+      *æ¸…æµ„ç©ºæ°—å®¤ç®¡ç†æ–™
            03  RECE200-SEIKANINF.
-      *´ðËÜÎÁ
+      *åŸºæœ¬æ–™
                05  RECE200-SEIKANRYO       PIC 9(09).
-      *Æü¿ô
+      *æ—¥æ•°
                05  RECE200-SEIKANNISSU     PIC 9(02).
-      *¹ç·×¶â³Û
+      *åˆè¨ˆé‡‘é¡
                05  RECE200-SEIKANKEI       PIC 9(09).
       *
-      *¿©»ö¼ïÊÌ¾ðÊó¡¾´ðËÜ
+      *é£Ÿäº‹ç¨®åˆ¥æƒ…å ±â€åŸºæœ¬
            03  RECE200-SHOKUJISYUBETU-KHN  PIC X(02).
       *
-      *¿©»ö¼ïÊÌ¾ðÊó
+      *é£Ÿäº‹ç¨®åˆ¥æƒ…å ±
            03  RECE200-SHOKUJISYUINF       OCCURS   3.
-      *¿©»ö¼ïÊÌ
+      *é£Ÿäº‹ç¨®åˆ¥
                05  RECE200-SHOKUJISYUBETU  PIC X(04).
       *
-      *¿©»ö´ðËÜÎÁ¾ðÊó
+      *é£Ÿäº‹åŸºæœ¬æ–™æƒ…å ±
            03  RECE200-SHOKUJIKHNINF       OCCURS   4.
-      *¿©»ö´ðËÜÎÁ
+      *é£Ÿäº‹åŸºæœ¬æ–™
                05  RECE200-SHOKUJIKHNRYO   PIC 9(09).
-      *¿©»öÆü¿ô
+      *é£Ÿäº‹æ—¥æ•°
                05  RECE200-SHOKUJIKHNNISSU PIC 9(02).
       *
-      *¹ç·×Æü¿ô¡Ê¿©»ö¡Ë
+      *åˆè¨ˆæ—¥æ•°ï¼ˆé£Ÿäº‹ï¼‰
            03  RECE200-SHOKUJITOTALDAY     PIC 9(02).
       *
-      *¿©»ö´ðËÜÎÁ¤Î¶â³Û½¸·×
+      *é£Ÿäº‹åŸºæœ¬æ–™ã®é‡‘é¡é›†è¨ˆ
            03  RECE200-SHOKUJIKHNRYO-KEI   PIC 9(09).
       *
-      *Â¾ÊÝ¸±Æþ±¡ÎÁ»»ÄêºÑ¤ß¥Õ¥é¥°
+      *ä»–ä¿é™ºå…¥é™¢æ–™ç®—å®šæ¸ˆã¿ãƒ•ãƒ©ã‚°
            03  RECE200-NYUINRYOFLG         PIC X(01).
       *
-      *ºÇ½ª¿ÇÎÅ²Ê
+      *æœ€çµ‚è¨ºç™‚ç§‘
            03  RECE200-LASTSRYKA           PIC X(02).
-      *ºÇ½ªÉÂÅïÈÖ¹æ
+      *æœ€çµ‚ç—…æ£Ÿç•ªå·
            03  RECE200-LASTBTUNUM          PIC X(02).
-      *ºÇ½ªÉÂ¼¼ÈÖ¹æ
+      *æœ€çµ‚ç—…å®¤ç•ªå·
            03  RECE200-LASTBRMNUM          PIC X(08).
       *
-      *Æþ±¡Ç¯·îÆü
+      *å…¥é™¢å¹´æœˆæ—¥
            03  RECE200-NYUINYMD            PIC X(08).
       *
-      *°åÎÅµ¡´Ø¼ïÊÌ
+      *åŒ»ç™‚æ©Ÿé–¢ç¨®åˆ¥
            03  RECE200-HOSPSBT             PIC X(01).
-      *ÉÂÅï¶èÊ¬¾ðÊó
+      *ç—…æ£ŸåŒºåˆ†æƒ…å ±
            03  RECE200-BYOTOKBNINF         OCCURS  4.
-      *ÉÂÅï¶èÊ¬
+      *ç—…æ£ŸåŒºåˆ†
                05  RECE200-BYOTOKBN        PIC X(02).
-      *ÉÂÅï¼ïÊÌ¾ðÊó
+      *ç—…æ£Ÿç¨®åˆ¥æƒ…å ±
            03  RECE200-BYOTOSYUBETUINF     OCCURS 31.
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
                05  RECE200-BYOTONUM        PIC X(02).
-      *ÉÂÅï¼ïÊÌ
+      *ç—…æ£Ÿç¨®åˆ¥
                05  RECE200-BYOTOSYUBETU    PIC X(02).
       *
-      *¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  RECE200-DAY-AREA.
                05  RECE200-DAY             PIC 9(03)
                                            OCCURS  31.
       *
-      *¼ÂÆü¿ô¥Æ¡¼¥Ö¥ë¾ðÊó
+      *å®Ÿæ—¥æ•°ãƒ†ãƒ¼ãƒ–ãƒ«æƒ…å ±
            03  RECE200-JNISSUTBLINF        OCCURS  31.
-      *¼ÂÆü¿ô¥Æ¡¼¥Ö¥ë
+      *å®Ÿæ—¥æ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                05  RECE200-JNISSUTBL       PIC X(01).
       *
-      *Æþ±¡ÎÁ¾ðÊó¼èÆÀ¥Õ¥é¥°
+      *å…¥é™¢æ–™æƒ…å ±å–å¾—ãƒ•ãƒ©ã‚°
            03  RECE200-DOUJITSU-FLG        PIC 9(01).
-      *Æþ±¡ÎÁ¾ðÊó
+      *å…¥é™¢æ–™æƒ…å ±
            03  RECE200-DOUJITSU-AREA.
-      *Æ±ÆüºÆÆþ±¡¡ÊÆþ±¡Ê¬¡Ë¤ÎÊÝ¸±ÁÈ¹ç¤»
+      *åŒæ—¥å†å…¥é™¢ï¼ˆå…¥é™¢åˆ†ï¼‰ã®ä¿é™ºçµ„åˆã›
                05  RECE200-DOUJITSU-HKNCOMBI
                                           PIC 9(04)   OCCURS  31.
-      *Æ±ÆüºÆÆþ±¡¡ÊÆþ±¡Ê¬¡Ë¤Î¿©»ö³«»Ï»þ´Ö¶èÊ¬
+      *åŒæ—¥å†å…¥é™¢ï¼ˆå…¥é™¢åˆ†ï¼‰ã®é£Ÿäº‹é–‹å§‹æ™‚é–“åŒºåˆ†
                05  RECE200-DOUJITSU-SKJKBN
                                           PIC X(01)   OCCURS  31.
-      *Æþ±¡¶èÊ¬
+      *å…¥é™¢åŒºåˆ†
                05  RECE200-NYUINDAY-TBL.
                    07  RECE200-NYUINDAY-KBN
                                           PIC  X(01)  OCCURS  31.
       *
-      *½é¿Ç»þ´Ö¶èÊ¬
+      *åˆè¨ºæ™‚é–“åŒºåˆ†
            03  RECE200-SHOSHINTIME         PIC X(01).
-      *³°Íè¿×Â®¸¡ÂÎ¸¡ºº²Ã»»¥Õ¥é¥°
+      *å¤–æ¥è¿…é€Ÿæ¤œä½“æ¤œæŸ»åŠ ç®—ãƒ•ãƒ©ã‚°
            03  RECE200-KENTAIKASANFLG      PIC X(01).
-      *¥³¥á¥ó¥È¥«¥¦¥ó¥È¥Õ¥é¥°
+      *ã‚³ãƒ¡ãƒ³ãƒˆã‚«ã‚¦ãƒ³ãƒˆãƒ•ãƒ©ã‚°
            03  RECE200-COMCNTFLG           PIC X(01).
-      *ÉÂ¾²¿ôÊÔ½¸¥Õ¥é¥°¡ÊÆÃÄê¼À´µÎÅÍÜ»ØÆ³ÎÁÅù¡Ë
+      *ç—…åºŠæ•°ç·¨é›†ãƒ•ãƒ©ã‚°ï¼ˆç‰¹å®šç–¾æ‚£ç™‚é¤ŠæŒ‡å°Žæ–™ç­‰ï¼‰
            03  RECE200-BEDSUFLG            PIC X(01).
-      *ÆÃÊÌ¤Ê´Ø·¸¤Ë¤¢¤ëÂ¾±¡Îò¤¢¤ê¥Õ¥é¥°
+      *ç‰¹åˆ¥ãªé–¢ä¿‚ã«ã‚ã‚‹ä»–é™¢æ­´ã‚ã‚Šãƒ•ãƒ©ã‚°
            03  RECE200-TAINFLG             PIC X(01).
-      *°õºþ½ç
+      *å°åˆ·é †
            03  RECE200-PRTSEQ              PIC 9(03).
-      *Ì¤ÀÁµá¥Õ¥é¥°
+      *æœªè«‹æ±‚ãƒ•ãƒ©ã‚°
            03  RECE200-MISEIKYU-FLG        PIC X(02).
-      *Ì¤ÄûÀµ¶èÊ¬
+      *æœªè¨‚æ­£åŒºåˆ†
            03  RECE200-TEISEIKBN           PIC X(01).
-      *¥ì¥»¥×¥È¼ïÊÌÉÔÌÀ¥¨¥é¡¼¾ðÊó
+      *ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ä¸æ˜Žã‚¨ãƒ©ãƒ¼æƒ…å ±
            03  RECE200-ERR-AREA.
                05  RECE200-ERR-ERRKBN      PIC 9(01).
                05  RECE200-ERR-DAY         PIC 9(02).
@@ -270,29 +270,29 @@
                05  RECE200-ERR-TEKSTYMD    PIC 9(08).
                05  RECE200-ERR-TEKEDYMD    PIC 9(08).
       *
-      *Ä¶½Å¾É»ù¡Ê¼Ô¡ËÆþ±¡¿ÇÎÅ²Ã»»Åù¤Î»»Äê¥Õ¥é¥°
+      *è¶…é‡ç—‡å…ï¼ˆè€…ï¼‰å…¥é™¢è¨ºç™‚åŠ ç®—ç­‰ã®ç®—å®šãƒ•ãƒ©ã‚°
            03  RECE200-CYOJKSNFLG          PIC X(01).
       *
-      *ºÆ¿Ç²Ã»»¡ÊÆþ±¡¡Ë¾ðÊó
+      *å†è¨ºåŠ ç®—ï¼ˆå…¥é™¢ï¼‰æƒ…å ±
            03  RECE200-NYUSAIINF.
                05  RECE200-NYUSAI-TENSU    PIC 9(08).
-      *Æþ±¡ÎÁÆüÊÌ¿ÇÎÅ¶èÊ¬¾ðÊó
+      *å…¥é™¢æ–™æ—¥åˆ¥è¨ºç™‚åŒºåˆ†æƒ…å ±
            03  RECE200-NYUDAYINF.
                05  RECE200-NYUDAY-SRYKBN   PIC X(02)  OCCURS 31.
       *
-      *Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¾ðÊó
+      *å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—æƒ…å ±
            03  RECE200-KANGOGENINF.
                05  RECE200-KANGOGEN-SRYCD  PIC X(09)  OCCURS 31.
       *
-      *Ç¥ÉØ¥Õ¥é¥°
+      *å¦Šå©¦ãƒ•ãƒ©ã‚°
            03  RECE200-NINPUFLG            PIC 9(01).
       *
-      *¸¡ºº¥Õ¥é¥°
+      *æ¤œæŸ»ãƒ•ãƒ©ã‚°
            03  RECE200-KENSA-BNPFLG        PIC 9(01).
            03  RECE200-KENSA-NTPROFLG      PIC 9(01).
            03  RECE200-KENSA-ANPFLG        PIC 9(01).
       *
-      *Í½È÷
+      *äºˆå‚™
            03  RECE200-YOBIETC-AREA.
                05  RECE200-YOBIETCINF      OCCURS 10.
                    07  RECE200-YOBIETC     PIC 9(09).

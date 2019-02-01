@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,11 +18,11 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGI2SUB02.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∆˛±°¥µº‘æ»≤Ò
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∏°∫˜ΩËÕ˝
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÂÖ•Èô¢ÊÇ£ËÄÖÁÖß‰ºö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ê§úÁ¥¢Âá¶ÁêÜ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,16 +37,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-PTNYUINRRK      PIC 9(01).
            03  FLG-TEIKIRRK        PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX1                                PIC 9(05).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-YMD                             PIC X(10).
            03  WRK-ZOGENPTN                        PIC X(01).
@@ -95,41 +95,41 @@
                                            ",RRKNUM   ASC".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    £¡£–£…•—•È•·•ø
+      *    Ôº°Ôº∞Ôº©„Éë„É©„É°„Çø
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
       *
-      *    ¥µº‘ƒÍ¥¸¿¡µ·Õ˙ŒÚ
+      *    ÊÇ£ËÄÖÂÆöÊúüË´ãÊ±ÇÂ±•Ê≠¥
        01  TEIKIRRK-REC.
            COPY    "CPTEIKIRRK.INC".
       *
-      *    ¥µº‘æ Ûæ»≤Ò•∆°º•÷•Î
+      *    ÊÇ£ËÄÖÊÉÖÂ†±ÁÖß‰ºö„ÉÜ„Éº„Éñ„É´
        01  PTSRH-REC.
            COPY    "CPPTSRH.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®È†òÂüü
       *****************************************************************
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ∆¸…’ ‘Ω∏•µ•÷
+      *    Êó•‰ªòÁ∑®ÈõÜ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *     ∏ª˙ŒÛ¡‡∫Ó•µ•÷
+      *    ÊñáÂ≠óÂàóÊìç‰Ωú„Çµ„Éñ
            COPY    "CPORCSSTRING.INC".
       *
-      *    ∂¶ƒÃŒŒ∞Ë
+      *    ÂÖ±ÈÄöÈ†òÂüü
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                         SECTION.
       *
@@ -147,7 +147,7 @@
            SPA-AREA.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -174,7 +174,7 @@
            .
       *
       *****************************************************************
-      *    ΩÈ¥¸ΩËÕ˝
+      *    ÂàùÊúüÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -227,18 +227,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    ¥µº‘ª·Ãæ
+      *    ÊÇ£ËÄÖÊ∞èÂêç
            IF    ( I2SUB02-NAME        NOT =   SPACE )
                MOVE    I2SUB02-NAME        TO  WRK-NAME
                PERFORM 2001-EDIT-NAME-SEC
            END-IF
       *
            IF    ( I2SUB02-API-FLG     =   ZERO )
-      *        «ØŒ§Ë§Í¿∏«Ø∑Ó∆¸§Ú∑◊ªª
+      *        Âπ¥ÈΩ¢„Çà„ÇäÁîüÂπ¥ÊúàÊó•„ÇíË®àÁÆó
                MOVE    I2SUB02-BASEYMD     TO  WRK-SYSYMD
                COMPUTE WRK-EDBIRTHDAY
                    =   WRK-SYSYMD
@@ -265,7 +265,7 @@
                MOVE    WRK-EDBIRTHDAY-G        TO  I2SUB02-EDBIRTHDAY
            END-IF
       *
-      *    ΩªΩÍ
+      *    ‰ΩèÊâÄ
            IF    ( I2SUB02-ADRS        NOT =   SPACE )
                MOVE    SPACE               TO  WRK-ADRS
                STRING  FUNCTION TRIM(I2SUB02-ADRS TRAILING)
@@ -274,10 +274,10 @@
                INTO    WRK-ADRS
                END-STRING
                INSPECT WRK-ADRS
-                       REPLACING   ALL "°ˆ" BY  "%%"
+                       REPLACING   ALL "Ôºä" BY  "%%"
            END-IF
       *
-      *    £”£—£Ã∫Ó¿Æ
+      *    Ôº≥Ôº±Ôº¨‰ΩúÊàê
            INITIALIZE                  WRK-SQL
                                        WRK-ORDER-TEXT
            MOVE    1               TO  WRK-SQL-PNT
@@ -387,7 +387,7 @@
                END-STRING
            ELSE
       *
-      *        ¥µº‘ª·Ãæ° ¡∞ ˝∞Ï√◊°À
+      *        ÊÇ£ËÄÖÊ∞èÂêçÔºàÂâçÊñπ‰∏ÄËá¥Ôºâ
                IF    ( I2SUB02-NAME        NOT =   SPACE )
                    STRING  " AND (( NAME LIKE '"   DELIMITED BY SIZE
                            WRK-NAME                DELIMITED BY SPACE
@@ -399,7 +399,7 @@
                    END-STRING
                END-IF
       *
-      *        «ØŒ
+      *        Âπ¥ÈΩ¢
                IF    ( I2SUB02-STBIRTHDAY NOT =    SPACE )
                    STRING  " AND  BIRTHDAY >= '"   DELIMITED BY SIZE
                            I2SUB02-STBIRTHDAY      DELIMITED BY SIZE
@@ -417,7 +417,7 @@
                    END-STRING
                END-IF
       *
-      *        ΩªΩÍ° ¡∞ ˝∞Ï√◊°À
+      *        ‰ΩèÊâÄÔºàÂâçÊñπ‰∏ÄËá¥Ôºâ
                IF    ( I2SUB02-ADRS        NOT =   SPACE )
                    STRING  " AND HOME_ADRS || HOME_BANTI LIKE '"
                                                    DELIMITED BY SIZE
@@ -430,7 +430,7 @@
                END-IF
            END-IF
       *
-      *    ∆˛±°∆¸
+      *    ÂÖ•Èô¢Êó•
            IF    ( I2SUB02-STNYUINYMD      NOT =   SPACE )
                STRING  " AND NYUINYMD >= '"        DELIMITED BY SIZE
                        I2SUB02-STNYUINYMD          DELIMITED BY SIZE
@@ -448,7 +448,7 @@
                END-STRING
            END-IF
       *
-      *    ¬‡±°∆¸
+      *    ÈÄÄÈô¢Êó•
            IF    ( I2SUB02-API-FLG     =   1 )
                IF    ( I2SUB02-STTAIINYMD  NOT =  SPACE )
                    STRING  " AND  TAIINYMD <> '99999999'"
@@ -474,7 +474,7 @@
                END-STRING
            END-IF
       *
-      *    ø«Œ≈≤ 
+      *    Ë®∫ÁôÇÁßë
            IF    ( I2SUB02-SRYKA       =   SPACE )
                CONTINUE
            ELSE
@@ -486,7 +486,7 @@
                END-STRING
            END-IF
       *
-      *    …¬≈Ô»÷πÊ
+      *    ÁóÖÊ£üÁï™Âè∑
            IF    ( I2SUB02-BTUNUM      =   SPACE )
                CONTINUE
            ELSE
@@ -498,7 +498,7 @@
                END-STRING
            END-IF
       *
-      *    æı¬÷
+      *    Áä∂ÊÖã
            EVALUATE    I2SUB02-JOTAI
            WHEN    "1"
                STRING  " AND TAIINYMD = '99999999'"
@@ -557,7 +557,7 @@
                END-STRING
            END-EVALUATE
       *
-      *    æı¬÷
+      *    Áä∂ÊÖã
            EVALUATE    I2SUB02-JOTAI
            WHEN        "3"
                MOVE    I2SUB02-BASEYMD TO  WRK-STYMD
@@ -587,7 +587,7 @@
                END-STRING
            END-EVALUATE
       *
-      *    ¿¡µ·æı¬÷
+      *    Ë´ãÊ±ÇÁä∂ÊÖã
            EVALUATE    I2SUB02-SEIKYUJOTAI
            WHEN    "1"
                PERFORM 2001-SQL-SYUNOU-SEC
@@ -605,7 +605,7 @@
                PERFORM 2001-SQL-PTTEIKIRRK-SEC
            END-IF
       *
-      *    ¬‡±°ªˆÕ≥
+      *    ÈÄÄÈô¢‰∫ãÁî±
            IF    ( I2SUB02-TAIINCD     =   SPACE )
                CONTINUE
            ELSE    
@@ -617,7 +617,7 @@
                END-STRING
            END-IF
       *
-      *    ª‡À¥∂Ë ¨
+      *    Ê≠ª‰∫°Âå∫ÂàÜ
            IF      I2SUB02-DEATHKBN     =   SPACE
                CONTINUE
            ELSE
@@ -636,7 +636,7 @@
                END-IF
            END-IF
       *
-      *    •∆•π•»¥µº‘
+      *    „ÉÜ„Çπ„ÉàÊÇ£ËÄÖ
            EVALUATE    I2SUB02-TSTPT
            WHEN    "a"
                STRING  " AND TSTPTNUMKBN <> '1'"
@@ -682,7 +682,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    º˝«º∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *    ÂèéÁ¥çÊ§úÁ¥¢Êù°‰ª∂Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-SQL-SYUNOU-SEC             SECTION.
       *
@@ -704,7 +704,7 @@
        2001-SQL-SYUNOU-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘ƒÍ¥¸¿¡µ·Õ˙ŒÚ∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *    ÊÇ£ËÄÖÂÆöÊúüË´ãÊ±ÇÂ±•Ê≠¥Ê§úÁ¥¢Êù°‰ª∂Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-SQL-PTTEIKIRRK-SEC         SECTION.
       *
@@ -739,7 +739,7 @@
        2001-SQL-PTTEIKIRRK-EXT.
            EXIT.
       *****************************************************************
-      *    ª·Ãæ∏°∫˜æÚ∑Ô ‘Ω∏ΩËÕ˝
+      *    Ê∞èÂêçÊ§úÁ¥¢Êù°‰ª∂Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-EDIT-NAME-SEC              SECTION.
       *
@@ -747,13 +747,13 @@
       *
            MOVE    "sub"               TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "°ˆ°°"              TO  ORCSSTR-STRING2
-           MOVE    "°ˆ"                TO  ORCSSTR-STRING3
+           MOVE    "Ôºä„ÄÄ"              TO  ORCSSTR-STRING2
+           MOVE    "Ôºä"                TO  ORCSSTR-STRING3
            CALL    "orcsstring" USING  ORCSSTRINGAREA
            MOVE    ORCSSTR-STRING1     TO  WRK-NAME
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "°ˆ"                TO  ORCSSTR-STRING2
+           MOVE    "Ôºä"                TO  ORCSSTR-STRING2
            CALL    "orcsstring" USING  ORCSSTRINGAREA
            MOVE    ORCSSTR-NUM1        TO  WRK-ORCSSTR-NUM1
            IF    ( ORCSSTR-NUM1        >   ZERO )
@@ -798,7 +798,7 @@
             AND  ( WRK-NAME2       NOT =   SPACE )
                STRING  WRK-NAME1       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
-                       "°°"            DELIMITED  BY  SIZE
+                       "„ÄÄ"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                INTO    WRK-NAME
@@ -807,7 +807,7 @@
            IF    ( WRK-NAME1           =   SPACE )
             AND  ( WRK-NAME2       NOT =   SPACE )
                STRING  "%"             DELIMITED  BY  SIZE
-                       "°°"            DELIMITED  BY  SIZE
+                       "„ÄÄ"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                INTO    WRK-NAME
@@ -818,7 +818,7 @@
        2001-EDIT-NAME-EXT.
            EXIT.
       *****************************************************************
-      *     ¬§”ΩÁ ‘Ω∏ΩËÕ˝
+      *    ‰∏¶„Å≥È†ÜÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2001-EDIT-ORDER-SEC             SECTION.
       *
@@ -871,7 +871,7 @@
        2001-EDIT-ORDER-EXT.
            EXIT.
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        201-MAIN-SEC                    SECTION.
       *
@@ -906,7 +906,7 @@
        201-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                    SECTION.
       *
@@ -916,7 +916,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∑ÓÀˆ∆¸ ‘Ω∏ΩËÕ˝
+      *    ÊúàÊú´Êó•Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        800-EOM-SEC                     SECTION.
       *
@@ -932,7 +932,7 @@
        800-EOM-EXT.
            EXIT.
       *****************************************************************
-      *    •´•Ï•Û•¿°ºΩËÕ˝
+      *    „Ç´„É¨„É≥„ÉÄ„ÉºÂá¶ÁêÜ
       *****************************************************************
        800-CALENDAR-SEC                SECTION.
       *
@@ -950,7 +950,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘æ»≤Ò∫ÔΩ¸ΩËÕ˝
+      *    ÊÇ£ËÄÖÁÖß‰ºöÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        900-PTSRH-DEL4-SEC              SECTION.
       *
@@ -967,7 +967,7 @@
        900-PTSRH-DEL4-EXT.
            EXIT.
       *****************************************************************
-      *    ƒÍ¥¸¿¡µ·Õ˙ŒÚ∏°∫˜° KEY2°À
+      *    ÂÆöÊúüË´ãÊ±ÇÂ±•Ê≠¥Ê§úÁ¥¢ÔºàKEY2Ôºâ
       *****************************************************************
        900-TEIKIRRK-KEY2-SEL-SEC       SECTION.
       *
@@ -994,7 +994,7 @@
        900-TEIKIRRK-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £¡£–£…•—•È•·•ø∫ÔΩ¸ΩËÕ˝
+      *    Ôº°Ôº∞Ôº©„Éë„É©„É°„ÇøÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        900-APIPARA-DEL5-SEC              SECTION.
       *
@@ -1011,7 +1011,7 @@
        900-APIPARA-DEL5-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∏°∫˜ΩËÕ˝
+      *    Ôº§Ôº¢Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC               SECTION.
       *
@@ -1029,7 +1029,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1044,7 +1044,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -1059,7 +1059,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬£ƒ£≈£Ã£≈£‘£≈ΩËÕ˝
+      *    Ôº§Ôº¢Ôº§Ôº•Ôº¨Ôº•Ôº¥Ôº•Âá¶ÁêÜ
       *****************************************************************
        910-DBDELETE-SEC                SECTION.
       *
@@ -1074,7 +1074,7 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬£…£Œ£”£≈£“£‘ΩËÕ˝
+      *    Ôº§Ôº¢Ôº©ÔºÆÔº≥Ôº•Ôº≤Ôº¥Âá¶ÁêÜ
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *

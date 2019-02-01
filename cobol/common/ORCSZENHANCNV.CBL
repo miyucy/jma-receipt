@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,14 +18,14 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSZENHANCNV.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : 
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Á´³Ñ¢ªÈ¾³ÑÊÑ´¹½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  08/09/16    NACL¡ÝÆ£¸¶    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : 
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¨è§’â†’åŠè§’å¤‰æ›å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  08/09/16    NACLâˆ’è—¤åŽŸ    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,13 +37,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
            03  FLG-YM              PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -63,26 +63,26 @@
                05  WRK-MOJI-LEN    PIC 9(02).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY   "CPORCXKANACONV.INC".
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSGDAY.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -94,7 +94,7 @@
            .
      *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -103,7 +103,7 @@
            INITIALIZE                  WRK-AREA
       *
            MOVE    ZERO                TO  LNK-ZENHANCNV-RC    
-      *    ½èÍý¶èÊ¬¤Ë¤è¤ê¸¡º÷½èÍý
+      *    å‡¦ç†åŒºåˆ†ã«ã‚ˆã‚Šæ¤œç´¢å‡¦ç†
            EVALUATE    LNK-ZENHANCNV-SYORI
                WHEN    "1"
                    PERFORM 200-YMD-HENSYU-SEC
@@ -140,7 +140,7 @@
            .
       *     
       *****************************************************************
-      *    ÆüÉÕÊÑ´¹½èÍý
+      *    æ—¥ä»˜å¤‰æ›å‡¦ç†
       *****************************************************************
        200-YMD-HENSYU-SEC       SECTION.
       *
@@ -153,18 +153,18 @@
            MOVE    ZERO                TO  FLG-YM
       *
            IF      LNK-ZENHANCNV-IN-DATA (1:4) 
-                                       =   "Ê¿À®"  OR  "¾¼ÏÂ"  OR
-                                           "ÂçÀµ"  OR  "ÌÀ¼£"
+                                       =   "å¹³æˆ"  OR  "æ˜­å’Œ"  OR
+                                           "å¤§æ­£"  OR  "æ˜Žæ²»"
       *!!!!
       *TEST
-      *2019.5.1¤«¤é¤Î¿·¸µ¹æ²¾ÂÐ±þ¡Ê¸µ¹æ¡ËG ¤È¤¹¤ë
-                                       OR  "¸µ¹æ"
+      *2019.5.1ã‹ã‚‰ã®æ–°å…ƒå·ä»®å¯¾å¿œï¼ˆå…ƒå·ï¼‰G ã¨ã™ã‚‹
+                                       OR  "å…ƒå·"
       *TEST
       *
                PERFORM 2001-YMD-WAREKI-HENSYU-SEC
            ELSE
                IF      LNK-ZENHANCNV-IN-DATA (1:2) 
-                                           =   "£²"
+                                           =   "ï¼’"
                    PERFORM 2002-YMD-SEIREKI-HENSYU-SEC
                ELSE
                    MOVE    2               TO  LNK-ZENHANCNV-RC
@@ -176,7 +176,7 @@
            EXIT.
       *     
       *****************************************************************
-      *    ÏÂÎòÊÑ´¹½èÍý
+      *    å’Œæ­´å¤‰æ›å‡¦ç†
       *****************************************************************
        2001-YMD-WAREKI-HENSYU-SEC     SECTION.
       *
@@ -186,18 +186,18 @@
            END-IF
       *
            EVALUATE    LNK-ZENHANCNV-IN-DATA (1:4) 
-               WHEN    "Ê¿À®"
+               WHEN    "å¹³æˆ"
                    MOVE    "4"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
-               WHEN    "¾¼ÏÂ"
+               WHEN    "æ˜­å’Œ"
                    MOVE    "3"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
-               WHEN    "ÂçÀµ"
+               WHEN    "å¤§æ­£"
                    MOVE    "2"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
-               WHEN    "ÌÀ¼£"
+               WHEN    "æ˜Žæ²»"
                    MOVE    "1"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
       *!!!!
       *TEST
-      *2019.5.1¤«¤é¤Î¿·¸µ¹æ²¾ÂÐ±þ¡Ê¸µ¹æ¡ËG ¤È¤¹¤ë
-               WHEN    "¸µ¹æ"
+      *2019.5.1ã‹ã‚‰ã®æ–°å…ƒå·ä»®å¯¾å¿œï¼ˆå…ƒå·ï¼‰G ã¨ã™ã‚‹
+               WHEN    "å…ƒå·"
                    MOVE    "5"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
       *TEST
       *!!!!
@@ -224,7 +224,7 @@
            INSPECT LNK-ZENHANCNV-OT-WYMD   REPLACING   ALL " "
                                                        BY  "0"
       *
-      *    ÏÂÎò¢ªÀ¾Îñ
+      *    å’Œæ­´â†’è¥¿æš¦
            INITIALIZE                      ORCSGDAYAREA
            IF      FLG-YM              =   ZERO
                MOVE    LNK-ZENHANCNV-OT-WYMD
@@ -252,7 +252,7 @@
            EXIT.
       *     
       *****************************************************************
-      *    À¾ÎñÊÑ´¹½èÍý
+      *    è¥¿æš¦å¤‰æ›å‡¦ç†
       *****************************************************************
        2002-YMD-SEIREKI-HENSYU-SEC     SECTION.
       *
@@ -269,7 +269,7 @@
            INSPECT WRK-HENKAN-OUT (1:8)    REPLACING   ALL " "
                                                        BY  "0"
       *
-      *    À¾Îñ¢ªÏÂÎò
+      *    è¥¿æš¦â†’å’Œæ­´
            INITIALIZE                      ORCSGDAYAREA
            IF      FLG-YM              =   ZERO
                MOVE    WRK-HENKAN-OUT (1:8)
@@ -297,7 +297,7 @@
            EXIT.
       *     
       *****************************************************************
-      *    Ê¸»úÊÑ´¹½èÍý
+      *    æ–‡å­—å¤‰æ›å‡¦ç†
       *****************************************************************
        200-MOJI-HENSYU-SEC         SECTION.
       *
@@ -313,7 +313,7 @@
            EXIT.
       *     
       *****************************************************************
-      *    ¿ô»úÊÑ´¹½èÍý
+      *    æ•°å­—å¤‰æ›å‡¦ç†
       *****************************************************************
        200-NUM-HENSYU-SEC         SECTION.
       *
@@ -341,7 +341,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³ÑÊ¸»ú¢ªÈ¾³ÑÊ¸»úÊÑ´¹½èÍý
+      *    å…¨è§’æ–‡å­—â†’åŠè§’æ–‡å­—å¤‰æ›å‡¦ç†
       *****************************************************************
        7003-MOJI-HENKAN-SEC            SECTION.
       *

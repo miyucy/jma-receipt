@@ -5,23 +5,23 @@ xml_claim_frontv2req {
 	recordname	varchar(128);
 	claim_frontv2req {
 		Request_Number		varchar(2);
-# ´µ¼ÔÈÖ¹æ
+# æ‚£è€…ç•ªå·
 		Patient_ID		varchar(20);
-# ¼õÉÕÆüÉÕ
+# å—ä»˜æ—¥ä»˜
 		Accept_Date		varchar(10);
-# ¼õÉÕ»ş´Ö
+# å—ä»˜æ™‚é–“
 		Accept_Time		varchar(08);
-# ¿ÇÎÅ²Ê¥³¡¼¥É
+# è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰
        		Department_Code		varchar(02);
-# ¥É¥¯¥¿¡¼¥³¡¼¥É
+# ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
 		Physician_Code		varchar(05);
-# Êİ¸±ÁÈ¹ç¤»
+# ä¿é™ºçµ„åˆã›
 		Insurance_Combination_Number	varchar(04);
-# ¿ÇÎÅÆâÍÆ¶èÊ¬Ì¾¾Î
+# è¨ºç™‚å†…å®¹åŒºåˆ†åç§°
 		Medical_Memo		varchar(16);
-# ¥á¥âÁ÷¿®¶èÊ¬
+# ãƒ¡ãƒ¢é€ä¿¡åŒºåˆ†
 		Medical_Memo_Info	varchar(02);
-# ¼õÉÕÁ÷¿®ºÑ¤ß¶èÊ¬
+# å—ä»˜é€ä¿¡æ¸ˆã¿åŒºåˆ†
 		Send_Status		varchar(2);
    	};
 };

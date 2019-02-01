@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSNYUINDAY.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����
-      *  ����ݡ��ͥ��̾  : ������̤����������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/12/13    NACL�ݾ�Ʀ��  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院
+      *  コンポーネント名  : 入院料未算定日取得
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/12/13    NACL−小豆沢  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *ʿ�ţ���ǯ��������б�
-      *  04.02.00    NACL-��Ʀ��  08/03/05  û���ں߼�Ѵ��������������ɲ�
-      *  04.02.00    NACL-��Ʀ��  08/06/02  �ߵ������������λ�������Ƚ���ɲ�
-      *ʿ������ǯ��������б�
-      *  05.00.00    NACL-��Ʀ��  18/03/07  û���ں߼������������Ƚ���ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *平静２０年４月改定対応
+      *  04.02.00    NACL-小豆沢  08/03/05  短期滞在手術基本料３の入院追加
+      *  04.02.00    NACL-小豆沢  08/06/02  救急搬送診療料の算定日を判定追加
+      *平成３０年４月改定対応
+      *  05.00.00    NACL-小豆沢  18/03/07  短期滞在手術等基本料の判定変更
       *****************************************************************
       *
       *
@@ -46,7 +46,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -57,7 +57,7 @@
            03  FLG-TANKI2                  PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -65,160 +65,160 @@
            03  IDX-ED                      PIC 9(02).
            03  IDX-TK3                     PIC 9(02).
       *
-      *    ���󥹥������
+      *    コンスタント値
        01  CONSTANT-AREA.
-      *    û���ں߼�Ѵ�������
+      *    短期滞在手術基本料２
            03   CONS-TANKI2                PIC X(09) VALUE "190076810".
-      *    û���ں߼�Ѵ����������������ܡ�
+      *    短期滞在手術基本料２（生活療養）
            03   CONS-TANKI2-SEIKATSU       PIC X(09) VALUE "190125310".
-      *    û���ں߼�Ѵ�������
+      *    短期滞在手術基本料３
            03   CONS-TANKI3                PIC X(09) VALUE "190130410".
-      *    û���ں߼�Ѵ����������������ܡ�
+      *    短期滞在手術基本料３（生活療養）
            03   CONS-TANKI3-SEIKATSU       PIC X(09) VALUE "190130510".
       *
            03   CONS-TANKI3-H26-AREA.
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե������ʷ��������ֻ��ѡˡ�
+      *      短手３（終夜睡眠ポリグラフィー１（携帯用装置使用））
              05   FILLER                   PIC X(02) VALUE "97".
              05   FILLER                   PIC X(09) VALUE "190177610".
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե�������¿���������󥵡ˡ�
+      *      短手３（終夜睡眠ポリグラフィー２（多点感圧センサ））
              05   FILLER                   PIC X(02) VALUE "99".
              05   FILLER                   PIC X(09) VALUE "190177810".
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե������ʣ��ڤӣ��ʳ��ˡ�
+      *      短手３（終夜睡眠ポリグラフィー３（１及び２以外））
              05   FILLER                   PIC X(02) VALUE "9B".
              05   FILLER                   PIC X(09) VALUE "190178010".
-      *      û�ꣳ�ʾ�����ʪ����륮����ٸ�����
+      *      短手３（小児食物アレルギー負荷検査）
              05   FILLER                   PIC X(02) VALUE "9D".
              05   FILLER                   PIC X(09) VALUE "190178210".
-      *      û�ꣳ����Ω��������ˡ��
+      *      短手３（前立腺針生検法）
              05   FILLER                   PIC X(02) VALUE "9F".
              05   FILLER                   PIC X(09) VALUE "190178410".
-      *      û�ꣳ�������ɼ�ѡ�����ͭ�����ڽ��ѡˡ�
+      *      短手３（腋臭症手術（皮膚有毛部切除術））
              05   FILLER                   PIC X(02) VALUE "9H".
              05   FILLER                   PIC X(09) VALUE "190178610".
-      *      û�ꣳ�ʴ�������꺬�ɳ�����ѡ�
+      *      短手３（関節鏡下手根管開放手術）
              05   FILLER                   PIC X(02) VALUE "9J".
              05   FILLER                   PIC X(09) VALUE "190178810".
-      *      û�ꣳ�ʶ��ж����򴶿������ڽ��ѡ�ξ¦�ˡ�
+      *      短手３（胸腔鏡下交感神経節切除術（両側））
              05   FILLER                   PIC X(02) VALUE "9L".
              05   FILLER                   PIC X(09) VALUE "190179010".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ�����������������¾�Τ�Ρ�
+      *      短手３（水晶体再建術・眼内レンズ挿入・その他のもの）
              05   FILLER                   PIC X(02) VALUE "9N".
              05   FILLER                   PIC X(09) VALUE "190179210".
-      *      û�ꣳ�ʿ徽�κƷ��ѡʴ������������ʤ����ˡ�
+      *      短手３（水晶体再建術（眼内レンズ挿入しない場合））
              05   FILLER                   PIC X(02) VALUE "9P".
              05   FILLER                   PIC X(09) VALUE "190179410".
-      *      û�ꣳ����������Ŧ�нѡ�Ĺ�£����̤���ˡ�
+      *      短手３（乳腺腫瘍摘出術（長径５ｃｍ未満））
              05   FILLER                   PIC X(02) VALUE "9R".
              05   FILLER                   PIC X(09) VALUE "190179610".
-      *      û�ꣳ�ʲ�����̮���ѡ�ȴ���ڽ��ѡˡ�
+      *      短手３（下肢静脈瘤手術（抜去切除術））
              05   FILLER                   PIC X(02) VALUE "9T".
              05   FILLER                   PIC X(09) VALUE "190179810".
-      *      û�ꣳ�ʲ�����̮���ѡʹŲ���ˡ�ˡ�
+      *      短手３（下肢静脈瘤手術（硬化療法））
              05   FILLER                   PIC X(02) VALUE "9V".
              05   FILLER                   PIC X(09) VALUE "190180010".
-      *      û�ꣳ�ʲ�����̮���ѡʹ�̷�姽ѡˡ�
+      *      短手３（下肢静脈瘤手術（高位結紮術））
              05   FILLER                   PIC X(02) VALUE "9X".
              05   FILLER                   PIC X(09) VALUE "190180210".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ�����̤���ˡ�
+      *      短手３（鼠径ヘルニア手術（１５歳未満））
              05   FILLER                   PIC X(02) VALUE "9Z".
              05   FILLER                   PIC X(09) VALUE "190180410".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ����аʾ�ˡ�
+      *      短手３（鼠径ヘルニア手術（１５歳以上））
              05   FILLER                   PIC X(02) VALUE "A1".
              05   FILLER                   PIC X(09) VALUE "190180610".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ�����̤���ˡ�
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳未満））
              05   FILLER                   PIC X(02) VALUE "A3".
              05   FILLER                   PIC X(09) VALUE "190180810".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ����аʾ�ˡ�
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳以上））
              05   FILLER                   PIC X(02) VALUE "A5".
              05   FILLER                   PIC X(09) VALUE "190181010".
-      *      û�ꣳ������Ū��Ĳ�ݥ꡼�ס�Ǵ���ڽ��ѣ����̤����
+      *      短手３（内視鏡的結腸ポリープ・粘膜切除術２ｃｍ未満）
              05   FILLER                   PIC X(02) VALUE "A7".
              05   FILLER                   PIC X(09) VALUE "190181210".
-      *      û�ꣳ������Ū��Ĳ�ݥ꡼�ס�Ǵ���ڽ��ѣ�����ʾ��
+      *      短手３（内視鏡的結腸ポリープ・粘膜切除術２ｃｍ以上）
              05   FILLER                   PIC X(02) VALUE "A9".
              05   FILLER                   PIC X(09) VALUE "190181410".
-      *      û�ꣳ�ʼ��˼�ѡʹŲ���ˡ�ʻ��ʳ�����ˡ�ˡ�
+      *      短手３（痔核手術（硬化療法（四段階注射法））
              05   FILLER                   PIC X(02) VALUE "AB".
              05   FILLER                   PIC X(09) VALUE "190181610".
-      *      û�ꣳ�ʻҵܷ�����������ڽ��ѡ�
+      *      短手３（子宮頚部（腟部）切除術）
              05   FILLER                   PIC X(02) VALUE "AD".
              05   FILLER                   PIC X(09) VALUE "190181810".
-      *      û�ꣳ�ʻҵܶ����ҵܶڼ�Ŧ�нѡ�
+      *      短手３（子宮鏡下子宮筋腫摘出術）
              05   FILLER                   PIC X(02) VALUE "AF".
              05   FILLER                   PIC X(09) VALUE "190182010".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ��徽��ǹ��ĥ��󥰡�˥��ʤ���
+      *      短手３（水晶体再建術・水晶体嚢拡張リング・縫着なし）
              05   FILLER                   PIC X(02) VALUE "AW".
              05   FILLER                   PIC X(09) VALUE "190182750".
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե������ʷ��������ֻ��ѡˡˡ������
+      *      短手３（終夜睡眠ポリグラフィー１（携帯用装置使用））（生活）
              05   FILLER                   PIC X(02) VALUE "98".
              05   FILLER                   PIC X(09) VALUE "190177710".
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե�������¿���������󥵡ˡˡ������
+      *      短手３（終夜睡眠ポリグラフィー２（多点感圧センサ））（生活）
              05   FILLER                   PIC X(02) VALUE "9A".
              05   FILLER                   PIC X(09) VALUE "190177910".
-      *      û�ꣳ�ʽ����̲�ݥꥰ��ե������ʣ��ڤӣ��ʳ��ˡˡ������
+      *      短手３（終夜睡眠ポリグラフィー３（１及び２以外））（生活）
              05   FILLER                   PIC X(02) VALUE "9C".
              05   FILLER                   PIC X(09) VALUE "190178110".
-      *      û�ꣳ�ʾ�����ʪ����륮����ٸ����ˡ������
+      *      短手３（小児食物アレルギー負荷検査）（生活）
              05   FILLER                   PIC X(02) VALUE "9E".
              05   FILLER                   PIC X(09) VALUE "190178310".
-      *      û�ꣳ����Ω��������ˡ�ˡ������
+      *      短手３（前立腺針生検法）（生活）
              05   FILLER                   PIC X(02) VALUE "9G".
              05   FILLER                   PIC X(09) VALUE "190178510".
-      *      û�ꣳ�������ɼ�ѡ�����ͭ�����ڽ��ѡˡˡ������
+      *      短手３（腋臭症手術（皮膚有毛部切除術））（生活）
              05   FILLER                   PIC X(02) VALUE "9I".
              05   FILLER                   PIC X(09) VALUE "190178710".
-      *      û�ꣳ�ʴ�������꺬�ɳ�����ѡˡ������
+      *      短手３（関節鏡下手根管開放手術）（生活）
              05   FILLER                   PIC X(02) VALUE "9K".
              05   FILLER                   PIC X(09) VALUE "190178910".
-      *      û�ꣳ�ʶ��ж����򴶿������ڽ��ѡ�ξ¦�ˡˡ������
+      *      短手３（胸腔鏡下交感神経節切除術（両側））（生活）
              05   FILLER                   PIC X(02) VALUE "9M".
              05   FILLER                   PIC X(09) VALUE "190179110".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ�����������������¾�Τ�Ρˡ������
+      *      短手３（水晶体再建術・眼内レンズ挿入・その他のもの）（生活）
              05   FILLER                   PIC X(02) VALUE "9O".
              05   FILLER                   PIC X(09) VALUE "190179310".
-      *      û�ꣳ�ʿ徽�κƷ��ѡʴ������������ʤ����ˡˡ������
+      *      短手３（水晶体再建術（眼内レンズ挿入しない場合））（生活）
              05   FILLER                   PIC X(02) VALUE "9Q".
              05   FILLER                   PIC X(09) VALUE "190179510".
-      *      û�ꣳ����������Ŧ�нѡ�Ĺ�£����̤���ˡˡ������
+      *      短手３（乳腺腫瘍摘出術（長径５ｃｍ未満））（生活）
              05   FILLER                   PIC X(02) VALUE "9S".
              05   FILLER                   PIC X(09) VALUE "190179710".
-      *      û�ꣳ�ʲ�����̮���ѡ�ȴ���ڽ��ѡˡˡ������
+      *      短手３（下肢静脈瘤手術（抜去切除術））（生活）
              05   FILLER                   PIC X(02) VALUE "9U".
              05   FILLER                   PIC X(09) VALUE "190179910".
-      *      û�ꣳ�ʲ�����̮���ѡʹŲ���ˡ�ˡˡ������
+      *      短手３（下肢静脈瘤手術（硬化療法））（生活）
              05   FILLER                   PIC X(02) VALUE "9W".
              05   FILLER                   PIC X(09) VALUE "190180110".
-      *      û�ꣳ�ʲ�����̮���ѡʹ�̷�姽ѡˡˡ������
+      *      短手３（下肢静脈瘤手術（高位結紮術））（生活）
              05   FILLER                   PIC X(02) VALUE "9Y".
              05   FILLER                   PIC X(09) VALUE "190180310".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ�����̤���ˡˡ������
+      *      短手３（鼠径ヘルニア手術（１５歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "A0".
              05   FILLER                   PIC X(09) VALUE "190180510".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ����аʾ�ˡˡ������
+      *      短手３（鼠径ヘルニア手術（１５歳以上））（生活）
              05   FILLER                   PIC X(02) VALUE "A2".
              05   FILLER                   PIC X(09) VALUE "190180710".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ�����̤���ˡˡ������
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "A4".
              05   FILLER                   PIC X(09) VALUE "190180910".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ����аʾ�ˡˡ������
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（１５歳以上））（生活）
              05   FILLER                   PIC X(02) VALUE "A6".
              05   FILLER                   PIC X(09) VALUE "190181110".
-      *      û�ꣳ������Ū��Ĳ�ݥ꡼�ס�Ǵ���ڽ��ѣ����̤���ˡ������
+      *      短手３（内視鏡的結腸ポリープ・粘膜切除術２ｃｍ未満）（生活）
              05   FILLER                   PIC X(02) VALUE "A8".
              05   FILLER                   PIC X(09) VALUE "190181310".
-      *      û�ꣳ������Ū��Ĳ�ݥ꡼�ס�Ǵ���ڽ��ѣ�����ʾ�ˡ������
+      *      短手３（内視鏡的結腸ポリープ・粘膜切除術２ｃｍ以上）（生活）
              05   FILLER                   PIC X(02) VALUE "AA".
              05   FILLER                   PIC X(09) VALUE "190181510".
-      *      û�ꣳ�ʼ��˼�ѡʹŲ���ˡ�ʻ��ʳ�����ˡ�ˡˡ������
+      *      短手３（痔核手術（硬化療法（四段階注射法））（生活）
              05   FILLER                   PIC X(02) VALUE "AC".
              05   FILLER                   PIC X(09) VALUE "190181710".
-      *      û�ꣳ�ʻҵܷ�����������ڽ��ѡˡ������
+      *      短手３（子宮頚部（腟部）切除術）（生活）
              05   FILLER                   PIC X(02) VALUE "AE".
              05   FILLER                   PIC X(09) VALUE "190181910".
-      *      û�ꣳ�ʻҵܶ����ҵܶڼ�Ŧ�нѡˡ������
+      *      短手３（子宮鏡下子宮筋腫摘出術）（生活）
              05   FILLER                   PIC X(02) VALUE "AG".
              05   FILLER                   PIC X(09) VALUE "190182110".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ��徽��ǹ��ĥ��󥰡�˥��ʤ��ˡ������
+      *      短手３（水晶体再建術・水晶体嚢拡張リング・縫着なし）（生活）
              05   FILLER                   PIC X(02) VALUE "AX".
              05   FILLER                   PIC X(09) VALUE "190182850".
       *
@@ -228,70 +228,70 @@
                 07   CONS-TANKI3-H26-SRYCD PIC X(09).
       *
            03   CONS-TANKI3-H28-AREA.
-      *      û�ꣳ�ʿ徽�κƷ��ѡ�����������������¾��ξ¦��
+      *      短手３（水晶体再建術・眼内レンズ挿入・その他・両側）
              05   FILLER                   PIC X(02) VALUE "AY".
              05   FILLER                   PIC X(09) VALUE "190195910".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ��������������ʤ���ξ¦��
+      *      短手３（水晶体再建術・眼内レンズ挿入しない・両側）
              05   FILLER                   PIC X(02) VALUE "B0".
              05   FILLER                   PIC X(09) VALUE "190196110".
-      *      û�ꣳ�ʷ���Ū�����ȳ�ĥ�ѡ��������ѡ�
+      *      短手３（経皮的シャント拡張術・血栓除去術）
              05   FILLER                   PIC X(02) VALUE "B2".
              05   FILLER                   PIC X(09) VALUE "190196310".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ���̤���ˡ�
+      *      短手３（鼠径ヘルニア手術（３歳未満））
              05   FILLER                   PIC X(02) VALUE "B4".
              05   FILLER                   PIC X(09) VALUE "190196510".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ��аʾ壶��̤���ˡ�
+      *      短手３（鼠径ヘルニア手術（３歳以上６歳未満））
              05   FILLER                   PIC X(02) VALUE "B6".
              05   FILLER                   PIC X(09) VALUE "190196610".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ��аʾ壱����̤���ˡ�
+      *      短手３（鼠径ヘルニア手術（６歳以上１５歳未満））
              05   FILLER                   PIC X(02) VALUE "B8".
              05   FILLER                   PIC X(09) VALUE "190196710".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ���̤���ˡ�
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（３歳未満））
              05   FILLER                   PIC X(02) VALUE "BA".
              05   FILLER                   PIC X(09) VALUE "190197110".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ��аʾ壶��̤���ˡ�
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（３歳以上６歳未満））
              05   FILLER                   PIC X(02) VALUE "BC".
              05   FILLER                   PIC X(09) VALUE "190197210".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ��аʾ壱����̤���ˡ�
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（６歳以上１５歳未満））
              05   FILLER                   PIC X(02) VALUE "BE".
              05   FILLER                   PIC X(09) VALUE "190197310".
-      *      û�ꣳ���γ��׷��ȿա�Ǣ�ɷ����˺սѡ�
+      *      短手３（体外衝撃波腎・尿管結石破砕術）
              05   FILLER                   PIC X(02) VALUE "BG".
              05   FILLER                   PIC X(09) VALUE "190197710".
-      *      û�ꣳ�ʥ���ޥʥ��դˤ��������������š�
+      *      短手３（ガンマナイフによる定位放射線治療）
              05   FILLER                   PIC X(02) VALUE "BI".
              05   FILLER                   PIC X(09) VALUE "190197910".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ�����������������¾��ξ¦�ˡ������
+      *      短手３（水晶体再建術・眼内レンズ挿入・その他・両側）（生活）
              05   FILLER                   PIC X(02) VALUE "AZ".
              05   FILLER                   PIC X(09) VALUE "190196010".
-      *      û�ꣳ�ʿ徽�κƷ��ѡ��������������ʤ���ξ¦�ˡ������
+      *      短手３（水晶体再建術・眼内レンズ挿入しない・両側）（生活）
              05   FILLER                   PIC X(02) VALUE "B1".
              05   FILLER                   PIC X(09) VALUE "190196210".
-      *      û�ꣳ�ʷ���Ū�����ȳ�ĥ�ѡ��������ѡˡ������
+      *      短手３（経皮的シャント拡張術・血栓除去術）（生活）
              05   FILLER                   PIC X(02) VALUE "B3".
              05   FILLER                   PIC X(09) VALUE "190196410".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ���̤���ˡˡ������
+      *      短手３（鼠径ヘルニア手術（３歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "B5".
              05   FILLER                   PIC X(09) VALUE "190196810".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ��аʾ壶��̤���ˡˡ������
+      *      短手３（鼠径ヘルニア手術（３歳以上６歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "B7".
              05   FILLER                   PIC X(09) VALUE "190196910".
-      *      û�ꣳ���ͷ¥إ�˥���ѡʣ��аʾ壱����̤���ˡˡ������
+      *      短手３（鼠径ヘルニア手術（６歳以上１５歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "B9".
              05   FILLER                   PIC X(09) VALUE "190197010".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ���̤���ˡˡ������
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（３歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "BB".
              05   FILLER                   PIC X(09) VALUE "190197410".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ��аʾ壶��̤���ˡˡ������
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（３歳以上６歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "BD".
              05   FILLER                   PIC X(09) VALUE "190197510".
-      *      û�ꣳ��ʢ�ж����ͷ¥إ�˥���ѡˡʣ��аʾ壱����̤���ˡˡ������
+      *      短手３（腹腔鏡下鼠径ヘルニア手術）（６歳以上１５歳未満））（生活）
              05   FILLER                   PIC X(02) VALUE "BF".
              05   FILLER                   PIC X(09) VALUE "190197610".
-      *      û�ꣳ���γ��׷��ȿա�Ǣ�ɷ����˺սѡˡ������
+      *      短手３（体外衝撃波腎・尿管結石破砕術）（生活）
              05   FILLER                   PIC X(02) VALUE "BH".
              05   FILLER                   PIC X(09) VALUE "190197810".
-      *      û�ꣳ�ʥ���ޥʥ��դˤ��������������šˡ������
+      *      短手３（ガンマナイフによる定位放射線治療）（生活）
              05   FILLER                   PIC X(02) VALUE "BJ".
              05   FILLER                   PIC X(09) VALUE "190198010".
       *
@@ -300,89 +300,89 @@
                 07   CONS-TANKI3-H28-KBNCD PIC X(02).
                 07   CONS-TANKI3-H28-SRYCD PIC X(09).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
       *
-      *    Ʊ����������������������
+      *    同日再入院日の翌日取得用
            03  WRK-DOUJITSU-YMD            PIC X(08).
            03  WRK-DOUJITSU-YMDR    REDEFINES   WRK-DOUJITSU-YMD.
                05  WRK-DOUJITSU-YYMM       PIC 9(06).
                05  WRK-DOUJITSU-DD         PIC 9(02).
       *
-      *    Ʊ����������������������
+      *    同日再入院日の翌日取得用
            03  WRK-YOKUJITSU-YMD          PIC 9(08).
            03  WRK-YOKUJITSU-YMDR   REDEFINES   WRK-YOKUJITSU-YMD.
                05  WRK-YOKUJITSU-YYMM      PIC 9(06).
                05  WRK-YOKUJITSU-DD        PIC 9(02).
       *
-      *    ������������
+      *    月末日取得用
            03  WRK-GETSUMATSU-YMD.
                05  WRK-GETSUMATSU-YY       PIC 9(04).
                05  WRK-GETSUMATSU-MM       PIC 9(02).
                05  WRK-GETSUMATSU-DD       PIC 9(02).
       *
-      *    û���ں߰ʳ������������ꤷ�Ƥ�����
+      *    短期滞在以外で入院料を算定している日
            03  WRK-TANKI-IGAI              PIC X(01)  OCCURS 31.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �������Ų�ץޥ�����
+      *    入院診療会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �������Ź԰٥ޥ�����
+      *    入院診療行為マスター
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスター
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ������������ޥ�����
+      *    患者入院履歴マスタ−
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
            COPY    "CPTENSU.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -391,7 +391,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -401,13 +401,13 @@
            INITIALIZE                  LNK-NYUINDAY-HENKYAKU-AREA
            MOVE    ZERO            TO  LNK-NYUINDAY-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-NYUINDAY-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    �����
+      *    主処理
            IF      LNK-NYUINDAY-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -427,18 +427,18 @@
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ����ǯ������å�
+      *    算定年月チェック
            IF     (LNK-NYUINDAY-SANTEIYM  =   SPACE)      OR
                   (LNK-NYUINDAY-SANTEIYM  <=   "200603")
                MOVE    1                TO  LNK-NYUINDAY-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                       PTINF-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTINF-PTID
@@ -448,7 +448,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ������Υ����å���������ץޥ�����������
+      *    入院中のチェック（入院会計マスター検索）
            INITIALIZE                       NYUINACCT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  NACCT-PTID
@@ -468,7 +468,7 @@
                END-IF
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
            MOVE    "key17"                TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -477,11 +477,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    �����������
+      *    月末日を取得
            INITIALIZE                         STS-AREA-DAY
            INITIALIZE                         LNK-DAY7-AREA
            MOVE    "71"                   TO  LNK-DAY7-IRAI
@@ -493,8 +493,8 @@
                MOVE    LNK-DAY7-KOYOMI    TO  WRK-GETSUMATSU-YMD
            END-IF
       *
-      *    û���ں߼�Ѵ������ʳ����������Υ���������Ω�äƤ�������
-      *    ���ꤹ��
+      *    短期滞在手術基本料以外で入院料のカレンダーが立っている日を
+      *    特定する
            INITIALIZE                       NYUINACCT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  NACCT-PTID
@@ -508,7 +508,7 @@
                PERFORM 910-NYUINACCT-READ-SEC
                PERFORM  UNTIL  ( FLG-NYUINACCT    =   1 )
                   PERFORM    210-NYUINACT-GET-SEC
-      *           �����ޥ������û���ں߰ʳ��Ǥ��뤳�Ȥ�Ƚ��
+      *           点数マスタより短期滞在以外であることの判定
                   INITIALIZE                  TNS-TENSU-REC
                   MOVE    LNK-NYUINDAY-HOSPNUM
                                           TO  TNS-HOSPNUM
@@ -535,12 +535,12 @@
                   PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"        TO  MCP-TABLE
            MOVE    "key36"                TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ����������û���ں߼�Ѵ��������λ���̵ͭ������
+      *    入院履歴より短期滞在手術基本料２の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
@@ -600,12 +600,12 @@
                END-PERFORM
            END-IF
       *
-      *    �����������򥯥�����
+      *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ����������û���ں߼�Ѵ����������������ܡˤλ���̵ͭ������
+      *    入院履歴より短期滞在手術基本料２（生活療養）の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
@@ -665,12 +665,12 @@
                END-PERFORM
            END-IF
       *
-      *    �����������򥯥�����
+      *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ����������û���ں߼�Ѵ��������λ���̵ͭ������
+      *    入院履歴より短期滞在手術基本料３の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
@@ -730,12 +730,12 @@
                END-PERFORM
            END-IF
       *
-      *    �����������򥯥�����
+      *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ����������û���ں߼�Ѵ����������������ܡˤλ���̵ͭ������
+      *    入院履歴より短期滞在手術基本料３（生活療養）の算定有無を特定
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
@@ -795,13 +795,13 @@
                END-PERFORM
            END-IF
       *
-      *    �����������򥯥�����
+      *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key49"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ʿ������ǯ������ɲ�ʬ
-      *    ����������û���ں߼���������������������ܰʳ��ˤλ���̵ͭ������
+      *    平成２６年改定の追加分
+      *    入院履歴より短期滞在手術等基本料３（生活療養以外）の算定有無を特定
            IF       LNK-NYUINDAY-SANTEIYM   >=   "201404"
             PERFORM     VARYING   IDX-TK3  FROM   1  BY  1
              UNTIL     IDX-TK3   >   24
@@ -865,14 +865,14 @@
                  PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
              END-IF
-      *      �����������򥯥�����
+      *      患者入院履歴クローズ
              MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
              MOVE    "key49"                 TO  MCP-PATHNAME
              PERFORM   900-CLOSE-SEC
             END-PERFORM
       *
       *
-      *    ����������û���ں߼���������������������ܡˤλ���̵ͭ������
+      *    入院履歴より短期滞在手術等基本料３（生活療養）の算定有無を特定
             PERFORM     VARYING   IDX-TK3  FROM   25  BY  1
              UNTIL     IDX-TK3   >   48
              INITIALIZE                     PTNYUINRRK-REC
@@ -935,7 +935,7 @@
                  PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
              END-IF
-      *      �����������򥯥�����
+      *      患者入院履歴クローズ
              MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
              MOVE    "key49"                 TO  MCP-PATHNAME
              PERFORM   900-CLOSE-SEC
@@ -943,8 +943,8 @@
       *
            END-IF
       *
-      *    ʿ������ǯ������ɲ�ʬ
-      *    ����������û���ں߼���������������������ܰʳ��ˤλ���̵ͭ������
+      *    平成２８年改定の追加分
+      *    入院履歴より短期滞在手術等基本料３（生活療養以外）の算定有無を特定
            IF       LNK-NYUINDAY-SANTEIYM   >=   "201604"
             PERFORM     VARYING   IDX-TK3  FROM   1  BY  1
              UNTIL     IDX-TK3   >   11
@@ -1008,14 +1008,14 @@
                  PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
              END-IF
-      *      �����������򥯥�����
+      *      患者入院履歴クローズ
              MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
              MOVE    "key49"                 TO  MCP-PATHNAME
              PERFORM   900-CLOSE-SEC
             END-PERFORM
       *
       *
-      *    ����������û���ں߼���������������������ܡˤλ���̵ͭ������
+      *    入院履歴より短期滞在手術等基本料３（生活療養）の算定有無を特定
             PERFORM     VARYING   IDX-TK3  FROM   12  BY  1
              UNTIL     IDX-TK3   >   22
              INITIALIZE                     PTNYUINRRK-REC
@@ -1078,7 +1078,7 @@
                  PERFORM 910-PTNYUINRRK-READ-SEC
                END-PERFORM
              END-IF
-      *      �����������򥯥�����
+      *      患者入院履歴クローズ
              MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
              MOVE    "key49"                 TO  MCP-PATHNAME
              PERFORM   900-CLOSE-SEC
@@ -1086,8 +1086,8 @@
       *
            END-IF
       *
-      *    û���ں߼�Ѵ����������������ܴޤ������û���ں߼�Ѵ����������������ܴޤ��
-      *    �˳���������������Ƚ�ꤷ��������פǻ���Ѥߤξ����ֵ��ͤ򥯥ꥢ����
+      *    短期滞在手術基本料２（生活療養含む）又は短期滞在手術基本料３（生活療養含む）
+      *    に該当する入院料を判定し、入院会計で算定済みの場合は返却値をクリアする
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM    TO  NACCT-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID       TO  NACCT-PTID
@@ -1194,12 +1194,12 @@
                END-PERFORM
            END-IF
       *
-      *    ������ץ�������
+      *    入院会計クローズ
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ������ʬ�Υ��å�
+      *    入院区分のセット
            PERFORM    VARYING   IDX   FROM   1   BY   1
                  UNTIL     IDX   >   31
                IF   LNK-NYUINDAY-TANKI2-KBN(IDX)  NOT =   SPACE
@@ -1207,7 +1207,7 @@
                END-IF
            END-PERFORM
       *
-      *    ������ʬ�Υ��ꥢ
+      *    入院区分のクリア
            PERFORM    VARYING   IDX   FROM   1   BY   1
                  UNTIL     IDX   >   31
                IF   WRK-TANKI-IGAI(IDX)  NOT =   SPACE
@@ -1218,8 +1218,8 @@
                END-IF
            END-PERFORM
       *
-      *    ������εߵ������������������ο��Ź԰١˻�������
-      *    ���������ǽ�Ȥ���
+      *    入院中の救急搬送診療料（入院の診療行為）算定日を
+      *    食事算定可能とする
            INITIALIZE                          SRYACT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM    TO  SRY-HOSPNUM
            MOVE    "1"                     TO  SRY-NYUGAIKBN
@@ -1262,7 +1262,7 @@
                        END-PERFORM
                    END-IF
       *
-      *            ���Ų�ץ�������
+      *            診療会計クローズ
                    MOVE    "tbl_sryacct"   TO  MCP-TABLE
                    MOVE    "key5"          TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
@@ -1273,13 +1273,13 @@
                END-PERFORM
            END-IF
       *
-      *    ���Ź԰٥�������
+      *    診療行為クローズ
            MOVE    "tbl_sryact"            TO  MCP-TABLE
            MOVE    "key7"                  TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ������εߵ������������ʳ���ο��Ź԰١˻�������
-      *    ���������ǽ�Ȥ���
+      *    入院中の救急搬送診療料（外来の診療行為）算定日を
+      *    食事算定可能とする
            INITIALIZE                          SRYACT-REC
            MOVE    LNK-NYUINDAY-HOSPNUM    TO  SRY-HOSPNUM
            MOVE    "2"                     TO  SRY-NYUGAIKBN
@@ -1322,7 +1322,7 @@
                        END-PERFORM
                    END-IF
       *
-      *            ���Ų�ץ�������
+      *            診療会計クローズ
                    MOVE    "tbl_sryacct"   TO  MCP-TABLE
                    MOVE    "key5"          TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
@@ -1333,12 +1333,12 @@
                END-PERFORM
            END-IF
       *
-      *    ���Ź԰٥�������
+      *    診療行為クローズ
            MOVE    "tbl_sryact"            TO  MCP-TABLE
            MOVE    "key7"                  TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ����������Ʊ��������������
+      *    入院履歴より同日再入院を特定
            INITIALIZE                     PTNYUINRRK-REC
            MOVE    LNK-NYUINDAY-HOSPNUM   TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-NYUINDAY-PTID      TO  PTNYUINRRK-PTID
@@ -1359,12 +1359,12 @@
                           MOVE  "1"       TO  LNK-NYUINDAY-DOUJITSU-KBN
                                                                (IDX-ST)
       *
-      *                   Ʊ����������������ʬ�ˤο������ϻ��ֶ�ʬ
+      *                   同日再入院日（入院分）の食事開始時間区分
                           MOVE  PTNYUINRRK-TIMEKBN-IN
                                      TO  LNK-NYUINDAY-DOUJITSU-SKJKBN
                                                                (IDX-ST)
       *
-      *                   Ʊ�������������ౡʬ�ˤο�����λ���ֶ�ʬ
+      *                   同日再入院日（退院分）の食事終了時間区分
                           EVALUATE   PTNYUINRRK-TIMEKBN-IN
                               WHEN   "0"
                                   MOVE  "3"   TO
@@ -1385,8 +1385,8 @@
                           END-EVALUATE
       *
       *
-      *                   Ʊ�������������ݸ��ȹ礻��������פ���
-      *                   �Ƽ�������
+      *                   同日再入院日の保険組合せを入院会計から
+      *                   再取得する
                           MOVE    PTNYUINRRK-TENNYUYMD
                                            TO  WRK-DOUJITSU-YMD
                           INITIALIZE           NYUINACCT-REC
@@ -1413,26 +1413,26 @@
                                END-IF
                            END-IF
       *
-      *                    ������ץ�������
+      *                    入院会計クローズ
                            MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
                            MOVE    "key17"            TO  MCP-PATHNAME
                            PERFORM   900-CLOSE-SEC
       *
-      *                    Ʊ���ౡʬ���ݸ��ȹ礻�ݸ�������������
-      *                    �ʣ������ݡ��������ݡ�����������𡡣���ϫ��
-      *                      �������塡�����������������񡡣���������
+      *                    同日退院分の保険組合せ保険種類を取得する
+      *                    （１：社保　２：国保　３：後期高齢　４：労災
+      *                      ５：自賠　６：公害　７：自費　８：治験）
                            IF  LNK-NYUINDAY-DOUJITSU-T-HKNCOMBI (IDX-ST)
                                                       NOT = ZERO
                                PERFORM   210-HKNSYURUI-GET1-SEC
                            END-IF
       *
-      *                   Ʊ����������������ʬ�ˤ��ݸ��ȹ礻�ֹ�
+      *                   同日再入院日（入院分）の保険組合せ番号
                           MOVE  PTNYUINRRK-HKNCOMBINUM
                                      TO  LNK-NYUINDAY-DOUJITSU-HKNCOMBI
                                                                (IDX-ST)
       *
-      *                   Ʊ�����������������ݸ��ȹ礻��������פ���
-      *                   �Ƽ�������
+      *                   同日再入院日翌日の保険組合せを入院会計から
+      *                   再取得する
                           MOVE    ZERO    TO  WRK-YOKUJITSU-YMD
                           INITIALIZE          LNK-DAY6-AREA
                           MOVE    "61"    TO  LNK-DAY6-IRAI
@@ -1444,7 +1444,7 @@
                                                         LNK-DAY6-AREA
                           MOVE    LNK-DAY6-KEISAN
                                           TO  WRK-YOKUJITSU-YMD
-      *                   ������ס��ݸ��ȹ礻�κޤ򸡺���
+      *                   入院会計（保険組合せの剤を検索）
                           INITIALIZE           NYUINACCT-REC
                            MOVE    LNK-NYUINDAY-HOSPNUM
                                            TO  NACCT-HOSPNUM
@@ -1469,20 +1469,20 @@
                                END-IF
                            END-IF
       *
-      *                    ������ץ�������
+      *                    入院会計クローズ
                            MOVE    "tbl_nyuinacct"    TO  MCP-TABLE
                            MOVE    "key17"            TO  MCP-PATHNAME
                            PERFORM   900-CLOSE-SEC
       *
-      *                    Ʊ��������ʬ���ݸ��ȹ礻�ݸ�������������
-      *                    �ʣ������ݡ��������ݡ�����������𡡣���ϫ��
-      *                      �������塡�����������������񡡣���������
+      *                    同日再入院分の保険組合せ保険種類を取得する
+      *                    （１：社保　２：国保　３：後期高齢　４：労災
+      *                      ５：自賠　６：公害　７：自費　８：治験）
                            IF  LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX-ST)
                                                       NOT = ZERO
                                PERFORM   210-HKNSYURUI-GET2-SEC
                            END-IF
       *
-      *                    �ݸ���ư��ʬ�򥻥å�
+      *                    保険変動区分をセット
                            IF  (LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                                                               =  "1" OR
                                                                  "2" OR
@@ -1548,7 +1548,7 @@
                END-PERFORM
            END-IF
       *
-      *    �����������򥯥�����
+      *    患者入院履歴クローズ
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key33"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1578,7 +1578,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰ټ���
+      *    入院診療行為取得
       *****************************************************************
        210-NYUINACT-GET-SEC            SECTION.
       *
@@ -1597,7 +1597,7 @@
                PERFORM   910-NYUINACT-READ-SEC
            END-IF
       *
-      *    �����԰٥�������
+      *    入院行為クローズ
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1607,7 +1607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�����������ౡʬ�ˤ��ݸ��������
+      *    同日再入院（退院分）の保険種類取得
       *****************************************************************
        210-HKNSYURUI-GET1-SEC            SECTION.
       *
@@ -1626,7 +1626,7 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM   910-HKNCOMBI-READ-SEC
                IF   FLG-HKNCOMBI           =   ZERO
-      *            ����
+      *            国保
                    IF   COMB-HKNNUM        =   "060"  OR
                                                "067"  OR
                                                "068"  OR
@@ -1634,45 +1634,45 @@
                        MOVE    "2"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            ��������
+      *            後期高齢者
                    IF   COMB-HKNNUM        =   "039"  OR
                                                "040"
                        MOVE    "3"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            ϫ���ݸ�
+      *            労災保険
                    IF   COMB-HKNNUM        =   "971"
                        MOVE    "4"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            �������ݸ�
+      *            自賠責保険
                    IF   COMB-HKNNUM        =   "973"
                        MOVE    "5"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            �����ݸ�
+      *            公害保険
                    IF   COMB-HKNNUM        =   "975"
                        MOVE    "6"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            ����
+      *            自費
                    IF   COMB-HKNNUM(1:2)   =   "98"
                        MOVE    "7"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
-      *            ����
+      *            治験
                    IF   COMB-HKNNUM(1:2)   =   "90"  OR
                                                "91"
                        MOVE    "8"         TO
                                  LNK-NYUINDAY-DOUJITSU-T-HKNSYU(IDX-ST)
                    END-IF
                END-IF
-      *        �ݸ��ȹ礻��������
+      *        保険組合せクローズ
                MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
                PERFORM   900-CLOSE-SEC
            ELSE
-      *        �ݸ��ȹ礻��������
+      *        保険組合せクローズ
                MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
                PERFORM   900-CLOSE-SEC
@@ -1683,7 +1683,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ��������������ʬ�ˤ��ݸ��������
+      *    同日再入院（入院分）の保険種類取得
       *****************************************************************
        210-HKNSYURUI-GET2-SEC            SECTION.
       *
@@ -1702,7 +1702,7 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM   910-HKNCOMBI-READ-SEC
                IF   FLG-HKNCOMBI           =   ZERO
-      *            ����
+      *            国保
                    IF   COMB-HKNNUM        =   "060"  OR
                                                "067"  OR
                                                "068"  OR
@@ -1710,45 +1710,45 @@
                        MOVE    "2"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            ��������
+      *            後期高齢者
                    IF   COMB-HKNNUM        =   "039"  OR
                                                "040"
                        MOVE    "3"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            ϫ���ݸ�
+      *            労災保険
                    IF   COMB-HKNNUM        =   "971"
                        MOVE    "4"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            �������ݸ�
+      *            自賠責保険
                    IF   COMB-HKNNUM        =   "973"
                        MOVE    "5"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            �����ݸ�
+      *            公害保険
                    IF   COMB-HKNNUM        =   "975"
                        MOVE    "6"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            ����
+      *            自費
                    IF   COMB-HKNNUM(1:2)   =   "98"
                        MOVE    "7"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
-      *            ����
+      *            治験
                    IF   COMB-HKNNUM(1:2)   =   "90"  OR
                                                "91"
                        MOVE    "8"         TO
                                    LNK-NYUINDAY-DOUJITSU-HKNSYU(IDX-ST)
                    END-IF
                END-IF
-      *        �ݸ��ȹ礻��������
+      *        保険組合せクローズ
                MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
                PERFORM   900-CLOSE-SEC
            ELSE
-      *        �ݸ��ȹ礻��������
+      *        保険組合せクローズ
                MOVE    "tbl_hkncombi"          TO  MCP-TABLE
                MOVE    "key"                   TO  MCP-PATHNAME
                PERFORM   900-CLOSE-SEC
@@ -1759,7 +1759,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1792,7 +1792,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������ޥ���������
+      *    患者入院履歴マスター検索
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -1809,7 +1809,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������ޥ������ɹ�
+      *    患者入院履歴マスター読込
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
@@ -1827,7 +1827,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ���������
+      *    入院会計マスター検索
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -1844,7 +1844,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ������ɹ�
+      *    入院会計マスター読込
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -1862,7 +1862,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ���������
+      *    入院診療行為マスター検索
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -1879,7 +1879,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ������ɹ�
+      *    入院診療行為マスター読込
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
@@ -1896,7 +1896,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ���������
+      *    診療会計マスター検索
       *****************************************************************
        910-SRYACCT-SELECT-SEC        SECTION.
       *
@@ -1913,7 +1913,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
@@ -1931,7 +1931,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ���������
+      *    診療行為マスター検索
       *****************************************************************
        910-SRYACT-SELECT-SEC        SECTION.
       *
@@ -1948,7 +1948,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        910-SRYACT-READ-SEC         SECTION.
       *
@@ -1966,7 +1966,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ���������
+      *    保険組合せマスター検索
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -1983,7 +1983,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�
+      *    保険組合せマスター読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2001,7 +2001,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʼ祭����
+      *    点数マスター読込（主キー）
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -2034,7 +2034,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -2045,7 +2045,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -2057,7 +2057,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -2070,7 +2070,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC                 SECTION.
       *

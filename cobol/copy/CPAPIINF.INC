@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -26,7 +26,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¼õÉÕ°ìÍ÷¼èÆÀ".
+           "å—ä»˜ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -36,7 +36,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¼õÉÕÅÐÏ¿".
+           "å—ä»˜ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -46,7 +46,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÀÁµá¶â³Û¼èÆÀ".
+           "è«‹æ±‚é‡‘é¡å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -54,9 +54,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "addressmasterlstv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "½»½ê¥Þ¥¹¥¿¼èÆÀ".
+           "ä½æ‰€ãƒžã‚¹ã‚¿å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "½»½ê¥Þ¥¹¥¿¼èÆÀ".
+           "ä½æ‰€ãƒžã‚¹ã‚¿å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -66,7 +66,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æü¥ì¥»£Á£Ð£É¥Ð¡¼¥¸¥ç¥ó¼èÆÀ".
+           "æ—¥ãƒ¬ã‚»ï¼¡ï¼°ï¼©ãƒãƒ¼ã‚¸ãƒ§ãƒ³å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -76,7 +76,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÍ½Ìó¾ðÊó¼èÆÀ".
+           "æ‚£è€…äºˆç´„æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201901".
            05  FILLER                  PIC  X(16)      VALUE
@@ -86,7 +86,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Í½Ìó°ìÍ÷¼èÆÀ".
+           "äºˆç´„ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -96,7 +96,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Í½ÌóÅÐÏ¿".
+           "äºˆç´„ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -106,7 +106,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "½Ð»º°é»ù°ì»þ¶â¾ðÊó¼èÆÀ¡¦ÅÐÏ¿".
+           "å‡ºç”£è‚²å…ä¸€æ™‚é‡‘æƒ…å ±å–å¾—ãƒ»ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -116,7 +116,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÌôºÞÊ»ÍÑ¶Ø´÷¥Á¥§¥Ã¥¯".
+           "è–¬å‰¤ä½µç”¨ç¦å¿Œãƒã‚§ãƒƒã‚¯".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -126,7 +126,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥Ç¡¼¥¿¥Á¥§¥Ã¥¯".
+           "ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201901".
            05  FILLER                  PIC  X(16)      VALUE
@@ -136,7 +136,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÉÂÌ¾¾ðÊó¼èÆÀ".
+           "æ‚£è€…ç—…åæƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -144,9 +144,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "diseasemasterlstv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÉÂÌ¾¥Þ¥¹¥¿°ì³ç¼èÆÀ".
+           "ç—…åãƒžã‚¹ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÉÂÌ¾¥Þ¥¹¥¿°ì³ç¼èÆÀ".
+           "ç—…åãƒžã‚¹ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -156,7 +156,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÉÂÌ¾ÅÐÏ¿".
+           "æ‚£è€…ç—…åç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -166,7 +166,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÉÂÌ¾ÅÐÏ¿£²".
+           "æ‚£è€…ç—…åç™»éŒ²ï¼’".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -176,7 +176,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¾È²ñ¸¡º÷¹àÌÜ¾ðÊó¼èÆÀ".
+           "ç…§ä¼šæ¤œç´¢é …ç›®æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -184,9 +184,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "findv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "¾È²ñ".
+           "ç…§ä¼š".
            05  FILLER                  PIC  X(64)      VALUE
-           "¾È²ñ".
+           "ç…§ä¼š".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -196,7 +196,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Ä¢É¼¥Ç¡¼¥¿¼èÆÀ".
+           "å¸³ç¥¨ãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -206,7 +206,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡²ñ·×¾È²ñ".
+           "å…¥é™¢ä¼šè¨ˆç…§ä¼š".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -216,7 +216,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "²¾·×»»¾ðÊó¼èÆÀ".
+           "ä»®è¨ˆç®—æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -226,7 +226,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡´ðËÜ¾ðÊó¼èÆÀ".
+           "å…¥é™¢åŸºæœ¬æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -236,7 +236,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÉÂÅï¡¦ÉÂ¼¼¾ðÊó¼èÆÀ".
+           "ç—…æ£Ÿãƒ»ç—…å®¤æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -246,7 +246,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡´µ¼Ô¾È²ñ".
+           "å…¥é™¢æ‚£è€…ç…§ä¼š".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -256,7 +256,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡´µ¼Ô¿©»öÅù¾ðÊó¼èÆÀ".
+           "å…¥é™¢æ‚£è€…é£Ÿäº‹ç­‰æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -266,7 +266,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡²ñ·×Ì¤ºîÀ®¥Á¥§¥Ã¥¯".
+           "å…¥é™¢ä¼šè¨ˆæœªä½œæˆãƒã‚§ãƒƒã‚¯".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -276,7 +276,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "°åÎÅ¶èÊ¬¡¦ADLÅÀ¿ôÅÐÏ¿".
+           "åŒ»ç™‚åŒºåˆ†ãƒ»ADLç‚¹æ•°ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -286,7 +286,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "°åÎÅ¶èÊ¬¡¦ADLÅÀ¿ô¾ðÊó¼èÆÀ".
+           "åŒ»ç™‚åŒºåˆ†ãƒ»ADLç‚¹æ•°æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -296,7 +296,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÆþÂà±¡ÅÐÏ¿".
+           "å…¥é€€é™¢ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201901".
            05  FILLER                  PIC  X(16)      VALUE
@@ -306,7 +306,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡´µ¼Ô´ðËÜ¾ðÊó¼èÆÀ".
+           "å…¥é™¢æ‚£è€…åŸºæœ¬æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -316,7 +316,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "²èÁü¥Ç¡¼¥¿¼èÆÀ".
+           "ç”»åƒãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -326,7 +326,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¼ýÇ¼¾ðÊó¼èÆÀ".
+           "åŽç´æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -334,9 +334,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "incomev3".
            05  FILLER                  PIC  X(64)      VALUE
-           "¼ýÇ¼".
+           "åŽç´".
            05  FILLER                  PIC  X(64)      VALUE
-           "¼ýÇ¼ÅÐÏ¿".
+           "åŽç´ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -346,7 +346,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÊÝ¸±¼Ô°ìÍ÷¾ðÊó¼èÆÀ".
+           "ä¿é™ºè€…ä¸€è¦§æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -356,7 +356,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÊÝ¸±¡¦¸øÈñ°ìÍ÷¼èÆÀ".
+           "ä¿é™ºãƒ»å…¬è²»ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -366,7 +366,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥«¥ë¥Æ£±¹æ»æ¡ÊÆþ±¡¡Ë".
+           "ã‚«ãƒ«ãƒ†ï¼‘å·ç´™ï¼ˆå…¥é™¢ï¼‰".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -376,7 +376,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥«¥ë¥Æ£±¹æ»æ¡Ê³°Íè¡Ë".
+           "ã‚«ãƒ«ãƒ†ï¼‘å·ç´™ï¼ˆå¤–æ¥ï¼‰".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -386,7 +386,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥«¥ë¥Æ£³¹æ»æ¡ÊÆþ±¡¡Ë".
+           "ã‚«ãƒ«ãƒ†ï¼“å·ç´™ï¼ˆå…¥é™¢ï¼‰".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -396,7 +396,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥«¥ë¥Æ£³¹æ»æ¡Ê³°Íè¡Ë".
+           "ã‚«ãƒ«ãƒ†ï¼“å·ç´™ï¼ˆå¤–æ¥ï¼‰".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -406,7 +406,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥æ¡¼¥¶¡¼´ÉÍý".
+           "ãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -416,7 +416,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥Þ¥¹¥¿¥Ç¡¼¥¿ºÇ½ª¹¹¿·Æü¼èÆÀ".
+           "ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿æœ€çµ‚æ›´æ–°æ—¥å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -426,7 +426,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¾ðÊó¼èÆÀ".
+           "è¨ºç™‚æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -434,9 +434,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodav31".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           "å…¥é™¢è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡´µ¼Ô·èÄê".
+           "å…¥é™¢æ‚£è€…æ±ºå®š".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -444,9 +444,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodav32".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           "å…¥é™¢è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅÆâÍÆ´ðËÜ¥Á¥§¥Ã¥¯".
+           "è¨ºç™‚å†…å®¹åŸºæœ¬ãƒã‚§ãƒƒã‚¯".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -454,9 +454,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodav33".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           "å…¥é™¢è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ³ÎÇ§¡¦ÀÁµá³ÎÇ§".
+           "è¨ºç™‚ç¢ºèªãƒ»è«‹æ±‚ç¢ºèª".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -464,9 +464,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodav34".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¹Ô°Ù".
+           "å…¥é™¢è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ùºï½ü".
+           "è¨ºç™‚è¡Œç‚ºå‰Šé™¤".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -476,7 +476,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÃæÅÓ½ªÎ»¥Ç¡¼¥¿ÅÐÏ¿".
+           "ä¸­é€”çµ‚äº†ãƒ‡ãƒ¼ã‚¿ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -486,7 +486,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "½é¿Ç»»ÄêÆüÅÐÏ¿".
+           "åˆè¨ºç®—å®šæ—¥ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -494,9 +494,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv31".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ù".
+           "è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿Ç»¡ÎÁ¼èÆÀ¡Ê½é²óÀÜÂ³¡Ë".
+           "è¨ºå¯Ÿæ–™å–å¾—ï¼ˆåˆå›žæŽ¥ç¶šï¼‰".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -504,9 +504,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv32".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ù".
+           "è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅÆâÍÆ´ðËÜ¥Á¥§¥Ã¥¯".
+           "è¨ºç™‚å†…å®¹åŸºæœ¬ãƒã‚§ãƒƒã‚¯".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -514,9 +514,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv33".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ù".
+           "è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ³ÎÇ§¡¦ÀÁµá³ÎÇ§".
+           "è¨ºç™‚ç¢ºèªãƒ»è«‹æ±‚ç¢ºèª".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -524,9 +524,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv34".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ù".
+           "è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ùºï½ü".
+           "è¨ºç™‚è¡Œç‚ºå‰Šé™¤".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -534,9 +534,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv35".
            05  FILLER                  PIC  X(64)      VALUE
-           "¿ÇÎÅ¹Ô°Ù".
+           "è¨ºç™‚è¡Œç‚º".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥ê¥Ï¥Ó¥ê¥³¥á¥ó¥ÈÅÐÏ¿".
+           "ãƒªãƒãƒ“ãƒªã‚³ãƒ¡ãƒ³ãƒˆç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -544,9 +544,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv36".
            05  FILLER                  PIC  X(64)      VALUE
-           "²ñ·×¾È²ñ".
+           "ä¼šè¨ˆç…§ä¼š".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÊÝ¸±ÍúÎò¾ðÊó°ì³çÊÑ¹¹".
+           "ä¿é™ºå±¥æ­´æƒ…å ±ä¸€æ‹¬å¤‰æ›´".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -554,9 +554,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicalmodv37".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÇÓÂ¾À©¸æ²ò½ü".
+           "æŽ’ä»–åˆ¶å¾¡è§£é™¤".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÇÓÂ¾À©¸æ²ò½ü".
+           "æŽ’ä»–åˆ¶å¾¡è§£é™¤".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -566,7 +566,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥»¥Ã¥ÈÅÐÏ¿".
+           "ã‚»ãƒƒãƒˆç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -574,9 +574,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "medicationmasterlstv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÅÀ¿ô¥Þ¥¹¥¿°ì³ç¼èÆÀ".
+           "ç‚¹æ•°ãƒžã‚¹ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÅÀ¿ô¥Þ¥¹¥¿°ì³ç¼èÆÀ".
+           "ç‚¹æ•°ãƒžã‚¹ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -586,7 +586,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÅÀ¿ô¥Þ¥¹¥¿¾ðÊóÅÐÏ¿".
+           "ç‚¹æ•°ãƒžã‚¹ã‚¿æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -596,7 +596,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¤ªÌô¼êÄ¢°õºþ".
+           "ãŠè–¬æ‰‹å¸³å°åˆ·".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -604,9 +604,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientbasisallv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô´ðËÜ¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…åŸºæœ¬æƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô´ðËÜ¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…åŸºæœ¬æƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -614,9 +614,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientdiseaseallv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÉÂÌ¾¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…ç—…åæƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÉÂÌ¾¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…ç—…åæƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -626,7 +626,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô´ðËÜ¾ðÊó".
+           "æ‚£è€…åŸºæœ¬æƒ…å ±".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -636,7 +636,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÈÖ¹æ°ìÍ÷¼èÆÀ".
+           "æ‚£è€…ç•ªå·ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -646,7 +646,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Ê£¿ô´µ¼Ô¾ðÊó¼èÆÀ".
+           "è¤‡æ•°æ‚£è€…æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -656,7 +656,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¾ðÊó¼èÆÀ(»áÌ¾¸¡º÷)".
+           "æ‚£è€…æƒ…å ±å–å¾—(æ°åæ¤œç´¢)".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -666,7 +666,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Á´ÊÝ¸±ÁÈ¹ç¤»°ìÍ÷¼èÆÀ".
+           "å…¨ä¿é™ºçµ„åˆã›ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -676,7 +676,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¥á¥â¾ðÊó¼èÆÀ".
+           "æ‚£è€…ãƒ¡ãƒ¢æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -684,9 +684,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmedicalallv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¿ÇÎÅ¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…è¨ºç™‚æƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¿ÇÎÅ¾ðÊó°ì³ç¼èÆÀ".
+           "æ‚£è€…è¨ºç™‚æƒ…å ±ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -696,7 +696,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -704,9 +704,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv31".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô´ðËÜ¾ðÊóÅÐÏ¿".
+           "æ‚£è€…åŸºæœ¬æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -714,9 +714,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv32".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÊÝ¸±¸øÈñ¾ðÊóÅÐÏ¿".
+           "æ‚£è€…ä¿é™ºå…¬è²»æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -724,9 +724,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv33".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÏ«ºÒ¼«ÇåÀÕ¾ðÊóÅÐÏ¿".
+           "æ‚£è€…åŠ´ç½è‡ªè³ è²¬æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -734,9 +734,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv34".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÄã½êÆÀ¾ðÊóÅÐÏ¿".
+           "æ‚£è€…ä½Žæ‰€å¾—æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -744,9 +744,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv35".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¸øÈñ°ìÉôÉéÃ´¶âÅÐÏ¿".
+           "æ‚£è€…å…¬è²»ä¸€éƒ¨è² æ‹…é‡‘ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -754,9 +754,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv36".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "²ð¸î¾ðÊóÅÐÏ¿".
+           "ä»‹è­·æƒ…å ±ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -764,9 +764,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "patientmodv37".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼ÔÅÐÏ¿".
+           "æ‚£è€…ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "´µ¼Ô¶Ø´÷ÌôºÞÅÐÏ¿".
+           "æ‚£è€…ç¦å¿Œè–¬å‰¤ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -776,7 +776,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "½èÊý¤»¤ó°õºþ".
+           "å‡¦æ–¹ã›ã‚“å°åˆ·".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -786,7 +786,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "PUSHÄÌÃÎ°ì³ç¼èÆÀ".
+           "PUSHé€šçŸ¥ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -794,9 +794,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "receiptdatacheckmakev3".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥Á¥§¥Ã¥¯ÍÑ¸ÄÊÌ¥ì¥»ÅÅ¥Ç¡¼¥¿¼èÆÀ".
+           "ãƒã‚§ãƒƒã‚¯ç”¨å€‹åˆ¥ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥Á¥§¥Ã¥¯ÍÑ¸ÄÊÌ¥ì¥»ÅÅ¥Ç¡¼¥¿¼èÆÀ".
+           "ãƒã‚§ãƒƒã‚¯ç”¨å€‹åˆ¥ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -804,9 +804,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "receiptdatamakev3".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥ì¥»ÅÅ¥Ç¡¼¥¿°ì³ç¼èÆÀ".
+           "ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥ì¥»ÅÅ¥Ç¡¼¥¿°ì³ç¼èÆÀ".
+           "ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿ä¸€æ‹¬å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -814,9 +814,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "receiptdatapatientmakev3".
            05  FILLER                  PIC  X(64)      VALUE
-           "¸ÄÊÌ¥ì¥»ÅÅ¥Ç¡¼¥¿¼èÆÀ".
+           "å€‹åˆ¥ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(64)      VALUE
-           "¸ÄÊÌ¥ì¥»ÅÅ¥Ç¡¼¥¿¼èÆÀ".
+           "å€‹åˆ¥ãƒ¬ã‚»é›»ãƒ‡ãƒ¼ã‚¿å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -824,9 +824,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "receiptmakev3".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÌÀºÙ½ñ".
+           "æ˜Žç´°æ›¸".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥ì¥»¥×¥ÈºîÀ®".
+           "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆ".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -834,9 +834,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "receiptprintv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÌÀºÙ½ñ".
+           "æ˜Žç´°æ›¸".
            05  FILLER                  PIC  X(64)      VALUE
-           "¥ì¥»¥×¥È°õºþ".
+           "ãƒ¬ã‚»ãƒ—ãƒˆå°åˆ·".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -844,9 +844,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "statisticsformv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æü¼¡¡¦·î¼¡Åý·×".
+           "æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆ".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æü¼¡¡¦·î¼¡Åý·×".
+           "æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆ".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -856,7 +856,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¾É¾õ¾Üµ­¾ðÊó¼èÆÀ".
+           "ç—‡çŠ¶è©³è¨˜æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -866,7 +866,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¾É¾õ¾Üµ­ÅÐÏ¿".
+           "ç—‡çŠ¶è©³è¨˜ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -876,7 +876,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "´ðËÜ¾ðÊó¼èÆÀ".
+           "åŸºæœ¬æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -886,7 +886,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥·¥¹¥Æ¥à´ÉÍý¾ðÊó¼èÆÀ".
+           "ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -896,7 +896,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "¥·¥¹¥Æ¥à¾õÂÖ¼èÆÀ".
+           "ã‚·ã‚¹ãƒ†ãƒ çŠ¶æ…‹å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -904,9 +904,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "tempmedicaladdv3".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿".
+           "å…¥é™¢è¨ºç™‚ãƒ‡ãƒ¼ã‚¿ä¸€æ‹¬ç™»éŒ²".
            05  FILLER                  PIC  X(64)      VALUE
-           "Æþ±¡¿ÇÎÅ¥Ç¡¼¥¿°ì³çÅÐÏ¿".
+           "å…¥é™¢è¨ºç™‚ãƒ‡ãƒ¼ã‚¿ä¸€æ‹¬ç™»éŒ²".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -916,7 +916,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ÃæÅÓ½ªÎ»´µ¼Ô¾ðÊó°ìÍ÷¼èÆÀ".
+           "ä¸­é€”çµ‚äº†æ‚£è€…æƒ…å ±ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -924,9 +924,9 @@
            05  FILLER                  PIC  X(32)      VALUE
            "tmedicalmodv2".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÃæÅÓ¥Ç¡¼¥¿´ÉÍý".
+           "ä¸­é€”ãƒ‡ãƒ¼ã‚¿ç®¡ç†".
            05  FILLER                  PIC  X(64)      VALUE
-           "ÃæÅÓ¥Ç¡¼¥¿´ÉÍý".
+           "ä¸­é€”ãƒ‡ãƒ¼ã‚¿ç®¡ç†".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
            05  FILLER                  PIC  X(16)      VALUE
@@ -936,7 +936,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "Íè±¡´µ¼Ô°ìÍ÷¼èÆÀ".
+           "æ¥é™¢æ‚£è€…ä¸€è¦§å–å¾—".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201812".
          03  APIINF-R REDEFINES APIINF-DATA.

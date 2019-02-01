@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥ì¥³¡¼¥ÉÄêµÁ¼èÆÀ¥µ¥Ö¥ë¡¼¥Á¥ó¥Ñ¥é¥á¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒ¬ã‚³ãƒ¼ãƒ‰å®šç¾©å–å¾—ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ãƒ‘ãƒ©ãƒ¡ã‚¿
       *                                   COPY (CPORCSSKDEF.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSSKDEFAREA.
-      *    ´ÉÍý¥³¡¼¥É
+      *    ç®¡ç†ã‚³ãƒ¼ãƒ‰
            03  ORCSSKDEF-KANRICD       PIC X(04).
-      *    ¥ì¥³¡¼¥ÉÌ¾¾Î
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰åç§°
            03  ORCSSKDEF-NAME          PIC X(40).
-      *    ¶èÊ¬¥³¡¼¥É
+      *    åŒºåˆ†ã‚³ãƒ¼ãƒ‰
            03  ORCSSKDEF-KBNCD         PIC X(08).
-      *    ¹àÌÜ¿ô
+      *    é …ç›®æ•°
            03  ORCSSKDEF-ITEM-MAX      PIC 9(03).
-      *    ¹àÌÜ¥Æ¡¼¥Ö¥ë
+      *    é …ç›®ãƒ†ãƒ¼ãƒ–ãƒ«
            03  ORCSSKDEF-ITEM-TBL.
                05  ORCSSKDEF-ITEM-OCC          OCCURS  500.
-      *            ¹àÌÜÈÖ¹æ
+      *            é …ç›®ç•ªå·
                    07  ORCSSKDEF-ITEM-NO       PIC 9(03).
-      *            ¹àÌÜÌ¾
+      *            é …ç›®å
                    07  ORCSSKDEF-ITEM          PIC X(30).
-      *            ¹àÌÜÌ¾¡Ê´Á»ú¡Ë
+      *            é …ç›®åï¼ˆæ¼¢å­—ï¼‰
                    07  ORCSSKDEF-ITEM-JP       PIC X(80).
-      *            ¹àÌÜ¥¿¥¤¥×¡Ê9:¿ô»ú¡¢
-      *                        A:±Ñ»ú¡¢
-      *                        X:±Ñ¿ô»ú¡ÊÈ¾³Ñ¡Ë¡¢
-      *                        N:±Ñ¿ô»ú¡ÊÁ´³Ñ¡Ë¡¢
-      *                        M:±Ñ¿ô»ú¡Êº®ºß¡Ë¡Ë
+      *            é …ç›®ã‚¿ã‚¤ãƒ—ï¼ˆ9:æ•°å­—ã€
+      *                        A:è‹±å­—ã€
+      *                        X:è‹±æ•°å­—ï¼ˆåŠè§’ï¼‰ã€
+      *                        N:è‹±æ•°å­—ï¼ˆå…¨è§’ï¼‰ã€
+      *                        M:è‹±æ•°å­—ï¼ˆæ··åœ¨ï¼‰ï¼‰
                    07  ORCSSKDEF-TYPE          PIC X(01).
-      *            ¹àÌÜ³«»Ï°ÌÃÖ
+      *            é …ç›®é–‹å§‹ä½ç½®
                    07  ORCSSKDEF-START         PIC 9(03).
-      *            ¹àÌÜÄ¹¡ÊºÇÂç¥µ¥¤¥º¡Ë
+      *            é …ç›®é•·ï¼ˆæœ€å¤§ã‚µã‚¤ã‚ºï¼‰
                    07  ORCSSKDEF-LENGTH        PIC 9(03).
-      *            ¹àÌÜÀºÅÙ
+      *            é …ç›®ç²¾åº¦
                    07  ORCSSKDEF-PRECISION     PIC 9(01).
       *

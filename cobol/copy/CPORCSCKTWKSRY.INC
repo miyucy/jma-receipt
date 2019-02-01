@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ������Ź԰�Ÿ���������ѥ�᥿��COPY (CPORCSCKTWKSRY.INC)
-      *                           ���ѥץ������ (ORCGKT01)
+      *    ワーク診療行為展開・更新パラメタ　COPY (CPORCSCKTWKSRY.INC)
+      *                           使用プログラム (ORCGKT01)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSCKTWKSRYAREA.
       *
-      *��ʬ�ʣ���Ÿ�������������ʣģ¡ˡ����������ʥѥ�᥿��
+      *区分（１：展開、２：作成（ＤＢ）、３：作成（パラメタ）
            03  ORCSCWKSRY-KBN              PIC  X(01).
-      *�����У�
+      *処理ＰＧ
            03  ORCSCWKSRY-PG               PIC  X(08).
       *
-      *������ʬ�ʣ�������Ÿ�����������ӽ�λŸ���������ģ�Ÿ����
+      *処理区分（０：訂正展開、１：中途終了展開、２：ＤＯ展開）
            03  ORCSCWKSRY-SYORIFLG         PIC  9(01).
-      *Ÿ����
+      *展開日
            03  ORCSCWKSRY-DAY              PIC  9(02).
-      *�ɲó��ϰ���
+      *追加開始位置
            03  ORCSCWKSRY-STRIDX           PIC  9(04).
-      *�ԥ����С����顼
+      *行オーバーエラー
            03  ORCSCWKSRY-ERRCD            PIC  X(04).
-      *���顼
+      *エラー
            03  ORCSCWKSRY-ERRCD2           PIC  X(04).
       *
-      *�ģº����Τ�����ʼ�ư����ʬ��
-      *    ��ư�û��ơ��֥�
+      *ＤＢ作成のみ設定（自動算定分）
+      *    自動加算テーブル
            03  ORCSCWKSRY-KASAN-AREA.
                05  ORCSCWKSRY-KASAN-TBL    OCCURS   60.
                    07  ORCSCWKSRY-KSN-HKNCOMBI    PIC X(04).
@@ -59,6 +59,6 @@
                    07  ORCSCWKSRY-KSN-ZAIEND      PIC X(01).
                    07  ORCSCWKSRY-KSN-INPUTCD     PIC X(22).
                    07  ORCSCWKSRY-KSN-AUTOKBN     PIC X(01).
-      *            ����
+      *            包括剤
                    07  ORCSCWKSRY-KSN-HKTKBN      PIC 9(01).
                05  ORCSCWKSRY-KSN-IDX             PIC 9(04).

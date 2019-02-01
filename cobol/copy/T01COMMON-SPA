@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,63 +17,63 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ����ɽ���� ���̣ӣУ�(SPA-WORK ������)
+      *    総括表作成 共通ＳＰＡ(SPA-WORK の内容)
       *          
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    12/01/13  �����ȹ�ؤ�ľ������ȿ���
-      *                                     ��ʧ���������б�
-      *  04.07.02    NACL-ƣ��    12/08/01  �쥻�ťǡ��������å���ǽ�б�
-      *  04.07.03    NACL-ƣ��    13/12/09  ���ž���Ϣ�ȴ����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    12/01/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.03    NACL-藤原    13/12/09  医療情報連携基盤対応
       *
-      *  04.08.01    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.01    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       *
-      *  04.09.01    NACL-ƣ��    17/08/01  �ȣ��ϣң��б�
+      *  04.09.01    NACL-藤原    17/08/01  ＨＡＯＲＩ対応
       *****************************************************************
        01  SPA-T01KYOUTU.
          03  SPA-T01KYOUTU-H. 
       *
-      *�ٹ��å�����
+      *警告メッセージ
            05  SPA-TIDCD                   PIC  X(04).
            05  SPA-TIDMSG                  PIC  X(200).
-      *�ٹ���̤��
+      *警告画面より
            05  SPA-TID1-AREA. 
                07  SPA-TID1-FLG            PIC  X(02).
                07  SPA-T99-FLG             PIC  X(02).
-      *�ٹ���̤��ʰ����ؼ���
+      *警告画面より（印刷指示）
            05  SPA-RECEDEN-FLG             PIC  X(02).
       *
            05  SPA-T99-MOTOPG              PIC X(08).
       *
-      *�������֥ե饰�ʣ����쥻�š�
+      *処理状態フラグ（１：レセ電）
            05  SPA-T01-SYORIFLG            PIC  9(01).
       *
            05  SPA-T01-TIMER-FLG           PIC 9(01).
       *
            05  SPA-T01-TBL-GROUP           PIC  X(14).
       *
-      *�쥻�ź������
+      *レセ電作成枚数
            05  SPA-T01-WRNO                PIC  9(02).
       *
-      *�쥻�źǽ����
+      *レセ電最終枚数
            05  SPA-T01-EDNO                PIC  9(02).
       *
-      *���饤�������¸���Υե����륻�쥯���������å��ե饰
+      *クライアント保存時のファイルセレクションチェックフラグ
            05  SPA-T99-FILESV-CHK-FLG      PIC 9(01).
       *
-      *���ϰ���
+      *入力位置
            05  SPA-T01-WIDGET              PIC X(64).
       *
-      *���ɽ�����̥ե饰�ʣ�����ǧ������������
+      *戻り表示画面フラグ（１：確認ダイアログ）
            05  SPA-T07-FLG                 PIC X(01).
-      *����ִ����ģ¤Υ�����  
+      *ジョブ管理ＤＢのキー値  
            05  SPA-T01-JOB-JOBID           PIC 9(07).
       *
          03  SPA-T01KYOUTU-G. 
-      *ľ�����᤹���ݸ����ֹ�
+      *直接請求する保険者番号
            05  SPA-T01-DIRECT-HKNJANUM-AREA.
                07  SPA-T01-DIRECT-HKNJANUM-G.
                     09  SPA-T01-DIRECT-HKNJANUM
@@ -87,15 +87,15 @@
                                            PIC X(08).
                    09  SPA-T01-DIRECT-HKNJANUM-63L
                                            PIC X(08).
-      *�쥻�ťǡ��������å� 
+      *レセ電データチェック 
            05  SPA-T01-RECEDEN-CHK         PIC X(01).
-      *�쥻�ץȺ�����ʬ
+      *レセプト作成区分
            05  SPA-T01-PRTKBN              PIC X(01).
-      *������ʬ
+      *入外区分
            05  SPA-T01-NYUGAIKBN           PIC X(01).
-      *Ϣ�ȴ����ѥǡ����ե�����ǥ��쥯�ȥ�
+      *連携基盤用データファイルデイレクトリ
            05  SPA-T01-9101-FILE-DIR       PIC X(200).
-      *����ǯ�����
+      *診療年月期間
            05  SPA-T01-1001-T.
                07  SPA-T01-1001-OCC        OCCURS  10.
                    09  SPA-T01-1001-TSTYUKYMD

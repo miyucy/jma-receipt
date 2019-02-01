@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      ÅÅ»ÒÅÀ¿ôÉ½¡¡Êñ³ç¡¦ÈïÊñ³ç¥Æ¡¼¥Ö¥ë   COPY (CPETENSU2.INC) *
+      *      é›»å­ç‚¹æ•°è¡¨ã€€åŒ…æ‹¬ãƒ»è¢«åŒ…æ‹¬ãƒ†ãƒ¼ãƒ–ãƒ«   COPY (CPETENSU2.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.08.00     NACL-°ËÆ£    16/03/13  ÆÃÎã¾ò·ïÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.08.00     NACL-ä¼Šè—¤    16/03/13  ç‰¹ä¾‹æ¡ä»¶è¿½åŠ 
       ************************************************************
       *01  ETENSU2-REC.
            03  ETENSU2-KEY.
-      *        ¥°¥ë¡¼¥×ÈÖ¹æ
+      *        ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·
                05  ETENSU2-H-GROUP             PIC  X(07).
-      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *        è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  ETENSU2-SRYCD               PIC  X(09).
-      *        Í­¸ú³«»ÏÆü
+      *        æœ‰åŠ¹é–‹å§‹æ—¥
                05  ETENSU2-YUKOSTYMD           PIC  X(08).
-      *        Í­¸ú½ªÎ»Æü
+      *        æœ‰åŠ¹çµ‚äº†æ—¥
                05  ETENSU2-YUKOEDYMD           PIC  X(08).
-      *    ¹¹¿·ÆüÉÕ
+      *    æ›´æ–°æ—¥ä»˜
            03  ETENSU2-CHGYMD                  PIC  X(08).
-      *    ÆÃÎã¾ò·ï
+      *    ç‰¹ä¾‹æ¡ä»¶
            03  ETENSU2-TOKUREI                 PIC  9(01).
-      *ÅÀ¿ô¥Þ¥¹¥¿ÍÑ
+      *ç‚¹æ•°ãƒžã‚¹ã‚¿ç”¨
            03  ETENSU2-TK-KEY.
                05  ETENSU2-TK-HOSPNUM          PIC  9(02).
                05  ETENSU2-TK-SRYKBN           PIC  X(02).
                05  ETENSU2-TK-SRYSYUKBN        PIC  X(03).
                05  ETENSU2-TK-SRYKBN-2         PIC  X(02).
                05  ETENSU2-TK-SRYSYUKBN-2      PIC  X(03).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  ETENSU2-UP-KEY.
                05  ETENSU2-UPH-GROUP           PIC  X(07).
                05  ETENSU2-UPSRYCD             PIC  X(09).

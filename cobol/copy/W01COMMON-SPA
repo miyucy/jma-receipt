@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,21 +17,21 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �����ƥ������������ ���̣ӣУ�(SPA-WORK ������)
+      *    システム管理情報設定 共通ＳＰＡ(SPA-WORK の内容)
       *          
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/04/01  ��ʬ�����ɤ�Ĺ�����ѹ� 
-      *  01.00.02    NACL-ƣ��    04/09/14  �ٹ�ե饰�����ɲ� 
-      *  03.04.00    NACL-¿��Ǽ  06/10/26  ��������Ϣ�������ɲ� 
-      *  04.06.01    NACL-��ƣ    11/06/17  �����ɶ�ʬ�ɲ� 
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/04/01  区分コードの長さを変更 
+      *  01.00.02    NACL-藤原    04/09/14  警告フラグ２を追加 
+      *  03.04.00    NACL-多々納  06/10/26  検索画面連絡情報追加 
+      *  04.06.01    NACL-伊藤    11/06/17  感染症区分追加 
       *****************************************************************
       *
        01  SPA-W01KYOUTU.
       *
            03  SPA-W01KYOUTU-AREA.
-      *ͭ������
+      *有効期間
            05  SPA-W01-STYUKYMD            PIC 9(08).
            05  SPA-W01-EDYUKYMD            PIC 9(08).
            05  SPA-W01-STYUKYMDH           PIC X(09).
@@ -49,15 +49,15 @@
                07  SPA-W01-MAE-KBNCD       PIC X(08).
            05  SPA-W01-MOTOPG              PIC X(08).
       *
-      *�ٹ��å�����
+      *警告メッセージ
            05  SPA-WIDCD                   PIC X(04).
            05  SPA-WIDCD2                  PIC X(04).
-      *�ٹ���̤��
+      *警告画面より
            05  SPA-WID1-AREA. 
                07  SPA-WID1-FLG            PIC X(02).
                07  SPA-WID2-FLG            PIC X(02).
       *
-      *    ���Ź԰ٸ�������Ϣ������
+      *    診療行為検索画面連絡情報
            03  SPA-W25-AREA.
                05  SPA-W25-MOTOPG          PIC X(08).
                05  SPA-W25-CDSYUBETU       PIC X(01).
@@ -74,5 +74,5 @@
       *
                05  SPA-W25-RC              PIC 9(04).
       *
-      *    �����ɶ�ʬ����
+      *    感染症区分情報
            03  SPA-W02-INFKBN              PIC X(01).

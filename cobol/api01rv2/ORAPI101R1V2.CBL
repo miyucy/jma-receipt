@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI101R1V2.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �����ƥ���������Ųʡ��ɥ�����������������
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  12/07/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : システム管理　診療科・ドクター一覧取得処理
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  12/07/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.07.00     NACL-¿��Ǽ  14/05/16  �ꥯ�������ֹ��б�
-      *                                     ���ŵ��ؾ�������ɲ�
-      * 05.00.00     NACL-ƣ��    18/11/07  �����ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  14/05/16  リクエスト番号対応
+      *                                     医療機関情報取得追加
+      * 05.00.00     NACL-藤原    18/11/07  項目追加
       *****************************************************************
       *
        ENVIRONMENT           DIVISION.
@@ -41,7 +41,7 @@
       *FILE                    SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -50,12 +50,12 @@
       *
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -67,7 +67,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -78,7 +78,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -87,7 +87,7 @@
            03  WRK-ZZ9                 PIC ZZZ9.
       *
            03  WRK-CNT                 PIC 9(04).
-      *    �ꥯ�������ֹ�
+      *    リクエスト番号
            03  WRK-REQUEST-NUMBER      PIC X(02).
       *
            03  WRK-NUM-4-X.
@@ -99,42 +99,42 @@
            03  WRK-IN-YMD                 PIC X(08).
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPAPISYSTEM01V2REQ.INC".
-      *    API XML�񤭹���������Ρʿ��Ųʡ�
+      *    API XML書き込み用定義体（診療科）
            COPY    "CPDEPARTMENTV2RES.INC".
-      *    API XML�񤭹���������Ρʥɥ�������
+      *    API XML書き込み用定義体（ドクター）
            COPY    "CPPHYSICIANV2RES.INC".
       *
-      *    API XML�񤭹���������Ρʰ��ŵ��ؾ����
+      *    API XML書き込み用定義体（医療機関情報）
             COPY    "CPAPISYS1001V2RES.INC".
       *
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
       *
-      *    �������ƾ���
+      *    診療内容情報
            COPY  "CPSK1005.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
       *
            COPY  "CPSK1002.INC".
@@ -146,7 +146,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -181,7 +181,7 @@
       *
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -195,19 +195,19 @@
       ***  INITIALIZE                      CNT-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST5-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-PTXMLMAKE-SEC
            END-IF
       *
@@ -220,7 +220,7 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -228,7 +228,7 @@
            INITIALIZE                      XML-DEPARTMENTRES
            INITIALIZE                      XML-PHYSICIANRES
            INITIALIZE                      XML-SYSTEM1001RES
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -237,14 +237,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  DEPTRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  DEPTRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -253,7 +253,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -271,11 +271,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTLSTREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -287,7 +287,7 @@
       *
            MOVE    ZERO                TO  FLG-SYORI
       *
-      *    �ꥯ�������ֹ椬�����ͥ��
+      *    リクエスト番号があれば優先
            IF      SYS01REQ-REQUEST-NUMBER >=  "01"   AND
                                            <=  "99"
                MOVE    SYS01REQ-REQUEST-NUMBER
@@ -299,40 +299,40 @@
       **** EVALUATE    APILST5-CLASS
            EVALUATE    WRK-REQUEST-NUMBER
            WHEN    "01"
-      *        ���Ųʰ���
+      *        診療科一覧
                MOVE    1                   TO  FLG-SYORI
            WHEN    "02"
-      *        �ɥ���������
+      *        ドクター一覧
                MOVE    2                   TO  FLG-SYORI
            WHEN    "03"
-      *        ��������
+      *        職員一覧
                MOVE    3                   TO  FLG-SYORI
            WHEN    "04"
-      *        ���ŵ��ؾ���
+      *        医療機関情報
                MOVE    4                   TO  FLG-SYORI
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
       *
-      *    ��������
+      *    一覧処理
            IF      WRK-ERRCD           =   SPACE
       *******  EVALUATE    APILST5-CLASS
                EVALUATE    WRK-REQUEST-NUMBER
                WHEN    "01"
-      *            ���Ųʰ���
+      *            診療科一覧
                    PERFORM 2002-SRYKA-LIST-SEC
                WHEN    "02"
-      *            �ɥ���������
+      *            ドクター一覧
                    PERFORM 2003-DRCD-LIST-SEC
                WHEN    "03"
-      *            ��������
+      *            職員一覧
                    PERFORM 2004-SYOCD-LIST-SEC
                WHEN    "04"
-      *            ���ŵ��ؾ���
+      *            医療機関情報
                    PERFORM 2005-SYS1001-LIST-SEC
                END-EVALUATE
            END-IF
@@ -342,7 +342,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTLSTREAD-SEC   SECTION.
       *
@@ -350,7 +350,7 @@
                DISPLAY "SYS01REQ-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-APIREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_system01_managev2req"
                                        TO  MCP-TABLE
@@ -391,7 +391,7 @@
        1000-APTLSTREAD-EXT.
            EXIT.
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -400,17 +400,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ƥ����å�
+      *    設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
            MOVE    SYS01REQ-BASE-DATE  TO  WRK-IN-DATE
-      *    ������
+      *    処理日
            MOVE    SYS01REQ-BASE-DATE  TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD            TO  WRK-IN-YMD
-      *    ������̤����ϥ����ƥ�����
+      *    開始日未設定はシステム日付
            IF      WRK-IN-DATE         =   SPACE
                MOVE    SPA-SYSYMD          TO  WRK-IN-YMD
                MOVE    WRK-IN-YMD          TO  WRK-SYMD
@@ -424,20 +424,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ųʰ�������
+      *    診療科一覧処理
       *****************************************************************
        2002-SRYKA-LIST-SEC             SECTION.
       *
            MOVE    ZERO                TO  IDX
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                      SYS-1005-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    WRK-IN-YMD          TO  SYS-1005-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -473,7 +473,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -486,7 +486,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɥ�������������
+      *    ドクター一覧処理
       *****************************************************************
        2003-DRCD-LIST-SEC             SECTION.
       *
@@ -498,7 +498,7 @@
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    WRK-IN-YMD          TO  SYS-1010-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -514,26 +514,26 @@
                                (FLG-SYSKANRI   =   1    )
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1) =   "1"
-      *            �ɥ������Τ�
+      *            ドクターのみ
                    ADD     1                   TO  IDX
                    IF      IDX                 >   100
                        MOVE    "10"                TO  WRK-ERRCD
                    ELSE
                        MOVE    SYS-1010-KBNCD(1:5) TO  PHYSRES-DRCD
                                                                  (IDX)
-      *                ��̾
+      *                氏名
                        MOVE    SYS-1010-NAME       TO  PHYSRES-NAME
                                                                  (IDX)
                        MOVE    SYS-1010-KANANAME   TO  PHYSRES-KANANAME
                                                                  (IDX)
-      *                ������Ͽ�ֹ�
+      *                医籍登録番号
                        MOVE    SYS-1010-ISEKINUM   TO  PHYSRES-ISEKINUM
                                                                  (IDX)
-      *                �����饤����
+      *                麻薬ライセンス
                        MOVE    SYS-1010-MAYAKULICENSE
                                                TO  PHYSRES-MAYAKULICENSE
                                                                  (IDX)
-      *                ����ʥ�����
+      *                専門科コード
                        PERFORM VARYING    IDY      FROM    1   BY  1
                                UNTIL      IDY      >   5
                            MOVE    SYS-1010-SEMONKACD-X (IDY)
@@ -546,7 +546,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -559,7 +559,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    職員一覧処理
       *****************************************************************
        2004-SYOCD-LIST-SEC             SECTION.
       *
@@ -571,7 +571,7 @@
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    WRK-IN-YMD          TO  SYS-1010-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
@@ -587,26 +587,26 @@
                                (FLG-SYSKANRI   =   1    )
                MOVE    SYSKANRI-REC        TO  SYS-1010-REC
                IF      SYS-1010-KBNCD(1:1) NOT =   "1"
-      *            �ɥ������ʳ�
+      *            ドクター以外
                    ADD     1                   TO  IDX
                    IF      IDX                 >   100
                        MOVE    "10"                TO  WRK-ERRCD
                    ELSE
                        MOVE    SYS-1010-KBNCD(1:5) TO  PHYSRES-DRCD
                                                                  (IDX)
-      *                ��̾
+      *                氏名
                        MOVE    SYS-1010-NAME       TO  PHYSRES-NAME
                                                                  (IDX)
                        MOVE    SYS-1010-KANANAME   TO  PHYSRES-KANANAME
                                                                  (IDX)
-      *                ������Ͽ�ֹ�
+      *                医籍登録番号
                        MOVE    SYS-1010-ISEKINUM   TO  PHYSRES-ISEKINUM
                                                                  (IDX)
-      *                �����饤����
+      *                麻薬ライセンス
                        MOVE    SYS-1010-MAYAKULICENSE
                                                TO  PHYSRES-MAYAKULICENSE
                                                                  (IDX)
-      *                ����ʥ�����
+      *                専門科コード
                        PERFORM VARYING    IDY      FROM    1   BY  1
                                UNTIL      IDY      >   5
                            MOVE    SYS-1010-SEMONKACD-X (IDY)
@@ -619,7 +619,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -632,7 +632,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ����Խ�����
+      *    医療機関情報編集処理
       *****************************************************************
        2005-SYS1001-LIST-SEC             SECTION.
       *
@@ -645,33 +645,33 @@
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    WRK-IN-YMD          TO  SYS-1001-STYUKYMD
            MOVE    WRK-IN-YMD          TO  SYS-1001-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1001-REC        TO  SYSKANRI-REC
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1001-REC
-      *        ���ֹ�
+      *        県番号
                MOVE    SYS-1001-PREFNUM
                                        TO  SYS101RES-PREFECTURES-NUMBER
-      *        ����ɽ��ʬ
+      *        点数表区分
                MOVE    SYS-1001-TENHYOKBN
                                        TO  SYS101RES-POINT-LIST
-      *        ���ŵ��إ�����
+      *        医療機関コード
                MOVE    SYS-1001-HOSPCD
                                        TO  SYS101RES-INSTITUTION-CODE
-      *        ���ŵ��ؼ���
+      *        医療機関種別
                MOVE    SYS-1001-HOSPSBT
                                    TO  SYS101RES-INSTITUTION-SPECIATION
-      *        ���ŵ��أɣ�
+      *        医療機関ＩＤ
                MOVE    SYS-1001-HOSPID
                                        TO  SYS101RES-INSTITUTION-ID
-      *        ���ŵ���̾��
+      *        医療機関名称
                MOVE    SYS-1001-HOSPNAME
                                    TO  SYS101RES-INSTITUTION-WHOLENAME
-      *        ���߼�̾
+      *        開設者名
                MOVE    SYS-1001-KAISETUNAME
                                    TO  SYS101RES-ESTABLISHER-WHOLENAME
-      *        ������̾
+      *        管理者名
                MOVE    SYS-1001-KANRINAME
                                    TO  SYS101RES-ADMINISTRATOR-WHOLENAME
                MOVE    SYS-1001-TANHOSPNAME
@@ -688,26 +688,26 @@
                MOVE    SYS-1001-ROUPAYKBN  TO  SYS101RES-ROUPAYKBN
                EVALUATE    SYS-1001-ROUPAYKBN
                    WHEN    "1"
-                       MOVE    "��Ψ"      TO  SYS101RES-ROUPAYKBNMEI
+                       MOVE    "定率"      TO  SYS101RES-ROUPAYKBNMEI
                    WHEN    "2"
-                       MOVE    "���"      TO  SYS101RES-ROUPAYKBNMEI
+                       MOVE    "定額"      TO  SYS101RES-ROUPAYKBNMEI
                END-EVALUATE
                MOVE    SYS-1001-HOSPSBT1   TO  SYS101RES-HOSPSBT1
                EVALUATE    SYS-1001-HOSPSBT1
                    WHEN    "0"
-                       MOVE    "�������±��Ǥʤ�"
+                       MOVE    "旧総合病院でない"
                                            TO  SYS101RES-HOSPSBT1MEI
                    WHEN    "1"
-                       MOVE    "�������±��Ǥ���"
+                       MOVE    "旧総合病院である"
                                            TO  SYS101RES-HOSPSBT1MEI
                END-EVALUATE
                MOVE    SYS-1001-HOSPCDN    TO  SYS101RES-HOSPCDN
                MOVE    SYS-1001-SYOHOKBN   TO  SYS101RES-SYOHOKBN
                EVALUATE    SYS-1001-SYOHOKBN
                    WHEN    "0"
-                       MOVE    "����"      TO  SYS101RES-SYOHOKBNMEI
+                       MOVE    "院内"      TO  SYS101RES-SYOHOKBNMEI
                    WHEN    "1"
-                       MOVE    "����"      TO  SYS101RES-SYOHOKBNMEI
+                       MOVE    "院外"      TO  SYS101RES-SYOHOKBNMEI
                END-EVALUATE
                IF    ( SYS-1001-SANKANUM   IS  NUMERIC  )
                AND   ( SYS-1001-SANKANUM   NOT =   ZERO )
@@ -718,45 +718,45 @@
                MOVE    SYS-1001-SKYPRTFLG  TO  SYS101RES-SKYPRTFLG
                EVALUATE    SYS-1001-SKYPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                            TO  SYS101RES-SKYPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���"  TO  SYS101RES-SKYPRTFLGMEI
+                       MOVE    "発行する"  TO  SYS101RES-SKYPRTFLGMEI
                    WHEN    "2"
-                       MOVE    "ȯ�Ԥ�������ᤢ���"
+                       MOVE    "発行する（請求あり）"
                                            TO  SYS101RES-SKYPRTFLGMEI
                    WHEN    "3"
-                       MOVE    "ȯ�Ԥ�����������ʤ���"
+                       MOVE    "発行する（訂正時なし）"
                                            TO  SYS101RES-SKYPRTFLGMEI
                END-EVALUATE
                MOVE    SYS-1001-SYOHOPRTFLG
                                            TO  SYS101RES-SYOHOPRTFLG 
                EVALUATE    SYS-1001-SYOHOPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                            TO  SYS101RES-SYOHOPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���"  TO  SYS101RES-SYOHOPRTFLGMEI
+                       MOVE    "発行する"  TO  SYS101RES-SYOHOPRTFLGMEI
                    WHEN    "2"
-                       MOVE    "�������ȯ��"
+                       MOVE    "院内処方発行"
                                            TO  SYS101RES-SYOHOPRTFLGMEI
                    WHEN    "3"
-                       MOVE    "ȯ�Ԥ�����������ʤ���"
+                       MOVE    "発行する（訂正時なし）"
                                            TO  SYS101RES-SYOHOPRTFLGMEI
                    WHEN    "4"
-                       MOVE    "�������ȯ�ԡ��������ʤ���" 
+                       MOVE    "院内処方発行（訂正時なし）" 
                                            TO  SYS101RES-SYOHOPRTFLGMEI
                END-EVALUATE
                MOVE    SYS-1001-ZENSYOHOFLG
                                            TO  SYS101RES-ZENSYOHOFLG
                EVALUATE    SYS-1001-ZENSYOHOFLG
                    WHEN    "0"
-                       MOVE    "ɽ������"  TO  SYS101RES-ZENSYOHOFLGMEI
+                       MOVE    "表示する"  TO  SYS101RES-ZENSYOHOFLGMEI
                    WHEN    "1"
-                       MOVE    "ɽ�����ʤ�"
+                       MOVE    "表示しない"
                                            TO  SYS101RES-ZENSYOHOFLGMEI
                END-EVALUATE
-      *        ���޾���ȯ������λ��������Ȥ���
+      *        薬剤情報発効空白の時、ゼロとする
                IF      SYS-1001-YAKUJYOPRTFLG
                                        =   SPACE
                    MOVE    ZERO            TO  SYS-1001-YAKUJYOPRTFLG
@@ -765,16 +765,16 @@
                                            TO  SYS101RES-YAKUJYOPRTFLG
                EVALUATE    SYS-1001-YAKUJYOPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                        TO  SYS101RES-YAKUJYOPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���"
+                       MOVE    "発行する"
                                        TO  SYS101RES-YAKUJYOPRTFLGMEI
                    WHEN    "2"
-                       MOVE    "ȯ�Ԥ�����������ʤ���"
+                       MOVE    "発行する（訂正時なし）"
                                        TO  SYS101RES-YAKUJYOPRTFLGMEI
                END-EVALUATE
-      *        ������Ģȯ������λ��������Ȥ���
+      *        お薬手帳発効空白の時、ゼロとする
                IF      SYS-1001-OKUSURIPRTFLG  =   SPACE
                    MOVE    ZERO            TO  SYS-1001-OKUSURIPRTFLG
                END-IF
@@ -782,39 +782,39 @@
                                           TO  SYS101RES-OKUSURIPRTFLG
                EVALUATE    SYS-1001-OKUSURIPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                           TO  SYS101RES-OKUSURIPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���ʸ�������"
+                       MOVE    "発行する（後期高齢）"
                                           TO  SYS101RES-OKUSURIPRTFLGMEI
                    WHEN    "2"
-                       MOVE    "ȯ�Ԥ���ʸ������ˡ��������ʤ���"
+                       MOVE    "発行する（後期高齢）（訂正時なし）"
                                           TO  SYS101RES-OKUSURIPRTFLGMEI
                    WHEN    "3"
-                       MOVE    "ȯ�Ԥ���" TO  SYS101RES-OKUSURIPRTFLGMEI
+                       MOVE    "発行する" TO  SYS101RES-OKUSURIPRTFLGMEI
                    WHEN    "4"
-                       MOVE    "ȯ�Ԥ�����������ʤ���"
+                       MOVE    "発行する（訂正時なし）"
                                           TO  SYS101RES-OKUSURIPRTFLGMEI
                END-EVALUATE
-      *        ���������ٽ�ȯ�Զ�ʬ����λ��������Ȥ���
+      *        診療費明細書発行区分空白の時、ゼロとする
                IF      SYS-1001-MEIPRTFLG  =   SPACE
                    MOVE    "1"                 TO  SYS-1001-MEIPRTFLG
                END-IF
                MOVE    SYS-1001-MEIPRTFLG  TO  SYS101RES-MEIPRTFLG
                EVALUATE    SYS-1001-MEIPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                            TO  SYS101RES-MEIPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���"  TO  SYS101RES-MEIPRTFLGMEI
+                       MOVE    "発行する"  TO  SYS101RES-MEIPRTFLGMEI
                    WHEN    "2"
-                       MOVE    "ȯ�Ԥ�������ᤢ���"
+                       MOVE    "発行する（請求あり）"
                                            TO  SYS101RES-MEIPRTFLGMEI
                    WHEN    "3"
-                       MOVE    "ȯ�Ԥ�����������ʤ���"
+                       MOVE    "発行する（訂正時なし）"
                                            TO  SYS101RES-MEIPRTFLGMEI
                END-EVALUATE
-      *        ͽ��ɼȯ�Զ�ʬ����λ��������Ȥ���
+      *        予約票発行区分空白の時、ゼロとする
                IF      SYS-1001-YYKHYOPRTFLG   =   SPACE
                    MOVE    ZERO                TO  SYS-1001-YYKHYOPRTFLG
                END-IF
@@ -822,12 +822,12 @@
                                                SYS101RES-YYKHYOPRTFLG
                EVALUATE    SYS-1001-YYKHYOPRTFLG
                    WHEN    "0"
-                       MOVE    "ȯ�Ԥ��ʤ�"
+                       MOVE    "発行しない"
                                            TO  SYS101RES-YYKHYOPRTFLGMEI
                    WHEN    "1"
-                       MOVE    "ȯ�Ԥ���"  TO  SYS101RES-YYKHYOPRTFLGMEI
+                       MOVE    "発行する"  TO  SYS101RES-YYKHYOPRTFLGMEI
                END-EVALUATE
-      *        ���������ݸ��ֹ楿�ֶ�ʬ����λ��������Ȥ���
+      *        地方公費保険番号タブ区分空白の時、ゼロとする
                IF      SYS-1001-CHIHOUNUMKBN   =   SPACE
                    MOVE    ZERO                TO  SYS-1001-CHIHOUNUMKBN
                END-IF
@@ -835,11 +835,11 @@
                                            TO  SYS101RES-CHIHOUNUMKBN
                EVALUATE    SYS-1001-CHIHOUNUMKBN
                    WHEN    "0"
-                       MOVE    "̵��"      TO  SYS101RES-CHIHOUNUMKBNMEI
+                       MOVE    "無効"      TO  SYS101RES-CHIHOUNUMKBNMEI
                    WHEN    "1"
-                       MOVE    "ͭ��"      TO  SYS101RES-CHIHOUNUMKBNMEI
+                       MOVE    "有効"      TO  SYS101RES-CHIHOUNUMKBNMEI
                END-EVALUATE
-      *        �����ü����ʬ�ʸ���ͭ�� ����λ���"1"�Ȥ���
+      *        請求額端数区分（減免有） 空白の時、"1"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN  =   SPACE
                    MOVE    "1"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN
@@ -849,23 +849,23 @@
                                            SYS101RES-DISCOUNT-HASU-KBN
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBNNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBNNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBNNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBNNM
                END-EVALUATE
-      *        �����ü����ʬ���ݡʸ���̵�ݸ�ʬ�� ����λ���"4"�Ȥ���
+      *        請求額端数区分医保（減免無保険分） 空白の時、"4"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN2 =   SPACE
                    MOVE    "4"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN2
@@ -875,23 +875,23 @@
                                            SYS101RES-DISCOUNT-HASU-KBN2
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN2
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2NM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2NM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2NM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2NM
                END-EVALUATE
-      *        �����ü����ʬ���ݡʸ���̵����ʬ�� ����λ���"0"�Ȥ���
+      *        請求額端数区分医保（減免無自費分） 空白の時、"0"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN2J   =   SPACE
                    MOVE    "0"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN2J
@@ -901,27 +901,27 @@
                                            SYS101RES-DISCOUNT-HASU-KBN2J
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN2J
                    WHEN    "0"
-                       MOVE    "�ݸ�ʬ�˽ऺ��"
+                       MOVE    "保険分に準ずる"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2JNM
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2JNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2JNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2JNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN2JNM
                END-EVALUATE
-      *        �����ü����ʬϫ�ҡʸ���̵�ݸ�ʬ�� ����λ���"4"�Ȥ���
+      *        請求額端数区分労災（減免無保険分） 空白の時、"4"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN3   =   SPACE
                    MOVE    "4"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN3
@@ -931,23 +931,23 @@
                                            SYS101RES-DISCOUNT-HASU-KBN3
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN3
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3NM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3NM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3NM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3NM
                END-EVALUATE
-      *        �����ü����ʬϫ�ҡʸ���̵����ʬ�� ����λ���"0"�Ȥ���
+      *        請求額端数区分労災（減免無自費分） 空白の時、"0"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN3J   =   SPACE
                    MOVE    "0"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN3J
@@ -957,27 +957,27 @@
                                            SYS101RES-DISCOUNT-HASU-KBN3J
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN3J
                    WHEN    "0"
-                       MOVE    "�ݸ�ʬ�˽ऺ��"
+                       MOVE    "保険分に準ずる"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3JNM
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3JNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3JNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3JNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN3JNM
                END-EVALUATE
-      *        �����ü����ʬ�����աʸ���̵�ݸ�ʬ�� ����λ���"4"�Ȥ���
+      *        請求額端数区分自賠責（減免無保険分） 空白の時、"4"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN4   =   SPACE
                    MOVE    "4"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN4
@@ -987,23 +987,23 @@
                                            SYS101RES-DISCOUNT-HASU-KBN4
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN4
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4NM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4NM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4NM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4NM
                END-EVALUATE
-      *        �����ü����ʬ�����աʸ���̵����ʬ�� ����λ���"0"�Ȥ���
+      *        請求額端数区分自賠責（減免無自費分） 空白の時、"0"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN4J   =   SPACE
                    MOVE    "0"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN4J
@@ -1013,27 +1013,27 @@
                                            SYS101RES-DISCOUNT-HASU-KBN4J
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN4J
                    WHEN    "0"
-                       MOVE    "�ݸ�ʬ�˽ऺ��"
+                       MOVE    "保険分に準ずる"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4JNM
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4JNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4JNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4JNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN4JNM
                END-EVALUATE
-      *        �����ü����ʬ�����ʸ���̵����ʬ�� ����λ���"4"�Ȥ���
+      *        請求額端数区分公害（減免無自費分） 空白の時、"4"とする
                IF      SYS-1001-DISCOUNT-HASU-KBN5J   =   SPACE
                    MOVE    "4"             TO
                                            SYS-1001-DISCOUNT-HASU-KBN5J
@@ -1043,27 +1043,27 @@
                                            SYS101RES-DISCOUNT-HASU-KBN5J
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN5J
                    WHEN    "0"
-                       MOVE    "�ݸ�ʬ�˽ऺ��"
+                       MOVE    "保険分に準ずる"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN5JNM
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN5JNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN5JNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN5JNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN5JNM
                END-EVALUATE
-      *        �����ü����ʬ�軰�Թ԰١ʸ���̵�ݸ�ʬ�� ����λ��������դ�����Ȥ���
+      *        請求額端数区分第三者行為（減免無保険分） 空白の時、自賠責の設定とする
                IF      SYS-1001-DISCOUNT-HASU-KBN6   =   SPACE
                     MOVE    SYS-1001-DISCOUNT-HASU-KBN6
                                            TO
@@ -1074,23 +1074,23 @@
                                            SYS101RES-DISCOUNT-HASU-KBN6
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN6
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6NM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6NM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6NM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6NM
                END-EVALUATE
-      *        �����ü����ʬ�����աʸ���̵����ʬ�� ����λ��������դ�����Ȥ���
+      *        請求額端数区分自賠責（減免無自費分） 空白の時、自賠責の設定とする
                IF      SYS-1001-DISCOUNT-HASU-KBN6J   =   SPACE
                     MOVE    SYS-1001-DISCOUNT-HASU-KBN6J
                                            TO
@@ -1101,56 +1101,56 @@
                                            SYS101RES-DISCOUNT-HASU-KBN6J
                EVALUATE    SYS-1001-DISCOUNT-HASU-KBN6J
                    WHEN    "0"
-                       MOVE    "�ݸ�ʬ�˽ऺ��"
+                       MOVE    "保険分に準ずる"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6JNM
                    WHEN    "1"
-                       MOVE    "������̤���ͼθ���"
+                       MOVE    "１０円未満四捨五入"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6JNM
                    WHEN    "2"
-                       MOVE    "������̤���ڤ�Τ�"
+                       MOVE    "１０円未満切り捨て"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6JNM
                    WHEN    "3"
-                       MOVE    "������̤���ڤ�夲"
+                       MOVE    "１０円未満切り上げ"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6JNM
                    WHEN    "4"
-                       MOVE    "������̤��ü�������ʤ�"
+                       MOVE    "１０円未満端数処理なし"
                                            TO
                                        SYS101RES-DISCOUNT-HASU-KBN6JNM
                END-EVALUATE
-      *        �軰�Թ԰١ʰ��������ô��۷׻���ʬ������λ�"2"�Ȥ���
+      *        第三者行為（医療費）負担金額計算区分、空白の時"2"とする
                IF      SYS-1001-DAISANKBN    =   SPACE
                    MOVE    "2"             TO  SYS-1001-DAISANKBN
                END-IF
                MOVE    SYS-1001-DAISANKBN  TO  SYS101RES-DAISANKBN
                EVALUATE    SYS-1001-DAISANKBN
                    WHEN    "1"
-                       MOVE    "��ô��ۣ�����̤���ͼθ���"
+                       MOVE    "負担金額１０円未満四捨五入"
                                            TO  SYS101RES-DAISANKBNMEI
                    WHEN    "2"
-                       MOVE    "��ô��ۣ�����̤��ü�������ʤ�"
+                       MOVE    "負担金額１０円未満端数処理なし"
                                            TO  SYS101RES-DAISANKBNMEI
                END-EVALUATE
-      *        ���ȷ׻��оݶ�ʬ������λ�"1"�Ȥ���
+      *        減免計算対象区分、空白の時"1"とする
                IF      SYS-1001-GENTAIKBN    =   SPACE
                    MOVE    "1"             TO  SYS-1001-GENTAIKBN
                END-IF
                MOVE    SYS-1001-GENTAIKBN  TO  SYS101RES-GENTAIKBN
                EVALUATE    SYS-1001-GENTAIKBN
                    WHEN    "1"
-                       MOVE    "����ʬ��ޤ�"  
+                       MOVE    "自費分を含む"  
                                            TO  SYS101RES-GENTAIKBNMEI
                    WHEN    "2"
-                       MOVE    "����ʬ�����" 
+                       MOVE    "自費分を除く" 
                                            TO  SYS101RES-GENTAIKBNMEI
                    WHEN    "3"
-                       MOVE    "����ʬ�Τ�"
+                       MOVE    "自費分のみ"
                                            TO  SYS101RES-GENTAIKBNMEI
                END-EVALUATE
-      *        ������ü����ʬ ����λ���"2"�Ȥ���
+      *        消費税端数区分 空白の時、"2"とする
                IF      SYS-1001-TAX-HASU-KBN   =   SPACE
                    MOVE    "2"             TO  SYS-1001-TAX-HASU-KBN
                END-IF
@@ -1158,16 +1158,16 @@
                                            TO  SYS101RES-TAX-HASU-KBN
                EVALUATE    SYS-1001-TAX-HASU-KBN
                    WHEN    "1"
-                       MOVE    "����̤���ͼθ���"  
+                       MOVE    "１円未満四捨五入"  
                                            TO  SYS101RES-TAX-HASU-KBNMEI
                    WHEN    "2"
-                       MOVE    "����̤���ڤ�Τ�" 
+                       MOVE    "１円未満切り捨て" 
                                            TO  SYS101RES-TAX-HASU-KBNMEI
                    WHEN    "3"
-                       MOVE    "����̤���ڤ�夲" 
+                       MOVE    "１円未満切り上げ" 
                                            TO  SYS101RES-TAX-HASU-KBNMEI
                END-EVALUATE
-      *        ���񥳡���ü�� ����λ���"2"�Ȥ���
+      *        自費コード端数 空白の時、"2"とする
                IF      SYS-1001-JIHI-HASU-KBN   =   SPACE
                    MOVE    "2"             TO  SYS-1001-JIHI-HASU-KBN
                END-IF
@@ -1175,32 +1175,32 @@
                                            TO  SYS101RES-JIHI-HASU-KBN
                EVALUATE    SYS-1001-JIHI-HASU-KBN
                    WHEN    "1"
-                       MOVE    "����̤���ͼθ���"
+                       MOVE    "１円未満四捨五入"
                                            TO
                                            SYS101RES-JIHI-HASU-KBNMEI
                    WHEN    "2"
-                       MOVE    "����̤���ڤ�Τ�"
+                       MOVE    "１円未満切り捨て"
                                            TO
                                            SYS101RES-JIHI-HASU-KBNMEI
                    WHEN    "3"
-                       MOVE    "����̤���ڤ�夲"
+                       MOVE    "１円未満切り上げ"
                                            TO
                                            SYS101RES-JIHI-HASU-KBNMEI
                END-EVALUATE
-      *        �������������ٳ�����׻���ʬ ����λ���"1"�Ȥ���
+      *        更生・育成限度額日割計算区分 空白の時、"1"とする
                IF      SYS-1001-HIWARIKBN  =   SPACE
                    MOVE    "1"             TO  SYS-1001-HIWARIKBN
                END-IF
                MOVE    SYS-1001-HIWARIKBN  TO  SYS101RES-HIWARIKBN
                EVALUATE    SYS-1001-HIWARIKBN
                    WHEN    "1"
-                       MOVE    "����׻����ʤ�"
+                       MOVE    "日割計算しない"
                                            TO  SYS101RES-HIWARIKBNMEI
                    WHEN    "2"
-                       MOVE    "����׻�����"
+                       MOVE    "日割計算する"
                                            TO  SYS101RES-HIWARIKBNMEI
                END-EVALUATE
-      *        �ǡ��������ե饰 ����λ���"0"�Ȥ���
+      *        データ作成フラグ 空白の時、"0"とする
                IF      SYS-1001-DATACREATEFLG  =   SPACE
                    MOVE    "0"             TO  SYS-1001-DATACREATEFLG
                END-IF
@@ -1208,14 +1208,14 @@
                                            TO  SYS101RES-DATACREATEFLG
                EVALUATE    SYS-1001-DATACREATEFLG
                    WHEN    "0"
-                       MOVE    "�������ʤ�"
+                       MOVE    "作成しない"
                                            TO
                                            SYS101RES-DATACREATEFLGMEI
                    WHEN    "1"
-                       MOVE    "��������"  TO
+                       MOVE    "作成する"  TO
                                            SYS101RES-DATACREATEFLGMEI
                END-EVALUATE
-      *        �ǡ��������ˡ��ʬ ����λ���"0"�Ȥ���
+      *        データ提出方法区分 空白の時、"0"とする
                IF      SYS-1001-DATATEISYUTUKBN  =   SPACE
                    MOVE    "0"             TO  SYS-1001-DATATEISYUTUKBN
                END-IF
@@ -1223,16 +1223,16 @@
                                            TO  SYS101RES-DATATEISYUTUKBN
                EVALUATE    SYS-1001-DATATEISYUTUKBN
                    WHEN    "0"
-                       MOVE    "��Ф��ʤ�"
+                       MOVE    "提出しない"
                                        TO  SYS101RES-DATATEISYUTUKBNMEI
                    WHEN    "1"
-                       MOVE    "��ư������"
+                       MOVE    "自動で送信"
                                        TO  SYS101RES-DATATEISYUTUKBNMEI
                    WHEN    "2"
-                       MOVE    "��ư������"
+                       MOVE    "手動で送信"
                                        TO  SYS101RES-DATATEISYUTUKBNMEI
                END-EVALUATE
-      *        �ǡ��������ɶ�ʬ ����λ���"0"�Ȥ���
+      *        データ感染症区分 空白の時、"0"とする
                IF      SYS-1001-DATAINFECTIONKBN   =   SPACE
                    IF      SYS-1001-DATACREATEFLG  =   "1"
                        MOVE    "1"         TO  SYS-1001-DATAINFECTIONKBN
@@ -1245,22 +1245,22 @@
                                            SYS101RES-DATAINFECTIONKBN
                EVALUATE    SYS-1001-DATAINFECTIONKBN
                    WHEN    "0"
-                       MOVE    "�������ʤ�"
+                       MOVE    "作成しない"
                                            TO
                                            SYS101RES-DATAINFECTIONKBNMEI
                    WHEN    "1"
-                       MOVE    "��������"  TO
+                       MOVE    "作成する"  TO
                                            SYS101RES-DATAINFECTIONKBNMEI
                    WHEN    "2"
-                       MOVE    "�������롿��"
+                       MOVE    "作成する／日"
                                            TO
                                            SYS101RES-DATAINFECTIONKBNMEI
                    WHEN    "9"
-                       MOVE    "�������ʤ���"
+                       MOVE    "作成しない消"
                                            TO
                                            SYS101RES-DATAINFECTIONKBNMEI
                END-EVALUATE
-      *        �ǡ��������ˡ��ʬ ����λ���"0"�Ȥ���
+      *        データ提出方法区分 空白の時、"0"とする
                IF      SYS-1001-JIHIPOSITION   =   SPACE
                    MOVE    "1"             TO  SYS-1001-JIHIPOSITION
                END-IF
@@ -1268,23 +1268,23 @@
                                            TO  SYS101RES-JIHIPOSITION
                EVALUATE    SYS-1001-JIHIPOSITION
                    WHEN    "1"
-                       MOVE    "�ݸ�ʬ�����ô��ۻͼθ�����"
+                       MOVE    "保険分欄（負担金額四捨五入）"
                                            TO
                                            SYS101RES-JIHIPOSITIONMEI
                    WHEN    "2"
-                       MOVE    "����ʬ��"  TO
+                       MOVE    "自費分欄"  TO
                                            SYS101RES-JIHIPOSITIONMEI
                    WHEN    "3"
-                       MOVE    "�ݸ�ʬ�����ô���ü�������ʤ���"
+                       MOVE    "保険分欄（負担金額端数処理なし）"
                                            TO
                                            SYS101RES-JIHIPOSITIONMEI
                END-EVALUATE
            ELSE
-      *        �оݤʤ�
+      *        対象なし
                MOVE    "11"            TO  WRK-ERRCD
            END-IF
       *
-      *    Ϣ�������
+      *    連絡先情報
            MOVE    SPACE               TO  SYS-1002-REC
            INITIALIZE                      SYS-1002-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
@@ -1297,17 +1297,17 @@
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1002-REC
-      *        ͹���ֹ�
+      *        郵便番号
                MOVE    SYS-1002-POST   TO  SYS101RES-ADDRESS-ZIPCODE
-      *        �����
+      *        所在地
                MOVE    SYS-1002-ADRS   TO  SYS101RES-WHOLEADDRESS
-      *        �����ֹ�
+      *        電話番号
                MOVE    SYS-1002-TEL    TO  SYS101RES-PHONENUMBER
-      *        �ƣ����ֹ�
+      *        ＦＡＸ番号
                MOVE    SYS-1002-FAX    TO  SYS101RES-FAXNUMBER
            END-IF
       *
-      *    ����
+      *    広告
            MOVE    SPACE               TO  SYS-1003-REC
            INITIALIZE                      SYS-1003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1003-HOSPNUM
@@ -1320,9 +1320,9 @@
            PERFORM 9001-SYSKANRI-KEYREAD-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC    TO  SYS-1003-REC
-      *        ��᡼�륢�ɥ쥹
+      *        ｅメールアドレス
                MOVE    SYS-1003-EMAIL  TO  SYS101RES-EMAIL-ADDRESS
-      *        �ۡ���ڡ������ɥ쥹
+      *        ホームページアドレス
                MOVE    SYS-1003-HPURL  TO  SYS101RES-HOMEPAGE-ADDRESS
            END-IF
            .
@@ -1330,21 +1330,21 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
            EVALUATE    FLG-SYORI
                WHEN    1
                WHEN    0
-      *            ���Ųʰ���
+      *            診療科一覧
                    PERFORM 3001-DEPARTMENT-MAKE-SEC
                WHEN    2
                WHEN    3
-      *            �ɥ���������������
+      *            ドクター・職員一覧
                    PERFORM 3002-PHYSICIAN-MAKE-SEC
                WHEN    4
-      *            ���ŵ��ؾ���
+      *            医療機関情報
                    PERFORM 3003-MEDICALINF-MAKE-SEC
            END-EVALUATE
       *
@@ -1353,19 +1353,19 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽����ʿ��Ųʰ�����
+      *    XML情報書き込み処理（診療科一覧）
       *****************************************************************
        3001-DEPARTMENT-MAKE-SEC               SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-               MOVE    "������λ"          TO  DEPTRES-API-RESULT-MSG
+      *        正常終了
+               MOVE    "処理終了"          TO  DEPTRES-API-RESULT-MSG
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  DEPTRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  DEPTRES-API-RESULT-MSG
@@ -1413,28 +1413,28 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽����ʥɥ�����������
+      *    XML情報書き込み処理（ドクター一覧）
       *****************************************************************
        3002-PHYSICIAN-MAKE-SEC               SECTION.
       *
            MOVE   "Patient Info"       TO  PHYSRES-RESKEY
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    DEPTRES-INFORMATION-DATE
                                        TO  PHYSRES-INFORMATION-DATE
            MOVE    DEPTRES-INFORMATION-TIME
                                        TO  PHYSRES-INFORMATION-TIME
            MOVE    ZERO                TO  PHYSRES-API-RESULT
-      *    ����� 
+      *    基準日 
            MOVE    WRK-HEN-DATE        TO  PHYSRES-BASE-DATE
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-               MOVE    "������λ"          TO  PHYSRES-API-RESULT-MSG
+      *        正常終了
+               MOVE    "処理終了"          TO  PHYSRES-API-RESULT-MSG
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  PHYSRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  PHYSRES-API-RESULT-MSG
@@ -1483,28 +1483,28 @@
       *
       *
       *****************************************************************
-      *    XML����񤭹��߽����ʰ��ŵ��ؾ����
+      *    XML情報書き込み処理（医療機関情報）
       *****************************************************************
        3003-MEDICALINF-MAKE-SEC               SECTION.
       *
            MOVE   "Patient Info"       TO  SYS101RES-RESKEY
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    DEPTRES-INFORMATION-DATE
                                        TO  SYS101RES-INFORMATION-DATE
            MOVE    DEPTRES-INFORMATION-TIME
                                        TO  SYS101RES-INFORMATION-TIME
            MOVE    ZERO                TO  SYS101RES-API-RESULT
-      *    ����� 
+      *    基準日 
            MOVE    WRK-HEN-DATE        TO  SYS101RES-BASE-DATE
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-               MOVE    "������λ"          TO  SYS101RES-API-RESULT-MSG
+      *        正常終了
+               MOVE    "処理終了"          TO  SYS101RES-API-RESULT-MSG
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  SYS101RES-API-RESULT
                MOVE    WRK-ERRMSG          TO  SYS101RES-API-RESULT-MSG
@@ -1552,7 +1552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1581,7 +1581,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1603,58 +1603,58 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "10"
-               MOVE    "�оݤ���������ʾ�Ȥʤ�ޤ���"
+               MOVE    "対象が１００件以上となります。"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "�оݤ�����ޤ���"
+               MOVE    "対象がありません。"
                                                TO  WRK-ERRMSG
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-      ****     MOVE    "������ʬ̤����"        TO  WRK-ERRMSG
-               MOVE    "�ꥯ�������ֹ椬����ޤ���"
+      ****     MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+               MOVE    "リクエスト番号がありません"
                                                TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE    "�������Ƥ˸��꤬����ޤ���"
+               MOVE    "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE    "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE    "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1662,7 +1662,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�����
+      *    システム管理読込処理
       *****************************************************************
        9001-SYSKANRI-KEYREAD-SEC            SECTION.
       *
@@ -1687,7 +1687,7 @@
       *
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�����
+      *    システム管理読込処理
       *****************************************************************
        900-SYSKANRI-READ-SEC            SECTION.
       *
@@ -1705,7 +1705,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1719,7 +1719,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1733,7 +1733,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

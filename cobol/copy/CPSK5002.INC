@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,88 +16,88 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5002.INC)   *
-      *         ¡Ê£µ£°£°£²¡Ë                            *
-      *         ÉÂ¼¼¥Þ¥¹¥¿                              *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5002.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼ï¼’ï¼‰                            *
+      *         ç—…å®¤ãƒžã‚¹ã‚¿                              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5002-REC.
            03  SYS-5002-KEY.
                05  SYS-5002-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5002-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5002-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5002-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5002-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5002-TBL.
-      *ÉÂ¼¼ÈÖ¹æ
+      *ç—…å®¤ç•ªå·
                05  SYS-5002-BRM-NUM
                                         PIC  X(08).
-      *ÉÂ¼¼¼ïÊÌ
+      *ç—…å®¤ç¨®åˆ¥
                05  SYS-5002-BRM-SBT
                                         PIC  X(02).
-      *ÆÃÄêÆþ±¡ÎÁ
+      *ç‰¹å®šå…¥é™¢æ–™
                05  SYS-5002-BRM-TOKTEI-NYUIN
                                         PIC  X(02).
-      *¼ýÍÆ¿Í¿ô
+      *åŽå®¹äººæ•°
                05  SYS-5002-BRM-NINZU   PIC  9(02).
-      *¼¼ÎÁº¹³Û
+      *å®¤æ–™å·®é¡
                05  SYS-5002-BRM-SAGAKU  PIC  X(02).
-      *À­ÊÌÆÃÄê
+      *æ€§åˆ¥ç‰¹å®š
                05  SYS-5002-BRM-SEX     PIC  X(01).
-      *ÆâÀþÈÖ¹æ
+      *å†…ç·šç•ªå·
                05  SYS-5002-BRM-NAITEL
                                         PIC  X(05).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  SYS-5002-BRM-KA      PIC  X(02).
       *
-      *²Ã»»ÎÎ°è
+      *åŠ ç®—é ˜åŸŸ
                05  SYS-5002-KSNAREA.
-      *¿·À¸»ùÆþ±¡°åÎÅ´ÉÍý²Ã»»
+      *æ–°ç”Ÿå…å…¥é™¢åŒ»ç™‚ç®¡ç†åŠ ç®—
                    07  SYS-5002-SINSEIJI.
                        09  SYS-5002-SINSEIJI-CD    PIC X(09).
                        09  SYS-5002-SINSEIJI-KBN   PIC X(01).
-      *¿ÇÎÅ½êÎÅÍÜÉÂ¾²ÎÅÍÜ´Ä¶­²Ã»»
+      *è¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠç™‚é¤Šç’°å¢ƒåŠ ç®—
                    07  SYS-5002-SNR-RYOYO          OCCURS 2.
                        09  SYS-5002-SNR-RYOYO-CD   PIC X(09).
                        09  SYS-5002-SNR-RYOYO-KBN  PIC X(01).
-      *Êü¼ÍÀþ¼£ÎÅÉÂ¼¼´ÉÍý²Ã»»
+      *æ”¾å°„ç·šæ²»ç™‚ç—…å®¤ç®¡ç†åŠ ç®—
                    07  SYS-5002-HOSYASEN.
                        09  SYS-5002-HOSYASEN-CD    PIC X(09).
                        09  SYS-5002-HOSYASEN-KBN   PIC X(01).
-      *ÎÅÍÜ´Ä¶­²Ã»»
+      *ç™‚é¤Šç’°å¢ƒåŠ ç®—
                    07  SYS-5002-RYOYO.
                        09  SYS-5002-RYOYO-CD       PIC X(09).
                        09  SYS-5002-RYOYO-KBN      PIC X(01).
-      *ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»
-      *¡ÊÉÂÅï´ÉÍý¾ðÊó¤«¤é°ÜÆ° H15.02.27)
+      *ç™‚é¤Šç—…æ£Ÿç™‚é¤Šç’°å¢ƒåŠ ç®—
+      *ï¼ˆç—…æ£Ÿç®¡ç†æƒ…å ±ã‹ã‚‰ç§»å‹• H15.02.27)
                    07  SYS-5002-BTU-RYOYO          OCCURS  3.
                        09  SYS-5002-BTU-RYOYO-CD   PIC X(09).
                        09  SYS-5002-BTU-RYOYO-KBN  PIC X(01).
-      *½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê¸Ä¼¼¡Ë
+      *é‡ç—‡è€…ç­‰ç™‚é¤Šç’°å¢ƒç‰¹åˆ¥åŠ ç®—ï¼ˆå€‹å®¤ï¼‰
                    07  SYS-5002-JYUTOK1.
                        09  SYS-5002-JYUTOK1-CD     PIC X(09).
                        09  SYS-5002-JYUTOK1-KBN    PIC X(01).
-      *½Å¾É¼ÔÅùÎÅÍÜ´Ä¶­ÆÃÊÌ²Ã»»¡Ê£²¿ÍÉô²°¡Ë
+      *é‡ç—‡è€…ç­‰ç™‚é¤Šç’°å¢ƒç‰¹åˆ¥åŠ ç®—ï¼ˆï¼’äººéƒ¨å±‹ï¼‰
                    07  SYS-5002-JYUTOK2.
                        09  SYS-5002-JYUTOK2-CD     PIC X(09).
                        09  SYS-5002-JYUTOK2-KBN    PIC X(01).
-      *Ìµ¶Ý¼£ÎÅ¼¼´ÉÍý²Ã»»
+      *ç„¡èŒæ²»ç™‚å®¤ç®¡ç†åŠ ç®—
                    07  SYS-5002-MUKIN.
                        09  SYS-5002-MUKIN-CD       PIC X(09).
                        09  SYS-5002-MUKIN-KBN      PIC X(01).
-      *ÎÅÍÜÉÂÅïÎÅÍÜ´Ä¶­²Ã»»£±
+      *ç™‚é¤Šç—…æ£Ÿç™‚é¤Šç’°å¢ƒåŠ ç®—ï¼‘
                    07  SYS-5002-BTU-RYOYO-H18.
                        09  SYS-5002-BTU-RYOYO-H18-CD   PIC X(09).
                        09  SYS-5002-BTU-RYOYO-H18-KBN  PIC X(01).
-      *Æþ±¡ÎÁ²Ã»»ºÆÄêµÁ
+      *å…¥é™¢æ–™åŠ ç®—å†å®šç¾©
                05  SYS-5002-KSNTBLR  REDEFINES  SYS-5002-KSNAREA.
                  07  SYS-5002-KSN              OCCURS  12.
                    09  SYS-5002-KSNCD              PIC X(09).
@@ -107,17 +107,17 @@
                05  SYS-5002-KHNKBNCD               PIC X(03).
                05  SYS-5002-TSRYCD                 PIC X(09).
                05  SYS-5002-YOBI2                  PIC X(35).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5002-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5002-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5002-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5002-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5002-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5002-UPD-KEY.
                05  SYS-5002-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5002-UPD-KANRICD     PIC X(04).

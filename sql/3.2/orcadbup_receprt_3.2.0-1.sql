@@ -1,18 +1,18 @@
 --                                    --
--- �쥻�ץ����٥ơ��֥���ѹ�         --
+-- レセプト明細テーブルの変更         --
 --                                    --
--- ���ܤ��ɲ�                         --
---   ����ѽ��Ͻ缱���ֹ�             --
+-- 項目の追加                         --
+--   主科用出力順識別番号             --
 --                                    --
 -- Create Date : 2006/08/31           --
 --                                    --
 \set ON_ERROR_STOP
 
---    �����ɲ�                        --
+--    項目追加                        --
 alter table TBL_RECEPRT
    add column PRTJYUN_SYUKA  numeric(04);
 
---    ��������                       --
+--    ゼロ設定                       --
 alter table TBL_RECEPRT
    alter PRTJYUN_SYUKA set default 0;
 

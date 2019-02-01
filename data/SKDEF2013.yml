@@ -1,311 +1,311 @@
 kanri_cd    : "2013"
-name        : "¥ì¥»¥×¥È¸øÈñµ­ºÜ½çÀßÄê"
+name        : "ãƒ¬ã‚»ãƒ—ãƒˆå…¬è²»è¨˜è¼‰é †è¨­å®š"
 class_cd    : "*"
 item_max    : 51
 item_list   :
 - item_no   : 1
   item      : "KOHNUM1"
-  item_jp   : "¸øÈñÈÖ¹æ£±"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘"
   type      : "X"
   start     : 1
   length    : 3
 - item_no   : 2
   item      : "KOHNUM2"
-  item_jp   : "¸øÈñÈÖ¹æ£²"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’"
   type      : "X"
   start     : 4
   length    : 3
 - item_no   : 3
   item      : "KOHNUM3"
-  item_jp   : "¸øÈñÈÖ¹æ£³"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“"
   type      : "X"
   start     : 7
   length    : 3
 - item_no   : 4
   item      : "KOHNUM4"
-  item_jp   : "¸øÈñÈÖ¹æ£´"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”"
   type      : "X"
   start     : 10
   length    : 3
 - item_no   : 5
   item      : "KOHNUM5"
-  item_jp   : "¸øÈñÈÖ¹æ£µ"
+  item_jp   : "å…¬è²»ç•ªå·ï¼•"
   type      : "X"
   start     : 13
   length    : 3
 - item_no   : 6
   item      : "KOHNUM6"
-  item_jp   : "¸øÈñÈÖ¹æ£¶"
+  item_jp   : "å…¬è²»ç•ªå·ï¼–"
   type      : "X"
   start     : 16
   length    : 3
 - item_no   : 7
   item      : "KOHNUM7"
-  item_jp   : "¸øÈñÈÖ¹æ£·"
+  item_jp   : "å…¬è²»ç•ªå·ï¼—"
   type      : "X"
   start     : 19
   length    : 3
 - item_no   : 8
   item      : "KOHNUM8"
-  item_jp   : "¸øÈñÈÖ¹æ£¸"
+  item_jp   : "å…¬è²»ç•ªå·ï¼˜"
   type      : "X"
   start     : 22
   length    : 3
 - item_no   : 9
   item      : "KOHNUM9"
-  item_jp   : "¸øÈñÈÖ¹æ£¹"
+  item_jp   : "å…¬è²»ç•ªå·ï¼™"
   type      : "X"
   start     : 25
   length    : 3
 - item_no   : 10
   item      : "KOHNUM10"
-  item_jp   : "¸øÈñÈÖ¹æ£±£°"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼"
   type      : "X"
   start     : 28
   length    : 3
 - item_no   : 11
   item      : "KOHNUM11"
-  item_jp   : "¸øÈñÈÖ¹æ£±£±"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼‘"
   type      : "X"
   start     : 31
   length    : 3
 - item_no   : 12
   item      : "KOHNUM12"
-  item_jp   : "¸øÈñÈÖ¹æ£±£²"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼’"
   type      : "X"
   start     : 34
   length    : 3
 - item_no   : 13
   item      : "KOHNUM13"
-  item_jp   : "¸øÈñÈÖ¹æ£±£³"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼“"
   type      : "X"
   start     : 37
   length    : 3
 - item_no   : 14
   item      : "KOHNUM14"
-  item_jp   : "¸øÈñÈÖ¹æ£±£´"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼”"
   type      : "X"
   start     : 40
   length    : 3
 - item_no   : 15
   item      : "KOHNUM15"
-  item_jp   : "¸øÈñÈÖ¹æ£±£µ"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼•"
   type      : "X"
   start     : 43
   length    : 3
 - item_no   : 16
   item      : "KOHNUM16"
-  item_jp   : "¸øÈñÈÖ¹æ£±£¶"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼–"
   type      : "X"
   start     : 46
   length    : 3
 - item_no   : 17
   item      : "KOHNUM17"
-  item_jp   : "¸øÈñÈÖ¹æ£±£·"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼—"
   type      : "X"
   start     : 49
   length    : 3
 - item_no   : 18
   item      : "KOHNUM18"
-  item_jp   : "¸øÈñÈÖ¹æ£±£¸"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼˜"
   type      : "X"
   start     : 52
   length    : 3
 - item_no   : 19
   item      : "KOHNUM19"
-  item_jp   : "¸øÈñÈÖ¹æ£±£¹"
+  item_jp   : "å…¬è²»ç•ªå·ï¼‘ï¼™"
   type      : "X"
   start     : 55
   length    : 3
 - item_no   : 20
   item      : "KOHNUM20"
-  item_jp   : "¸øÈñÈÖ¹æ£²£°"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼"
   type      : "X"
   start     : 58
   length    : 3
 - item_no   : 21
   item      : "KOHNUM21"
-  item_jp   : "¸øÈñÈÖ¹æ£²£±"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼‘"
   type      : "X"
   start     : 61
   length    : 3
 - item_no   : 22
   item      : "KOHNUM22"
-  item_jp   : "¸øÈñÈÖ¹æ£²£²"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼’"
   type      : "X"
   start     : 64
   length    : 3
 - item_no   : 23
   item      : "KOHNUM23"
-  item_jp   : "¸øÈñÈÖ¹æ£²£³"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼“"
   type      : "X"
   start     : 67
   length    : 3
 - item_no   : 24
   item      : "KOHNUM24"
-  item_jp   : "¸øÈñÈÖ¹æ£²£´"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼”"
   type      : "X"
   start     : 70
   length    : 3
 - item_no   : 25
   item      : "KOHNUM25"
-  item_jp   : "¸øÈñÈÖ¹æ£²£µ"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼•"
   type      : "X"
   start     : 73
   length    : 3
 - item_no   : 26
   item      : "KOHNUM26"
-  item_jp   : "¸øÈñÈÖ¹æ£²£¶"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼–"
   type      : "X"
   start     : 76
   length    : 3
 - item_no   : 27
   item      : "KOHNUM27"
-  item_jp   : "¸øÈñÈÖ¹æ£²£·"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼—"
   type      : "X"
   start     : 79
   length    : 3
 - item_no   : 28
   item      : "KOHNUM28"
-  item_jp   : "¸øÈñÈÖ¹æ£²£¸"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼˜"
   type      : "X"
   start     : 82
   length    : 3
 - item_no   : 29
   item      : "KOHNUM29"
-  item_jp   : "¸øÈñÈÖ¹æ£²£¹"
+  item_jp   : "å…¬è²»ç•ªå·ï¼’ï¼™"
   type      : "X"
   start     : 85
   length    : 3
 - item_no   : 30
   item      : "KOHNUM30"
-  item_jp   : "¸øÈñÈÖ¹æ£³£°"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼"
   type      : "X"
   start     : 88
   length    : 3
 - item_no   : 31
   item      : "KOHNUM31"
-  item_jp   : "¸øÈñÈÖ¹æ£³£±"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼‘"
   type      : "X"
   start     : 91
   length    : 3
 - item_no   : 32
   item      : "KOHNUM32"
-  item_jp   : "¸øÈñÈÖ¹æ£³£²"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼’"
   type      : "X"
   start     : 94
   length    : 3
 - item_no   : 33
   item      : "KOHNUM33"
-  item_jp   : "¸øÈñÈÖ¹æ£³£³"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼“"
   type      : "X"
   start     : 97
   length    : 3
 - item_no   : 34
   item      : "KOHNUM34"
-  item_jp   : "¸øÈñÈÖ¹æ£³£´"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼”"
   type      : "X"
   start     : 100
   length    : 3
 - item_no   : 35
   item      : "KOHNUM35"
-  item_jp   : "¸øÈñÈÖ¹æ£³£µ"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼•"
   type      : "X"
   start     : 103
   length    : 3
 - item_no   : 36
   item      : "KOHNUM36"
-  item_jp   : "¸øÈñÈÖ¹æ£³£¶"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼–"
   type      : "X"
   start     : 106
   length    : 3
 - item_no   : 37
   item      : "KOHNUM37"
-  item_jp   : "¸øÈñÈÖ¹æ£³£·"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼—"
   type      : "X"
   start     : 119
   length    : 3
 - item_no   : 38
   item      : "KOHNUM38"
-  item_jp   : "¸øÈñÈÖ¹æ£³£¸"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼˜"
   type      : "X"
   start     : 122
   length    : 3
 - item_no   : 39
   item      : "KOHNUM39"
-  item_jp   : "¸øÈñÈÖ¹æ£³£¹"
+  item_jp   : "å…¬è²»ç•ªå·ï¼“ï¼™"
   type      : "X"
   start     : 125
   length    : 3
 - item_no   : 40
   item      : "KOHNUM40"
-  item_jp   : "¸øÈñÈÖ¹æ£´£°"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼"
   type      : "X"
   start     : 128
   length    : 3
 - item_no   : 41
   item      : "KOHNUM41"
-  item_jp   : "¸øÈñÈÖ¹æ£´£±"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼‘"
   type      : "X"
   start     : 131
   length    : 3
 - item_no   : 42
   item      : "KOHNUM42"
-  item_jp   : "¸øÈñÈÖ¹æ£´£²"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼’"
   type      : "X"
   start     : 134
   length    : 3
 - item_no   : 43
   item      : "KOHNUM43"
-  item_jp   : "¸øÈñÈÖ¹æ£´£³"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼“"
   type      : "X"
   start     : 137
   length    : 3
 - item_no   : 44
   item      : "KOHNUM44"
-  item_jp   : "¸øÈñÈÖ¹æ£´£´"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼”"
   type      : "X"
   start     : 140
   length    : 3
 - item_no   : 45
   item      : "KOHNUM45"
-  item_jp   : "¸øÈñÈÖ¹æ£´£µ"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼•"
   type      : "X"
   start     : 143
   length    : 3
 - item_no   : 46
   item      : "KOHNUM46"
-  item_jp   : "¸øÈñÈÖ¹æ£´£¶"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼–"
   type      : "X"
   start     : 146
   length    : 3
 - item_no   : 47
   item      : "KOHNUM47"
-  item_jp   : "¸øÈñÈÖ¹æ£´£·"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼—"
   type      : "X"
   start     : 149
   length    : 3
 - item_no   : 48
   item      : "KOHNUM48"
-  item_jp   : "¸øÈñÈÖ¹æ£´£¸"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼˜"
   type      : "X"
   start     : 152
   length    : 3
 - item_no   : 49
   item      : "KOHNUM49"
-  item_jp   : "¸øÈñÈÖ¹æ£´£¹"
+  item_jp   : "å…¬è²»ç•ªå·ï¼”ï¼™"
   type      : "X"
   start     : 155
   length    : 3
 - item_no   : 50
   item      : "KOHNUM50"
-  item_jp   : "¸øÈñÈÖ¹æ£µ£°"
+  item_jp   : "å…¬è²»ç•ªå·ï¼•ï¼"
   type      : "X"
   start     : 158
   length    : 3
 - item_no   : 51
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 161
   length    : 350

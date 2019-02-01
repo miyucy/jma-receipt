@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,60 +16,60 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    �����å��ޥ�����       COPY (CPCHKSND.INC)                   *
+      *    チェックマスタ２       COPY (CPCHKSND.INC)                   *
       *****************************************************************
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *01  CHKSND-REC.
            03  CHKSND-KEY.
                05  CHKSND-HOSPNUM        PIC 9(2).
-      *�����å���ʬ
+      *チェック区分
                05  CHKSND-CHKKBN         PIC  X(01).
-      *���ť�����
+      *診療コード
                05  CHKSND-SRYCD          PIC  X(09).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  CHKSND-YUKOSTYMD      PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  CHKSND-YUKOEDYMD      PIC  X(08).
-      *�����ɶ�ʬ
+      *コード区分
                05  CHKSND-CDKBN          PIC  X(01).
-      *Ϣ�ֹ�
+      *連番号
                05  CHKSND-RENNUM         PIC  9(05).
-      *Ŭ�ѥ�����
+      *適用コード
            03  CHKSND-CD                 PIC  X(170).
-      *��̾
+      *病名
            03  CHKSND-BYOMEI             PIC  X(160).
-      *����ʬ
+      *条件区分
            03  CHKSND-COMPKBN            PIC  X(1).
-      *������ʬ
+      *疑い区分
            03  CHKSND-UTAGAIKBN          PIC  X(1).
-      *��̾�Խ��ե饰
+      *病名編集フラグ
            03  CHKSND-BYOMEIHENFLG       PIC  X(1).
-      *������ʬ
+      *入外区分
            03  CHKSND-NYUGAIKBN          PIC  X(1).
-      *���롼�ץ����å���ʬ
+      *グループチェック区分
            03  CHKSND-GRPCHKKBN          PIC  X(1).
-      *���롼�ףɣ�
+      *グループＩＤ
            03  CHKSND-GRPID              PIC  X(1).
-      *��­������
+      *補足コメント
            03  CHKSND-HOSOKU             PIC  X(40).
-      *��­�����Ⱦ���ʬ
+      *補足コメント条件区分
            03  CHKSND-HOSOKU-COMPKBN     PIC  X(1).
-      *Ŭ����̾�����å���ʬ
+      *適応病名チェック区分
            03  CHKSND-TEKBYOKBN          PIC  X(1).
-      *ü���ɣ�
+      *端末ＩＤ
            03  CHKSND-TERMID             PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  CHKSND-OPID               PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  CHKSND-CREYMD             PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  CHKSND-UPYMD              PIC  X(08).
-      *�������� 
+      *更新時間 
            03  CHKSND-UPHMS              PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  CHKSND-UPKEY.
                05  CHKSND-UPCHKSNDKBN      PIC  X(01).
                05  CHKSND-UPSRYCD        PIC  X(09).
@@ -78,7 +78,7 @@
                05  CHKSND-UPCDKBN        PIC  X(01).
                05  CHKSND-UPRENNUM       PIC  9(03).
       *
-      *�����ѹ���
+      *検索用項目
            03  CHKSND-SELNAME            PIC  X(200).
            03  CHKSND-SELCDSYU           PIC X(1).
            03  CHKSND-SELINPUTCD         PIC X(20).

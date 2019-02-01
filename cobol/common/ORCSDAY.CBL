@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCSDAY.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ÆüÉÕÊÑ´¹¥µ¥Ö
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÆüÉÕÊÑ´¹
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  00/12/01    MCC¡Ý    ¡¡   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ—¥ä»˜å¤‰æ›ã‚µãƒ–
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ—¥ä»˜å¤‰æ›
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  00/12/01    MCCâˆ’    ã€€   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Æ£¸¶     01.05.07  ÌÀ¼£¤Î³«»ÏÇ¯¤Î½¤Àµ
-      *  01.00.02    MCC-Æ£¸¶     01.05.07  Æü¤Î¥Ë¥å¡¼¥á¥ê¥Ã¥¯¥Á¥§¥Ã¥¯ÄÉ²Ã
-      *  01.00.03    NACL-Æ£¸¶    02.10.21  ´Á»ú¹àÌÜ¤Î¶õÇò¤òÁ´³Ñ¤Ë½¤Àµ
-      *  01.00.04    NACL-Â¿¡¹Ç¼  03.04.16  END-IF,END-SERACHÄÉ²Ã
-      *  01.00.05    NACL-Â¿¡¹Ç¼  04.09.22  ³¤¤ÎÆü¡¢·ÉÏ·¤ÎÆüÊÑ¹¹
-      *  04.03.00    NACL-Â¿¡¹Ç¼  08.07.08  ÌÀ¼£°ÊÁ°¡¢ÏÂÎñ£¹£¹Ç¯°Ê¾å¥¨¥é¡¼Â¾
-      *  04.08.00    NACL-Â¿¡¹Ç¼  15.10.20  H27(2015) ¿¶ÂØµÙÆüÄÉ²Ã
-      *  04.08.00    NACL-Â¿¡¹Ç¼  15.11.26  »³¤ÎÆü¡Ê8/11)ÄÉ²Ã
-      *  05.00.00    NACL-Â¿¡¹Ç¼  19.02.XX  2019Ç¯µÙÆüÈ½Äê¡¢¸µ¹æ²þÀµ²¾ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-è—¤åŽŸ     01.05.07  æ˜Žæ²»ã®é–‹å§‹å¹´ã®ä¿®æ­£
+      *  01.00.02    MCC-è—¤åŽŸ     01.05.07  æ—¥ã®ãƒ‹ãƒ¥ãƒ¼ãƒ¡ãƒªãƒƒã‚¯ãƒã‚§ãƒƒã‚¯è¿½åŠ 
+      *  01.00.03    NACL-è—¤åŽŸ    02.10.21  æ¼¢å­—é …ç›®ã®ç©ºç™½ã‚’å…¨è§’ã«ä¿®æ­£
+      *  01.00.04    NACL-å¤šã€…ç´  03.04.16  END-IF,END-SERACHè¿½åŠ 
+      *  01.00.05    NACL-å¤šã€…ç´  04.09.22  æµ·ã®æ—¥ã€æ•¬è€ã®æ—¥å¤‰æ›´
+      *  04.03.00    NACL-å¤šã€…ç´  08.07.08  æ˜Žæ²»ä»¥å‰ã€å’Œæš¦ï¼™ï¼™å¹´ä»¥ä¸Šã‚¨ãƒ©ãƒ¼ä»–
+      *  04.08.00    NACL-å¤šã€…ç´  15.10.20  H27(2015) æŒ¯æ›¿ä¼‘æ—¥è¿½åŠ 
+      *  04.08.00    NACL-å¤šã€…ç´  15.11.26  å±±ã®æ—¥ï¼ˆ8/11)è¿½åŠ 
+      *  05.00.00    NACL-å¤šã€…ç´  19.02.XX  2019å¹´ä¼‘æ—¥åˆ¤å®šã€å…ƒå·æ”¹æ­£ä»®å¯¾å¿œ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -134,27 +134,27 @@
        01  GENGO-TBL.
       *TEST
       *TEST
-      *2019.5.1¤«¤é¤Î¿·¸µ¹æ²¾ÂÐ±þ¡Ê¸µ¹æ¡ËG ¤È¤¹¤ë
+      *2019.5.1ã‹ã‚‰ã®æ–°å…ƒå·ä»®å¯¾å¿œï¼ˆå…ƒå·ï¼‰G ã¨ã™ã‚‹
            03  FILLER.
              05  FILLER    PIC X(10)   VALUE   "5G20190501".
-             05  FILLER    PIC X(04)   VALUE   "¸µ¹æ".
+             05  FILLER    PIC X(04)   VALUE   "å…ƒå·".
       *TEST
       *TEST
            03  FILLER.
              05  FILLER    PIC X(10)   VALUE   "4H19890108".
-             05  FILLER    PIC X(04)   VALUE   "Ê¿À®".
+             05  FILLER    PIC X(04)   VALUE   "å¹³æˆ".
            03  FILLER.
              05  FILLER    PIC X(10)   VALUE   "3S19261225".
-             05  FILLER    PIC X(04)   VALUE   "¾¼ÏÂ".
+             05  FILLER    PIC X(04)   VALUE   "æ˜­å’Œ".
            03  FILLER.
              05  FILLER    PIC X(10)   VALUE   "2T19120730".
-             05  FILLER    PIC X(04)   VALUE   "ÂçÀµ".
+             05  FILLER    PIC X(04)   VALUE   "å¤§æ­£".
            03  FILLER.
       *---- (01.00.01) LINE MOD START ----------------------------*
       ****   05  FILLER    PIC X(10)   VALUE   "1M18730101".
              05  FILLER    PIC X(10)   VALUE   "1M18680101".
       *---- (01.00.01) LINE MOD END   ----------------------------*
-             05  FILLER    PIC X(04)   VALUE   "ÌÀ¼£".
+             05  FILLER    PIC X(04)   VALUE   "æ˜Žæ²»".
        01  GENGO-TBL-R     REDEFINES   GENGO-TBL.
       *
       *****03  GENGO-TBL-R2   OCCURS   4   INDEXED  BY  IX1.
@@ -172,7 +172,7 @@
                07  GENGO-YYMMDD        PIC 9(08).
              05  GENMEI                PIC N(2).
       *
-      *    £²£°£°£°Ç¯°ÊÁ°¤Î½ËÆü¥Æ¡¼¥Ö¥ë¡Ê¸ÇÄêÆü¡Ë
+      *    ï¼’ï¼ï¼ï¼å¹´ä»¥å‰ã®ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆå›ºå®šæ—¥ï¼‰
        01  SKJT-TABLE.
            03  FILLER      PIC X(12)   VALUE "010101150211".
            03  FILLER      PIC X(12)   VALUE "042905030504".
@@ -183,7 +183,7 @@
            03  SKJT-TBL    OCCURS      15  INDEXED  BY  IX2.
              05  SKJT-T1               PIC 9(04).
       *
-      *    £²£°£°£°Ç¯°Ê¹ß¤Î½ËÆü¥Æ¡¼¥Ö¥ë¡Ê¸ÇÄêÆü¡Ë
+      *    ï¼’ï¼ï¼ï¼å¹´ä»¥é™ã®ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆå›ºå®šæ—¥ï¼‰
        01  SKJT-TABLE-NEW.
            03  FILLER      PIC X(12)   VALUE "010102110429".
            03  FILLER      PIC X(12)   VALUE "050305040505".
@@ -193,8 +193,8 @@
            03  SKJT-TBLNEW  OCCURS     12  INDEXED  BY IX6.
              05  SKJT-NEW              PIC 9(04).
       *
-      *    £²£°£°£³Ç¯°Ê¹ß¤Î½ËÆü¥Æ¡¼¥Ö¥ë¡Ê¸ÇÄêÆü¡Ë
-      *    (7/20,9/15 ¤òÂè£³·îÍË¤Ø¡Ë
+      *    ï¼’ï¼ï¼ï¼“å¹´ä»¥é™ã®ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆå›ºå®šæ—¥ï¼‰
+      *    (7/20,9/15 ã‚’ç¬¬ï¼“æœˆæ›œã¸ï¼‰
        01  SKJT-TABLE-NEW2.
            03  FILLER      PIC X(12)   VALUE "010102110429".
            03  FILLER      PIC X(12)   VALUE "050305040505".
@@ -205,7 +205,7 @@
       *
       *!
       *H31.1
-      *    £²£°£±£¹Ç¯¤Î½ËÆü¥Æ¡¼¥Ö¥ë¡Ê¸ÇÄêÆü¡Ë
+      *    ï¼’ï¼ï¼‘ï¼™å¹´ã®ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆå›ºå®šæ—¥ï¼‰
        01  SKJT-TABLE-NEW19.
            03  FILLER      PIC X(12)   VALUE "010102110429".
            03  FILLER      PIC X(12)   VALUE "043005010502".
@@ -217,25 +217,25 @@
              05  SKJT-NEW19              PIC 9(04).
       *!
       *
-      *    ½ËÆü¥Æ¡¼¥Ö¥ë£²¡Ê½ÕÊ¬¤ÎÆü¡¦½©Ê¬¤ÎÆü¡Ë
+      *    ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼’ï¼ˆæ˜¥åˆ†ã®æ—¥ãƒ»ç§‹åˆ†ã®æ—¥ï¼‰
        01  SKJT-TABLE2.
            03  SKJT-TBL2   OCCURS      2   INDEXED  BY  IX3.
              05  SKJT-M                PIC 9(02).
              05  SKJT-D                PIC 9(02).
       *
-      *    ½ËÆü¥Æ¡¼¥Ö¥ë£³¡ÊÀ®¿Í¤ÎÆü¡¦ÂÎ°é¤ÎÆü¡Ë
+      *    ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼“ï¼ˆæˆäººã®æ—¥ãƒ»ä½“è‚²ã®æ—¥ï¼‰
        01  SKJT-TABLE3.
            03  SKJT-TBL3   OCCURS      2   INDEXED  BY  IX5.
              05  SKJT-M3               PIC 9(02).
              05  SKJT-D3               PIC 9(02).
       *
-      *    ½ËÆü¥Æ¡¼¥Ö¥ë£´¡Ê³¤Æü¡¦·ÉÏ·¤ÎÆü¡Ë
+      *    ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼”ï¼ˆæµ·æ—¥ãƒ»æ•¬è€ã®æ—¥ï¼‰
        01  SKJT-TABLE4.
            03  SKJT-TBL4   OCCURS      2   INDEXED  BY  IX8.
              05  SKJT-M4               PIC 9(02).
              05  SKJT-D4               PIC 9(02).
       *
-      *    Ç¯´Ö½ËÆü´ÉÍý¥Æ¡¼¥Ö¥ë  ( 99 => ¥µ¥ó¥·¥å¥Ä ¥Ë¥è¥ê ¥»¥Ã¥Æ¥¤ )
+      *    å¹´é–“ç¥æ—¥ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«  ( 99 => ã‚µãƒ³ã‚·ãƒ¥ãƒ„ ãƒ‹ãƒ¨ãƒª ã‚»ãƒƒãƒ†ã‚¤ )
        01  SKJT-KNR-TBL.
            03  FILLER      PIC X(14)   VALUE "01019900000002".
            03  FILLER      PIC X(14)   VALUE "02110000000001".
@@ -255,7 +255,7 @@
              05  SKJT-KNRDD            PIC 9(02)    OCCURS   5.
              05  SKJT-KNRCNT           PIC 9(02).
       *
-      *    µÙÆü¥Æ¡¼¥Ö¥ë
+      *    ä¼‘æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«
        01  KYUJT-TABLE.
            03  FILLER      PIC X(08)   VALUE "01020103".
            03  FILLER      PIC X(12)   VALUE "122912301231".
@@ -264,7 +264,7 @@
            03  KYUJT-TBL   OCCURS      10  INDEXED  BY  IX4.
              05  KYUJT-T2              PIC 9(04).
       *
-      *    ¥«¥ì¥ó¥À¡¼¥Æ¡¼¥Ö¥ë
+      *    ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«
        01  CAL-TABLE.
            03  FILLER      PIC X(24)   VALUE
                                        "312831303130313130313031".
@@ -272,7 +272,7 @@
            03  CAL-TBL     OCCURS      12.
              05  CAL-T                 PIC 9(02).
       *
-      *    Æü¿ô¥Æ¡¼¥Ö¥ë
+      *    æ—¥æ•°ãƒ†ãƒ¼ãƒ–ãƒ«
        01  NISU-TABLE.
            03  FILLER      PIC X(36)   VALUE
                           "000031059090120151181212243273304334".
@@ -280,36 +280,36 @@
            03  NISU-TBL    OCCURS      12.
              05  NISU-T                PIC 9(03).
       *
-      *    ÍËÆü¥Æ¡¼¥Ö¥ë
+      *    æ›œæ—¥ãƒ†ãƒ¼ãƒ–ãƒ«
        01  YOUBI-TABLE.
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "1MON".
-             05  FILLER    PIC X(02)   VALUE    "·î".
+             05  FILLER    PIC X(02)   VALUE    "æœˆ".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "2TUE".
-             05  FILLER    PIC X(02)   VALUE    "²Ð".
+             05  FILLER    PIC X(02)   VALUE    "ç«".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "3WED".
-             05  FILLER    PIC X(02)   VALUE    "¿å".
+             05  FILLER    PIC X(02)   VALUE    "æ°´".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "4THU".
-             05  FILLER    PIC X(02)   VALUE    "ÌÚ".
+             05  FILLER    PIC X(02)   VALUE    "æœ¨".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "5FRI".
-             05  FILLER    PIC X(02)   VALUE    "¶â".
+             05  FILLER    PIC X(02)   VALUE    "é‡‘".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "6SAT".
-             05  FILLER    PIC X(02)   VALUE    "ÅÚ".
+             05  FILLER    PIC X(02)   VALUE    "åœŸ".
            03  FILLER.
              05  FILLER    PIC X(04)   VALUE    "7SUN".
-             05  FILLER    PIC X(02)   VALUE    "Æü".
+             05  FILLER    PIC X(02)   VALUE    "æ—¥".
        01  YOUBI-TABLE2    REDEFINES   YOUBI-TABLE.
            03  YOUBI-TBL   OCCURS      7   INDEXED  BY  IX-YOUBI.
              05  YOUBI-KBN             PIC X(01).
              05  YOUBI-KIGO            PIC X(03).
              05  YOUBI-MEI             PIC X(02).
       *
-      *    ´Á»úÊÔ½¸¥Æ¡¼¥Ö¥ë
+      *    æ¼¢å­—ç·¨é›†ãƒ†ãƒ¼ãƒ–ãƒ«
        01  EDT-GYMD.
            03  EDT-GYMD-XX             PIC  9(02).
            03  EDT-GYMD-YMD.
@@ -360,11 +360,11 @@
            03  EDT-YMD-M               PIC  X(04).
            03  EDT-YMD-D               PIC  X(04).
       *
-      *    ¿ô»ú¥Æ¡¼¥Ö¥ë
+      *    æ•°å­—ãƒ†ãƒ¼ãƒ–ãƒ«
        01  SUUJI-AREA.
            03  SUUJIN-TBL.
                05  FILLER              PIC  X(22)  VALUE
-                 "  £°£±£²£³£´£µ£¶£·£¸£¹".
+                 "  ï¼ï¼‘ï¼’ï¼“ï¼”ï¼•ï¼–ï¼—ï¼˜ï¼™".
            03  SUUJIN-TBL-R            REDEFINES   SUUJIN-TBL.
                05  SUUJIN              PIC  X(02)  OCCURS  11.
            03  SUUJI-TBL.
@@ -373,22 +373,22 @@
            03  SUUJI-TBL-R             REDEFINES   SUUJI-TBL.
                05  SUUJI               PIC  X(01)  OCCURS  11.
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÊ¸»úÎÎ°è
+      *    ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆæ–‡å­—é ˜åŸŸ
        01  CST-MOJI-AREA.
            03  CST-SPACE               PIC  X(02)  VALUE
                  "  ".
            03  CST-NEN                 PIC  X(02)  VALUE
-                 "Ç¯".
+                 "å¹´".
            03  CST-TUKI                PIC  X(02)  VALUE
-                 "·î".
+                 "æœˆ".
            03  CST-HI                  PIC  X(02)  VALUE
-                 "Æü".
+                 "æ—¥".
            03  CST-PN                  PIC  X(02)  VALUE
-                 "¡¥".
+                 "ï¼Ž".
            03  CST-PX                  PIC  X(01)  VALUE
                  ".".
       *
-      *    Åº¤¨»úÎÎ°è
+      *    æ·»ãˆå­—é ˜åŸŸ
        01  IDX-AREA.
            03  I                       PIC  9(02).
            03  J                       PIC  9(02).
@@ -410,7 +410,7 @@
        PROCEDURE           DIVISION  USING   STS-AREA-DAY
                                              LNK-DAYX-AREA.
       ******************************************************************
-      *        °ÍÍêÀ©¸æ½èÍý
+      *        ä¾é ¼åˆ¶å¾¡å‡¦ç†
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
@@ -432,44 +432,44 @@
            EVALUATE    LNK-DAYX-IRAI
                WHEN    "11"
                WHEN    "12"
-      *            ÎñÊÑ´¹
+      *            æš¦å¤‰æ›
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY1-AREA
                    PERFORM  DTCONV-RTN
                    MOVE     LNK-DAY1-AREA      TO  LNK-DAYX-AREA
                WHEN    "21"
                WHEN    "22"
-      *            ÆüÉÕÊÔ½¸
+      *            æ—¥ä»˜ç·¨é›†
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY2-AREA
                    PERFORM  DTEDIT-RTN
                    MOVE     LNK-DAY2-AREA      TO  LNK-DAYX-AREA
                WHEN    "31"
                WHEN    "32"
-      *            ÍËÆü»»½Ð
+      *            æ›œæ—¥ç®—å‡º
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY3-AREA
                    PERFORM  DTYOUB-RTN
                    MOVE     LNK-DAY3-AREA      TO  LNK-DAYX-AREA
                WHEN    "41"
                WHEN    "42"
-      *            ½ËÆü»»½Ð
-      *!!!         2019Ç¯¤«¤éÂÐ±þ¤Ê¤·
+      *            ç¥æ—¥ç®—å‡º
+      *!!!         2019å¹´ã‹ã‚‰å¯¾å¿œãªã—
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY4-AREA
                    PERFORM  DTSKJT-RTN
                    MOVE     LNK-DAY4-AREA      TO  LNK-DAYX-AREA
                WHEN    "51"
                WHEN    "52"
-      *            ´ü´ÖÆü¿ô·×»»
+      *            æœŸé–“æ—¥æ•°è¨ˆç®—
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY5-AREA
                    PERFORM  DTKIKN-RTN
                    MOVE     LNK-DAY5-AREA      TO  LNK-DAYX-AREA
                WHEN    "61"
                WHEN    "62"
-      *            ³ºÅöÆü»»½Ð
+      *            è©²å½“æ—¥ç®—å‡º
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY6-AREA
                    PERFORM  DTPLMN-RTN
                    MOVE     LNK-DAY6-AREA      TO  LNK-DAYX-AREA
                WHEN    "71"
                WHEN    "72"
-      *            ·îËöÆü»»½Ð
+      *            æœˆæœ«æ—¥ç®—å‡º
                    MOVE     LNK-DAYX-AREA      TO  LNK-DAY7-AREA
                    PERFORM  DTMEND-RTN
                    MOVE     LNK-DAY7-AREA      TO  LNK-DAYX-AREA
@@ -483,7 +483,7 @@
            .
       *****STOP RUN.
       ******************************************************************
-      *        ÎñÊÑ´¹½èÍý                         (IRAI = 11 / 12)     *
+      *        æš¦å¤‰æ›å‡¦ç†                         (IRAI = 11 / 12)     *
       ******************************************************************
        DTCONV-RTN           SECTION.
        DTCONV-000.
@@ -492,7 +492,7 @@
                WHEN    "21"
                WHEN    "61"
                WHEN    "71"
-      *            À¾Îñ
+      *            è¥¿æš¦
                    IF      LNK-DAY1-YMD(1:8)   NOT NUMERIC
                        MOVE    20              TO  STS-DAY-RC1
                    ELSE
@@ -506,7 +506,7 @@
                WHEN    "52"
                WHEN    "62"
                WHEN    "72"
-      *            ÏÂÎñ
+      *            å’Œæš¦
                    IF      LNK-DAY1-WYMD(1:7)  NOT NUMERIC
                        MOVE    20              TO  STS-DAY-RC1
                    ELSE
@@ -521,17 +521,17 @@
        DTCONV-EXT.
            EXIT.
       ******************************************************************
-      *        À¾ÎñÊÔ½¸¥Á¥§¥Ã¥¯½èÍý                                    *
+      *        è¥¿æš¦ç·¨é›†ãƒã‚§ãƒƒã‚¯å‡¦ç†                                    *
       ******************************************************************
        200-SEIREKI-CHK-SEC          SECTION.
       *
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯
            PERFORM YMD-CHK-RTN
            IF      WK-ERR          =   1
                MOVE    20              TO  STS-DAY-RC1
            ELSE
                MOVE    ZERO            TO  IDX-T
-      *        ÏÂÎñÊÑ´¹
+      *        å’Œæš¦å¤‰æ›
                SET     IX1    TO     1
                SEARCH  GENGO-TBL-R2  VARYING  IX1
                AT  END
@@ -541,7 +541,7 @@
                    MOVE    IX1         TO  IDX-T
                END-SEARCH
            END-IF
-      *    ÏÂÎñÇ¯ÊÑ´¹
+      *    å’Œæš¦å¹´å¤‰æ›
            IF     (STS-DAY-RC1         =   ZERO  )
               AND (IDX-T           NOT =   ZERO  )
                SET      IX1            TO  IDX-T
@@ -566,7 +566,7 @@
        200-SEIREKI-CHK-EXT.
            EXIT.
       ******************************************************************
-      *        ÏÂÎñÊÔ½¸¥Á¥§¥Ã¥¯½èÍý                                    *
+      *        å’Œæš¦ç·¨é›†ãƒã‚§ãƒƒã‚¯å‡¦ç†                                    *
       ******************************************************************
        201-WAREKI-CHK-SEC          SECTION.
       *
@@ -593,7 +593,7 @@
                IF      WK-ERR          =   1
                    MOVE    20              TO    STS-DAY-RC1
                ELSE
-      *            À¾ÎñÊÔ½¸
+      *            è¥¿æš¦ç·¨é›†
                    MOVE    WK-YYMMDD       TO  LNK-DAY1-YMD
                END-IF
            END-IF
@@ -601,14 +601,14 @@
        201-WAREKI-CHK-EXT.
            EXIT.
       ******************************************************************
-      *        ÆüÉÕÊÔ½¸½èÍý                       (IRAI = 21 / 22)     *
+      *        æ—¥ä»˜ç·¨é›†å‡¦ç†                       (IRAI = 21 / 22)     *
       ******************************************************************
        DTEDIT-RTN           SECTION.
        DTEDIT-000.
       *
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®š
            IF  LNK-DAY2-IRAI   =   "21"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY2-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY2-YMD      TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -617,7 +617,7 @@
                    GO  TO      DTEDIT-EXT
                END-IF
            ELSE
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY2-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY2-YMD      TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -630,7 +630,7 @@
       *
            PERFORM  SUUJI-EDT-RTN.
       *
-      *    *ÊÔ½¸£± ¢ª X ZZ.ZZ.ZZ
+      *    *ç·¨é›†ï¼‘ â†’ X ZZ.ZZ.ZZ
            MOVE    LNK-DAY1-GENKIGO         TO    EDT-GYMD1-G.
            MOVE    WK-YY                    TO    EDT-GYMD1-Y.
            MOVE    CST-PX                   TO    EDT-GYMD1-P1.
@@ -639,7 +639,7 @@
            MOVE    WK-DD                    TO    EDT-GYMD1-D.
            MOVE    EDT-GYMD1                TO    LNK-DAY2-EDTYMD1.
       *
-      *    *ÊÔ½¸£² ¢ª NN NN.NN.NN
+      *    *ç·¨é›†ï¼’ â†’ NN NN.NN.NN
            MOVE    LNK-DAY1-GENMEI          TO    EDT-GYMD2-G.
            MOVE    EDT-YMD-Y                TO    EDT-GYMD2-Y.
            MOVE    CST-PN                   TO    EDT-GYMD2-P1.
@@ -648,9 +648,9 @@
            MOVE    EDT-YMD-D                TO    EDT-GYMD2-D.
            MOVE    EDT-GYMD2                TO    LNK-DAY2-EDTYMD2.
            INSPECT LNK-DAY2-EDTYMD2         REPLACING   ALL "  "
-                                                        BY  "¡¡". 
+                                                        BY  "ã€€". 
       *
-      *    *ÊÔ½¸£³ ¢ª NN NNÇ¯NN·îNNÆü
+      *    *ç·¨é›†ï¼“ â†’ NN NNå¹´NNæœˆNNæ—¥
            MOVE    LNK-DAY1-GENMEI          TO    EDT-GYMD3-G.
            MOVE    EDT-YMD-Y                TO    EDT-GYMD3-Y.
            MOVE    CST-NEN                  TO    EDT-GYMD3-NEN.
@@ -660,28 +660,28 @@
            MOVE    CST-HI                   TO    EDT-GYMD3-HI.
            MOVE    EDT-GYMD3                TO    LNK-DAY2-EDTYMD3.
            INSPECT LNK-DAY2-EDTYMD3         REPLACING   ALL "  "
-                                                        BY  "¡¡". 
+                                                        BY  "ã€€". 
       *
            MOVE    SPACE                    TO    LNK-DAY1-AREA
            .
        DTEDIT-EXT.
            EXIT.
       ******************************************************************
-      *        ÍËÆü»»½Ð½èÍý                       (IRAI = 31 / 32)     *
+      *        æ›œæ—¥ç®—å‡ºå‡¦ç†                       (IRAI = 31 / 32)     *
       ******************************************************************
        DTYOUB-RTN           SECTION.
        DTYOUB-000.
       *
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®š
            IF  LNK-DAY3-IRAI   =   "31"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY3-YMD      TO    WK-YYMMDD
                PERFORM YMD-CHK-RTN
                IF      WK-ERR      =  1
                    MOVE    20            TO    STS-DAY-RC1
                END-IF
            ELSE
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY3-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY3-YMD      TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -689,11 +689,11 @@
            END-IF
       *
            IF      STS-DAY-RC1         =   ZERO
-      *        µÙÆüÈ½Äê
+      *        ä¼‘æ—¥åˆ¤å®š
                PERFORM YSK-KBN-RTN
                MOVE    YSK-SYUKJTS             TO  LNK-DAY3-SYUKU
                MOVE    YSK-KYUJTS              TO  LNK-DAY3-YASUMI
-      *        ÍËÆüÀßÄê
+      *        æ›œæ—¥è¨­å®š
                PERFORM YOUBI-SET-RTN
                MOVE    YOUBI-KBN  (IX-YOUBI)   TO  LNK-DAY3-YOBI
                MOVE    YOUBI-KIGO (IX-YOUBI)   TO  LNK-DAY3-YOBIKIGO
@@ -703,14 +703,14 @@
        DTYOUB-EXT.
            EXIT.
       ******************************************************************
-      *        ½ËÆü»»½Ð½èÍý                       (IRAI = 41 / 42)     *
+      *        ç¥æ—¥ç®—å‡ºå‡¦ç†                       (IRAI = 41 / 42)     *
       ******************************************************************
        DTSKJT-RTN          SECTION.
        DTSKJT-000.
       *
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®š
            IF  LNK-DAY4-IRAI   =   "41"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY4-YM       TO    WK-YYYYMM
                MOVE    01                TO    WK-DD
                PERFORM  YMD-CHK-RTN
@@ -719,7 +719,7 @@
                    GO  TO      DTSKJT-EXT
                END-IF
            ELSE
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY4-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY4-YM       TO    LNK-DAY1-YMD
                COMPUTE  LNK-DAY1-YMD  =  LNK-DAY1-YMD  *  100  +  1
@@ -730,15 +730,15 @@
                END-IF
            END-IF.
       *
-      *    ½ËÆü¡Ê½ÕÊ¬¤ÎÆü¡¤½©Ê¬¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæ˜¥åˆ†ã®æ—¥ï¼Œç§‹åˆ†ã®æ—¥ï¼‰ç®—å‡º
            IF  WK-MM   =   3   OR   9
                PERFORM SKJT-KEISAN1-RTN
            END-IF.
-      *    ½ËÆü¡ÊÀ®¿Í¤ÎÆü¡¤ÂÎ°é¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæˆäººã®æ—¥ï¼Œä½“è‚²ã®æ—¥ï¼‰ç®—å‡º
            IF  WK-MM   =   1   OR   10
                PERFORM SKJT-KEISAN2-RTN
            END-IF.
-      *    ½ËÆü¡Ê³¤¤ÎÆü¡¤·ÉÏ·¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæµ·ã®æ—¥ï¼Œæ•¬è€ã®æ—¥ï¼‰ç®—å‡º
            IF  WK-MM   =   7   OR   9
                PERFORM SKJT-KEISAN3-SEC
            END-IF
@@ -752,18 +752,18 @@
        DTSKJT-EXT.
            EXIT.
       ******************************************************************
-      *        ´ü´ÖÆü¿ô·×»»½èÍý                   (IRAI = 51 / 52)     *
+      *        æœŸé–“æ—¥æ•°è¨ˆç®—å‡¦ç†                   (IRAI = 51 / 52)     *
       ******************************************************************
        DTKIKN-RTN           SECTION.
        DTKIKN-000.
       *
            MOVE    ZERO                TO  WK-ST
            MOVE    ZERO                TO  WK-END
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê¡Ê³«»ÏÇ¯·îÆü¡Ë
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®šï¼ˆé–‹å§‹å¹´æœˆæ—¥ï¼‰
            EVALUATE    LNK-DAY5-IRAI
            WHEN    "51"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
-      *       ¡Ê³«»ÏÇ¯·îÆü¡Ë
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
+      *       ï¼ˆé–‹å§‹å¹´æœˆæ—¥ï¼‰
                MOVE    LNK-DAY5-START    TO    WK-YYMMDD
                PERFORM YMD-CHK-RTN
                IF      WK-ERR          =   1
@@ -772,7 +772,7 @@
                ELSE
                    MOVE    WK-YYMMDD       TO  WK-ST
                END-IF
-      *       ¡Ê½ªÎ»Ç¯·îÆü¡Ë
+      *       ï¼ˆçµ‚äº†å¹´æœˆæ—¥ï¼‰
                IF      STS-DAY-RC1         =   ZERO
                    MOVE    LNK-DAY5-END    TO    WK-YYMMDD
                    PERFORM YMD-CHK-RTN
@@ -785,8 +785,8 @@
                END-IF
       *
            WHEN    "52"
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
-      *       ¡Ê³«»ÏÇ¯·îÆü¡Ë
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
+      *       ï¼ˆé–‹å§‹å¹´æœˆæ—¥ï¼‰
                MOVE    LNK-DAY5-IRAI       TO  LNK-DAY1-IRAI
                MOVE    LNK-DAY5-START      TO  LNK-DAY1-YMD
                PERFORM DTCONV-RTN
@@ -797,7 +797,7 @@
                    MOVE    30              TO  STS-DAY-RC1
                    MOVE    02              TO  STS-DAY-RC2
                END-IF
-      *       ¡Ê½ªÎ»Ç¯·îÆü¡Ë
+      *       ï¼ˆçµ‚äº†å¹´æœˆæ—¥ï¼‰
                IF      STS-DAY-RC1         =   ZERO
                    MOVE    LNK-DAY5-IRAI       TO  LNK-DAY1-IRAI
                    MOVE    LNK-DAY5-END        TO  LNK-DAY1-YMD
@@ -826,7 +826,7 @@
                    UNTIL  (STS-DAY-RC1 NOT =   ZERO )
                    OR     (WK-ST           =   WK-END )
                    OR     (FLG-SYORI-END   =   1    )
-      *        £±Ç¯Ê¬·×»»
+      *        ï¼‘å¹´åˆ†è¨ˆç®—
                IF     (WK-ST  +  10000 )   <=  WK-END
                    IF      WK-ST2      <   0301
                        MOVE    WK-ST       TO  WK-YYMMDD
@@ -834,7 +834,7 @@
                        COMPUTE WK-ST1      =   WK-ST1  +  1
                        MOVE    WK-ST       TO  WK-YYMMDD
                    END-IF
-      *            ±¼Ç¯È½Äê
+      *            é–å¹´åˆ¤å®š
                    PERFORM URUDOSHI-CHK-RTN
                    IF      WK-UERR         =   1
                        COMPUTE  WK-NISU    =   WK-NISU   +  366
@@ -850,7 +850,7 @@
            END-PERFORM
            IF      STS-DAY-RC1         =   ZERO
                IF      WK-ST           NOT =   WK-END
-      *        ·îÆü¤Î·×»»
+      *        æœˆæ—¥ã®è¨ˆç®—
                    MOVE    WK-ST1          TO  KISAN-YY
                    MOVE    1               TO  KISAN-MM
                                                KISAN-DD
@@ -871,14 +871,14 @@
        DTKIKN-EXT.
            EXIT.
       ******************************************************************
-      *        ³ºÅöÆü»»½Ð½èÍý                     (IRAI = 61 / 62)     *
+      *        è©²å½“æ—¥ç®—å‡ºå‡¦ç†                     (IRAI = 61 / 62)     *
       ******************************************************************
        DTPLMN-RTN          SECTION.
        DTPLMN-000.
       *
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®š
            IF  LNK-DAY6-IRAI   =   "61"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY6-KIJUN    TO    WK-YYMMDD
                PERFORM  YMD-CHK-RTN
                IF  WK-ERR  =  1
@@ -886,7 +886,7 @@
                    GO  TO      DTPLMN-EXT
                END-IF
            ELSE
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY6-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY6-KIJUN    TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -896,7 +896,7 @@
                END-IF
            END-IF.
       *
-      *    *Æü¿ô¥Ñ¥¿¡¼¥óÈ½Äê
+      *    *æ—¥æ•°ãƒ‘ã‚¿ãƒ¼ãƒ³åˆ¤å®š
            EVALUATE    LNK-DAY6-ZOGENPTN
                WHEN    "1"
                        PERFORM  DTPLMN-DAY-RTN
@@ -911,7 +911,7 @@
            END-EVALUATE.
       *
            IF  LNK-DAY6-IRAI   =   "62"
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¼õ¼è¤ê¤Î¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å—å–ã‚Šã®å ´åˆ
                MOVE    "61"              TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY6-KOYOMI   TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -981,11 +981,11 @@
        DTPLMN-EXT.
            EXIT.
       ******************************************************************
-      *        Æü¿ô¤Ë¤è¤ë³ºÅöÆü»»½Ð½èÍý
+      *        æ—¥æ•°ã«ã‚ˆã‚‹è©²å½“æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DTPLMN-DAY-RTN      SECTION.
        DTPLMN-DAY-000.
-      *    *·×»»Æü
+      *    *è¨ˆç®—æ—¥
            MOVE     LNK-DAY6-ZOGEN        TO    WK-NISU.
            PERFORM  NISSU-KANSAN-RTN.
            MOVE     WK-YYMMDD             TO    LNK-DAY6-KEISAN.
@@ -1000,7 +1000,7 @@
                                                LNK-DAY6-KEISANGO
            END-IF
       *
-      *    *Îñ¾åÆü
+      *    *æš¦ä¸Šæ—¥
            MOVE     LNK-DAY6-KEISAN       TO    WK-MNS-YMD.
            PERFORM  DT-MINUS-RTN.
            MOVE     WK-MNS-YMD            TO    LNK-DAY6-KOYOMI
@@ -1019,7 +1019,7 @@
        DTPLMN-DAY-EXT.
            EXIT.
       ******************************************************************
-      *        ·î¿ô¤Ë¤è¤ë³ºÅöÆü»»½Ð½èÍý
+      *        æœˆæ•°ã«ã‚ˆã‚‹è©²å½“æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DTPLMN-MON-RTN      SECTION.
        DTPLMN-MON-000.
@@ -1054,7 +1054,7 @@
                MOVE     WK-YUKO-DD     TO    WK-DD
            END-IF
       *
-      *    *·×»»Æü
+      *    *è¨ˆç®—æ—¥
            MOVE    WK-YYMMDD           TO    LNK-DAY6-KEISAN.
            PERFORM YSK-KBN-RTN
            IF      YSK-KYUJTS      NOT =   1
@@ -1067,7 +1067,7 @@
                MOVE    WK-YUKO         TO  LNK-DAY6-KEISANGO
            END-IF
       *
-      *    *Îñ¾åÆü
+      *    *æš¦ä¸Šæ—¥
            MOVE     LNK-DAY6-KEISAN   TO    WK-MNS-YMD.
            PERFORM  DT-MINUS-RTN.
            MOVE     WK-MNS-YMD        TO    LNK-DAY6-KOYOMI
@@ -1086,7 +1086,7 @@
        DTPLMN-MON-EXT.
            EXIT.
       ******************************************************************
-      *        Ç¯¿ô¤Ë¤è¤ë³ºÅöÆü»»½Ð½èÍý
+      *        å¹´æ•°ã«ã‚ˆã‚‹è©²å½“æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DTPLMN-NEN-RTN      SECTION.
        DTPLMN-NEN-000.
@@ -1099,7 +1099,7 @@
                MOVE     WK-YUKO-DD     TO    WK-DD
            END-IF.
       *
-      *    *·×»»Æü
+      *    *è¨ˆç®—æ—¥
            MOVE     WK-YYMMDD          TO    LNK-DAY6-KEISAN.
            PERFORM  YSK-KBN-RTN
            IF      YSK-KYUJTS          =   1
@@ -1112,7 +1112,7 @@
                MOVE    WK-YYMMDD           TO  LNK-DAY6-KEISANGO
            END-IF
       *
-      *    *Îñ¾åÆü
+      *    *æš¦ä¸Šæ—¥
            MOVE     LNK-DAY6-KEISAN    TO    WK-MNS-YMD.
            PERFORM  DT-MINUS-RTN.
            MOVE     WK-MNS-YMD         TO    LNK-DAY6-KOYOMI
@@ -1132,14 +1132,14 @@
        DTPLMN-NEN-EXT.
            EXIT.
       ******************************************************************
-      *        ·îËöÆü»»½Ð½èÍý                     (IRAI = 71 / 72)     *
+      *        æœˆæœ«æ—¥ç®—å‡ºå‡¦ç†                     (IRAI = 71 / 72)     *
       ******************************************************************
        DTMEND-RTN          SECTION.
        DTMEND-000.
       *
-      *    *¼õ¼èÆüÉÕ¤ÎÀ¾Îñ OR ÏÂÎñÈ½Äê
+      *    *å—å–æ—¥ä»˜ã®è¥¿æš¦ OR å’Œæš¦åˆ¤å®š
            IF  LNK-DAY7-IRAI   =   "71"
-      *        *À¾ÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *è¥¿æš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY7-YM       TO    WK-YYYYMM
                MOVE    01                TO    WK-DD
                PERFORM  YMD-CHK-RTN
@@ -1148,7 +1148,7 @@
                    GO  TO      DTMEND-EXT
                END-IF
            ELSE
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å ´åˆ
                MOVE    LNK-DAY7-IRAI     TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY7-YM       TO    LNK-DAY1-YMD
                COMPUTE  LNK-DAY1-YMD   =  LNK-DAY1-YMD  *  100  +  1
@@ -1194,7 +1194,7 @@
            MOVE    WK-YYMMDD       TO    LNK-DAY7-EIGYO.
       *
            IF  LNK-DAY7-IRAI   =   "72"
-      *        *ÏÂÎñÆüÉÕ¤Ë¤è¤ë¼õ¼è¤ê¤Î¾ì¹ç
+      *        *å’Œæš¦æ—¥ä»˜ã«ã‚ˆã‚‹å—å–ã‚Šã®å ´åˆ
                MOVE    "71"              TO    LNK-DAY1-IRAI
                MOVE    LNK-DAY7-KOYOMI   TO    LNK-DAY1-YMD
                PERFORM  DTCONV-RTN
@@ -1219,18 +1219,18 @@
        DTMEND-EXT.
            EXIT.
       ******************************************************************
-      *        ÆüÉÕ¥Á¥§¥Ã¥¯½èÍý
+      *        æ—¥ä»˜ãƒã‚§ãƒƒã‚¯å‡¦ç†
       ******************************************************************
        YMD-CHK-RTN         SECTION.
        YMD-CHK-000.
       *
            MOVE    ZERO                TO    WK-ERR.
-      *    ¿ôÃÍ¥Á¥§¥Ã¥¯
+      *    æ•°å€¤ãƒã‚§ãƒƒã‚¯
            IF     (WK-MM (1:2)  IS  NOT  NUMERIC )
                OR (WK-DD (1:2)  IS  NOT  NUMERIC )
                MOVE    1               TO    WK-ERR
            END-IF
-      *    ·î¥Á¥§¥Ã¥¯
+      *    æœˆãƒã‚§ãƒƒã‚¯
            IF      WK-ERR              =   ZERO
                IF     (WK-MM           <   1   )
                   OR  (WK-MM           >   12  )
@@ -1238,10 +1238,10 @@
                END-IF
            END-IF
            IF      WK-ERR              =   ZERO
-      *        Æü¥Á¥§¥Ã¥¯
+      *        æ—¥ãƒã‚§ãƒƒã‚¯
                EVALUATE    WK-MM
                    WHEN    2
-      *                ±¼Ç¯È½Äê
+      *                é–å¹´åˆ¤å®š
                        PERFORM URUDOSHI-CHK-RTN
                        IF      WK-UERR         =   ZERO
                            IF     (WK-DD       <   1  )
@@ -1274,7 +1274,7 @@
            EXIT.
       *
       ******************************************************************
-      *        ½áÇ¯È½Äê½èÍý
+      *        æ½¤å¹´åˆ¤å®šå‡¦ç†
       ******************************************************************
        URUDOSHI-CHK-RTN    SECTION.
        URUDOSHI-CHK-000.
@@ -1306,23 +1306,23 @@
        URUDOSHI-CHK-EXT.
            EXIT.
       ******************************************************************
-      *        ÍËÆü¡¦½ËÆü¶èÊ¬¡¦µÙÆü¶èÊ¬  »»½Ð½èÍý
+      *        æ›œæ—¥ãƒ»ç¥æ—¥åŒºåˆ†ãƒ»ä¼‘æ—¥åŒºåˆ†  ç®—å‡ºå‡¦ç†
       ******************************************************************
        YSK-KBN-RTN         SECTION.
        YSK-KBN-000.
-      *    ½ËÆü¡Ê½ÕÊ¬¤ÎÆü¡¤½©Ê¬¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæ˜¥åˆ†ã®æ—¥ï¼Œç§‹åˆ†ã®æ—¥ï¼‰ç®—å‡º
            PERFORM SKJT-KEISAN1-RTN.
-      *    ½ËÆü¡ÊÀ®¿Í¤ÎÆü¡¤ÂÎ°é¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæˆäººã®æ—¥ï¼Œä½“è‚²ã®æ—¥ï¼‰ç®—å‡º
            PERFORM SKJT-KEISAN2-RTN.
-      *    ½ËÆü¡Ê³¤¤ÎÆü¡¤·ÉÏ·¤ÎÆü¡Ë»»½Ð
+      *    ç¥æ—¥ï¼ˆæµ·ã®æ—¥ï¼Œæ•¬è€ã®æ—¥ï¼‰ç®—å‡º
            PERFORM SKJT-KEISAN3-SEC
       *
            MOVE    ZERO          TO    YSK-SYUKJTS   YSK-KYUJTS.
            MOVE    WK-YYMMDD     TO    WK-YOUB.
-      *    ½ËÆü¥Æ¡¼¥Ö¥ë¸¡º÷
+      *    ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢
            PERFORM  TABLE-SRH-RTN.
            IF  YSK-SYUKJTS  =  ZERO
-      *        ·îÍË¤Î¿¶ÂØµÙÆüÈ½Äê
+      *        æœˆæ›œã®æŒ¯æ›¿ä¼‘æ—¥åˆ¤å®š
                IF  YSK-YOUBI  =  1
                    MOVE    WK-YOUB       TO    WK-MNS-YMD
                    PERFORM  DT-MINUS-RTN
@@ -1331,13 +1331,13 @@
                END-IF
            END-IF.
            IF  YSK-YOUBI  =  ZERO
-      *        ÆüÍËÆü
+      *        æ—¥æ›œæ—¥
                MOVE    1                 TO    YSK-KYUJTS
            ELSE
                IF  YSK-SYUKJTS  =  1
                    MOVE    1             TO    YSK-KYUJTS
                ELSE
-      *            12/29¤«¤é1/3¤Þ¤ÇµÙÆü
+      *            12/29ã‹ã‚‰1/3ã¾ã§ä¼‘æ—¥
                    SET     IX4    TO     1
                    SEARCH  KYUJT-TBL     VARYING  IX4
                      AT  END
@@ -1349,16 +1349,16 @@
                END-IF
            END-IF.
       *H27.10
-      *    H27(2015) 5/6,9/22¤òµÙÆü¤È¤¹¤ë
+      *    H27(2015) 5/6,9/22ã‚’ä¼‘æ—¥ã¨ã™ã‚‹
            IF     (WK-SYY              =   2015 )
               AND (WK-SMD              =   0922
                                        OR  0506 )
                MOVE    1               TO  YSK-KYUJTS
            END-IF.
       *H27.12
-      *TABLE-SRH-RTN ¤Ë°ÜÆ°
-      *    »³¤ÎÆü
-      *    H28(2016) ¤«¤é8/11¤ò»³¤ÎÆü
+      *TABLE-SRH-RTN ã«ç§»å‹•
+      *    å±±ã®æ—¥
+      *    H28(2016) ã‹ã‚‰8/11ã‚’å±±ã®æ—¥
       *    IF     (WK-SYY              >=  2016 )
       *       AND (WK-SMD              =   0811 )
       *        MOVE    1               TO  YSK-KYUJTS
@@ -1378,13 +1378,13 @@
        YSK-KBN-EXT.
            EXIT.
       ******************************************************************
-      *        ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *        ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       ******************************************************************
        TABLE-SRH-RTN       SECTION.
        TABLE-SRH-000.
       *
       *H31.1
-      *    2019Ç¯¤Î½ËÆü
+      *    2019å¹´ã®ç¥æ—¥
            IF      WK-SYY          =   2019
                PERFORM 2019-TABLE-SRH-SEC
                GO      TO      TABLE-SRH-EXT
@@ -1424,7 +1424,7 @@
                END-SEARCH
            END-EVALUATE
       *
-      *    ½ÕÊ¬¤ÎÆü¡¦½©Ê¬¤ÎÆü
+      *    æ˜¥åˆ†ã®æ—¥ãƒ»ç§‹åˆ†ã®æ—¥
            IF  YSK-SYUKJTS  =  ZERO
                SET     IX3    TO     1
                SEARCH  SKJT-TBL2     VARYING  IX3
@@ -1435,7 +1435,7 @@
                    MOVE    1         TO    YSK-SYUKJTS
                END-SEARCH
            END-IF.
-      *    À®¿Í¤ÎÆü¡¦ÂÎ°é¤ÎÆü
+      *    æˆäººã®æ—¥ãƒ»ä½“è‚²ã®æ—¥
            IF  (YSK-SYUKJTS  =   ZERO ) AND
                (WK-SYY       >=  2000 )
                SET     IX5    TO     1
@@ -1447,7 +1447,7 @@
                    MOVE    1         TO    YSK-SYUKJTS
                 END-SEARCH
            END-IF.
-      *    ³¤¤ÎÆü¡¦·ÉÏ·¤ÎÆü
+      *    æµ·ã®æ—¥ãƒ»æ•¬è€ã®æ—¥
            IF  (YSK-SYUKJTS  =   ZERO ) AND
                (WK-SYY       >=  2003 )
                SET     IX8    TO     1
@@ -1460,8 +1460,8 @@
                 END-SEARCH
            END-IF
       *H27.12
-      *    »³¤ÎÆü
-      *    H28(2016) ¤«¤é8/11¤ò»³¤ÎÆü
+      *    å±±ã®æ—¥
+      *    H28(2016) ã‹ã‚‰8/11ã‚’å±±ã®æ—¥
            IF     (WK-SYY              >=  2016 )
                IF    (WYOUB-MMDD       =   0811 )
                    MOVE    1               TO  YSK-KYUJTS
@@ -1473,11 +1473,11 @@
       *
       *H31.1
       ******************************************************************
-      *        2019Ç¯¤Î½ËÆü»»½Ð½èÍý
+      *        2019å¹´ã®ç¥æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        2019-TABLE-SRH-SEC        SECTION.
       *
-      *    £²£°£±£¹Ç¯¤Î½ËÆü¥Æ¡¼¥Ö¥ë¡Ê¸ÇÄêÆü¡Ë
+      *    ï¼’ï¼ï¼‘ï¼™å¹´ã®ç¥æ—¥ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆå›ºå®šæ—¥ï¼‰
            SET    IX19    TO     1
               SEARCH  SKJT-TBLNEW19  VARYING   IX19
               AT  END
@@ -1487,7 +1487,7 @@
                      MOVE    1         TO    YSK-SYUKJTS
            END-SEARCH
       *
-      *    ½ÕÊ¬¤ÎÆü¡¦½©Ê¬¤ÎÆü
+      *    æ˜¥åˆ†ã®æ—¥ãƒ»ç§‹åˆ†ã®æ—¥
            IF  YSK-SYUKJTS  =  ZERO
                SET     IX3    TO     1
                SEARCH  SKJT-TBL2     VARYING  IX3
@@ -1498,7 +1498,7 @@
                    MOVE    1         TO    YSK-SYUKJTS
                END-SEARCH
            END-IF.
-      *    À®¿Í¤ÎÆü¡¦ÂÎ°é¤ÎÆü
+      *    æˆäººã®æ—¥ãƒ»ä½“è‚²ã®æ—¥
            IF  (YSK-SYUKJTS  =   ZERO ) AND
                (WK-SYY       >=  2000 )
                SET     IX5    TO     1
@@ -1510,7 +1510,7 @@
                    MOVE    1         TO    YSK-SYUKJTS
                 END-SEARCH
            END-IF.
-      *    ³¤¤ÎÆü¡¦·ÉÏ·¤ÎÆü
+      *    æµ·ã®æ—¥ãƒ»æ•¬è€ã®æ—¥
            IF  (YSK-SYUKJTS  =   ZERO ) AND
                (WK-SYY       >=  2003 )
                SET     IX8    TO     1
@@ -1528,7 +1528,7 @@
       **
       *
       ******************************************************************
-      *        Á°Æü»»½Ð½èÍý
+      *        å‰æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DT-MINUS-RTN        SECTION.
        DT-MINUS-000.
@@ -1550,7 +1550,7 @@
            EXIT.
       *
       ******************************************************************
-      *        ·îËöÆü»»½Ð½èÍý
+      *        æœˆæœ«æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DT-MMLAST-RTN       SECTION.
        DT-MMLAST-000.
@@ -1566,7 +1566,7 @@
        DT-MMLAST-EXT.
            EXIT.
       ******************************************************************
-      *        Á°ÆüÍ­¸úÆü»»½Ð½èÍý
+      *        å‰æ—¥æœ‰åŠ¹æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DT-YUKOMNS-RTN      SECTION.
        DT-YUKOMNS-000.
@@ -1592,7 +1592,7 @@
        DT-YUKOMNS-EXT.
            EXIT.
       ******************************************************************
-      *        ÍâÆüÍ­¸úÆü»»½Ð½èÍý
+      *        ç¿Œæ—¥æœ‰åŠ¹æ—¥ç®—å‡ºå‡¦ç†
       ******************************************************************
        DT-YUKOPLS-RTN      SECTION.
        DT-YUKOPLS-000.
@@ -1618,7 +1618,7 @@
        DT-YUKOPLS-EXT.
            EXIT.
       ******************************************************************
-      *        Æü¿ô»»½Ð½èÍý
+      *        æ—¥æ•°ç®—å‡ºå‡¦ç†
       ******************************************************************
        NISSU-SANSYUTS-RTN  SECTION.
        NISSU-SANSYUTS-000.
@@ -1663,7 +1663,7 @@
        NISSU-SANSYUTS-EXT.
            EXIT.
       ******************************************************************
-      *        Æü¿ô´¹»»½èÍý
+      *        æ—¥æ•°æ›ç®—å‡¦ç†
       ******************************************************************
        NISSU-KANSAN-RTN    SECTION.
        NISSU-KANSAN-000.
@@ -1726,7 +1726,7 @@
        NISSU-KANSAN-EXT.
            EXIT.
       ******************************************************************
-      *    ½ÕÊ¬¤ÎÆü¡¦½©Ê¬¤ÎÆü¤ò»»½Ð¤¹¤ë                                *
+      *    æ˜¥åˆ†ã®æ—¥ãƒ»ç§‹åˆ†ã®æ—¥ã‚’ç®—å‡ºã™ã‚‹                                *
       ******************************************************************
        SKJT-KEISAN1-RTN  SECTION.
        SKJT-KEISAN1-000.
@@ -1768,7 +1768,7 @@
        SKJT-KEISAN1-EXT.
            EXIT.
       ******************************************************************
-      *    À®¿Í¤ÎÆü  ÂÎ°é¤ÎÆü¤ò»»½Ð¤¹¤ë                                *
+      *    æˆäººã®æ—¥  ä½“è‚²ã®æ—¥ã‚’ç®—å‡ºã™ã‚‹                                *
       ******************************************************************
        SKJT-KEISAN2-RTN  SECTION.
        SKJT-KEISAN2-000.
@@ -1824,7 +1824,7 @@
        SKJT-KEISAN2-EXT.
            EXIT.
       ******************************************************************
-      *    ³¤¤ÎÆü  ·ÉÏ·¤ÎÆü¤ò»»½Ð¤¹¤ë                                *
+      *    æµ·ã®æ—¥  æ•¬è€ã®æ—¥ã‚’ç®—å‡ºã™ã‚‹                                *
       ******************************************************************
        SKJT-KEISAN3-SEC  SECTION.
            SET     IX8              TO  1.
@@ -1875,7 +1875,7 @@
        SKJT-KEISAN3-EXT.
            EXIT.
       *******************************************************************
-      *        ¿ô»úÊÑ´¹½èÍý
+      *        æ•°å­—å¤‰æ›å‡¦ç†
       ******************************************************************
        SUUJI-EDT-RTN    SECTION.
        SUUJI-EDT-000.
@@ -1905,7 +1905,7 @@
        SUUJI-EDT-EXT.
            EXIT.
       ******************************************************************
-      *        ÍËÆüÊÑ´¹½èÍý
+      *        æ›œæ—¥å¤‰æ›å‡¦ç†
       ******************************************************************
        YOUBI-SET-RTN    SECTION.
        YOUBI-SET-000.

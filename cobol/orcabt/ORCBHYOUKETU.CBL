@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBHYOUKETU.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �
-      *  ����ݡ��ͥ��̾  : �������ɸ���б���ʿ������ǯ�ٰʹߤ��б���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/03/29    NACL-��Ʀ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次
+      *  コンポーネント名  : 入院会計標欠対応（平成１８年度以降に対応）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/03/29    NACL-小豆沢   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-��Ʀ��  07/06/14  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-小豆沢  07/06/14  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                     PIC X(200).
       *
@@ -50,11 +50,11 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-NYUINACCT               PIC 9(01).
@@ -63,13 +63,13 @@
            03  FLG-TENSU                   PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                    PIC 9(05).
            03  CNT-PAGE                    PIC 9(05).
            03  CNT-JOB-UPDCNT              PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME                    PIC 9(08).
            03  SYS-YMD.
@@ -77,11 +77,11 @@
                05  SYS-MM                  PIC 9(02).
                05  SYS-DD                  PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                                 PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  PARA-AREA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -90,7 +90,7 @@
            03  WRK-PARA-SRYYM                      PIC X(06).
            03  WRK-PARA-KBN                        PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-DBPATH                          PIC X(100).
            03  WRK-ERRNO                           PIC 9(2).
@@ -105,47 +105,47 @@
            03  WRK-ZAITEN                          PIC 9(08).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �����԰�
+      *    入院行為
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -153,7 +153,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -167,7 +167,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -183,7 +183,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
            DISPLAY "100-INIT-SEC"
@@ -221,25 +221,25 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO   SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORCBHYOUKETSU"     TO  JOB-PGID
            EVALUATE   WRK-PARA-KBN
                WHEN   "1"
-                 MOVE    "ɸ���׹���������ʬ�Σ���"
+                 MOVE    "標欠会計更新１００分の１０"
                                        TO  JOB-SHELLMSG
                WHEN   "2"
-                 MOVE    "ɸ���׹���������ʬ�Σ���"
+                 MOVE    "標欠会計更新１００分の１５"
                                        TO  JOB-SHELLMSG
                WHEN   "3"
-                 MOVE    "ɸ���׹���������ʬ�Σ�"
+                 MOVE    "標欠会計更新１００分の２"
                                        TO  JOB-SHELLMSG
                WHEN   "4"
-                 MOVE    "ɸ���׹���������ʬ�Σ�"
+                 MOVE    "標欠会計更新１００分の３"
                                        TO  JOB-SHELLMSG
                WHEN   "5"
-                 MOVE    "ɸ���׹�����ɸ���á�"
+                 MOVE    "標欠会計更新（標欠取消）"
                                        TO  JOB-SHELLMSG
            END-EVALUATE
       *
@@ -256,12 +256,12 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -281,13 +281,13 @@
                    IF    FLG-SYSKANRI  =   ZERO
                          MOVE    SYS-1001-HOSPNUM  TO  WRK-HOSPNUM
                    ELSE
-                         MOVE  "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                         MOVE  "医療機関情報が取得できませんでした。"
                                            TO  WRK-RECEERR
                          PERFORM 500-ERR-HENSYU-SEC
                          GO  TO  100-INIT-EXT
                    END-IF
            ELSE
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+               MOVE    "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -297,21 +297,21 @@
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ����ǯ������å�
+      *    処理年月チェック
            IF    WRK-PARA-SRYYM    >=   "200604"
                CONTINUE
            ELSE
-               MOVE  "�����о�ǯ�����Ǥ���"
+               MOVE  "処理対象年月が誤りです。"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ������ʬ�����å�
+      *    処理区分チェック
            IF    WRK-PARA-KBN    =   "1" OR "2" OR "3" OR "4" OR "5"
                CONTINUE
            ELSE
-               MOVE  "������ʬ������Ǥ���"
+               MOVE  "処理区分が誤りです。"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  100-INIT-EXT
@@ -321,7 +321,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -373,7 +373,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰��Խ�������������ʬ���ʣ�����ʬ�Σ������ۡ�
+      *    入院診療行為編集処理　処理区分１（１００分の１０減額）
       *****************************************************************
        210-NYUINACT-UPD1-SEC          SECTION.
       *
@@ -409,7 +409,7 @@
                            MOVE   1            TO   NSRY-SRYSURYO(3)
                        END-IF
                    END-IF
-      *            ���ٿ������̷ס����ť����ɷ�
+      *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
                                          WRK-SRYCDTOTAL
@@ -421,14 +421,14 @@
                          MOVE    NSRY-SRYCD(IDX)   TO  WRK-SRYCDX
                          ADD     WRK-SRYCD9        TO  WRK-SRYCDTOTAL
                    END-PERFORM
-      *            ������
+      *            剤点数
                    MOVE     ZERO      TO   WRK-ZAITEN
                    PERFORM  VARYING   IDX   FROM  1  BY  1
                      UNTIL  (IDX      >     5)    OR
                             (NSRY-SRYCD(IDX)   =   SPACE)
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
-      *            �������Ź԰ٹ���
+      *            入院診療行為更新
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
@@ -449,7 +449,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰��Խ�������������ʬ���ʣ�����ʬ�Σ������ۡ�
+      *    入院診療行為編集処理　処理区分２（１００分の１５減額）
       *****************************************************************
        210-NYUINACT-UPD2-SEC          SECTION.
       *
@@ -485,7 +485,7 @@
                            MOVE   1            TO   NSRY-SRYSURYO(3)
                        END-IF
                    END-IF
-      *            ���ٿ������̷ס����ť����ɷ�
+      *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
                                          WRK-SRYCDTOTAL
@@ -497,14 +497,14 @@
                          MOVE    NSRY-SRYCD(IDX)   TO  WRK-SRYCDX
                          ADD     WRK-SRYCD9        TO  WRK-SRYCDTOTAL
                    END-PERFORM
-      *            ������
+      *            剤点数
                    MOVE     ZERO      TO   WRK-ZAITEN
                    PERFORM  VARYING   IDX   FROM  1  BY  1
                      UNTIL  (IDX      >     5)    OR
                             (NSRY-SRYCD(IDX)   =   SPACE)
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
-      *            �������Ź԰ٹ���
+      *            入院診療行為更新
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
@@ -525,7 +525,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰��Խ�������������ʬ���ʣ�����ʬ�Σ����ۡ�
+      *    入院診療行為編集処理　処理区分３（１００分の２減額）
       *****************************************************************
        210-NYUINACT-UPD3-SEC          SECTION.
       *
@@ -561,7 +561,7 @@
                            MOVE   1            TO   NSRY-SRYSURYO(3)
                        END-IF
                    END-IF
-      *            ���ٿ������̷ס����ť����ɷ�
+      *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
                                          WRK-SRYCDTOTAL
@@ -573,14 +573,14 @@
                          MOVE    NSRY-SRYCD(IDX)   TO  WRK-SRYCDX
                          ADD     WRK-SRYCD9        TO  WRK-SRYCDTOTAL
                    END-PERFORM
-      *            ������
+      *            剤点数
                    MOVE     ZERO      TO   WRK-ZAITEN
                    PERFORM  VARYING   IDX   FROM  1  BY  1
                      UNTIL  (IDX      >     5)    OR
                             (NSRY-SRYCD(IDX)   =   SPACE)
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
-      *            �������Ź԰ٹ���
+      *            入院診療行為更新
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
@@ -601,7 +601,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰��Խ�������������ʬ���ʣ�����ʬ�Σ����ۡ�
+      *    入院診療行為編集処理　処理区分４（１００分の３減額）
       *****************************************************************
        210-NYUINACT-UPD4-SEC          SECTION.
       *
@@ -637,7 +637,7 @@
                            MOVE   1            TO   NSRY-SRYSURYO(3)
                        END-IF
                    END-IF
-      *            ���ٿ������̷ס����ť����ɷ�
+      *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
                                          WRK-SRYCDTOTAL
@@ -649,14 +649,14 @@
                          MOVE    NSRY-SRYCD(IDX)   TO  WRK-SRYCDX
                          ADD     WRK-SRYCD9        TO  WRK-SRYCDTOTAL
                    END-PERFORM
-      *            ������
+      *            剤点数
                    MOVE     ZERO      TO   WRK-ZAITEN
                    PERFORM  VARYING   IDX   FROM  1  BY  1
                      UNTIL  (IDX      >     5)    OR
                             (NSRY-SRYCD(IDX)   =   SPACE)
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
-      *            �������Ź԰ٹ���
+      *            入院診療行為更新
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
@@ -677,7 +677,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰��Խ�������������ʬ����ɸ��μ�ä���
+      *    入院診療行為編集処理　処理区分５（標欠の取消し）
       *****************************************************************
        210-NYUINACT-UPD5-SEC          SECTION.
       *
@@ -703,7 +703,7 @@
                    PERFORM   210-HYOUKETU-CLEAR-SEC
       *
                    MOVE    1      TO   FLG-NYUINACCT-UPD
-      *            ���ٿ������̷ס����ť����ɷ�
+      *            明細数・数量計・診療コード計
                    MOVE     ZERO    TO   WRK-MEISAISU
                                          WRK-SURYOTOTAL
                                          WRK-SRYCDTOTAL
@@ -715,14 +715,14 @@
                      MOVE    NSRY-SRYCD(IDX)   TO  WRK-SRYCDX
                      ADD     WRK-SRYCD9        TO  WRK-SRYCDTOTAL
                    END-PERFORM
-      *            ������
+      *            剤点数
                    MOVE     ZERO      TO   WRK-ZAITEN
                    PERFORM  VARYING   IDX   FROM  1  BY  1
                      UNTIL  (IDX      >     5)    OR
                             (NSRY-SRYCD(IDX)   =   SPACE)
                        PERFORM   210-ZAITEN-SET-SEC
                    END-PERFORM
-      *            �������Ź԰ٹ���
+      *            入院診療行為更新
                    MOVE   NYUINACT-REC    TO   MCPDATA-REC
                    MOVE  "tbl_nyuinact"   TO   MCP-TABLE
                    MOVE  "key"            TO   MCP-PATHNAME
@@ -743,7 +743,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ɸ��Υ��ꥢ����
+      *    標欠のクリア処理
       *****************************************************************
        210-HYOUKETU-CLEAR-SEC          SECTION.
       *
@@ -768,7 +768,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Խ�����
+      *    入院会計編集処理
       *****************************************************************
        210-NYUINACCT-UPD-SEC          SECTION.
       *
@@ -777,7 +777,7 @@
            MOVE    WRK-SRYCDTOTAL  TO   NACCT-SRYCDTOTAL
            MOVE    WRK-MEISAISU    TO   NACCT-MEISAISU
            MOVE    WRK-SURYOTOTAL  TO   NACCT-SURYOUTOTAL
-      *    ������׹���
+      *    入院会計更新
            MOVE    NYUINACCT-REC   TO   MCPDATA-REC
            MOVE   "tbl_nyuinacct"  TO   MCP-TABLE
            MOVE   "key"            TO   MCP-PATHNAME
@@ -792,7 +792,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������åȽ���
+      *    剤点セット処理
       *****************************************************************
        210-ZAITEN-SET-SEC          SECTION.
       *
@@ -804,22 +804,22 @@
            MOVE   TNS-YUKOSTYMD        TO  TNS-YUKOEDYMD
            PERFORM 910-TENSU-READ-SEC
       *
-      *    ��������
+      *    点数算定
            EVALUATE    TNS-TENSIKIBETU
-      *        �����ʥץ饹��
+      *        点数（プラス）
                WHEN    3
                    ADD   TNS-TEN     TO  WRK-ZAITEN
-      *        ��û�
+      *        ％加算
                WHEN    5
                    COMPUTE    WRK-ZAITEN        =
                               WRK-ZAITEN        +
                             ((WRK-ZAITEN  * (TNS-TEN   /  100))  + 0.5)
-      *        �󸺻�
+      *        ％減算
                WHEN    6
                    COMPUTE    WRK-ZAITEN  =
                               WRK-ZAITEN  -
                             ((WRK-ZAITEN * (TNS-TEN   /  100))  -  0.5)
-      *        �����ʥޥ��ʥ���
+      *        点数（マイナス）
                WHEN    8
                    COMPUTE  WRK-ZAITEN  =
                             WRK-ZAITEN  -  TNS-TEN
@@ -835,11 +835,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
@@ -851,7 +851,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -861,7 +861,7 @@
            WRITE   RECEERR-REC
            CLOSE   RECEERR-FILE
       *
-      *    ����ִ�����λ����
+      *    ジョブ管理終了処理
            MOVE    "JBE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -877,7 +877,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ���������
+      *    システム管理マスター検索
       *****************************************************************
        910-SYSKANRI-SELECT-SEC        SECTION.
       *
@@ -893,7 +893,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -911,7 +911,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ���������
+      *    入院会計マスター検索
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -928,7 +928,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ������ɹ�
+      *    入院会計マスター読込
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -947,7 +947,7 @@
       *
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ���������
+      *    入院診療行為マスター検索
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -964,7 +964,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ź԰٥ޥ������ɹ�
+      *    入院診療行為マスター読込
       *****************************************************************
        910-NYUINACT-READ-SEC        SECTION.
       *
@@ -982,7 +982,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1013,7 +1013,7 @@
       *
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1026,7 +1026,7 @@
       *      
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1043,7 +1043,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1060,7 +1060,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1073,7 +1073,7 @@
       *
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1086,7 +1086,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1104,7 +1104,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����ȣạ̃��ɣͼ����������� (xml2)
+      *    ＡＰＩリクエストＣＬＡＩＭ受付送信取得 (xml2)
       *                                      COPY (CPCLAIMFRONTV02REQ.INC)
       ******************************************************************
        01  XML-CLAIM-FRONTV2REQ.
@@ -29,24 +29,24 @@
            02  CLFRREQ-MODE              PIC S9(9)   BINARY.
            02  CLFRREQ-RECORDNAME        PIC X(128).
            02  CLFRREQ-CLAIM-FRONT.
-      *        �ꥯ�������ֹ�
+      *        リクエスト番号
                03  CLFRREQ-REQUEST-NUMBER    PIC X(02).
-      *        �����ֹ�
+      *        患者番号
                03  CLFRREQ-PATIENTID         PIC X(20).
-      *        ��������
+      *        受付日付
                03  CLFRREQ-ACCEPT-DATE       PIC X(10).
-      *        ���ջ���
+      *        受付時間
                03  CLFRREQ-ACCEPT-TIME       PIC X(8).
-      *        ���Ų�
+      *        診療科
                03  CLFRREQ-DEP-CODE          PIC X(02).
-      *        �ɥ�����
+      *        ドクター
                03  CLFRREQ-DR-CODE           PIC X(05).
-      *        �ݸ��ȹ礻�ֹ�
+      *        保険組合せ番号
                03  CLFRREQ-COMBINATION-NUMBER      PIC X(04).
-      *        ��������̾��
+      *        診療内容名称
                03  CLFRREQ-MEDICAL-NAME       PIC X(16).
-      *        ���������ʬ
+      *        メモ送信区分
                03  CLFRREQ-MEMO-CODE          PIC X(02).
-      *        ���պѤ�������ʬ�ʥꥯ�������ֹ�ᣰ�����Τߡ�
+      *        受付済み送信区分（リクエスト番号＝０２　のみ）
                03  CLFRREQ-SEND-STATUS       PIC X(02).
       *

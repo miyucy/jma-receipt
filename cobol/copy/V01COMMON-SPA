@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,22 +17,22 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �ݸ��ֹ����� ���̣ӣУ�(SPA-WORK ������)
+      *    保険番号設定 共通ＳＰＡ(SPA-WORK の内容)
       *          
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/10/09  �����ֹ���ɲ�      
-      *  04.08.00    NACL-����    15/11/04  ʣ�̸��ݸ��ֹ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/10/09  選択番号の追加      
+      *  04.08.00    NACL-森脇    15/11/04  複写元保険番号の追加
       *****************************************************************
       *
        01  SPA-V01KYOUTU.
-      *ͭ������
+      *有効期間
            05  SPA-V01-STYUKYMD            PIC 9(08).
            05  SPA-V01-EDYUKYMD            PIC 9(08).
            05  SPA-V01-STYUKYMDH           PIC X(09).
            05  SPA-V01-EDYUKYMDH           PIC X(09).
-      *ͭ�����֡�����
+      *有効期間（前）
            05  SPA-OLD-STYUKYMD            PIC X(08).
            05  SPA-OLD-EDYUKYMD            PIC X(08).
            05  SPA-V01-SYORI               PIC 9(01).
@@ -45,9 +45,9 @@
            05  SPA-V01-MAE-HKNNUM          PIC X(03).
            05  SPA-V01-CPHKNNUM            PIC X(03).
       *
-      *�ٹ��å�����
+      *警告メッセージ
            05  SPA-VIDCD                   PIC X(04).
-      *�ٹ���̤��
+      *警告画面より
            05  SPA-VID1-AREA. 
                07  SPA-VID1-FLG            PIC X(02).
       *

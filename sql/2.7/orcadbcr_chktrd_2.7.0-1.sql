@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- •¡•ß•√•Ø•ﬁ•π•ø£≥               --
+-- „ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„ÇøÔºì               --
 --                                --
 -- Table Name  : TBL_CHKTRD       --
 -- Create Date : 2005/10/28       --

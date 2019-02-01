@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,18 +16,18 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ƥ�С����������ѥ�᥿                         *
+      *    システムバージョン取得パラメタ                         *
       *                         COPY  (CPORCSVERSION.INC)  
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SVERSION-AREA.
            03  SVERSION-VERSION        PIC X(64).
-      *    �ѥå�������꡼�����κ���С�������ֹ�
+      *    パッケージリリース時の最大バージョン番号
            03  SVERSION-DBVERSION-1    PIC X(64).
-      *    �ѥå���꡼�����κ���С�������ֹ�
+      *    パッチリリース時の最大バージョン番号
            03  SVERSION-DBVERSION-2    PIC X(64).
-      *    ���ꥸ�ʥ����פΥС�������ֹ�
+      *    オリジナルダンプのバージョン番号
            03  SVERSION-DBVERSION-3    PIC X(64).

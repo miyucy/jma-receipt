@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,34 +18,34 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGT05.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ɽ�����������
-      *  ����ݡ��ͥ��̾  : ����饤�������̥ǡ������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08/09/05    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 総括表・公費請求書
+      *  コンポーネント名  : オンライン請求結果データ取込
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08/09/05    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.04.01    NACL-ƣ��    08/12/10  �����б�
-      *  04.04.02    NACL-ƣ��    10/12/10  ����ե��������¸�ѥե�����̾
-      *                                     ���ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    08/12/10  返戻対応
+      *  04.04.02    NACL-藤原    10/12/10  返戻ファイルの保存用ファイル名
+      *                                     の変更
       *
-      *  04.05.01    NACL-ƣ��    09/07/23  ����ե�����ξ�ʸ���б�
+      *  04.05.01    NACL-藤原    09/07/23  返戻ファイルの小文字対応
       *
-      *  04.06.01    NACL-ƣ��    10/12/20  �ݸ��Ԥ���������б�
-      *  04.06.02    NACL-ƣ��    11/02/10  ��Ͽ�ѥ��顼���ξ����ɲ�
-      *  04.06.03    NACL-ƣ��    11/02/14  OpenCOBOL 1.0.0 �б�
-      *  04.06.04    NACL-ƣ��    12/06/19  �����߻��Υ쥳����Ĺ�ѹ�
+      *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.02    NACL-藤原    11/02/10  登録済エラー時の情報追加
+      *  04.06.03    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
+      *  04.06.04    NACL-藤原    12/06/19  取り込み時のレコード長変更
       *
-      *  04.07.01    NACL-ƣ��    12/08/01  �쥻�ťǡ��������å���ǽ�б�
-      *  04.07.02    NACL-ƣ��    13/10/07  ϫ�ҥ쥻���б�
-      *  04.07.03    NACL-ƣ��    15/05/11  �ե������ʸ�������ɥ����å�
+      *  04.07.01    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.02    NACL-藤原    13/10/07  労災レセ電対応
+      *  04.07.03    NACL-藤原    15/05/11  ファイルの文字コードチェック
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,11 +53,11 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  ERR-FILE        ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-ERR.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN  ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
@@ -65,29 +65,29 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  ERR-FILE.
        01  ERR-REC             PIC X(200).
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARA-FILE.
        01  PARA-REC            PIC X(3000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING   //TEMPFLPARA//
                                    BY          //RECEERR//.
       *
            COPY    "CPERRFL.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �쥻�ץȺ����ؼ����̥ѥ�᥿
+      *    レセプト作成指示共通パラメタ
            COPY    "T01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
            COPY    "T01SCR-SPA".
            COPY    "CPORCSPRTLNK.INC"
                                    REPLACING  //LNK-//
@@ -95,7 +95,7 @@
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-ERR                 PIC X(02).
@@ -161,14 +161,14 @@
       *
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //ASS-PARA//.
-      *    ������
+      *    カウンタ
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(05).
            03  MOJI-CNT                PIC 9(03).
            03  SPILIT-CNT              PIC 9(03).
            03  ERR-CNT                 PIC 9(04).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(02).
@@ -177,7 +177,7 @@
            03  IDXX                    PIC 9(05).
            03  IDXY                    PIC 9(05).
       *
-      *    ������
+      *    カウンタ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -231,7 +231,7 @@
       *                             
        01  WRK-SHELL-NAME         PIC X(50).
       *
-      *    ���ŵ��ءʴ��ܾ�����������ΰ�
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-AREA.
            03  TBL-SYS1001-OCC             OCCURS  10.
                05  TBL-SYS1001-REC     PIC X(610).
@@ -239,25 +239,25 @@
       *
        01  WRK-CONS-AREA.
       *
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����  
+      *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "044".
-      *    ���������ģ¤Υ�����  
+      *    印刷管理ＤＢのキー値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
-      *    ����ִ����ģ¤Υ�����  
+      *    ジョブ管理ＤＢのキー値  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *     
-      *    ����ִ����ģ¤Υ����͡ʥ쥻�ץȡ�  
+      *    ジョブ管理ＤＢのキー値（レセプト）  
            03  WRK-CONS-JOB-SHELLID-RECEPT1
                                    PIC X(08)   VALUE   "RECEPT1".
            03  WRK-CONS-JOB-JOBID-RECEPT1
                                    PIC 9(07)   VALUE   1.
       *     
-      *    ����ִ����ģ¤Υ����͡ʥǡ���������  
+      *    ジョブ管理ＤＢのキー値（データ収集）  
            03  WRK-CONS-JOB-SHELLID-COLLECT
                                   PIC X(08)    VALUE   "COLLECT".
            03  WRK-CONS-JOB-JOBID-COLLECT
@@ -266,14 +266,14 @@
            03  WRK-CONS-DATALST-MAX
                                    PIC 9(02)   VALUE   15.
       *
-      *    ���顼�ե�����ɣ�
+      *    エラーファイルＩＤ
            03  WRK-CONS-FILE-ID    PIC X(08)   VALUE   "OR044ERR".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
@@ -292,44 +292,44 @@
        01  HENREI-B-REC.
            COPY    "CPHENREI-BODY.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSZENHANCNV.INC".
       *
-      *    �������Ѵ�����
+      *    コード変換サブ
            COPY    "CPORCSJISTOEUC.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -347,7 +347,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -366,15 +366,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -387,21 +387,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "TERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -423,7 +423,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -443,7 +443,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣԣɣģ���������
+      *    確認画面（ＴＩＤ１）戻り処理
       *****************************************************************
        330-TID1-SET-SEC            SECTION.
       *
@@ -454,7 +454,7 @@
                        PERFORM 210-BACK-SYORI-SEC
                        GO  TO  330-TID1-SET-EXT
                    WHEN    "1001"
-      *                �ģ���Ͽ
+      *                ＤＢ登録
                        MOVE    SPACE           TO  SPA-TIDCD
                                                    SPA-TID1-FLG
                        PERFORM 4501-JOBKANRI-CHK-SEC
@@ -484,11 +484,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̲��̡ʣԣ�����������
+      *    処理結果画面（Ｔ９９）戻り処理
       *****************************************************************
        320-T99-SET-SEC            SECTION.
       *
-      *    ��Ͽ�ѥե饰����
+      *    登録済フラグ設定
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
                MOVE    "1"             TO  SPA-NAI-T05-TDB (IDX)
@@ -498,7 +498,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -511,24 +511,24 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            MOVE    T05-ENTRY1          TO  SPA-GMN-T05-ENTRY1
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *        �����ߥե�����������
+      *        取り込みファイル削除処理
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM  220-DEL-GID-SEC
-      *        UPLOAD(�����ФؤΥǡ�����¸)����
+      *        UPLOAD(サーバへのデータ保存)処理
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 700-EXPORT-SEC
-      *        �ģ���Ͽ
+      *        ＤＢ登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 210-TOUROKU-GID-SEC
                END-EVALUATE
@@ -538,20 +538,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ý���
+      *    会話処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            MOVE    T05-ENTRY1          TO  SPA-GMN-T05-ENTRY1
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        �ֹ���������
+      *        番号選択入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 201-SELNUM-CHK-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "DATALST"
                    PERFORM 203-DATALST-SELECT-SEC
-      *        ���ʬ
+      *        一括分
                WHEN    "ACTIVATE"       ALSO   ANY
                    PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
@@ -561,14 +561,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ʬ���Ͻ���
+      *    一括分入力処理
       *****************************************************************
        400-ENTRY-SYORI-SEC             SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
            MOVE    ZERO                TO  SPA-GMN-T05-CUR
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
@@ -576,20 +576,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
            END-IF
       *
            IF      FLG-TOUROKU         =   1
-      *        ������
+      *        更新前
                PERFORM 4101-KAKUTEI-CHK-SEC
            END-IF
       *
@@ -598,7 +598,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -607,7 +607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
@@ -616,7 +616,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ܥ��󲡲��������å�����
+      *    確定ボタン押下時チェック処理
       *****************************************************************
        4101-KAKUTEI-CHK-SEC        SECTION.
       *
@@ -625,7 +625,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ����Ͻ���
+      *    選択番号入力処理
       *****************************************************************
        201-SELNUM-CHK-SEC              SECTION.
       *
@@ -662,7 +662,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ����������
+      *    対象データ選択処理
       *****************************************************************
        2011-DATALST-SELECT-SEC          SECTION.
       *
@@ -680,7 +680,7 @@
                        MOVE    SPA-GMN-T05-TUKAISU (SPA-NAI-T05-SELNUM)   
                                            TO  WRK-NUM3
                        MOVE    WRK-NUM3    TO  SPA-GMN-T05-SELNAME2(1:3)
-                       MOVE    "��"        TO  SPA-GMN-T05-SELNAME2(4:)
+                       MOVE    "回"        TO  SPA-GMN-T05-SELNAME2(4:)
                    END-IF
                WHEN    "RIfixf"
                WHEN    "rifixf"
@@ -689,7 +689,7 @@
                        MOVE    SPA-GMN-T05-TSKAISU (SPA-NAI-T05-SELNUM)
                                            TO  WRK-NUM3
                        MOVE    WRK-NUM3    TO  SPA-GMN-T05-SELNAME2(1:3)
-                       MOVE    "��"        TO  SPA-GMN-T05-SELNAME2(4:)
+                       MOVE    "回"        TO  SPA-GMN-T05-SELNAME2(4:)
                  END-IF
            END-EVALUATE
       *
@@ -698,7 +698,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥǡ����������
+      *    対象データ選択処理
       *****************************************************************
        203-DATALST-SELECT-SEC              SECTION.
       *
@@ -732,7 +732,7 @@
            EXIT.
       *
       *****************************************************************
-      *     UPLOAD(�����ФؤΥǡ�����¸)����
+      *     UPLOAD(サーバへのデータ保存)処理
       *****************************************************************
        700-EXPORT-SEC          SECTION.
       *
@@ -743,7 +743,7 @@
                                            WRK-ERRMSG2
                                            ERR-CNT
       *
-      *    �ե�����̾����
+      *    ファイル名取得
            MOVE    SPACE               TO  WRK-FILENM
            IF      T05-ENTRY1          =   SPACE
                CONTINUE
@@ -761,7 +761,7 @@
                END-IF
            END-IF
       *
-      *    �ե�����̾�����å�
+      *    ファイル名チェック
            PERFORM 7001-FILENM-CHECK-SEC
            IF      WRK-ERRMSG1         >   ZERO
                GO  TO  700-EXPORT-EXT
@@ -773,7 +773,7 @@
                GO  TO  700-EXPORT-EXT
            END-IF
       *
-      *    ��¸�ѥե�����̾
+      *    保存用ファイル名
            COMPUTE IDY     =   SPA-GMN-T05-DATALST-MAX +   1
            IF      IDY                 >   WRK-CONS-DATALST-MAX
                MOVE    99                  TO  WRK-ERRMSG1
@@ -819,7 +819,7 @@
            DISPLAY "NAME=" IDY "#" SPA-NAI-T05-SAVE-NAME (IDY)
       *??
       *  
-      *    BLOBEXPORT  ---> �����Фؤ���¸��FUNCTION
+      *    BLOBEXPORT  ---> サーバへの保存用FUNCTION
            INITIALIZE                      ORCA-BLOB
            MOVE    T05-OBJECTDATA      TO  ORCA-BLOB-OBJECT
            MOVE    SPA-NAI-T05-SAVE-NAME(IDY)
@@ -832,19 +832,19 @@
                                        ORCA-BLOB
                                        SPA-AREA
       *
-      *    �����ߥե���������å�����
+      *    取り込みファイルチェック処理
            PERFORM 7002-FILE-CHECK-SEC
            IF      WRK-ERRMSG1         >   ZERO
                INITIALIZE              WRK-ERRMSG-HENSYU-AREA
                EVALUATE    SPA-NAI-T05-TFLG3 (IDY)
                    WHEN    "1"
-                       MOVE    "����"          TO
+                       MOVE    "社保"          TO
                                                WRK-ERRMSG-TEISYUTUSAKI
                    WHEN    "2"
-                       MOVE    "����"          TO
+                       MOVE    "国保"          TO
                                                WRK-ERRMSG-TEISYUTUSAKI
                    WHEN    "3"
-                       MOVE    "ϫ��"          TO
+                       MOVE    "労災"          TO
                                                WRK-ERRMSG-TEISYUTUSAKI
                END-EVALUATE
                MOVE    SPA-GMN-T05-TSRYYM(IDY) TO  WRK-ERRMSG-SRYYM
@@ -852,7 +852,7 @@
                    WHEN    "0"
                        CONTINUE
                    WHEN    "1"
-                       MOVE    "���ݸ��Ԥ���������"
+                       MOVE    "（保険者からの返戻）"
                                                TO  WRK-ERRMSG-HKNJA
                END-EVALUATE
                MOVE    SPA-GMN-T05-THOSPCD (IDY)
@@ -862,24 +862,24 @@
                                            SPA-NAI-T05-DATALST (IDY)
                EVALUATE    WRK-ERRMSG1
                    WHEN    1
-                       MOVE    "�ե����뤬���Ǥ�"
+                       MOVE    "ファイルが空です"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    2
-                       MOVE    "�ե�����̾���ǧ���Ƥ�������"
+                       MOVE    "ファイル名を確認してください"
                                                TO  SPA-GMN-T05-ERRMSG1
-                       MOVE    "��ƻ�ܸ��ֹ桢���ŵ��إ����ɥ��顼"
+                       MOVE    "都道府県番号、医療機関コードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                    WHEN    3
-                       MOVE    "���˼����ߺѤΥե�����Ǥ�"
+                       MOVE    "既に取り込み済のファイルです"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    4
                        IF      WRK-ERRMSG-HOSPCD   =   SPACE
                            STRING
-                               "���ˣģ���Ͽ�ѤΥե�����Ǥ�������衧"
+                               "既にＤＢ登録済のファイルです　提出先："
                                                DELIMITED  BY  SIZE
                                 WRK-ERRMSG-TEISYUTUSAKI
                                                DELIMITED  BY  SIZE
-                                "������ǯ�" DELIMITED  BY  SIZE
+                                "　処理年月：" DELIMITED  BY  SIZE
                                 WRK-ERRMSG-SRYYM
                                                DELIMITED  BY  SIZE
                                 WRK-ERRMSG-HKNJA
@@ -888,14 +888,14 @@
                            END-STRING
                        ELSE
                            STRING
-                               "���ˣģ���Ͽ�ѤΥե�����Ǥ�����"
+                               "既にＤＢ登録済のファイルです　（"
                                                DELIMITED  BY  SIZE
                                 WRK-ERRMSG-HOSPCD
                                                DELIMITED  BY  SIZE
-                               "�ˡ�����衧"  DELIMITED  BY  SIZE
+                               "）　提出先："  DELIMITED  BY  SIZE
                                 WRK-ERRMSG-TEISYUTUSAKI
                                                DELIMITED  BY  SIZE
-                                "������ǯ�" DELIMITED  BY  SIZE
+                                "　処理年月：" DELIMITED  BY  SIZE
                                 WRK-ERRMSG-SRYYM
                                                DELIMITED  BY  SIZE
                                 WRK-ERRMSG-HKNJA
@@ -904,87 +904,87 @@
                            END-STRING
                        END-IF
                    WHEN    5
-                       MOVE    "����ߥǡ�����������ʸ����¸�ߤ��ޤ�"
+                       MOVE    "取込みデータに不正な文字が存在します"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    6
-                       MOVE    "���ŵ��إ����ɤμ������Ǥ��ޤ���Ǥ���"
+                       MOVE    "医療機関コードの取得ができませんでした"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    9
-                       MOVE    "�ե����뤬�����ץ�Ǥ��ޤ���"
+                       MOVE    "ファイルがオープンできません"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    18
-                       MOVE    "¸�ߤ��ʤ��쥳���ɤ�����ޤ�"
+                       MOVE    "存在しないレコードがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
-                       MOVE    "������ŵ��إ쥳���ɥ��顼"
+                       MOVE    "返戻医療機関レコードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                    WHEN    98
-                       MOVE    "���顼�����ߤϣ���������ޤǤǤ�"
+                       MOVE    "エラー取り込みは１０００件までです"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    99
-                       MOVE    "����ʾ������ޤ���"
+                       MOVE    "これ以上取り込めません"
                                                TO  SPA-GMN-T05-ERRMSG1
                    WHEN    OTHER
-                       MOVE    "�Ѵ���ǽ�Υǡ���������ޤ�"
+                       MOVE    "変換不能のデータがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
                        EVALUATE    WRK-ERRMSG1
                            WHEN    10
-                               MOVE    "�����󥨥顼"
+                               MOVE    "送信回エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    11
-                               MOVE    "�������󥨥顼"
+                               MOVE    "請求確定回エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    12
-                               MOVE    "����ǯ��顼"
+                               MOVE    "診療年月エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    13
-                               MOVE    "����ǯ�������顼"
+                               MOVE    "送信年月日エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    14
-                               MOVE    "����ǯ��顼"
+                               MOVE    "請求年月エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    15
-                               MOVE    "�������ǯ�������顼"
+                               MOVE    "請求確定年月日エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    16
-                               MOVE    "������ʧ���إ����ɥ��顼"
+                               MOVE    "審査支払機関コードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    17
-                               MOVE    "�����󥨥顼"
+                               MOVE    "送信回エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    19
                                MOVE
-                                   "��ƻ�ܸ��ֹ桢���ŵ��إ����ɥ��顼"
+                                   "都道府県番号、医療機関コードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    20
-                               MOVE    "����ɽ���顼"
+                               MOVE    "点数表エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    21
-                               MOVE    "�ޥ���ܥ�塼�༱�̾��󥨥顼"
+                               MOVE    "マルチボリューム識別情報エラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                            WHEN    22
                                MOVE
-                                   "��ƻ�ܸ��ֹ桢���ŵ��إ����ɥ��顼"
+                                   "都道府県番号、医療機関コードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                        END-EVALUATE
                END-EVALUATE
                GO  TO  700-EXPORT-EXT
            END-IF
       *
-      *    �����ץ쥳���ɥ����å�
+      *    返戻合計レコードチェック
            IF      WRK-FILENM          =  "RECEIPTC.HEN"   OR
                                           "receiptc.hen"   OR
                                           "RECEIPTC.SAH"   OR
                                           "receiptc.sah"
                IF      FLG-HG-CHK          =   ZERO
-                   MOVE    "¸�ߤ��ʤ��쥳���ɤ�����ޤ�"
+                   MOVE    "存在しないレコードがあります"
                                                TO  SPA-GMN-T05-ERRMSG1
-                   MOVE    "�����ץ쥳���ɥ��顼"
+                   MOVE    "返戻合計レコードエラー"
                                                TO  SPA-GMN-T05-ERRMSG2
                    GO  TO  700-EXPORT-EXT
                END-IF
            END-IF
       *
-      *    ������������å�
+      *    送信回数チェック
            IF      WRK-FILENM(1:6)     =  "RIhasp" OR "RIuasp" OR
                                           "rihasp" OR "riuasp"
                PERFORM VARYING IDX     FROM    1   BY  1
@@ -1006,14 +1006,14 @@
                END-PERFORM
            END-IF
       *
-      *    ����ǯ������å�
+      *    診療年月チェック
            IF      IDY                 >   1
                IF      SPA-NAI-T05-TSRYYM (1)
                                        NOT =   SPA-NAI-T05-TSRYYM(IDY)
-                   MOVE  "�о�ǯ��ʿ���ǯ��ˤ��ǧ���Ƥ�������"
+                   MOVE  "対象年月（診療年月）を確認してください"
                                            TO  SPA-GMN-T05-ERRMSG2
                                                SPA-NAI-T05-ERR-MSG(IDY)
-                   MOVE  "��"              TO  SPA-GMN-T05-TFLG4  (IDY)
+                   MOVE  "○"              TO  SPA-GMN-T05-TFLG4  (IDY)
                END-IF
            END-IF
       *
@@ -1027,11 +1027,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����̾�����å�����
+      *    ファイル名チェック処理
       *****************************************************************
        7001-FILENM-CHECK-SEC            SECTION.
       *
-      *    �ե�����̾���
+      *    ファイル名桁数
            MOVE    ZERO                TO  MOJI-CNT
            PERFORM VARYING IDX FROM    50  BY  -1
                    UNTIL   IDX <       1
@@ -1046,25 +1046,25 @@
                WHEN    "rihasp"
                WHEN    "RIuasp"
                WHEN    "riuasp"
-      *            ���ջ�̳�����ե�����
+      *            受付事務点検ファイル
                    EVALUATE    MOJI-CNT
                        WHEN    26
                        WHEN    35
-      *                    ������ʧ���إ�����
+      *                    審査支払機関コード
                            IF      WRK-FILENM (7:1)    =   "1" OR  "2"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                                MOVE    2               TO  WRK-ERRMSG2
                            END-IF
-      *                    ����ɽ��ʬ
+      *                    点数表区分
                            IF      WRK-FILENM (10:1)   =   "1"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                                MOVE    3               TO  WRK-ERRMSG2
                            END-IF
-      *                    ������
+      *                    送信回
                            IF      MOJI-CNT            =   26
                                MOVE    WRK-FILENM (20:3)   TO  SNUM-INX
                                CALL    "ORCSNUM"           USING
@@ -1080,7 +1080,7 @@
                                    MOVE    4           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
-      *                    ��ĥ��
+      *                    拡張子
                            IF      MOJI-CNT            =   26
                                IF      WRK-FILENM (23:4)   =   ".csv"
                                    CONTINUE
@@ -1104,26 +1104,26 @@
                    MOVE 9                  TO  SPILIT-CNT
                WHEN    "RIfixf"
                WHEN    "rifixf"
-      *            �����������ե�����
+      *            請求確定状況ファイル
                    EVALUATE    MOJI-CNT
                        WHEN    27
                        WHEN    29
                        WHEN    35
-      *                    ������ʧ���إ�����
+      *                    審査支払機関コード
                            IF      WRK-FILENM (7:1)    =   "1" OR  "2"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                                MOVE    2               TO  WRK-ERRMSG2
                            END-IF
-      *                    ����ɽ��ʬ
+      *                    点数表区分
                            IF      WRK-FILENM (10:1)   =   "1"
                                CONTINUE
                            ELSE
                                MOVE    1               TO  WRK-ERRMSG1
                                MOVE    3               TO  WRK-ERRMSG2
                            END-IF
-      *                    ������
+      *                    送信回
                            IF      MOJI-CNT            =   27  OR  29
                                MOVE    WRK-FILENM (20:3)   TO  SNUM-INX
                                CALL    "ORCSNUM"           USING
@@ -1139,7 +1139,7 @@
                                    MOVE    4           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
-      *                    ��������
+      *                    請求確定回
                            IF      MOJI-CNT            =   27
                                IF    ( WRK-FILENM (23:1)   >=   "1" )
                                AND   ( WRK-FILENM (23:1)   <=   "9" )
@@ -1164,7 +1164,7 @@
                                    MOVE    6           TO  WRK-ERRMSG2
                                END-IF
                            END-IF
-      *                    ��ĥ��
+      *                    拡張子
                            IF      MOJI-CNT            =   27
                                IF      WRK-FILENM (24:4)   =   ".csv"
                                    CONTINUE
@@ -1197,10 +1197,10 @@
                    MOVE    10              TO  SPILIT-CNT
                WHEN    "RECEIP"
                WHEN    "receip"
-      *            ����ǡ���
+      *            返戻データ
                    EVALUATE    MOJI-CNT
                        WHEN    12
-      *                    �ե�����̾
+      *                    ファイル名
                            IF      WRK-FILENM      =   "RECEIPTC.HEN" 
                                                    OR  "receiptc.hen"
                                                    OR  "RECEIPTC.SAH" 
@@ -1217,10 +1217,10 @@
                    MOVE    8               TO  SPILIT-CNT
                WHEN    "RRECEC"
                WHEN    "rrecec"
-      *            ����ǡ�����ϫ�ҡ�
+      *            返戻データ（労災）
                    EVALUATE    MOJI-CNT
                        WHEN    10
-      *                    �ե�����̾
+      *                    ファイル名
                            IF      WRK-FILENM      =   "RRECEC.HEN" 
                                                    OR  "rrecec.hen"
                                CONTINUE
@@ -1238,27 +1238,27 @@
            END-EVALUATE
       *
            IF      WRK-ERRMSG1         =   1
-               MOVE    "�ե�����̾���ǧ���Ƥ�������"
+               MOVE    "ファイル名を確認してください"
                                            TO  SPA-GMN-T05-ERRMSG1
            END-IF
            EVALUATE    WRK-ERRMSG2
                WHEN    1
-                   MOVE    "�ե�����̾��Ĺ�����ۤʤ�ޤ�"
+                   MOVE    "ファイル名の長さが異なります"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    2
-                   MOVE    "������ʧ���إ����ɥ��顼"
+                   MOVE    "審査支払機関コードエラー"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    3
-                   MOVE    "����ɽ��ʬ���顼"
+                   MOVE    "点数表区分エラー"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    4
-                   MOVE    "�����󥨥顼"
+                   MOVE    "送信回エラー"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    5
-                   MOVE    "��ĥ�ҥ��顼"
+                   MOVE    "拡張子エラー"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    6
-                   MOVE    "�������󥨥顼"
+                   MOVE    "請求確定回エラー"
                                            TO  SPA-GMN-T05-ERRMSG2
                WHEN    OTHER
                    MOVE    SPACE           TO  SPA-GMN-T05-ERRMSG2
@@ -1268,7 +1268,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ߥե���������å�����
+      *    取り込みファイルチェック処理
       *****************************************************************
        7002-FILE-CHECK-SEC          SECTION.
       *
@@ -1310,7 +1310,7 @@
                                MOVE    4               TO  WK-BODY-LINE
                            WHEN    "RIfixf"
                            WHEN    "rifixf"
-                               MOVE    "����饤�������������ե�����"
+                               MOVE    "オンライン請求確定状況ファイル"
                                                        TO  WRK-TITLE
                                MOVE    1               TO  WK-HEAD-LINE
                                MOVE    2               TO  WK-BODY-LINE
@@ -1319,12 +1319,12 @@
                                EVALUATE    WRK-FILENM
                                    WHEN    "receiptc.hen"
                                    WHEN    "RECEIPTC.HEN"
-                                       MOVE    "����饤������ե�����"
+                                       MOVE    "オンライン返戻ファイル"
                                                            TO  WRK-TITLE
                                    WHEN    "receiptc.sah"
                                    WHEN    "RECEIPTC.SAH"
                                        MOVE
-                                      "����饤������ե�������ݸ��ԡ�"
+                                      "オンライン返戻ファイル（保険者）"
                                                            TO  WRK-TITLE
                                END-EVALUATE
                                MOVE    1               TO  WK-HEAD-LINE
@@ -1332,18 +1332,18 @@
                            WHEN    "RRECEC"
                            WHEN    "rrecec"
                                        MOVE
-                                       "����饤������ե������ϫ�ҡ�"
+                                       "オンライン返戻ファイル（労災）"
                                                        TO  WRK-TITLE
                                MOVE    1               TO  WK-HEAD-LINE
                                MOVE    2               TO  WK-BODY-LINE
                        END-EVALUATE
                    END-IF
                    IF      CNT-PARA            =   WK-HEAD-LINE
-      *                �إå����ܼ��������å�����
+      *                ヘッダ項目取得チェック処理
                        PERFORM 70021-HEAD-CHECK-SEC
                    END-IF
                    IF      CNT-PARA            >=  WK-BODY-LINE
-      *                ���ٹ��ܼ��������å�����
+      *                明細項目取得チェック処理
                        PERFORM 70022-BODY-CHECK-SEC
                    END-IF
       *
@@ -1363,7 +1363,7 @@
                GO  TO  7002-FILE-CHECK-EXT
            END-IF
       *
-      *    �ե�����̾����ƻ�ܸ������ɡ����ŵ��إ����ɡ˥����å�
+      *    ファイル名（都道府県コード・医療機関コード）チェック
            INITIALIZE                      TBL-SYS1001-AREA
       *
            INITIALIZE                      SYS-1001-REC
@@ -1450,9 +1450,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    �ե�����̾
+      *    ファイル名
            MOVE    WRK-TITLE           TO  SPA-GMN-T05-TNAIYO(IDY)
-      *    ���ḵ
+      *    返戻元
            EVALUATE    WRK-FILENM
                WHEN    "RECEIPTC.HEN"
                WHEN    "receiptc.hen"
@@ -1466,7 +1466,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    SPACE           TO  SPA-NAI-T05-TFLG2 (IDY)
            END-EVALUATE
       *
-      *    ������ʧ����̾��
+      *    審査支払機関名称
            IF      WRK-FILENM      =   "RECEIPTC.HEN"  OR
                                        "receiptc.hen"  OR
                                        "RECEIPTC.SAH"  OR
@@ -1481,7 +1481,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            TO  SPA-NAI-T05-TFLG3 (IDY)
                END-IF
            END-IF
-      *    ���ŵ��إ����ɡʿ���ǯ��˳���������ŵ��إ����ɤ������
+      *    医療機関コード（診療年月に該当する医療機関コードを取得）
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
                WHEN    "rihasp"
@@ -1489,7 +1489,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "riuasp"
                WHEN    "RIfixf"
                WHEN    "rifixf"
-      *            �ե�����̾�ΰ��ŵ��إ����ɤ����
+      *            ファイル名の医療機関コードを取得
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       100
                            OR      SPA-NAI-1001-TSTYUKYMD  (IDX)
@@ -1502,7 +1502,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                             (1:6) )
                            IF      SPA-NAI-1001-THOSPCD (IDX)
                                            NOT =   WRK-FILENM (11:7)
-                                MOVE    "��"       TO
+                                MOVE    "旧"       TO
                                                SPA-GMN-T05-THOSPCD (IDY)
                            END-IF
                            MOVE    WRK-FILENM (11:7)
@@ -1517,10 +1517,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                WHEN    "RECEIP"
                WHEN    "receip"
-      *            ����ǯ��˳���������ŵ��إ����ɤ����
+      *            診療年月に該当する医療機関コードを取得
                    MOVE    WRK-HOSPCD      TO  SPA-NAI-T05-THOSPCD (IDY)
       *
-      *            ����ǯ�������ΰ��ŵ��إ����ɤ�����ȥ����å�
+      *            請求年月の前月の医療機関コードを取得とチェック
                    INITIALIZE                  STS-AREA-DAY
                    INITIALIZE                  LNK-DAY6-AREA
                    MOVE    "61"            TO  LNK-DAY6-IRAI
@@ -1545,7 +1545,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                             (1:6) )
                            IF      SPA-NAI-1001-THOSPCD (IDX)
                                            NOT =   WRK-HOSPCD
-                                MOVE    "��"       TO
+                                MOVE    "旧"       TO
                                                SPA-GMN-T05-THOSPCD (IDY)
                            END-IF
                            MOVE    100            TO  IDX
@@ -1590,7 +1590,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    AND   ( WRK-SYORIYM-HOSPCD      >   ZERO )
                        IF      WRK-SRYYM-HOSPCD
                                            NOT =   WRK-SYORIYM-HOSPCD
-                                MOVE    "��"       TO
+                                MOVE    "旧"       TO
                                                SPA-GMN-T05-THOSPCD (IDY)
                        END-IF
                        MOVE    WRK-SRYYM-HOSPCD    TO
@@ -1607,7 +1607,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            DISPLAY "SPA-NAI-T05-THOSPCD=" SPA-NAI-T05-THOSPCD (IDY) "#"
       *??
       *
-      *    �����ߺѤΥե����뤫�ɤ����γ�ǧ
+      *    取り込み済のファイルかどうかの確認
            IF      IDY                 >   1
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
@@ -1660,7 +1660,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-PERFORM
            END-IF
       *
-      *    �ģ���Ͽ�ѤΥե����뤫�ɤ����γ�ǧ
+      *    ＤＢ登録済のファイルかどうかの確認
            EVALUATE    WRK-FILENM(1:6)
                WHEN    "RIhasp"
                WHEN    "rihasp"
@@ -1708,7 +1708,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                GO  TO  7002-FILE-CHECK-EXT
                        END-EVALUATE
                    ELSE
-      *                ���ŵ��إ����ɤ�����λ�����饤��쥻�Ŵ����ο���ǯ��ǳ�ǧ
+      *                医療機関コードが空白の時オンラインレセ電管理の診療年月で確認
                        INITIALIZE                  ONRECE-K-REC
                        MOVE   SPA-HOSPNUM      TO  ONRECE-K-HOSPNUM
                        MOVE   SPA-NAI-T05-TFLG3 (IDY)
@@ -1782,7 +1782,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    4               TO  WRK-ERRMSG1
                        GO  TO  7002-FILE-CHECK-EXT
                    END-IF
-      *            ���ŵ��إ����ɤ�����λ��������٤ο���ǯ��ǳ�ǧ
+      *            医療機関コードが空白の時返戻明細の診療年月で確認
                    INITIALIZE                  HENREI-K-REC
                    MOVE   SPA-HOSPNUM      TO  HENREI-K-HOSPNUM
                    MOVE   SPA-NAI-T05-TFLG3 (IDY)
@@ -1842,7 +1842,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
            END-EVALUATE
       *
-      *    ���顼����Υ����å��ʣ���������Ķ�������ϼ������Բġ�
+      *    エラー件数のチェック（１０００件超えた場合は取り込み不可）
            IF      ERR-CNT                 >   1000
                MOVE    98                      TO  WRK-ERRMSG1
            END-IF
@@ -1851,7 +1851,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �إå����ܼ�������
+      *    ヘッダ項目取得処理
       *****************************************************************
        70021-HEAD-CHECK-SEC          SECTION.
       *
@@ -1868,8 +1868,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ���ԣãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ�ޤ�
+      *    患者ＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPILIT-CNT)
                    OR      ( WRK-PO-ED     >=  3000 )
@@ -1883,18 +1883,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1           TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *
                IF      FLG-DATAEND     =   ZERO
                 IF     CNT-PARA        =   WK-HEAD-LINE
-      *            �إå��������Խ�����
+      *            ヘッダ項目別編集処理
                    PERFORM 700211-HEAD-HENSYU-SEC
                 ELSE
-      *            �ܥǥ��������Խ�����
+      *            ボディ項目別編集処理
                    PERFORM 700211-BODY-HENSYU-SEC
                 END-IF
                END-IF
@@ -1905,7 +1905,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �إå��������Խ�����
+      *    ヘッダ項目別編集処理
       *****************************************************************
        700211-HEAD-HENSYU-SEC        SECTION.
       *
@@ -1915,13 +1915,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RIuasp"
                WHEN    "riuasp"
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ��������ǯ��
+      *                １：診療年月
                        WHEN    1
                            PERFORM 2401-UKE-SRYYM-SET-SEC
-      *                ��������ǯ����
+      *                ２：送信年月日
                        WHEN    2
                            PERFORM 2402-UKE-SENDYMD-SET-SEC
-      *                �������ŵ��إ�����
+      *                ６：医療機関コード
                        WHEN    6
                            MOVE    SPACE               TO  WRK-HOSPCD
                            IF      WRK-MO-CNT          =   14
@@ -1946,20 +1946,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *??
                DISPLAY "HASP WRK-HOSPCD=" WRK-HOSPCD "#" 
       *??
-      *                �����������
+      *                ９：送信回数
                        WHEN    9
                            PERFORM 2404-UKE-SENDNUM-SET-SEC
                    END-EVALUATE
                WHEN    "RIfixf"
                WHEN    "rifixf"
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ��������ǯ��
+      *                ２：請求年月
                        WHEN    2
                            PERFORM 2410S-SKYYM-SET-SEC
-      *                �����������ǯ����
+      *                ３：請求確定年月日
                        WHEN    3
                            PERFORM 2410S-SKYYMD-SET-SEC
-      *                ����������ʧ���إ�����
+      *                ４：審査支払機関コード
                        WHEN    4
                            EVALUATE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                WHEN    "1"
@@ -1968,7 +1968,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                WHEN    OTHER
                                    MOVE    16          TO  WRK-ERRMSG1
                            END-EVALUATE
-      *                �������ŵ��إ�����
+      *                ７：医療機関コード
                        WHEN    7
                            MOVE    SPACE               TO  WRK-HOSPCD
                            IF      WRK-MO-CNT          =   7
@@ -1980,7 +1980,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *??
                DISPLAY "FIX WRK-HOSPCD=" WRK-HOSPCD "#" 
       *??
-      *                ����������
+      *                ９：送信回
                        WHEN    9
                            INITIALIZE                  ORCSNUMAREA
                            MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
@@ -1997,7 +1997,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            ELSE
                                MOVE    10              TO  WRK-ERRMSG1
                            END-IF
-      *                ��������������
+      *                １０：請求確定回
                        WHEN    10
                            INITIALIZE                  ORCSNUMAREA
                            MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
@@ -2019,13 +2019,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RECEIP"
                WHEN    "receip"
                    EVALUATE    WRK-KOUMOKU-NO
-      *                �쥳���ɼ��̾���
+      *                レコード識別情報
                        WHEN    1
                            IF      PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                    NOT =   "HI"
                                MOVE    18              TO  WRK-ERRMSG1
                            END-IF
-      *                ������ʧ���إ�����
+      *                審査支払機関コード
                        WHEN    2
                            EVALUATE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                WHEN    "1"
@@ -2037,7 +2037,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                WHEN    OTHER
                                    MOVE    16          TO  WRK-ERRMSG1
                            END-EVALUATE
-      *                ����ǯ��
+      *                請求年月
                        WHEN    3
                            INITIALIZE                      ORCSGDAYAREA
                            MOVE    "1"                 TO  SGDAY-INTYPE
@@ -2053,7 +2053,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            ELSE
                                MOVE    14              TO  WRK-ERRMSG1
                            END-IF
-      *                ��ƻ�ܸ�
+      *                都道府県
                        WHEN    4
                            MOVE    SPACE               TO  WRK-PREFNUM
                            IF      WRK-MO-CNT          =   2
@@ -2062,13 +2062,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            ELSE
                                MOVE    19              TO  WRK-ERRMSG1
                            END-IF
-      *                ����ɽ
+      *                点数表
                        WHEN    5
                            IF      PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                    NOT =   "1"
                                MOVE    20              TO  WRK-ERRMSG1
                            END-IF
-      *                ���ŵ��إ�����
+      *                医療機関コード
                        WHEN    6
                            MOVE    SPACE               TO  WRK-HOSPCD
                            IF      WRK-MO-CNT          =   7
@@ -2089,13 +2089,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RRECEC"
                WHEN    "rrecec"
                    EVALUATE    WRK-KOUMOKU-NO
-      *                �쥳���ɼ��̾���
+      *                レコード識別情報
                        WHEN    1
                            IF      PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                    NOT =   "RE"
                                MOVE    18              TO  WRK-ERRMSG1
                            END-IF
-      *                ����ǯ��
+      *                請求年月
                        WHEN    21
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    TO  WRK-SEIKYU-DATA
@@ -2116,7 +2116,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            ELSE
                                MOVE    14              TO  WRK-ERRMSG1
                            END-IF
-      *                    ����ǯ��
+      *                    診療年月
                            INITIALIZE              ORCSGDAYAREA
                            MOVE    "1"             TO  SGDAY-INTYPE
                            MOVE    WRK-SEIKYU-SRYYM
@@ -2137,12 +2137,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ܥǥ��������Խ�����
+      *    ボディ項目別編集処理
       *****************************************************************
        700211-BODY-HENSYU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
-      *    �����������ʬ
+      *    ２９：確定区分
                WHEN    29
                    IF  PARA-DATA (WRK-MO-ST:WRK-MO-CNT) = "2"
                        ADD   1         TO  ERR-CNT
@@ -2154,7 +2154,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ��ʼ��ա��Ѵ�����
+      *    診療年月（受付）変換処理
       *****************************************************************
        2401-UKE-SRYYM-SET-SEC        SECTION.
       *
@@ -2179,7 +2179,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ�����ʼ��ա��Ѵ�����
+      *    送信年月日（受付）変換処理
       *****************************************************************
        2402-UKE-SENDYMD-SET-SEC        SECTION.
       *
@@ -2202,7 +2202,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ʼ��ա��Ѵ�����
+      *    送信回数（受付）変換処理
       *****************************************************************
        2404-UKE-SENDNUM-SET-SEC        SECTION.
       *
@@ -2229,7 +2229,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ������������Ѵ�����
+      *    請求年月（請求確定）変換処理
       *****************************************************************
        2410S-SKYYM-SET-SEC       SECTION.
       *
@@ -2266,7 +2266,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ���������������Ѵ�����
+      *    請求年月日（請求確定）変換処理
       *****************************************************************
        2410S-SKYYMD-SET-SEC      SECTION.
       *
@@ -2286,7 +2286,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���٥����å�����
+      *    明細チェック処理
       *****************************************************************
        70022-BODY-CHECK-SEC             SECTION.
       *
@@ -2327,13 +2327,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                WHEN    "RIfixf"
                WHEN    "rifixf"
                    IF      SPA-GMN-T05-TCNT (IDY)  =   1
-      *                �����Խ������ʿ���ǯ���
+      *                明細編集処理（診療年月）
                        PERFORM 700221-BODY-HENSYU-SEC
                    END-IF
                WHEN    "RECEIP"
                WHEN    "receip"
                    IF      SPA-GMN-T05-TCNT (IDY)  =   2
-      *                �����Խ������ʿ���ǯ���
+      *                明細編集処理（診療年月）
                        PERFORM 700221-BODY-HENSYU-SEC
                    END-IF
            END-EVALUATE
@@ -2343,7 +2343,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Խ������ʿ���ǯ���
+      *    明細編集処理（診療年月）
       *****************************************************************
        700221-BODY-HENSYU-SEC           SECTION.
       *
@@ -2351,8 +2351,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ���ԣãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ�ޤ�
+      *    患者ＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了まで
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX             >   SPILIT-CNT
                    OR      WRK-PO-ED       >=  3000
@@ -2365,10 +2365,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1           TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
       *
                IF      FLG-DATAEND     =   ZERO
@@ -2376,7 +2376,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    "RECEIP"
                        WHEN    "receip"
                            IF      WRK-KOUMOKU-NO  =   4
-      *                        ����ǯ��
+      *                        診療年月
                                MOVE    "1"             TO  SGDAY-INTYPE
                                MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                        TO  SGDAY-INDAY
@@ -2394,7 +2394,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    "RIuasp"
                        WHEN    "riuasp"
                            IF      WRK-KOUMOKU-NO  =   6
-      *                        ����ǯ��
+      *                        診療年月
                                MOVE    "1"             TO  SGDAY-INTYPE
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2414,7 +2414,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        WHEN    "RIfixf"
                        WHEN    "rifixf"
                            IF      WRK-KOUMOKU-NO  =   4
-      *                        ����ǯ��
+      *                        診療年月
                                MOVE    "1"             TO  SGDAY-INTYPE
                                MOVE    PARA-DATA (WRK-MO-ST:WRK-MO-CNT)
                                                        TO  SGDAY-INDAY
@@ -2440,7 +2440,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������������å�
+      *    送信回数チェック
       *****************************************************************
        7003-SEND-CHECK-SEC           SECTION.
       *
@@ -2450,10 +2450,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        =   SPA-NAI-T05-TFLG2(IDX) )
                IF      SPA-GMN-T05-TUKAISU(IDY)
                                        NOT =   SPA-GMN-T05-TUKAISU(IDX)
-                   MOVE    "���դ�����������ۤʤ�ޤ�"
+                   MOVE    "受付の送信回数が異なります"
                                            TO  SPA-GMN-T05-ERRMSG2
                                                SPA-NAI-T05-ERR-MSG(IDY)
-                   MOVE  "��"              TO  SPA-GMN-T05-TFLG4  (IDY)
+                   MOVE  "○"              TO  SPA-GMN-T05-TFLG4  (IDY)
                END-IF
            END-IF
            .
@@ -2461,7 +2461,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ɥ�å���������
+      *    削除ガイドメッセージ処理
       *****************************************************************
        220-DEL-GID-SEC                 SECTION.
       *
@@ -2476,17 +2476,17 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        220-DEL-SEC                 SECTION.
       *
-      *    �����ߥե�������
+      *    取り込みファイル削除
            MOVE    ZERO                TO  IF-RESULT
            MOVE    SPA-NAI-T05-SAVE-NAME (SPA-NAI-T05-SELNUM)
                                        TO  IF-FILENAME
            CALL    "orcfiledel"    USING   ORCSFDELAREA
       *
-      *    ����Ժ��
+      *    選択行削除
            MOVE    SPA-NAI-T05-SELNUM  TO  IDX
            INITIALIZE                  SPA-GMN-T05-DATALST (IDX)
            INITIALIZE                  SPA-NAI-T05-DATALST (IDX)
@@ -2530,7 +2530,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ѣʣɣӢ��ţգ��Ѵ�����
+      *    全角ＪＩＳ→ＥＵＣ変換処理
       *****************************************************************
        7002-FILE-CONVERT-SEC       SECTION.
       *
@@ -2545,7 +2545,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ���Ͽ�����ɥ�å���������
+      *    ＤＢ登録ガイドメッセージ処理
       *****************************************************************
        210-TOUROKU-GID-SEC                 SECTION.
       *
@@ -2561,7 +2561,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                GO  TO  210-TOUROKU-GID-EXT
            END-IF
       *
-      *    �ģ�̤��Ͽ�ե����뤬���뤫
+      *    ＤＢ未登録ファイルがあるか
            MOVE    ZERO                TO  FLG-DB-INSERT
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
@@ -2576,7 +2576,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                GO  TO  210-TOUROKU-GID-EXT
            END-IF
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            IF      SPA-ERRCD       =   SPACE
                PERFORM 4501-JOBKANRI-CHK-SEC
                IF      SPA-ERRCD       =   SPACE
@@ -2588,11 +2588,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ���Ͽ����
+      *    ＤＢ登録処理
       *****************************************************************
        210-TOUROKU-SEC                 SECTION.
       * 
-      *    ����ִ����������
+      *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
@@ -2605,7 +2605,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                GO  TO  210-TOUROKU-EXT
            END-IF
       *
-      *    ̤��Ͽ�ե�����Τ�ȴ������
+      *    未登録ファイルのみ抜きだし
            INITIALIZE                  TABLE-SAVE-AREA
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
@@ -2620,7 +2620,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-PERFORM
       *
-      *    ���顼�ե�����̾����     
+      *    エラーファイル名設定     
            MOVE    WRK-CONS-FILE-ID    TO  ERRFLPARA-FILE-ID
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
@@ -2631,7 +2631,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        INTO        RECEERR
            END-STRING
       *
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
            MOVE    ZERO            TO  WRK-CONS-JOB-JOBID     
            PERFORM 45011-JOBKANRI-HENSYU-SEC
       *             
@@ -2713,23 +2713,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    "monthly"       TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
            PERFORM 45012-JOBID-UPD-SEC
       *     
-      *    �����ǧ���̤�ɽ��                                                   
+      *    情報確認画面を表示                                                   
            PERFORM 490-KAKUNIN-SEC
             .
        210-TOUROKU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        4501-JOBKANRI-CHK-SEC       SECTION.
       *
            MOVE    SPACE           TO  SPA-ERRCD
       *
-      *    ����ִ��������å�        
+      *    ジョブ管理チェック        
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
@@ -2744,7 +2744,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -2756,9 +2756,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "7777"          TO  SPA-ERRCD
                            MOVE    SPACE           TO  WRK-RECEERR
-                           STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE      
+                                   "】"            DELIMITED  BY  SIZE      
                                                    INTO  WRK-RECEERR
                            END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
@@ -2768,7 +2768,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
       *
-      *    ����ִ��������å��ʥ쥻�ץȡ�
+      *    ジョブ管理チェック（レセプト）
            IF      SPA-ERRCD           =   SPACE         
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
@@ -2782,10 +2782,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    IF      JOB-ENDYMD      =   SPACE
                        MOVE    "7777"          TO  SPA-ERRCD
                        MOVE    SPACE             TO  WRK-RECEERR
-                       STRING  "�쥻�ץȺ���������Ǥ���"
+                       STRING  "レセプト作成処理中です【"
                                                  DELIMITED  BY  SIZE
                                JOB-SHELLMSG      DELIMITED  BY  SPACE
-                               "��"              DELIMITED  BY  SIZE      
+                               "】"              DELIMITED  BY  SIZE      
                                                  INTO  WRK-RECEERR
                        END-STRING
                    END-IF
@@ -2796,7 +2796,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
       *****************************************************************
        45011-JOBKANRI-HENSYU-SEC       SECTION.
       *
@@ -2824,7 +2824,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *****************************************************************
        45012-JOBID-UPD-SEC    SECTION.
       *
@@ -2875,7 +2875,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����������å�����
+      *    戻る前チェック処理
       *****************************************************************
        210-BACK                    SECTION.
       *        
@@ -2893,7 +2893,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -2910,7 +2910,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-PERFORM
            END-IF
       *
-      *    �ģ�̤��Ͽ�ե����뤬����Ȥ�
+      *    ＤＢ未登録ファイルがあるとき
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-GMN-T05-DATALST-MAX
                IF      SPA-NAI-T05-TDB (IDX)
@@ -2926,7 +2926,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������
+      *    戻る処理
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
@@ -2943,7 +2943,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -2968,7 +2968,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -2996,7 +2996,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       ****             MOVE    WRK-PAGE        TO  T99-PAGE     (IDX)
                        MOVE    JOB-YOBI        TO  T99-ERRMSG   (IDX)
                        IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "������Ǥ�"    TO  T99-MSG
+                           MOVE    "処理中です"    TO  T99-MSG
                        ELSE
                            IF      JOB-ERRCD       =   SPACE
                                CONTINUE
@@ -3004,9 +3004,9 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                MOVE    SPACE       TO  T99-MSG
                                IF      T99-MSG     =   SPACE
                                  STRING  JOB-YOBI    DELIMITED BY SPACE
-                                         "��"        DELIMITED BY SIZE
+                                         "【"        DELIMITED BY SIZE
                                         JOB-SHELLMSG DELIMITED BY SPACE
-                                        "��"         DELIMITED BY SIZE
+                                        "】"         DELIMITED BY SIZE
                                                      INTO  T99-MSG
                                  END-STRING   
                                END-IF
@@ -3019,10 +3019,10 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            IF      T99-MSG              =   SPACE
                MOVE    "B01"                TO  MCP-WIDGET
                IF      T99-COUNT            >   ZERO    
-                   MOVE    "����������˽�λ���ޤ���"
+                   MOVE    "処理は正常に終了しました"
                                                 TO  T99-MSG
                ELSE
-                   MOVE    "������������Ϥ���ޤ���"
+                   MOVE    "該当する処理はありません"
                                                 TO  T99-MSG
                END-IF                                 
                MOVE    WIDGET-NORMAL       TO  T99-B01-STATE
@@ -3046,7 +3046,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -3073,7 +3073,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    画面内容編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -3114,15 +3114,15 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        TO  T05-DATALST-TDATA   (IDX)
                EVALUATE    SPA-NAI-T05-TFLG3 (IDX)
                    WHEN    "1"
-                       MOVE    "��"        TO  T05-DATALST-TFLG3   (IDX)
+                       MOVE    "社"        TO  T05-DATALST-TFLG3   (IDX)
                    WHEN    "2"
-                       MOVE    "��"        TO  T05-DATALST-TFLG3   (IDX)
+                       MOVE    "国"        TO  T05-DATALST-TFLG3   (IDX)
                END-EVALUATE
                EVALUATE    SPA-NAI-T05-TFLG2 (IDX)
                    WHEN    "0"
-                       MOVE    "��"        TO  T05-DATALST-TFLG2   (IDX)
+                       MOVE    "　"        TO  T05-DATALST-TFLG2   (IDX)
                    WHEN    "1"
-                       MOVE    "��"        TO  T05-DATALST-TFLG2   (IDX)
+                       MOVE    "保"        TO  T05-DATALST-TFLG2   (IDX)
                END-EVALUATE
                MOVE  SPA-GMN-T05-TFLG4 (IDX)
                                        TO  T05-DATALST-TFLG4   (IDX)
@@ -3167,7 +3167,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -3188,7 +3188,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC             SECTION.
       *
@@ -3204,7 +3204,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -3212,16 +3212,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼" 
+                   MOVE    "選択番号入力エラー" 
                                                TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�ɤ߹��ߥե����뤬����ޤ���" 
+                   MOVE    "読み込みファイルがありません" 
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���ˣģ���Ͽ�ѤǤ�"
+                   MOVE    "既にＤＢ登録済です"
                                                TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�оݤΥǡ��������򤷤Ƥ���ޤ���"
+                   MOVE    "対象のデータを選択してありません"
                                                TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR         TO  SPA-ERRMSG
@@ -3249,7 +3249,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ��å�����ɽ������
+      *    確認メッセージ表示処理
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
@@ -3258,28 +3258,28 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            EVALUATE    SPA-TIDCD
                 WHEN    "1001"
-                    MOVE    "��Ͽ�����򤷤ޤ�����������Ǥ���"
+                    MOVE    "登録処理をします。よろしいですか"
                                                TO  TID1-ID1MSG
                     MOVE    "B12"               TO  MCP-WIDGET
               WHEN    "1002"
-                   STRING  "�ģ�̤��Ͽ�Υե����뤬����ޤ���"
+                   STRING  "ＤＢ未登録のファイルがあります。"
                                                DELIMITED   BY  SIZE
-                           "������λ���Ƥ�������Ǥ���"
+                           "処理を終了してよろしいですか"
                                                DELIMITED   BY  SIZE
                                                INTO  TID1-ID1MSG
                    END-STRING
                    MOVE    "B01"               TO  MCP-WIDGET
                WHEN    "0101"
-                   MOVE    "���򤷤��ե�����������ޤ�����"
+                   MOVE    "選択したファイルを削除しますか？"
                                                TO  TID1-ID1MSG
                    MOVE    "B01"               TO  MCP-WIDGET
                WHEN    "6666"
-                   MOVE    "������Ǥ�"        TO  TID1-ID1MSG
+                   MOVE    "処理中です"        TO  TID1-ID1MSG
                    MOVE    "B12"               TO  MCP-WIDGET
            END-EVALUATE
       *
-           MOVE    "���"           TO  TID1-B01-LABEL
-           MOVE    "�ϣ�"           TO  TID1-B12-LABEL
+           MOVE    "戻る"           TO  TID1-B01-LABEL
+           MOVE    "ＯＫ"           TO  TID1-B12-LABEL
       *
            MOVE    "T05"                TO  SPA-MOTOPG
            MOVE    "TID1"               TO  SPA-SAKIPG
@@ -3295,7 +3295,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
        520-TIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
@@ -3304,19 +3304,19 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            PERFORM VARYING   IDYY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDYY           >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
-      *        ����ޤΰ���
+      *        カンマの位置
                IF    ( CSV-X (IDYY)    =   ","              )  OR
                    ( ( IDX             =   SPILIT-CNT ) AND
                      ( CSV-X (IDYY)    =   SPACE      )     )
                    MOVE    IDYY            TO  WRK-PO-ED
                    MOVE    1               TO  FLG-COMMA
                ELSE
-      *            ����ޤ�­��ʤ����ν�λ���ַ���
+      *            カンマが足りない場合の終了位置決定
                    IF      CSV-X (IDYY) NOT =   SPACE
                        MOVE    IDYY         TO  WRK-PO-ED
                    END-IF
                END-IF
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF      CSV-X (IDYY)         =   """"
                    IF      FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
@@ -3331,15 +3331,15 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽���
+      *    項目共通処理
       *****************************************************************
        220-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -3350,16 +3350,16 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                COMPUTE WRK-MO-ST       =   WRK-PO-ST   +   1
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-MO-CNT  =   WRK-PO-ED
@@ -3369,7 +3369,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
                                        -   WRK-PO-ST
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT      =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
@@ -3389,7 +3389,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -3406,7 +3406,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
           EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -3430,7 +3430,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3445,7 +3445,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ե������ɤ߹��߽���
+      *    管理ファイル読み込み処理
       *****************************************************************
        900-ONRECE-KANRI-READ-SEC     SECTION.
       *
@@ -3478,7 +3478,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���٥ե������ɹ�����
+      *    明細ファイル読込処理
       *****************************************************************
        900-ONRECE-BODY-READ-SEC        SECTION.
       *
@@ -3511,7 +3511,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����饤����������ɤ߹��߽���
+      *    オンライン返戻管理読み込み処理
       *****************************************************************
        900-HENREI-KANRI-READ-SEC     SECTION.
       *
@@ -3547,7 +3547,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����饤�����������ɹ�����
+      *    オンライン返戻明細読込処理
       *****************************************************************
        900-HENREI-BODY-READ-SEC        SECTION.
       *
@@ -3580,7 +3580,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -3594,7 +3594,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -3613,7 +3613,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -3624,7 +3624,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -3636,7 +3636,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -3649,7 +3649,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¼ýÇ¼°ìÍ÷É½ÍÑ¼ýÇ¼¥Þ¥¹¥¿         COPY (CPBD001.INC)     *
+      *    åŽç´ä¸€è¦§è¡¨ç”¨åŽç´ãƒžã‚¹ã‚¿         COPY (CPBD001.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  BD001-REC.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  BD001-HOSPNUM             PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  BD001-PTID                PIC  9(10).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  BD001-PTNUM               PIC  X(20).
-      *´Á»ú»áÌ¾
+      *æ¼¢å­—æ°å
            03  BD001-NAME                PIC  X(100).
-      *À­ÊÌ
+      *æ€§åˆ¥
            03  BD001-SEX                 PIC  X(01).
-      *À¸Ç¯·îÆü
+      *ç”Ÿå¹´æœˆæ—¥
            03  BD001-BIRTHDAY            PIC  X(08).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  BD001-SRYKA               PIC  X(02).
-      *ÅÁÉ¼È¯¹ÔÆü
+      *ä¼ç¥¨ç™ºè¡Œæ—¥
            03  BD001-DENPPRTYMD          PIC  X(08).
-      *ÀÁµá¶â³Û
+      *è«‹æ±‚é‡‘é¡
            03  BD001-SKYMONEY            PIC  9(07).
-      *Æþ¶â¹ç·×³Û
+      *å…¥é‡‘åˆè¨ˆé¡
            03  BD001-NYUKIN-TOTAL        PIC  9(07).

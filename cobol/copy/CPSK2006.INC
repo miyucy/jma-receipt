@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,106 +16,106 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK2006.INC)            *
-      *         �ʣ���������                                     *
-      *         �쥻�ץ��õ������Խ�����                         *
+      *         システム管理マスタ     (CPSK2006.INC)            *
+      *         （２００６）                                     *
+      *         レセプト特記事項編集情報                         *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    14/02/10  ������ʬ��������ʬ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    14/02/10  入外区分、所得区分の追加
       ************************************************************
        01  SYS-2006-REC.
            03  SYS-2006-KEY.
                05  SYS-2006-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-2006-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-2006-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-2006-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-2006-EDYUKYMD    PIC  X(08).
-      *���ݸ��ֹ�
+      *条件：保険番号
            03  SYS-2006-HKNNUM          PIC  X(03).
-      *��������ʧ����
+      *条件：審査支払機関
            03  SYS-2006-TEISYUTUSAKI    PIC  X(01).
-      *���ݸ����ֹ�
+      *条件：保険者番号
            03  SYS-2006-HKNJANUM        PIC  X(08).
-      *��Ϸ�Ͷ�ʬ
+      *条件：老人区分
            03  SYS-2006-RJNKBN          PIC  X(01).
-      *�������Ƕ�ʬ
+      *条件：在総診区分
            03  SYS-2006-ZAITAKU         PIC  X(01).
-      *�õ�����
+      *特記事項
            03  SYS-2006-TOKKI           PIC  X(24).
-      *����ô���ֹ�
+      *条件：負担者番号
            03  SYS-2006-FTNJANUMKBN-JYOKEN
                                         PIC  X(01).
-      *����ô���ֹ�����
+      *条件：負担者番号内容
            03  SYS-2006-FTNJANUM-JYOKEN PIC  X(08).
-      *��������ʬ
+      *条件：入外区分
            03  SYS-2006-NYUGAIKBN       PIC  X(01).
-      *��������ʬ
+      *条件：所得区分
            03  SYS-2006-SYOTOKUKBN      PIC  X(01).
-      *ͽ��
+      *予備
            03  SYS-2006-YOBI1           PIC  X(89).
-      *���ճ��
+      *給付割合
            03  SYS-2006-KYURATE         PIC  9(03).
-      *ͽ��
+      *予備
            03  SYS-2006-YOBI2           PIC  X(02).
-      *�쥻�š��õ�����
+      *レセ電：特記事項
            03  SYS-2006-RECEDEN-TOKKI   PIC  X(02).
-      *�쥻�š����ճ��
+      *レセ電：給付割合
            03  SYS-2006-RECEDEN-KYURATE PIC  9(03).
-      *�쥻�š�����쥳���ɶ�ʬ
+      *レセ電：公費レコード区分
            03  SYS-2006-RECEDEN-KORECKBN
                                         PIC  X(01).
-      *Ŭ������ʥ�����
+      *適用欄上段コメント
            03  SYS-2006-TEKIYOU-COMMENT1
                                         PIC  X(52).
-      *Ŭ������ʥ����ȥ쥻���Խ���ʬ
+      *適用欄上段コメントレセ電編集区分
            03  SYS-2006-TEKIYOU-COMMENT1KBN
                                         PIC  X(01).
-      *Ŭ�����ʥ�����
+      *適用欄下段コメント
            03  SYS-2006-TEKIYOU-COMMENT2
                                         PIC  X(52).
-      *Ŭ�����ʥ����ȥ쥻���Խ���ʬ
+      *適用欄下段コメントレセ電編集区分
            03  SYS-2006-TEKIYOU-COMMENT2KBN
                                         PIC  X(01).
-      *ͽ��
+      *予備
            03  SYS-2006-YOBI3           PIC  X(49).
-      *��ô���ֹ��Խ���ʬ
+      *負担者番号編集区分
            03  SYS-2006-FTNJANUMKBN     PIC  X(02).
-      *��ô���ֹ��Խ�����
+      *負担者番号編集内容
            03  SYS-2006-FTNJANUM        PIC  X(08).
-      *������ֹ��Խ���ʬ
+      *受給者番号編集区分
            03  SYS-2006-JKYSNUMKBN      PIC  X(02).
-      *������ֹ��Խ�����
+      *受給者番号編集内容
            03  SYS-2006-JKYSNUM         PIC  X(07).
-      *�쥻�š���ô���ֹ��Խ���ʬ
+      *レセ電：負担者番号編集区分
            03  SYS-2006-RECEDEN-FTNJANUMKBN
                                         PIC  X(02).
-      *�쥻�š���ô���ֹ��Խ�����
+      *レセ電：負担者番号編集内容
            03  SYS-2006-RECEDEN-FTNJANUM
                                         PIC  X(08).
-      *�쥻�š�������ֹ��Խ���ʬ
+      *レセ電：受給者番号編集区分
            03  SYS-2006-RECEDEN-JKYSNUMKBN
                                         PIC  X(02).
-      *�쥻�š�������ֹ��Խ�����
+      *レセ電：受給者番号編集内容
            03  SYS-2006-RECEDEN-JKYSNUM PIC  X(07).
-      *ͽ��
+      *予備
            03  SYS-2006-YOBI4           PIC  X(158).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-2006-TERMID          PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  SYS-2006-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-2006-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-2006-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-2006-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-2006-UPD-KEY.
                05  SYS-2006-UPD-HOSPNUM     PIC 9(2).
                05  SYS-2006-UPD-KANRICD     PIC X(04).

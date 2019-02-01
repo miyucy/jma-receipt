@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,33 +18,33 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTPTINF.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : £Ä£ÂºîÀ®½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : £Ã£Ó£Ö¥Õ¥¡¥¤¥ë¥³¥ó¥Ð¡¼¥È½èÍý¡Ê´µ¼Ô¾ðÊó¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  01/04/11    MCC-ÂÀÅÄ      ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ï¼¤ï¼¢ä½œæˆå‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ³ãƒãƒ¼ãƒˆå‡¦ç†ï¼ˆæ‚£è€…æƒ…å ±ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  01/04/11    MCC-å¤ªç”°      æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Æ£¸¶     01/11/01  ´µ¼ÔÈÖ¹æ¤Î¶õÇò¤Þ¤Ç¤Ç·å¿ô
-      *                                     ¤òÊÔ½¸  
-      *  01.00.02    MCC-Æ£¸¶     01/11/01  »áÌ¾¡¦¤«¤Ê»áÌ¾¤ò¶õÇò¤Þ¤Ç
-      *                                     ¤òÊÔ½¸  
-      *  01.00.03    MCC-°ËÆ£     01/12/12  ´µ¼ÔÈÖ¹æ¹½À®¤Ë¹ç¤ï¤»¤Æ
-      *                                     Á°£°µÍ¤áÊÔ½¸¤ò¹Ô¤¦  
-      *  01.00.04    MCC-°ËÆ£     01/12/12  £Ä£Â¥³¡¼¥ë¥¤¥ó¥¿¡¼¥Õ¥§¥¤¥¹
-      *                                     ¤ÎÊÑ¹¹ 
-      *  01.00.05    MCC-¿¹ÏÆ     02/05/01  ¶õÇòÊÔ½¸¤ÎÊÑ¹¹  
-      *  01.01.01    NACL-¿¹ÏÆ    02/11/28  Æþ±¡ÍúÎòÈÖ¹æ¡¢»ÞÈÖ¹æ¤ÎÄÉ²Ã
-      *  01.01.02    NACL-Â¿¡¹Ç¼  03/10/10  ¼«Í³¹½À®´µ¼ÔÈÖ¹æÊÔ½¸½¤Àµ
-      *  01.01.03    NACL-Â¿¡¹Ç¼  05/09/01  Á´³Ñ¥Á¥§¥Ã¥¯ÊÑ´¹ÄÉ²Ã
-      *  01.01.04    NACL-¿¹ÏÆ    05/07/13  ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¡¢¥³¥ß¥Ã¥È
-      *  01.01.05    NACL-¿¹ÏÆ    05/09/26  ¹½Â¤ÊÑ¹¹
-      *  01.01.06    NACL-¿¹ÏÆ    06/07/26  MONFUNCÂÐ±þ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/16  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *                                     PTNUM ½ÅÊ£»þ½èÍý½ªÎ»¤ÎÄÉ²Ã¤Ê¤É
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/12/XX  »áÌ¾¤Î³ÈÄ¥´Á»úÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-è—¤åŽŸ     01/11/01  æ‚£è€…ç•ªå·ã®ç©ºç™½ã¾ã§ã§æ¡æ•°
+      *                                     ã‚’ç·¨é›†  
+      *  01.00.02    MCC-è—¤åŽŸ     01/11/01  æ°åãƒ»ã‹ãªæ°åã‚’ç©ºç™½ã¾ã§
+      *                                     ã‚’ç·¨é›†  
+      *  01.00.03    MCC-ä¼Šè—¤     01/12/12  æ‚£è€…ç•ªå·æ§‹æˆã«åˆã‚ã›ã¦
+      *                                     å‰ï¼è©°ã‚ç·¨é›†ã‚’è¡Œã†  
+      *  01.00.04    MCC-ä¼Šè—¤     01/12/12  ï¼¤ï¼¢ã‚³ãƒ¼ãƒ«ã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹
+      *                                     ã®å¤‰æ›´ 
+      *  01.00.05    MCC-æ£®è„‡     02/05/01  ç©ºç™½ç·¨é›†ã®å¤‰æ›´  
+      *  01.01.01    NACL-æ£®è„‡    02/11/28  å…¥é™¢å±¥æ­´ç•ªå·ã€æžç•ªå·ã®è¿½åŠ 
+      *  01.01.02    NACL-å¤šã€…ç´  03/10/10  è‡ªç”±æ§‹æˆæ‚£è€…ç•ªå·ç·¨é›†ä¿®æ­£
+      *  01.01.03    NACL-å¤šã€…ç´  05/09/01  å…¨è§’ãƒã‚§ãƒƒã‚¯å¤‰æ›è¿½åŠ 
+      *  01.01.04    NACL-æ£®è„‡    05/07/13  ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã€ã‚³ãƒŸãƒƒãƒˆ
+      *  01.01.05    NACL-æ£®è„‡    05/09/26  æ§‹é€ å¤‰æ›´
+      *  01.01.06    NACL-æ£®è„‡    06/07/26  MONFUNCå¯¾å¿œ
+      *  03.05.00    NACL-å¤šã€…ç´  07/05/16  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *                                     PTNUM é‡è¤‡æ™‚å‡¦ç†çµ‚äº†ã®è¿½åŠ ãªã©
+      *  04.05.00    NACL-å¤šã€…ç´  09/12/XX  æ°åã®æ‹¡å¼µæ¼¢å­—å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -52,19 +52,19 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ë
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  PARA-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    ÆþÎÏ´µ¼Ô¾ðÊó£Ã£Ó£Ö¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›æ‚£è€…æƒ…å ±ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  CSV-FILE        ASSIGN
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
       *
-      *    ½ÐÎÏ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -72,7 +72,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    ¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ë
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-RECKBN             PIC X(01).
@@ -80,35 +80,35 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
-      *    ÆþÎÏ´µ¼Ô¾ðÊó£Ã£Ó£Ö¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›æ‚£è€…æƒ…å ±ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«
        FD  CSV-FILE.
        01  CSV-REC.
            03  CSV-R                   PIC X(3000).
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   3000.
       *
-      *    ½ÐÎÏ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
            03  STS-LST                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
@@ -130,7 +130,7 @@
            03  FLG-YMD                 PIC 9(01).
            03  FLG-PTNUM-ERR           PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
@@ -139,7 +139,7 @@
            03  CNT-PTINF               PIC 9(06).
            03  CNT-PTNUM               PIC 9(06).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -147,7 +147,7 @@
            03  IDS                     PIC 9(04).
            03  IDE                     PIC 9(04).
       *
-      *    ¥Ñ¥é¥á¡¼¥¿ÊÝÂ¸
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ä¿å­˜
        01  PARA-SAVE.
            03  PARA-03-1               PIC X(01).
            03  PARA-03-2               PIC X(10).
@@ -158,7 +158,7 @@
            03  PARA-11-1               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -190,11 +190,11 @@
            03  WRK-HEN-PTNUM           PIC X(20).
            03  WRK-HEN-WARIKBN         PIC X(01).
       *
-      *    Ä¢É¼½ÐÎÏÎÎ°è
+      *    å¸³ç¥¨å‡ºåŠ›é ˜åŸŸ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(23) VALUE
-                                       "¡ÚPGID:ORCVTPTINF.CBL¡Û".
+                                       "ã€PGID:ORCVTPTINF.CBLã€‘".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -204,14 +204,14 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]É¬¿ÜÌ¤ÆþÎÏ        [2]¹àÌÜ·å¿ôÉÔÀµ     ".
-                   07  FILLER          PIC X(10) VALUE " [3]¸íÆþÎÏ".
+                   " [1]å¿…é ˆæœªå…¥åŠ›        [2]é …ç›®æ¡æ•°ä¸æ­£     ".
+                   07  FILLER          PIC X(10) VALUE " [3]èª¤å…¥åŠ›".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]´µ¼Ô£É£Ä¼èÆÀ¼ºÇÔ  [6]´µ¼ÔÈÖ¹æ½ÐÎÏ¼ºÇÔ ".
+                   " [5]æ‚£è€…ï¼©ï¼¤å–å¾—å¤±æ•—  [6]æ‚£è€…ç•ªå·å‡ºåŠ›å¤±æ•— ".
                    07  FILLER          PIC X(20) VALUE
-                   " [7]´µ¼Ô¾ðÊó½ÐÎÏ¼ºÇÔ".
+                   " [7]æ‚£è€…æƒ…å ±å‡ºåŠ›å¤±æ•—".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -219,7 +219,7 @@
                    "-------------------------------------------------".
       *
        01  ERRLST-AREA.
-      *    ¥¨¥é¡¼ÈÖ¹æ£±¡¦£²¡¦£³¤Ç»ÈÍÑ
+      *    ã‚¨ãƒ©ãƒ¼ç•ªå·ï¼‘ãƒ»ï¼’ãƒ»ï¼“ã§ä½¿ç”¨
            03  ERR-REC1.
                05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -229,7 +229,7 @@
                    07  ERR1-ERRNO      PIC X(03).
                    07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    ¥¨¥é¡¼ÈÖ¹æ£´¡¦£µ¡¦£¶¤Ç»ÈÍÑ
+      *    ã‚¨ãƒ©ãƒ¼ç•ªå·ï¼”ãƒ»ï¼•ãƒ»ï¼–ã§ä½¿ç”¨
            03  ERR-REC2.
                05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -246,34 +246,34 @@
                05  ERR2-NAME           PIC X(30).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ï¼ˆåŒ»ç™‚æ©Ÿé–¢æƒ…å ±ï¼‰
            COPY    "CPSK1001.INC".
-      *    ¥·¥¹¥Æ¥à´ÉÍý¡Ê´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¡Ë
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ï¼ˆæ‚£è€…ç•ªå·æ§‹æˆç®¡ç†ï¼‰
            COPY    "CPSK1009.INC".
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹
+      *    æ‚£è€…ç•ªå·å¤‰æ›
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSKANACHK.INC".
            COPY    "CPORCXKANACONV.INC".
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿¡Ê³ÈÄ¥´Á»ú¡Ë
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿ï¼ˆæ‹¡å¼µæ¼¢å­—ï¼‰
            COPY    "CPORCSKANACHK2.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *D   COPY    "CPORCMCP.INC".
       *
@@ -286,7 +286,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -301,7 +301,7 @@
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -312,19 +312,19 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    ¥Ñ¥é¥á¥¿¥»¥Ã¥È
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿ã‚»ãƒƒãƒˆ
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                       INTO    ASS-PARA
            END-UNSTRING
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¾ðÊó¼èÆÀ
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æƒ…å ±å–å¾—
            PERFORM 101-PARA-GET-SEC
            IF      FLG-PARA            =   2
                MOVE    1               TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    °åÎÅµ¡´ØÈÖ¹æ
+      *    åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            IF      PARA-HOSPNUM    NUMERIC
                MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            ELSE
@@ -333,7 +333,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¥»¥Ã¥È
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã‚»ãƒƒãƒˆ
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYMD (3:)
            ADD     2000            TO  WRK-SYY
@@ -342,10 +342,10 @@
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
       *
-      *    Ã¼Ëö£É£Ä¸ÇÄê
+      *    ç«¯æœ«ï¼©ï¼¤å›ºå®š
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    Ä¢É¼£Ï£Ð£Å£Î½èÍý
+      *    å¸³ç¥¨ï¼¯ï¼°ï¼¥ï¼®å‡¦ç†
            OPEN    INPUT               CSV-FILE
            IF      STS-CSV         NOT =   ZERO
                MOVE    1               TO  FLG-CSV
@@ -353,32 +353,32 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    Ä¢É¼½ÐÎÏ¡¡½é´ü½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›ã€€åˆæœŸå‡¦ç†
            PERFORM 2910-ERRLST-INIT-SEC
            IF      FLG-CSV             =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ¥Ç¡¼¥¿¥Ù¡¼¥¹¥ª¡¼¥×¥ó
+      *    ãƒ‡ãƒ¼ã‚¿ãƒ™ãƒ¼ã‚¹ã‚ªãƒ¼ãƒ—ãƒ³
            PERFORM 100-DBOPEN-SEC
       *
-      *    ¥¨¥ó¥³¡¼¥Ç¥£¥ó¥°¼èÆÀ½èÍý
+      *    ã‚¨ãƒ³ã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°å–å¾—å‡¦ç†
            CALL    "ORCSENCODING"      USING    MCPAREA
                                                 SPA-AREA
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊó¡¡¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±ã€€æ¤œç´¢å‡¦ç†
            PERFORM 110-CP1001-KENSAKU-SEC
            IF      FLG-CSV             =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®¥¯¥ê¥¢½èÍý
+      *    æ‚£è€…ç•ªå·æ§‹æˆã‚¯ãƒªã‚¢å‡¦ç†
            IF      PARA-03-1           =   "T"
                MOVE    9               TO  FLG-UPDATE
                PERFORM 250-PTNUM-GET-SEC
            END-IF
       *
-      *    ´µ¼ÔÈÖ¹æ·å¿ô¡¡¼èÆÀ½èÍý
+      *    æ‚£è€…ç•ªå·æ¡æ•°ã€€å–å¾—å‡¦ç†
            MOVE    ZERO            TO  FLG-UPDATE
            PERFORM 250-PTNUM-GET-SEC
            IF      WRK-RENKETA(1:2)    NOT =   PARA-05-1
@@ -391,7 +391,7 @@
            MOVE    PARA-09-1       TO  WRK-COMMIT
            MOVE    PARA-11-1       TO  WRK-ERR
       *
-      *    ´µ¼Ô£Ã£Ó£Ö¥Õ¥¡¥¤¥ë¡¡¸¡º÷½èÍý
+      *    æ‚£è€…ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«ã€€æ¤œç´¢å‡¦ç†
            MOVE    1               TO  FLG-UPDATE
            PERFORM 900-CSV-KENSAKU-SEC
       *
@@ -400,7 +400,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¾ðÊó¼èÆÀ
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æƒ…å ±å–å¾—
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
@@ -424,7 +424,7 @@
       *
            CLOSE                       PARA-FILE
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF    ( PARA-03-2           IS  NUMERIC )   AND
                  ( PARA-03-3           IS  NUMERIC )   AND
                  ( PARA-04-1           IS  NUMERIC )   AND
@@ -441,7 +441,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¾ðÊó¼èÆÀ¡Ê£±¡Ë
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿æƒ…å ±å–å¾—ï¼ˆï¼‘ï¼‰
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
@@ -478,7 +478,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊó¡¡¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±ã€€æ¤œç´¢å‡¦ç†
       *****************************************************************
        110-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -518,20 +518,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    1000·ï¤´¤È¤Ë¥á¥Ã¥»¡¼¥¸¤òÉ½¼¨
+      *    1000ä»¶ã”ã¨ã«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’è¡¨ç¤º
            IF      CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTPTINF)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      *    »ØÄê¤·¤¿·ï¿ô¤Ë¤Ê¤Ã¤¿¤é¥³¥ß¥Ã¥È
+      *    æŒ‡å®šã—ãŸä»¶æ•°ã«ãªã£ãŸã‚‰ã‚³ãƒŸãƒƒãƒˆ
            IF      CNT-COMMIT          =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
-      *    ¥¨¥é¡¼¤¬»ØÄê¤·¤¿·ï¿ô¤Ë¤Ê¤Ã¤¿¤é½èÍý½ªÎ»
+      *    ã‚¨ãƒ©ãƒ¼ãŒæŒ‡å®šã—ãŸä»¶æ•°ã«ãªã£ãŸã‚‰å‡¦ç†çµ‚äº†
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
@@ -548,8 +548,8 @@
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ´µ¼Ô£Ã£Ó£Ö¥Õ¥¡¥¤¥ë¤ËÂ¸ºß¤¹¤ë¹àÌÜ¿ôÊ¬¡¢·«¤êÊÖ¤¹
-      *    ¤Þ¤¿¤Ï¥ì¥³¡¼¥É½ªÎ»¡¢¤Þ¤¿¤Ï¹àÌÜ¥¨¥é¡¼£´¸Ä¤Þ¤Ç
+      *    æ‚£è€…ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«ã«å­˜åœ¨ã™ã‚‹é …ç›®æ•°åˆ†ã€ç¹°ã‚Šè¿”ã™
+      *    ã¾ãŸã¯ãƒ¬ã‚³ãƒ¼ãƒ‰çµ‚äº†ã€ã¾ãŸã¯é …ç›®ã‚¨ãƒ©ãƒ¼ï¼”å€‹ã¾ã§
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   49   )
                    OR      ( WRK-PO-ED     >=  3000 )
@@ -564,17 +564,17 @@
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1           TO  WRK-KOUMOKU-NO
-      *            ¹àÌÜ½ªÎ»Ê¸»ú¸å¤Î¥«¥ó¥Þ°ÌÃÖ¤ò¼èÆÀ(WRK-PO-ED)
+      *            é …ç›®çµ‚äº†æ–‡å­—å¾Œã®ã‚«ãƒ³ãƒžä½ç½®ã‚’å–å¾—(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ¹àÌÜ¶¦ÄÌ½èÍý
+      *        é …ç›®å…±é€šå‡¦ç†
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *        ¹àÌÜÊÌ½èÍý
+      *        é …ç›®åˆ¥å‡¦ç†
                IF      FLG-DATAEND     =   ZERO
                    PERFORM 240-KOUMOKU-BETU-SEC
                END-IF
            END-PERFORM
-      *    É¬¿Ü¹àÌÜ¤Ê¤·
+      *    å¿…é ˆé …ç›®ãªã—
            IF      FLG-ERRARI          =   ZERO
                IF     (WRK-KOUMOKU-NO      >   ZERO) AND
                       (WRK-KOUMOKU-NO      <   6   )
@@ -583,28 +583,28 @@
                    PERFORM 290-ERRREC-EDIT-SEC
                END-IF
            END-IF
-      *    ¥Ç¡¼¥¿¤Ê¤·
+      *    ãƒ‡ãƒ¼ã‚¿ãªã—
            IF     (WRK-KOUMOKU-NO      =   ZERO )
                CONTINUE
            ELSE
       *
            IF      FLG-ERRARI          =   ZERO
-      *        ´µ¼Ô¾ðÊó¥»¥Ã¥È
+      *        æ‚£è€…æƒ…å ±ã‚»ãƒƒãƒˆ
                PERFORM 250-PTINF-SET-SEC
                IF      FLG-ERR         NOT =   ZERO
-      *            ¥¨¥é¡¼¥ê¥¹¥ÈÊÔ½¸/½ÐÎÏ½èÍý
+      *            ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆç·¨é›†/å‡ºåŠ›å‡¦ç†
                    PERFORM 290-ERRREC-EDIT-SEC
                    MOVE    2           TO  FLG-ERRARI
                    PERFORM 290-ERRLST-OUT-SEC
                END-IF
            ELSE
-      *        ¥¨¥é¡¼¥ê¥¹¥È½ÐÎÏ½èÍý
+      *        ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆå‡ºåŠ›å‡¦ç†
                PERFORM 290-ERRLST-OUT-SEC
            END-IF
       *
            END-IF
       *
-      *    ´µ¼Ô£Ã£Ó£Ö¥Õ¥¡¥¤¥ë¡¡¸¡º÷½èÍý
+      *    æ‚£è€…ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«ã€€æ¤œç´¢å‡¦ç†
            IF      FLG-CSV             =   ZERO
                PERFORM 900-CSV-KENSAKU-SEC
            END-IF
@@ -614,7 +614,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÂÐ¾Ý¹àÌÜ¤ÎÊ¸»ú½ªÎ»°ÌÃÖ¤ò¼èÆÀ
+      *    å¯¾è±¡é …ç›®ã®æ–‡å­—çµ‚äº†ä½ç½®ã‚’å–å¾—
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
@@ -623,19 +623,19 @@
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY           >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
-      *        ¥«¥ó¥Þ¤Î°ÌÃÖ
+      *        ã‚«ãƒ³ãƒžã®ä½ç½®
                IF    ( CSV-X (IDY)     =   "," )  OR
                      ((IDX             =   49   ) AND
                      ( CSV-X (IDY)     =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
                ELSE
-      *            ¥«¥ó¥Þ¤¬Â­¤ê¤Ê¤¤¾ì¹ç¤Î½ªÎ»°ÌÃÖ·èÄê
+      *            ã‚«ãƒ³ãƒžãŒè¶³ã‚Šãªã„å ´åˆã®çµ‚äº†ä½ç½®æ±ºå®š
                    IF      CSV-X (IDY) NOT =   SPACE
                        MOVE    IDY         TO  WRK-PO-ED
                    END-IF
                END-IF
-      *        ¥Ç¥ê¥ß¥¿(")Â¸ºß¤¹¤ë¤«¤É¤¦¤«
+      *        ãƒ‡ãƒªãƒŸã‚¿(")å­˜åœ¨ã™ã‚‹ã‹ã©ã†ã‹
                IF      CSV-X (IDY)         =   """"
                    IF      FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
@@ -655,15 +655,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ¶¦ÄÌ½èÍý
+      *    é …ç›®å…±é€šå‡¦ç†
       *****************************************************************
        220-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    ¥Ç¡¼¥¿¤¬¾ÊÎ¬¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¡¢FLG-NODATA¤Ë1¤ò¥»¥Ã¥È
+      *    ãƒ‡ãƒ¼ã‚¿ãŒçœç•¥ã•ã‚Œã¦ã„ã‚‹å ´åˆã€FLG-NODATAã«1ã‚’ã‚»ãƒƒãƒˆ
            IF      FLG-DELI1           =   1
-      *        ¥Ç¥ê¥ß¥¿(")¤ò´Þ¤ó¤Ç¤¤¤ë¾ì¹ç
+      *        ãƒ‡ãƒªãƒŸã‚¿(")ã‚’å«ã‚“ã§ã„ã‚‹å ´åˆ
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -674,16 +674,16 @@
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        ¥Ç¥ê¥ß¥¿(")¤ò´Þ¤ó¤Ç¤¤¤Ê¤¤¾ì¹ç
+      *        ãƒ‡ãƒªãƒŸã‚¿(")ã‚’å«ã‚“ã§ã„ãªã„å ´åˆ
                IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    Å¾Á÷³«»Ï°ÌÃÖ¡¦Å¾Á÷·å¿ô¤ò»»½Ð
+      *    è»¢é€é–‹å§‹ä½ç½®ãƒ»è»¢é€æ¡æ•°ã‚’ç®—å‡º
            IF      FLG-DELI1           =   1
-      *        ¥Ç¥ê¥ß¥¿(")¤ò´Þ¤ó¤Ç¤¤¤ë¾ì¹ç
+      *        ãƒ‡ãƒªãƒŸã‚¿(")ã‚’å«ã‚“ã§ã„ã‚‹å ´åˆ
                COMPUTE WRK-MO-ST       =   WRK-PO-ST   +   1
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-MO-CNT  =   WRK-PO-ED
@@ -693,7 +693,7 @@
                                        -   WRK-PO-ST
                END-IF
            ELSE
-      *        ¥Ç¥ê¥ß¥¿(")¤ò´Þ¤ó¤Ç¤¤¤Ê¤¤¾ì¹ç
+      *        ãƒ‡ãƒªãƒŸã‚¿(")ã‚’å«ã‚“ã§ã„ãªã„å ´åˆ
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT      =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
@@ -708,156 +708,156 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜÊÌ½èÍý
+      *    é …ç›®åˆ¥å‡¦ç†
       *****************************************************************
        240-KOUMOKU-BETU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
-      *    £±¡§´µ¼ÔÈÖ¹æ
+      *    ï¼‘ï¼šæ‚£è€…ç•ªå·
            WHEN    1
                PERFORM 2410-PTNUM-SET-SEC
-      *    £²¡§¥«¥Ê»áÌ¾
+      *    ï¼’ï¼šã‚«ãƒŠæ°å
            WHEN    2
                PERFORM 2410-KANANAME-SET-SEC
-      *    £³¡§´Á»ú»áÌ¾
+      *    ï¼“ï¼šæ¼¢å­—æ°å
            WHEN    3
                PERFORM 2410-NAME-SET-SEC
-      *    £´¡§ÄÌ¾Î
+      *    ï¼”ï¼šé€šç§°
            WHEN    4
                PERFORM 2410-NICKNAME-SET-SEC
-      *    £µ¡§À­ÊÌ
+      *    ï¼•ï¼šæ€§åˆ¥
            WHEN    5
                PERFORM 2410-SEX-SET-SEC
-      *    £¶¡§À¸Ç¯·îÆü
+      *    ï¼–ï¼šç”Ÿå¹´æœˆæ—¥
            WHEN    6
                PERFORM 2410-BIRTHDAY-SET-SEC
-      *    £·¡§»àË´¶èÊ¬
+      *    ï¼—ï¼šæ­»äº¡åŒºåˆ†
            WHEN    7
                PERFORM 2410-DEATHKBN-SET-SEC
-      *    £¸¡§¼«Âð¡ÝÍ¹ÊØÈÖ¹æ
+      *    ï¼˜ï¼šè‡ªå®…âˆ’éƒµä¾¿ç•ªå·
            WHEN    8
                PERFORM 2410-HOME-POST-SET-SEC
-      *    £¹¡§¼«Âð¡Ý½»½ê
+      *    ï¼™ï¼šè‡ªå®…âˆ’ä½æ‰€
            WHEN    9
                PERFORM 2410-HOME-ADRS-SET-SEC
-      *    £±£°¡§¼«Âð¡ÝÈÖÃÏ
+      *    ï¼‘ï¼ï¼šè‡ªå®…âˆ’ç•ªåœ°
            WHEN    10
                PERFORM 2410-HOME-BANTI-SET-SEC
-      *    £±£±¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
+      *    ï¼‘ï¼‘ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰
            WHEN    11
                PERFORM 2410-HOME-TEL1-SET-SEC
-      *    £±£²¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë
+      *    ï¼‘ï¼’ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰
            WHEN    12
                PERFORM 2410-HOME-TEL2-SET-SEC
-      *    £±£³¡§À¤ÂÓ¼ç
+      *    ï¼‘ï¼“ï¼šä¸–å¸¯ä¸»
            WHEN    13
                PERFORM 2410-SETAINUSI-SET-SEC
-      *    £±£´¡§Â³ÊÁ
+      *    ï¼‘ï¼”ï¼šç¶šæŸ„
            WHEN    14
                PERFORM 2410-ZOKUGARA-SET-SEC
-      *    £±£µ¡§¿¦¶È
+      *    ï¼‘ï¼•ï¼šè·æ¥­
            WHEN    15
                PERFORM 2410-JOB-SET-SEC
-      *    £±£¶¡§·ÈÂÓÅÅÏÃÈÖ¹æ
+      *    ï¼‘ï¼–ï¼šæºå¸¯é›»è©±ç•ªå·
            WHEN    16
                PERFORM 2410-KEITAI-TEL-SET-SEC
-      *    £±£·¡§£Æ£Á£ØÈÖ¹æ
+      *    ï¼‘ï¼—ï¼šï¼¦ï¼¡ï¼¸ç•ªå·
            WHEN    17
                PERFORM 2410-FAX-SET-SEC
-      *    £±£¸¡§ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+      *    ï¼‘ï¼˜ï¼šé›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            WHEN    18
                PERFORM 2410-EMAIL-SET-SEC
-      *    £±£¹¡§¸ºÌÈ»öÍ³
+      *    ï¼‘ï¼™ï¼šæ¸›å…äº‹ç”±
            WHEN    19
                PERFORM 2410-DISCOUNT-KBN-SET-SEC
-      *    £²£°¡§³ä°ú¶èÊ¬
+      *    ï¼’ï¼ï¼šå‰²å¼•åŒºåˆ†
            WHEN    20
                PERFORM 2410-WARIKBN-SET-SEC
-      *    £²£±¡§³ä°ú
+      *    ï¼’ï¼‘ï¼šå‰²å¼•
            WHEN    21
                PERFORM 2410-DISCOUNT-SET-SEC
-      *    £²£²¡§¥³¥á¥ó¥È£±
+      *    ï¼’ï¼’ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼‘
            WHEN    22
                PERFORM 2410-COMMENT-1-SET-SEC
-      *    £²£³¡§¥³¥á¥ó¥È£²
+      *    ï¼’ï¼“ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼’
            WHEN    23
                PERFORM 2410-COMMENT-2-SET-SEC
-      *    £²£´¡§¶Ø´÷£±
+      *    ï¼’ï¼”ï¼šç¦å¿Œï¼‘
            WHEN    24
                PERFORM 2410-TABOO-1-SET-SEC
-      *    £²£µ¡§¶Ø´÷£²
+      *    ï¼’ï¼•ï¼šç¦å¿Œï¼’
            WHEN    25
                PERFORM 2410-TABOO-2-SET-SEC
-      *    £²£¶¡§¥¢¥ì¥ë¥®¡¼£±
+      *    ï¼’ï¼–ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼‘
            WHEN    26
                PERFORM 2410-ALLERGY-1-SET-SEC
-      *    £²£·¡§¥¢¥ì¥ë¥®¡¼£²
+      *    ï¼’ï¼—ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼’
            WHEN    27
                PERFORM 2410-ALLERGY-2-SET-SEC
-      *    £²£¸¡§´¶À÷¾É£±
+      *    ï¼’ï¼˜ï¼šæ„ŸæŸ“ç—‡ï¼‘
            WHEN    28
                PERFORM 2410-KANSENSYO-1-SET-SEC
-      *    £²£¹¡§´¶À÷¾É£²
+      *    ï¼’ï¼™ï¼šæ„ŸæŸ“ç—‡ï¼’
            WHEN    29
                PERFORM 2410-KANSENSYO-2-SET-SEC
-      *    £³£°¡§Ï¢ÍíÀè¡ÝÌ¾¾Î
+      *    ï¼“ï¼ï¼šé€£çµ¡å…ˆâˆ’åç§°
            WHEN    30
                PERFORM 2410-RENRAKU-NAME-SET-SEC
-      *    £³£±¡§Ï¢ÍíÀè¡ÝÂ³ÊÁ
+      *    ï¼“ï¼‘ï¼šé€£çµ¡å…ˆâˆ’ç¶šæŸ„
            WHEN    31
                PERFORM 2410-RENRAKU-ZOKUGARA-SET-SEC
-      *    £³£²¡§Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ
+      *    ï¼“ï¼’ï¼šé€£çµ¡å…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    32
                PERFORM 2410-RENRAKU-POST-SET-SEC
-      *    £³£³¡§Ï¢ÍíÀè¡Ý½»½ê
+      *    ï¼“ï¼“ï¼šé€£çµ¡å…ˆâˆ’ä½æ‰€
            WHEN    33
                PERFORM 2410-RENRAKU-ADRS-SET-SEC
-      *    £³£´¡§Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ
+      *    ï¼“ï¼”ï¼šé€£çµ¡å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    34
                PERFORM 2410-RENRAKU-BANTI-SET-SEC
-      *    £³£µ¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
+      *    ï¼“ï¼•ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰
            WHEN    35
                PERFORM 2410-RENRAKU-TEL1-SET-SEC
-      *    £³£¶¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë
+      *    ï¼“ï¼–ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰
            WHEN    36
                PERFORM 2410-RENRAKU-TEL2-SET-SEC
-      *    £³£·¡§¶ÐÌ³Àè¡ÝÌ¾¾Î
+      *    ï¼“ï¼—ï¼šå‹¤å‹™å…ˆâˆ’åç§°
            WHEN    37
                PERFORM 2410-OFFICE-NAME-SET-SEC
-      *    £³£¸¡§¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ
+      *    ï¼“ï¼˜ï¼šå‹¤å‹™å…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    38
                PERFORM 2410-OFFICE-POST-SET-SEC
-      *    £³£¹¡§¶ÐÌ³Àè¡Ý½»½ê
+      *    ï¼“ï¼™ï¼šå‹¤å‹™å…ˆâˆ’ä½æ‰€
            WHEN    39
                PERFORM 2410-OFFICE-ADRS-SET-SEC
-      *    £´£°¡§¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ
+      *    ï¼”ï¼ï¼šå‹¤å‹™å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    40
                PERFORM 2410-OFFICE-BANTI-SET-SEC
-      *    £´£±¡§¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ
+      *    ï¼”ï¼‘ï¼šå‹¤å‹™å…ˆâˆ’é›»è©±ç•ªå·
            WHEN    41
                PERFORM 2410-OFFICE-TEL-SET-SEC
-      *    £´£²¡§µ¢¾ÊÀè¡ÝÌ¾¾Î
+      *    ï¼”ï¼’ï¼šå¸°çœå…ˆâˆ’åç§°
            WHEN    42
                PERFORM 2410-KISEI-NAME-SET-SEC
-      *    £´£³¡§µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ
+      *    ï¼”ï¼“ï¼šå¸°çœå…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    43
                PERFORM 2410-KISEI-POST-SET-SEC
-      *    £´£´¡§µ¢¾ÊÀè¡Ý½»½ê
+      *    ï¼”ï¼”ï¼šå¸°çœå…ˆâˆ’ä½æ‰€
            WHEN    44
                PERFORM 2410-KISEI-ADRS-SET-SEC
-      *    £´£µ¡§µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ
+      *    ï¼”ï¼•ï¼šå¸°çœå…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    45
                PERFORM 2410-KISEI-BANTI-SET-SEC
-      *    £´£¶¡§µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ
+      *    ï¼”ï¼–ï¼šå¸°çœå…ˆâˆ’é›»è©±ç•ªå·
            WHEN    46
                PERFORM 2410-KISEI-TEL-SET-SEC
-      *    £´£·¡§¥Æ¥¹¥È´µ¼Ô¥Õ¥é¥°
+      *    ï¼”ï¼—ï¼šãƒ†ã‚¹ãƒˆæ‚£è€…ãƒ•ãƒ©ã‚°
            WHEN    47
                PERFORM 2410-TSTPTNUMKBN-SET-SEC
-      *    £´£¸¡§ÅÐÏ¿Æü
+      *    ï¼”ï¼˜ï¼šç™»éŒ²æ—¥
            WHEN    48
                PERFORM 2410-CREYMD-SET-SEC
-      *    £´£¹¡§¹¹¿·Æü
+      *    ï¼”ï¼™ï¼šæ›´æ–°æ—¥
            WHEN    49
                PERFORM 2410-UPYMD-SET-SEC
            END-EVALUATE
@@ -872,7 +872,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ¶õÇò½èÍý
+      *    é …ç›®ç©ºç™½å‡¦ç†
       *****************************************************************
        2401-SPACE-HENSYU-SEC       SECTION.
       *
@@ -889,11 +889,11 @@
                    END-IF
                END-PERFORM
       *
-      *        ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
+      *        å¾Œã‚ã®å…¨è§’ç©ºç™½ã‚’å‰Šé™¤
                IF      WRK-LEN             >   1
                    PERFORM 24021-KUHAKU-DEL-SEC
                END-IF
-      *        È¾³Ñ±Ñ¿ô»ú¤Ç¤¢¤ë¤³¤È
+      *        åŠè§’è‹±æ•°å­—ã§ã‚ã‚‹ã“ã¨
                IF      WRK-LEN             >   1
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"             TO  KANACHK-SYORI
@@ -906,7 +906,7 @@
                           (KANACHK-MAE-INPUT   =   KANACHK-OUT-INPUT)
                        CONTINUE
                    ELSE
-      *                Á´³Ñ¡¢È¾³Ñ¥«¥Ê¤Ï¥¨¥é¡¼
+      *                å…¨è§’ã€åŠè§’ã‚«ãƒŠã¯ã‚¨ãƒ©ãƒ¼
                        MOVE    3               TO  FLG-ERR
                    END-IF
                END-IF
@@ -916,13 +916,13 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý
+      *    å…¨è§’æ¡æ•°ãƒ»ç©ºç™½å‡¦ç†
       *****************************************************************
        2402-ZENKAKU-HEN-SEC        SECTION.
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
-      *    ¸å¤í¤ÎÁ´³Ñ¶õÇòºï½ü
+      *    å¾Œã‚ã®å…¨è§’ç©ºç™½å‰Šé™¤
            MOVE    "1"             TO  KANACHK-SYORIKBN
            MOVE    WRK-DATA        TO  KANACHK-MAE-INPUT
            MOVE    WRK-CNT         TO  KANACHK-MAX-CNT
@@ -931,11 +931,11 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            MOVE    KANACHK-MAX         TO  WRK-LEN
            IF      KANACHK-RC      NOT =   ZERO
-      *        Á´³Ñ¡¦È¾³Ñº®ºß¥¨¥é¡Ý
+      *        å…¨è§’ãƒ»åŠè§’æ··åœ¨ã‚¨ãƒ©âˆ’
                MOVE    3               TO  FLG-ERR
            ELSE
                IF      KANACHK-SYUBETU =   1
-      *        È¾³Ñ¤òÁ´³Ñ¤Ø
+      *        åŠè§’ã‚’å…¨è§’ã¸
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "2"             TO  KANACHK-SYORI
                    MOVE    "1"             TO  KANACHK-SYORIKBN
@@ -954,7 +954,7 @@
            IF      WRK-LEN         =   ZERO
                MOVE    1               TO  WRK-LEN
            END-IF
-      ***  ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
+      ***  å¾Œã‚ã®å…¨è§’ç©ºç™½ã‚’å‰Šé™¤
       *    IF      WRK-LEN         >   1
       *        PERFORM 24021-KUHAKU-DEL-SEC
       **** END-IF
@@ -963,21 +963,21 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³Ñ¶õÇòºï½ü½èÍý
+      *    å…¨è§’ç©ºç™½å‰Šé™¤å‡¦ç†
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
            COMPUTE IDZ             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDZ:2)    =   "¡¡"
+           IF      WRK-DATA (IDZ:2)    =   "ã€€"
                MOVE    1                   TO  WRK-LEN
                PERFORM VARYING IDS     FROM    IDZ BY  -2
                        UNTIL   IDS     <   2
-                   IF      WRK-DATA (IDS:2)    NOT =   "¡¡"
+                   IF      WRK-DATA (IDS:2)    NOT =   "ã€€"
                        COMPUTE WRK-LEN         =   IDS     +   1
                        MOVE    2               TO  IDS
                    ELSE
                        IF      IDS             =   3
-                           IF      WRK-DATA (1:2)      NOT =   "¡¡"
+                           IF      WRK-DATA (1:2)      NOT =   "ã€€"
                                MOVE    2               TO  WRK-LEN
                            END-IF
                        END-IF
@@ -989,7 +989,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý¡Ê¥³¥á¥ó¥È¡Ë
+      *    å…¨è§’æ¡æ•°ãƒ»ç©ºç™½å‡¦ç†ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆï¼‰
       *****************************************************************
        2402-ZENKAKU-HEN2-SEC       SECTION.
       *
@@ -1004,7 +1004,7 @@
            IF      WRK-LEN             =   ZERO
                MOVE    1               TO  WRK-LEN
            END-IF
-      *    ¸å¤í¤ÎÁ´³Ñ¶õÇò¤òºï½ü
+      *    å¾Œã‚ã®å…¨è§’ç©ºç™½ã‚’å‰Šé™¤
            IF      WRK-LEN             >   1
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
@@ -1013,15 +1013,15 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý¡Ê³ÈÄ¥´Á»úÂÐ±þ¡Ë
+      *    å…¨è§’æ¡æ•°ãƒ»ç©ºç™½å‡¦ç†ï¼ˆæ‹¡å¼µæ¼¢å­—å¯¾å¿œï¼‰
       *****************************************************************
        2402-ZENKAKU-HEN02-SEC        SECTION.
       *
            IF      SPA-ENCODING        =   2
-      *        ³ÈÄ¥´Á»úÂÐ±þ
+      *        æ‹¡å¼µæ¼¢å­—å¯¾å¿œ
                PERFORM 24021-ZENKAKU-HEN02C-SEC
            ELSE
-      *        ³ÈÄ¥´Á»úÉÔ²Ä
+      *        æ‹¡å¼µæ¼¢å­—ä¸å¯
                PERFORM 2402-ZENKAKU-HEN-SEC
            END-IF
            .
@@ -1029,7 +1029,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á´³Ñ·å¿ô¡¦¶õÇò½èÍý¡Ê³ÈÄ¥´Á»úÂÐ±þ¡Ë
+      *    å…¨è§’æ¡æ•°ãƒ»ç©ºç™½å‡¦ç†ï¼ˆæ‹¡å¼µæ¼¢å­—å¯¾å¿œï¼‰
       *****************************************************************
        24021-ZENKAKU-HEN02C-SEC        SECTION.
       *
@@ -1043,11 +1043,11 @@
            MOVE    KANACHK2-MAE-INPUT  TO  WRK-DATA
            MOVE    KANACHK2-MAX        TO  WRK-LEN
            IF      KANACHK2-RC     NOT =   ZERO
-      *        Á´³Ñ¡¦È¾³Ñº®ºß¥¨¥é¡Ý
+      *        å…¨è§’ãƒ»åŠè§’æ··åœ¨ã‚¨ãƒ©âˆ’
                MOVE    3               TO  FLG-ERR
            ELSE
                IF      KANACHK2-SYUBETU =   1
-      *        È¾³Ñ¤òÁ´³Ñ¤Ø
+      *        åŠè§’ã‚’å…¨è§’ã¸
                    INITIALIZE                  ORCSKANACHK2AREA
                    MOVE    "2"             TO  KANACHK2-SYORI
                    MOVE    "1"             TO  KANACHK2-SYORIKBN
@@ -1072,19 +1072,19 @@
       *
       *
       *****************************************************************
-      *    ¹àÌÜ£±¡§´µ¼ÔÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼šæ‚£è€…ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-PTNUM-SET-SEC          SECTION.
       *
            MOVE    SPACE           TO  SPA-PTNUM
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA          =   1
                MOVE    1               TO  FLG-ERR
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    ¶õÇò¤Þ¤Ç¤òÊÔ½¸¤¹¤ë
+      *    ç©ºç™½ã¾ã§ã‚’ç·¨é›†ã™ã‚‹
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-HEN-PTNUM
            MOVE    ZERO                TO  WRK-CNT
@@ -1095,14 +1095,14 @@
            END-PERFORM
            MOVE    WRK-CNT             TO  WRK-MO-CNT
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF    ( WRK-MO-CNT          =   0  )    OR
                  ( WRK-MO-CNT          >   20 )
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    ´µ¼ÔÈÖ¹æ¥»¥Ã¥È
+      *    æ‚£è€…ç•ªå·ã‚»ãƒƒãƒˆ
            IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
                  ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
                 (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
@@ -1126,7 +1126,7 @@
                                        TO  SPA-PTNUM(IDZ:)
            END-IF
       *
-      *    È¾³Ñ¥Á¥§¥Ã¥¯
+      *    åŠè§’ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"             TO  KANACHK-SYORI
            MOVE    SPA-PTNUM       TO  KANACHK-MAE-INPUT
@@ -1138,7 +1138,7 @@
                   (KANACHK-RC2         =   ZERO  )
                CONTINUE
            ELSE
-      *        È¾³Ñ°Ê³°¤Ï¥¨¥é¡¼
+      *        åŠè§’ä»¥å¤–ã¯ã‚¨ãƒ©ãƒ¼
                MOVE    3               TO  FLG-ERR
            END-IF
            .
@@ -1146,17 +1146,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²¡§¥«¥Ê»áÌ¾¡¡½èÍý
+      *    é …ç›®ï¼’ï¼šã‚«ãƒŠæ°åã€€å‡¦ç†
       *****************************************************************
        2410-KANANAME-SET-SEC       SECTION.
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    1               TO  FLG-ERR
                GO  TO  2410-KANANAME-SET-EXT
            END-IF
       *
-      *    ¥«¥Ê»áÌ¾¥»¥Ã¥È
+      *    ã‚«ãƒŠæ°åã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -1171,13 +1171,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³¡§´Á»ú»áÌ¾¡¡½èÍý
+      *    é …ç›®ï¼“ï¼šæ¼¢å­—æ°åã€€å‡¦ç†
       *****************************************************************
        2410-NAME-SET-SEC           SECTION.
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA      =   1
-      *        ¥«¥Ê¤¬¤Ê¤±¤ì¤Ð¥¨¥é¡¼
+      *        ã‚«ãƒŠãŒãªã‘ã‚Œã°ã‚¨ãƒ©ãƒ¼
                IF  PTINF-KANANAME      =   SPACE
                    MOVE    1               TO  FLG-ERR
                ELSE
@@ -1186,7 +1186,7 @@
                GO  TO  2410-NAME-SET-EXT
            END-IF
       *
-      *    ´Á»ú»áÌ¾¥»¥Ã¥È
+      *    æ¼¢å­—æ°åã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -1201,16 +1201,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´¡§ÄÌ¾Î¡¡½èÍý
+      *    é …ç›®ï¼”ï¼šé€šç§°ã€€å‡¦ç†
       *****************************************************************
        2410-NICKNAME-SET-SEC       SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-NICKNAME-SET-EXT
            END-IF
       *
-      *    ÄÌ¾Î¥»¥Ã¥È
+      *    é€šç§°ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -1225,23 +1225,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£µ¡§À­ÊÌ¡¡½èÍý
+      *    é …ç›®ï¼•ï¼šæ€§åˆ¥ã€€å‡¦ç†
       *****************************************************************
        2410-SEX-SET-SEC            SECTION.
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    1               TO  FLG-ERR
                GO  TO  2410-SEX-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      NOT =   1
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-SEX-SET-EXT
            END-IF
       *
-      *    À­ÊÌ¥»¥Ã¥È
+      *    æ€§åˆ¥ã‚»ãƒƒãƒˆ
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                WHEN    "1"     THRU    "2"
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1255,23 +1255,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£¶¡§À¸Ç¯·îÆü¡¡½èÍý
+      *    é …ç›®ï¼–ï¼šç”Ÿå¹´æœˆæ—¥ã€€å‡¦ç†
       *****************************************************************
        2410-BIRTHDAY-SET-SEC       SECTION.
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    1               TO  FLG-ERR
                GO  TO  2410-BIRTHDAY-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      NOT =   8
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-BIRTHDAY-SET-EXT
            END-IF
       *
-      *    À¸Ç¯·îÆü¥»¥Ã¥È
+      *    ç”Ÿå¹´æœˆæ—¥ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -1286,23 +1286,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£·¡§»àË´¶èÊ¬¡¡½èÍý
+      *    é …ç›®ï¼—ï¼šæ­»äº¡åŒºåˆ†ã€€å‡¦ç†
       *****************************************************************
        2410-DEATHKBN-SET-SEC       SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    "0"             TO  PTINF-DEATHKBN
                GO  TO  2410-DEATHKBN-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      NOT =   1
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-DEATHKBN-SET-EXT
            END-IF
       *
-      *    »àË´¶èÊ¬¥»¥Ã¥È
+      *    æ­»äº¡åŒºåˆ†ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  PTINF-DEATHKBN
       *
@@ -1311,22 +1311,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£¸¡§¼«Âð¡ÝÍ¹ÊØÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼˜ï¼šè‡ªå®…âˆ’éƒµä¾¿ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-HOME-POST-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-HOME-POST-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      >   7
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-HOME-POST-SET-EXT
            END-IF
       *
-      *    Í¹ÊØÈÖ¹æ¥»¥Ã¥È
+      *    éƒµä¾¿ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1338,16 +1338,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£¹¡§¼«Âð¡Ý½»½ê¡¡½èÍý
+      *    é …ç›®ï¼™ï¼šè‡ªå®…âˆ’ä½æ‰€ã€€å‡¦ç†
       *****************************************************************
        2410-HOME-ADRS-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-HOME-ADRS-SET-EXT
            END-IF
       *
-      *    ½»½ê¥»¥Ã¥È
+      *    ä½æ‰€ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1362,16 +1362,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£°¡§¼«Âð¡ÝÈÖÃÏ¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼ï¼šè‡ªå®…âˆ’ç•ªåœ°ã€€å‡¦ç†
       *****************************************************************
        2410-HOME-BANTI-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-HOME-BANTI-SET-EXT
            END-IF
       *
-      *    ÈÖÃÏ¥»¥Ã¥È
+      *    ç•ªåœ°ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1386,16 +1386,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£±¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼‘ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰ã€€å‡¦ç†
       *****************************************************************
        2410-HOME-TEL1-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-HOME-TEL1-SET-EXT
            END-IF
       *
-      *    ÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1407,16 +1407,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£²¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼’ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰ã€€å‡¦ç†
       *****************************************************************
        2410-HOME-TEL2-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-HOME-TEL2-SET-EXT
            END-IF
       *
-      *    ÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1428,16 +1428,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£³¡§À¤ÂÓ¼ç¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼“ï¼šä¸–å¸¯ä¸»ã€€å‡¦ç†
       *****************************************************************
        2410-SETAINUSI-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-SETAINUSI-SET-EXT
            END-IF
       *
-      *    À¤ÂÓ¼ç¥»¥Ã¥È
+      *    ä¸–å¸¯ä¸»ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -1452,16 +1452,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£´¡§Â³ÊÁ¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼”ï¼šç¶šæŸ„ã€€å‡¦ç†
       *****************************************************************
        2410-ZOKUGARA-SET-SEC       SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-ZOKUGARA-SET-EXT
            END-IF
       *
-      *    Â³ÊÁ¥»¥Ã¥È
+      *    ç¶šæŸ„ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    30              TO  WRK-CNT
@@ -1476,16 +1476,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£µ¡§¿¦¶È¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼•ï¼šè·æ¥­ã€€å‡¦ç†
       *****************************************************************
        2410-JOB-SET-SEC            SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-JOB-SET-EXT
            END-IF
       *
-      *    ¿¦¶È¥»¥Ã¥È
+      *    è·æ¥­ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    20              TO  WRK-CNT
@@ -1500,16 +1500,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£¶¡§·ÈÂÓÅÅÏÃÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼–ï¼šæºå¸¯é›»è©±ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-KEITAI-TEL-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KEITAI-TEL-SET-EXT
            END-IF
       *
-      *    ·ÈÂÓÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    æºå¸¯é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1521,16 +1521,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£·¡§£Æ£Á£ØÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼—ï¼šï¼¦ï¼¡ï¼¸ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-FAX-SET-SEC            SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-FAX-SET-EXT
            END-IF
       *
-      *    £Æ£Á£ØÈÖ¹æ¥»¥Ã¥È
+      *    ï¼¦ï¼¡ï¼¸ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1542,16 +1542,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£¸¡§ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼˜ï¼šé›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹ã€€å‡¦ç†
       *****************************************************************
        2410-EMAIL-SET-SEC          SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-EMAIL-SET-EXT
            END-IF
       *
-      *    ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+      *    é›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1563,21 +1563,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£±£¹¡§¸ºÌÈ»öÍ³¡¡½èÍý
+      *    é …ç›®ï¼‘ï¼™ï¼šæ¸›å…äº‹ç”±ã€€å‡¦ç†
       *****************************************************************
        2410-DISCOUNT-KBN-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    "00"            TO  PTINF-DISCOUNT-KBN
                GO  TO  2410-DISCOUNT-KBN-SET-EXT
            END-IF
       *
-      *    ¸ºÌÈ»öÍ³¥»¥Ã¥È
+      *    æ¸›å…äº‹ç”±ã‚»ãƒƒãƒˆ
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-               WHEN    "¿¦°÷²ÈÂ²ÄÌ±¡"
+               WHEN    "è·å“¡å®¶æ—é€šé™¢"
                    MOVE    "02"        TO  PTINF-DISCOUNT-KBN
-               WHEN    "¿¦°÷²ÈÂ²Æþ±¡"
+               WHEN    "è·å“¡å®¶æ—å…¥é™¢"
                    MOVE    "03"        TO  PTINF-DISCOUNT-KBN
                WHEN    OTHER
                    MOVE    "00"        TO  PTINF-DISCOUNT-KBN
@@ -1588,28 +1588,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£°¡§³ä°ú¶èÊ¬¡¡½èÍý
+      *    é …ç›®ï¼’ï¼ï¼šå‰²å¼•åŒºåˆ†ã€€å‡¦ç†
       *****************************************************************
        2410-WARIKBN-SET-SEC        SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    ZERO            TO  WRK-HEN-WARIKBN
                GO  TO  2410-WARIKBN-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      NOT =   1
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-WARIKBN-SET-EXT
            END-IF
       *
-      *    ³ä°ú¶èÊ¬¥»¥Ã¥È
+      *    å‰²å¼•åŒºåˆ†ã‚»ãƒƒãƒˆ
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                WHEN    "1"     THRU    "2"
                    MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-HEN-WARIKBN
-      *        ¸íÆþÎÏ
+      *        èª¤å…¥åŠ›
                WHEN    OTHER
                    MOVE    3       TO  FLG-ERR
                    GO  TO  2410-WARIKBN-SET-EXT
@@ -1620,24 +1620,24 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£±¡§³ä°ú¡¡½èÍý
+      *    é …ç›®ï¼’ï¼‘ï¼šå‰²å¼•ã€€å‡¦ç†
       *****************************************************************
        2410-DISCOUNT-SET-SEC           SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    "00"            TO  PTINF-DISCOUNT
                GO  TO  2410-DISCOUNT-SET-EXT
            END-IF
       *
-      *    ³ä°ú¥»¥Ã¥È
+      *    å‰²å¼•ã‚»ãƒƒãƒˆ
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-      *        Îã¡§ÄêÎ¨
+      *        ä¾‹ï¼šå®šçŽ‡
                WHEN    "20"
                    IF  WRK-HEN-WARIKBN     =   "1"
                        MOVE    "02"    TO  PTINF-DISCOUNT
                    END-IF
-      *        Îã¡§Äê³Û
+      *        ä¾‹ï¼šå®šé¡
                WHEN    "1000"
                    IF  WRK-HEN-WARIKBN     =   "2"
                        MOVE    "04"    TO  PTINF-DISCOUNT
@@ -1653,16 +1653,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£²¡§¥³¥á¥ó¥È£±¡¡½èÍý
+      *    é …ç›®ï¼’ï¼’ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼‘ã€€å‡¦ç†
       *****************************************************************
        2410-COMMENT-1-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-COMMENT-1-SET-EXT
            END-IF
       *
-      *    ¥³¥á¥ó¥È£±¥»¥Ã¥È
+      *    ã‚³ãƒ¡ãƒ³ãƒˆï¼‘ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1675,16 +1675,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£³¡§¥³¥á¥ó¥È£²¡¡½èÍý
+      *    é …ç›®ï¼’ï¼“ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼’ã€€å‡¦ç†
       *****************************************************************
        2410-COMMENT-2-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-COMMENT-2-SET-EXT
            END-IF
       *
-      *    ¥³¥á¥ó¥È£²¥»¥Ã¥È
+      *    ã‚³ãƒ¡ãƒ³ãƒˆï¼’ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1697,16 +1697,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£´¡§¶Ø´÷£±¡¡½èÍý
+      *    é …ç›®ï¼’ï¼”ï¼šç¦å¿Œï¼‘ã€€å‡¦ç†
       *****************************************************************
        2410-TABOO-1-SET-SEC        SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-TABOO-1-SET-EXT
            END-IF
       *
-      *    ¶Ø´÷£±¥»¥Ã¥È
+      *    ç¦å¿Œï¼‘ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1721,16 +1721,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£µ¡§¶Ø´÷£²¡¡½èÍý
+      *    é …ç›®ï¼’ï¼•ï¼šç¦å¿Œï¼’ã€€å‡¦ç†
       *****************************************************************
        2410-TABOO-2-SET-SEC        SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-TABOO-2-SET-EXT
            END-IF
       *
-      *    ¶Ø´÷£²¥»¥Ã¥È
+      *    ç¦å¿Œï¼’ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1745,16 +1745,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£¶¡§¥¢¥ì¥ë¥®¡¼£±¡¡½èÍý
+      *    é …ç›®ï¼’ï¼–ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼‘ã€€å‡¦ç†
       *****************************************************************
        2410-ALLERGY-1-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-ALLERGY-1-SET-EXT
            END-IF
       *
-      *    ¥¢¥ì¥ë¥®¡¼£±¥»¥Ã¥È
+      *    ã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼‘ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1769,16 +1769,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£·¡§¥¢¥ì¥ë¥®¡¼£²¡¡½èÍý
+      *    é …ç›®ï¼’ï¼—ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼’ã€€å‡¦ç†
       *****************************************************************
        2410-ALLERGY-2-SET-SEC       SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-ALLERGY-2-SET-EXT
            END-IF
       *
-      *    ¥¢¥ì¥ë¥®¡¼£²¥»¥Ã¥È
+      *    ã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼’ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1793,16 +1793,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£¸¡§´¶À÷¾É£±¡¡½èÍý
+      *    é …ç›®ï¼’ï¼˜ï¼šæ„ŸæŸ“ç—‡ï¼‘ã€€å‡¦ç†
       *****************************************************************
        2410-KANSENSYO-1-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KANSENSYO-1-SET-EXT
            END-IF
       *
-      *    ´¶À÷¾É£±¥»¥Ã¥È
+      *    æ„ŸæŸ“ç—‡ï¼‘ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1817,16 +1817,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£²£¹¡§´¶À÷¾É£²¡¡½èÍý
+      *    é …ç›®ï¼’ï¼™ï¼šæ„ŸæŸ“ç—‡ï¼’ã€€å‡¦ç†
       *****************************************************************
        2410-KANSENSYO-2-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KANSENSYO-2-SET-EXT
            END-IF
       *
-      *    ´¶À÷¾É£²¥»¥Ã¥È
+      *    æ„ŸæŸ“ç—‡ï¼’ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1841,16 +1841,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£°¡§Ï¢ÍíÀè¡ÝÌ¾¾Î¡¡½èÍý
+      *    é …ç›®ï¼“ï¼ï¼šé€£çµ¡å…ˆâˆ’åç§°ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-NAME-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-NAME-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÌ¾¾Î¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’åç§°ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -1865,16 +1865,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£±¡§Ï¢ÍíÀè¡ÝÂ³ÊÁ¡¡½èÍý
+      *    é …ç›®ï¼“ï¼‘ï¼šé€£çµ¡å…ˆâˆ’ç¶šæŸ„ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-ZOKUGARA-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-ZOKUGARA-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÂ³ÊÁ¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’ç¶šæŸ„ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                   TO  WRK-DATA
            MOVE    30             TO  WRK-CNT
@@ -1889,22 +1889,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£²¡§Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼“ï¼’ï¼šé€£çµ¡å…ˆâˆ’éƒµä¾¿ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-POST-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-POST-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      >  7
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-RENRAKU-POST-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’éƒµä¾¿ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1916,16 +1916,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£³¡§Ï¢ÍíÀè¡Ý½»½ê¡¡½èÍý
+      *    é …ç›®ï¼“ï¼“ï¼šé€£çµ¡å…ˆâˆ’ä½æ‰€ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-ADRS-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-ADRS-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡Ý½»½ê¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’ä½æ‰€ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1940,16 +1940,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£´¡§Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ¡¡½èÍý
+      *    é …ç›®ï¼“ï¼”ï¼šé€£çµ¡å…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-BANTI-SET-SEC  SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-BANTI-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1964,16 +1964,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£µ¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë¡¡½èÍý
+      *    é …ç›®ï¼“ï¼•ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-TEL1-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-TEL1-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                   TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -1985,16 +1985,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£¶¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë¡¡½èÍý
+      *    é …ç›®ï¼“ï¼–ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰ã€€å‡¦ç†
       *****************************************************************
        2410-RENRAKU-TEL2-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-RENRAKU-TEL2-SET-EXT
            END-IF
       *
-      *    Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    é€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -2006,16 +2006,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£·¡§¶ÐÌ³Àè¡ÝÌ¾¾Î¡¡½èÍý
+      *    é …ç›®ï¼“ï¼—ï¼šå‹¤å‹™å…ˆâˆ’åç§°ã€€å‡¦ç†
       *****************************************************************
        2410-OFFICE-NAME-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-OFFICE-NAME-SET-EXT
            END-IF
       *
-      *    ¶ÐÌ³Àè¡ÝÌ¾¾Î¥»¥Ã¥È
+      *    å‹¤å‹™å…ˆâˆ’åç§°ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -2030,22 +2030,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£¸¡§¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼“ï¼˜ï¼šå‹¤å‹™å…ˆâˆ’éƒµä¾¿ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-OFFICE-POST-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-OFFICE-POST-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      >   7
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-OFFICE-POST-SET-EXT
            END-IF
       *
-      *    ¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ¥»¥Ã¥È
+      *    å‹¤å‹™å…ˆâˆ’éƒµä¾¿ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -2057,16 +2057,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£³£¹¡§¶ÐÌ³Àè¡Ý½»½ê¡¡½èÍý
+      *    é …ç›®ï¼“ï¼™ï¼šå‹¤å‹™å…ˆâˆ’ä½æ‰€ã€€å‡¦ç†
       *****************************************************************
        2410-OFFICE-ADRS-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-OFFICE-ADRS-SET-EXT
            END-IF
       *
-      *    ¶ÐÌ³Àè¡Ý½»½ê¥»¥Ã¥È
+      *    å‹¤å‹™å…ˆâˆ’ä½æ‰€ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -2081,16 +2081,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£°¡§¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ¡¡½èÍý
+      *    é …ç›®ï¼”ï¼ï¼šå‹¤å‹™å…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã€€å‡¦ç†
       *****************************************************************
        2410-OFFICE-BANTI-SET-SEC   SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-OFFICE-BANTI-SET-EXT
            END-IF
       *
-      *    ¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ¥»¥Ã¥È
+      *    å‹¤å‹™å…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -2105,16 +2105,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£±¡§¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼”ï¼‘ï¼šå‹¤å‹™å…ˆâˆ’é›»è©±ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-OFFICE-TEL-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-OFFICE-TEL-SET-EXT
            END-IF
       *
-      *    ¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    å‹¤å‹™å…ˆâˆ’é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -2126,16 +2126,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£²¡§µ¢¾ÊÀè¡ÝÌ¾¾Î¡¡½èÍý
+      *    é …ç›®ï¼”ï¼’ï¼šå¸°çœå…ˆâˆ’åç§°ã€€å‡¦ç†
       *****************************************************************
        2410-KISEI-NAME-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KISEI-NAME-SET-EXT
            END-IF
       *
-      *    µ¢¾ÊÀè¡ÝÌ¾¾Î¥»¥Ã¥È
+      *    å¸°çœå…ˆâˆ’åç§°ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    50              TO  WRK-CNT
@@ -2150,22 +2150,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£³¡§µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼”ï¼“ï¼šå¸°çœå…ˆâˆ’éƒµä¾¿ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-KISEI-POST-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KISEI-POST-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      >   7
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-KISEI-POST-SET-EXT
            END-IF
       *
-      *    µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ¥»¥Ã¥È
+      *    å¸°çœå…ˆâˆ’éƒµä¾¿ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -2177,16 +2177,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£´¡§µ¢¾ÊÀè¡Ý½»½ê¡¡½èÍý
+      *    é …ç›®ï¼”ï¼”ï¼šå¸°çœå…ˆâˆ’ä½æ‰€ã€€å‡¦ç†
       *****************************************************************
        2410-KISEI-ADRS-SET-SEC     SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KISEI-ADRS-SET-EXT
            END-IF
       *
-      *    µ¢¾ÊÀè¡Ý½»½ê¥»¥Ã¥È
+      *    å¸°çœå…ˆâˆ’ä½æ‰€ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -2201,16 +2201,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£µ¡§µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ¡¡½èÍý
+      *    é …ç›®ï¼”ï¼•ï¼šå¸°çœå…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã€€å‡¦ç†
       *****************************************************************
        2410-KISEI-BANTI-SET-SEC    SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KISEI-BANTI-SET-EXT
            END-IF
       *
-      *    µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ¥»¥Ã¥È
+      *    å¸°çœå…ˆâˆ’ç•ªåœ°æ–¹æ›¸ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -2225,16 +2225,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£¶¡§µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ¡¡½èÍý
+      *    é …ç›®ï¼”ï¼–ï¼šå¸°çœå…ˆâˆ’é›»è©±ç•ªå·ã€€å‡¦ç†
       *****************************************************************
        2410-KISEI-TEL-SET-SEC      SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-KISEI-TEL-SET-EXT
            END-IF
       *
-      *    µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ¥»¥Ã¥È
+      *    å¸°çœå…ˆâˆ’é›»è©±ç•ªå·ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            PERFORM 2401-SPACE-HENSYU-SEC
@@ -2246,23 +2246,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£·¡§¥Æ¥¹¥È´µ¼Ô¥Õ¥é¥°¡¡½èÍý
+      *    é …ç›®ï¼”ï¼—ï¼šãƒ†ã‚¹ãƒˆæ‚£è€…ãƒ•ãƒ©ã‚°ã€€å‡¦ç†
       *****************************************************************
        2410-TSTPTNUMKBN-SET-SEC    SECTION.
       *
-      *    É¬¿ÜÌ¤ÆþÎÏ
+      *    å¿…é ˆæœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                MOVE    1           TO  FLG-ERR
                GO  TO  2410-TSTPTNUMKBN-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF  WRK-MO-CNT          NOT =   1
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-TSTPTNUMKBN-SET-EXT
            END-IF
       *
-      *    ¥Æ¥¹¥È´µ¼Ô¥Õ¥é¥°
+      *    ãƒ†ã‚¹ãƒˆæ‚£è€…ãƒ•ãƒ©ã‚°
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                WHEN    "0"
                WHEN    "1"
@@ -2277,22 +2277,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£¸¡§ÅÐÏ¿Æü¡¡½èÍý
+      *    é …ç›®ï¼”ï¼˜ï¼šç™»éŒ²æ—¥ã€€å‡¦ç†
       *****************************************************************
        2410-CREYMD-SET-SEC         SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-CREYMD-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF      WRK-MO-CNT      NOT =   8
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-CREYMD-SET-EXT
            END-IF
       *
-      *    ÅÐÏ¿Æü¥»¥Ã¥È
+      *    ç™»éŒ²æ—¥ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -2307,22 +2307,22 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ£´£¹¡§¹¹¿·Æü¡¡½èÍý
+      *    é …ç›®ï¼”ï¼™ï¼šæ›´æ–°æ—¥ã€€å‡¦ç†
       *****************************************************************
        2410-UPYMD-SET-SEC             SECTION.
       *
-      *    Ì¤ÆþÎÏ
+      *    æœªå…¥åŠ›
            IF      FLG-NODATA      =   1
                GO  TO  2410-UPYMD-SET-EXT
            END-IF
       *
-      *    ¹àÌÜ·å¿ôÉÔÀµ
+      *    é …ç›®æ¡æ•°ä¸æ­£
            IF  WRK-MO-CNT          NOT =   8
                MOVE    2           TO  FLG-ERR
                GO  TO  2410-UPYMD-SET-EXT
            END-IF
       *
-      *    ¹¹¿·Æü¥»¥Ã¥È
+      *    æ›´æ–°æ—¥ã‚»ãƒƒãƒˆ
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -2337,19 +2337,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó½èÍý
+      *    æ‚£è€…æƒ…å ±å‡¦ç†
       *****************************************************************
        250-PTINF-SET-SEC           SECTION.
       *
-      *    ´µ¼Ô£É£Ä¼èÆÀ½èÍý
+      *    æ‚£è€…ï¼©ï¼¤å–å¾—å‡¦ç†
            IF  FLG-ERR                 =   ZERO
                PERFORM 250-PTNUM-GET-SEC
            END-IF
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥Þ¥¹¥¿¡¡¹¹¿·½èÍý
+      *    æ‚£è€…ç•ªå·å¤‰æ›ãƒžã‚¹ã‚¿ã€€æ›´æ–°å‡¦ç†
            IF  FLG-ERR                 =   ZERO
                PERFORM 260-PTNUM-INSERT-SEC
            END-IF
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¡¹¹¿·½èÍý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ã€€æ›´æ–°å‡¦ç†
            IF  FLG-ERR                 =   ZERO
                PERFORM 270-PTINF-INSERT-SEC
            END-IF
@@ -2359,11 +2359,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô£É£Ä¼èÆÀ½èÍý
+      *    æ‚£è€…ï¼©ï¼¤å–å¾—å‡¦ç†
       *****************************************************************
        250-PTNUM-GET-SEC           SECTION.
       *
-      *    ´µ¼ÔÈÖ¹æºÎÈÖ¸¡º÷
+      *    æ‚£è€…ç•ªå·æŽ¡ç•ªæ¤œç´¢
            PERFORM 2510-PTGETNUM-GET-SEC
            IF  FLG-SYSKANRI            =   1
                MOVE    5               TO  FLG-ERR
@@ -2373,7 +2373,7 @@
       *****MOVE    MCPDATA-REC     TO  SYS-1009-REC
            EVALUATE    FLG-UPDATE
            WHEN    ZERO
-      *        ´µ¼ÔÈÖ¹æ·å¿ô»»½Ð½èÍý
+      *        æ‚£è€…ç•ªå·æ¡æ•°ç®—å‡ºå‡¦ç†
                PERFORM 2520-PTNUM-KETA-SEC
                GO  TO  250-PTNUM-GET-EXT
            WHEN    1
@@ -2386,7 +2386,7 @@
                MOVE    PARA-03-3       TO  SYS-1009-PTID(1:10)
            END-EVALUATE
       *
-      *    ´µ¼ÔÈÖ¹æºÎÈÖ  ¹¹¿·
+      *    æ‚£è€…ç•ªå·æŽ¡ç•ª  æ›´æ–°
            MOVE    SPA-HOSPNUM     TO  SYS-1009-HOSPNUM
            MOVE    SYS-1009-REC    TO  MCPDATA-REC
            MOVE    "DBUPDATE"      TO  MCP-FUNC
@@ -2404,7 +2404,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æºÎÈÖ¸¡º÷
+      *    æ‚£è€…ç•ªå·æŽ¡ç•ªæ¤œç´¢
       *****************************************************************
        2510-PTGETNUM-GET-SEC       SECTION.
       *
@@ -2440,7 +2440,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ·å¿ô»»½Ð½èÍý
+      *    æ‚£è€…ç•ªå·æ¡æ•°ç®—å‡ºå‡¦ç†
       *****************************************************************
        2520-PTNUM-KETA-SEC         SECTION.
       *
@@ -2482,11 +2482,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥Þ¥¹¥¿¡¡¹¹¿·½èÍý
+      *    æ‚£è€…ç•ªå·å¤‰æ›ãƒžã‚¹ã‚¿ã€€æ›´æ–°å‡¦ç†
       *****************************************************************
        260-PTNUM-INSERT-SEC        SECTION.
       *
-      *    Â¸ºß¥Á¥§¥Ã¥¯
+      *    å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            PERFORM 900-PTNUM-READ-SEC
            IF      FLG-PTNUM-ERR   NOT =   ZERO
                MOVE    6               TO  FLG-ERR
@@ -2521,11 +2521,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¡ÅÐÏ¿½èÍý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ã€€ç™»éŒ²å‡¦ç†
       *****************************************************************
        270-PTINF-INSERT-SEC        SECTION.
       *
-      *    Â¸ºß¥Á¥§¥Ã¥¯
+      *    å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF       =   ZERO
                MOVE    7               TO  FLG-ERR
@@ -2540,7 +2540,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO            TO  PTINF-MAXZAINUM
            MOVE    ZERO            TO  PTINF-RRKNUM
            MOVE    ZERO            TO  PTINF-RRKEDANUM
-      *    ¥Æ¥¹¥È´µ¼Ô¶èÊ¬¤¬Ì¤ÀßÄê¤Î»þ¤Ï¡¢£° ¤È¤¹¤ë
+      *    ãƒ†ã‚¹ãƒˆæ‚£è€…åŒºåˆ†ãŒæœªè¨­å®šã®æ™‚ã¯ã€ï¼ ã¨ã™ã‚‹
            IF      PTINF-TSTPTNUMKBN   =   SPACE
                MOVE    "0"             TO  PTINF-TSTPTNUMKBN
            END-IF
@@ -2564,7 +2564,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥ê¥¹¥ÈÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆç·¨é›†å‡¦ç†
       *****************************************************************
        290-ERRREC-EDIT-SEC         SECTION.
       *
@@ -2582,18 +2582,18 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            EVALUATE    FLG-ERR
-      *    É¬¿Ü¹àÌÜÌ¤ÆþÎÏ¥¨¥é¡¼
+      *    å¿…é ˆé …ç›®æœªå…¥åŠ›ã‚¨ãƒ©ãƒ¼
            WHEN    1
-      *    ¹àÌÜ·å¿ô¥¨¥é¡¼
+      *    é …ç›®æ¡æ•°ã‚¨ãƒ©ãƒ¼
            WHEN    2
-      *    ¸íÆþÎÏ¥¨¥é¡¼
+      *    èª¤å…¥åŠ›ã‚¨ãƒ©ãƒ¼
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
-      *    ´µ¼Ô£É£Ä¼èÆÀ¥¨¥é¡¼
+      *    æ‚£è€…ï¼©ï¼¤å–å¾—ã‚¨ãƒ©ãƒ¼
            WHEN    5
-      *    ´µ¼ÔÈÖ¹æ½ÐÎÏ¥¨¥é¡¼
+      *    æ‚£è€…ç•ªå·å‡ºåŠ›ã‚¨ãƒ©ãƒ¼
            WHEN    6
-      *    ´µ¼Ô¾ðÊó½ÐÎÏ¥¨¥é¡¼
+      *    æ‚£è€…æƒ…å ±å‡ºåŠ›ã‚¨ãƒ©ãƒ¼
            WHEN    7
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
            END-EVALUATE
@@ -2603,167 +2603,167 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥ê¥¹¥ÈÊÔ½¸¡¡ÊÌ£±¡¡½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆç·¨é›†ã€€åˆ¥ï¼‘ã€€å‡¦ç†
       *****************************************************************
        2910-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
-      *    ¥¨¥é¡¼ÆâÍÆÈÖ¹æÅ¾Á÷
+      *    ã‚¨ãƒ©ãƒ¼å†…å®¹ç•ªå·è»¢é€
            MOVE    "["             TO  ERR1-ERRNO(IDE)(1:1)
            MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO(IDE)(2:1)
            MOVE    "]"             TO  ERR1-ERRNO(IDE)(3:1)
       *
-      *    ¥¨¥é¡¼¹àÌÜÌ¾¾ÎÅ¾Á÷
+      *    ã‚¨ãƒ©ãƒ¼é …ç›®åç§°è»¢é€
            EVALUATE    WRK-KOUMOKU-NO
-      *    £±¡§´µ¼ÔÈÖ¹æ
+      *    ï¼‘ï¼šæ‚£è€…ç•ªå·
            WHEN    1
-               MOVE    "´µ¼ÔÈÖ¹æ:"     TO  ERR1-KOMOKU(IDE)
-      *    £²¡§¥«¥Ê»áÌ¾
+               MOVE    "æ‚£è€…ç•ªå·:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼šã‚«ãƒŠæ°å
            WHEN    2
-               MOVE    "¥«¥Ê»áÌ¾:"     TO  ERR1-KOMOKU(IDE)
-      *    £³¡§´Á»ú»áÌ¾
+               MOVE    "ã‚«ãƒŠæ°å:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼šæ¼¢å­—æ°å
            WHEN    3
-               MOVE    "´Á»ú»áÌ¾:"     TO  ERR1-KOMOKU(IDE)
-      *    £´¡§ÄÌ¾Î
+               MOVE    "æ¼¢å­—æ°å:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼šé€šç§°
            WHEN    4
-               MOVE    "ÄÌ¾Î    :"     TO  ERR1-KOMOKU(IDE)
-      *    £µ¡§À­ÊÌ
+               MOVE    "é€šç§°    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼•ï¼šæ€§åˆ¥
            WHEN    5
-               MOVE    "À­ÊÌ    :"     TO  ERR1-KOMOKU(IDE)
-      *    £¶¡§À¸Ç¯·îÆü
+               MOVE    "æ€§åˆ¥    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼–ï¼šç”Ÿå¹´æœˆæ—¥
            WHEN    6
-               MOVE    "À¸Ç¯·îÆü:"     TO  ERR1-KOMOKU(IDE)
-      *    £·¡§»àË´¶èÊ¬
+               MOVE    "ç”Ÿå¹´æœˆæ—¥:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼—ï¼šæ­»äº¡åŒºåˆ†
            WHEN    7
-               MOVE    "»àË´¶èÊ¬:"     TO  ERR1-KOMOKU(IDE)
-      *    £¸¡§¼«Âð¡ÝÍ¹ÊØÈÖ¹æ
+               MOVE    "æ­»äº¡åŒºåˆ†:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼˜ï¼šè‡ªå®…âˆ’éƒµä¾¿ç•ªå·
            WHEN    8
-               MOVE    "¼«ÂðÍ¹ÊØ:"     TO  ERR1-KOMOKU(IDE)
-      *    £¹¡§¼«Âð¡Ý½»½ê
+               MOVE    "è‡ªå®…éƒµä¾¿:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼™ï¼šè‡ªå®…âˆ’ä½æ‰€
            WHEN    9
-               MOVE    "¼«Âð½»½ê:"     TO  ERR1-KOMOKU(IDE)
-      *    £±£°¡§¼«Âð¡ÝÈÖÃÏ
+               MOVE    "è‡ªå®…ä½æ‰€:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼ï¼šè‡ªå®…âˆ’ç•ªåœ°
            WHEN    10
-               MOVE    "¼«ÂðÈÖÃÏ:"     TO  ERR1-KOMOKU(IDE)
-      *    £±£±¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
+               MOVE    "è‡ªå®…ç•ªåœ°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼‘ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰
            WHEN    11
-               MOVE    "¼«ÂðÅÅÃë:"     TO  ERR1-KOMOKU(IDE)
-      *    £±£²¡§¼«Âð¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë
+               MOVE    "è‡ªå®…é›»æ˜¼:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼’ï¼šè‡ªå®…âˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰
            WHEN    12
-               MOVE    "¼«ÂðÅÅÌë:"     TO  ERR1-KOMOKU(IDE)
-      *    £±£³¡§À¤ÂÓ¼ç
+               MOVE    "è‡ªå®…é›»å¤œ:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼“ï¼šä¸–å¸¯ä¸»
            WHEN    13
-               MOVE    "À¤ÂÓ¼ç  :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£´¡§Â³ÊÁ
+               MOVE    "ä¸–å¸¯ä¸»  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼”ï¼šç¶šæŸ„
            WHEN    14
-               MOVE    "Â³ÊÁ    :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£µ¡§¿¦¶È
+               MOVE    "ç¶šæŸ„    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼•ï¼šè·æ¥­
            WHEN    15
-               MOVE    "¿¦¶È    :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£¶¡§·ÈÂÓÅÅÏÃÈÖ¹æ
+               MOVE    "è·æ¥­    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼–ï¼šæºå¸¯é›»è©±ç•ªå·
            WHEN    16
-               MOVE    "·ÈÂÓ    :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£·¡§£Æ£Á£ØÈÖ¹æ
+               MOVE    "æºå¸¯    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼—ï¼šï¼¦ï¼¡ï¼¸ç•ªå·
            WHEN    17
-               MOVE    "£Æ£Á£Ø  :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£¸¡§ÅÅ»Ò¥á¡¼¥ë¥¢¥É¥ì¥¹
+               MOVE    "ï¼¦ï¼¡ï¼¸  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼˜ï¼šé›»å­ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            WHEN    18
-               MOVE    "¥á¡¼¥ë  :"     TO  ERR1-KOMOKU(IDE)
-      *    £±£¹¡§¸ºÌÈ»öÍ³
+               MOVE    "ãƒ¡ãƒ¼ãƒ«  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼‘ï¼™ï¼šæ¸›å…äº‹ç”±
            WHEN    19
-               MOVE    "¸ºÌÈ»öÍ³:"     TO  ERR1-KOMOKU(IDE)
-      *    £²£°¡§³ä°ú¶èÊ¬
+               MOVE    "æ¸›å…äº‹ç”±:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼ï¼šå‰²å¼•åŒºåˆ†
            WHEN    20
-               MOVE    "³ä°ú¶èÊ¬:"     TO  ERR1-KOMOKU(IDE)
-      *    £²£±¡§³ä°ú
+               MOVE    "å‰²å¼•åŒºåˆ†:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼‘ï¼šå‰²å¼•
            WHEN    21
-               MOVE    "³ä°ú    :"     TO  ERR1-KOMOKU(IDE)
-      *    £²£²¡§¥³¥á¥ó¥È£±
+               MOVE    "å‰²å¼•    :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼’ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼‘
            WHEN    22
-               MOVE    "¥³¥á£±  :"     TO  ERR1-KOMOKU(IDE)
-      *    £²£³¡§¥³¥á¥ó¥È£²
+               MOVE    "ã‚³ãƒ¡ï¼‘  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼“ï¼šã‚³ãƒ¡ãƒ³ãƒˆï¼’
            WHEN    23
-               MOVE    "¥³¥á£²  :"     TO  ERR1-KOMOKU(IDE)
-      *    £²£´¡§¶Ø´÷£±
+               MOVE    "ã‚³ãƒ¡ï¼’  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼”ï¼šç¦å¿Œï¼‘
            WHEN    24
-               MOVE    "¶Ø´÷£±  :"     TO  ERR1-KOMOKU(IDE)
-      *    £²£µ¡§¶Ø´÷£²
+               MOVE    "ç¦å¿Œï¼‘  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼•ï¼šç¦å¿Œï¼’
            WHEN    25
-               MOVE    "¶Ø´÷£²  :"     TO  ERR1-KOMOKU(IDE)
-      *    £²£¶¡§¥¢¥ì¥ë¥®¡¼£±
+               MOVE    "ç¦å¿Œï¼’  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼–ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼‘
            WHEN    26
-               MOVE    "¥¢¥ì¥ë£±:"     TO  ERR1-KOMOKU(IDE)
-      *    £²£·¡§¥¢¥ì¥ë¥®¡¼£²
+               MOVE    "ã‚¢ãƒ¬ãƒ«ï¼‘:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼—ï¼šã‚¢ãƒ¬ãƒ«ã‚®ãƒ¼ï¼’
            WHEN    27
-               MOVE    "¥¢¥ì¥ë£²"      TO  ERR1-KOMOKU(IDE)
-      *    £²£¸¡§´¶À÷¾É£±
+               MOVE    "ã‚¢ãƒ¬ãƒ«ï¼’"      TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼˜ï¼šæ„ŸæŸ“ç—‡ï¼‘
            WHEN    28
-               MOVE    "´¶À÷¾É£±:"     TO  ERR1-KOMOKU(IDE)
-      *    £²£¹¡§´¶À÷¾É£²
+               MOVE    "æ„ŸæŸ“ç—‡ï¼‘:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼’ï¼™ï¼šæ„ŸæŸ“ç—‡ï¼’
            WHEN    29
-               MOVE    "´¶À÷¾É£²:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£°¡§Ï¢ÍíÀè¡ÝÌ¾¾Î
+               MOVE    "æ„ŸæŸ“ç—‡ï¼’:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼ï¼šé€£çµ¡å…ˆâˆ’åç§°
            WHEN    30
-               MOVE    "Ï¢ÍíÌ¾¾Î:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£±¡§Ï¢ÍíÀè¡ÝÂ³ÊÁ
+               MOVE    "é€£çµ¡åç§°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼‘ï¼šé€£çµ¡å…ˆâˆ’ç¶šæŸ„
            WHEN    31
-               MOVE    "Ï¢ÍíÂ³ÊÁ:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£²¡§Ï¢ÍíÀè¡ÝÍ¹ÊØÈÖ¹æ
+               MOVE    "é€£çµ¡ç¶šæŸ„:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼’ï¼šé€£çµ¡å…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    32
-               MOVE    "Ï¢ÍíÍ¹ÊØ:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£³¡§Ï¢ÍíÀè¡Ý½»½ê
+               MOVE    "é€£çµ¡éƒµä¾¿:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼“ï¼šé€£çµ¡å…ˆâˆ’ä½æ‰€
            WHEN    33
-               MOVE    "Ï¢Íí½»½ê:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£´¡§Ï¢ÍíÀè¡ÝÈÖÃÏÊý½ñ
+               MOVE    "é€£çµ¡ä½æ‰€:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼”ï¼šé€£çµ¡å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    34
-               MOVE    "Ï¢ÍíÈÖÃÏ:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£µ¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÃë¡Ë
+               MOVE    "é€£çµ¡ç•ªåœ°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼•ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆæ˜¼ï¼‰
            WHEN    35
-               MOVE    "Ï¢ÍíÅÅÃë:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£¶¡§Ï¢ÍíÀè¡ÝÅÅÏÃÈÖ¹æ¡ÊÌë¡Ë
+               MOVE    "é€£çµ¡é›»æ˜¼:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼–ï¼šé€£çµ¡å…ˆâˆ’é›»è©±ç•ªå·ï¼ˆå¤œï¼‰
            WHEN    36
-               MOVE    "Ï¢ÍíÅÅÌë:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£·¡§¶ÐÌ³Àè¡ÝÌ¾¾Î
+               MOVE    "é€£çµ¡é›»å¤œ:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼—ï¼šå‹¤å‹™å…ˆâˆ’åç§°
            WHEN    37
-               MOVE    "¶ÐÌ³Ì¾¾Î:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£¸¡§¶ÐÌ³Àè¡ÝÍ¹ÊØÈÖ¹æ
+               MOVE    "å‹¤å‹™åç§°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼˜ï¼šå‹¤å‹™å…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    38
-               MOVE    "¶ÐÌ³Í¹ÊØ:"     TO  ERR1-KOMOKU(IDE)
-      *    £³£¹¡§¶ÐÌ³Àè¡Ý½»½ê
+               MOVE    "å‹¤å‹™éƒµä¾¿:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼“ï¼™ï¼šå‹¤å‹™å…ˆâˆ’ä½æ‰€
            WHEN    39
-               MOVE    "¶ÐÌ³½»½ê:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£°¡§¶ÐÌ³Àè¡ÝÈÖÃÏÊý½ñ
+               MOVE    "å‹¤å‹™ä½æ‰€:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼ï¼šå‹¤å‹™å…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    40
-               MOVE    "¶ÐÌ³ÈÖÃÏ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£±¡§¶ÐÌ³Àè¡ÝÅÅÏÃÈÖ¹æ
+               MOVE    "å‹¤å‹™ç•ªåœ°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼‘ï¼šå‹¤å‹™å…ˆâˆ’é›»è©±ç•ªå·
            WHEN    41
-               MOVE    "¶ÐÌ³ÅÅÏÃ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£²¡§µ¢¾ÊÀè¡ÝÌ¾¾Î
+               MOVE    "å‹¤å‹™é›»è©±:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼’ï¼šå¸°çœå…ˆâˆ’åç§°
            WHEN    42
-               MOVE    "µ¢¾ÊÌ¾¾Î:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£³¡§µ¢¾ÊÀè¡ÝÍ¹ÊØÈÖ¹æ
+               MOVE    "å¸°çœåç§°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼“ï¼šå¸°çœå…ˆâˆ’éƒµä¾¿ç•ªå·
            WHEN    43
-               MOVE    "µ¢¾ÊÍ¹ÊØ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£´¡§µ¢¾ÊÀè¡Ý½»½ê
+               MOVE    "å¸°çœéƒµä¾¿:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼”ï¼šå¸°çœå…ˆâˆ’ä½æ‰€
            WHEN    44
-               MOVE    "µ¢¾Ê½»½ê:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£µ¡§µ¢¾ÊÀè¡ÝÈÖÃÏÊý½ñ
+               MOVE    "å¸°çœä½æ‰€:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼•ï¼šå¸°çœå…ˆâˆ’ç•ªåœ°æ–¹æ›¸
            WHEN    45
-               MOVE    "µ¢¾ÊÈÖÃÏ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£¶¡§µ¢¾ÊÀè¡ÝÅÅÏÃÈÖ¹æ
+               MOVE    "å¸°çœç•ªåœ°:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼–ï¼šå¸°çœå…ˆâˆ’é›»è©±ç•ªå·
            WHEN    46
-               MOVE    "µ¢¾ÊÅÅÏÃ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£·¡§¥Æ¥¹¥È´µ¼Ô¥Õ¥é¥°
+               MOVE    "å¸°çœé›»è©±:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼—ï¼šãƒ†ã‚¹ãƒˆæ‚£è€…ãƒ•ãƒ©ã‚°
            WHEN    47
-               MOVE    "¥Æ¥¹¥È´µ:"     TO  ERR1-KOMOKU(IDE)
-      *    £´£¸¡§ÅÐÏ¿Æü
+               MOVE    "ãƒ†ã‚¹ãƒˆæ‚£:"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼˜ï¼šç™»éŒ²æ—¥
            WHEN    48
-               MOVE    "ÅÐÏ¿Æü  :"     TO  ERR1-KOMOKU(IDE)
-      *    £´£¹¡§¹¹¿·Æü
+               MOVE    "ç™»éŒ²æ—¥  :"     TO  ERR1-KOMOKU(IDE)
+      *    ï¼”ï¼™ï¼šæ›´æ–°æ—¥
            WHEN    49
-               MOVE    "¹¹¿·Æü  :"     TO  ERR1-KOMOKU(IDE)
+               MOVE    "æ›´æ–°æ—¥  :"     TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
-      *    ¥¨¥é¡¼ÃÍÅ¾Á÷
+      *    ã‚¨ãƒ©ãƒ¼å€¤è»¢é€
            IF      WRK-MO-CNT          NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  ERR1-ATAI(IDE)(1:8)
@@ -2774,20 +2774,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥ê¥¹¥ÈÊÔ½¸¡¡ÊÌ£²¡¡½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆç·¨é›†ã€€åˆ¥ï¼’ã€€å‡¦ç†
       *****************************************************************
        2910-ERRREC-EDIT-BETU2-SEC  SECTION.
       *
            ADD     1               TO  CNT-ERR
            MOVE    SPACE           TO  ERR-REC2
-      *    ¥¨¥é¡¼ÆâÍÆÈÖ¹æÅ¾Á÷
+      *    ã‚¨ãƒ©ãƒ¼å†…å®¹ç•ªå·è»¢é€
            MOVE    CNT-CSV         TO  ERR2-LINENO
            MOVE    "["             TO  ERR2-ERRNO(1:1)
            MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO(2:1)
            MOVE    "]"             TO  ERR2-ERRNO(3:1)
-           MOVE    "´µ¼ÔÈÖ¹æ:"     TO  ERR2-PTNUMMES
-           MOVE    "´µ¼Ô£É£Ä:"     TO  ERR2-PTIDMES
-           MOVE    "´µ¼Ô»áÌ¾:"     TO  ERR2-NAMEMES
+           MOVE    "æ‚£è€…ç•ªå·:"     TO  ERR2-PTNUMMES
+           MOVE    "æ‚£è€…ï¼©ï¼¤:"     TO  ERR2-PTIDMES
+           MOVE    "æ‚£è€…æ°å:"     TO  ERR2-NAMEMES
            MOVE    "ERR"           TO  ERR2-NAIYO
       *
            MOVE    SPA-PTNUM       TO  ERR2-PTNUM
@@ -2799,7 +2799,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥ê¥¹¥È½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒªã‚¹ãƒˆå‡ºåŠ›å‡¦ç†
       *****************************************************************
        290-ERRLST-OUT-SEC          SECTION.
       *
@@ -2816,7 +2816,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼½ÐÎÏ¡¡½é´ü½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›ã€€åˆæœŸå‡¦ç†
       *****************************************************************
        2910-ERRLST-INIT-SEC        SECTION.
       *
@@ -2841,7 +2841,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯½èÍý
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -2862,7 +2862,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2872,7 +2872,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    Ä¢É¼½ÐÎÏ¡¡½ªÎ»½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›ã€€çµ‚äº†å‡¦ç†
            CLOSE                       CSV-FILE
            CLOSE                       ERR-FILE
       *
@@ -2885,7 +2885,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿£Æ£Å£Ô£Ã£È½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -2901,7 +2901,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æÆÉ¤ß¹þ¤ß¡¡½èÍý
+      *    æ‚£è€…ç•ªå·èª­ã¿è¾¼ã¿ã€€å‡¦ç†
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -2933,13 +2933,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_ptnum"     TO  MCP-TABLE
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ´µ¼Ô£É£Ä¤¬Â¸ºß¤¹¤ë»þ¡¢¥¨¥é¡¼
+      *    æ‚£è€…ï¼©ï¼¤ãŒå­˜åœ¨ã™ã‚‹æ™‚ã€ã‚¨ãƒ©ãƒ¼
            IF      FLG-PTNUM       =   ZERO
                MOVE    1               TO  FLG-PTNUM-ERR
                DISPLAY "*(ORCVTPTINF)* PTID  ERR [" SPA-PTID  "]"
                MOVE    1               TO  FLG-CSV
            ELSE
-      *        ´µ¼ÔÈÖ¹æÂ¸ºß¥Á¥§¥Ã¥¯
+      *        æ‚£è€…ç•ªå·å­˜åœ¨ãƒã‚§ãƒƒã‚¯
                MOVE    ZERO            TO  FLG-PTNUM
                MOVE    SPACE           TO  PTNUM-REC
                INITIALIZE                  PTNUM-REC
@@ -2966,7 +2966,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "tbl_ptnum"     TO  MCP-TABLE
                MOVE    "key4"          TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-      *        ´µ¼ÔÈÖ¹æ¤¬Â¸ºß¤¹¤ë»þ¡¢¥¨¥é¡¼
+      *        æ‚£è€…ç•ªå·ãŒå­˜åœ¨ã™ã‚‹æ™‚ã€ã‚¨ãƒ©ãƒ¼
                IF      FLG-PTNUM       =   ZERO
                    MOVE    2               TO  FLG-PTNUM-ERR
                    DISPLAY "*(ORCVTPTINF)* PTNUM ERR [" SPA-PTNUM "]"
@@ -2979,7 +2979,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¾ðÊóÆÉ¤ß¹þ¤ß¡¡½èÍý
+      *    æ‚£è€…æƒ…å ±èª­ã¿è¾¼ã¿ã€€å‡¦ç†
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -3013,7 +3013,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô£Ã£Ó£Ö¥Õ¥¡¥¤¥ë¸¡º÷½èÍý
+      *    æ‚£è€…ï¼£ï¼³ï¼¶ãƒ•ã‚¡ã‚¤ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-CSV-KENSAKU-SEC         SECTION.
       *
@@ -3033,7 +3033,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ëÆÉ¤ß¹þ¤ß½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -3050,7 +3050,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PARA-READ-EXT.
           EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3063,7 +3063,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -3078,7 +3078,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -3092,7 +3092,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -3114,7 +3114,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *    ï¼¤ï¼¢ã€€ï¼£ï¼¯ï¼­ï¼­ï¼©ï¼´å‡¦ç†
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -3136,7 +3136,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

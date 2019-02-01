@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,57 +16,57 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      �쥻�ץȵ������Υޥ�����     COPY (CPRECEKISAI.INC) *
+      *      レセプト記載要領マスター     COPY (CPRECEKISAI.INC) *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  RKISAI-REC.
            03  RKISAI-KEY.
-      *        ����
+      *        項番
                05  RKISAI-ITEMNO               PIC 9(04).
-      *        ����
+      *        枝番
                05  RKISAI-EDANO                PIC 9(02).
-      *        ����ǯ��
+      *        開始年月
                05  RKISAI-STYM                 PIC X(06).
-      *        ��λǯ��
+      *        終了年月
                05  RKISAI-EDYM                 PIC X(06).
-      *        ���Ź԰٥�����
+      *        診療行為コード
                05  RKISAI-SRYCD                PIC X(09).
-      *        Ϣ��
+      *        連番
                05  RKISAI-RENNUM               PIC 9(02).
-      *    �����ȥ�����
+      *    コメントコード
            03  RKISAI-C-CD                     PIC X(09).
-      *    ���Ԥξ��֥�����
+      *    患者の状態コード
            03  RKISAI-JYOTAICD                 PIC X(03).
-      *    �Ǻܰ��ֶ�ʬ
+      *    掲載位置区分
            03  RKISAI-KEISAIKBN                PIC 9(01).
-      *    ��ʬ
+      *    区分
            03  RKISAI-KUBUN                    PIC X(64).
-      *    ����ʬ
+      *    条件区分
            03  RKISAI-JYOKEN                   PIC 9(02).
-      *    ������ͳ������
+      *    非算定理由コメント
            03  RKISAI-HISANTEI                 PIC 9(01).
-      *    ������ʬ
+      *    処理区分
       *      0:
-      *      1:���ϡ�������
-      *      2:���ϡʼ�ưȯ����
-      *      3:�쥻�ץȡʼ�ư���ܡ�
+      *      1:入力（選択肢）
+      *      2:入力（自動発生）
+      *      3:レセプト（自動記載）
            03  RKISAI-SYORIKBN                 PIC 9(01).
-      *    ���Ź԰�̾����
+      *    診療行為名称等
            03  RKISAI-MEISYOETC                PIC X(300).
-      *    �ѹ�ǯ����
+      *    変更年月日
            03  RKISAI-CHGYMD                   PIC X(08).
-      *    �ѻ�ǯ����
+      *    廃止年月日
            03  RKISAI-HAISIYMD                 PIC X(08).
-      *    ����ǯ����
+      *    作成年月日
            03  RKISAI-CREYMD                   PIC X(08).
-      *    ����ǯ����
+      *    更新年月日
            03  RKISAI-UPYMD                    PIC X(08).
-      *    ��������
+      *    更新時間
            03  RKISAI-UPHMS                    PIC X(06).
-      *������
+      *更新用
            03  RKISAI-UP-KEY.
                05  RKISAI-UPITEMNO             PIC 9(04).
                05  RKISAI-UPEDANO              PIC 9(02).

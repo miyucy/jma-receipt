@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,64 +18,64 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBM550.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ɽ�����������
-      *  ����ݡ��ͥ��̾  : ����饤������(���ա��������ǡ���������)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  08/09/01    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 総括表・公費請求書
+      *  コンポーネント名  : オンライン請求(受付、請求確定データ取り込み)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  08/09/01    NACL-竹田     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.04.01    NACL-ƣ��    09/12/10  �����б�
-      *  04.04.02    NACL-ƣ��    10/12/10  ����ե��������¸�ѥե�����̾
-      *                                     ���ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    09/12/10  返戻対応
+      *  04.04.02    NACL-藤原    10/12/10  返戻ファイルの保存用ファイル名
+      *                                     の変更
       *
-      *  04.06.01    NACL-ƣ��    10/12/20  �ݸ��Ԥ���������б�
-      *  04.06.02    NACL-ƣ��    11/02/14  OpenCOBOL 1.0.0 �б�
-      *  04.06.03    NACL-ƣ��    12/06/19  �����߻��Υ쥳����Ĺ�ѹ�
-      *  04.06.03    NACL-ƣ��    12/08/10  �����߻��ξ���ѹ�
-      *  04.06.04    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
-      *  04.07.02    NACL-ƣ��    13/10/07  ϫ�ҥ쥻���б�
-      *  04.07.03    NACL-ƣ��    14/02/12  �ǡ������̤������Ǥ��������
-      *                                     ������褦�ˤ���
-      *  04.07.04    NACL-ƣ��    15/05/12  �����ֹ椫��ɣĤ������Ǥ��ʤ�
-      *                                     �Ȥ��Υ��顼����
+      *  04.06.01    NACL-藤原    10/12/20  保険者からの返戻対応
+      *  04.06.02    NACL-藤原    11/02/14  OpenCOBOL 1.0.0 対応
+      *  04.06.03    NACL-藤原    12/06/19  取り込み時のレコード長変更
+      *  04.06.03    NACL-藤原    12/08/10  取り込み時の条件変更
+      *  04.06.04    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
+      *  04.07.02    NACL-藤原    13/10/07  労災レセ電対応
+      *  04.07.03    NACL-藤原    14/02/12  データ識別が数字であれば全て
+      *                                     取り込むようにする
+      *  04.07.04    NACL-藤原    15/05/12  患者番号からＩＤが取得できない
+      *                                     ときのエラー処理
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    16/01/15  ϫ�ҥ쥻�Ť��������ؤ�
-      *                                     ����������
-      *  04.08.03    NACL-ƣ��    16/08/08  �ҳ�����ʬ�������оݤȸ����оݡ�
-      *                                     �쥻�ץȤ�ʬ���б�
-      *  04.08.04    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
-      *  04.08.05    NACL-ƣ��    18/03/28  ʿ������ǯ��������б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    16/01/15  労災レセ電の請求情報への
+      *                                     更新日設定
+      *  04.08.03    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
+      *  04.08.04    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
+      *  04.08.05    NACL-藤原    18/03/28  平成３０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    �����ߥǡ����ե�����
+      *    取り込みデータファイル
            SELECT  PARA-FILE       ASSIGN  ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  CSVERR-FILE     ASSIGN  CSVERR
                                    FILE    STATUS  IS  STS-CSVERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �����ߥǡ����ե�����
+      *    取り込みデータファイル
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-DATA           PIC X(3000).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  CSVERR-FILE.
        01  CSVERR-REC              PIC X(200). 
       *
@@ -86,7 +86,7 @@
       *
        01  LNK-TIMEOFDAY       PIC X(100).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
@@ -115,16 +115,16 @@
                05  FLG-NODATA          PIC 9(01).
            03  FLG-PTID-ERR            PIC 9(01).
       *
-      *    ������
+      *    カウンタ
        01  CNT-AREA.
            03  READ-CNT                PIC 9(05).
            03  INS-K-CNT               PIC 9(05).
            03  INS-B-CNT               PIC 9(05).
-      *    �ãӣֹ��ܿ�
+      *    ＣＳＶ項目数
            03  SPLIT-CNT               PIC 9(03).
            03  SPLIT-CNT1              PIC 9(03).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(05).
            03  IDY                     PIC 9(05).
@@ -139,11 +139,11 @@
            03  IDX2                    PIC 9(05).
            03  IDX3                    PIC 9(05).
       *
-      *    �����ߥե�����̾
+      *    取り込みファイル名
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //ASS-PARA//.
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -228,7 +228,7 @@
            03  CK-AMOUNT-FLG           PIC 9(1).
            03  HIT-K                   PIC 9(3).
       *
-      *    �����ֹ湽�����������������ΰ�
+      *    患者番号構成管理情報退避用領域
        01  TBL-SYS1009-T.
            03  TBL-SYS1009-OCC         OCCURS  10.
                05  TBL-SYS1009         PIC X(610).
@@ -271,15 +271,15 @@
            03  WRK-CONS-HENREI-B-MAX   PIC 9(05)   VALUE   50000.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK1001.INC".
       *
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -296,38 +296,38 @@
            COPY    "CPHENREI-BODY.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �������Ѵ�����
+      *    コード変換サブ
            COPY    "CPORCSJISTOEUC.INC".
       *
            COPY    "CPORCSZENHANCNV.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
@@ -342,7 +342,7 @@
                                    USING   COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -355,7 +355,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -425,15 +425,15 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBM550"      TO  JOB-PGID
-           MOVE    "����饤������ʥǡ��������ߡ�"
+           MOVE    "オンライン請求（データ取り込み）"
                                    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    �����ֹ湽�����������Խ�
+      *    患者番号構成管理情報編集
            INITIALIZE                      TBL-SYS1009-T
       *
            INITIALIZE                      SYS-1009-REC
@@ -466,7 +466,7 @@
            PERFORM 900-CLOSE-SEC
       *
            IF      TBL-SYS1009-MAX     =   ZERO
-               MOVE    "�����ֹ湽���������󤬼����Ǥ��ޤ���Ǥ�����"
+               MOVE    "患者番号構成管理情報が取得できませんでした。"
                                          TO  WRK-CSVERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -476,7 +476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -513,7 +513,7 @@
                OPEN    INPUT               PARA-FILE
                IF      STS-PARA        NOT =   ZERO
                    CALL "coblog" USING   "file open err " WRK-FILE-TMP
-                   STRING  "�ե����륪���ץ󥨥顼 FILE="
+                   STRING  "ファイルオープンエラー FILE="
                                                    DELIMITED  BY  SIZE
                        WRK-FILE-TMP                DELIMITED  BY  SPACE
                        " STS="                     DELIMITED  BY  SIZE
@@ -528,17 +528,17 @@
                    WHEN    "RIhasp"
                    WHEN    "RIuasp"
                    WHEN    "RIfixf"
-      *                �ǡ��������߽���
+      *                データ取り込み処理
                        PERFORM 2001-PARA-HENSYU-SEC
                END-EVALUATE
                EVALUATE    WRK-FILE-TMP(5:8)
                    WHEN    "RECEIPTC"
-      *                �ǡ��������߽���������ե������
+      *                データ取り込み処理（返戻ファイル）
                        PERFORM 2002-PARA-HENSYU-SEC
                END-EVALUATE
                EVALUATE    WRK-FILE-TMP(5:6)
                    WHEN    "RRECEC"
-      *                �ǡ��������߽�����ϫ������ե������
+      *                データ取り込み処理（労災返戻ファイル）
                        PERFORM 2003-PARA-HENSYU-SEC
                END-EVALUATE
            END-PERFORM
@@ -549,17 +549,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ��������߽���
+      *    データ取り込み処理
       *****************************************************************
        2001-PARA-HENSYU-SEC             SECTION.
       *
-      *    �����ߥǡ����ե������ɤ߹��߽���
+      *    取り込みデータファイル読み込み処理
            PERFORM 900-PARA-READ-SEC
       *
            PERFORM             UNTIL   FLG-PARA    =   1
                                OR      FLG-END     =   1
       *
-      *        ʸ���������Ѵ�
+      *        文字コード変換
                MOVE    PARA-DATA           TO  SJISTOEUC-INDATA
                INITIALIZE                      SJISTOEUC-OUTDATA
                MOVE    10000               TO  SJISTOEUC-INLEN
@@ -571,38 +571,38 @@
                EVALUATE    WRK-FILE-TMP (1:6)
                    WHEN    "RIhasp"
                    WHEN    "RIuasp"
-      *                ����
+      *                受付
                        EVALUATE    WRK-PARA-REC (1:2)
-                           WHEN    "��" 
-                           WHEN    "��" 
-      *                        Ģɼ̾������̾
+                           WHEN    "受" 
+                           WHEN    "項" 
+      *                        帳票名、項目名
                                CONTINUE
-                           WHEN    "ʿ" 
-      *                        �إå�
+                           WHEN    "平" 
+      *                        ヘッダ
                                ADD     1               TO  IDZZ
                                MOVE    9               TO  SPLIT-CNT
                                MOVE    10              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                                MOVE  ZERO              TO  IDZZ
                            WHEN  OTHER
-      *                        ����
+      *                        明細
                                ADD     1               TO  IDZZ
                                MOVE    22              TO  SPLIT-CNT
                                MOVE    23              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                        END-EVALUATE
                    WHEN    "RIfixf"
-      *                �����ǧ
+      *                請求確認
                        EVALUATE    WRK-PARA-REC (1:1)
                            WHEN    "1" 
-      *                        �إå�
+      *                        ヘッダ
                                ADD     1               TO  IDZZ
                                MOVE    10              TO  SPLIT-CNT
                                MOVE    11              TO  SPLIT-CNT1
                                PERFORM 20011-PARA-SPLIT-SEC
                                MOVE  ZERO              TO  IDZZ
                            WHEN    "2" 
-      *                        ����
+      *                        明細
                                ADD     1               TO  IDZZ
                                MOVE    31              TO  SPLIT-CNT
                                MOVE    32              TO  SPLIT-CNT1
@@ -610,14 +610,14 @@
                        END-EVALUATE
                END-EVALUATE
       *
-      *        �����ߥǡ����ե������ɤ߹��߽���
+      *        取り込みデータファイル読み込み処理
                PERFORM 900-PARA-READ-SEC
            END-PERFORM
       *
            CLOSE   PARA-FILE
       *
            IF      FLG-END             =   ZERO
-      *        �ģ¹�������
+      *        ＤＢ更新処理
                PERFORM 20011-DB-UPDATE-SEC
            END-IF
       *
@@ -628,7 +628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ��������߽���������ե������
+      *    データ取り込み処理（返戻ファイル）
       *****************************************************************
        2002-PARA-HENSYU-SEC             SECTION.
       *
@@ -641,13 +641,13 @@
       *
            MOVE    WRK-PARA-HOSPCD (IDXX)  TO  WRK-HENREI-K-HOSPCD
       *
-      *    �����ߥǡ����ե������ɤ߹��߽���
+      *    取り込みデータファイル読み込み処理
            PERFORM 900-PARA-READ-SEC
       *
            PERFORM             UNTIL   FLG-PARA    =   1
                                OR      FLG-END     =   1
       *
-      *        ʸ���������Ѵ�
+      *        文字コード変換
                MOVE  PARA-DATA             TO  SJISTOEUC-INDATA
                INITIALIZE                      SJISTOEUC-OUTDATA
                MOVE    10000               TO  SJISTOEUC-INLEN
@@ -680,7 +680,7 @@
                        PERFORM 20011-PARA-SPLIT-SEC
                    WHEN    "RE"            ALSO     ANY
                        IF      IDZZ            >   ZERO
-      *                    �ģ¹�������������ե������
+      *                    ＤＢ更新処理（返戻ファイル）
                            PERFORM 20021-DB-UPDATE-SEC
       *                    MOVE    ZERO        TO  IDZZ
                            INITIALIZE              TABLE-AREA
@@ -714,7 +714,7 @@
                        PERFORM 20011-PARA-SPLIT-SEC
                    WHEN    OTHER
       *??              IF      WRK-FILE-TMP(5:12)  =   "RECEIPTC.SAH"
-      *                    �ǡ������̤������ΤȤ���������֥��å��Ȥ��Ƽ�����
+      *                    データ識別が数字のとき履歴管理ブロックとして取り込み
                            UNSTRING    WRK-PARA-REC (1:10)
                                                    DELIMITED  BY  ","
                                                    INTO    WRK-SIKIBETU
@@ -750,7 +750,7 @@
       *??              END-IF
                END-EVALUATE
       *
-      *        �����ߥǡ����ե������ɤ߹��߽���
+      *        取り込みデータファイル読み込み処理
                PERFORM 900-PARA-READ-SEC
            END-PERFORM
       *
@@ -761,7 +761,7 @@
            END-IF
       *
            IF      IDZZ            >   ZERO
-      *        �ģ¹�������������ե������
+      *        ＤＢ更新処理（返戻ファイル）
                PERFORM 20021-DB-UPDATE-SEC
            END-IF
       *
@@ -774,7 +774,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ��������߽�����ϫ�ҡ�����ե������
+      *    データ取り込み処理（労災・返戻ファイル）
       *****************************************************************
        2003-PARA-HENSYU-SEC             SECTION.
       *??
@@ -790,13 +790,13 @@
       *
            MOVE    ZERO            TO  IDZZ
       *
-      *    �����ߥǡ����ե������ɤ߹��߽���
+      *    取り込みデータファイル読み込み処理
            PERFORM 900-PARA-READ-SEC
       *
            PERFORM             UNTIL   FLG-PARA    =   1
                                OR      FLG-END     =   1
       *
-      *        ʸ���������Ѵ�
+      *        文字コード変換
                MOVE  PARA-DATA             TO  SJISTOEUC-INDATA
                INITIALIZE                      SJISTOEUC-OUTDATA
                MOVE    10000               TO  SJISTOEUC-INLEN
@@ -827,7 +827,7 @@
                                            ALSO    WRK-FILE-TMP(5:12) 
                        WHEN    "RE"            ALSO     ANY
                            IF      IDZZ            >   ZERO
-      *                        �ģ¹���������ϫ�ҡ�����ե������
+      *                        ＤＢ更新処理（労災・返戻ファイル）
                                PERFORM 20031-DB-UPDATE-SEC
       *                        MOVE    ZERO        TO  IDZZ
                                INITIALIZE              TABLE-AREA
@@ -851,7 +851,7 @@
                    END-EVALUATE
                END-IF
       *
-      *        �����ߥǡ����ե������ɤ߹��߽���
+      *        取り込みデータファイル読み込み処理
                PERFORM 900-PARA-READ-SEC
            END-PERFORM
       *
@@ -862,7 +862,7 @@
            END-IF
       *
            IF      IDZZ            >   ZERO
-      *        �ģ¹���������ϫ�ҡ�����ե������
+      *        ＤＢ更新処理（労災・返戻ファイル）
                PERFORM 20031-DB-UPDATE-SEC
            END-IF
       *
@@ -875,7 +875,7 @@
            EXIT.
       *
      *****************************************************************
-      *    �ǡ��������ʬΥ����
+      *    データカンマ分離処理
       *****************************************************************
        20011-PARA-SPLIT-SEC          SECTION.
       *
@@ -884,8 +884,8 @@
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ���ԣãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ�ޤ�
+      *    患者ＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   SPLIT-CNT)
                    OR      ( WRK-PO-ED     >=  3000 )
@@ -901,12 +901,12 @@
                    MOVE    WRK-PO-ST       TO  WRK-PO-ED
                ELSE
                    ADD     1               TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 200111-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 200112-KOUMOKU-KYOTU-SEC
-      *        �����̽���
+      *        項目別処理
                IF      FLG-DATAEND     =   ZERO
                    PERFORM 200113-KOUMOKU-BETU-SEC
                END-IF
@@ -916,7 +916,7 @@
        20011-PARA-SPLIT-EXT.
            EXIT.
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        200111-CHAR-END-GET-SEC        SECTION.
       *
@@ -925,7 +925,7 @@
            PERFORM VARYING   IDYY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDYY           >=  3000 )
                    OR      ( FLG-COMMA     =   1    )
-      *        ����ޤΰ���
+      *        カンマの位置
                IF    ( WRK-PARA-X (IDYY)     =   "," )  OR
                      ((IDX             =   SPLIT-CNT  OR  
                                            SPLIT-CNT1) AND
@@ -933,12 +933,12 @@
                    MOVE    IDYY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
                ELSE
-      *            ����ޤ�­��ʤ����ν�λ���ַ���
+      *            カンマが足りない場合の終了位置決定
                    IF      WRK-PARA-X (IDYY) NOT =   SPACE
                        MOVE    IDYY         TO  WRK-PO-ED
                    END-IF
                END-IF
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF      WRK-PARA-X (IDYY)         =   """"
                    IF      FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
@@ -953,15 +953,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽���
+      *    項目共通処理
       *****************************************************************
        200112-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -972,16 +972,16 @@
                    GO  TO  200112-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
                    GO  TO  200112-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                COMPUTE WRK-MO-ST       =   WRK-PO-ST   +   1
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-MO-CNT  =   WRK-PO-ED
@@ -991,7 +991,7 @@
                                        -   WRK-PO-ST
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT      =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
@@ -1011,7 +1011,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����̽���
+      *    項目別処理
       *****************************************************************
        200113-KOUMOKU-BETU-SEC        SECTION.
       *
@@ -1036,19 +1036,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ���չ����̽���
+      *    受付項目別処理
       *****************************************************************
        2001131-HASP-KOUMOKU-BETU-SEC     SECTION.
       *
            EVALUATE    WRK-PARA-REC(1:2)
-      *        Ģɼ̾������̾
-               WHEN    "��" 
-               WHEN    "��" 
+      *        帳票名、項目名
+               WHEN    "受" 
+               WHEN    "項" 
                    CONTINUE
-      *        �إå�
-               WHEN    "ʿ" 
+      *        ヘッダ
+               WHEN    "平" 
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ��������ǯ��
+      *                １：診療年月
                        WHEN    1
                            MOVE     SPA-HOSPNUM
                                                TO  TBL-B-HOSPNUM (IDZZ)
@@ -1077,7 +1077,7 @@
                                                        TBL-B-SRYYM(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ��顼 DATA="
+                               STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1087,7 +1087,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ��������ǯ����
+      *                ２：送信年月日
                        WHEN    2
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1104,7 +1104,7 @@
                                                        WRK-UKEYMD
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ�������顼 DATA="
+                               STRING  "送信年月日エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1114,7 +1114,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ���� �������
+      *                ９： 送信回数
                        WHEN    9
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1132,7 +1132,7 @@
                                                        TBL-B-UCNT (IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����������顼 DATA="
+                               STRING  "送信回数エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1143,12 +1143,12 @@
                                PERFORM 500-COBABORT-SEC
                            END-IF
                    END-EVALUATE        
-      *        ����
+      *        明細
                WHEN    OTHER
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ���� �쥻�ץ��ֹ�
+      *                ２： レセプト番号
                        WHEN    2
-      *                    ���顼ʬ���
+      *                    エラー分件数
                            ADD  1              TO  NOPATIENT-CNT
       *
                            MOVE    SPA-HOSPNUM TO  TBL-B-HOSPNUM(IDZZ)
@@ -1179,7 +1179,7 @@
                                                                (IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "�쥻�ץ��ֹ楨�顼 DATA="
+                               STRING  "レセプト番号エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1189,7 +1189,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ���� �����ֹ�
+      *                ３： 患者番号
                        WHEN    3
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1204,7 +1204,7 @@
                                                    TO  TBL-B-PTNUM(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "�����ֹ楨�顼 DATA="
+                               STRING  "患者番号エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1214,7 +1214,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ���� ����ǯ��
+      *                ６： 診療年月
                        WHEN    6
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1230,7 +1230,7 @@
                                                    WRK-PTID-SRYYM
                                MOVE    TBL-B-PTNUM(IDZZ)
                                                TO  WRK-PTNUM 
-      *                        ����ǯ���PTID���Խ� 
+      *                        診療年月からPTIDを編集 
                                PERFORM 500-PTID-HENSYU-SEC
                                IF      SPTNUM-RC   =   00
                                    MOVE    SPTNUM-PTID TO
@@ -1240,7 +1240,7 @@
                                END-IF
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ��顼 DATA="
+                               STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1250,17 +1250,17 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ���� ������ʬ
+      *                ７： 入外区分
                        WHEN    7
                            EVALUATE    WRK-PARA-REC
                                            (WRK-MO-ST:WRK-MO-CNT)
-                               WHEN    "������"
+                               WHEN    "入院外"
                                    MOVE    "2" TO  TBL-B-NYUGAIKBN(IDZZ)
-                               WHEN    "������"
+                               WHEN    "入　院"
                                    MOVE    "1" TO  TBL-B-NYUGAIKBN(IDZZ)
                                WHEN    OTHER
                                    MOVE    SPACE       TO  WRK-CSVERR
-                                   STRING  "������ʬ���顼 DATA="
+                                   STRING  "入外区分エラー DATA="
                                                    DELIMITED  BY  SIZE
                                            WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1270,11 +1270,11 @@
                                    PERFORM 500-ERR-HENSYU-SEC
                                    PERFORM 500-COBABORT-SEC
                            END-EVALUATE
-      *                ���� ���Ի�̾
+      *                ８： 患者氏名
                        WHEN    8
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  TBL-B-NAME (IDZZ)
-      *                ������ǯ����
+      *                ９：生年月日
                        WHEN    9
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1289,7 +1289,7 @@
                                                TO  TBL-B-BIRTHDAY(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "��ǯ�������顼 DATA="
+                               STRING  "生年月日エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1299,7 +1299,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ������ ���顼������
+      *                １０： エラーコード
                        WHEN    10
                            INITIALIZE          ORCSZENHANCNVAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1316,7 +1316,7 @@
                                                TBL-B-U-ERR-CODE(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "���顼�����ɥ��顼 DATA="
+                               STRING  "エラーコードエラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1326,53 +1326,53 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ���������顼��å�������
+      *                １１：エラーメッセージ１
                        WHEN    11
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-MSG-1(IDZZ)
                            END-IF
-      *                ���������顼��å�������
+      *                １２：エラーメッセージ２
                        WHEN    12
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-MSG-2(IDZZ)
                            END-IF
-      *                ������ ���ż���
+      *                １３： 診療識別
                        WHEN    13
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-SRYKBN(IDZZ)
                            END-IF
-      *                ������ ���顼����
+      *                １４： エラー事項
                        WHEN    14
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-ERR-INFO(IDZZ)
                            END-IF
-      *                �������������
+      *                １７：請求情報
                        WHEN    17
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-SEIKYU-INFO (IDZZ)
                            END-IF
-      *                ���������������
+      *                １８：返戻再請求
                        WHEN    18
                            IF      WRK-MO-CNT  >   ZERO
                                IF      WRK-PARA-REC 
                                                (WRK-MO-ST:WRK-MO-CNT)
-                                                       =   "��"
+                                                       =   "１"
                                    MOVE    "1"         TO
                                                TBL-B-U-HENREI-FLG (IDZZ)
                                END-IF
                            END-IF
-      *                ������ͽ����
+      *                １９：予備１
                        WHEN    19
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                            TO  TBL-B-U-YOBI1     (IDZZ)
                            END-IF
-      *                ������ͽ����
+      *                ２０：予備２
                        WHEN    20
                            IF      WRK-MO-CNT  >   ZERO
                                MOVE WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1386,15 +1386,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������̽���
+      *    請求確定項目別処理
       *****************************************************************
        2001132-FIXF-KOUMOKU-BETU-SEC     SECTION.
       *
            EVALUATE    WRK-PARA-REC(1:1)
-      *        �إå�
+      *        ヘッダ
                WHEN    "1" 
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ���� ����ǯ������� -> ����ǯ��
+      *                ２： 請求年月の前月 -> 診療年月
                        WHEN    2
                            MOVE    SPA-HOSPNUM TO  TBL-B-HOSPNUM(IDZZ)
                            MOVE    WRK-PARA-HOSPCD (IDXX)
@@ -1423,7 +1423,7 @@
                                                        TBL-B-SRYYM(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ��顼 DATA="
+                               STRING  "請求年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1447,7 +1447,7 @@
                                                            (IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "������ʧ���إ����ɥ��顼 DATA="
+                               STRING  "審査支払機関コードエラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1475,7 +1475,7 @@
                                                         UKE-CNT
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����������顼 DATA="
+                               STRING  "送信回数エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1501,7 +1501,7 @@
                                                        SEI-CNT
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "������������顼 DATA="
+                               STRING  "請求確定回数エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1512,7 +1512,7 @@
                                PERFORM 500-COBABORT-SEC
                            END-IF
                    END-EVALUATE
-      *        �Ŀ;���
+      *        個人情報
                WHEN     "2" 
                    EVALUATE    WRK-KOUMOKU-NO
                        WHEN    2
@@ -1546,7 +1546,7 @@
                                                                  (IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "�쥻�ץ��ֹ楨�顼 DATA="
+                               STRING  "レセプト番号エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1578,7 +1578,7 @@
                                                TO  TBL-B-SRYYM-B(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ��顼 DATA="
+                               STRING  "診療年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                               (WRK-MO-ST:WRK-MO-CNT)
@@ -1605,7 +1605,7 @@
                                                TO  TBL-B-BIRTHDAY(IDZZ)
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "��ǯ�������顼 DATA="
+                               STRING  "生年月日エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                               (WRK-MO-ST:WRK-MO-CNT)
@@ -1807,7 +1807,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ե���������̽���
+      *    返戻ファイル項目別処理
       *****************************************************************
        2001133-RECEIPTC-KOUMOKU-BETU-SEC     SECTION.
       *??
@@ -1826,7 +1826,7 @@
            EVALUATE    WRK-PARA-REC(1:2)
                WHEN    "HI"
                    EVALUATE    WRK-KOUMOKU-NO
-      *                ������ʧ���إ�����
+      *                審査支払機関コード
                        WHEN    2
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    =   "1" OR  "2"
@@ -1836,7 +1836,7 @@
                                                WRK-HENREI-K-TEISYUTUSAKI
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "������ʧ���إ����ɥ��顼 DATA="
+                               STRING  "審査支払機関コードエラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1846,7 +1846,7 @@
                                PERFORM 500-ERR-HENSYU-SEC
                                PERFORM 500-COBABORT-SEC
                            END-IF
-      *                ����ǯ��
+      *                請求年月
                        WHEN    3
                            INITIALIZE                      ORCSGDAYAREA
                            MOVE    "1"                 TO  SGDAY-INTYPE
@@ -1859,7 +1859,7 @@
                                                    WRK-HENREI-K-SYORIYM
                            ELSE
                                MOVE    SPACE       TO  WRK-CSVERR
-                               STRING  "����ǯ��顼 DATA="
+                               STRING  "請求年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                        WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -1881,7 +1881,7 @@
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
       *
                            MOVE    1               TO  FLG-SIKIBETU-HR
-      *                ����ǯ��
+      *                処理年月
                        WHEN    2
                            INITIALIZE                      ORCSGDAYAREA
                            MOVE    "1"                 TO  SGDAY-INTYPE
@@ -1895,7 +1895,7 @@
                                MOVE    "W01"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �����ʬ
+      *                返戻区分
                        WHEN    3
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    =   "1" OR  "2" OR
@@ -1908,7 +1908,7 @@
                                MOVE    "W02"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
-      *                �����ͳ������
+      *                返戻事由コード
                        WHEN    5
                            INITIALIZE                  ORCSKANACHKAREA
                            MOVE    "1"             TO  KANACHK-SYORI
@@ -1928,7 +1928,7 @@
                                MOVE    "W03"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
-      *                ������ͳ
+      *                返戻理由
                        WHEN    6
                            INITIALIZE                  ORCSKANACHKAREA
                            MOVE    "1"             TO  KANACHK-SYORI
@@ -1948,7 +1948,7 @@
                                MOVE    "W04"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF    
-      *                ������Ϣ����ǯ��
+      *                増減点連絡書年月
                        WHEN    9
                            IF      WRK-MO-CNT      >   ZERO
                                INITIALIZE                  ORCSGDAYAREA
@@ -1966,7 +1966,7 @@
                                    PERFORM 500-ERRCD-HENSYU-SEC
                                END-IF
                            END-IF
-      *                �����ֹ�
+      *                検索番号
                        WHEN    10
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                NUMERIC
@@ -1978,7 +1978,7 @@
                                MOVE    "E01"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                ʣ���쥻�ץȸ����ֹ�
+      *                複数レセプト検索番号
                        WHEN    11
                            IF      WRK-MO-CNT      >   ZERO
                                IF      WRK-PARA-REC
@@ -2000,7 +2000,7 @@
                                        TBL-HENREI-B-HENREI-INFO1 (IDZZ)
                            MOVE    WRK-PARA-REC    TO
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
-      *                �����
+      *                総件数
                        WHEN    2
                            INITIALIZE          ORCSNUMAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2017,7 +2017,7 @@
                                MOVE    "W08"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                ���������
+      *                総合計点数
                        WHEN    3
                            INITIALIZE          ORCSNUMAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2034,7 +2034,7 @@
                                MOVE    "W09"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �ޥ���ܥ�塼�༱�̾���
+      *                マルチボリューム識別情報
                        WHEN    4
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                NOT =   "99"
@@ -2054,7 +2054,7 @@
                                        TBL-HENREI-B-HENREI-INFO1 (IDZZ)
                            MOVE    WRK-PARA-REC    TO
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
-      *                �쥻�ץ��ֹ�
+      *                レセプト番号
                        WHEN    2
                            INITIALIZE          ORCSNUMAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2083,7 +2083,7 @@
                                MOVE    "W40"           TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �쥻�ץȼ���
+      *                レセプト種別
                        WHEN    3
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO
@@ -2094,7 +2094,7 @@
                            ELSE
                                MOVE    "1" TO  WRK-HENREI-B-NYUGAIKBN
                            END-IF
-      *                ����ǯ��
+      *                診療年月
                        WHEN    4
                            INITIALIZE                      ORCSGDAYAREA
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2110,7 +2110,7 @@
                                MOVE    "W41"   TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                ��̾
+      *                氏名
                        WHEN    5
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-NAME
@@ -2130,7 +2130,7 @@
                                MOVE    "W42"   TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �õ�����ʣ�����������
+      *                特記事項（０７、０８）
                        WHEN    12
                            PERFORM VARYING IDX1    FROM    1   BY  2
                                    UNTIL   IDX1    >       WRK-MO-CNT
@@ -2168,7 +2168,7 @@
                                MOVE    "W43"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �������ʺҳ���ʬ��
+      *                請求情報（災害区分）
                        WHEN    21
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-SEIKYU-DATA-R
@@ -2251,13 +2251,13 @@
                                                             (IDZZ)
                WHEN    OTHER
                    IF      WRK-RIREKIKANRI-FLG =   1
-      *              ��������֥��å�
+      *              履歴管理ブロック
                      EVALUATE    WRK-KOUMOKU-NO
-      *                  �ǡ�������
+      *                  データ識別
                          WHEN    1
                              MOVE    1   TO  TBL-HENREI-B-SELECT-FLG
                                                             (IDZZ)
-      *                  ���ֹ�
+      *                  行番号
                          WHEN    2
                              INITIALIZE          ORCSNUMAREA
                              MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2273,7 +2273,7 @@
                                  MOVE    "W20"       TO  WRK-ERRCD
                                  PERFORM 500-ERRCD-HENSYU-SEC
                              END-IF
-      *                  ���ֹ�
+      *                  枝番号
                          WHEN    3
                              INITIALIZE          ORCSNUMAREA
                              MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2289,7 +2289,7 @@
                                  MOVE    "W21"       TO  WRK-ERRCD
                                  PERFORM 500-ERRCD-HENSYU-SEC
                              END-IF
-      *                  �쥳���ɼ��̾���
+      *                  レコード識別情報
                          WHEN    4
                              MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                  TO  WRK-RECORD-SIKIBETU
@@ -2305,11 +2305,11 @@
                              MOVE    WRK-PARA-REC (WRK-MO-ST:)
                                            TO  TBL-HENREI-B-HENREI-INFO2
                                                             (IDZZ)
-      *                  ��������ǡ���
+      *                  履歴請求データ
                          WHEN    5
                              IF      WRK-RECORD-SIKIBETU
                                                =   "RC"
-      *                          ��������ʥ����å��ǡ�����
+      *                          管理情報（チェックデータ）
                                  INITIALIZE              ORCSKANACHKAREA
                                  MOVE    "1"         TO  KANACHK-SYORI
                                  MOVE
@@ -2350,7 +2350,7 @@
       *
       *
       *****************************************************************
-      *    ϫ�ҡ�����ե���������̽���
+      *    労災・返戻ファイル項目別処理
       *****************************************************************
        2001134-RRECEC-KOUMOKU-BETU-SEC     SECTION.
       *
@@ -2391,7 +2391,7 @@
                                        TBL-HENREI-B-HENREI-INFO1 (IDZZ)
                            MOVE    WRK-PARA-REC    TO
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
-      *                ��̾
+      *                氏名
                        WHEN    5
                            MOVE  WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-NAME
@@ -2411,7 +2411,7 @@
                                MOVE    "W42"   TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �����ֹ�
+      *                患者番号
                        WHEN    14
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                TO  WRK-HENREI-B-PTNUM
@@ -2423,7 +2423,7 @@
                                MOVE    "W43"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �Ż����������ֹ�
+      *                電算処理受付番号
                        WHEN    19
                            IF      WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                NUMERIC
@@ -2435,12 +2435,12 @@
                                MOVE    "E01"       TO  WRK-ERRCD
                                PERFORM 500-ERRCD-HENSYU-SEC
                            END-IF
-      *                �������
+      *                請求情報
                        WHEN    21
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    TO  WRK-SEIKYU-DATA
                            IF      PATIENT-CNT     =   1
-      *                        ����ǯ��
+      *                        請求年月
                                INITIALIZE              ORCSGDAYAREA
                                MOVE    "1"             TO  SGDAY-INTYPE
                                MOVE
@@ -2452,7 +2452,7 @@
                                                    WRK-HENREI-K-SYORIYM
                                ELSE
                                    MOVE    SPACE       TO  WRK-CSVERR
-                                   STRING  "����ǯ��顼 DATA="
+                                   STRING  "請求年月エラー DATA="
                                                    DELIMITED  BY  SIZE
                                            WRK-PARA-REC
                                                (WRK-MO-ST:WRK-MO-CNT)
@@ -2463,7 +2463,7 @@
                                    PERFORM 500-COBABORT-SEC
                                END-IF
                            END-IF
-      *                    ����ǯ��
+      *                    診療年月
                            INITIALIZE              ORCSGDAYAREA
                            MOVE    WRK-SEIKYU-SRYYM
                                                    TO  SGDAY-INDAY
@@ -2488,11 +2488,11 @@
                                        TBL-HENREI-B-HENREI-INFO1 (IDZZ)
                            MOVE    WRK-PARA-REC    TO
                                        TBL-HENREI-B-HENREI-INFO2 (IDZZ)
-      *                ��̳�ҳ����̶кҳ��ζ�ʬ
+      *                業務災害・通勤災害の区分
                        WHEN    3
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    TO  WRK-SAIGAIKBN
-      *                Ģɼ����
+      *                帳票種別
                        WHEN    4
                            MOVE    WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
                                                    TO  WRK-CHOHYOKBN
@@ -2528,7 +2528,7 @@
                                    MOVE    "7092"  TO
                                                WRK-HENREI-B-RECESYUBETU
                            END-EVALUATE
-      *                ǯ��ڽ��ֹ�
+      *                年金証書番号
                        WHEN    5
                            IF      WRK-MO-CNT      >   ZERO
                                IF   WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2538,7 +2538,7 @@
                                                    TO  WRK-HENREI-B-KIGO
                                END-IF
                            END-IF
-      *                ϫƯ�ݸ��ֹ�
+      *                労働保険番号
                        WHEN    6
                            IF      WRK-MO-CNT      >   ZERO
                                IF   WRK-PARA-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -2578,16 +2578,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹�������
+      *    ＤＢ更新処理
       *****************************************************************
        20011-DB-UPDATE-SEC           SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �����ե������ɤ߹��ߡʿ���ǯ�������
+      *    管理ファイル読み込み（診療年月、提出先）
            MOVE    ZERO            TO  FLG-MATCH
            MOVE    ZERO            TO  TBL-ONRECE-K-MAX
       *
@@ -2598,7 +2598,7 @@
            PERFORM 900-ONRECE-KANRIANRI-SELECT-SEC
       *
            PERFORM             UNTIL   FLG-ONRECE-K    =   1
-      *        �����ΰ��ŵ��إ����ɤΤȤ������о�
+      *        該当の医療機関コードのときだけ対象
                IF      ONRECE-K-HOSPCD =   SPACE
                    MOVE    ONRECE-K-HOSPNUM    TO  ONRECE-B-HOSPNUM
                    MOVE    ONRECE-K-TEISYUTUSAKI
@@ -2664,13 +2664,13 @@
       *??
            DISPLAY "TBL-ONRECE-K-MAX=" TBL-ONRECE-K-MAX "#"
       *??
-      *    �����ǡ����ʤ��ΤȤ�
+      *    管理データなしのとき
            IF      TBL-ONRECE-K-MAX       =   ZERO
-      *        �ģ��ɲý��� 
+      *        ＤＢ追加処理 
                PERFORM  200111-DB-INSERT-SEC
            ELSE
       *
-      *        �����å�����
+      *        チェック処理
                PERFORM VARYING   IDX   FROM    1   BY  1
                        UNTIL   ( IDX           >   TBL-ONRECE-K-MAX )
                        OR      ( FLG-MATCH     =   1                )
@@ -2681,17 +2681,17 @@
       *??
       *
                IF      FLG-MATCH           =  ZERO
-      *            �ģ��ɲý��� 
+      *            ＤＢ追加処理 
                    PERFORM 200111-DB-INSERT-SEC
                END-IF
                IF      FLG-MATCH           =  1
                    EVALUATE    WRK-FILE-TMP (1:6)
                        WHEN    "RIhasp"
                        WHEN    "RIuasp"
-      *                    ���չ�������
+      *                    受付更新処理
                            PERFORM 200114-HASP-MOD-SEC
                        WHEN    "RIfixf"
-      *                    ������깹������
+      *                    請求確定更新処理
                            PERFORM 200115-FIXF-MOD-SEC
                    END-EVALUATE
                END-IF
@@ -2702,14 +2702,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲý��� 
+      *    ＤＢ追加処理 
       *****************************************************************
        200111-DB-INSERT-SEC         SECTION.
       *
-      *    �����ǡ��������������
+      *    管理データ項目設定処理
            PERFORM 200112-ONRECE-K-SET-SEC
       *
-      *    ����ǯ����������
+      *    処理年月日の設定
            EVALUATE    WRK-FILE-TMP (1:6)
                WHEN    "RIhasp"
                WHEN    "RIuasp"
@@ -2739,7 +2739,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ǡ��������������
+      *    管理データ項目設定処理
       *****************************************************************
        200112-ONRECE-K-SET-SEC        SECTION.
       *
@@ -2765,7 +2765,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ǡ��������å�����
+      *    管理データチェック処理
       *****************************************************************
        200113-ONRECE-K-CHK-SEC         SECTION.
       *
@@ -2833,7 +2833,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٥ǡ��������å�����
+      *    明細データチェック処理
       *****************************************************************
        2001131-HASP-CHK-SEC    SECTION.
       *
@@ -2896,11 +2896,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���չ�������
+      *    受付更新処理
       *****************************************************************
        200114-HASP-MOD-SEC         SECTION.
       *
-      *    �����쥳���ɹ���
+      *    管理レコード更新
            MOVE    TBL-ONRECE-K-REC (HIT-K)
                                        TO  ONRECE-K-REC
            MOVE    UKE-CNT             TO  ONRECE-K-UCNT
@@ -2911,7 +2911,7 @@
            MOVE    TBL-K-SCNT (HIT-K)  TO  ONRECE-K-SCNT-V
            PERFORM 900-ONRECE-KANRI-UPDATE-SEC
       *
-      *    ���٥쥳���ɹ����ʥ��顼ʬ��
+      *    明細レコード更新（エラー分）
            PERFORM VARYING   IDZZ  FROM    1   BY  1
                    UNTIL     IDZZ          >   WRK-CONS-ONRECE-B-MAX
                    OR        TBL-B-HOSPNUM(IDZZ)
@@ -2993,7 +2993,7 @@
                END-IF
            END-PERFORM
       *
-      *    ���٥쥳���ɹ���
+      *    明細レコード更新
            MOVE    TBL-ONRECE-B-REC (1)
                                        TO  ONRECE-B-REC
            MOVE    UKE-CNT             TO  ONRECE-B-UCNT
@@ -3010,11 +3010,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������깹������
+      *    請求確定更新処理
       *****************************************************************
        200115-FIXF-MOD-SEC         SECTION.
       *
-      *    �����쥳���ɹ���
+      *    管理レコード更新
            MOVE   TBL-ONRECE-K-REC (HIT-K)
                                        TO  ONRECE-K-REC
            MOVE   SEI-CNT              TO  ONRECE-K-SCNT
@@ -3135,16 +3135,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹�������������ե������
+      *    ＤＢ更新処理（返戻ファイル）
       *****************************************************************
        20021-DB-UPDATE-SEC           SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �������٥ե����빹��
+      *    返戻明細ファイル更新
       *
            IF      FLG-SIKIBETU-HR     =   ZERO
                MOVE    "E10"               TO  TBL-HENREI-B-ERRCD(1)
@@ -3201,7 +3201,7 @@
       *
                    MOVE    SPACE               TO  WRK-CSVERR
                    MOVE    MCP-RC              TO  WRK-MCP-RC
-                   STRING  "�������٣ģ¹������顼 MCP-RC="
+                   STRING  "返戻明細ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3211,7 +3211,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��������ե����빹��
+      *    返戻管理ファイル更新
            IF      FLG-PARA            =   1
                DISPLAY "HENREI-K-TEISYUTUSAKI ="
                                            WRK-HENREI-K-TEISYUTUSAKI
@@ -3239,7 +3239,7 @@
       *
                    MOVE    SPACE               TO  WRK-CSVERR
                    MOVE    MCP-RC              TO  WRK-MCP-RC
-                   STRING  "��������ģ¹������顼 MCP-RC="
+                   STRING  "返戻管理ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3254,16 +3254,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���������ϫ�ҡ�����ե������
+      *    ＤＢ更新処理（労災・返戻ファイル）
       *****************************************************************
        20031-DB-UPDATE-SEC           SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �������٥ե����빹��
+      *    返戻明細ファイル更新
       *
            DISPLAY "HENREI-B-SRYYM=" WRK-HENREI-B-SRYYM
                    " NYUGAIKBN="     WRK-HENREI-B-NYUGAIKBN
@@ -3307,7 +3307,7 @@
       *
                    MOVE    SPACE               TO  WRK-CSVERR
                    MOVE    MCP-RC              TO  WRK-MCP-RC
-                   STRING  "�������٣ģ¹������顼 MCP-RC="
+                   STRING  "返戻明細ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3317,7 +3317,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��������ե����빹��
+      *    返戻管理ファイル更新
            IF      FLG-PARA            =   1
                DISPLAY "HENREI-K-TEISYUTUSAKI ="
                                            WRK-HENREI-K-TEISYUTUSAKI
@@ -3345,7 +3345,7 @@
       *
                    MOVE    SPACE               TO  WRK-CSVERR
                    MOVE    MCP-RC              TO  WRK-MCP-RC
-                   STRING  "��������ģ¹������顼 MCP-RC="
+                   STRING  "返戻管理ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3359,7 +3359,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����������
+      *    データ削除処理
       *****************************************************************
        2009-DB-DELETE-SEC                  SECTION.
       *
@@ -3379,7 +3379,7 @@
            PERFORM 900-ORCDBMAIN-SEC
       *
            MOVE    SPACE                   TO  WRK-CSVERR
-           MOVE    "���Ƥδ��Ծ���μ����˼��Ԥ��ޤ���"
+           MOVE    "全ての患者情報の取得に失敗しました"
                                            TO    WRK-CSVERR
            PERFORM 500-ERR-HENSYU-SEC
            PERFORM 500-COBABORT-SEC
@@ -3388,7 +3388,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -3402,7 +3402,7 @@
                WRITE   CSVERR-REC
                CLOSE   CSVERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-CSVERR      TO  JOB-YOBI
@@ -3418,7 +3418,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -3435,11 +3435,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ湽�������������
+      *    患者番号構成情報取得処理
       *****************************************************************
        500-PTID-HENSYU-SEC            SECTION.
       *
-      *    �����ֹ湽���������
+      *    患者番号構成情報取得
            MOVE    ZERO               TO  FLG-SET
       *
            PERFORM VARYING IDZ     FROM    1   BY  1
@@ -3454,7 +3454,7 @@
            END-PERFORM
            IF     FLG-SET              =   ZERO
                INITIALIZE                  SYS-1009-REC
-               CALL "coblog" USING "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+               CALL "coblog" USING "患者番号構成情報が取得できません"
            END-IF
       *
            MOVE    SYS-1009-PTNUMKSIKBN
@@ -3485,7 +3485,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�������Խ�����
+      *    エラーコード編集処理
       *****************************************************************
        500-ERRCD-HENSYU-SEC            SECTION.
       *
@@ -3498,11 +3498,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -3515,7 +3515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ߥǡ����ե������ɤ߹��߽���
+      *    取り込みデータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -3528,7 +3528,7 @@
                    IF      STS-PARA        NOT =   ZERO
                        CALL "coblog" USING   "file read err "
                                                    WRK-FILE-TMP
-                       STRING  "�ե������ɤ߹��ߥ��顼 FILE="
+                       STRING  "ファイル読み込みエラー FILE="
                                                    DELIMITED  BY  SIZE
                            WRK-FILE-TMP            DELIMITED  BY  SPACE
                            " STS="                 DELIMITED  BY  SIZE
@@ -3548,7 +3548,7 @@
           EXIT.
       *
       *****************************************************************
-      *    �����ե�����ӣţ̣ţãԽ���
+      *    管理ファイルＳＥＬＥＣＴ処理
       *****************************************************************
        900-ONRECE-KANRIANRI-SELECT-SEC     SECTION.
       *
@@ -3567,7 +3567,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����FETCH����
+      *    管理ファイルFETCH処理
       *****************************************************************
        900-ONRECE-KANRI-FETCH-SEC      SECTION.
       *
@@ -3586,7 +3586,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����UPDATE����
+      *    管理ファイルUPDATE処理
       *****************************************************************
        900-ONRECE-KANRI-UPDATE-SEC     SECTION.
       *??
@@ -3608,7 +3608,7 @@
       *
                MOVE    SPACE               TO  WRK-CSVERR
                MOVE    MCP-RC              TO  WRK-MCP-RC
-               STRING  "�����ģ¹������顼 MCP-RC="
+               STRING  "管理ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3621,7 +3621,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����INSERT����
+      *    管理ファイルINSERT処理
       *****************************************************************
        900-ONRECE-KANRI-INSERT-SEC     SECTION.
       *??
@@ -3644,7 +3644,7 @@
       *
                MOVE    SPACE               TO  WRK-CSVERR
                MOVE    MCP-RC              TO  WRK-MCP-RC
-               STRING  "�����ģ¹������顼 MCP-RC="
+               STRING  "管理ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3657,7 +3657,7 @@
            EXIT.
       *
       *****************************************************************
-      *    BODY�ե�����SELECT������
+      *    BODYファイルSELECT　処理
       *****************************************************************
        900-ONRECE-B-SELECT-SEC     SECTION.
       *
@@ -3676,7 +3676,7 @@
            EXIT.
       *
       *****************************************************************
-      *    BODY�ե�����FETCH����
+      *    BODYファイルFETCH処理
       *****************************************************************
        900-ONRECE-B-FETCH-SEC      SECTION.
       *
@@ -3695,7 +3695,7 @@
            EXIT.
       *
       *****************************************************************
-      *    BODY�ե�����INSERT������
+      *    BODYファイルINSERT　処理
       *****************************************************************
        900-ONRECE-B-INSERT-SEC     SECTION.
       *??
@@ -3717,7 +3717,7 @@
       *
                MOVE    SPACE               TO  WRK-CSVERR
                MOVE    MCP-RC              TO  WRK-MCP-RC
-               STRING  "���٣ģ¹������顼 MCP-RC="
+               STRING  "明細ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3730,7 +3730,7 @@
            EXIT.
       *
       *****************************************************************
-      *    BODY�ե�����UPDATE������
+      *    BODYファイルUPDATE　処理
       *****************************************************************
        900-ONRECE-B-UPDATE-SEC     SECTION.
       *
@@ -3753,7 +3753,7 @@
       *
                MOVE    SPACE               TO  WRK-CSVERR
                MOVE    MCP-RC              TO  WRK-MCP-RC
-               STRING  "���٣ģ¹������顼 MCP-RC="
+               STRING  "明細ＤＢ更新エラー MCP-RC="
                                                DELIMITED  BY  SIZE
                            WRK-MCP-RC          DELIMITED  BY  SIZE
                                                INTO    WRK-CSVERR
@@ -3766,7 +3766,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����ạ̃ϣӣŽ���
+      *    管理ファイルＣＬＯＳＥ処理
       *****************************************************************
        900-ONRECE-KANRI-CLOSE-SEC      SECTION.
       *
@@ -3778,7 +3778,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٥ե�����ạ̃ϣӣŽ���
+      *    明細ファイルＣＬＯＳＥ処理
       *****************************************************************
        900-ONRECE-B-CLOSE-SEC      SECTION.
       *
@@ -3790,7 +3790,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    管理マスター読込
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -3814,7 +3814,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ңţ���
+      *    システム管理マスタＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3829,7 +3829,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -3846,7 +3846,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -3865,7 +3865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -3877,7 +3877,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -3889,7 +3889,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -3902,7 +3902,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -3920,7 +3920,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

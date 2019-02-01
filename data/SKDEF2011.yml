@@ -1,35 +1,35 @@
 kanri_cd    : "2011"
-name        : "レセ排淡规戎规惰磊り矢机肋年攫鼠"
+name        : "銉偦闆昏鍙风暘鍙峰尯鍒囥倞鏂囧瓧瑷畾鎯呭牨"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "KIGO-DELIMITER-FLG"
-  item_jp   : "惰磊り矢机肋年フラグ∈淡规∷"
+  item_jp   : "鍖哄垏銈婃枃瀛楄ō瀹氥儠銉┿偘锛堣鍙凤級"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "KIGO-DELIMITER-HKNJANUM-FLG"
-  item_jp   : "惰磊り矢机肋年滦据瘦副荚フラグ∈淡规∷"
+  item_jp   : "鍖哄垏銈婃枃瀛楄ō瀹氬璞′繚闄鸿�呫儠銉┿偘锛堣鍙凤級"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "NUM-DELIMITER-FLG"
-  item_jp   : "惰磊り矢机肋年フラグ∈戎规∷"
+  item_jp   : "鍖哄垏銈婃枃瀛楄ō瀹氥儠銉┿偘锛堢暘鍙凤級"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "NUM-DELIMITER-HKNJANUM-FLG"
-  item_jp   : "惰磊り矢机肋年滦据瘦副荚フラグ∈戎规∷"
+  item_jp   : "鍖哄垏銈婃枃瀛楄ō瀹氬璞′繚闄鸿�呫儠銉┿偘锛堢暘鍙凤級"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "徒洒"
+  item_jp   : "浜堝倷"
   type      : "X"
   start     : 5
   length    : 496

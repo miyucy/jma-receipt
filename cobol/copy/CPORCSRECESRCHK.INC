@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,44 +15,44 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ************************************************************
-      * ¥ª¥ó¥é¥¤¥ó¿ÇÎÅÎÁÅù¤Ë´Ø¤ï¤ë´ÉÍýÎÁ¡¦»ØÆ³ÎÁ¤Î»»ÄêÍúÎò¥Á¥§¥Ã¥¯
-      * ¡Ê¥ì¥»¥×¥ÈÍÑ¡Ë
+      * ã‚ªãƒ³ãƒ©ã‚¤ãƒ³è¨ºç™‚æ–™ç­‰ã«é–¢ã‚ã‚‹ç®¡ç†æ–™ãƒ»æŒ‡å°Žæ–™ã®ç®—å®šå±¥æ­´ãƒã‚§ãƒƒã‚¯
+      * ï¼ˆãƒ¬ã‚»ãƒ—ãƒˆç”¨ï¼‰
       * COPY  (CPORCSRECESRCHK.INC)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSRECESRCHKAREA.
-      *ÆþÎÏÃÍ
-      *    ´µ¼Ô£É£Ä
+      *å…¥åŠ›å€¤
+      *    æ‚£è€…ï¼©ï¼¤
            03  LNK-RECESRCHK-PTID          PIC 9(10).
-      *    ½èÍýÇ¯·î
+      *    å‡¦ç†å¹´æœˆ
            03  LNK-RECESRCHK-SRYYM         PIC X(06).
-      *    ¥Á¥§¥Ã¥¯¶èÊ¬
+      *    ãƒã‚§ãƒƒã‚¯åŒºåˆ†
            03  LNK-RECESRCHK-CHKKBN        PIC X(01).
-      *    ¥Á¥§¥Ã¥¯ÈÖ¹æ
+      *    ãƒã‚§ãƒƒã‚¯ç•ªå·
            03  LNK-RECESRCHK-CHKNO         PIC 9(02).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-RECESRCHK-HENKYAKU-AREA.
-      *»»ÄêÍúÎò¾ðÊó
-      *  Ä¾¶á»»ÄêÇ¯·î
+      *ç®—å®šå±¥æ­´æƒ…å ±
+      *  ç›´è¿‘ç®—å®šå¹´æœˆ
                05  LNK-RECESRCHK-SANTEIYM  PIC X(06).
-      *  »»Äê¿ÇÎÅ¥³¡¼¥É
+      *  ç®—å®šè¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  LNK-RECESRCHK-SRYCD     PIC X(09).
-      *  ½é²ó»»ÄêÆü
+      *  åˆå›žç®—å®šæ—¥
                05  LNK-RECESRCHK-FSANTEIYMD
                                            PIC X(08).
-      *  Åö·î½é²ó»»ÄêÆü
+      *  å½“æœˆåˆå›žç®—å®šæ—¥
                05  LNK-RECESRCHK-MSANTEID  PIC X(02).
-      *  ³ºÅö¥³¥á¥ó¥È¥³¡¼¥É
+      *  è©²å½“ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰
                05  LNK-RECESRCHK-COMCD     PIC X(09).
       *
-      *Éüµ¢¥³¡¼¥É £±¡§Ì¤ÀßÄê¥¨¥é¡¼
-      *           £²¡§½èÍýÇ¯·î¥¨¥é¡¼
-      *           £³¡§´µ¼Ô£É£Ä¥¨¥é¡¼
-      *           £´¡§¥Á¥§¥Ã¥¯¶èÊ¬¥¨¥é¡¼
-      *           £µ¡§¥Á¥§¥Ã¥¯ÈÖ¹æ¥¨¥é¡¼
-      *           £¹¡§»»ÄêÍúÎò¾ðÊóÊÔ½¸¤Ê¤·
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ ï¼‘ï¼šæœªè¨­å®šã‚¨ãƒ©ãƒ¼
+      *           ï¼’ï¼šå‡¦ç†å¹´æœˆã‚¨ãƒ©ãƒ¼
+      *           ï¼“ï¼šæ‚£è€…ï¼©ï¼¤ã‚¨ãƒ©ãƒ¼
+      *           ï¼”ï¼šãƒã‚§ãƒƒã‚¯åŒºåˆ†ã‚¨ãƒ©ãƒ¼
+      *           ï¼•ï¼šãƒã‚§ãƒƒã‚¯ç•ªå·ã‚¨ãƒ©ãƒ¼
+      *           ï¼™ï¼šç®—å®šå±¥æ­´æƒ…å ±ç·¨é›†ãªã—
            03  LNK-RECESRCHK-RC            PIC S9(9) BINARY.
       *

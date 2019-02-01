@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * фЭ╟Еи╦╫Ю╔Л╔╩╔в╔х╔╫╔у╔х║йJMA standard receipt software║к
+      * Ф≈╔Е▄╩Ф╗≥Ф╨√Ц┐╛Ц┌╩Ц┐≈Ц┐┬Ц┌╫Ц┐∙Ц┐┬О╪┬JMA standard receipt softwareО╪┴
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHXLST.
       *****************************************************************
-      *  ╔╥╔╧╔ф╔Юл╬        : ёоёрёцёа
-      *  ╔╣╔ж╔╥╔╧╔ф╔Юл╬    : ╔а╔╖╔╞╔ч╔╧╔©
-      *  ╔Ё╔С╔щ║╪╔м╔С╔хл╬  : ╔а╔╖╔╞╔ч╔╧╔©╟ЛмВи╫╟У╨Ч
-      *  ╢имЩ╪т            : 
-      *  ╨Ню╝фЭиу    ╨Н╤х╪т        ╣╜╫р
-      *  02/04/26    MCC║щб©║╧г╪   ©╥╣╛╨Ню╝
+      *  Ц┌╥Ц┌╧Ц┐├Ц┐═Е░█        : О╪╞О╪╡О╪ёО╪║
+      *  Ц┌╣Ц┐√Ц┌╥Ц┌╧Ц┐├Ц┐═Е░█    : Ц┐│Ц┌╖Ц┌╞Ц┐·Ц┌╧Ц┌©
+      *  Ц┌ЁЦ┐ЁЦ┐²Ц┐╪Ц┐█Ц┐ЁЦ┐┬Е░█  : Ц┐│Ц┌╖Ц┌╞Ц┐·Ц┌╧Ц┌©Д╦─Х╕╖Х║╗Е█╟Е┬╥
+      *  Г╝║Г░├Х─┘            : 
+      *  Д╫°Ф┬░Ф≈╔Д╩≤    Д╫°Ф╔╜Х─┘        Х╗≤Х©╟
+      *  02/04/26    MCCБ┬▓Е╓ Ц─┘Г╢█   Ф√╟Х╕▐Д╫°Ф┬░
       *****************************************************************
-      *  ╔в╔М╔╟╔И╔Ю╫╓ю╣мЗнР
-      * Maj/Min/Rev  ╫╓ю╣╪т       фЭиу      фБмф
-      *  01.00.01    NACL-бюед    04/03/01  ╟ЛЁГ╟У╨Чбп╠Ч
-      *  01.00.02    NACL-бюед    05/02/04  ╔у╔╘║╪╔Юйя╧╧
-      *  03.05.00    NACL-б©║╧г╪  07/05/08  ╔╟╔К║╪╔в©гнебп╠Ч
-      *  04.08.01    NACL-©╧оф    16/12/14  ёцёсёж╫пнобп╠Ч
+      *  Ц┐≈Ц┐╜Ц┌╟Ц┐╘Ц┐═Д©╝Ф╜ёЕ╠╔Ф╜╢
+      * Maj/Min/Rev  Д©╝Ф╜ёХ─┘       Ф≈╔Д╩≤      Е├┘Е╝╧
+      *  01.00.01    NACL-Е╓╙Г■╟    04/03/01  Д╦─Ф▀╛Е█╟Е┬╥Е╞╬Е©°
+      *  01.00.02    NACL-Е╓╙Г■╟    05/02/04  Ц┐∙Ц┌╘Ц┐╪Ц┐═Е╓┴Ф⌡╢
+      *  03.05.00    NACL-Е╓ Ц─┘Г╢█  07/05/08  Ц┌╟Ц┐╚Ц┐╪Ц┐≈Х╗╨Г≥┌Е╞╬Е©°
+      *  04.08.01    NACL-Фё╝Х└┤    16/12/14  О╪ёО╪ЁО╪╤Е┤╨Е┼⌡Е╞╬Е©°
       *****************************************************************
       *
       *
@@ -39,27 +39,27 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡©гне╧т╟ы║к
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Х╗╨Г≥┌Х║▄Г┌╨О╪┴
            SELECT  B01L-FILE       ASSIGN      ASS01
                                    ORGANIZATION    LINE  SEQUENTIAL
                                    FILE    STATUS  IS    STS-ASS01.
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡ибл╬║к
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Г≈┘Е░█О╪┴
            SELECT  B01R-FILE       ASSIGN      ASS02
                                    ORGANIZATION    LINE  SEQUENTIAL
                                    FILE    STATUS  IS    STS-ASS02.
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡бп╬щ║к
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Е╞╬Х╠║О╪┴
            SELECT  B01T-FILE       ASSIGN      ASS03
                                    ORGANIZATION    LINE  SEQUENTIAL
                                    FILE    STATUS  IS    STS-ASS03.
       *
       *----(04.08.01)--ADD-START---
-      *    CHKCSV╔г║╪╔©
+      *    CHKCSVЦ┐┤Ц┐╪Ц┌©
            SELECT  CHKCSV-FILE     ASSIGN     CHKCSVPARA
                                    ORGANIZATION    LINE  SEQUENTIAL
                                    FILE    STATUS  IS  STS-CHKCSV.
       *----(04.08.01)--ADD-END-----
       *
-      *    ╟У╨Чмя╔г║╪╔©
+      *    Е█╟Е┬╥Г■╗Ц┐┤Ц┐╪Ц┌©
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
@@ -108,48 +108,48 @@
       *----(04.08.01)--ADD-START---
        FD  CHKCSV-FILE.
        01  CHKCSV-REC.
-      *    ©гне╔Ё║╪╔и║йлТ╨ч╔Ё║╪╔и║к
+      *    Х╗╨Г≥┌Ц┌ЁЦ┐╪Ц┐┴О╪┬Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴О╪┴
            03  CHKCSV-SRYCD            PIC X(09).
-      *    ©гне╧т╟ыл╬║йлТ╨чл╬║к
+      *    Х╗╨Г≥┌Х║▄Г┌╨Е░█О╪┬Х√╛Е┴╓Е░█О╪┴
            03  CHKCSV-NAME             PIC X(100).
-      *    ©гне╔Ё║╪╔и║йлТ╨ч╔Ё║╪╔и║к
+      *    Х╗╨Г≥┌Ц┌ЁЦ┐╪Ц┐┴О╪┬Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴О╪┴
            03  CHKCSV-SRYCD2           PIC X(09).
-      *    ©гне╧т╟ыл╬║йлТ╨чл╬║к
+      *    Х╗╨Г≥┌Х║▄Г┌╨Е░█О╪┬Х√╛Е┴╓Е░█О╪┴
            03  CHKCSV-NAME2            PIC X(100).
-      *    фЧЁ╟╤Хй╛
+      *    Е┘╔Е╓√Е▄╨Е┬├
            03  CHKCSV-NYUGAIKBN        PIC X(04).
-      *    фЧЁ╟йл╓к╔а╔╖╔ц╔╞
+      *    Е┘╔Е╓√Е┬╔Ц│╚Ц┐│Ц┌╖Ц┐┐Ц┌╞
            03  CHKCSV-NYUGAIBNDKBN     PIC X(06).
-      *    ╔╟╔К║╪╔в
+      *    Ц┌╟Ц┐╚Ц┐╪Ц┐≈
            03  CHKCSV-GRPID            PIC X(01).
-      *    фЭ/╥Н
+      *    Ф≈╔/Ф°┬
            03  CHKCSV-DMKBN            PIC X(02).
-      *    ╥ы╧П╔╗╔И║╪
+      *    Х╜╕Е▒┼Ц┌╗Ц┐╘Ц┐╪
            03  CHKCSV-KEIKOKU          PIC X(20).
-      *    ╔а╔╖╔ц╔╞╓╥╓й╓╓
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└
            03  CHKCSV-NASI             PIC X(20).
-      *    ╔ч╔╧╔©дС╤║й╛
+      *    Ц┐·Ц┌╧Ц┌©Ф▐░Д╬⌡Е┬├
            03  CHKCSV-DATAKBN          PIC X(20).
-      *    ибл╬╔Ё║╪╔и
+      *    Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴
            03  CHKCSV-KEY-CD-G.
                05  CHKCSV-KEY-CD-OCC       OCCURS  21.
                    07  CHKCSV-KEY-CD       PIC X(07).
                    07  CHKCSV-KEY-CDSEP    PIC X(01).
-      *    ибл╬
+      *    Г≈┘Е░█
            03  CHKCSV-BYOMEI           PIC X(100).
-      *    йДб╜╔Ё╔А╔С╔х
+      *    Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬
            03  CHKCSV-HOSOKU           PIC X(100).
-      *    ибл╬╟Лцв╬Р╥О
+      *    Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤
            03  CHKCSV-COMPKBNMEI       PIC X(08).
-      *    йДб╜╔Ё╔А╔С╔х╟Лцв╬Р╥О
+      *    Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬Д╦─Х┤╢Ф²║Д╩╤
            03  CHKCSV-H-COMPKBNMEI     PIC X(08).
-      *    ╣©╓╓ибл╬╓н╟╥╓╓
+      *    Г√▒Ц│└Г≈┘Е░█Ц│╝Ф┴╠Ц│└
            03  CHKCSV-UTAGAIKBNMEI     PIC X(18).
-      *    е╛мяибл╬╔ч╔╧╔©
+      *    И│╘Г■╗Г≈┘Е░█Ц┐·Ц┌╧Ц┌©
            03  CHKCSV-TEKIYO           PIC X(20).
       *----(04.08.01)--ADD-END-----
       *
-      *    ╟У╨Чмя╔г║╪╔©
+      *    Е█╟Е┬╥Г■╗Ц┐┤Ц┐╪Ц┌©
        FD  PRT-FILE.
            COPY    "HCM44.INC".
       *
@@ -169,16 +169,16 @@
                                        //TEIKI01// BY //CHKCSV//.
       *----(04.08.01)--ADD-END-----
       *
-      *     ╟У╨Чмя╔г║╪╔© л╬╬ннн╟Х 
+      *     Е█╟Е┬╥Г■╗Ц┐┤Ц┐╪Ц┌© Е░█Г╖╟И═≤Е÷÷ 
            COPY    "CPCOMMONPRT.INC".
            COPY    "CPASGNPARA.INC".
-      *    ╔╥╔╖╔Кмянн╟Х
+      *    Ц┌╥Ц┌╖Ц┐╚Г■╗И═≤Е÷÷
            COPY    "CPCOMMONSHELL.INC".
       *
-      *    ╔╥╔╖╔Кмянн╟Х
+      *    Ц┌╥Ц┌╖Ц┐╚Г■╗И═≤Е÷÷
            COPY    "CPSHELLTBL.INC".
       *
-      *    ╔╚╔╕╔С╔хнн╟Х
+      *    Ц┌╚Ц┌╕Ц┐ЁЦ┐┬И═≤Е÷÷
        01  CNT-AREA.
            03  CNT-OUT                 PIC 9(05).
            03  CNT-TEKCD               PIC 9(05).
@@ -190,7 +190,7 @@
            03  CNT-CHKCSV              PIC 9(10).
       *----(04.08.01)--ADD-END-----
       *
-      *    ╔у╔И╔╟нн╟Х
+      *    Ц┐∙Ц┐╘Ц┌╟И═≤Е÷÷
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-ASS01               PIC X(02).
@@ -200,7 +200,7 @@
            03  STS-CHKCSV              PIC X(02).
       *----(04.08.01)--ADD-END-----
       *
-      *    ╔у╔И╔╟нн╟Х
+      *    Ц┐∙Ц┐╘Ц┌╟И═≤Е÷÷
        01  FLG-AREA.
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
@@ -245,7 +245,7 @@
            03  FLG-CHKCSV              PIC 9(01).
       *----(04.08.01)--ADD-END-----
       *
-      *    е╨╩Знн╟Х
+      *    Ф╥╩Е╜≈И═≤Е÷÷
        01  IDX-AREA.
            03  IDX1                    PIC 9(05).
            03  IDX2                    PIC 9(05).
@@ -254,7 +254,7 @@
            03  IDX-CMB                 PIC 9(05).
            03  IDXY                    PIC 9(05).
       *
-      *    ╟Л╩Чнн╟Х
+      *    Д╦─Ф≥┌И═≤Е÷÷
        01  WRK-AREA.
            03  WRK-SYMD                PIC X(08).
            03  WRK-EDTYMD1             PIC X(09).
@@ -304,7 +304,7 @@
       *----(04.08.01)--ADD-START---
            03  WRK-CSV-TITLE           PIC X(40).
       *
-      *    ёцёсёж╔г║╪╔©йт╫╦мя
+      *    О╪ёО╪ЁО╪╤Ц┐┤Ц┐╪Ц┌©Г╥╗И⌡├Г■╗
            03  WRK-REC             PIC X(20000).
            03  WRK-REC-LENGTH      PIC 9(05).
            03  WRK-HENSYU-AREA.
@@ -315,7 +315,7 @@
                05  WRK-SYOSUU      PIC 9(01).
                05  WRK-RECEND      PIC 9(01).
       *
-      *    ╫пноюХ╔у╔║╔╓╔Кл╬
+      *    Е┤╨Е┼⌡Е┘┬Ц┐∙Ц┌║Ц┌╓Ц┐╚Е░█
        01  WRK-TO-DATA-G.
            03  WRK-TO-DATA.
                05  WRK-TO-DATA-HOSPNUM PIC 9(02).
@@ -330,13 +330,13 @@
            03  KEY-TEKCD               PIC X(200).
            03  KEY-ID                  PIC 9(09).
       *
-      *    ╟У╨ЧфБмф
+      *    Е█╟Е┬╥Е├┘Е╝╧
        01  HEAD-01.
            03  H01-MIDASI              PIC X(60).
-           03  FILLER                  PIC X(08)   VALUE   "╢П╫ЮфЭ║╖".
+           03  FILLER                  PIC X(08)   VALUE   "Е÷╨Ф╨√Ф≈╔О╪ ".
            03  H01-KJNYMD              PIC X(09).
            03  FILLER                  PIC X(46)   VALUE   SPACE.
-           03  FILLER                  PIC X(08)   VALUE   "╨Ню╝фЭ║╖".
+           03  FILLER                  PIC X(08)   VALUE   "Д╫°Ф┬░Ф≈╔О╪ ".
            03  H01-SAKYMD              PIC X(09).
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(04)   VALUE   "  P-".
@@ -406,26 +406,26 @@
            03  CONST-SETCD-MAX         PIC 9(05)   VALUE   100.
            03  CONST-TOTUGO-MES-MAX    PIC 9(05)   VALUE   4.
            03  CONST-TOTUGO-MES-VAL.
-               05  CONST-TOTUGO-BUBUN  PIC X(12)   VALUE "иТ║╖иТй╛╟Лцв".
-               05  CONST-TOTUGO-KANZEN PIC X(12)   VALUE "╢╟║╖╢╟а╢╟Лцв".
-               05  CONST-TOTUGO-ZENPO  PIC X(12)   VALUE "а╟║╖а╟йЩ╟Лцв".
-               05  CONST-TOTUGO-KOHO   PIC X(12)   VALUE "╦Е║╖╦ЕйЩ╟Лцв".
+               05  CONST-TOTUGO-BUBUN  PIC X(12)   VALUE "И┐╗О╪ И┐╗Е┬├Д╦─Х┤╢".
+               05  CONST-TOTUGO-KANZEN PIC X(12)   VALUE "Е╝▄О╪ Е╝▄Е┘╗Д╦─Х┤╢".
+               05  CONST-TOTUGO-ZENPO  PIC X(12)   VALUE "Е┴█О╪ Е┴█Ф√╧Д╦─Х┤╢".
+               05  CONST-TOTUGO-KOHO   PIC X(12)   VALUE "Е╬▄О╪ Е╬▄Ф√╧Д╦─Х┤╢".
            03  CONST-TOTUGO-MES-R      REDEFINES   CONST-TOTUGO-MES-VAL.
                05  CONST-TOTUGO-MES    PIC X(12)   OCCURS  4.
            03  CONST-CHKERR-MES-MAX    PIC 9(05)   VALUE   2.
            03  CONST-CHKERR-MES-VAL.
                05  CONST-CHKERR-KEIKOKU PIC X(20) 
-                                           VALUE "╥ы║╖╥ы╧П".
+                                           VALUE "Х╜╕О╪ Х╜╕Е▒┼".
                05  CONST-CHKERR-NASI   PIC X(20)
-                                           VALUE "л╣║╖╔а╔╖╔ц╔╞╓╥╓й╓╓".
+                                           VALUE "Г└║О╪ Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└".
            03  CONST-CHKERR-MES-R      REDEFINES   CONST-CHKERR-MES-VAL.
                05  CONST-CHKERR-MES    PIC X(20)   OCCURS  2.
            03  CONST-TEKCD-MAX         PIC 9(05)   VALUE   400.
       *
-      *    ибл╬╔╥╔╧╔ф╔Юм╫лС╔Ё║╪╔и╔ф║╪╔ж╔К
+      *    Г≈┘Е░█Ц┌╥Ц┌╧Ц┐├Ц┐═Д╨┬Г╢└Ц┌ЁЦ┐╪Ц┐┴Ц┐├Ц┐╪Ц┐√Ц┐╚
            COPY    "CMBYOMEICD.INC".
       *
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©║щё╣бЮхРнн╟Х
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Б┬▓О╪∙И──И│©И═≤Е÷÷
        01  WKCHK005-REC.
            COPY    "CPCHK005.INC"      REPLACING   //CHK005-//
                                        BY          //WKCHK005-//.
@@ -441,36 +441,36 @@
                                        BY          //TCHKSND-//.
       *
       *****************************************************************
-      *    ╔у╔║╔╓╔К╔Л╔╓╔╒╔╕╔х
+      *    Ц┐∙Ц┌║Ц┌╓Ц┐╚Ц┐╛Ц┌╓Ц┌╒Ц┌╕Ц┐┬
       *****************************************************************
       *
            COPY  "CPSYSKANRI.INC".
       *
            COPY  "CPSK1101.INC".
       *
-      *    ╫пноюХ╔в╔Й╔С╔©л╬ЁД╓ЙеЖ╓ф╬ПйС
+      *    Е┤╨Е┼⌡Е┘┬Ц┐≈Ц┐╙Ц┐ЁЦ┌©Е░█Е┴╡Ц┌┼Е╫⌠Ц│╕Ф┐┘Е═╠
            COPY  "CPSK1031.INC".
-      *    ею©Т╔ч╔╧╔©║щ
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Б┬▓
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ибл╬╔ч╔╧╔©║щ
+      *    Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Б┬▓
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©║щ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Б┬▓
        01  CHK-REC.
            COPY    "CPCHK.INC".
       *
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©║щё╡
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Б┬▓О╪▓
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
       *
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©║щёЁ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Б┬▓О╪⌠
        01  CHKTRD-REC.
            COPY    "CPCHKTRD.INC".
       *
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©║щё╣
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Б┬▓О╪∙
        01  CHK005-REC.
            COPY    "CPCHK005.INC".
       *
@@ -485,33 +485,33 @@
            COPY    "CPSRYCDCHG.INC".
       *
       *****************************************************************
-      *    ╔╣╔ж╔в╔Ммя║║нн╟Х
+      *    Ц┌╣Ц┐√Ц┐≈Ц┐╜Г■╗Ц──И═≤Е÷÷
       *****************************************************************
       *
-      *    ╔у╔║╔╓╔К╨О╫Э╔я╔И╔А╔©
+      *    Ц┐∙Ц┌║Ц┌╓Ц┐╚Е┴┼И≥╓Ц┐▒Ц┐╘Ц┐║Ц┌©
            COPY    "CPORCSFDEL.INC".
       *
-      *    ╟У╨Ч╔я╔И╔А╔©
+      *    Е█╟Е┬╥Ц┐▒Ц┐╘Ц┐║Ц┌©
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ╔╙╔С╔И╔╓╔Сд╒и╪л╬║╕╫пноюХ╔в╔Й╔С╔©л╬╪Хфю╔я╔И
+      *    Ц┌╙Ц┐ЁЦ┐╘Ц┌╓Ц┐ЁЕ╦ЁГ╔╗Е░█Ц┐╩Е┤╨Е┼⌡Е┘┬Ц┐≈Ц┐╙Ц┐ЁЦ┌©Е░█Е▐√Е╬≈Ц┐▒Ц┐╘
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ╟У╨Чёдёб╧╧©╥╔╣╔ж
+      *    Е█╟Е┬╥О╪╓О╪╒Ф⌡╢Ф√╟Ц┌╣Ц┐√
            COPY    "CPORCSPRT.INC".
       *
-      *    фЭиуйя╢╧╔╣╔ж
+      *    Ф≈╔Д╩≤Е╓┴Ф▐⌡Ц┌╣Ц┐√
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ╔ч╔╥╔СфЭиу╪Хфю╔╣╔ж
+      *    Ц┐·Ц┌╥Ц┐ЁФ≈╔Д╩≤Е▐√Е╬≈Ц┌╣Ц┐√
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ╟Л╩Ч╔у╔║╔╓╔Кл╬йт╫╦
+      *    Д╦─Ф≥┌Ц┐∙Ц┌║Ц┌╓Ц┐╚Е░█Г╥╗И⌡├
            COPY    "CPORCSGETTEMP.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    еЩ╥вёцёсёжю╘╦Ф╔╣╔ж
+      *    Г╣╠Х╗┬О╪ёО╪ЁО╪╤Е┬╤Е╬║Ц┌╣Ц┐√
            COPY    "CPORCSTOUKEICSV.INC".
       *----(04.08.01)--ADD-END-----
       *
@@ -526,14 +526,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    о╒мМ║║нн╟Х
+      *    И─ёГ╣║Ц──И═≤Е÷÷
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ╔╧╔янн╟Х
+      *    Ц┌╧Ц┐▒И═≤Е÷÷
            COPY    "COMMON-SPA".
       *
-      *    ╟ЛмВ╟У╨Чйя╢╧нн╟Х
+      *    Д╦─Х╕╖Е█╟Е┬╥Е╓┴Ф▐⌡И═≤Е÷÷
            COPY    "CPORCHXLST.INC".
       *
       *
@@ -543,7 +543,7 @@
            .
       *
       *****************************************************************
-      *    ╪Г║║║║╫ХмЩ
+      *    Д╦╩Ц──Ц──Е┤╕Г░├
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -581,7 +581,7 @@
            MOVE    C-UID           TO  CHKCSVPARA-TERMID
       *----(04.08.01)--ADD-END-----
       *
-      *    Ёфёдёбфи╧Ч
+      *    Е░└О╪╓О╪╒Х╙╜Х╬╪
            PERFORM 100-SYORI-SEC
            IF    ( HXLST-RCD       NOT =   ZERO )
                GO  TO  000-PROC-EXT
@@ -612,7 +612,7 @@
            MOVE    ZERO        TO  CNT-CHKCSV
       *----(04.08.01)--ADD-END-----
       *
-      *    лю╨ыйт╫╦╫ХмЩ
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├
            EVALUATE    HXLST-CHKKBN
            WHEN    "1"
            WHEN    "2"
@@ -648,7 +648,7 @@
                PERFORM 910-DBCLOSECURSOR-SEC
            END-EVALUATE
       *
-      *    ╟У╨Ч╫ХмЩ
+      *    Е█╟Е┬╥Е┤╕Г░├
            IF    ( IDX-LINE            >   CONST-MEISAI-ST )
                MOVE    ALL "-" TO  HCM44-MOJI (IDX-LINE)
                PERFORM 2100-HEAD-SEC
@@ -664,7 +664,7 @@
       *----(04.08.01)--ADD-START---
            CLOSE                       CHKCSV-FILE
       *
-      *    ёцёсёж╔у╔║╔╓╔К╓╛╓╒╓Л╓п╫ХмЩ
+      *    О╪ёО╪ЁО╪╤Ц┐∙Ц┌║Ц┌╓Ц┐╚Ц│▄Ц│┌Ц┌▄Ц│╟Е┤╕Г░├
            IF      CNT-CHKCSV      >   0
                PERFORM 430-CHKCSV-SYORI-SEC
            END-IF
@@ -684,11 +684,11 @@
            .
       *
       *****************************************************************
-      *    ╫И╢Эйт╫╦╫ХмЩ
+      *    Е┬²Ф°÷Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        100-SYORI-SEC                   SECTION.
       *
-      *    ╫пноюХ╔в╔Й╔С╔©л╬ЁД╓ЙеЖ╓ф╬ПйСйт╫╦
+      *    Е┤╨Е┼⌡Е┘┬Ц┐≈Ц┐╙Ц┐ЁЦ┌©Е░█Е┴╡Ц┌┼Е╫⌠Ц│╕Ф┐┘Е═╠Г╥╗И⌡├
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -749,13 +749,13 @@
                MOVE    -1          TO  HXLST-RCD
            END-EVALUATE
       *
-           MOVE    "║╓"               TO  WRK-DELIMITER
+           MOVE    "О╪▄"               TO  WRK-DELIMITER
       *
            .
        100-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ╫И╢Эйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©║к
+      *    Е┬²Ф°÷Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪┴
       *****************************************************************
        1001-CHKMST-SYOKI-SEC           SECTION.
       *
@@ -816,43 +816,43 @@
            EVALUATE    HXLST-CHKKBN
            WHEN    "3"
                MOVE
-               "║Ц║║лТ╨ч╓х╤ь╢В╟ЛмВи╫║║║Д"
+               "О╪°Ц──Х√╛Е┴╓Ц│╗Г╕│Е©▄Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "╤ь╢В╔Ё║╪╔и@"
+                   MOVE    "Г╕│Е©▄Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "4" 
                MOVE
-               "║Ц║║лТ╨ч╓хй╩мя╤ь╢В╟ЛмВи╫║║║Д"
+               "О╪°Ц──Х√╛Е┴╓Ц│╗Д╫╣Г■╗Г╕│Е©▄Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "  й╩мя╤ь╢ВлТ╨ч╔Ё║╪╔и@"
+                   MOVE    "  Д╫╣Г■╗Г╕│Е©▄Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "5"
                MOVE
-               "║Ц║║ф╠╟Л╥Н╓кй╩мя╩╩дЙ╓г╓╜╓й╓╓©гне╧т╟ы╟ЛмВи╫║║║Д"
+               "О╪°Ц──Е░▄Д╦─Ф°┬Ц│╚Д╫╣Г■╗Г╝≈Е╝ Ц│╖Ц│█Ц│╙Ц│└Х╗╨Г≥┌Х║▄Г┌╨Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "  е╛мя©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "  И│╘Г■╗Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "A"
                MOVE
-               "║Ц║║ф╠╟ЛфЭ╓кй╩мя╩╩дЙ╓г╓╜╓й╓╓©гне╧т╟ы╟ЛмВи╫║║║Д"
+               "О╪°Ц──Е░▄Д╦─Ф≈╔Ц│╚Д╫╣Г■╗Г╝≈Е╝ Ц│╖Ц│█Ц│╙Ц│└Х╗╨Г≥┌Х║▄Г┌╨Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "  е╛мя©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "  И│╘Г■╗Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "B"
                MOVE
-               "║Ц║║ф╠╟Л╡Я╥в╓кй╩мя╩╩дЙ╓г╓╜╓й╓╓©гне╧т╟ы╟ЛмВи╫║║║Д"
+               "О╪°Ц──Е░▄Д╦─Д╪ Х╗┬Ц│╚Д╫╣Г■╗Г╝≈Е╝ Ц│╖Ц│█Ц│╙Ц│└Х╗╨Г≥┌Х║▄Г┌╨Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "  е╛мя©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "  И│╘Г■╗Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -860,50 +860,50 @@
        1001-CHKMST-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    ╫И╢Эйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡║к
+      *    Е┬²Ф°÷Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓О╪┴
       *****************************************************************
        1001-CHKSND-SYOKI-SEC           SECTION.
       *
            EVALUATE    HXLST-CHKKBN
            WHEN    "1"
                MOVE
-               "║Ц║║лТ╨ч╓хибл╬╟ЛмВи╫║║║Д"
+               "О╪°Ц──Х√╛Е┴╓Ц│╗Г≈┘Е░█Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "  лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "  Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "    ибл╬╔Ё║╪╔и@"
+                   MOVE    "    Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "2"
                MOVE
-               "║Ц║║©гне╧т╟ы╓хибл╬╟ЛмВи╫║║║Д"
+               "О╪°Ц──Х╗╨Г≥┌Х║▄Г┌╨Ц│╗Г≈┘Е░█Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "  ©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "  Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "    ибл╬╔Ё║╪╔и@"
+                   MOVE    "    Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "6"
                MOVE
-               "║Ц║║еЙм©╤ь╢ВлТ╨ч╓хибл╬║║║Д"
+               "О╪°Ц──Ф┼∙Д╦▌Г╕│Е©▄Х√╛Е┴╓Ц│╗Г≈┘Е░█Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "  лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "  Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "    ибл╬╔Ё║╪╔и@"
+                   MOVE    "    Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "Y"
                MOVE
-               "║Ц║║е╛╠Чибл╬╟ЛмВи╫║йлТ╨ч║к║║║Д"
+               "О╪°Ц──И│╘Е©°Г≈┘Е░█Д╦─Х╕╖Х║╗О╪┬Х√╛Е┴╓О╪┴Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "  лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "  Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "    ибл╬@"
+                   MOVE    "    Г≈┘Е░█@"
                                        TO  WRK-MIDASI2
            WHEN    "Z"
                MOVE
-               "║Ц║║е╛╠Чибл╬╟ЛмВи╫║й©гне╧т╟ы║к║║║Д"
+               "О╪°Ц──И│╘Е©°Г≈┘Е░█Д╦─Х╕╖Х║╗О╪┬Х╗╨Г≥┌Х║▄Г┌╨О╪┴Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "  ©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "  Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "    ибл╬@"
+                   MOVE    "    Г≈┘Е░█@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -911,7 +911,7 @@
        1001-CHKSND-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    ╫И╢Эйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ёЁ║к
+      *    Е┬²Ф°÷Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪⌠О╪┴
       *****************************************************************
        1001-CHKTRD-SYOKI-SEC           SECTION.
       *
@@ -962,18 +962,18 @@
            PERFORM 900-CHKTRD-SEL-SEC
       *
            MOVE
-               "║Ц║║©гне╧т╟ы╓и╓╕╓╥╓н╩╩дЙоЁ╓Л╟ЛмВи╫║║║Д"
+               "О╪°Ц──Х╗╨Г≥┌Х║▄Г┌╨Ц│╘Ц│├Ц│≈Ц│╝Г╝≈Е╝ Ф╪▐Ц┌▄Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-           MOVE    "    ©гне╧т╟ы╔Ё║╪╔и║йлТ╨ч╔Ё║╪╔и║к@"
+           MOVE    "    Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴О╪┬Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴О╪┴@"
                                        TO  WRK-MIDASI1
-           MOVE    "  ©гне╧т╟ы╔Ё║╪╔и║йлТ╨ч╔Ё║╪╔и║к@"
+           MOVE    "  Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴О╪┬Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴О╪┴@"
                                        TO  WRK-MIDASI2
       *
            .
        1001-CHKTRD-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    ╫И╢Эйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣║к
+      *    Е┬²Ф°÷Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙О╪┴
       *****************************************************************
        1001-CHK005-SYOKI-SEC           SECTION.
       *
@@ -998,19 +998,19 @@
            EVALUATE    HXLST-CHKKBN
            WHEN    "8"
                MOVE
-               "║Ц║║ибл╬╓хлТ╨ч╟ЛмВи╫║║║Д"
+               "О╪°Ц──Г≈┘Е░█Ц│╗Х√╛Е┴╓Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "        ибл╬╔Ё║╪╔и@"
+                   MOVE    "        Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "      лТ╨ч╔Ё║╪╔и@"
+                   MOVE    "      Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            WHEN    "9"
                MOVE
-               "║Ц║║ибл╬╓х©гне╧т╟ы╟ЛмВи╫║║║Д"
+               "О╪°Ц──Г≈┘Е░█Ц│╗Х╗╨Г≥┌Х║▄Г┌╨Д╦─Х╕╖Х║╗Ц──О╪·"
                                        TO  H01-MIDASI
-                   MOVE    "        ибл╬╔Ё║╪╔и@"
+                   MOVE    "        Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI1
-                   MOVE    "      ©гне╧т╟ы╔Ё║╪╔и@"
+                   MOVE    "      Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴@"
                                        TO  WRK-MIDASI2
            END-EVALUATE
       *
@@ -1018,7 +1018,7 @@
        1001-CHK005-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        200-MEISAI-CHKTRD-SYORI-SEC     SECTION.
       *
@@ -1047,30 +1047,30 @@
       *
                EVALUATE    CHKTRD-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "фЧ"       TO  B02-NYUGAIKBN
+                   MOVE    "Е┘╔"       TO  B02-NYUGAIKBN
                WHEN    "2"
-                   MOVE    "Ё╟"       TO  B02-NYUGAIKBN
+                   MOVE    "Е╓√"       TO  B02-NYUGAIKBN
                WHEN    OTHER
-                   MOVE    "║║"       TO  B02-NYUGAIKBN
+                   MOVE    "Ц──"       TO  B02-NYUGAIKBN
                END-EVALUATE
       *
                IF    ( CHKTRD-NYUGAIBNDKBN =  "2" )
-                   MOVE    "йл"       TO  B02-NYUGAIBNDKBN
+                   MOVE    "Е┬╔"       TO  B02-NYUGAIBNDKBN
                ELSE
-                   MOVE    "║║"       TO  B02-NYUGAIBNDKBN
+                   MOVE    "Ц──"       TO  B02-NYUGAIBNDKBN
                END-IF
       *
                MOVE    CHKTRD-SRYCD   TO  B02-SRYCD1
                MOVE    WRK-SRYNAME    TO  B02-NAME1
            ELSE
-               MOVE    "║║"       TO  B02-NYUGAIKBN
-               MOVE    "║║"       TO  B02-NYUGAIBNDKBN
+               MOVE    "Ц──"       TO  B02-NYUGAIKBN
+               MOVE    "Ц──"       TO  B02-NYUGAIBNDKBN
            END-IF
       *
            IF    ( CHKTRD-DAYMONTHKBN =   "0" )
-               MOVE    "фЭ"           TO  B02-DMKBN
+               MOVE    "Ф≈╔"           TO  B02-DMKBN
            ELSE
-               MOVE    "╥Н"           TO  B02-DMKBN
+               MOVE    "Ф°┬"           TO  B02-DMKBN
            END-IF
       *
            MOVE    CHKTRD-CD          TO  B02-SRYCD2
@@ -1083,7 +1083,7 @@
            PERFORM 420-CHKCSV-02-SET-SEC
       *----(04.08.01)--ADD-END-----
       *
-           INSPECT B02-NAME1   REPLACING   ALL "  "    BY  "║║"
+           INSPECT B02-NAME1   REPLACING   ALL "  "    BY  "Ц──"
       *
            MOVE    BODY-02            TO  HCM44-MOJI (IDX-LINE)
            PERFORM 2200-PAGE-FEED-CHK-SEC
@@ -1094,7 +1094,7 @@
        200-MEISAI-CHKTRD-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        200-MEISAI-CHKSND-SYORI-SEC     SECTION.
       *
@@ -1186,7 +1186,7 @@
       *
                    PERFORM 210-BODY-01-LEFT-SEC
                    PERFORM 210-BODY-01-RIGHT-SEC
-                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "║║"
+                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "Ц──"
                    MOVE    BODY-01    TO  HCM44-MOJI (IDX-LINE)
                    PERFORM 2200-PAGE-FEED-CHK-SEC
       *
@@ -1197,7 +1197,7 @@
       *
                    MOVE    SPACE      TO  B01-LEFT
                    PERFORM 210-BODY-01-RIGHT-SEC
-                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "║║"
+                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "Ц──"
                    MOVE    BODY-01    TO  HCM44-MOJI (IDX-LINE)
                    PERFORM 2200-PAGE-FEED-CHK-SEC
                    PERFORM 900-B01R-READ-SEC
@@ -1206,7 +1206,7 @@
       *
                    MOVE    SPACE      TO  B01-RIGHT
                    PERFORM 210-BODY-01-LEFT-SEC
-                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "║║"
+                   INSPECT BODY-01    REPLACING     ALL "  "    BY  "Ц──"
                    MOVE    BODY-01    TO  HCM44-MOJI (IDX-LINE)
                    PERFORM 2200-PAGE-FEED-CHK-SEC
       *
@@ -1245,7 +1245,7 @@
            EXIT.
       *
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        2101-MEISAI-CHKSND-SYORI-SEC    SECTION.
       *
@@ -1264,7 +1264,7 @@
        2101-MEISAI-CHKSND-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        21011-MEISAI-CHKSND-SYORI-SEC    SECTION.
       *
@@ -1283,7 +1283,7 @@
            PERFORM 900-CHKSND-KEY2-SEL-SEC
       *
       *----(04.08.01)--ADD-START---
-      *    ╔а╔╖╔ц╔╞╓╥╓й╓╓й╛╓ю╓ц╓©╓И
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└Е┬├Ц│═Ц│ёЦ│÷Ц┌┴
            IF      FLG-CHK002      =   1
                MOVE    TCHKSND-REC     TO  CHKSND-REC
                PERFORM 420-CSV-BODY-01-SET-SEC
@@ -1338,7 +1338,7 @@
        21011-MEISAI-CHKSND-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        210-MEISAI-B01L-SEC             SECTION.
       *
@@ -1352,16 +1352,16 @@
       *
                MOVE    SPACE           TO  WRK-SRYNAME
                IF    ( WRK-NAME1       =   SPACE )
-                   STRING  "║з"            DELIMITED   BY  SIZE
+                   STRING  "Ц─░"            DELIMITED   BY  SIZE
                            WRK-NAME        DELIMITED   BY  SPACE
-                           "║ш"            DELIMITED   BY  SIZE
+                           "Ц─▒"            DELIMITED   BY  SIZE
                    INTO    WRK-SRYNAME
                    END-STRING
                ELSE
-                   STRING  "║з"            DELIMITED   BY  SIZE
+                   STRING  "Ц─░"            DELIMITED   BY  SIZE
                            WRK-NAME1       DELIMITED   BY  SPACE
                            WRK-NAME        DELIMITED   BY  SPACE
-                           "║ш"            DELIMITED   BY  SIZE
+                           "Ц─▒"            DELIMITED   BY  SIZE
                    INTO    WRK-SRYNAME
                END-STRING
                END-IF
@@ -1373,13 +1373,13 @@
            MOVE    CHKSND-NYUGAIKBN    TO  B01L-NYUGAIKBN
            EVALUATE    CHKSND-NYUGAIKBN
            WHEN    "0"
-               MOVE    "║ъ"        TO  B01L-NYUGAIKBNMEI
+               MOVE    "ц≈"        TO  B01L-NYUGAIKBNMEI
            WHEN    "1"
-               MOVE    "фЧ"        TO  B01L-NYUGAIKBNMEI
+               MOVE    "Е┘╔"        TO  B01L-NYUGAIKBNMEI
            WHEN    "2"
-               MOVE    "Ё╟"        TO  B01L-NYUGAIKBNMEI
+               MOVE    "Е╓√"        TO  B01L-NYUGAIKBNMEI
            WHEN    OTHER
-               MOVE    "║║"        TO  B01L-NYUGAIKBNMEI
+               MOVE    "Ц──"        TO  B01L-NYUGAIKBNMEI
            END-EVALUATE
       *
            MOVE    CHKSND-SRYCD    TO  B01L-SRYCD
@@ -1422,7 +1422,7 @@
                IF    ( FLG-EDIT       =   1 )
                    INITIALIZE                 B01R-REC
                    MOVE    CNT-MSTSEQ     TO  B01R-MSTSEQ
-                   MOVE    "е╛╠Чибл╬╔ч╔╧╔©╓Р╩╡╬х╓╧╓К"
+                   MOVE    "И│╘Е©°Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Ц┌▓Е▐┌Г┘╖Ц│≥Ц┌▀"
                                           TO  B01R-TEKIYO
                    WRITE   B01R-REC
                END-IF
@@ -1474,7 +1474,7 @@
                            MOVE    "key"           TO  MCP-PATHNAME
                            PERFORM 910-DBSELECT-SEC
                            IF    ( MCP-RC      NOT =   ZERO )
-                               MOVE    "╨О"        TO  WRK-NAME1
+                               MOVE    "Е┴┼"        TO  WRK-NAME1
                            END-IF
                            MOVE    "tbl_inputset"  TO  MCP-TABLE
                            MOVE    "key"           TO  MCP-PATHNAME
@@ -1521,16 +1521,16 @@
                                PERFORM 2001-SRYCD-HEN-SEC
                                IF    ( WRK-NAME1       =   SPACE )
                                  STRING  WRK-NAME1 DELIMITED   BY  SIZE
-                                       "║й"        DELIMITED   BY  SIZE
+                                       "О╪┬"        DELIMITED   BY  SIZE
                                        WRK-NAME    DELIMITED   BY  SPACE
-                                       "║к"        DELIMITED   BY  SIZE
+                                       "О╪┴"        DELIMITED   BY  SIZE
                                  INTO  B01L-NAME
                                  END-STRING
                                ELSE
-                                 STRING  "║й"      DELIMITED   BY  SIZE
+                                 STRING  "О╪┬"      DELIMITED   BY  SIZE
                                        WRK-NAME1   DELIMITED   BY  SPACE
                                        WRK-NAME    DELIMITED   BY  SPACE
-                                       "║к"        DELIMITED   BY  SIZE
+                                       "О╪┴"        DELIMITED   BY  SIZE
                                  INTO    B01L-NAME
                                  END-STRING
                                END-IF
@@ -1562,7 +1562,7 @@
        210-MEISAI-B01L-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        210-MEISAI-B01R-SEC             SECTION.
       *
@@ -1575,14 +1575,14 @@
            WHEN    "1"
                IF    ( CHKSND-CHKKBN      =   "1" OR "2" )
                 AND  ( CHKSND-HOSOKU  NOT =   SPACE )
-                   MOVE    "иТ"       TO  B01R-COMPKBNMEI
+                   MOVE    "И┐╗"       TO  B01R-COMPKBNMEI
                END-IF
            WHEN    "2"
-               MOVE    "╢╟"           TO  B01R-COMPKBNMEI
+               MOVE    "Е╝▄"           TO  B01R-COMPKBNMEI
            WHEN    "3"
-               MOVE    "а╟"           TO  B01R-COMPKBNMEI
+               MOVE    "Е┴█"           TO  B01R-COMPKBNMEI
            WHEN    "4"
-               MOVE    "╦Е"           TO  B01R-COMPKBNMEI
+               MOVE    "Е╬▄"           TO  B01R-COMPKBNMEI
            END-EVALUATE
            MOVE    CHKSND-COMPKBN     TO  B01R-COMPKBN
       *
@@ -1592,13 +1592,13 @@
                                       TO  B01R-HOSOKU-COMPKBN
                EVALUATE    CHKSND-HOSOKU-COMPKBN
                WHEN    "1"
-                   MOVE    "(иТ)"     TO  B01R-HOSOKU-COMPKBNMEI
+                   MOVE    "(И┐╗)"     TO  B01R-HOSOKU-COMPKBNMEI
                WHEN    "2"
-                   MOVE    "(╢╟)"     TO  B01R-HOSOKU-COMPKBNMEI
+                   MOVE    "(Е╝▄)"     TO  B01R-HOSOKU-COMPKBNMEI
                WHEN    "3"
-                   MOVE    "(а╟)"     TO  B01R-HOSOKU-COMPKBNMEI
+                   MOVE    "(Е┴█)"     TO  B01R-HOSOKU-COMPKBNMEI
                WHEN    "4"
-                   MOVE    "(╦Е)"     TO  B01R-HOSOKU-COMPKBNMEI
+                   MOVE    "(Е╬▄)"     TO  B01R-HOSOKU-COMPKBNMEI
                END-EVALUATE
            END-IF
       *
@@ -1631,9 +1631,9 @@
                IF    ( CHKSND-CHKKBN   =   "1" OR "2" )
                 AND  ( CHKSND-HOSOKU   NOT =   SPACE )
                    MOVE    SPACE    TO WRK-MEISAISTR
-                   STRING  "║й"             DELIMITED BY SIZE
+                   STRING  "О╪┬"             DELIMITED BY SIZE
                            CHKSND-HOSOKU    DELIMITED BY SPACE
-                           "║к"             DELIMITED BY SPACE
+                           "О╪┴"             DELIMITED BY SPACE
                    INTO    WRK-MEISAISTR
                    END-STRING
                    PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
@@ -1648,7 +1648,7 @@
        210-MEISAI-B01R-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        2001-MEISAI-CHKSND-SYORI-SEC    SECTION.
       *
@@ -1680,7 +1680,7 @@
                PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
            END-IF
       *
-           MOVE    "║з"            TO  WRK-MEISAISTR
+           MOVE    "Ц─░"            TO  WRK-MEISAISTR
            PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
       *
            MOVE    1               TO  FLG-TEKCD
@@ -1716,15 +1716,15 @@
       *
            END-PERFORM
       *
-           MOVE    "║ш"            TO  WRK-MEISAISTR
+           MOVE    "Ц─▒"            TO  WRK-MEISAISTR
            PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
       *
            IF    ( CHKSND-CHKKBN   =   "1" OR "2" )
             AND  ( CHKSND-HOSOKU   NOT =   SPACE )
                MOVE    SPACE    TO WRK-MEISAISTR
-               STRING  "║й"             DELIMITED BY SIZE
+               STRING  "О╪┬"             DELIMITED BY SIZE
                        CHKSND-HOSOKU    DELIMITED BY SPACE
-                       "║к"             DELIMITED BY SPACE
+                       "О╪┴"             DELIMITED BY SPACE
                INTO    WRK-MEISAISTR
                END-STRING
                PERFORM 20011-MEISAI-CHKSND-SYORI-SEC
@@ -1734,7 +1734,7 @@
        2001-MEISAI-CHKSND-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        211-MEISAI-B01R-SEC             SECTION.
       *
@@ -1751,7 +1751,7 @@
       *
                    INITIALIZE                     B01R-REC
                    MOVE    CNT-MSTSEQ         TO  B01R-MSTSEQ
-                   MOVE    "╒ё╒ё╒ё║║╟й╡╪е╛╠Чибл╬╔ч╔╧╔©╓Х╓Й║║╒ё╒ё╒ё"
+                   MOVE    "Б√═Б√═Б√═Ц──Д╩╔Д╦▀И│╘Е©°Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Ц┌┬Ц┌┼Ц──Б√═Б√═Б√═"
                                           TO  B01R-TEKIYO
                    WRITE   B01R-REC
                END-IF
@@ -1808,7 +1808,7 @@
        211-MEISAI-B01R-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔╩╔ц╔хфБлСб╚╔Ё║╪╔ибп╬щ╔а╔╖╔ц╔╞╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌╩Ц┐┐Ц┐┬Е├┘Г╢└Ф²÷Ц┌ЁЦ┐╪Ц┐┴Е╞╬Х╠║Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        210-YAKUSOKU-CHK-SEC            SECTION.
       *
@@ -1843,7 +1843,7 @@
        210-YAKUSOKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔Й╔╧╔хйт╫╦╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐╙Ц┌╧Ц┐┬Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        210-BODY-01-LEFT-SEC            SECTION.
       *
@@ -1857,7 +1857,7 @@
        210-BODY-01-LEFT-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔Й╔╧╔хйт╫╦╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐╙Ц┌╧Ц┐┬Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        210-BODY-01-RIGHT-SEC           SECTION.
       *
@@ -1894,7 +1894,7 @@
        210-BODY-01-RIGHT-EXT.
            EXIT.
       *****************************************************************
-      *    ╡Ч╧т╔а╔╖╔ц╔╞╫ХмЩ
+      *    Ф■╧Х║▄Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        20011-LINE-FEED-CHK-SEC         SECTION.
       *
@@ -1921,7 +1921,7 @@
        20011-LINE-FEED-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        20011-MEISAI-CHKSND-SYORI-SEC   SECTION.
       *
@@ -1962,7 +1962,7 @@
        20011-MEISAI-CHKSND-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        200-MEISAI-CHKMST-SYORI-SEC     SECTION.
       *
@@ -1992,27 +1992,27 @@
            END-IF
       *
            IF    ( CHK-DATAKBN     =   "1" )
-               MOVE    "║Щ"        TO  B04-DATAKBN
+               MOVE    "Б≈▌"        TO  B04-DATAKBN
                MOVE    1           TO  FLG-MSTDAT
            ELSE
-               MOVE    "║║"        TO  B04-DATAKBN
+               MOVE    "Ц──"        TO  B04-DATAKBN
            END-IF
       *
            IF    ( CHK-NYUGAIBNDKBN =  "1" )
-               MOVE    "йл"        TO  B04-NYUGAIBNDKBN
+               MOVE    "Е┬╔"        TO  B04-NYUGAIBNDKBN
            ELSE
-               MOVE    "║║"        TO  B04-NYUGAIBNDKBN
+               MOVE    "Ц──"        TO  B04-NYUGAIBNDKBN
            END-IF
       *
            EVALUATE    CHK-CHKERR
            WHEN    "8"
-               MOVE    "л╣"        TO  B04-CHKERR
+               MOVE    "Г└║"        TO  B04-CHKERR
                MOVE    1           TO  FLG-NASI
            WHEN    "9"
-               MOVE    "╥ы"        TO  B04-CHKERR
+               MOVE    "Х╜╕"        TO  B04-CHKERR
                MOVE    1           TO  FLG-KEIKOKU
            WHEN    OTHER
-               MOVE    "║║"        TO  B04-CHKERR
+               MOVE    "Ц──"        TO  B04-CHKERR
            END-EVALUATE
       *
            MOVE    CHK-CD          TO  B04-SRYCD2
@@ -2025,7 +2025,7 @@
            PERFORM 420-CHKCSV-04-SET-SEC
       *----(04.08.01)--ADD-START---
       *
-           INSPECT B04-NAME1       REPLACING   ALL "  "  BY  "║║"
+           INSPECT B04-NAME1       REPLACING   ALL "  "  BY  "Ц──"
       *
            MOVE    BODY-04         TO  HCM44-MOJI (IDX-LINE)
            PERFORM 2200-PAGE-FEED-CHK-SEC
@@ -2035,7 +2035,7 @@
        200-MEISAI-CHKMST-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        200-MEISAI-CHK005-SYORI-SEC     SECTION.
       *
@@ -2068,31 +2068,31 @@
            INITIALIZE              BODY-03
            EVALUATE    WKCHK005-NYUGAIKBN
            WHEN    "1"
-               MOVE    "фЧ"       TO  B03-NYUGAIKBN
+               MOVE    "Е┘╔"       TO  B03-NYUGAIKBN
            WHEN    "2"
-               MOVE    "Ё╟"       TO  B03-NYUGAIKBN
+               MOVE    "Е╓√"       TO  B03-NYUGAIKBN
            WHEN    OTHER
-               MOVE    "║║"       TO  B03-NYUGAIKBN
+               MOVE    "Ц──"       TO  B03-NYUGAIKBN
            END-EVALUATE
       *
            IF    ( WKCHK005-NYUGAIBNDKBN =  "2" )
-               MOVE    "йл"       TO  B03-NYUGAIBNDKBN
+               MOVE    "Е┬╔"       TO  B03-NYUGAIBNDKBN
            ELSE
-               MOVE    "║║"       TO  B03-NYUGAIBNDKBN
+               MOVE    "Ц──"       TO  B03-NYUGAIBNDKBN
            END-IF
       *
            EVALUATE    WKCHK005-COMPKBN
            WHEN    "2"
-               MOVE    "╢╟"           TO  B03-COMPKBN
+               MOVE    "Е╝▄"           TO  B03-COMPKBN
                MOVE    1              TO  FLG-KANZEN
            WHEN    "3"
-               MOVE    "а╟"           TO  B03-COMPKBN
+               MOVE    "Е┴█"           TO  B03-COMPKBN
                MOVE    1              TO  FLG-ZENPO
            WHEN    "4"
-               MOVE    "╦Е"           TO  B03-COMPKBN
+               MOVE    "Е╬▄"           TO  B03-COMPKBN
                MOVE    1              TO  FLG-KOHO
            WHEN    OTHER
-               MOVE    "║║"           TO  B03-COMPKBN
+               MOVE    "Ц──"           TO  B03-COMPKBN
            END-EVALUATE
       *
            MOVE    WKCHK005-CD       TO  WRK-KEY-CD-G
@@ -2107,7 +2107,7 @@
       *
       *
            PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
-           INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "║║"
+           INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "Ц──"
            MOVE    BODY-03         TO  HCM44-MOJI (IDX-LINE)
            PERFORM 2200-PAGE-FEED-CHK-SEC
            INITIALIZE              BODY-03
@@ -2115,7 +2115,7 @@
            PERFORM UNTIL ( CNT-TEKCD   >=  WRK-TEKCD-MAX )
       *
                PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
-               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "║║"
+               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "Ц──"
                MOVE    BODY-03     TO  HCM44-MOJI (IDX-LINE)
                PERFORM 2200-PAGE-FEED-CHK-SEC
                INITIALIZE          BODY-03
@@ -2126,7 +2126,7 @@
        200-MEISAI-CHK005-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        2001-MEISAI-CHK005-SYORI-SEC    SECTION.
       *
@@ -2158,7 +2158,7 @@
                PERFORM 20011-MEISAI-CHK005-SYORI-SEC
            END-IF
       *
-           MOVE    "║з"            TO  WRK-MEISAISTR
+           MOVE    "Ц─░"            TO  WRK-MEISAISTR
            PERFORM 20011-MEISAI-CHK005-SYORI-SEC
       *
            MOVE    1               TO  FLG-TEKCD
@@ -2194,14 +2194,14 @@
       *
            END-PERFORM
       *
-           MOVE    "║ш"            TO  WRK-MEISAISTR
+           MOVE    "Ц─▒"            TO  WRK-MEISAISTR
            PERFORM 20011-MEISAI-CHK005-SYORI-SEC
       *
            .
        2001-MEISAI-CHK005-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        20011-MEISAI-CHK005-SYORI-SEC   SECTION.
       *
@@ -2211,7 +2211,7 @@
       *
                PERFORM 20011-MEISAI-CHK005-SRYCD-SEC
       *
-               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "║║"
+               INSPECT B03-LEFT    REPLACING   ALL "  "  BY  "Ц──"
                MOVE    BODY-03 TO  HCM44-MOJI (IDX-LINE)
       *
                PERFORM 2200-PAGE-FEED-CHK-SEC
@@ -2244,7 +2244,7 @@
        20011-MEISAI-CHK005-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        20011-CHK005-LINE-FEED-CHK-SEC  SECTION.
       *
@@ -2269,16 +2269,16 @@
        20011-CHK005-LINE-FEED-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ыйт╫╦╫ХмЩ║й╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╓Х╓Й║к
+      *    Ф≤▌Г╢╟Г╥╗И⌡├Е┤╕Г░├О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ц┌┬Ц┌┼О╪┴
       *****************************************************************
        20011-MEISAI-CHK005-SRYCD-SEC   SECTION.
       *
            IF    ( WRK-TEKCD-MAX   >   CNT-TEKCD )
                COMPUTE CNT-TEKCD   =   CNT-TEKCD   +   1
                IF    ( WRK-DMKBN (CNT-TEKCD)   =   "0" )
-                   MOVE    "фЭ"    TO  B03-DMKBN
+                   MOVE    "Ф≈╔"    TO  B03-DMKBN
                ELSE
-                   MOVE    "╥Н"    TO  B03-DMKBN
+                   MOVE    "Ф°┬"    TO  B03-DMKBN
                END-IF
                MOVE    WRK-TEKCD (CNT-TEKCD)
                                    TO  B03-SRYCD
@@ -2295,7 +2295,7 @@
        20011-MEISAI-CHK005-SRYCD-EXT.
            EXIT.
       *****************************************************************
-      *   ©гне╔Ё║╪╔и╫ХмЩ
+      *   Х╗╨Г≥┌Ц┌ЁЦ┐╪Ц┐┴Е┤╕Г░├
       *****************************************************************
        2001-SRYCD-HEN-SEC              SECTION.
       *
@@ -2311,7 +2311,7 @@
                 AND  ( TNS-ROUTEKKBN   =   2   )
       *
                    MOVE    SPACE       TO  WRK-NAME
-                   STRING  "║но╥║о"        DELIMITED   BY  SIZE
+                   STRING  "О╪╩Х─│О╪╫"        DELIMITED   BY  SIZE
                            TNS-NAME        DELIMITED   BY  SIZE
                    INTO    WRK-NAME
                    END-STRING
@@ -2334,14 +2334,14 @@
            PERFORM 910-DBCLOSECURSOR-SEC
       *
            IF    ( FLG-OK              =   ZERO )
-               MOVE    "╨О"            TO  WRK-NAME1
+               MOVE    "Е┴┼"            TO  WRK-NAME1
            END-IF
       *
            .
        2001-SRYCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   фЧно╔Ё║╪╔и╫ХмЩ
+      *   Е┘╔Е┼⌡Ц┌ЁЦ┐╪Ц┐┴Е┤╕Г░├
       *****************************************************************
        2001-INPUTCD-HEN-SEC            SECTION.
       *
@@ -2350,14 +2350,14 @@
            IF    ( FLG-INPUTCD     =   ZERO )
                MOVE    ICD-DSPNAME     TO  WRK-NAME
            ELSE
-               MOVE    "╨О"            TO  WRK-NAME1
+               MOVE    "Е┴┼"            TO  WRK-NAME1
            END-IF
       *
            .
        2001-INPUTCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    м╫лСибл╬╔Ё║╪╔и╔а╔╖╔ц╔╞╫ХмЩ
+      *    Д╨┬Г╢└Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        2100-YYKBYOCD-CHK-SEC           SECTION.
       *
@@ -2378,7 +2378,7 @@
        2100-YYKBYOCD-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ╦╚╫п╓╥йт╫╦╫ХмЩ
+      *    Х╕▀Е┤╨Ц│≈Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2100-HEAD-SEC                   SECTION.
       *
@@ -2390,14 +2390,14 @@
            MOVE    1                   TO  WRK-TGPNT
            MOVE    SPACE               TO  H02-MIDASI1
            STRING  WRK-MIDASI1  DELIMITED   BY  "@"
-                   "║║"         DELIMITED   BY  SIZE
+                   "Ц──"         DELIMITED   BY  SIZE
            INTO    H02-MIDASI1
            WITH    POINTER WRK-TGPNT
            END-STRING
       *
            IF        ( HXLST-CHKKBN    =   "1" )
                IF    ( FLG-NOCHECK     =   1 )
-                   STRING "║ъ║╖╔а╔╖╔ц╔╞╓╥╓й╓╓лТ╨ч"
+                   STRING "ц≈О╪ Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└Х√╛Е┴╓"
                                        DELIMITED   BY  SIZE
                    INTO   H02-MIDASI1
                    WITH   POINTER WRK-TGPNT
@@ -2407,7 +2407,7 @@
       *
            IF        ( HXLST-CHKKBN    =   "2" )
                IF    ( FLG-NOCHECK     =   1 )
-                   STRING "║ъ║╖╔а╔╖╔ц╔╞╓╥╓й╓╓©гне╧т╟ы"
+                   STRING "ц≈О╪ Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└Х╗╨Г≥┌Х║▄Г┌╨"
                                        DELIMITED   BY  SIZE
                    INTO   H02-MIDASI1
                    WITH   POINTER WRK-TGPNT
@@ -2462,7 +2462,7 @@
            IF        ( HXLST-CHKKBN    =   "1" OR "2" OR "6"
                                         OR "Y" OR "Z" )
                IF    ( FLG-UTAGAIKBN       =   1 )
-                       STRING "#:╣©╓╓ибл╬╓Рг╖╓А╓й╓╓"
+                       STRING "#:Г√▒Ц│└Г≈┘Е░█Ц┌▓Х╙█Ц┌│Ц│╙Ц│└"
                               DELIMITED   BY  SPACE
                           " " DELIMITED   BY  SIZE
                        INTO   H02-MIDASI2
@@ -2474,7 +2474,7 @@
            IF        ( HXLST-CHKKBN    =   "5" OR "A" OR "B" )
       *
                IF    ( FLG-MSTDAT      =   1 )
-                   STRING "║Щ║╖╔ч╔╧╔©дС╤║й╛"
+                   STRING "Б≈▌О╪ Ц┐·Ц┌╧Ц┌©Ф▐░Д╬⌡Е┬├"
                                        DELIMITED   BY  SPACE
                           " "          DELIMITED   BY  SIZE
                    INTO   H02-MIDASI2
@@ -2507,7 +2507,7 @@
        2100-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *   ╡Ч╔з║╪╔╦╔а╔╖╔ц╔╞╫ХмЩ
+      *   Ф■╧Ц┐ Ц┐╪Ц┌╦Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        2200-PAGE-FEED-CHK-SEC          SECTION.
       *
@@ -2538,14 +2538,14 @@
        2200-PAGE-FEED-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ╟У╨Ч╫ХмЩ║й╔╙╔С╔И╔╓╔С╟У╨Ч║к
+      *    Е█╟Е┬╥Е┤╕Г░├О╪┬Ц┌╙Ц┐ЁЦ┐╘Ц┌╓Ц┐ЁЕ█╟Е┬╥О╪┴
       *****************************************************************
        400-PRINT-SYORI-SEC             SECTION.
       *
-      *    д╒и╪╟У╨ЧЁ╚╩о╫ХмЩ
+      *    Е╦ЁГ╔╗Е█╟Е┬╥И√▀Е╖▀Е┤╕Г░├
            PERFORM 400-SYOKI-PRINT-SEC
       *
-      *    д╒и╪╟У╨Ч╫ХмЩ
+      *    Е╦ЁГ╔╗Е█╟Е┬╥Е┤╕Г░├
            PERFORM 400-PRINT-SEC
       *
            .
@@ -2553,11 +2553,11 @@
            EXIT.
       *
       *****************************************************************
-      *    д╒и╪╟У╨ЧЁ╚╩о╫ХмЩ
+      *    Е╦ЁГ╔╗Е█╟Е┬╥И√▀Е╖▀Е┤╕Г░├
       *****************************************************************
        400-SYOKI-PRINT-SEC             SECTION.
       *
-      *    ╔у╔║╔╓╔Кёоёпёеён
+      *    Ц┐∙Ц┌║Ц┌╓Ц┐╚О╪╞О╪╟О╪╔О╪╝
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC44"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -2579,11 +2579,11 @@
            EXIT.
       *
       *****************************************************************
-      *    д╒и╪╟У╨Ч╫ХмЩ
+      *    Е╦ЁГ╔╗Е█╟Е┬╥Е┤╕Г░├
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
-      *     ╟У╨Чмя╔г║╪╔©╫пно
+      *     Е█╟Е┬╥Г■╗Ц┐┤Ц┐╪Ц┌©Е┤╨Е┼⌡
             WRITE  HCM44
       *
             CLOSE  PRT-FILE
@@ -2605,7 +2605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ╟У╨Ч╫ХмЩ║й╟ЛЁГ╟У╨Ч║к
+      *    Е█╟Е┬╥Е┤╕Г░├О╪┬Д╦─Ф▀╛Е█╟Е┬╥О╪┴
       *****************************************************************
        410-PRINT-SYORI-SEC             SECTION.
       *
@@ -2629,7 +2629,7 @@
            EXIT.
       *----(04.08.01)--ADD-START---
       *****************************************************************
-      *    ёцёсёжBODY-01╫пно╫ХмЩ(HXLST-CHKKBN=1,2,6,Y,Z)
+      *    О╪ёО╪ЁО╪╤BODY-01Е┤╨Е┼⌡Е┤╕Г░├(HXLST-CHKKBN=1,2,6,Y,Z)
       *****************************************************************
        420-CSV-BODY-01-SET-SEC         SECTION.
       *
@@ -2655,7 +2655,7 @@
            IF    ( HXLST-TEMP-NAME NOT =   SPACE )
                AND  ( CHKSND-TERMID   =   HXLST-TEMP-NAME )
                AND  ( CHKSND-OPID     =   HXLST-TEMP-KEY )
-               MOVE   "е╛╠Чибл╬╔ч╔╧╔©"    TO  CHKCSV-TEKIYO
+               MOVE   "И│╘Е©°Г≈┘Е░█Ц┐·Ц┌╧Ц┌©"    TO  CHKCSV-TEKIYO
            END-IF
       *
            MOVE    CHKSND-GRPID    TO  CHKCSV-GRPID
@@ -2665,47 +2665,47 @@
       *
            EVALUATE    TCHKSND-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "фЧ╠║"        TO  CHKCSV-NYUGAIKBN
+                   MOVE    "Е┘╔И≥╒"        TO  CHKCSV-NYUGAIKBN
                WHEN    "2"
-                   MOVE    "Ё╟мХ"        TO  CHKCSV-NYUGAIKBN
+                   MOVE    "Е╓√Ф²╔"        TO  CHKCSV-NYUGAIKBN
                WHEN    "0"
-                   MOVE    "╔а╔╖╔ц╔╞╓╥╓й╓╓" 
+                   MOVE    "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└" 
                                          TO  CHKCSV-NASI
            END-EVALUATE
       *
            EVALUATE    CHKSND-UTAGAIKBN
                WHEN    "0"
                    IF    ( SYS-1101-YBUTAGAIKBN    =   "2" )
-                       MOVE    "╣©╓╓ибл╬╓Рг╖╓А╓й╓╓"
+                       MOVE    "Г√▒Ц│└Г≈┘Е░█Ц┌▓Х╙█Ц┌│Ц│╙Ц│└"
                                        TO  CHKCSV-UTAGAIKBNMEI
                    END-IF
                WHEN    "2"
-                   MOVE    "╣©╓╓ибл╬╓Рг╖╓А╓й╓╓"
+                   MOVE    "Г√▒Ц│└Г≈┘Е░█Ц┌▓Х╙█Ц┌│Ц│╙Ц│└"
                                        TO  CHKCSV-UTAGAIKBNMEI
            END-EVALUATE
       *
            EVALUATE    CHKSND-COMPKBN
                WHEN    "1"
-                   MOVE    "иТй╛╟Лцв"  TO  CHKCSV-COMPKBNMEI
+                   MOVE    "И┐╗Е┬├Д╦─Х┤╢"  TO  CHKCSV-COMPKBNMEI
                WHEN    "2"
-                   MOVE    "╢╟а╢╟Лцв"      TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е╝▄Е┘╗Д╦─Х┤╢"      TO  CHKCSV-COMPKBNMEI
                WHEN    "3"
-                   MOVE    "а╟йЩ╟Лцв"      TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е┴█Ф√╧Д╦─Х┤╢"      TO  CHKCSV-COMPKBNMEI
                WHEN    "4"
-                   MOVE    "╦ЕйЩ╟Лцв"      TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е╬▄Ф√╧Д╦─Х┤╢"      TO  CHKCSV-COMPKBNMEI
            END-EVALUATE
       *
            IF    ( CHKSND-CHKKBN      =   "1" OR "2" )
             AND  ( CHKSND-HOSOKU  NOT =   SPACE )
                EVALUATE    CHKSND-HOSOKU-COMPKBN
                WHEN    "1"
-                   MOVE    "иТй╛╟Лцв"      TO   CHKCSV-H-COMPKBNMEI
+                   MOVE    "И┐╗Е┬├Д╦─Х┤╢"      TO   CHKCSV-H-COMPKBNMEI
                WHEN    "2"
-                   MOVE    "╢╟а╢╟Лцв"      TO   CHKCSV-H-COMPKBNMEI
+                   MOVE    "Е╝▄Е┘╗Д╦─Х┤╢"      TO   CHKCSV-H-COMPKBNMEI
                WHEN    "3"
-                   MOVE    "а╟йЩ╟Лцв"      TO   CHKCSV-H-COMPKBNMEI
+                   MOVE    "Е┴█Ф√╧Д╦─Х┤╢"      TO   CHKCSV-H-COMPKBNMEI
                WHEN    "4"
-                   MOVE    "╦ЕйЩ╟Лцв"      TO   CHKCSV-H-COMPKBNMEI
+                   MOVE    "Е╬▄Ф√╧Д╦─Х┤╢"      TO   CHKCSV-H-COMPKBNMEI
                END-EVALUATE
            END-IF
       *
@@ -2715,7 +2715,7 @@
        420-CSV-BODY-01-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёжBODY-02╫пно╫ХмЩ(HXLST-CHKKBN=7)
+      *    О╪ёО╪ЁО╪╤BODY-02Е┤╨Е┼⌡Е┤╕Г░├(HXLST-CHKKBN=7)
       *****************************************************************
        420-CHKCSV-02-SET-SEC       SECTION.
       *
@@ -2736,21 +2736,21 @@
       *
            EVALUATE    CHKTRD-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "фЧ╠║"      TO  CHKCSV-NYUGAIKBN
+                   MOVE    "Е┘╔И≥╒"      TO  CHKCSV-NYUGAIKBN
                WHEN    "2"
-                   MOVE    "Ё╟мХ"      TO  CHKCSV-NYUGAIKBN
+                   MOVE    "Е╓√Ф²╔"      TO  CHKCSV-NYUGAIKBN
            END-EVALUATE
       *
            IF      CHKTRD-NYUGAIBNDKBN =   "2"
-               MOVE    "╓╧╓К"      TO  CHKCSV-NYUGAIBNDKBN
+               MOVE    "Ц│≥Ц┌▀"      TO  CHKCSV-NYUGAIBNDKBN
            ELSE
-               MOVE    "╓╥╓й╓╓"    TO  CHKCSV-NYUGAIBNDKBN
+               MOVE    "Ц│≈Ц│╙Ц│└"    TO  CHKCSV-NYUGAIBNDKBN
            END-IF
       *
            IF    ( CHKTRD-DAYMONTHKBN =   "0" )
-               MOVE    "фЭ"        TO  CHKCSV-DMKBN
+               MOVE    "Ф≈╔"        TO  CHKCSV-DMKBN
            ELSE
-               MOVE    "╥Н"        TO  CHKCSV-DMKBN
+               MOVE    "Ф°┬"        TO  CHKCSV-DMKBN
            END-IF
       *
            WRITE   CHKCSV-REC
@@ -2759,7 +2759,7 @@
        420-CHKCSV-02-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёжBODY-03╫пно╫ХмЩ(HXLST-CHKKBN=8,9)
+      *    О╪ёО╪ЁО╪╤BODY-03Е┤╨Е┼⌡Е┤╕Г░├(HXLST-CHKKBN=8,9)
       *****************************************************************
        420-CHKCSV-03-SET-SEC       SECTION.
       *
@@ -2774,19 +2774,19 @@
       *
            EVALUATE    WKCHK005-COMPKBN
                WHEN    "1"
-                   MOVE    "иТй╛╟Лцв"  TO  CHKCSV-COMPKBNMEI
+                   MOVE    "И┐╗Е┬├Д╦─Х┤╢"  TO  CHKCSV-COMPKBNMEI
                WHEN    "2"
-                   MOVE    "╢╟а╢╟Лцв"  TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е╝▄Е┘╗Д╦─Х┤╢"  TO  CHKCSV-COMPKBNMEI
                WHEN    "3"
-                   MOVE    "а╟йЩ╟Лцв"  TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е┴█Ф√╧Д╦─Х┤╢"  TO  CHKCSV-COMPKBNMEI
                WHEN    "4"
-                   MOVE    "╦ЕйЩ╟Лцв"  TO  CHKCSV-COMPKBNMEI
+                   MOVE    "Е╬▄Ф√╧Д╦─Х┤╢"  TO  CHKCSV-COMPKBNMEI
            END-EVALUATE
       *
            IF    ( WRK-DMKBN (CNT-TEKCD)   =   "0" )
-               MOVE    "фЭ"        TO  CHKCSV-DMKBN
+               MOVE    "Ф≈╔"        TO  CHKCSV-DMKBN
            ELSE
-               MOVE    "╥Н"        TO  CHKCSV-DMKBN
+               MOVE    "Ф°┬"        TO  CHKCSV-DMKBN
            END-IF
       *
            MOVE    WRK-TEKCD(CNT-TEKCD)
@@ -2802,7 +2802,7 @@
        420-CHKCSV-03-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёжBODY-04╫пно╫ХмЩ(HXLST-CHKKBN=4,5,A,B)
+      *    О╪ёО╪ЁО╪╤BODY-04Е┤╨Е┼⌡Е┤╕Г░├(HXLST-CHKKBN=4,5,A,B)
       *****************************************************************
        420-CHKCSV-04-SET-SEC     SECTION.
       *
@@ -2822,20 +2822,20 @@
            MOVE    WRK-NAME        TO  CHKCSV-NAME2
       *
            IF      CHK-NYUGAIBNDKBN    =  "1"
-               MOVE    "╓╧╓К"          TO  CHKCSV-NYUGAIBNDKBN
+               MOVE    "Ц│≥Ц┌▀"          TO  CHKCSV-NYUGAIBNDKBN
            ELSE
-               MOVE    "╓╥╓й╓╓"        TO  CHKCSV-NYUGAIBNDKBN
+               MOVE    "Ц│≈Ц│╙Ц│└"        TO  CHKCSV-NYUGAIBNDKBN
            END-IF
       *
            EVALUATE    CHK-CHKERR
                WHEN    "8"
-                   MOVE    "╔а╔╖╔ц╔╞╓╥╓й╓╓"    TO  CHKCSV-NASI
+                   MOVE    "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└"    TO  CHKCSV-NASI
                WHEN    "9"
-                   MOVE    "╥ы╧П"              TO  CHKCSV-KEIKOKU
+                   MOVE    "Х╜╕Е▒┼"              TO  CHKCSV-KEIKOKU
            END-EVALUATE
       *
            IF      CHK-DATAKBN     =   "1" 
-               MOVE    "╔ч╔╧╔©дС╤║й╛"  TO  CHKCSV-DATAKBN
+               MOVE    "Ц┐·Ц┌╧Ц┌©Ф▐░Д╬⌡Е┬├"  TO  CHKCSV-DATAKBN
            END-IF
       *
            WRITE   CHKCSV-REC
@@ -2844,7 +2844,7 @@
        420-CHKCSV-04-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёж╦╚╫п╓╥╫пно╫ХмЩ
+      *    О╪ёО╪ЁО╪╤Х╕▀Е┤╨Ц│≈Е┤╨Е┼⌡Е┤╕Г░├
       *****************************************************************
        430-CHKCSV-SYORI-SEC        SECTION.
       *
@@ -2852,19 +2852,19 @@
                GO  TO  430-CHKCSV-SYORI-EXT
            END-IF
       *
-      *    ╔©╔╓╔х╔К
+      *    Ц┌©Ц┌╓Ц┐┬Ц┐╚
            PERFORM 430-CHKCSV-TITLE-SET-SEC
       *
            OPEN    INPUT               CHKCSV-FILE
       *
-      *    еЩ╥в╔у╔║╔╓╔Кфи╓ъ╧Ч╓ъ
+      *    Г╣╠Х╗┬Ц┐∙Ц┌║Ц┌╓Ц┐╚Х╙╜Ц│©Х╬╪Ц│©
            INITIALIZE                  CHKCSV-REC
            PERFORM 900-CHKCSV-READ-SEC
       *
            PERFORM UNTIL FLG-CHKCSV    =   1
-      *        фБмф
+      *        Е├┘Е╝╧
                PERFORM 430-CHKCSV-BODY-SET-SEC
-      *        еЩ╥в╔у╔║╔╓╔Кфи╓ъ╧Ч╓ъ
+      *        Г╣╠Х╗┬Ц┐∙Ц┌║Ц┌╓Ц┐╚Х╙╜Ц│©Х╬╪Ц│©
                PERFORM 900-CHKCSV-READ-SEC
            END-PERFORM
       *
@@ -2873,7 +2873,7 @@
        430-CHKCSV-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёж╦╚╫п╓╥╫пно╫ХмЩ
+      *    О╪ёО╪ЁО╪╤Х╕▀Е┤╨Ц│≈Е┤╨Е┼⌡Е┤╕Г░├
       *****************************************************************
        430-CHKCSV-TITLE-SET-SEC    SECTION.
       *
@@ -2884,40 +2884,40 @@
            MOVE    SPACE               TO  WRK-CSV-TITLE
            EVALUATE    HXLST-CHKKBN
                WHEN    "1"
-                   MOVE    "║злТ╨ч╓хибл╬║ш"
+                   MOVE    "Ц─░Х√╛Е┴╓Ц│╗Г≈┘Е░█Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "2"
-                   MOVE    "║з©гне╧т╟ы╓хибл╬║ш"
+                   MOVE    "Ц─░Х╗╨Г≥┌Х║▄Г┌╨Ц│╗Г≈┘Е░█Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "4"
-                   MOVE    "║злТ╨ч╓хй╩мя╤ь╢В║ш"
+                   MOVE    "Ц─░Х√╛Е┴╓Ц│╗Д╫╣Г■╗Г╕│Е©▄Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "5"
-                   MOVE    "║з©гне╧т╟ы╓нй╩мя╩╩дЙ║ш"
+                   MOVE    "Ц─░Х╗╨Г≥┌Х║▄Г┌╨Ц│╝Д╫╣Г■╗Г╝≈Е╝ Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "6"
-                   MOVE    "║зеЙм©╤ь╢ВлТ╨ч╓хибл╬║ш"
+                   MOVE    "Ц─░Ф┼∙Д╦▌Г╕│Е©▄Х√╛Е┴╓Ц│╗Г≈┘Е░█Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "7"
-                   MOVE    "║з©гне╧т╟ы╓и╓╕╓╥╓н╩╩дЙоЁ╓Л║ш"
+                   MOVE    "Ц─░Х╗╨Г≥┌Х║▄Г┌╨Ц│╘Ц│├Ц│≈Ц│╝Г╝≈Е╝ Ф╪▐Ц┌▄Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "8"
-                   MOVE    "║зибл╬╓хлТ╨ч║ш"
+                   MOVE    "Ц─░Г≈┘Е░█Ц│╗Х√╛Е┴╓Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "9"
-                   MOVE    "║зибл╬╓х©гне╧т╟ы║ш"
+                   MOVE    "Ц─░Г≈┘Е░█Ц│╗Х╗╨Г≥┌Х║▄Г┌╨Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "A"
-                   MOVE    "║з©гне╧т╟ы╓нй╩мя╩╩дЙ║йф╠фЭфБ║к║ш"
+                   MOVE    "Ц─░Х╗╨Г≥┌Х║▄Г┌╨Ц│╝Д╫╣Г■╗Г╝≈Е╝ О╪┬Е░▄Ф≈╔Е├┘О╪┴Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "B"
-                   MOVE    "║з©гне╧т╟ы╓нй╩мя╩╩дЙ║йф╠╡Я╥вфБ║к║ш"
+                   MOVE    "Ц─░Х╗╨Г≥┌Х║▄Г┌╨Ц│╝Д╫╣Г■╗Г╝≈Е╝ О╪┬Е░▄Д╪ Х╗┬Е├┘О╪┴Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "Y"
-                   MOVE    "║зе╛╠Чибл╬║йлТ╨ч║к║ш"
+                   MOVE    "Ц─░И│╘Е©°Г≈┘Е░█О╪┬Х√╛Е┴╓О╪┴Ц─▒"
                                        TO  WRK-CSV-TITLE
                WHEN    "Z"
-                   MOVE    "║зе╛╠Чибл╬║й©гне╧т╟ы║к║ш"
+                   MOVE    "Ц─░И│╘Е©°Г≈┘Е░█О╪┬Х╗╨Г≥┌Х║▄Г┌╨О╪┴Ц─▒"
                                        TO  WRK-CSV-TITLE
            END-EVALUATE
       *
@@ -2928,257 +2928,257 @@
            INITIALIZE                  WRK-REC
            EVALUATE    HXLST-CHKKBN
                WHEN    "1"
-                   STRING  "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬,"           DELIMITED BY SIZE
-                           "╔а╔╖╔ц╔╞╓╥╓й╓╓,"   DELIMITED BY SIZE
-                           "фЧЁ╟╤Хй╛,"         DELIMITED BY SIZE
-                           "╔╟╔К║╪╔в,"         DELIMITED BY SIZE
-                           "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╟Лцв╬Р╥О,"     DELIMITED BY SIZE
-                           "╣©╓╓ибл╬╓н╟╥╓╓,"   DELIMITED BY SIZE
-                           "йДб╜╔Ё╔А╔С╔х,"     DELIMITED BY SIZE
-                           "йДб╜╔Ё╔А╔С╔х╟Лцв╬Р╥О,"
+                   STRING  "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█,"           DELIMITED BY SIZE
+                           "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└,"   DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е▄╨Е┬├,"         DELIMITED BY SIZE
+                           "Ц┌╟Ц┐╚Ц┐╪Ц┐≈,"         DELIMITED BY SIZE
+                           "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤,"     DELIMITED BY SIZE
+                           "Г√▒Ц│└Г≈┘Е░█Ц│╝Ф┴╠Ц│└,"   DELIMITED BY SIZE
+                           "Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬,"     DELIMITED BY SIZE
+                           "Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬Д╦─Х┤╢Ф²║Д╩╤,"
                                                DELIMITED BY SIZE
-                           "е╛╠Чибл╬╔ч╔╧╔©"    DELIMITED BY SIZE
+                           "И│╘Е©°Г≈┘Е░█Ц┐·Ц┌╧Ц┌©"    DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "2"
-                   STRING  "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "╔а╔╖╔ц╔╞╓╥╓й╓╓,"   DELIMITED BY SIZE
-                           "фЧЁ╟╤Хй╛,"         DELIMITED BY SIZE
-                           "╔╟╔К║╪╔в,"         DELIMITED BY SIZE
-                           "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╟Лцв╬Р╥О,"     DELIMITED BY SIZE
-                           "╣©╓╓ибл╬╓н╟╥╓╓,"   DELIMITED BY SIZE
-                           "йДб╜╔Ё╔А╔С╔х,"     DELIMITED BY SIZE
-                           "йДб╜╔Ё╔А╔С╔х╟Лцв╬Р╥О,"
+                   STRING  "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└,"   DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е▄╨Е┬├,"         DELIMITED BY SIZE
+                           "Ц┌╟Ц┐╚Ц┐╪Ц┐≈,"         DELIMITED BY SIZE
+                           "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤,"     DELIMITED BY SIZE
+                           "Г√▒Ц│└Г≈┘Е░█Ц│╝Ф┴╠Ц│└,"   DELIMITED BY SIZE
+                           "Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬,"     DELIMITED BY SIZE
+                           "Хё°Х╤ЁЦ┌ЁЦ┐║Ц┐ЁЦ┐┬Д╦─Х┤╢Ф²║Д╩╤,"
                                                DELIMITED BY SIZE
-                           "е╛╠Чибл╬╔ч╔╧╔©"    DELIMITED BY SIZE
+                           "И│╘Е©°Г≈┘Е░█Ц┐·Ц┌╧Ц┌©"    DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
-      *        3╓огя╩ъ
+      *        3Ц│╞Е╩┐Ф╜╒
                WHEN    "4"
-                   STRING  "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬,"           DELIMITED BY SIZE
-                           "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬"            DELIMITED BY SIZE
+                   STRING  "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█,"           DELIMITED BY SIZE
+                           "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█"            DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "5"
-                   STRING  "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "фЧЁ╟йл╓к╔а╔╖╔ц╔╞," DELIMITED BY SIZE
-                           "╥ы╧П╔╗╔И║╪,"       DELIMITED BY SIZE
-                           "╔а╔╖╔ц╔╞╓╥╓й╓╓,"   DELIMITED BY SIZE
-                           "╔ч╔╧╔©дС╤║й╛"      DELIMITED BY SIZE
+                   STRING  "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е┬╔Ц│╚Ц┐│Ц┌╖Ц┐┐Ц┌╞," DELIMITED BY SIZE
+                           "Х╜╕Е▒┼Ц┌╗Ц┐╘Ц┐╪,"       DELIMITED BY SIZE
+                           "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└,"   DELIMITED BY SIZE
+                           "Ц┐·Ц┌╧Ц┌©Ф▐░Д╬⌡Е┬├"      DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "6"
-                   STRING  "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬,"           DELIMITED BY SIZE
-                           "фЧЁ╟╤Хй╛,"         DELIMITED BY SIZE
-                           "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╟Лцв╬Р╥О"      DELIMITED BY SIZE
+                   STRING  "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█,"           DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е▄╨Е┬├,"         DELIMITED BY SIZE
+                           "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤"      DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "7"
-                   STRING  "©гне╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "фЧЁ╟╤Хй╛,"         DELIMITED BY SIZE
-                           "фЧЁ╟йл╓к╔а╔╖╔ц╔╞," DELIMITED BY SIZE
-                           "©гне╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "фЭ/╥Н"             DELIMITED BY SIZE
+                   STRING  "Х╗╨Г≥┌Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е▄╨Е┬├,"         DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е┬╔Ц│╚Ц┐│Ц┌╖Ц┐┐Ц┌╞," DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Ф≈╔/Ф°┬"             DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "8"
-                   STRING  "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╟Лцв╬Р╥О,"     DELIMITED BY SIZE
-                           "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬,"           DELIMITED BY SIZE
-                           "фЭ/╥Н"             DELIMITED BY SIZE
+                   STRING  "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤,"     DELIMITED BY SIZE
+                           "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█,"           DELIMITED BY SIZE
+                           "Ф≈╔/Ф°┬"             DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "9"
-                   STRING  "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╟Лцв╬Р╥О,"     DELIMITED BY SIZE
-                           "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "фЭ/╥Н"             DELIMITED BY SIZE
+                   STRING  "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Д╦─Х┤╢Ф²║Д╩╤,"     DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Ф≈╔/Ф°┬"             DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "A"
                WHEN    "B"
-                   STRING  "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "фЧЁ╟йл╓к╔а╔╖╔ц╔╞," DELIMITED BY SIZE
-                           "╥ы╧П╔╗╔И║╪,"       DELIMITED BY SIZE
-                           "╔а╔╖╔ц╔╞╓╥╓й╓╓,"   DELIMITED BY SIZE
-                           "╔ч╔╧╔©дС╤║й╛"      DELIMITED BY SIZE
+                   STRING  "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Е┘╔Е╓√Е┬╔Ц│╚Ц┐│Ц┌╖Ц┐┐Ц┌╞," DELIMITED BY SIZE
+                           "Х╜╕Е▒┼Ц┌╗Ц┐╘Ц┐╪,"       DELIMITED BY SIZE
+                           "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц│≈Ц│╙Ц│└,"   DELIMITED BY SIZE
+                           "Ц┐·Ц┌╧Ц┌©Ф▐░Д╬⌡Е┬├"      DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "Y"
-                   STRING  "лТ╨ч╔Ё║╪╔и,"       DELIMITED BY SIZE
-                           "лТ╨чл╬,"           DELIMITED BY SIZE
-                           "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠"    DELIMITED BY SIZE
+                   STRING  "Х√╛Е┴╓Ц┌ЁЦ┐╪Ц┐┴,"       DELIMITED BY SIZE
+                           "Х√╛Е┴╓Е░█,"           DELIMITED BY SIZE
+                           "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒"    DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
                WHEN    "Z"
-                   STRING  "©гне╧т╟ы╔Ё║╪╔и,"   DELIMITED BY SIZE
-                           "©гне╧т╟ыл╬,"       DELIMITED BY SIZE
-                           "ибл╬,"             DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иёЁ,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╢,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╣,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╤,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╥,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╦,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╧,"     DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╠,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╡,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ёЁ,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╢,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╣,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╤,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╥,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╦,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╠ё╧,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╟,"   DELIMITED BY SIZE
-                           "ибл╬╔Ё║╪╔иё╡ё╠"    DELIMITED BY SIZE
+                   STRING  "Х╗╨Г≥┌Х║▄Г┌╨Ц┌ЁЦ┐╪Ц┐┴,"   DELIMITED BY SIZE
+                           "Х╗╨Г≥┌Х║▄Г┌╨Е░█,"       DELIMITED BY SIZE
+                           "Г≈┘Е░█,"             DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪⌠,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪■,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪∙,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪√,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≈,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≤,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪≥,"     DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▒,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪▓,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪⌠,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪■,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪∙,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪√,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≈,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≤,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▒О╪≥,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪░,"   DELIMITED BY SIZE
+                           "Г≈┘Е░█Ц┌ЁЦ┐╪Ц┐┴О╪▓О╪▒"    DELIMITED BY SIZE
                                          INTO  WRK-REC
                    END-STRING
            END-EVALUATE
@@ -3187,7 +3187,7 @@
        430-CHKCSV-TITLE-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ёцёсёжл╬╬нйт╫╦╫ХмЩ
+      *    О╪ёО╪ЁО╪╤Е░█Г╖╟Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        430-CHKCSV-BODY-SET-SEC     SECTION.
       *
@@ -3472,7 +3472,7 @@
        430-CHKCSV-BODY-SET-EXT.
            EXIT.
       *****************************************************************
-      *    еЩ╥вёцёсёж╫пно╫ХмЩ
+      *    Г╣╠Х╗┬О╪ёО╪ЁО╪╤Е┤╨Е┼⌡Е┤╕Г░├
       *****************************************************************
        440-TOUKEICSV-SEC           SECTION.
       *
@@ -3493,7 +3493,7 @@
            MOVE    "2"                 TO  STOUKEICSV-CODE-TYPE
            MOVE    WRK-REC             TO  STOUKEICSV-CSVDATA
            MOVE    SPACE               TO  STOUKEICSV-TITLE
-           STRING  "╔а╔╖╔ц╔╞╔ч╔╧╔©ёцёсёж"  DELIMITED BY SIZE
+           STRING  "Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪ёО╪ЁО╪╤"  DELIMITED BY SIZE
                    WRK-CSV-TITLE           DELIMITED BY SPACE
                                    INTO    STOUKEICSV-TITLE
            END-STRING
@@ -3506,7 +3506,7 @@
            EXIT.
       *----(04.08.01)--ADD-END-----
       *****************************************************************
-      *    ╫╙н╩║║║║╫ХмЩ
+      *    Г╣┌Д╨├Ц──Ц──Е┤╕Г░├
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -3515,7 +3515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ╔ч╔╥╔СфЭиу╪Хфю╔╣╔ж
+      *    Ц┐·Ц┌╥Ц┐ЁФ≈╔Д╩≤Е▐√Е╬≈Ц┌╣Ц┐√
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -3526,7 +3526,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    й╦╩ЗнСд╧╔а╔╖╔ц╔╞╫ХмЩ
+      *    Ф√┤Е╜≈Е┬≈И∙╥Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        800-STRLEN-CHK-SEC              SECTION.
       *
@@ -3543,7 +3543,7 @@
        800-STRLEN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ю╬нЯфЭкэ╦Лйя╢╧╫ХмЩ
+      *    Х╔©Ф ╕Ф≈╔Ф°╛Х╙·Е╓┴Ф▐⌡Е┤╕Г░├
       *****************************************************************
        800-SEIWA-HEN-SEC        SECTION.
       *
@@ -3559,7 +3559,7 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKMST-SEL-SEC              SECTION.
       *
@@ -3578,7 +3578,7 @@
        900-CHKMST-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©FETCH╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©FETCHЕ┤╕Г░├
       *****************************************************************
        900-CHKMST-FET-SEC              SECTION.
       *
@@ -3598,7 +3598,7 @@
       *
                    MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                    MOVE    CHK-SRYCD       TO  TTNS-CHK-SRYCD
-      *            ею©Т╔ч╔╧╔©╦║╨В
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    IF    ( FLG-TENSU       NOT =   ZERO )
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -3606,7 +3606,7 @@
       *
                    MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                    MOVE    CHK-CD          TO  TTNS-CHK-SRYCD
-      *            ею©Т╔ч╔╧╔©╦║╨В
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    IF    ( FLG-TENSU       NOT =   ZERO )
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -3622,7 +3622,7 @@
        900-CHKMST-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKSND-SEL-SEC              SECTION.
       *
@@ -3642,7 +3642,7 @@
        900-CHKSND-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡FETCH╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓FETCHЕ┤╕Г░├
       *****************************************************************
        900-CHKSND-FET-SEC              SECTION.
       *
@@ -3669,7 +3669,7 @@
                    ELSE
                        MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                        MOVE    CHKSND-SRYCD    TO  TTNS-CHK-SRYCD
-      *                ею©Т╔ч╔╧╔©╦║╨В
+      *                Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                        PERFORM 900-TENSU-KEY-SEL-SEC
                        IF    ( FLG-TENSU       NOT =   ZERO )
                            MOVE    ZERO        TO  FLG-LOOPEND
@@ -3687,7 +3687,7 @@
        900-CHKSND-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKSND-KEY2-SEL-SEC             SECTION.
       *
@@ -3709,7 +3709,7 @@
        900-CHKSND-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKSND-KEY2-FET-SEC             SECTION.
       *
@@ -3729,7 +3729,7 @@
        900-CHKSND-KEY2-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKSND-KEY23-SEL-SEC              SECTION.
       *
@@ -3765,7 +3765,7 @@
        900-CHKSND-KEY23-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╡FETCH╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪▓FETCHЕ┤╕Г░├
       *****************************************************************
        900-CHKSND-KEY23-FET-SEC            SECTION.
       *
@@ -3785,7 +3785,7 @@
        900-CHKSND-KEY23-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ёЁ╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪⌠Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHKTRD-SEL-SEC              SECTION.
       *
@@ -3804,7 +3804,7 @@
        900-CHKTRD-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ёЁFETCH╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪⌠FETCHЕ┤╕Г░├
       *****************************************************************
        900-CHKTRD-FET-SEC              SECTION.
       *
@@ -3824,7 +3824,7 @@
       *
                    MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                    MOVE    CHKTRD-SRYCD    TO  TTNS-CHK-SRYCD
-      *            ею©Т╔ч╔╧╔©╦║╨В
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    IF    ( FLG-TENSU       NOT =   ZERO )
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -3832,7 +3832,7 @@
       *
                    MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                    MOVE    CHKTRD-CD       TO  TTNS-CHK-SRYCD
-      *            ею©Т╔ч╔╧╔©╦║╨В
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    IF    ( FLG-TENSU       NOT =   ZERO )
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -3849,7 +3849,7 @@
        900-CHKTRD-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣╦║╨В╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-CHK005-SEL-SEC              SECTION.
       *
@@ -3868,7 +3868,7 @@
        900-CHK005-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔а╔╖╔ц╔╞╔ч╔╧╔©ё╣FETCH╫ХмЩ
+      *    Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©О╪∙FETCHЕ┤╕Г░├
       *****************************************************************
        900-CHK005-FET-SEC              SECTION.
       *
@@ -3888,7 +3888,7 @@
       *
                    MOVE    HXLST-KJNYMD    TO  TTNS-CHK-YMD
                    MOVE    CHK005-SRYCD    TO  TTNS-CHK-SRYCD
-      *            ею©Т╔ч╔╧╔©╦║╨В
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒
                    PERFORM 900-TENSU-KEY-SEL-SEC
                    IF    ( FLG-TENSU       NOT =   ZERO )
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -3904,7 +3904,7 @@
        900-CHK005-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ею©Т╔ч╔╧╔©╦║╨В╫ХмЩ(KEY4)
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒Е┤╕Г░├(KEY4)
       *****************************************************************
        900-TENSU-KEY4-SEL-SEC          SECTION.
       *
@@ -3928,7 +3928,7 @@
        900-TENSU-KEY4-EXT.
            EXIT.
       *****************************************************************
-      *    ею©Т╔ч╔╧╔©FETCH╫ХмЩ(KEY4)
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©FETCHЕ┤╕Г░├(KEY4)
       *****************************************************************
        900-TENSU-KEY4-FET-SEC          SECTION.
       *
@@ -3948,7 +3948,7 @@
        900-TENSU-KEY4-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ибл╬╦║╨В╫ХмЩ(KEY)
+      *    Г≈┘Е░█Ф╓°Г╢╒Е┤╕Г░├(KEY)
       *****************************************************************
        900-BYOMEI-KEY-SEL-SEC          SECTION.
       *
@@ -3977,7 +3977,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-BYOMEI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ╔╥╔╧╔ф╔Ю╢имЩ╦║╨В╫ХмЩ
+      *    Ц┌╥Ц┌╧Ц┐├Ц┐═Г╝║Г░├Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -4004,7 +4004,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔Ё║╪╔и╦║╨В╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌ЁЦ┐╪Ц┐┴Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-INPUTCD-KEY2-SEL-SEC        SECTION.
       *
@@ -4035,7 +4035,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-INPUTCD-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔╩╔ц╔х╦║╨В╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌╩Ц┐┐Ц┐┬Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-INPUTSET-KEY-SEL-SEC        SECTION.
       *
@@ -4066,7 +4066,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-INPUTSET-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔╩╔ц╔х╦║╨В╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌╩Ц┐┐Ц┐┬Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-INPUTSET-KEY7-SEL-SEC       SECTION.
       *
@@ -4092,7 +4092,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-INPUTSET-KEY7-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔╩╔ц╔хFETCH╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌╩Ц┐┐Ц┐┬FETCHЕ┤╕Г░├
       *****************************************************************
        900-INPUTSET-KEY7-FET-SEC       SECTION.
       *
@@ -4112,7 +4112,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-INPUTSET-KEY7-FET-EXT.
            EXIT.
       *****************************************************************
-      *    фЧно╔Ё║╪╔и╦║╨В╫ХмЩ
+      *    Е┘╔Е┼⌡Ц┌ЁЦ┐╪Ц┐┴Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        900-SRYCDCHG-KEY2-SEL-SEC        SECTION.
       *
@@ -4142,16 +4142,16 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-SRYCDCHG-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ею©Т╔ч╔╧╔©╦║╨В╫ХмЩ(KEY1)
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ф╓°Г╢╒Е┤╕Г░├(KEY1)
       *****************************************************************
        900-TENSU-KEY-SEL-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-TENSU
       *
-      *    ею©Т╔ч╔╧╔©бЮхР╔О║╪╔╞╔а╔╖╔ц╔╞
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©И──И│©Ц┐╞Ц┐╪Ц┌╞Ц┐│Ц┌╖Ц┐┐Ц┌╞
            PERFORM 9001-TTNS-CHK-SEC
       *
-      *    бЮхР╔О║╪╔╞╓кб╦╨ъ╓╥╓й╓╓╬Л╧Г╓оёдёб╓Р╦║╨В
+      *    И──И│©Ц┐╞Ц┐╪Ц┌╞Ц│╚Е╜≤Е°╗Ц│≈Ц│╙Ц│└Е═╢Е░┬Ц│╞О╪╓О╪╒Ц┌▓Ф╓°Г╢╒
            IF    ( TTNS-FLG            =   ZERO )
       *
                INITIALIZE                      TNS-TENSU-REC
@@ -4166,7 +4166,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                IF    ( MCP-RC          =   ZERO )
                    MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
       *
-      *            ею©Т╔ч╔╧╔©бЮхР╔О║╪╔╞╓кйт╫╦╓╧╓К
+      *            Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©И──И│©Ц┐╞Ц┐╪Ц┌╞Ц│╚Г╥╗И⌡├Ц│≥Ц┌▀
                    PERFORM 9001-TTNS-HEN-SEC
                ELSE
                    MOVE    1               TO  FLG-TENSU
@@ -4183,7 +4183,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ею©Т╔ч╔╧╔©бЮхР╔О║╪╔╞╔а╔╖╔ц╔╞╫ХмЩ
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©И──И│©Ц┐╞Ц┐╪Ц┌╞Ц┐│Ц┌╖Ц┐┐Ц┌╞Е┤╕Г░├
       *****************************************************************
        9001-TTNS-CHK-SEC               SECTION.
       *
@@ -4209,7 +4209,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        9001-TTNS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ею©Т╔ч╔╧╔©бЮхР╔О║╪╔╞йт╫╦╫ХмЩ
+      *    Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©И──И│©Ц┐╞Ц┐╪Ц┌╞Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        9001-TTNS-HEN-SEC               SECTION.
       *
@@ -4229,7 +4229,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        9001-TTNS-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡©гне╧т╟ы║кфи╧Ч╫ХмЩ
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Х╗╨Г≥┌Х║▄Г┌╨О╪┴Х╙╜Х╬╪Е┤╕Г░├
       *****************************************************************
        900-B01L-READ-SEC               SECTION.
       *
@@ -4246,7 +4246,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-B01L-READ-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡ибл╬║кфи╧Ч╫ХмЩ
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Г≈┘Е░█О╪┴Х╙╜Х╬╪Е┤╕Г░├
       *****************************************************************
        900-B01R-READ-SEC               SECTION.
       *
@@ -4263,7 +4263,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        900-B01R-READ-EXT.
            EXIT.
       *****************************************************************
-      *    лю╨ы╬ПйС║й╔а╔╖╔ц╔╞ё╡бп╬щ║кфи╧Ч╫ХмЩ
+      *    Ф≤▌Г╢╟Ф┐┘Е═╠О╪┬Ц┐│Ц┌╖Ц┐┐Ц┌╞О╪▓Е╞╬Х╠║О╪┴Х╙╜Х╬╪Е┤╕Г░├
       *****************************************************************
        900-B01T-READ-SEC               SECTION.
       *
@@ -4281,7 +4281,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *----(04.08.01)--ADD-START---
       *****************************************************************
-      *    CHKCSV╔у╔║╔╓╔К╫Гфи╧Ч
+      *    CHKCSVЦ┐∙Ц┌║Ц┌╓Ц┐╚И═├Х╙╜Х╬╪
       *****************************************************************
        900-CHKCSV-READ-SEC         SECTION.
       *
@@ -4296,7 +4296,7 @@ grpsys*    MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *----(04.08.01)--ADD-END-----
       *****************************************************************
-      *    ёдёб╦║╨В╫ХмЩ║йFHETCH╓Б╧т╓╕)
+      *    О╪╓О╪╒Ф╓°Г╢╒Е┤╕Г░├О╪┬FHETCHЦ┌┌Х║▄Ц│├)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -4313,7 +4313,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ёдёб╦║╨В╫ХмЩ║йFHETCH╓о╧т╓О╓й╓╓)
+      *    О╪╓О╪╒Ф╓°Г╢╒Е┤╕Г░├О╪┬FHETCHЦ│╞Х║▄Ц┌▐Ц│╙Ц│└)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -4327,7 +4327,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ёдёбфи╓ъ╧Ч╓ъ╫ХмЩ
+      *    О╪╓О╪╒Х╙╜Ц│©Х╬╪Ц│©Е┤╕Г░├
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -4341,7 +4341,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ёдёб╔╞╔М║╪╔╨╫ХмЩ
+      *    О╪╓О╪╒Ц┌╞Ц┐╜Ц┐╪Ц┌╨Е┤╕Г░├
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

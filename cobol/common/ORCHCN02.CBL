@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCN02.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Âà±¡¾ÚÌÀ½ñ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Âà±¡¾ÚÌÀ½ñ°õºþ
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/10/23    NACL-¿¹ÏÆ     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : é€€é™¢è¨¼æ˜Žæ›¸
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : é€€é™¢è¨¼æ˜Žæ›¸å°åˆ·
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/10/23    NACL-æ£®è„‡     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-ÂÀÅÄ    03.07.01  ½ÐÎÏÀè¥×¥ê¥ó¥¿¥µ¥ÖÄÉ²Ã
-      *  01.00.02    NACL-ÂÀÅÄ    03.09.19  ¼«±¡Îò¤è¤ê·ÑÂ³¤·¤ÆÆþ±¡¤·¤Æ¤¤¤ë
-      *                                     ¾ì¹ç¤ÎÆþ±¡Æü¤ò½¤Àµ
-      *  01.00.03    NACL-¾®Æ¦Âô  06.06.12  Æþ±¡Îò¡¢ÄÌ»»´ü´Ö¤ÎÊÔ½¸ÄÉ²Ã
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/09  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤ªç”°    03.07.01  å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿ã‚µãƒ–è¿½åŠ 
+      *  01.00.02    NACL-å¤ªç”°    03.09.19  è‡ªé™¢æ­´ã‚ˆã‚Šç¶™ç¶šã—ã¦å…¥é™¢ã—ã¦ã„ã‚‹
+      *                                     å ´åˆã®å…¥é™¢æ—¥ã‚’ä¿®æ­£
+      *  01.00.03    NACL-å°è±†æ²¢  06.06.12  å…¥é™¢æ­´ã€é€šç®—æœŸé–“ã®ç·¨é›†è¿½åŠ 
+      *  03.05.00    NACL-å¤šã€…ç´  07/05/09  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *
-      *  04.08.01    NACL-Æ£¸¶    16/02/23  ½ýÉÂÌ¾Íóµ­ºÜÂÐ±þ
-      *  04.08.02    NACL-Æ£¸¶    16/10/11  ½ýÉÂÌ¾µ­ºÜÊýË¡ÊÑ¹¹
-      *  05.00.00    NACL-¿¹ÏÆ    17/06/19  API(GINBEE)ÂÐ±þ
+      *  04.08.01    NACL-è—¤åŽŸ    16/02/23  å‚·ç—…åæ¬„è¨˜è¼‰å¯¾å¿œ
+      *  04.08.02    NACL-è—¤åŽŸ    16/10/11  å‚·ç—…åè¨˜è¼‰æ–¹æ³•å¤‰æ›´
+      *  05.00.00    NACL-æ£®è„‡    17/06/19  API(GINBEE)å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,14 +43,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿
        FD  PRT-FILE.
        01  PRT-REC                 PIC X(10000).
       *
@@ -58,15 +58,15 @@
       *
            COPY    "HCN02V03.INC".
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿ Ì¾¾ÎÎÎ°è 
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿ åç§°é ˜åŸŸ 
            COPY    "CPCOMMONPRT.INC".
            COPY    "CPASGNPARA.INC".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -75,11 +75,11 @@
       *
            03  FLG-YOBI            PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ é ˜åŸŸ
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
            03  SYS-YMD.
@@ -87,14 +87,14 @@
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  MEISAI-IDX          PIC 9(04).
            03  KISAI-IDX           PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYY       PIC 9(04).
@@ -121,7 +121,7 @@
            03  WRK-NYUINYMD        PIC X(08).
            03  WRK-TAIINYMD        PIC X(08).
       *
-      *    Ê¸»úÊÑ´¹
+      *    æ–‡å­—å¤‰æ›
            03  WRK-ZENKAKU-G.
                05  WRK-ZENKAKU         PIC X(02)   OCCURS   10.
            03  WRK-MOJI                PIC X(10).
@@ -136,14 +136,14 @@
            03  WRK-ERRMSG          PIC X(40).
       *
       *----API-ADD-START---
-      *    ÆüÉÕÊÔ½¸
+      *    æ—¥ä»˜ç·¨é›†
            03  WRK-HEN-DATE.
                05  WRK-HEN-YY          PIC X(04).
                05  WRK-HEN-H1          PIC X(01).
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    ÉÂÌ¾ÊÔ½¸
+      *    ç—…åç·¨é›†
            03  WRK-BYOMEI-G.
                05  WRK-BYOMEI          PIC X(76)   OCCURS   2.
       *----API-ADD-END-----
@@ -167,27 +167,27 @@
       *
        01  WRK-HCN02-AREA.
            03  WRK-HCN02-TBL                    OCCURS  8.
-               05  FILLER                   PIC X(6)  VALUE   "¼ïÊÌ¡§".
+               05  FILLER                   PIC X(6)  VALUE   "ç¨®åˆ¥ï¼š".
                05  WRK-HCN02-SYUBETU        PIC X(26).
-               05  FILLER                   PIC X(2)  VALUE  "¡¡".
+               05  FILLER                   PIC X(2)  VALUE  "ã€€".
                05  WRK-HCN02-KIKAN          PIC X(4).
-               05  FILLER                   PIC X(2)  VALUE  "Æü".
-               05  FILLER                   PIC X(6)  VALUE "¡ÊÊ¿À®".
+               05  FILLER                   PIC X(2)  VALUE  "æ—¥".
+               05  FILLER                   PIC X(6)  VALUE "ï¼ˆå¹³æˆ".
                05  WRK-HCN02-KIKANSTRYY     PIC X(4).
-               05  FILLER                   PIC X(2)  VALUE  "Ç¯".
+               05  FILLER                   PIC X(2)  VALUE  "å¹´".
                05  WRK-HCN02-KIKANSTRMM     PIC X(4).
-               05  FILLER                   PIC X(2)  VALUE  "·î".
+               05  FILLER                   PIC X(2)  VALUE  "æœˆ".
                05  WRK-HCN02-KIKANSTRDD     PIC X(4).
-               05  FILLER                   PIC X(8)  VALUE  "Æü¡ÁÊ¿À®".
+               05  FILLER                   PIC X(8)  VALUE  "æ—¥ã€œå¹³æˆ".
                05  WRK-HCN02-KIKANENDYY     PIC X(4).
-               05  FILLER                   PIC X(2)  VALUE  "Ç¯".
+               05  FILLER                   PIC X(2)  VALUE  "å¹´".
                05  WRK-HCN02-KIKANENDMM     PIC X(4).
-               05  FILLER                   PIC X(2)  VALUE  "·î".
+               05  FILLER                   PIC X(2)  VALUE  "æœˆ".
                05  WRK-HCN02-KIKANENDDD     PIC X(4).
-               05  FILLER                   PIC X(8)  VALUE  "Æü¡Ë".
+               05  FILLER                   PIC X(8)  VALUE  "æ—¥ï¼‰".
       *
       *----API-ADD-START---
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó¥Ñ¥é¥á¥¿
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ‘ãƒ©ãƒ¡ã‚¿
        01  PARA-AREA.
            03  PARA-API-DATA           PIC X(01).
            03  PARA-API-CUSTOM-ID      PIC X(30).
@@ -196,86 +196,86 @@
            03  WRK-PARA                PIC X(50).
       *----API-ADD-END-----
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿
+      *    æ‚£è€…ãƒžã‚¹ã‚¿
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´ðËÜ¾ðÊó
+      *    åŸºæœ¬æƒ…å ±
            COPY    "CPSK1001.INC".
       *
-      *    ½êºßÃÏ¡¢Ï¢ÍíÀè
+      *    æ‰€åœ¨åœ°ã€é€£çµ¡å…ˆ
            COPY    "CPSK1002.INC".
       *
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            COPY    "CPSK1010.INC".
       *
-      *    ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾³ä¤êÅö¤Æ¾ðÊó
+      *    å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿åå‰²ã‚Šå½“ã¦æƒ…å ±
            COPY    "CPSK1034.INC".
       *
-      *    Æþ±¡´ðËÜ¾ðÊó
+      *    å…¥é™¢åŸºæœ¬æƒ…å ±
            COPY    "CPSK5000.INC".
       *
-      *    °õºþ¥Ñ¥é¥á¥¿
+      *    å°åˆ·ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ´µ¼ÔÉÂÌ¾
+      *    æ‚£è€…ç—…å
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆþÂà±¡Æü¼èÆÀ¥µ¥Ö¥Ñ¥é¥á¥¿
+      *    å…¥é€€é™¢æ—¥å–å¾—ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSNTYMD.INC".
       *
-      *    ÆüÉÕ¥µ¥Ö¥ë¡¼¥Á¥óÎÎ°è
+      *    æ—¥ä»˜ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³é ˜åŸŸ
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY  "CPORCSNUM.INC".
       *
-      *    Á´³Ñ¥Á¥§¥Ã¥¯¥Ñ¥é¥á¥¿
+      *    å…¨è§’ãƒã‚§ãƒƒã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSKANACHK.INC".
       *
-      *    Âà±¡¾ÚÌÀ½ñÆþ±¡¼èÆÀ¥µ¥Ö
+      *    é€€é™¢è¨¼æ˜Žæ›¸å…¥é™¢å–å¾—ã‚µãƒ–
            COPY    "CPORCHCN02SUB.INC".
       *
       *
-      *    ¥ª¥ó¥é¥¤¥óÄ¢É¼Ì¾¡¦½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾¼èÆÀ¥Ñ¥é
+      *    ã‚ªãƒ³ãƒ©ã‚¤ãƒ³å¸³ç¥¨åãƒ»å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿åå–å¾—ãƒ‘ãƒ©
            COPY    "CPORCSPRTNM.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ÉÂÌ¾ÁÈÎ©¥µ¥Ö
+      *    ç—…åçµ„ç«‹ã‚µãƒ–
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *----API-ADD-START---
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÊÔ½¸¥Ñ¥é¥á¥¿
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    Âà±¡¾ÚÌÀ½ñapi
+      *    é€€é™¢è¨¼æ˜Žæ›¸api
            COPY    "CPFMTAIIN.INC".
       *
            COPY    "CPORCRPMAIN.INC".
       *----API-ADD-END-----
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
-      *    Æþ±¡ÍúÎò
+      *    å…¥é™¢å±¥æ­´
        01  LNK-PTNYUINRRK.
            COPY    "CPPTNYUINRRK.INC"
                REPLACING   //PTNYUINRRK-//
@@ -288,7 +288,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -302,7 +302,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -326,23 +326,23 @@
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
            MOVE    SGETTEMP-FULLNAME   TO  ASGNPARA
       *
-      *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿ç·¨é›†å‡¦ç†
            PERFORM 110-PARA-HENSYU-SEC
       *
       *----API-ADD-START---
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÀßÄê
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®š
            INITIALIZE                  PARA-AREA
-      *    £Á£Ð£ÉÊÖµÑ¥Ç¡¼¥¿¡Ê1:ºîÀ®¤¹¤ë Ä¢É¼°õºþ¤Ê¤·¡Ë
+      *    ï¼¡ï¼°ï¼©è¿”å´ãƒ‡ãƒ¼ã‚¿ï¼ˆ1:ä½œæˆã™ã‚‹ å¸³ç¥¨å°åˆ·ãªã—ï¼‰
            MOVE    "API_DATA"      TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:1)   TO  PARA-API-DATA
            IF     (PARA-API-DATA       =   "1"       )
                CONTINUE
            ELSE
-      *        APIÁ÷¿®¤Ê¤·
+      *        APIé€ä¿¡ãªã—
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
-      *    £Á£Ð£É¥«¥¹¥¿¥à£É£Ä
+      *    ï¼¡ï¼°ï¼©ã‚«ã‚¹ã‚¿ãƒ ï¼©ï¼¤
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA            TO  PARA-API-CUSTOM-ID
@@ -352,11 +352,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¥¿ÊÔ½¸½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿ç·¨é›†å‡¦ç†
       *****************************************************************
        110-PARA-HENSYU-SEC                   SECTION.
       *
-      *    ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾³ä¤êÅö¤Æ¾ðÊóÊÔ½¸
+      *    å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿åå‰²ã‚Šå½“ã¦æƒ…å ±ç·¨é›†
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
            MOVE    SPA-SYSYMD          TO  ORCSPRTNM-SRYYMD
@@ -371,7 +371,7 @@
       *
       *----API-ADD-START---
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó¥Ñ¥é¥á¥¿¼èÆÀ½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ãƒ‘ãƒ©ãƒ¡ã‚¿å–å¾—å‡¦ç†
       *****************************************************************
        1001-OPTION-CALL-SEC        SECTION.
       *
@@ -383,7 +383,7 @@
                                        ORCSPRGOPTIONAREA
            MOVE    SPACE           TO  WRK-PARA
            IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *        È¾³Ñ¤Ç£±Ê¸»úÌÜ¤òÃÍ¤È¤¹¤ë
+      *        åŠè§’ã§ï¼‘æ–‡å­—ç›®ã‚’å€¤ã¨ã™ã‚‹
                MOVE    ORCSPRGOPTION-OT-PARA   TO  WRK-PARA
            END-IF
       *
@@ -392,11 +392,11 @@
            EXIT.
       *----API-ADD-END-----
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *¡¡¡¡°õºþ¹àÌÜÊÔ½¸
+      *ã€€ã€€å°åˆ·é …ç›®ç·¨é›†
             PERFORM 2001-SYORI-SEC
       *----API-ADD-START---
            IF      PARA-API-DATA       =   "1"
@@ -404,7 +404,7 @@
                GO  TO  200-MAIN-EXT
            END-IF
       *----API-ADD-END-----
-      *¡¡¡¡°õºþÍÑ¥Ç¡¼¥¿½ÐÎÏ
+      *ã€€ã€€å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿å‡ºåŠ›
       *
             OPEN   OUTPUT                  PRT-FILE
             MOVE   HCN02               TO  PRT-REC
@@ -417,7 +417,7 @@
             MOVE   SPACE               TO  MKPRT-DEF
             MOVE   ASGNPARA            TO  MKPRT-DAT
             MOVE   SYS-1034-PRTNM(2)   TO  MKPRT-PRTNM
-            MOVE   "Âà±¡¾ÚÌÀ½ñ"        TO  MKPRT-INFO
+            MOVE   "é€€é™¢è¨¼æ˜Žæ›¸"        TO  MKPRT-INFO
             CALL   "ORCSMKPRT1"        USING
                                        ORCSMKPRTAREA
                                        SPA-AREA
@@ -428,11 +428,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                    PTINF-REC
            MOVE    SPA-HOSPNUM       TO  PTINF-HOSPNUM
            MOVE    SPA-PTID          TO  PTINF-PTID
@@ -442,7 +442,7 @@
                GO      TO      2001-SYORI-EXT
            END-IF
       *
-      *    ´ðËÜ¾ðÊó
+      *    åŸºæœ¬æƒ…å ±
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -455,7 +455,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            END-IF
       *
-      *    ½êºßÃÏ¡¢Ï¢ÍíÀè
+      *    æ‰€åœ¨åœ°ã€é€£çµ¡å…ˆ
            INITIALIZE                  SYS-1002-REC
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
@@ -468,7 +468,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1002-REC
            END-IF
       *
-      *    ¿¦°÷¾ðÊó
+      *    è·å“¡æƒ…å ±
            IF          LNK-PTNYUINRRK-DRCD1    =   SPACE
                MOVE    SPACE                   TO  SYS-1010-REC
            ELSE
@@ -487,12 +487,12 @@
       *
       *----API-ADD-START---
            IF      PARA-API-DATA       =   "1"
-      *        £Á£Ð£É½èÍý
+      *        ï¼¡ï¼°ï¼©å‡¦ç†
                PERFORM 700-API-SYORI-SEC
                GO  TO  2001-SYORI-EXT
            END-IF
       *----API-ADD-END-----
-      *    Ä¢É¼ÊÔ½¸½èÍý
+      *    å¸³ç¥¨ç·¨é›†å‡¦ç†
            PERFORM 310-HC01-HEN-SEC
       *
            .
@@ -500,28 +500,28 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä¢É¼ÊÔ½¸½èÍý
+      *    å¸³ç¥¨ç·¨é›†å‡¦ç†
       *****************************************************************
        310-HC01-HEN-SEC                SECTION.
       *
            INITIALIZE  HCN02
       *
-      *    °åÎÅµ¡´ØÌ¾¾Î
+      *    åŒ»ç™‚æ©Ÿé–¢åç§°
            MOVE    SYS-1001-HOSPNAME   TO  HCN02-HOSPNAME
       *
-      *    ½»½ê
+      *    ä½æ‰€
            MOVE    SYS-1002-ADRS       TO  HCN02-HOSPADRS
       *
-      *    ÅÅÏÃÈÖ¹æ
+      *    é›»è©±ç•ªå·
            MOVE    SYS-1002-TEL        TO  HCN02-HOSPTEL
       *
-      *    ¼ç¼£°å»áÌ¾
+      *    ä¸»æ²»åŒ»æ°å
            MOVE    SYS-1010-NAME       TO  HCN02-DRNAME
       *
-      *    ´µ¼Ô»áÌ¾
+      *    æ‚£è€…æ°å
            MOVE    PTINF-NAME          TO  HCN02-PTNAME
       *
-      *    ´µ¼Ô½»½ê
+      *    æ‚£è€…ä½æ‰€
            MOVE    SPACE               TO  WRK-ADRS
            STRING  PTINF-HOME-ADRS         DELIMITED   BY  SPACE
                    PTINF-HOME-BANTI        DELIMITED   BY  SPACE
@@ -529,37 +529,37 @@
            END-STRING
            MOVE    WRK-ADRS            TO  HCN02-PTADRS
       *
-      *    ÅÅÏÃÈÖ¹æ
+      *    é›»è©±ç•ªå·
            MOVE    PTINF-HOME-TEL1     TO  HCN02-PTTEL
       *
-      *    À­ÊÌ
+      *    æ€§åˆ¥
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "¡û"        TO  HCN02-PTSEX(1)
+                   MOVE    "â—‹"        TO  HCN02-PTSEX(1)
                WHEN    "2"
-                   MOVE    "¡û"        TO  HCN02-PTSEX(2)
+                   MOVE    "â—‹"        TO  HCN02-PTSEX(2)
            END-EVALUATE
       *
-      *    ÃÂÀ¸Æü
+      *    èª•ç”Ÿæ—¥
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
       *
            EVALUATE    WRK-HENYMDG(1:4)
-               WHEN    "ÌÀ¼£"
-                   MOVE    "¡û"        TO  HCN02-PTBIRTHG(1)
-               WHEN    "ÂçÀµ"
-                   MOVE    "¡û"        TO  HCN02-PTBIRTHG(2)
-               WHEN    "¾¼ÏÂ"
-                   MOVE    "¡û"        TO  HCN02-PTBIRTHG(3)
-               WHEN    "Ê¿À®"
-                   MOVE    "¡û"        TO  HCN02-PTBIRTHG(4)
+               WHEN    "æ˜Žæ²»"
+                   MOVE    "â—‹"        TO  HCN02-PTBIRTHG(1)
+               WHEN    "å¤§æ­£"
+                   MOVE    "â—‹"        TO  HCN02-PTBIRTHG(2)
+               WHEN    "æ˜­å’Œ"
+                   MOVE    "â—‹"        TO  HCN02-PTBIRTHG(3)
+               WHEN    "å¹³æˆ"
+                   MOVE    "â—‹"        TO  HCN02-PTBIRTHG(4)
            END-EVALUATE
       *
            MOVE    WRK-HENYMDG(5:4)    TO  HCN02-PTBIRTHYY
            MOVE    WRK-HENYMDG(11:4)   TO  HCN02-PTBIRTHMM
            MOVE    WRK-HENYMDG(17:4)   TO  HCN02-PTBIRTHDD
       *
-      *    Ç¯Îð
+      *    å¹´é½¢
            MOVE    SPA-SYSYMD(1:4)     TO  WRK-SPA-SYSYYYY
            COMPUTE WRK-NENREI          =   WRK-SPA-SYSYY
                                        -   WRK-SYY
@@ -570,7 +570,7 @@
            MOVE    WRK-Z3              TO  HCN02-PTNENREI
       *
       *
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†
            INITIALIZE                  SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
@@ -588,7 +588,7 @@
                PERFORM 3101-NTYMD-HEN2-SEC
            END-IF
       *
-      *    ½ýÉÂÌ¾
+      *    å‚·ç—…å
            IF   SYS-5000-TAIKSIKBN     =   "4"  OR  "5"
                INITIALIZE                      PTBYOMEI-REC
                MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -636,11 +636,11 @@
                PERFORM 910-DBCLOSECURSOR-SEC
            END-IF
       *
-      *    ÄÌ»»´ü´ÖÅý·×
+      *    é€šç®—æœŸé–“çµ±è¨ˆ
       *     MOVE    ORCHCMT-TKIKAN      TO  WRK-Z4
       *     MOVE    WRK-Z4              TO  HCN02-TKIKAN
       *
-      *    ÄÌ»»´ü´ÖÇ¯·îÆü
+      *    é€šç®—æœŸé–“å¹´æœˆæ—¥
       *     IF      ORCHCMT-TKIKANYMD   =   SPACE
       *         CONTINUE
       *     ELSE
@@ -651,21 +651,21 @@
       *         MOVE    WRK-HENYMDG(17:4)   TO  HCN02-TKIKANDD
       *     END-IF
       *
-      *    ÆÃµ­»ö¹à
+      *    ç‰¹è¨˜äº‹é …
       *     PERFORM VARYING IDX     FROM    1    BY   1
       *             UNTIL   IDX     >       ORCHCMT-KENSU
-      *    Æþ±¡¼ïÊÌ
+      *    å…¥é™¢ç¨®åˆ¥
       *         MOVE    ORCHCMT-SYUBETU(IDX)    TO  WRK-HCN02-SYUBETU(IDX)
-      *    ÄÌ»»´ü´Ö
+      *    é€šç®—æœŸé–“
       *         MOVE    ORCHCMT-KIKAN(IDX)      TO  WRK-Z4
       *         MOVE    WRK-Z4                  TO  WRK-HCN02-KIKAN(IDX)
-      *    ÄÌ»»´ü´Ö³«»ÏÇ¯·îÆü
+      *    é€šç®—æœŸé–“é–‹å§‹å¹´æœˆæ—¥
       *         MOVE    ORCHCMT-KIKANSTRYMD(IDX)    TO  WRK-SYMD
       *         PERFORM 31012-SEIWA-HEN-SEC
       *         MOVE    WRK-HENYMDG(5:4)    TO  WRK-HCN02-KIKANSTRYY(IDX)
       *         MOVE    WRK-HENYMDG(11:4)   TO  WRK-HCN02-KIKANSTRMM(IDX)
       *         MOVE    WRK-HENYMDG(17:4)   TO  WRK-HCN02-KIKANSTRDD(IDX)
-      *    ÄÌ»»´ü´Ö½ªÎ»Ç¯·îÆü
+      *    é€šç®—æœŸé–“çµ‚äº†å¹´æœˆæ—¥
       *         MOVE    ORCHCMT-KIKANENDYMD(IDX)    TO  WRK-SYMD
       *         PERFORM 31012-SEIWA-HEN-SEC
       *         MOVE    WRK-HENYMDG(5:4)    TO  WRK-HCN02-KIKANENDYY(IDX)
@@ -698,7 +698,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý¡ÊÆþ±¡ÎÁÅù¤Îµ­ºÜ¤Ê¤·¡Ë
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†ï¼ˆå…¥é™¢æ–™ç­‰ã®è¨˜è¼‰ãªã—ï¼‰
       *****************************************************************
        3101-NTYMD-HEN1-SEC              SECTION.
       *
@@ -713,7 +713,7 @@
                    UNTIL ( IDX2    >   SNTYMD-MAX )
                IF    ( LNK-PTNYUINRRK-RRKNUM
                                    =   SNTYMD-RRKNUM (IDX2))
-      *            Æþ±¡Æü
+      *            å…¥é™¢æ—¥
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                                                    WRK-NYUINYMD
@@ -723,7 +723,7 @@
                    MOVE    WRK-HENYMDG(11:4)   TO  HCN02-NYUINMM
                    MOVE    WRK-HENYMDG(17:4)   TO  HCN02-NYUINDD
       *
-      *            Âà±¡Æü
+      *            é€€é™¢æ—¥
                    MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                                                    WRK-TAIINYMD
@@ -744,7 +744,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý¡ÊÆþ±¡ÎÁÅù¤Îµ­ºÜ¤¢¤ê¡Ë
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†ï¼ˆå…¥é™¢æ–™ç­‰ã®è¨˜è¼‰ã‚ã‚Šï¼‰
       *****************************************************************
        3101-NTYMD-HEN2-SEC              SECTION.
       *
@@ -761,7 +761,7 @@
                    UNTIL ( IDX2    >   SNTYMD-MAX )
                IF    ( LNK-PTNYUINRRK-RRKNUM
                                    =   SNTYMD-RRKNUM (IDX2))
-      *            Æþ±¡Æü
+      *            å…¥é™¢æ—¥
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                                                    WRK-NYUINYMD
@@ -777,7 +777,7 @@
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                        TO  LNK-ORCHCN02SUB-NYUINYMD
       *
-      *            Âà±¡Æü
+      *            é€€é™¢æ—¥
                    MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                                                    WRK-TAIINYMD
@@ -802,7 +802,7 @@
                END-IF
            END-PERFORM
       *
-      *    Âà±¡¾ÚÌÀ½ñÍÑÆþ±¡¼èÆÀ¥µ¥Ö
+      *    é€€é™¢è¨¼æ˜Žæ›¸ç”¨å…¥é™¢å–å¾—ã‚µãƒ–
       *
            MOVE    PTINF-HOSPNUM       TO  LNK-ORCHCN02SUB-HOSPNUM
            MOVE    PTINF-PTID          TO  LNK-ORCHCN02SUB-PTID
@@ -826,7 +826,7 @@
                    MOVE  LNK-ORCHCN02SUB-NISSU(MEISAI-IDX)
                                            TO   WRK-Z5
                    MOVE  WRK-Z5            TO   HCN02-NISSU(KISAI-IDX)
-                   MOVE  "Æü´Ö"            TO   HCN02-NISSU(KISAI-IDX)
+                   MOVE  "æ—¥é–“"            TO   HCN02-NISSU(KISAI-IDX)
                                                            (6:)
                END-IF
            END-PERFORM
@@ -855,7 +855,7 @@
            MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z5
            MOVE   WRK-Z5                   TO   HCN02-TKIKAN
       *
-      *    Í½È÷¥¨¥ê¥¢¤Î°õ»ú
+      *    äºˆå‚™ã‚¨ãƒªã‚¢ã®å°å­—
            MOVE      ZERO         TO      FLG-YOBI
            MOVE      ZERO         TO      WRK-YOBI-NISSU
            PERFORM   VARYING   IDX   FROM  MEISAI-IDX  BY  1
@@ -868,13 +868,13 @@
                END-IF
            END-PERFORM
            IF     FLG-YOBI     =     1
-               MOVE  "¾åµ­Â¾"              TO   HCN02-YOBI(1:6)
+               MOVE  "ä¸Šè¨˜ä»–"              TO   HCN02-YOBI(1:6)
                MOVE  WRK-YOBI-NISSU        TO   WRK-Z5
                MOVE  WRK-Z5                TO   HCN02-YOBI(7:5)
-               MOVE  "ÆüÍ­"                TO   HCN02-YOBI(12:4)
+               MOVE  "æ—¥æœ‰"                TO   HCN02-YOBI(12:4)
            END-IF
       *
-      *    °õºþÂÐ¾Ý³°²Õ½ê¤Î½é´ü²½
+      *    å°åˆ·å¯¾è±¡å¤–ç®‡æ‰€ã®åˆæœŸåŒ–
            IF   SYS-5000-TAIKSIKBN     =   "2"
                MOVE   SPACE        TO  HCN02-TKIKAN
                MOVE   SPACE        TO  HCN02-TKIKANGEN
@@ -928,7 +928,7 @@
        3101-NTYMD-HEN2-EXT.
            EXIT.
       *****************************************************************
-      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *    è¥¿æš¦æ—¥æœ¬èªžå¤‰æ›å‡¦ç†
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -940,13 +940,13 @@
                                                LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "¡¡"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "ã€€"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Á´³ÑÊÑ´¹½èÍý
+      *    å…¨è§’å¤‰æ›å‡¦ç†
       *****************************************************************
        2009-HENKAN-SEC                 SECTION.
       *
@@ -968,32 +968,32 @@
       *
       *----API-ADD-START---
       *****************************************************************
-      *    £Á£Ð£É½èÍý
+      *    ï¼¡ï¼°ï¼©å‡¦ç†
       *****************************************************************
        700-API-SYORI-SEC           SECTION.
       *
            INITIALIZE              FMTAIIN-REC
       *
            MOVE    "taiin_shomeisho"   TO  FMTAIIN-FORM-ID
-      *    ¥×¥ê¥ó¥¿Ì¾
+      *    ãƒ—ãƒªãƒ³ã‚¿å
            MOVE    SYS-1034-PRTNM(2)   TO  FMTAIIN-PRINTER
       *
-      *    °åÎÅµ¡´ØÌ¾¾Î
+      *    åŒ»ç™‚æ©Ÿé–¢åç§°
            MOVE    SYS-1001-HOSPNAME   TO  FMTAIIN-HOSP-NAME(1)
-      *    ½»½ê
+      *    ä½æ‰€
            MOVE    SYS-1002-POST       TO  FMTAIIN-HOSP-POST
            MOVE    SYS-1002-ADRS       TO  FMTAIIN-HOSP-ADRS(1)
       *
-      *    ÅÅÏÃÈÖ¹æ
+      *    é›»è©±ç•ªå·
            MOVE    SYS-1002-TEL        TO  FMTAIIN-HOSP-TEL
       *
-      *    ¼ç¼£°å»áÌ¾
+      *    ä¸»æ²»åŒ»æ°å
            MOVE    LNK-PTNYUINRRK-DRCD1
                                        TO  FMTAIIN-DR-CODE
            MOVE    SYS-1010-NAME       TO  FMTAIIN-DR-NAME
            MOVE    SYS-1010-KANANAME   TO  FMTAIIN-DR-KANANAME
       *
-      *    ´µ¼Ô»áÌ¾
+      *    æ‚£è€…æ°å
            MOVE    SPA-PTNUM           TO  FMTAIIN-PTNUM
            MOVE    PTINF-NAME          TO  FMTAIIN-NAME
            MOVE    PTINF-KANANAME      TO  FMTAIIN-KANANAME
@@ -1008,7 +1008,7 @@
            MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
            MOVE    WRK-HEN-DATE        TO  FMTAIIN-BIRTHDAY
       *
-      *    Ç¯Îð
+      *    å¹´é½¢
            MOVE    SPA-SYSYMD(1:4)     TO  WRK-SPA-SYSYYYY
            COMPUTE WRK-NENREI          =   WRK-SPA-SYSYY
                                        -   WRK-SYY
@@ -1017,14 +1017,14 @@
            END-IF
            MOVE    WRK-NENREI          TO  FMTAIIN-AGE
       *
-      *    ´µ¼Ô½»½ê
+      *    æ‚£è€…ä½æ‰€
            MOVE    PTINF-HOME-ADRS     TO  FMTAIIN-HOME-ADRS(1)
            MOVE    PTINF-HOME-BANTI    TO  FMTAIIN-HOME-ADRS(2)
       *
            MOVE    PTINF-HOME-POST     TO  FMTAIIN-HOME-POST
            MOVE    PTINF-HOME-TEL1     TO  FMTAIIN-HOME-TEL
       *
-      *    È¯¹ÔÆü
+      *    ç™ºè¡Œæ—¥
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            MOVE    SPACE               TO  WRK-HEN-DATE
            MOVE    WRK-SYMD(1:4)       TO  WRK-HEN-YY
@@ -1034,7 +1034,7 @@
            MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
            MOVE    WRK-HEN-DATE        TO  FMTAIIN-PRTYMD
       *
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†
            INITIALIZE                  SYS-5000-REC
            MOVE    "5000"              TO  SYS-5000-KANRICD
            MOVE    "*"                 TO  SYS-5000-KBNCD
@@ -1054,7 +1054,7 @@
       *
            MOVE    SPACE       TO  WRK-BYOMEI-G
       *
-      *    ½ýÉÂÌ¾
+      *    å‚·ç—…å
            IF   SYS-5000-TAIKSIKBN     =   "4"  OR  "5"
                INITIALIZE                      PTBYOMEI-REC
                MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -1110,7 +1110,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý¡ÊÆþ±¡ÎÁÅù¤Îµ­ºÜ¤Ê¤·¡Ë
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†ï¼ˆå…¥é™¢æ–™ç­‰ã®è¨˜è¼‰ãªã—ï¼‰
       *****************************************************************
        710-API-NTYMD-HEN1-SEC          SECTION.
       *
@@ -1125,7 +1125,7 @@
                    UNTIL ( IDX2    >   SNTYMD-MAX )
                IF    ( LNK-PTNYUINRRK-RRKNUM
                                    =   SNTYMD-RRKNUM (IDX2))
-      *            Æþ±¡Æü
+      *            å…¥é™¢æ—¥
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                                                    WRK-NYUINYMD
@@ -1137,7 +1137,7 @@
                    MOVE    WRK-SYMD(7:2)       TO  WRK-HEN-DD
                    MOVE    WRK-HEN-DATE        TO  FMTAIIN-NYUINYMD
       *
-      *            Âà±¡Æü
+      *            é€€é™¢æ—¥
                    MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                                                    WRK-TAIINYMD
@@ -1158,7 +1158,7 @@
        710-API-NTYMD-HEN1-EXT.
            EXIT.
       *****************************************************************
-      *    ÆþÂà±¡ÆüÊÔ½¸½èÍý¡ÊÆþ±¡ÎÁÅù¤Îµ­ºÜ¤¢¤ê¡Ë
+      *    å…¥é€€é™¢æ—¥ç·¨é›†å‡¦ç†ï¼ˆå…¥é™¢æ–™ç­‰ã®è¨˜è¼‰ã‚ã‚Šï¼‰
       *****************************************************************
        710-API-NTYMD-HEN2-SEC              SECTION.
       *
@@ -1175,7 +1175,7 @@
                    UNTIL ( IDX2    >   SNTYMD-MAX )
                IF    ( LNK-PTNYUINRRK-RRKNUM
                                    =   SNTYMD-RRKNUM (IDX2))
-      *            Æþ±¡Æü
+      *            å…¥é™¢æ—¥
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                                TO  WRK-SYMD
                                                    WRK-NYUINYMD
@@ -1190,7 +1190,7 @@
                    MOVE    SNTYMD-NYUINYMD(IDX2)
                                        TO  LNK-ORCHCN02SUB-NYUINYMD
       *
-      *            Âà±¡Æü
+      *            é€€é™¢æ—¥
                    MOVE    LNK-PTNYUINRRK-TAIINYMD
                                                TO  WRK-SYMD
                                                    WRK-TAIINYMD
@@ -1211,7 +1211,7 @@
                END-IF
            END-PERFORM
       *
-      *    Âà±¡¾ÚÌÀ½ñÍÑÆþ±¡¼èÆÀ¥µ¥Ö
+      *    é€€é™¢è¨¼æ˜Žæ›¸ç”¨å…¥é™¢å–å¾—ã‚µãƒ–
       *
            MOVE    PTINF-HOSPNUM       TO  LNK-ORCHCN02SUB-HOSPNUM
            MOVE    PTINF-PTID          TO  LNK-ORCHCN02SUB-PTID
@@ -1263,7 +1263,7 @@
            MOVE   LNK-ORCHCN02SUB-TKIKAN   TO   WRK-Z5
            MOVE   WRK-Z5                   TO   FMTAIIN-IPPAN-NISSU
       *
-      *    Í½È÷¥¨¥ê¥¢¤Î°õ»ú
+      *    äºˆå‚™ã‚¨ãƒªã‚¢ã®å°å­—
            MOVE      ZERO         TO      FLG-YOBI
            MOVE      ZERO         TO      WRK-YOBI-NISSU
            PERFORM   VARYING   IDX   FROM  MEISAI-IDX  BY  1
@@ -1279,7 +1279,7 @@
            MOVE   WRK-YOBI-NISSU   TO   WRK-Z5
            MOVE   WRK-Z5           TO   FMTAIIN-OTHER-NISSU
       *
-      *    °õºþÂÐ¾Ý³°²Õ½ê¤Î½é´ü²½
+      *    å°åˆ·å¯¾è±¡å¤–ç®‡æ‰€ã®åˆæœŸåŒ–
            IF   SYS-5000-TAIKSIKBN     =   "2"
                MOVE   SPACE        TO  FMTAIIN-IPPAN-NISSU
                MOVE   SPACE        TO  FMTAIIN-BASEYMD
@@ -1315,17 +1315,17 @@
        710-API-NTYMD-HEN2-EXT.
            EXIT.
       *****************************************************************
-      *    £Á£Ð£ÉÁ÷¿®½èÍý
+      *    ï¼¡ï¼°ï¼©é€ä¿¡å‡¦ç†
       *****************************************************************
        790-API-CALL-SEC            SECTION.
       *
-      *    ¥«¥¹¥¿¥à£É£Ä
+      *    ã‚«ã‚¹ã‚¿ãƒ ï¼©ï¼¤
            MOVE    PARA-API-CUSTOM-ID  TO  FMTAIIN-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "taiin_shomeisho"   TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "Âà±¡¾ÚÌÀ½ñ"        TO  RPMAIN-TITLE
+           MOVE    "é€€é™¢è¨¼æ˜Žæ›¸"        TO  RPMAIN-TITLE
            MOVE    "fm_discharge_certificate"
                                        TO  MCP-TABLE
            MOVE    FMTAIIN-DATA        TO  RPMAIN-DATA
@@ -1339,7 +1339,7 @@
            EXIT.
       *----API-ADD-END-----
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¤ß¹þ¤ß
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­ã¿è¾¼ã¿
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1364,7 +1364,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    ç®¡ç†ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
       *****************************************************************
        800-SYSKANRI-READ-SEC           SECTION.
       *
@@ -1388,7 +1388,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÉÂÌ¾¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ç—…åãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTBYO-READ-SEC           SECTION.
       *
@@ -1406,7 +1406,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1415,7 +1415,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1432,7 +1432,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1446,7 +1446,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *

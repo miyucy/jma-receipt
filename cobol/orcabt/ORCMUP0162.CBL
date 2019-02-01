@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0162.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ץ�����४�ץ���󹹿�����
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : プログラムオプション更新処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08.02.04    NACL-��ƣ     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08.02.04    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.03.00     NACL-����    08/05/28  ���顼���������б�
-      * 04.04.00     NACL-��ƣ    09/03/25  �����ǡ����쥤�������ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.03.00     NACL-太田    08/05/28  エラー処理強化対応
+      * 04.04.00     NACL-伊藤    09/03/25  更新データレイアウト変更
       *                                     OPTION 5000 -> 44000
-      * 04.04.00     NACL-����    09/03/27  �����ɲå����å�����
-      * 04.07.01     NACL-����    13/07/04  OPID���å�
+      * 04.04.00     NACL-太田    09/03/27  ２重追加チェック修正
+      * 04.07.01     NACL-森脇    13/07/04  OPIDセット
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,17 +40,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ץ�����४�ץ���󹹿��ǡ���
+      *    入力：プログラムオプション更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -59,18 +59,18 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ץ�����४�ץ���󹹿��ǡ���
+      *    入力：プログラムオプション更新データ
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-PRGOPTIONWK-REC.
            03  ERR-PRGOPTIONWK-SYORIKBN       PIC  X(01).
            COPY    "CPPRGOPTION.INC"   REPLACING  //PRGOPTION-//
                                               BY  //ERR-PRGOPTIONWK-//.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -78,25 +78,25 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-PRGOPTION           PIC 9(01).
            03  FLG-LF                  PIC 9(01).
       *
-      *    ����ǥå����ΰ�
+      *    インデックス領域
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
@@ -107,7 +107,7 @@ grpsys     COPY    "COMMON-SPA".
            03  IDXP                    PIC 9(05).
            03  IDXS                    PIC 9(05).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -124,7 +124,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -151,7 +151,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-ATO-OPTION      PIC X(200) OCCURS 100.
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ��ޥ����ǡ��������ΰ�
+      *    旧マスタデータ退避領域
        01  PRGWK-REC.
            03  PRGWK-SYORIKBN      PIC  X(1).
            03  PRGWK-HOSPNUM       PIC  9(2).
@@ -168,11 +168,11 @@ grpsys     COPY    "COMMON-SPA".
            03  PRGWK-V01-AREA-01       PIC X(5044).
            03  PRGWK-V01-AREA-02       PIC X(55).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUP0162.CBL��".
+                                       "【PGID:ORCMUP0162.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -194,31 +194,31 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
        01  PRGOPTIONWK-REC.
            03  PRGOPTIONWK-SYORIKBN           PIC  X(01).
            COPY    "CPPRGOPTION.INC"   REPLACING   //PRGOPTION-//
                                               BY   //PRGOPTIONWK-//.
-      *    �ץ�����४�ץ����
+      *    プログラムオプション
        01  PRGOPTION-REC.
            COPY    "CPPRGOPTION.INC".
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -229,7 +229,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -245,7 +245,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -271,7 +271,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
@@ -279,10 +279,10 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �ץ�����४�ץ����ǡ����ɹ��߽���
+      *    プログラムオプションデータ読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -290,7 +290,7 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -303,7 +303,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -314,7 +314,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -325,7 +325,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -339,32 +339,32 @@ grpsys     COPY    "COMMON-SPA".
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO                TO  WRK-ERRCD
       *
            EVALUATE    PRGOPTIONWK-SYORIKBN
-      *        �ɲ�
+      *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ����
+      *        更新
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ���
+      *        削除
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    �ץ�����४�ץ����ǡ����ɹ��߽���
+      *    プログラムオプションデータ読込み処理
            PERFORM 900-IN-KENSAKU-SEC
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�  ����
+      *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
@@ -387,13 +387,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    �ɲå��顼��Ʊ�쥭��¸�ߡ�
+      *    追加エラー（同一キー存在）
            IF      FLG-PRGOPTION       =   ZERO
       *        MOVE    1               TO  WRK-ERRCD
       *        PERFORM 2040-ERR-SYORI-SEC
                CONTINUE
            ELSE
-      *        �ģ��ɲ�
+      *        ＤＢ追加
                PERFORM 20101-PRGOPTION-INS-SEC
            END-IF
            .
@@ -401,7 +401,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
@@ -425,12 +425,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-PRGOPTION       =   ZERO
-      *        �ģ¹���
+      *        ＤＢ更新
                PERFORM 20101-PRGOPTION-UPD-SEC
            ELSE
                MOVE    5               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
-      *        �ģ��ɲ�
+      *        ＤＢ追加
                PERFORM 20101-PRGOPTION-INS-SEC
            END-IF
            .
@@ -438,7 +438,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���  ����
+      *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
@@ -462,7 +462,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-PRGOPTION       =   ZERO
-      *        �ģº��
+      *        ＤＢ削除
                PERFORM 20101-PRGOPTION-DEL-SEC
            ELSE
                MOVE    6               TO  WRK-ERRCD
@@ -473,7 +473,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲ�  ����
+      *    ＤＢ追加  処理
       *****************************************************************
        20101-PRGOPTION-INS-SEC  SECTION.
       *
@@ -500,12 +500,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        20101-PRGOPTION-UPD-SEC  SECTION.
       *
-      *    ����ʸ�Ϲ����ǡ������֤�����
-      *    ���ץ����ǡ����ϴ�¸�ǡ�������Ӥ����֤�����
+      *    説明文は更新データに置き換え
+      *    オプションデータは既存データと比較して置き換え
            IF     (PRGOPTIONWK-KBNCD   =   "EXPLANATION")
                PERFORM 220-PRGOPTION-EDIT-SEC
            ELSE
@@ -531,7 +531,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģº��  ����
+      *    ＤＢ削除  処理
       *****************************************************************
        20101-PRGOPTION-DEL-SEC  SECTION.
       *
@@ -554,7 +554,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        20101-PRGOPTION-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���ץ�����Խ�����
+      *    オプション編集処理
       *****************************************************************
        220-PRGOPTION-EDIT-SEC         SECTION.
       *
@@ -611,11 +611,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ץ�����Խ��ޡ�������
+      *    オプション編集マージ処理
       *****************************************************************
        220-PRGOPTION-HENSYU-SEC       SECTION.
       *
-      *    ��¸�ǡ���
+      *    既存データ
            MOVE    SPACE               TO  WRK-OPTION
            MOVE    1                   TO  WRK-OPTION-LEN
            STRING  PRGOPTION-OPTION    DELIMITED   BY  SIZE
@@ -657,7 +657,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *----(04.07.01)--ADD-END-----
       *
-      *    �����ǡ���
+      *    更新データ
            INITIALIZE                      PRGOPTION-REC
            MOVE    PRGOPTIONWK-REC(2:) TO  PRGOPTION-REC
       *
@@ -678,7 +678,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM UNTIL ( IDX-PNT1    >   WRK-OPTION-LEN )
                    OR    ( PRGOPTION-OPTION(IDX-PNT1:) =   SPACE )
-      *        �Ԥ������ޤ�
+      *        行が終わるまで
                IF    ( PRGOPTION-OPTION(IDX-PNT1:2)    =   "\n" )
                    COMPUTE CNT-ATO     =   CNT-ATO     +   1
                    MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
@@ -692,11 +692,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                END-IF
                COMPUTE IDX-PNT1    =   IDX-PNT1   +   1
            END-PERFORM
-      *    �ǽ���
+      *    最終行
            COMPUTE CNT-ATO     =   CNT-ATO     +   1
            MOVE    WRK-ATO-NAIYO   TO  WRK-ATO-OPTION(CNT-ATO)
       *
-      *    �ޡ�������
+      *    マージ処理
            MOVE    1                   TO  IDX-PNT1
            MOVE    1                   TO  IDX-PNT2
            MOVE    1                   TO  IDX-PNT3
@@ -712,13 +712,13 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        UNTIL ( IDX-PNT1 >   200 )
                        OR    ( WRK-ATO-NAIYO(IDX-PNT1:)    =  SPACE )
                        OR    ( FLG-LF  =   1 )
-      *            �����ȥ����å�
+      *            コメントチェック
                    IF      WRK-ATO-NAIYO(IDX-PNT1:1)   =   "="
                        PERFORM VARYING IDY FROM 1 BY 1
                                UNTIL ( IDY >   CNT-MAE )
                                OR    ( FLG-LF  =   1 )
                            MOVE    WRK-MAE-OPTION(IDY) TO  WRK-MAE-NAIYO
-      *                    ���ץ��������å�
+      *                    オプションチェック
                            IF      WRK-ATO-NAIYO(1:1)    =   "#"
                                COMPUTE IDX-PNT2  =   IDX-PNT1  -   1
                                IF      WRK-ATO-NAIYO(2:IDX-PNT2)
@@ -788,23 +788,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
        220-PRGOPTION-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    PRGOPTIONWK-REC     TO  ERR-PRGOPTIONWK-REC
            WRITE   ERR-PRGOPTIONWK-REC
            ADD     1                   TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
            .
        2040-ERR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -813,18 +813,18 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    PRGOPTIONWK-KBNCD     TO  WRK-KBNCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "���ץ����ޥ�����Ͽ�Ѥ�"
+                   MOVE  "オプションマスタ登録済み"
                                        TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "�ɲå��顼"  TO  WRK-MSG-01
+                   MOVE  "追加エラー"  TO  WRK-MSG-01
                WHEN    3
-                   MOVE  "�������顼"  TO  WRK-MSG-01
+                   MOVE  "更新エラー"  TO  WRK-MSG-01
                WHEN    4
-                   MOVE  "������顼"  TO  WRK-MSG-01
+                   MOVE  "削除エラー"  TO  WRK-MSG-01
                WHEN    5
-                   MOVE  "�����оݤʤ�"  TO  WRK-MSG-01
+                   MOVE  "更新対象なし"  TO  WRK-MSG-01
                WHEN    6
-                   MOVE  "����оݤʤ�"  TO  WRK-MSG-01
+                   MOVE  "削除対象なし"  TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA        TO  PLF-REC
@@ -835,7 +835,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -845,7 +845,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0162)* PLFFILE OPN STS[" STS-PLF "]"
@@ -862,14 +862,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -903,7 +903,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *     �ץ�����४�ץ�����ɹ��߽���
+      *     プログラムオプション読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -923,7 +923,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
           EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ����ޥ����ѹ��ǡ����������
+      *    プログラムオプションマスタ変更データ設定処理
       *****************************************************************
        900-IN-DATA-SET-SEC         SECTION.
       *
@@ -939,7 +939,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѹ���쥤�����Ȱ�������
+      *    変更後レイアウト移送処理
       *****************************************************************
        900-PRGWK-SET              SECTION.
       *
@@ -966,7 +966,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѹ���쥤�����Ȱ�������
+      *    変更後レイアウト移送処理
       *****************************************************************
        900-PRGWK-V01-SET          SECTION.
       *
@@ -982,7 +982,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ�����ɹ�
+      *    プログラムオプション読込
       *****************************************************************
        910-PRGOPTION-READ-SEC   SECTION.
       *
@@ -1000,7 +1000,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1018,7 +1018,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1036,7 +1036,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
@@ -1047,7 +1047,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

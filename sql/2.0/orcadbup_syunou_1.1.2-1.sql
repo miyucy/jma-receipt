@@ -1,8 +1,8 @@
 --                                    --
--- ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                 --
+-- åŽç´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                 --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---       µëÉÕÂÐ¾Ý³°ÅÀ¿ôÂÐ±þ¡ÊÊ¡²¬¡Ë   --
+-- é …ç›®ã®è¿½åŠ                          --
+--       çµ¦ä»˜å¯¾è±¡å¤–ç‚¹æ•°å¯¾å¿œï¼ˆç¦å²¡ï¼‰   --
 --          KYUFUGAI-SHOSHIN-TEN      --
 --          KYUFUGAI-SIDOU-TEN        --
 --          KYUFUGAI-OSIN1-TEN        --
@@ -13,7 +13,7 @@
 -- Create Date : 2003/08/21           --
 --                                    --
 
--- TBL_SYUNOUWK ºîÀ®                  --
+-- TBL_SYUNOUWK ä½œæˆ                  --
 
 create table TBL_SYUNOUWK (
 HOSPID				char(24)	not null,
@@ -245,16 +245,16 @@ constraint TBL_SYUNOUWK_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
 
--- TBL_SYUNOU ¢ª TBL_SYUNOUWK   --
+-- TBL_SYUNOU â†’ TBL_SYUNOUWK   --
 
 insert into TBL_SYUNOUWK
 select * from TBL_SYUNOU;
 
--- TBL_SYUNOU ºï½ü               --
+-- TBL_SYUNOU å‰Šé™¤               --
 
 drop table TBL_SYUNOU;
 
--- TBL_SYUNOU ºîÀ®               --
+-- TBL_SYUNOU ä½œæˆ               --
 
 create table TBL_SYUNOU (
 HOSPID				char(24)	not null,
@@ -492,7 +492,7 @@ constraint TBL_SYUNOU_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
 
--- TBL_SYUNOUWK ¢ª TBL_SYUNOU   --
+-- TBL_SYUNOUWK â†’ TBL_SYUNOU   --
 
 insert into TBL_SYUNOU
 (HOSPID,
@@ -819,7 +819,7 @@ FUKU_DENPNUM,
 FUKU_KBN,
 TERMID,OPID,CREYMD,UPYMD,UPHMS from TBL_SYUNOUWK;
 
--- TBL_SYUNOUWK ºï½ü             --
+-- TBL_SYUNOUWK å‰Šé™¤             --
 
 drop table TBL_SYUNOUWK;  
 

@@ -1,35 +1,35 @@
 kanri_cd    : "5110"
-name        : "ÆÃÄêÆş±¡ÎÁ¡ÊÉÂÅï¡Ë"
+name        : "ç‰¹å®šå…¥é™¢æ–™ï¼ˆç—…æ£Ÿï¼‰"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "SRYCD"
-  item_jp   : "¿ÇÎÅ¥³¡¼¥É"
+  item_jp   : "è¨ºç™‚ã‚³ãƒ¼ãƒ‰"
   type      : "X"
   start     : 1
   length    : 9
 - item_no   : 2
   item      : "BTU-TOKUTEINYUIN-NM"
-  item_jp   : "ÆÃÄêÆş±¡ÎÁÌ¾¾Î"
+  item_jp   : "ç‰¹å®šå…¥é™¢æ–™åç§°"
   type      : "X"
   start     : 10
   length    : 60
 - item_no   : 3
   item      : "BTU-TOKUTEINYUIN-NM2"
-  item_jp   : "ÆÃÄêÆş±¡ÎÁÌ¾¾Î£²"
+  item_jp   : "ç‰¹å®šå…¥é™¢æ–™åç§°ï¼’"
   type      : "X"
   start     : 70
   length    : 24
 - item_no   : 4
   item      : "SEIKATU-RYOKBN"
-  item_jp   : "À¸³èÎÅÍÜ¶èÊ¬"
+  item_jp   : "ç”Ÿæ´»ç™‚é¤ŠåŒºåˆ†"
   type      : "X"
   start     : 94
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 95
   length    : 406

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0251.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ݸ��ԥޥ����ʲ���ݸ��˹�������
-      *                    : �ʥ饤���󥹥ޥ���������ѡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  14/02/12    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : 保険者マスタ（介護保険）更新処理
+      *                    : （ライセンスマスタから使用）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  14/02/12    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,17 +35,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ������å��ޥ����ե�����
+      *    入力：チェックマスタファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,21 +54,21 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ݸ��Թ����ǡ���
+      *    入力：保険者更新データ
        FD  IN-FILE.
        01  IN-REC.
            03  IN-SYORIKBN             PIC  X(01).
            COPY    "CPHKNJAINFCARE.INC"    REPLACING
                                            //HKNJAC-// BY //IN-//.
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-REC.
            03  ERR-SYORIKBN            PIC  X(01).
            COPY    "CPHKNJAINFCARE.INC"    REPLACING
                                            //HKNJAC-// BY //ERR-//.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                 PIC X(1000).
       *
@@ -76,27 +76,27 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-IN                  PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
            03  FLG-HKNJA               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-IN                  PIC 9(06).
@@ -110,7 +110,7 @@
            03  SYS-YY                  PIC 9(02).
            03  SYS-MM                  PIC 9(02).
            03  SYS-DD                  PIC 9(02).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -124,11 +124,11 @@
            03  WRK-IN                  PIC X(01).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUP0251.CBL��".
+                                       "【PGID:ORCMUP0251.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -146,27 +146,27 @@
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �ݸ��ԡʲ���ݸ���
+      *    保険者（介護保険）
        01  HKNJAINFCARE-REC.
            COPY    "CPHKNJAINFCARE.INC".
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -177,7 +177,7 @@
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -193,7 +193,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -210,10 +210,10 @@
       *        DISPLAY "DBOPEN ERR"
       *    END-IF.
       *
-      *    �ե��������
+      *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT           IN-FILE
            IF  STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -221,10 +221,10 @@
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �ݸ����ѹ��ե������ɹ��߽���
+      *    保険者変更ファイル読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -232,7 +232,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
@@ -245,7 +245,7 @@
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -256,7 +256,7 @@
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -267,7 +267,7 @@
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -281,42 +281,42 @@
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            MOVE    ZERO                TO  WRK-ERRCD
       *
            EVALUATE    IN-SYORIKBN
-      *        �ɲ�
+      *        追加
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ����
+      *        更新
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ���
+      *        削除
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    �ݸ����ѹ��ե������ɹ��߽���
+      *    保険者変更ファイル読込み処理
            PERFORM 900-IN-KENSAKU-SEC
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�  ����
+      *    追加  処理
       *****************************************************************
        2010-INSERT-SYORI-SEC               SECTION.
       *
            PERFORM 910-HKNJA-CHECK-SEC
       *
            IF      FLG-HKNJA           =   ZERO
-      *        ���˥쥳���ɤ�¸�ߤ���ʤ�й�����Ԥ�
+      *        既にレコードが存在するならば更新を行う
                PERFORM 20201-HKNJA-UPD-SEC
            ELSE
-      *        �ɲ�
+      *        追加
                PERFORM 20101-HKNJA-INS-SEC
            END-IF
            .
@@ -324,7 +324,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ��ɲ�  ����
+      *    ＤＢ追加  処理
       *****************************************************************
        20101-HKNJA-INS-SEC         SECTION.
       *
@@ -352,17 +352,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ����  ����
+      *    更新  処理
       *****************************************************************
        2020-UPDATE-SYORI-SEC       SECTION.
       *
            PERFORM 910-HKNJA-CHECK-SEC
       *
            IF      FLG-HKNJA           =   ZERO
-      *        ����
+      *        更新
                PERFORM 20201-HKNJA-UPD-SEC
            ELSE
-      *        �쥳���ɤ�¸�ߤ��ʤ��ʤ���ɲä�Ԥ�
+      *        レコードが存在しないならば追加を行う
                PERFORM 20101-HKNJA-INS-SEC
            END-IF
            .
@@ -370,7 +370,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹���  ����
+      *    ＤＢ更新  処理
       *****************************************************************
        20201-HKNJA-UPD-SEC         SECTION.
       *
@@ -396,14 +396,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���  ����
+      *    削除  処理
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
            PERFORM 910-HKNJA-CHECK-SEC
       *
            IF      FLG-HKNJA           =   ZERO
-      *        ���
+      *        削除
                PERFORM 20301-HKNJA-DEL-SEC
            ELSE
                MOVE    7                   TO  WRK-ERRCD
@@ -414,7 +414,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģº��  ����
+      *    ＤＢ削除  処理
       *****************************************************************
        20301-HKNJA-DEL-SEC         SECTION.
       *
@@ -436,7 +436,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ԥǡ������åȽ���
+      *    保険者データセット処理
       *****************************************************************
        2099-HKNJA-SET-SEC          SECTION.
       *
@@ -458,23 +458,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    IN-REC              TO  ERR-REC
            WRITE   ERR-REC
            ADD     1                   TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
            .
        2040-ERR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -482,25 +482,25 @@
            MOVE    IN-HKNJANUM         TO  WRK-HKNJANUM
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "�ݸ�����Ͽ�Ѥ�"
+                   MOVE    "保険者登録済み"
                                        TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "�ɲå��顼"
+                   MOVE    "追加エラー"
                                        TO  WRK-MSG-01
                WHEN    3
-                   MOVE    "�����оݤʤ�"
+                   MOVE    "更新対象なし"
                                        TO  WRK-MSG-01
                WHEN    4
-                   MOVE    "����̵�����顼"
+                   MOVE    "更新無しエラー"
                                        TO  WRK-MSG-01
                WHEN    5
-                   MOVE    "�������顼"
+                   MOVE    "更新エラー"
                                        TO  WRK-MSG-01
                WHEN    6
-                   MOVE    "������顼"
+                   MOVE    "削除エラー"
                                        TO  WRK-MSG-01
                WHEN    7
-                   MOVE    "����оݤʤ�"
+                   MOVE    "削除対象なし"
                                        TO  WRK-MSG-01
            END-EVALUATE
       *
@@ -512,7 +512,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -522,7 +522,7 @@
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT  PLF-FILE
            IF      STS-PLF         NOT =   ZERO
                DISPLAY "*(ORCMUP0251)* PLFFILE OPN STS[" STS-PLF "]"
@@ -543,14 +543,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE   IN-FILE
            CLOSE   ERR-FILE
            CLOSE   PLF-FILE
@@ -582,7 +582,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �ݸ����ѹ��ե������ɹ��߽���
+      *     保険者変更ファイル読込み処理
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -604,7 +604,7 @@
           EXIT.
       *
       *****************************************************************
-      *    �ݸ��ԥޥ������ɹ�
+      *    保険者マスター読込
       *****************************************************************
        910-HKNJA-CHECK-SEC         SECTION.
       *
@@ -633,7 +633,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ԥޥ������ɹ�
+      *    保険者マスター読込
       *****************************************************************
        910-HKNJA-READ-SEC          SECTION.
       *
@@ -655,7 +655,7 @@
        910-HKNJA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC             SECTION.
       *
@@ -666,7 +666,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -684,7 +684,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -702,7 +702,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

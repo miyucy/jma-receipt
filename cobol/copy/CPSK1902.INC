@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,54 +16,54 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK1902.INC)            *
-      *         ¡Ê£±£¹£°£²¡Ë                                     *
-      *         °åÎÅµ¡´ØÊÔ½¸¾ðÊó¡Ý½êºßÃÏ¾ðÊó                     *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK1902.INC)            *
+      *         ï¼ˆï¼‘ï¼™ï¼ï¼’ï¼‰                                     *
+      *         åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±âˆ’æ‰€åœ¨åœ°æƒ…å ±                     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-1902-REC.
            03  SYS-1902-KEY.
                05  SYS-1902-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-1902-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-1902-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-1902-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-1902-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-1902-TBL.
-      *Í¹ÊØÈÖ¹æ
+      *éƒµä¾¿ç•ªå·
                05  SYS-1902-POST        PIC  X(07).
-      *½êºßÃÏ¡Ê£±¹ÔÌÜ¡Ë
+      *æ‰€åœ¨åœ°ï¼ˆï¼‘è¡Œç›®ï¼‰
                05  SYS-1902-ADRS1       PIC  X(152).
-      *½êºßÃÏ¡Ê£²¹ÔÌÜ¡Ë
+      *æ‰€åœ¨åœ°ï¼ˆï¼’è¡Œç›®ï¼‰
                05  SYS-1902-ADRS2       PIC  X(152).
-      *½êºßÃÏ¡Ê£³¹ÔÌÜ¡Ë
+      *æ‰€åœ¨åœ°ï¼ˆï¼“è¡Œç›®ï¼‰
                05  SYS-1902-ADRS3       PIC  X(152).
-      *ÅÅÏÃÈÖ¹æ
+      *é›»è©±ç•ªå·
                05  SYS-1902-TEL         PIC  X(15).
-      *£Æ£Á£ØÈÖ¹æ
+      *ï¼¦ï¼¡ï¼¸ç•ªå·
                05  SYS-1902-FAX         PIC  X(15).
-      *½êºßÃÏ¡Ê£±¹ÔÌÜ¡ËÊ¸»ú¿ô
+      *æ‰€åœ¨åœ°ï¼ˆï¼‘è¡Œç›®ï¼‰æ–‡å­—æ•°
                05  SYS-1902-ADRS1MOJI   PIC  9(02).
-      *Í½È÷
+      *äºˆå‚™
            03  SYS-1902-YOBI            PIC  X(05).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-1902-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-1902-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-1902-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-1902-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-1902-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-1902-UPD-KEY.
                05  SYS-1902-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1902-UPD-KANRICD     PIC X(04).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -41,10 +41,10 @@
            03  I2SUB02-DEATHKBN    PIC X(01).
            03  I2SUB02-SORT-OCC    OCCURS 3.
       *
-      *    1:ÉÂÅï¡¦ÉÂ¼¼/2:´µ¼ÔÈÖ¹æ/3:¥«¥Ê»áÌ¾
-      *    4,5:Æş±¡Æü/6,7:Âà±¡Æü
+      *    1:ç—…æ£Ÿãƒ»ç—…å®¤/2:æ‚£è€…ç•ªå·/3:ã‚«ãƒŠæ°å
+      *    4,5:å…¥é™¢æ—¥/6,7:é€€é™¢æ—¥
                05  I2SUB02-SORT-CD PIC X(01).
-      *    1:¾º½ç/2:¹ß½ç
+      *    1:æ˜‡é †/2:é™é †
                05  I2SUB02-SORT-ORDER
                                    PIC X(01).
            03  I2SUB02-MEMO        PIC X(2000).

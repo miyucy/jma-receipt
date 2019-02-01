@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æ±ÆüºÆÆþ±¡È½Äê¥Ñ¥é¥á¥¿¡¡¡¡¡¡COPY (CPORCSDOUNYUIN.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSDOUNYUIN)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´Ø£É£Ä
-      *      ´µ¼Ô£É£Ä
-      *      Æþ±¡ÍúÎòÈÖ¹æ
-      *      Æþ±¡Æü¡ÊËô¤ÏÅ¾ÆþÆü¡Ë
+      *    åŒæ—¥å†å…¥é™¢åˆ¤å®šãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€ã€€COPY (CPORCSDOUNYUIN.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSDOUNYUIN)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
+      *      æ‚£è€…ï¼©ï¼¤
+      *      å…¥é™¢å±¥æ­´ç•ªå·
+      *      å…¥é™¢æ—¥ï¼ˆåˆã¯è»¢å…¥æ—¥ï¼‰
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSDOUNYUIN-AREA.
       *
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            03  LNK-DOUNYUIN-HOSPNUM               PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-DOUNYUIN-PTID                  PIC  9(10).
-      *Æþ±¡ÍúÎòÈÖ¹æ
+      *å…¥é™¢å±¥æ­´ç•ªå·
            03  LNK-DOUNYUIN-RRKNUM                PIC  9(03).
-      *ºÆÆþ±¡Æü
+      *å†å…¥é™¢æ—¥
            03  LNK-DOUNYUIN-SAINYUINYMD           PIC  X(08).
-      *ÊÖµÑ¥¨¥ê¥¢
+      *è¿”å´ã‚¨ãƒªã‚¢
            03  LNK-DOUNYUIN-HENKYAKU-AREA.
-      *Æþ±¡ÎÁ»»Äê³«»ÏÆü¡ÊÉüµ¢¥³¡¼¥É¤¬£±¤Î»þ¤Î¤ßÊÖµÑ¡Ë
+      *å…¥é™¢æ–™ç®—å®šé–‹å§‹æ—¥ï¼ˆå¾©å¸°ã‚³ãƒ¼ãƒ‰ãŒï¼‘ã®æ™‚ã®ã¿è¿”å´ï¼‰
              05  LNK-DOUNYUIN-SANTEIYMD           PIC  X(08).
       *
-      *Éüµ¢¥³¡¼¥É
-      *     £°¡§Á°Îò¤«¤é¤ÎÆ±ÆüºÆÆþ±¡°Ê³°
-      *     £±¡§Á°Îò¤«¤é¤ÎÆ±ÆüºÆÆþ±¡
-      *     £¸¡§Á°Æþ±¡ÎòÌµ¤·
-      *     £¹¡§´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷¥¨¥é¡¼
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰
+      *     ï¼ï¼šå‰æ­´ã‹ã‚‰ã®åŒæ—¥å†å…¥é™¢ä»¥å¤–
+      *     ï¼‘ï¼šå‰æ­´ã‹ã‚‰ã®åŒæ—¥å†å…¥é™¢
+      *     ï¼˜ï¼šå‰å…¥é™¢æ­´ç„¡ã—
+      *     ï¼™ï¼šæ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢ã‚¨ãƒ©ãƒ¼
            03  LNK-DOUNYUIN-RC                    PIC S9(9) BINARY.
       *

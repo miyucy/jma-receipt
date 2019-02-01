@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBMSTCOPY.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �
-      *  ����ݡ��ͥ��̾  : �ܱ�ʬ���ǡ���ʣ��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/01/30    NACL-��Ʀ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次
+      *  コンポーネント名  : 本院分院データ複写
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/01/30    NACL-小豆沢   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,14 +34,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                     PIC X(200).
       *
@@ -50,14 +50,14 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    ����
+      *    一覧
            COPY    "HCMSL55.INC".
       *
       *
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSBASE                 PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
@@ -70,13 +70,13 @@
            03  FLG-INPUTCD-ARI             PIC 9(01).
            03  FLG-INPUTSET-ARI            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                    PIC 9(05).
            03  CNT-PAGE                    PIC 9(05).
            03  CNT-JOB-UPDCNT              PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME                    PIC 9(08).
            03  SYS-YMD.
@@ -84,14 +84,14 @@
                05  SYS-MM                  PIC 9(02).
                05  SYS-DD                  PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
            03  IDX3                        PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  PARA-AREA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -100,7 +100,7 @@
            03  WRK-PARA-SYORIKBN                   PIC X(01).
            03  WRK-PARA-COPYHOSPNUM                PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-ERRNO                           PIC 9(2).
            03  WRK-RECEERR                         PIC X(200).
@@ -121,23 +121,23 @@
            03  LST-HEAD1.
                05                      PIC X(40)   VALUE   " ".
                05                      PIC X(40)   VALUE   
-                             "�ܱ�ʬ���ޥ�����ʣ�̷�̥ꥹ�ȡ�ʣ�̸���".
+                             "本院分院マスター複写結果リスト（複写元：".
                05  LST-HEAD-MOTOHOSP   PIC X(10).
                05                      PIC X(10)   VALUE   
-                             "  ʣ���衧".
+                             "  複写先：".
                05  LST-HEAD-SAKIHOSP   PIC X(10).
-               05                      PIC X(02)   VALUE   "��".
+               05                      PIC X(02)   VALUE   "）".
                05                      PIC X(08)   VALUE   SPACE.
                05  LST-HEAD-PAGE       PIC Z,ZZ9.
-               05                      PIC X(05)   VALUE   "��".
+               05                      PIC X(05)   VALUE   "頁".
            03  LST-HEAD.
-               05                      PIC X(04)   VALUE   "�ֹ�".
+               05                      PIC X(04)   VALUE   "番号".
                05                      PIC X(02)   VALUE   SPACE.
-               05                      PIC X(20)   VALUE   "ʣ�̥�����".
+               05                      PIC X(20)   VALUE   "複写コード".
                05                      PIC X(01)   VALUE   SPACE.
-               05                      PIC X(30)   VALUE   "̾��".
+               05                      PIC X(30)   VALUE   "名称".
                05                      PIC X(06)   VALUE   SPACE.
-               05                      PIC X(52)   VALUE   "�������".
+               05                      PIC X(52)   VALUE   "処理結果".
       *
            03  LST-MEISAI-G.
                05  LST-MEISAI-OCC      OCCURS      50.
@@ -154,64 +154,64 @@
            03  CONST-LST-MEISAI-MAX    PIC 9(05)   VALUE   50.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ���ܥޥ���
+      *    システム基本マスタ
        01  SYSBASE-REC.
            COPY    "CPSYSBASE.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1001.INC".
       *
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
       *
-      *    ���ϥ�����
+      *    入力コード
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    ���ϥ��å�
+      *    入力セット
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -219,7 +219,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -233,7 +233,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -251,7 +251,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -294,22 +294,22 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  RECEERR
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORCBMSTCOPY"       TO  JOB-PGID
               EVALUATE    WRK-PARA-SYORIKBN
                   WHEN    "1"
-                      MOVE    "�ޥ���ʣ�̡����ϥ����ɡ�"
+                      MOVE    "マスタ複写（入力コード）"
                                        TO  JOB-SHELLMSG
                   WHEN    "2"
-                      MOVE    "�ޥ���ʣ�̡������ޥ�����"
+                      MOVE    "マスタ複写（点数マスタ）"
                                        TO  JOB-SHELLMSG
                   WHEN    "3"
-                      MOVE    "�ޥ���ʣ�̡����ϥ��åȡ�"
+                      MOVE    "マスタ複写（入力セット）"
                                        TO  JOB-SHELLMSG
                   WHEN    OTHER
-                      MOVE    "�ޥ���ʣ��"
+                      MOVE    "マスタ複写"
                                        TO  JOB-SHELLMSG
               END-EVALUATE
       *
@@ -323,18 +323,18 @@
            IF    ( WRK-PARA-SYORIKBN   =   "1" OR "2" OR "3" )
                CONTINUE
            ELSE
-               MOVE    "������ʬ������Ǥ�"
+               MOVE    "処理区分が誤りです"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
            END-IF
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �����ΰ��ŵ���̾���Խ�
+      *    自院の医療機関名称編集
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -353,13 +353,13 @@
                          MOVE    SYS-1001-TANHOSPNAME
                                        TO  WRK-SAKIHOSPNAME
                    ELSE
-                         MOVE  "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                         MOVE  "医療機関情報が取得できません"
                                            TO  WRK-RECEERR
                          PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1               TO  FLG-INIT-CHK
                    END-IF
            ELSE
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+               MOVE    "医療機関情報が取得できません"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
@@ -374,7 +374,7 @@
            END-IF
       *
            IF    SPA-HOSPNUM    =   WRK-PARA-COPYHOSPNUM
-               MOVE    "ʣ�̸���¾������ꤷ�Ƥ�������"
+               MOVE    "複写元は他院を指定してください"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
@@ -384,7 +384,7 @@
                GO    TO   100-INIT-EXT
            END-IF
       *
-      *    ʣ�̸��ΰ��ŵ���̾���Խ�
+      *    複写元の医療機関名称編集
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -403,13 +403,13 @@
                          MOVE    SYS-1001-TANHOSPNAME
                                        TO  WRK-MOTOHOSPNAME
                    ELSE
-                   MOVE  "ʣ�̸��ΰ��ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE  "複写元の医療機関情報が取得できません"
                                        TO  WRK-RECEERR
                          PERFORM 500-ERR-HENSYU-SEC
                    MOVE    1           TO  FLG-INIT-CHK
                    END-IF
            ELSE
-               MOVE    "ʣ�̸��ΰ��ŵ��ؾ��󤬼����Ǥ��ޤ���"
+               MOVE    "複写元の医療機関情報が取得できません"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
@@ -423,7 +423,7 @@
                GO    TO   100-INIT-EXT
            END-IF
       *
-      *    �ܱ�ʬ�������å�
+      *    本院分院チェック
            INITIALIZE                      SYSBASE-REC
            MOVE    SPA-HOSPNUM         TO  SYSBASE-HOSPNUM
            MOVE    "tbl_sysbase"       TO  MCP-TABLE
@@ -435,7 +435,7 @@
                PERFORM     910-SYSBASE-READ-SEC
                    IF    FLG-SYSBASE   =   ZERO
                        IF   SYSBASE-HONBUNKBN    =   "0"
-                         MOVE  "�ܱ�ʬ���Ǥʤ���������Ǥ��ޤ���"
+                         MOVE  "本院分院でないため処理できません"
                                        TO  WRK-RECEERR
                          PERFORM 500-ERR-HENSYU-SEC
                          MOVE    1     TO  FLG-INIT-CHK
@@ -444,13 +444,13 @@
                                        TO  WRK-SAKIGRP
                        END-IF
                    ELSE
-                       MOVE  "�����ƥ���ܾ��󤬼����Ǥ��ޤ���"
+                       MOVE  "システム基本情報が取得できません"
                                            TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1         TO  FLG-INIT-CHK
                    END-IF
            ELSE
-               MOVE    "�����ƥ���ܾ��󤬼����Ǥ��ޤ���"
+               MOVE    "システム基本情報が取得できません"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
@@ -464,7 +464,7 @@
                GO    TO   100-INIT-EXT
            END-IF
       *
-      *    ʣ�̸����ŵ��إ����å�
+      *    複写元医療機関チェック
            INITIALIZE                      SYSBASE-REC
            MOVE    WRK-PARA-COPYHOSPNUM TO SYSBASE-HOSPNUM
            MOVE    "tbl_sysbase"       TO  MCP-TABLE
@@ -476,7 +476,7 @@
                PERFORM     910-SYSBASE-READ-SEC
                    IF    FLG-SYSBASE   =   ZERO
                        IF   SYSBASE-HONBUNKBN    =   "0"
-                     MOVE  "ʣ�̸����ܱ�ʬ���Ǥʤ���������Ǥ��ޤ���"
+                     MOVE  "複写元が本院分院でないため処理できません"
                                        TO  WRK-RECEERR
                          PERFORM 500-ERR-HENSYU-SEC
                          MOVE    1     TO  FLG-INIT-CHK
@@ -484,7 +484,7 @@
                          MOVE    SYSBASE-HONBUNGRP
                                        TO  WRK-MOTOGRP
                            IF   WRK-MOTOGRP  NOT = WRK-SAKIGRP
-                           MOVE  "ʣ�̸����ܱ�ʬ���δط��ˤ���ޤ���"
+                           MOVE  "複写元と本院分院の関係にありません"
                                            TO  WRK-RECEERR
                                PERFORM 500-ERR-HENSYU-SEC
                                MOVE    1   TO  FLG-INIT-CHK
@@ -492,13 +492,13 @@
                        END-IF
                    ELSE
                        MOVE
-                      "ʣ�̸��Υ����ƥ���ܾ��󤬼����Ǥ��ޤ���"
+                      "複写元のシステム基本情報が取得できません。"
                                          TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                        MOVE    1         TO  FLG-INIT-CHK
                    END-IF
            ELSE
-               MOVE "ʣ�̸��Υ����ƥ���ܾ��󤬼����Ǥ��ޤ���"
+               MOVE "複写元のシステム基本情報が取得できません"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                MOVE    1               TO  FLG-INIT-CHK
@@ -513,7 +513,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -531,14 +531,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ�����ʣ�̽���
+      *    点数マスター複写処理
       *****************************************************************
        2001-TENSU-SEC                SECTION.
       *
-      *    Ģɼ�������
+      *    帳票初期処理
            PERFORM 2001-HCMSL55-INIT-SEC
       *
-      *    ʣ���оݸ���
+      *    複写対象検索
            MOVE    SPACE                TO  TNS-TENSU-REC
            INITIALIZE                       TNS-TENSU-REC
            MOVE    WRK-PARA-COPYHOSPNUM TO  TNS-HOSPNUM
@@ -552,7 +552,7 @@
                MOVE    "key27"          TO  MCP-PATHNAME
                PERFORM  910-TENSU-READ-SEC
                PERFORM  UNTIL  FLG-TENSU    =    1
-      *                �����ޥ�������������
+      *                点数マスター作成処理
                    PERFORM     2001-TENSU-INS-SEC
       *
                    MOVE    "tbl_tensu"  TO  MCP-TABLE
@@ -574,13 +574,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ�������������
+      *    点数マスター作成処理
       *****************************************************************
        2001-TENSU-INS-SEC          SECTION.
       *
            MOVE   TNS-TENSU-REC TO  WRK-TAIHI-AREA
       *
-      *       �����������ޥ���¸�ߥ����å�
+      *       自院の点数マスタ存在チェック
            PERFORM    2001-TENSU-CHK-SEC
       *
            IF         FLG-TENSU-ARI    =    ZERO
@@ -600,7 +600,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ�������¸�ߥ����å�
+      *    点数マスタ自院存在チェック
       *****************************************************************
        2001-TENSU-CHK-SEC          SECTION.
       *
@@ -631,14 +631,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ�����ʣ�̽���
+      *    入力コード複写処理
       *****************************************************************
        2001-INPUTCD-SEC                SECTION.
       *
-      *    Ģɼ�������
+      *    帳票初期処理
            PERFORM 2001-HCMSL55-INIT-SEC
       *
-      *    ʣ���оݸ���
+      *    複写対象検索
            MOVE    SPACE                TO  INPUTCD-REC
            INITIALIZE                       INPUTCD-REC
            MOVE    WRK-PARA-COPYHOSPNUM TO  ICD-HOSPNUM
@@ -656,7 +656,7 @@
                        (ICD-INPUTCD(1:1) = "S")
                      CONTINUE
                   ELSE
-      *                   ���ϥ����ɺ�������
+      *                   入力コード作成処理
                      PERFORM     2001-INPUTCD-INS-SEC
                   END-IF
       *
@@ -679,13 +679,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɺ�������
+      *    入力コード作成処理
       *****************************************************************
        2001-INPUTCD-INS-SEC          SECTION.
       *
            MOVE   INPUTCD-REC          TO  WRK-TAIHI-AREA
       *
-      *       ���������ϥ�����¸�ߥ����å�
+      *       自院の入力コード存在チェック
            PERFORM    2001-INPUTCD-CHK-SEC
       *
            IF         FLG-INPUTCD-ARI  =    ZERO
@@ -705,7 +705,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɼ���¸�ߥ����å�
+      *    入力コード自院存在チェック
       *****************************************************************
        2001-INPUTCD-CHK-SEC          SECTION.
       *
@@ -736,15 +736,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ��å�ʣ�̽���
-      *    �ʽ����оݥ��åȤθ��������ϥ����ɥơ��֥���Ԥ���
+      *    入力セット複写処理
+      *    （処理対象セットの検索は入力コードテーブルより行う）
       *****************************************************************
        2001-INPUTSET-SEC                SECTION.
       *
-      *    Ģɼ�������
+      *    帳票初期処理
            PERFORM 2001-HCMSL55-INIT-SEC
       *
-      *    ʣ���оݸ���
+      *    複写対象検索
            MOVE    SPACE                TO  INPUTCD-REC
            INITIALIZE                       INPUTCD-REC
            MOVE    WRK-PARA-COPYHOSPNUM TO  ICD-HOSPNUM
@@ -758,7 +758,7 @@
                PERFORM  UNTIL  FLG-INPUTCD  =    1
                   IF   (ICD-INPUTCD(1:1) = "P")       OR
                        (ICD-INPUTCD(1:1) = "S")
-      *                   ���ϥ��åȺ�������
+      *                   入力セット作成処理
                      PERFORM     2001-INPUTSET-INS-SEC
                   END-IF
       *
@@ -781,13 +781,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ��åȺ�������
+      *    入力セット作成処理
       *****************************************************************
        2001-INPUTSET-INS-SEC          SECTION.
       *
            MOVE   INPUTCD-REC          TO  WRK-TAIHI-AREA
       *
-      *       ���������ϥ��å�¸�ߥ����å�
+      *       自院の入力セット存在チェック
            PERFORM    2001-INPUTSET-CHK-SEC
       *
            IF         FLG-INPUTSET-ARI =   ZERO
@@ -799,7 +799,7 @@
                MOVE    "key"           TO  MCP-PATHNAME
                MOVE    "DBINSERT"      TO  MCP-FUNC
                PERFORM     900-ORCDBMAIN-SEC
-      *            ���ϥ��åȥơ��֥��ʣ��
+      *            入力セットテーブルの複写
                MOVE    SPACE               TO  INPUTSET-REC
                INITIALIZE                      INPUTSET-REC
                MOVE    WRK-PARA-COPYHOSPNUM TO ISET-HOSPNUM
@@ -812,7 +812,7 @@
                    MOVE    "key6"             TO  MCP-PATHNAME
                    PERFORM  910-INPUTSET-READ-SEC
                    PERFORM  UNTIL  FLG-INPUTSET  =    1
-      *                     ���ϥ��åȺ�������
+      *                     入力セット作成処理
                        MOVE   INPUTSET-REC    TO  WRK-TAIHI-AREA
                        MOVE    SPACE          TO  INPUTSET-REC
                        INITIALIZE                 INPUTSET-REC
@@ -843,7 +843,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ��åȼ���¸�ߥ����å�
+      *    入力セット自院存在チェック
       *****************************************************************
        2001-INPUTSET-CHK-SEC          SECTION.
       *
@@ -874,7 +874,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�������
+      *    帳票初期処理
       *****************************************************************
        2001-HCMSL55-INIT-SEC           SECTION.
       *
@@ -888,7 +888,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        2002-HCMSL55-HEN-SEC            SECTION.
       *
@@ -916,17 +916,17 @@
                        PERFORM  910-TENSU-READ-SEC
                        IF    FLG-TENSU    =    ZERO
                           INSPECT TNS-NAME REPLACING
-                                           ALL "  "  BY  "��"
+                                           ALL "  "  BY  "　"
                           MOVE    TNS-NAME  TO  LST-NAME1 (CNT-LINE)
                        ELSE
-                          MOVE  "����ͭ���������ޥ���̵��������"
+                          MOVE  "現在有効な点数マスタ無し　　　"
                                        TO  LST-NAME1 (CNT-LINE)
                           IF ICD-SRYCD(1:1)  = "P" 
-                             MOVE "���ϥ��åȡ�������������������"
+                             MOVE "入力セット　　　　　　　　　　"
                                        TO  LST-NAME1 (CNT-LINE)
                           END-IF
                           IF ICD-SRYCD(1:1)  = "S" 
-                             MOVE "��«���åȡ�������������������"
+                             MOVE "約束セット　　　　　　　　　　"
                                        TO  LST-NAME1 (CNT-LINE)
                           END-IF
                        END-IF
@@ -937,11 +937,11 @@
                    PERFORM   900-CLOSE-SEC
                WHEN   "2"
                    MOVE    TNS-SRYCD   TO  LST-CD (CNT-LINE)
-                   INSPECT TNS-NAME REPLACING  ALL "  "  BY  "��"
+                   INSPECT TNS-NAME REPLACING  ALL "  "  BY  "　"
                    MOVE    TNS-NAME    TO  LST-NAME1 (CNT-LINE)
                WHEN   "3"
                    MOVE    ICD-INPUTCD TO  LST-CD (CNT-LINE)
-      *                 ���ѥ����å�
+      *                 全角チェック
                    INITIALIZE             ORCSKANACHKAREA
                    MOVE    "1"            TO  KANACHK-SYORI
                    MOVE    ICD-DSPNAME    TO  KANACHK-MAE-INPUT
@@ -970,23 +970,23 @@
                WHEN    SPACE
                   EVALUATE   WRK-PARA-SYORIKBN
                       WHEN   "1"
-                          MOVE  "���ϥ����ɤ�ʣ�̤��ޤ���"
+                          MOVE  "入力コードを複写しました"
                                        TO  WRK-NAIYO
                       WHEN   "2"
-                          MOVE  "�����ޥ�����ʣ�̤��ޤ���"
+                          MOVE  "点数マスタを複写しました"
                                        TO  WRK-NAIYO
                       WHEN   "3"
-                          MOVE  "���ϥ��åȤ�ʣ�̤��ޤ���"
+                          MOVE  "入力セットを複写しました"
                                        TO  WRK-NAIYO
                   END-EVALUATE
                WHEN    "2001"
-                   MOVE  "���ϥ����ɤ�¸�ߤ��Ƥ��ޤ�"
+                   MOVE  "入力コードが存在しています"
                                        TO  WRK-NAIYO
                WHEN    "2002"
-                   MOVE  "�����ޥ�����¸�ߤ��Ƥ��ޤ�"
+                   MOVE  "点数マスタが存在しています"
                                        TO  WRK-NAIYO
                WHEN    "2003"
-                   MOVE  "���ϥ��åȤ�¸�ߤ��Ƥ��ޤ�"
+                   MOVE  "入力セットが存在しています"
                                        TO  WRK-NAIYO
            END-EVALUATE
            MOVE    WRK-NAIYO           TO  LST-NAIYO (CNT-LINE)
@@ -999,7 +999,7 @@
        2002-HCMSL55-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        2002-HCMSL55-PRT-SEC            SECTION.
       *
@@ -1040,7 +1040,7 @@
        2002-HCMSL55-PRT-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        290-PRINT-SEC                   SECTION.
       *
@@ -1063,7 +1063,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                    TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
-           MOVE    "�ܱ�ʬ���ޥ�����ʣ��"
+           MOVE    "本院分院マスター複写"
                                     TO  SPRT-TITLE
            MOVE    HCMSL55          TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
@@ -1079,7 +1079,7 @@
            IF      SPRT-RETURN          =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1088,11 +1088,11 @@
        290-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
@@ -1104,7 +1104,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -1114,7 +1114,7 @@
            WRITE   RECEERR-REC
            CLOSE   RECEERR-FILE
       *
-      *    ����ִ�����λ����
+      *    ジョブ管理終了処理
            MOVE    "JBE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1130,7 +1130,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1148,7 +1148,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ���ܥޥ���������
+      *    システム基本マスター検索
       *****************************************************************
        910-SYSBASE-SELECT-SEC        SECTION.
       *
@@ -1165,7 +1165,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ���ܥޥ������ɹ�
+      *    システム基本マスター読込
       *****************************************************************
        910-SYSBASE-READ-SEC        SECTION.
       *
@@ -1183,7 +1183,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ���������
+      *    点数マスター検索
       *****************************************************************
        910-TENSU-SELECT-SEC        SECTION.
       *
@@ -1200,7 +1200,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC        SECTION.
       *
@@ -1218,7 +1218,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɸ���
+      *    入力コード検索
       *****************************************************************
        910-INPUTCD-SELECT-SEC        SECTION.
       *
@@ -1235,7 +1235,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ������ɹ�
+      *    入力コード読込
       *****************************************************************
        910-INPUTCD-READ-SEC        SECTION.
       *
@@ -1253,7 +1253,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ��åȸ���
+      *    入力セット検索
       *****************************************************************
        910-INPUTSET-SELECT-SEC        SECTION.
       *
@@ -1270,7 +1270,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ��å��ɹ�
+      *    入力セット読込
       *****************************************************************
        910-INPUTSET-READ-SEC        SECTION.
       *
@@ -1288,7 +1288,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1301,7 +1301,7 @@
       *      
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1318,7 +1318,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1335,7 +1335,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1348,7 +1348,7 @@
       *
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1361,7 +1361,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1379,7 +1379,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -1397,7 +1397,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -1411,7 +1411,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

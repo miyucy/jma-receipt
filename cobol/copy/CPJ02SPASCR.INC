@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,14 +16,14 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ��ץ�����  ���������� ���̣ӣУ�
-      *                             �ʣʣ������ʣ�����,�ʣ�������
+      *    会計カード  カード入力 画面ＳＰＡ
+      *                             （Ｊ０２，Ｊ０２１,Ｊ０２２）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-¿��Ǽ   01.05.28  ����ɽ���򡢴�����
-      * 01.00.02     MCC-¿��Ǽ   02.05.20  ϫ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   01.05.28  数字表示を、漢字へ
+      * 01.00.02     MCC-多々納   02.05.20  労災追加
       ************************************************************
       *
       *01  SPA-SCR-REC.
@@ -42,7 +42,7 @@
                        09  SPA-GMN-TDAY    PIC X(03)
                                                    OCCURS  31.
                    07  SPA-GMN-TSRYCD      PIC X(09).
-      *            ����̾��
+      *            一般名称
                    07  SPA-GMN-GENENAME        PIC X(80).
       *
            03  SPA-NAI-G.
@@ -84,30 +84,30 @@
                                13   SPA-NAI-DAY    PIC  9(03)
                                                        OCCURS   31.
                        09  SPA-NAI-RENNUM          PIC  9(02).
-      *                Ϸ��Ŭ�Ѷ�ʬ
+      *                老人適用区分
                        09  SPA-NAI-ROUTEKKBN       PIC  9(01).
-      *                �������ޥ��ʥ�ʬ
+      *                剤点数マイナス分
                        09  SPA-NAI-ZAITENFLG       PIC  9(01).
-      *                ���������ʬ
+      *                算定履歴区分
                        09  SPA-NAI-SANTEIRRKKBN    PIC  9(01).
-      *                ����
+      *                月上限
                        09  SPA-NAI-JGNCNT          PIC  9(03).
-      *                �����
+      *                日上限
                        09  SPA-NAI-JGNCNT1D        PIC  9(03).
-      *                �����
+      *                週上限
                        09  SPA-NAI-JGNCNT1W        PIC  9(03).
-      *                ����
+      *                月上限
                        09  SPA-NAI-JGNCNTETC       PIC  9(03).
-      *                ���顼����
+      *                エラー識別
                        09  SPA-NAI-JGNCNTERR       PIC  9(01).
-      *                ��ʬ����ٻȽ��
+      *                内分泌負荷試験判定
                        09  SPA-NAI-HOUKNSKBN       PIC  9(02).
-      *                �����
+      *                内数量
                        09  SPA-NAI-TSURYO          PIC  9(05).
-      *                ������ưȯ��Ĵ����
+      *                入院自動発生調剤料
                        09  SPA-NAI-NYUAUTO         PIC  9(01).
-      *ver.4.7         ������������
+      *ver.4.7         院外処方点数
                        09  SPA-NAI-INGAITEN        PIC  9(07).
-      *H28.5           ��ȯ���ѹ��Բġʽ����ˤ���
+      *H28.5           後発品変更不可（処方）あり
                        09  SPA-NAI-GENEFLG         PIC  X(01).
       *

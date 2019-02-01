@@ -193,7 +193,7 @@ if [ "$METHOD" = "update" ]; then
     done
 
     if [ $CONN_NUMBER -gt 1 ]; then
-      NOTICE_MSG="Ã¼Ëö¤Ï¶¯À©½ªÎ»¤·¤Þ¤·¤¿¡£"
+      NOTICE_MSG="ç«¯æœ«ã¯å¼·åˆ¶çµ‚äº†ã—ã¾ã—ãŸã€‚"
       echomsg "moninfo abortall go! $NOTICE_MSG" ${LOG}
       $MONINFO abort-all $NOTICE_MSG
       sleep 4

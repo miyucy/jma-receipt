@@ -13,7 +13,7 @@ xml_medicalv3res3 {
 	Api_Result				varchar(3);
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
-#--- ¿ÇÎÅÆüÉÕ
+#--- è¨ºç™‚æ—¥ä»˜
 	Perform_Date				varchar(10);
 	Perform_Time				varchar(8);
 	Base_Date				varchar(10);
@@ -28,7 +28,7 @@ xml_medicalv3res3 {
         	WholeName_inKana		varchar(100);
         	BirthDate			varchar(10);
         	Sex				varchar(1);
-#---            Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#---            ä¿é™ºçµ„åˆã›æƒ…å ±
 		HealthInsurance_Information  {
 		Insurance_Combination_Number		varchar(04);
 		Insurance_Combination_Rate		varchar(03);
@@ -51,11 +51,11 @@ xml_medicalv3res3 {
             	} [4];
         	};
     	};
-#--- ¿ÇÎÅÆâÍÆ
+#--- è¨ºç™‚å†…å®¹
 	Medical_Information  {
 		Medical_Info  {
 #--!!!!!
-#-----  Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»ÀÚÂØ
+#-----  è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›åˆ‡æ›¿
 			Medication_Change_Info   {
 			    Change_Mode			varchar(03);
 			    Change_Insurance_Combination_Number	varchar(04);
@@ -77,7 +77,7 @@ xml_medicalv3res3 {
 			Medical_Point 			varchar(08);
 			Medical_Money			varchar(08);
 			Medical_Inclusion_Class		varchar(05);
-#----->                 Êñ³ç¸¡ºº¤Î¸¡ºº¿ô
+#----->                 åŒ…æ‹¬æ¤œæŸ»ã®æ¤œæŸ»æ•°
 			Medical_Examination_Count	varchar(02);
 			Medical_Delete_Number		varchar(02);
 			Medical_Delete_Info		varchar(06);
@@ -85,37 +85,37 @@ xml_medicalv3res3 {
 				Medication_Code	varchar(09);
 				Medication_Name	varchar(80);
 				Medication_Number	varchar(11);
-#----->                         Ã±°Ì¥³¡¼¥É
+#----->                         å˜ä½ã‚³ãƒ¼ãƒ‰
 				Medication_Unit_Code		varchar(3);
 				Medication_Unit_Code_Name	varchar(24);
 				Medication_Money 	varchar(07);
 				Medication_Input_Info {
 					Medication_Input_Code	varchar(08);
 				} [5];
-#----->                         ¥Õ¥£¥ë¥àÊ¬²è¿ô
+#----->                         ãƒ•ã‚£ãƒ«ãƒ åˆ†ç”»æ•°
 				Medication_Film_Comp_Number	varchar(03);
 				Medication_Generic	varchar(1);
      				Medication_Generic_Name		varchar(200);
 				Medication_Continue		varchar(01);
 				Medication_Internal_Kinds	varchar(01);
-#----->                         ²Ã»»¼«Æ°»»Äê¤Ê¤·
+#----->                         åŠ ç®—è‡ªå‹•ç®—å®šãªã—
 				Medication_No_Addition_Class	varchar(03);
 				Medication_Auto_Addition 	varchar(01);
 			} [50];
 		}[120] ;
 		};
-#--- ¥á¥Ã¥»¡¼¥¸
+#--- ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Medical_Message_Information {
         Medical_Result			varchar(4);
         Medical_Result_Message		varchar(100);
 	        };
-#--- ÅÁÉ¼ÈÖ¹æ
+#--- ä¼ç¥¨ç•ªå·
         Invoice_Number			varchar(07);
 #--!!!!!
-#-----  Á÷¿®Ä´À°¶â¾ğÊó
+#-----  é€ä¿¡èª¿æ•´é‡‘æƒ…å ±
 	In_Cd_Information   {
 	   In_Change_Info       {
-#-----        Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#-----        è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›æƒ…å ±
 	      In_Insurance_Combination_Number	varchar(04);
 	      In_Department_Code		varchar(02);
 	      In_Cd_Ic_Money			varchar(10);
@@ -128,36 +128,36 @@ xml_medicalv3res3 {
 	   In_Re_Money			varchar(10);
         };
 #-!!!!!
-#--- ¼ıÇ¼¾ğÊó
+#--- åç´æƒ…å ±
 	Cd_Information {
 	Ic_Code				varchar(2);
 	Ic_Code_Name			varchar(20);
-#--- Æş¶â¼è¤ê°·¤¤¶èÊ¬
+#--- å…¥é‡‘å–ã‚Šæ‰±ã„åŒºåˆ†
 	Ic_Request_Code			varchar(1);
 	Ic_Request_Code_Name 		varchar(40);
-#---    º£²óÀÁµá³Û¹ç·×
+#---    ä»Šå›è«‹æ±‚é¡åˆè¨ˆ
 	Total_Ac_Money			varchar(10);
-#---    º£²óÆş¶â¹ç·×
+#---    ä»Šå›å…¥é‡‘åˆè¨ˆ
 	Total_Ic_Money			varchar(10);
-#---    º£²óÊÖ¶â¹ç·×
+#---    ä»Šå›è¿”é‡‘åˆè¨ˆ
 	Total_Re_Money			varchar(10);
-#---    º£²óÆş¶â³Û¾å¸Â
+#---    ä»Šå›å…¥é‡‘é¡ä¸Šé™
 	Max_Ac_Money			varchar(10);
 	Cd_Information2 {
 #-!!!!!
-#-----    ¿ÇÎÅ²Ê¡¦Êİ¸±ÁÈ¹ç¤»ÈÖ¹æ
+#-----    è¨ºç™‚ç§‘ãƒ»ä¿é™ºçµ„åˆã›ç•ªå·
 	  Insurance_Combination_Number	varchar(04);
 	  Insurance_Combination_Name	varchar(40);
 	  Department_Code		varchar(02);
 	  Department_Code_Name		varchar(20);
 #-!!!!!
-#---    º£²óÆş¶â³Û
+#---    ä»Šå›å…¥é‡‘é¡
 	   Ic_Money			varchar(10);
 	   Ad_Money1			varchar(10);
   	   Ad_Money2			varchar(10);
-#---    º£²óÀÁµá³Û
+#---    ä»Šå›è«‹æ±‚é¡
    	   Ac_Money			varchar(10);
-#---    ÊÖ¶â³Û
+#---    è¿”é‡‘é¡
 	   Re_Money			varchar(10);
 	   Cd_Ac_Information  {
 		Ai_Money		varchar(10);
@@ -167,7 +167,7 @@ xml_medicalv3res3 {
 		Pi_Smoney		varchar(10);
 		Lsi_Total_Money 	varchar(10);
 		};
-#---    ÀÁµáÅÀ¿ô¾ğÊó
+#---    è«‹æ±‚ç‚¹æ•°æƒ…å ±
 	    Ac_Point_Information  {
 		Ac_Ttl_Point	varchar(10);
 		Ac_Point_Detail   {
@@ -176,17 +176,17 @@ xml_medicalv3res3 {
 			Me_Money	varchar(10);
 	 		} [16];
    	 	 };
-#---           ¼«ÈñÌÀºÙ
+#---           è‡ªè²»æ˜ç´°
 	        Oe_Etc_Information  {
 	             Oe_Etc_Detail    {
 			Oe_Etc_Name		varchar(20);
 			Oe_Etc_Money_Non_Taxable	varchar(10);
 			Oe_Etc_Money_Taxable		varchar(10);
 	 		} [10];
-#---            ¼«Èñ¾ÃÈñÀÇ³Û¡ÊºÆ·×¡Ë
+#---            è‡ªè²»æ¶ˆè²»ç¨é¡ï¼ˆå†è¨ˆï¼‰
 	  	    Tax_In_Oe_Etc_Ttl_Money_Taxable	varchar(10);
     	         };
-#---        ÄûÀµÁ°¾ğÊó
+#---        è¨‚æ­£å‰æƒ…å ±
 	    Old_Money_Information  {
 		Old_Ic_Money			varchar(10);
 		Old_Ac_Money			varchar(10);
@@ -194,37 +194,37 @@ xml_medicalv3res3 {
 		Old_Ad_Money2			varchar(10);
 	 	};
  	    };
-#---        ¸ºÌÈ¾ğÊó
+#---        æ¸›å…æƒ…å ±
 	    Discount_Information  {
 		Discount_Name			varchar(12);
         	};
             Old_Total_Information  {
-#---            Á°²ó¤Ş¤Ç¤ÎÌ¤¼ı¶â
+#---            å‰å›ã¾ã§ã®æœªåé‡‘
 		Old_Total_Re_Money		varchar(10);
-#---            Á°²ó¤Ş¤Ç¤Î²áÆş¶â
+#---            å‰å›ã¾ã§ã®éå…¥é‡‘
 		Old_Total_Ov_Money		varchar(10);
     		};
 	};
 #-!!!!!
-#-----  Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#-----  è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›æƒ…å ±
 	Cd_Sub_Information2 {
 	  Cd_Sub_Info2   {
               Sub_Change_Info   {
-#-----        Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#-----        è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›æƒ…å ±
 	      Insurance_Combination_Number	varchar(04);
 	      Department_Code	 		varchar(02);
 	      Department_Code_Name 		varchar(20);
 	      Physician_Code			varchar(05);
-#-------      ÅÁÉ¼ÈÖ¹æ
+#-------      ä¼ç¥¨ç•ªå·
               Sub_Invoice_Number		varchar(07);
 	      };
-#---    º£²óÆş¶â³Û
+#---    ä»Šå›å…¥é‡‘é¡
 	      Ic_Money			varchar(10);
 	      Ad_Money1			varchar(10);
 	      Ad_Money2			varchar(10);
-#---    º£²óÀÁµá³Û
+#---    ä»Šå›è«‹æ±‚é¡
    	      Ac_Money			varchar(10);
-#---    ÊÖ¶â³Û
+#---    è¿”é‡‘é¡
 	      Re_Money			varchar(10);
 	      Cd_Ac_Information  {
 		Ai_Money		varchar(10);
@@ -234,7 +234,7 @@ xml_medicalv3res3 {
 		Pi_Smoney		varchar(10);
 		Lsi_Total_Money 	varchar(10);
 		};
-#---    ÀÁµáÅÀ¿ô¾ğÊó
+#---    è«‹æ±‚ç‚¹æ•°æƒ…å ±
 	      Ac_Point_Information  {
 		Ac_Ttl_Point	varchar(10);
 		Ac_Point_Detail   {
@@ -243,38 +243,38 @@ xml_medicalv3res3 {
 			Me_Money	varchar(10);
 	 		} [16];
    	 	 };
-#---           ¼«ÈñÌÀºÙ
+#---           è‡ªè²»æ˜ç´°
 	        Oe_Etc_Information  {
 	             Oe_Etc_Detail    {
 			Oe_Etc_Name		varchar(20);
 			Oe_Etc_Money_Non_Taxable	varchar(10);
 			Oe_Etc_Money_Taxable		varchar(10);
 	 		} [10];
-#---            ¼«Èñ¾ÃÈñÀÇ³Û¡ÊºÆ·×¡Ë
+#---            è‡ªè²»æ¶ˆè²»ç¨é¡ï¼ˆå†è¨ˆï¼‰
 	  	    Tax_In_Oe_Etc_Ttl_Money_Taxable	varchar(10);
     	         };
-#---        ÄûÀµÁ°¾ğÊó
+#---        è¨‚æ­£å‰æƒ…å ±
 	    Old_Money_Information  {
 		Old_Ic_Money			varchar(10);
 		Old_Ac_Money			varchar(10);
 		Old_Ad_Money1			varchar(10);
 		Old_Ad_Money2			varchar(10);
 	 	};
-#---        ¤Ş¤È¤áÆşÎÏº¹³Û
+#---        ã¾ã¨ã‚å…¥åŠ›å·®é¡
 	    Grp_Money_Information  {
 		Grp_SGK_Money			varchar(10);
 	 	};
 	 } [15];
         };
 #-!!!!!
-#--- È¯¹Ô¶èÊ¬
+#--- ç™ºè¡ŒåŒºåˆ†
 	Print_Order_Information    {
-#---            ÀÁµá½ñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬
+#---            è«‹æ±‚æ›¸æ˜ç´°æ›¸ç™ºè¡ŒåŒºåˆ†
 		Order_Invoice_Receipt_Class	varchar(1);
 		Order_Invoice_Receipt_Class_Name	varchar(30);
 		};
 #-!!!!!
-#--- °õºş¶èÊ¬
+#--- å°åˆ·åŒºåˆ†
 	Print_Information    {
 		Print_Prescription_Class		varchar(1);
 		Print_Prescription_Class_Name		varchar(30);

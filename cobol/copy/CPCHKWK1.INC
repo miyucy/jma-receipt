@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,54 +16,54 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¹¹¿·¥Ç¡¼¥¿    COPY (CPCHKWK1.INC)            *
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿æ›´æ–°ãƒ‡ãƒ¼ã‚¿    COPY (CPCHKWK1.INC)            *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  CHKWK-REC.
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
            03  CHKWK-SYORI-UPDKBN        PIC  X(01).
       *
            03  CHKWK-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  CHKWK-HOSPNUM         PIC 9(2).
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  CHKWK-CHKKBN          PIC X(1).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  CHKWK-SRYCD           PIC X(9).
-      *¥°¥ë¡¼¥×ÈÖ¹æ¡ÊÌ¤»ÈÍÑ¡Ë
+      *ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ï¼ˆæœªä½¿ç”¨ï¼‰
                05  CHKWK-GRPNUM          PIC 9(2).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  CHKWK-YUKOSTYMD       PIC X(8).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  CHKWK-YUKOEDYMD       PIC X(8).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  CHKWK-CDKBN           PIC X(1).
-      *Å¬ÍÑ¥³¡¼¥É
+      *é©ç”¨ã‚³ãƒ¼ãƒ‰
                05  CHKWK-CD              PIC X(9).
-      *Í­¸ú½ªÎ»Ç¯·îÆü2
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥2
            03  CHKWK-YUKOEDYMD2          PIC  X(08).
-      *Æþ³°¶èÊ¬¡ÊÌ¤»ÈÍÑ¡Ë
+      *å…¥å¤–åŒºåˆ†ï¼ˆæœªä½¿ç”¨ï¼‰
            03  CHKWK-NYUGAIKBN           PIC X(1).
-      *Æ±°ìÆþ³°À©¸æ¶èÊ¬¡Ê1:Æþ±¡¡¦³°Íè¤ÎÈ½Äê¤ò¹Ô¤¦¡Ë
+      *åŒä¸€å…¥å¤–åˆ¶å¾¡åŒºåˆ†ï¼ˆ1:å…¥é™¢ãƒ»å¤–æ¥ã®åˆ¤å®šã‚’è¡Œã†ï¼‰
            03  CHKWK-NYUGAIBNDKBN        PIC X(1).
-      *½èÍý¶èÊ¬¡Ê1:ËýÀ­áÖÄË´ÉÍýÎÁ¥Á¥§¥Ã¥¯¡¢2:½é¿ÇÎÁ¥Á¥§¥Ã¥¯¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼ˆ1:æ…¢æ€§ç–¼ç—›ç®¡ç†æ–™ãƒã‚§ãƒƒã‚¯ã€2:åˆè¨ºæ–™ãƒã‚§ãƒƒã‚¯ï¼‰
            03  CHKWK-SYORIKBN            PIC X(1).
-      *¥¨¥é¡¼½èÍý¡Ê0:¥¨¥é¡¼¡¢9:¥¨¥é¡¼¡¢8:½èÍý¤Ê¤·¡Ë
+      *ã‚¨ãƒ©ãƒ¼å‡¦ç†ï¼ˆ0:ã‚¨ãƒ©ãƒ¼ã€9:ã‚¨ãƒ©ãƒ¼ã€8:å‡¦ç†ãªã—ï¼‰
            03  CHKWK-CHKERR              PIC 9(1).
-      *¥Ç¡¼¥¿¶èÊ¬¡Ê1:¥Þ¥¹¥¿Äó¶¡¡¢2:¥æ¡¼¥¶ÅÐÏ¿¡Ë
+      *ãƒ‡ãƒ¼ã‚¿åŒºåˆ†ï¼ˆ1:ãƒžã‚¹ã‚¿æä¾›ã€2:ãƒ¦ãƒ¼ã‚¶ç™»éŒ²ï¼‰
            03  CHKWK-DATAKBN             PIC X(1).
-      *Ï¢ÈÖ¹æ¡Ê²èÌÌÉ½¼¨¡Ë
+      *é€£ç•ªå·ï¼ˆç”»é¢è¡¨ç¤ºï¼‰
            03  CHKWK-RENNUM              PIC 9(3).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  CHKWK-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  CHKWK-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  CHKWK-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  CHKWK-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö 
+      *æ›´æ–°æ™‚é–“ 
            03  CHKWK-UPHMS               PIC  X(06).

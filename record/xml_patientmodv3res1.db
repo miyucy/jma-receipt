@@ -34,7 +34,7 @@ xml_patientmodv3res1 {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
-#--- ¶ĞÌ³Àè
+#--- å‹¤å‹™å…ˆ
 		WorkPlace_Information	{
 			WholeName		varchar(50);
 			Address_ZipCode		varchar(07);
@@ -42,7 +42,7 @@ xml_patientmodv3res1 {
 			WholeAddress2		varchar(100);
 			PhoneNumber		varchar(15);
         	};
-#--- Ï¢ÍíÀè
+#--- é€£çµ¡å…ˆ
 		Contact_Information	{
 			WholeName		varchar(50);
 			Relationship 		varchar(30);
@@ -52,7 +52,7 @@ xml_patientmodv3res1 {
 			PhoneNumber1		varchar(15);
 			PhoneNumber2		varchar(15);
         	};
-#--- µ¢¾ÊÀè
+#--- å¸°çœå…ˆ
 		Home2_Information	{
 			WholeName		varchar(50);
 			Address_ZipCode		varchar(07);
@@ -70,13 +70,13 @@ xml_patientmodv3res1 {
 		Comment2		varchar(100);
 		TestPatient_Flag	varchar(01);
 		Death_Flag		varchar(01);
-#---            ¸ºÌÈ»öÍ³
+#---            æ¸›å…äº‹ç”±
 		Reduction_Reason	varchar(02);
 		Reduction_Reason_Name	varchar(20);
-#---            ³ä°úÎ¨
+#---            å‰²å¼•ç‡
 		Discount		varchar(02);
 		Discount_Name		varchar(14);
-#---            ¾õÂÖ£±¤«¤é£³
+#---            çŠ¶æ…‹ï¼‘ã‹ã‚‰ï¼“
 		Condition1		varchar(02);
 		Condition1_Name		varchar(20);
 		Condition2		varchar(02);
@@ -84,7 +84,7 @@ xml_patientmodv3res1 {
 		Condition3		varchar(02);
 		Condition3_Name		varchar(20);
     	};
-#---   Æ±°ì´µ¼Ô¾ğÊó
+#---   åŒä¸€æ‚£è€…æƒ…å ±
 	Patient2_Information	{
 		Patient_ID		varchar(20);
 		WholeName		varchar(50);
@@ -94,21 +94,21 @@ xml_patientmodv3res1 {
 		WholeAddress1		varchar(100);
 		WholeAddress2		varchar(100);
         } [20];
-#---    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+#---    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Patient_Message_Information	{
 	Patient_Message_Info	{
 		Patient_Result		varchar(4);
 		Patient_Result_Message	varchar(200);
       	  } [50];
         };
-#---    ¥ï¡¼¥Ë¥ó¥°¥á¥Ã¥»¡¼¥¸
+#---    ãƒ¯ãƒ¼ãƒ‹ãƒ³ã‚°ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Patient_Warning_Information	{
 	Patient_Warning_Info	{
 		Patient_Warning		varchar(4);
 		Patient_Warning_Message	varchar(200);
           } [50];
         };
-#--- ³ÎÇ§¥á¥Ã¥»¡¼¥¸
+#--- ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 	Patient_Select_Information	{
         Patient_Select			varchar(4);
         Patient_Select_Message		varchar(100);

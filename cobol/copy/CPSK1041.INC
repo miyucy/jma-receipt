@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,56 +16,56 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK1041.INC)   *
-      *         ¡Ê£±£°£´£±¡Ë                            *
-      *         Æþ¶âÊýË¡¾ðÊó                            *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK1041.INC)   *
+      *         ï¼ˆï¼‘ï¼ï¼”ï¼‘ï¼‰                            *
+      *         å…¥é‡‘æ–¹æ³•æƒ…å ±                            *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 01.00.01     NACL-Â¿¡¹Ç¼  05/09/13  Æþ¶â¾õÂÖÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 01.00.01     NACL-å¤šã€…ç´  05/09/13  å…¥é‡‘çŠ¶æ…‹è¿½åŠ 
       ************************************************************
        01  SYS-1041-REC.
            03  SYS-1041-KEY.
                05  SYS-1041-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-1041-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-1041-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-1041-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-1041-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-1041-TBL.
-      *Æþ¶âÊýË¡Ì¾¾Î
+      *å…¥é‡‘æ–¹æ³•åç§°
                05  SYS-1041-NYKN-NAME   PIC  X(30).
-      *Æþ¶âÊýË¡Î¬¾Î
+      *å…¥é‡‘æ–¹æ³•ç•¥ç§°
                05  SYS-1041-NYKN-TANNAME
                                         PIC  X(10).
-      *Æþ¶âÊýË¡Ê¬Îà¶èÊ¬
+      *å…¥é‡‘æ–¹æ³•åˆ†é¡žåŒºåˆ†
                05  SYS-1041-NYKN-BUNRUI PIC  X(02).
-      *Æþ¶â¾õÂÖ
+      *å…¥é‡‘çŠ¶æ…‹
                05  SYS-1041-NYKN-JYOTAI PIC  X(01).
-      *Æþ¶â¾õÂÖ¡ÊÂà±¡»þ¡Ë
+      *å…¥é‡‘çŠ¶æ…‹ï¼ˆé€€é™¢æ™‚ï¼‰
                05  SYS-1041-NYKN-JYOTAI-N
                                         PIC  X(01).
-      *Æþ¶â¾õÂÖ¡ÊÄê´üÀÁµá¡Ë
+      *å…¥é‡‘çŠ¶æ…‹ï¼ˆå®šæœŸè«‹æ±‚ï¼‰
                05  SYS-1041-NYKN-JYOTAI-T
                                         PIC  X(01).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-1041-YOBI        PIC  X(455).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-1041-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-1041-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-1041-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-1041-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-1041-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-1041-UPD-KEY.
                05  SYS-1041-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1041-UPD-KANRICD     PIC X(04).

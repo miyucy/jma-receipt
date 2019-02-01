@@ -1,18 +1,18 @@
 --                                    --
--- JOB�����ޥ���                      --
---    ������ߥե饰                  --
---    �¹ԥץ�����id                  --
---    �¹�userid ���ɲ�               --
+-- JOB管理マスタ                      --
+--    処理中止フラグ                  --
+--    実行プロセスid                  --
+--    実行userid の追加               --
 --                                    --
---   ������ߥե饰(STOPFLG)          --
---   �¹ԥץ�����id(PID1,PTD2,PID3    --
+--   処理中止フラグ(STOPFLG)          --
+--   実行プロセスid(PID1,PTD2,PID3    --
 --                 ,PTD4)             --
---   �¹�userid(RUN_OPID)             --
+--   実行userid(RUN_OPID)             --
 --                                    --
 -- Create Date : 2003/08/05           --
 --                                    --
 
--- TBL_JOBKANRIWK  ����              --
+-- TBL_JOBKANRIWK  作成              --
 
 create table TBL_JOBKANRIWK (
 JOBID 			numeric(7,0) DEFAULT 0 NOT NULL,
@@ -35,16 +35,16 @@ UPDCNT 			numeric(10,0),
 STEPCNT 		numeric(3,0) DEFAULT 0,
 YOBI 			character varying(500),
 Constraint TBL_JOBKANRIWK_primary_key Primary Key (JOBID, SHELLID));
--- TBL_JOBKANRI �� TBL_JOBKANRIWK   --
+-- TBL_JOBKANRI → TBL_JOBKANRIWK   --
 
 insert into TBL_JOBKANRIWK
 select * from TBL_JOBKANRI;
 
--- TBL_JOBKANRI ���               --
+-- TBL_JOBKANRI 削除               --
 
 drop table TBL_JOBKANRI;
 
--- TBL_JOBKANRI ����               --
+-- TBL_JOBKANRI 作成               --
 
 create table TBL_JOBKANRI (
 JOBID 			numeric(7,0) DEFAULT 0 NOT NULL,
@@ -74,7 +74,7 @@ PID4	 		numeric(5,0) DEFAULT 0,
 YOBI 			character varying(500),
 Constraint TBL_JOBKANRI_primary_key Primary Key (JOBID, SHELLID, RUN_OPID));
 
--- TBL_JOBKANRIWK �� TBL_JOBKANRI   --
+-- TBL_JOBKANRIWK → TBL_JOBKANRI   --
 
 insert into TBL_JOBKANRI
 (JOBID,
@@ -132,6 +132,6 @@ YOBI
 from TBL_JOBKANRIWK;
 
 
--- TBL_JOBKANRIWK ���             --
+-- TBL_JOBKANRIWK 削除             --
 
 drop table TBL_JOBKANRIWK;

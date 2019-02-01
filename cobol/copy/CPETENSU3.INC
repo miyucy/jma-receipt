@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      �Ż�����ɽ����ȿ��Ϣ�ơ��֥�
+      *      電子点数表　背反関連テーブル
       *                                     COPY (CPETENSU3.INC) *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  ETENSU3-REC.
       *
            03  ETENSU3-KEY.
-      *���Ź԰٥����ɣ�
+      *診療行為コード１
                05  ETENSU3-SRYCD1             PIC  X(09).
-      *���Ź԰٥����ɣ�
+      *診療行為コード２
                05  ETENSU3-SRYCD2             PIC  X(09).
-      *ͭ��������
+      *有効開始日
                05  ETENSU3-YUKOSTYMD          PIC  X(08).
-      *ͭ����λ��
+      *有効終了日
                05  ETENSU3-YUKOEDYMD          PIC  X(08).
-      *��ȿ��ʬ
+      *背反区分
            03  ETENSU3-HAIHAN              PIC  9(01).
-      *������
+      *特例条件
            03  ETENSU3-TOKUREI             PIC  9(01).
-      *����ǯ����
+      *作成年月日
            03  ETENSU3-CHGYMD              PIC  X(08).
-      *������
+      *更新用
            03  ETENSU3-UP-KEY.
                05  ETENSU3-UPSRYCD1        PIC  X(09).
                05  ETENSU3-UPSRYCD2        PIC  X(09).

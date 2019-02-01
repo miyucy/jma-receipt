@@ -8,7 +8,7 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+#    æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 #        $1  TERMID
 #        $2  HOSPNUM
 #        $3  HOSPID
@@ -45,7 +45,7 @@ fi
 #fi
 rm -f ${LOG_FILE}
 
-#´¶À÷¾É¥Ç¡¼¥¿ºîÀ®
+#æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 
 rm -f $ERRFILE
 
@@ -69,7 +69,7 @@ fi
 
 $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE${JOBID}${SHELLID},${HOSPNUM}
 
-echo "´¶À÷¾É¥Ç¡¼¥¿Á÷¿®½èÍý µ¯Æ°"
+echo "æ„ŸæŸ“ç—‡ãƒ‡ãƒ¼ã‚¿é€ä¿¡å‡¦ç† èµ·å‹•"
 $DASUPLOAD ${HOSPNUM} ${HOSPID} 2 &
 
 exit 0

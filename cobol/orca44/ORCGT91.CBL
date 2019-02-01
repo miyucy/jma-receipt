@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGT91.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ɽ�����������
-      *  ����ݡ��ͥ��̾  : ����Ĵ���ǡ�����ǧ�ʣԣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/06/18    NACL�ݰ�ƣ    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 総括表・公費請求書
+      *  コンポーネント名  : 定点調査データ確認（Ｔ９１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/06/18    NACL−伊藤    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,7 +34,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ����Ĵ�������ǡ���
+      *    定点調査収集データ
            SELECT  COLLECT-FILE    ASSIGN  COLLECT
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-COLLECT.
@@ -42,13 +42,13 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ����Ĵ�������ǡ���
+      *    定点調査収集データ
        FD  COLLECT-FILE.
        01  COLLECT-REC             PIC X(3000). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ����Ĵ�������ǡ��� 
+      *    定点調査収集データ 
        01  COLLECT.
            03  FILLER              PIC X(08)  VALUE "/var/lib".
            03  FILLER              PIC X(12)  VALUE "/jma-receipt".
@@ -59,14 +59,14 @@
            03  COLLECT-GN          PIC X(01).
            03  FILLER              PIC X(04)  VALUE ".csv".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
            COPY    "ENUM-VALUE".
       *
-      *    �쥻�ץȺ����ؼ����̥ѥ�᥿
+      *    レセプト作成指示共通パラメタ
            COPY    "T01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-T91.
            03  SPA-NAI-MOTOPG        PIC X(08).
            03  SPA-T91-AREA.
@@ -82,7 +82,7 @@
                05  SPA-NAI-PAGECNT   OCCURS 200
                                      PIC S9(09) BINARY.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-COLLECT         PIC X(02).
       *
@@ -92,7 +92,7 @@
            03  FLG-COLLECT         PIC 9(01).
            03  FLG-OVR             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(06).
            03  IDX-2               PIC 9(05).
@@ -105,7 +105,7 @@
            03  IDZ                 PIC 9(05).
            03  IDX-CNT             PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -145,7 +145,7 @@
                05  FILLER          PIC X(01)   VALUE   ".".
                05  WRK-SS          PIC X(02).
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
            COPY    "CPSHELLTBL.INC".
@@ -153,7 +153,7 @@
        01  WRK-SHELL-NAME         PIC X(50).
       *     
        01  WRK-CONS-AREA.
-      *    ����ִ����ģ¤Υ����͡ʥǡ���������  
+      *    ジョブ管理ＤＢのキー値（データ収集）  
            03  WRK-CONS-JOB-SHELLID-COLLECT
                                    PIC X(08)   VALUE   "COLLECT".
            03  WRK-CONS-JOB-JOBID-COLLECT
@@ -162,45 +162,45 @@
            03  WRK-CONS-MAX-LEN    PIC 9(05)   VALUE   63000.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1031.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *   �ե��������ѥ�᥿
+      *   ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -219,7 +219,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -233,15 +233,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -253,26 +253,26 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "TERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
       *
                IF      FLG-END             =   ZERO
-      *            �����Խ�
+      *            画面編集
                    PERFORM 500-GMNHEN-SEC
                END-IF
                IF      SPA-TIDCD       NOT =   SPACE
@@ -296,11 +296,11 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    SPA-MOTOPG          TO  SPA-NAI-MOTOPG
@@ -321,7 +321,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -336,7 +336,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����Խ�����
+      *    データ編集処理
       *****************************************************************
        310-DATA-HENSYU-SEC            SECTION.
       *
@@ -370,7 +370,7 @@
            OPEN    INPUT               COLLECT-FILE
            MOVE    ZERO                TO  FLG-COLLECT
            IF      STS-COLLECT     NOT =   ZERO
-      *        �ǡ����ʤ�
+      *        データなし
                MOVE   1                TO  FLG-COLLECT
                DISPLAY " STS-COLLECT:"  STS-COLLECT
            END-IF
@@ -394,11 +394,11 @@
            CLOSE                       COLLECT-FILE
       *
            IF      IDX-CNT             =   ZERO
-      *        �оݤʤ�
+      *        対象なし
                MOVE    "0001"              TO  SPA-ERRCD
            ELSE
                MOVE    WRK-DATAVIEW        TO  SPA-GMN-DATAVIEW
-      *        ����
+      *        内容
                MOVE    SPACE               TO  SPA-GMN-CNTHEN
                ADD     1                   TO  WRK-DATA-MAX
                MOVE    WRK-DATA-MAX        TO  WRK-Z1
@@ -407,11 +407,11 @@
                ELSE
                    MOVE    IDX             TO  WRK-Z2
                END-IF
-               STRING  "��"                DELIMITED  BY  SIZE
+               STRING  "（"                DELIMITED  BY  SIZE
                        WRK-Z1              DELIMITED  BY  SIZE
-                       "��"                DELIMITED  BY  SIZE
+                       "〜"                DELIMITED  BY  SIZE
                        WRK-Z2              DELIMITED  BY  SIZE
-                       "��"                DELIMITED  BY  SIZE
+                       "）"                DELIMITED  BY  SIZE
                                        INTO  SPA-GMN-CNTHEN
                END-STRING
                IF      SPA-NAI-NEXT    =   1
@@ -425,8 +425,8 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����Խ����������ڡ��������С�
-      *    �����աˤȤꤢ����̤���ѤǤ�
+      *    データ編集処理（総ページ数算出）
+      *    （注意）とりあえず未使用です
       *****************************************************************
        3100-DATA-HENSYU-SEC           SECTION.
       *
@@ -436,7 +436,7 @@
            OPEN    INPUT               COLLECT-FILE
            MOVE    ZERO                TO  FLG-COLLECT
            IF      STS-COLLECT     NOT =   ZERO
-      *        �ǡ����ʤ�
+      *        データなし
                MOVE   1                TO  FLG-COLLECT
                DISPLAY " STS-COLLECT:"  STS-COLLECT
            END-IF
@@ -457,8 +457,8 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����Խ����������ڡ��������С�
-      *    �����աˤȤꤢ����̤���ѤǤ�
+      *    データ編集処理（総ページ数算出）
+      *    （注意）とりあえず未使用です
       *****************************************************************
        31001-DATA-HEN-SEC           SECTION.
       *
@@ -491,19 +491,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣãɣģ��ˣϣ˽���
+      *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        330-TID1-SET-SEC            SECTION.
       *
            IF      SPA-TID1-FLG    =   "OK"
                EVALUATE    SPA-TIDCD
                    WHEN    "2006"
-      *                ����Ĵ�� �ե���������
+      *                定点調査 ファイル送信
                        PERFORM 470-COLLECT-SYORI-SEC
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK
                    WHEN    "2008"
-      *                ����Ĵ�� �ǡ������
+      *                定点調査 データ削除
                        PERFORM 470-COLLECT-DELETE-SEC
                        MOVE    "JOIN"          TO  MCP-PUTTYPE
                        PERFORM 210-BACK
@@ -525,7 +525,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣãɣģ��ˣϣ˽���
+      *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        3101-DATA-HEN-SEC            SECTION.
       *
@@ -575,7 +575,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣԣɣģ��ˣϣ˽���
+      *    確認画面（ＴＩＤ２）ＯＫ処理
       *****************************************************************
        340-TID2-SET-SEC            SECTION.
       *
@@ -585,26 +585,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     ���
+      *     戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE    "CHANGE"            TO  MCP-PUTTYPE
                    MOVE    "2006"              TO  SPA-TIDCD
       *****        PERFORM 210-BACK
-      *     ��
+      *     前
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 470-PREV-SYORI-SEC
-      *     ��
+      *     次
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-NEXT-SYORI-SEC
-      *     ����
+      *     入院
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 410-NYUIN-SYORI-SEC
-      *     ����
+      *     外来
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 411-GAIRAI-SYORI-SEC
            END-EVALUATE
@@ -613,12 +613,12 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���ʬ
+      *        一括分
                WHEN    "ACTIVATE"       ALSO    ANY
                    PERFORM 400-ENTRY-SYORI-SEC
            END-EVALUATE
@@ -628,14 +628,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ʬ���Ͻ���
+      *    一括分入力処理
       *****************************************************************
        400-ENTRY-SYORI-SEC             SECTION.
       *
       *    MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *    MOVE    ZERO                TO  SPA-GMN-CUR
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *    MOVE    ZERO                TO  FLG-TOUROKU
            PERFORM 410-INPUT-CHK-SEC
            .
@@ -643,7 +643,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
@@ -653,7 +653,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -663,7 +663,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƽ���
+      *    前内容処理
       *****************************************************************
        470-PREV-SYORI-SEC           SECTION.
       *
@@ -682,7 +682,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƽ���
+      *    次内容処理
       *****************************************************************
        470-NEXT-SYORI-SEC           SECTION.
       *
@@ -697,7 +697,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    入院処理
       *****************************************************************
        410-NYUIN-SYORI-SEC           SECTION.
       *
@@ -713,7 +713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    外来処理
       *****************************************************************
        411-GAIRAI-SYORI-SEC           SECTION.
       *
@@ -729,11 +729,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ�����������
+      *    データ収集処理
       *****************************************************************
        470-COLLECT-SYORI-SEC      SECTION.
       *
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID-COLLECT
@@ -778,7 +778,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ǡ�����������
+      *    データ収集処理
       *****************************************************************
        470-COLLECT-DELETE-SEC     SECTION.
       *
@@ -800,7 +800,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -831,7 +831,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -857,7 +857,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -884,7 +884,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -894,12 +894,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-CNTHEN      TO  T91-CNTHEN
       *
            IF      SPA-GMN-SYORI       =   "2"
-               MOVE    "�ڳ����"          TO  T91-MIDASI1
+               MOVE    "【外来】"          TO  T91-MIDASI1
            ELSE
-               MOVE    "��������"          TO  T91-MIDASI1
+               MOVE    "【入院】"          TO  T91-MIDASI1
            END-IF
            IF      SPA-NAI-NEXT        =   1
-               MOVE    "�Լ��ڡ��������"  TO  T91-MIDASI2
+               MOVE    "《次ページあり》"  TO  T91-MIDASI2
            END-IF
       *
            PERFORM 5001-MAPCUR-SEC
@@ -909,7 +909,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -934,7 +934,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        50011-INPUT-CUR-SEC             SECTION.
       *
@@ -945,20 +945,20 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ������
+      *    エラーメッセージ表示処理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "ɽ������ǡ����Ϥ���ޤ���" 
+                   MOVE    "表示するデータはありません。" 
                                                TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "���ǤϤ���ޤ���" 
+                   MOVE    "次頁はありません。" 
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���ǤϤ���ޤ���" 
+                   MOVE    "前頁はありません。" 
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -982,7 +982,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ������
+      *    ガイドメッセージ表示処理
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
@@ -990,10 +990,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-TIDCD
                WHEN    "2006"
-                 MOVE  "����Ĵ�����������Фإ��åץ����ɤ��ޤ�����"
+                 MOVE  "定点調査収集サーバへアップロードしますか？"
                                        TO  WRK-TIDMSG
                WHEN    "2008"
-                 MOVE  "����Ĵ�������ǡ����������ޤ�����"
+                 MOVE  "定点調査収集データを削除しますか？"
                                        TO  WRK-TIDMSG
            END-EVALUATE
       *
@@ -1002,8 +1002,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-TIDCD            TO  TID1-ID1CODE
            MOVE    WRK-TIDMSG           TO  TID1-ID1MSG
       *
-           MOVE    "������"             TO  TID1-B01-LABEL
-           MOVE    "��  ��"             TO  TID1-B12-LABEL
+           MOVE    "いいえ"             TO  TID1-B01-LABEL
+           MOVE    "は  い"             TO  TID1-B12-LABEL
            MOVE    "B01"                TO  MCP-WIDGET
       *
            MOVE    "T91"                TO  SPA-MOTOPG
@@ -1020,7 +1020,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1034,7 +1034,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

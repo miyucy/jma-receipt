@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       **************************************************************
-      *         Å¬±þÉÂÌ¾½ýÉÂÌ¾¥Þ¥¹¥¿  COPY (CPTEKIOU-DISEASE.INC)  *
+      *         é©å¿œç—…åå‚·ç—…åãƒžã‚¹ã‚¿  COPY (CPTEKIOU-DISEASE.INC)  *
       **************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TEKIOU-DISEASE-REC.
            03  TEKDIS-KEY.
-      *¸úÇ½¥³¡¼¥É
+      *åŠ¹èƒ½ã‚³ãƒ¼ãƒ‰
                05  TEKDIS-KONOCD       PIC X(05).
-      *½ýÉÂÌ¾
+      *å‚·ç—…å
                05  TEKDIS-BYOMEI       PIC X(200).
-      *Á°ÃÖ½¤¾þ¸ì
+      *å‰ç½®ä¿®é£¾èªž
            03  TEKDIS-BEFORE-BYOMEI    PIC X(100).
-      *¸åÃÖ½¤¾þ¸ì
+      *å¾Œç½®ä¿®é£¾èªž
            03  TEKDIS-AFTER-BYOMEI     PIC X(100).
-      *½ýÉÂÌ¾¥³¡¼¥É
+      *å‚·ç—…åã‚³ãƒ¼ãƒ‰
            03  TEKDIS-BYOMEICD         PIC X(07).
-      *Á°ÃÖ½¤¾þ¸ì¥³¡¼¥É
+      *å‰ç½®ä¿®é£¾èªžã‚³ãƒ¼ãƒ‰
            03  TEKDIS-BEFORE-BYOMEICD  PIC X(04).
-      *¸åÃÖ½¤¾þ¸ì¥³¡¼¥É
+      *å¾Œç½®ä¿®é£¾èªžã‚³ãƒ¼ãƒ‰
            03  TEKDIS-AFTER-BYOMEICD   PIC X(04).
       *ICD
            03  TEKDIS-ICD              PIC X(05).
-      *²þÄûÇ¯·î
+      *æ”¹è¨‚å¹´æœˆ
            03  TEKDIS-KAITEIYM         PIC X(06).
-      *Êä½õ¶èÊ¬
+      *è£œåŠ©åŒºåˆ†
            03  TEKDIS-HOJYOKBN         PIC 9(02).
-      *¸úÇ½Ì¾¾ÎÈÖ¹æ
+      *åŠ¹èƒ½åç§°ç•ªå·
            03  TEKDIS-KONOMEINO        PIC 9(06).
       *
            03  TEKDIS-CREYMD           PIC X(08).
            03  TEKDIS-UPYMD            PIC X(08).
            03  TEKDIS-UPHMS            PIC X(06).
-      *¸¡º÷ÍÑ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *æ¤œç´¢ç”¨è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
            03  TEKDIS-SELSRYCD         PIC X(09).
-      *¸¡º÷ÍÑÉÂÌ¾
+      *æ¤œç´¢ç”¨ç—…å
            03  TEKDIS-SELBYOMEI        PIC X(200).

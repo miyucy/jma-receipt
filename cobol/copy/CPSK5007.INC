@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,50 +16,50 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5007.INC)   *
-      *         ¡Ê£µ£°£°£·¡Ë                            *
-      *         Æþ±¡»Ø¼¨¤»¤óÀßÄê¾ðÊó                    *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5007.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼ï¼—ï¼‰                            *
+      *         å…¥é™¢æŒ‡ç¤ºã›ã‚“è¨­å®šæƒ…å ±                    *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5007-REC.
            03  SYS-5007-KEY.
                05  SYS-5007-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5007-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É¡Ê£°£±¡§Æþ±¡½èÊý¡¢£°£²¡§Æþ±¡ËãÌô½èÊý
-      *            £°£³¡§Ãí¼Í½èÊý¡¢£°£´¡§Ãí¼ÍËãÌô¡¢
-      *            £°£µ¡§»Ø¼¨äµ¡Ë
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰ï¼ˆï¼ï¼‘ï¼šå…¥é™¢å‡¦æ–¹ã€ï¼ï¼’ï¼šå…¥é™¢éº»è–¬å‡¦æ–¹
+      *            ï¼ï¼“ï¼šæ³¨å°„å‡¦æ–¹ã€ï¼ï¼”ï¼šæ³¨å°„éº»è–¬ã€
+      *            ï¼ï¼•ï¼šæŒ‡ç¤ºç®‹ï¼‰
                05  SYS-5007-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5007-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5007-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5007-TBL.
-      *Æþ±¡»Ø¼¨¤»¤ó¶èÊ¬
+      *å…¥é™¢æŒ‡ç¤ºã›ã‚“åŒºåˆ†
                05  SYS-5007-SIJISENKBN  PIC  X(01).
-      *»Ø¼¨äµ
+      *æŒ‡ç¤ºç®‹
                05  SYS-5007-SIJISEN-AREA   OCCURS   4.
-      *        ¸«½Ð¤·
+      *        è¦‹å‡ºã—
                    07  SYS-5007-SIJISEN-HEAD   PIC X(30).
-      *        °õºþÉô¿ô
+      *        å°åˆ·éƒ¨æ•°
                    07  SYS-5007-SIJISEN-PRT    PIC 9(02).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-5007-YOBI             PIC  X(371).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5007-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5007-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5007-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5007-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5007-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5007-UPD-KEY.
                05  SYS-5007-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5007-UPD-KANRICD     PIC X(04).

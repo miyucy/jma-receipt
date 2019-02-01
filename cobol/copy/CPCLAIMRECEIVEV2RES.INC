@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Ï•π•›•Û•π£√£Ã£¡£…£Õ√Ê≈”•«°º•ø≈˘ºË∆¿ (xml2)
+      *    Ôº°Ôº∞Ôº©„É¨„Çπ„Éù„É≥„ÇπÔº£Ôº¨Ôº°Ôº©Ôº≠‰∏≠ÈÄî„Éá„Éº„ÇøÁ≠âÂèñÂæó (xml2)
       *                                      COPY (CPCLAIMRECEIVEV2RES.INC)
       ******************************************************************
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
        01  XML-CLAIM-RECEIVEV2RES.
            02  CLRERES-CONTEXT           PIC S9(9)   BINARY.
@@ -29,23 +29,23 @@
            02  CLRERES-MODE              PIC S9(9)   BINARY.
            02  CLRERES-RECORDNAME        PIC X(128).
            02  CLRERES-CLAIM-FRONT.
-      *        º¬ª‹∆¸
+      *        ÂÆüÊñΩÊó•
                03  CLRERES-INFORMATION-DATE    PIC X(10).
-      *        º¬ª‹ª˛¥÷
+      *        ÂÆüÊñΩÊôÇÈñì
                03  CLRERES-INFORMATION-TIME    PIC X(8).
-      *         ÷µ—•≥°º•…
+      *        ËøîÂç¥„Ç≥„Éº„Éâ
                03  CLRERES-API-RESULT          PIC X(2).
-      *         ÷µ—•·•√•ª°º•∏
+      *        ËøîÂç¥„É°„ÉÉ„Çª„Éº„Ç∏
                03  CLRERES-API-RESULT-MSG      PIC X(100).
-      *        ¥µº‘»÷πÊ
+      *        ÊÇ£ËÄÖÁï™Âè∑
                03  CLRERES-PATIENTID           PIC X(20).
-      *        ΩËÕ˝∆¸
+      *        Âá¶ÁêÜÊó•
                03  CLRERES-PERFORM-DATE        PIC X(19).
-      *        •·•√•ª°º•∏
+      *        „É°„ÉÉ„Çª„Éº„Ç∏
                03  CLRERES-MESSAGE-G.
-      *            •·•√•ª°º•∏
+      *            „É°„ÉÉ„Çª„Éº„Ç∏
                    05  CLRERES-WARNING-MSG-TBL   OCCURS  50.
-      *                •·•√•ª°º•∏•≥°º•…
+      *                „É°„ÉÉ„Çª„Éº„Ç∏„Ç≥„Éº„Éâ
                        07  CLRERES-WARNING        PIC X(03).
-      *                •·•√•ª°º•∏
+      *                „É°„ÉÉ„Çª„Éº„Ç∏
                        07  CLRERES-WARNING-MSG    PIC X(100).

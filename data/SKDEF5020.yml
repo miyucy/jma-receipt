@@ -1,23 +1,23 @@
 kanri_cd    : "5020"
-name        : "°åÎÅµ¡´Ø¾ğÊó¡İÆş±¡´ğËÜ¾ğÊó¡Ê£²¡Ë"
+name        : "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’å…¥é™¢åŸºæœ¬æƒ…å ±ï¼ˆï¼’ï¼‰"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "REKI-JITAKBN"
-  item_jp   : "¼«±¡Îò¡¿Â¾±¡Îò¶èÊ¬"
+  item_jp   : "è‡ªé™¢æ­´ï¼ä»–é™¢æ­´åŒºåˆ†"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "REKI-TAIINKBN"
-  item_jp   : "Âà±¡¶èÊ¬"
+  item_jp   : "é€€é™¢åŒºåˆ†"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 3
   length    : 498

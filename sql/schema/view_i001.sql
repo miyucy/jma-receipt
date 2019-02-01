@@ -53,5 +53,5 @@ CREATE VIEW view_i001 AS
        AND (b.rrknum = e.rrknum));
 
 
-COMMENT ON VIEW view_i001 IS 'Æþ±¡´µ¼Ô¾È²ñ¥Ó¥å¡¼';
+COMMENT ON VIEW view_i001 IS 'å…¥é™¢æ‚£è€…ç…§ä¼šãƒ“ãƒ¥ãƒ¼';
 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0181.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : £Ä£ÂºîÀ®½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡´ðËÜÎÁ¹¹¿·½èÍý
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ï¼¤ï¼¢ä½œæˆå‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢åŸºæœ¬æ–™æ›´æ–°å‡¦ç†
       *                    : 
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  11.02.08    NACL-¿¹ÏÆ     ¿·µ¬ºîÀ®
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  11.02.08    NACL-æ£®è„‡     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,17 +35,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÆþÎÏ¡§Æþ±¡´ðËÜÎÁ¹¹¿·¥Ç¡¼¥¿
+      *    å…¥åŠ›ï¼šå…¥é™¢åŸºæœ¬æ–™æ›´æ–°ãƒ‡ãƒ¼ã‚¿
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,11 +54,11 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ÆþÎÏ¡§Æþ±¡´ðËÜÎÁ¹¹¿·¥Ç¡¼¥¿
+      *    å…¥åŠ›ï¼šå…¥é™¢åŸºæœ¬æ–™æ›´æ–°ãƒ‡ãƒ¼ã‚¿
        FD  IN-FILE.
        01  IN-REC                      PIC X(50200).
       *
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  ERR-FILE.
        01  ERR-NYUKHNWK-REC.
            03  ERR-NYUKHNWK-SYORIKBN   PIC  X(01).
@@ -66,7 +66,7 @@
            COPY    "CPNYUINKHN.INC"    REPLACING  //NYUKHN-//
                                               BY  //ERR-NYUKHNWK-//.
       *
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -74,26 +74,26 @@
      *
            COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-NYUKHN              PIC 9(01).
            03  FLG-PLF                 PIC 9(01).
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ¥¤¥ó¥Ç¥Ã¥¯¥¹ÎÎ°è
+      *    ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é ˜åŸŸ
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
@@ -101,7 +101,7 @@
            03  IDX                     PIC 9(03).
            03  IDY                     PIC 9(03).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -118,7 +118,7 @@
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -133,11 +133,11 @@
            03  WRK-IN                  PIC X(01).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ëÎÎ°è
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "¡ÚPGID:ORCMUP0181.CBL¡Û".
+                                       "ã€PGID:ORCMUP0181.CBLã€‘".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -159,11 +159,11 @@
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
            COPY    "ENUM-VALUE".
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
        01  NYUKHNWK-REC.
@@ -171,20 +171,20 @@
            03  NYUKHNWK-YUKOEDYMD2     PIC X(08).
            COPY    "CPNYUINKHN.INC"    REPLACING   //NYUKHN-//
                                               BY   //NYUKHNWK-//.
-      *    Æþ±¡´ðËÜÎÁ
+      *    å…¥é™¢åŸºæœ¬æ–™
        01  NYUKHN-REC.
            COPY    "CPNYUINKHN.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¾ðÊó
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†æƒ…å ±
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -195,7 +195,7 @@
            LNK-AREA.
       *
       ****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -212,7 +212,7 @@
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -235,17 +235,17 @@
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ÆþÎÏ¡¡½é´ü½èÍý
+      *    å…¥åŠ›ã€€åˆæœŸå‡¦ç†
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
                DISPLAY "*(ORCMUP0181)* IN-FILE OPN STS[" STS-IN "]"
            END-IF
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    Æþ±¡´ðËÜÎÁ¥Ç¡¼¥¿ÆÉ¹þ¤ß½èÍý
+      *    å…¥é™¢åŸºæœ¬æ–™ãƒ‡ãƒ¼ã‚¿èª­è¾¼ã¿å‡¦ç†
            IF      FLG-IN          =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -254,7 +254,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¼èÆÀ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±å–å¾—
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -267,7 +267,7 @@
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE           TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -278,7 +278,7 @@
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE           TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -289,7 +289,7 @@
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    ¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    ãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE           TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -304,25 +304,25 @@
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
            EVALUATE    NYUKHNWK-SYORIKBN
-      *        ÄÉ²Ã
+      *        è¿½åŠ 
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ¹¹¿·
+      *        æ›´æ–°
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ºï½ü
+      *        å‰Šé™¤
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    Æþ±¡´ðËÜÎÁ¥Ç¡¼¥¿ÆÉ¹þ¤ß½èÍý
+      *    å…¥é™¢åŸºæœ¬æ–™ãƒ‡ãƒ¼ã‚¿èª­è¾¼ã¿å‡¦ç†
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -330,11 +330,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ÄÉ²Ã  ½èÍý
+      *    è¿½åŠ   å‡¦ç†
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
-      *    Ã±½ãÄÉ²Ã
+      *    å˜ç´”è¿½åŠ 
            IF      NYUKHNWK-YUKOEDYMD2
                                    =   SPACE
                PERFORM 2011-INSERT-SYORI-SEC
@@ -347,7 +347,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ã±½ãÄÉ²Ã  ½èÍý
+      *    å˜ç´”è¿½åŠ   å‡¦ç†
       *****************************************************************
        2011-INSERT-SYORI-SEC       SECTION.
       *
@@ -373,12 +373,12 @@
            MOVE    "key"           TO  MCP-PATHNAME
            PERFORM 900-TBL-CLOSE-SEC
       *
-      *    ÄÉ²Ã¥¨¥é¡¼¡ÊÆ±°ì¥­¡¼Â¸ºß¡Ë
+      *    è¿½åŠ ã‚¨ãƒ©ãƒ¼ï¼ˆåŒä¸€ã‚­ãƒ¼å­˜åœ¨ï¼‰
            IF      FLG-NYUKHN      =   ZERO
                MOVE    1               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
-      *        £Ä£ÂÄÉ²Ã
+      *        ï¼¤ï¼¢è¿½åŠ 
                PERFORM 20101-NYUKHN-INS-SEC
            END-IF
       *
@@ -387,7 +387,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²þÀµÄÉ²Ã  ½èÍý
+      *    æ”¹æ­£è¿½åŠ   å‡¦ç†
       *****************************************************************
        2012-INSERT-SYORI-SEC       SECTION.
       *
@@ -414,13 +414,13 @@
                      OR   (FLG-SYORI       =   1  )
                IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOEDYMD2)
                  AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD2)
-      *            £Ä£Â¹¹¿·
+      *            ï¼¤ï¼¢æ›´æ–°
                    MOVE    NYUKHN-YUKOEDYMD
                                            TO  NYUKHN-UPYUKOEDYMD
                    MOVE    NYUKHNWK-YUKOEDYMD2
                                            TO  NYUKHN-YUKOEDYMD
                    PERFORM 20101-NYUKHN-UPD-SEC
-      *            £Ä£ÂÄÉ²Ã
+      *            ï¼¤ï¼¢è¿½åŠ 
                    PERFORM 20101-NYUKHN-INS-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
@@ -437,7 +437,7 @@
            PERFORM 900-TBL-CLOSE-SEC
       *
            IF      FLG-SYORI       =   ZERO
-      *        £Ä£ÂÄÉ²Ã
+      *        ï¼¤ï¼¢è¿½åŠ 
                PERFORM 20101-NYUKHN-INS-SEC
            END-IF
       *
@@ -446,7 +446,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¹¹¿·  ½èÍý
+      *    ï¼¤ï¼¢æ›´æ–°  å‡¦ç†
       *****************************************************************
        2020-UPDATE-SYORI-SEC       SECTION.
       *
@@ -473,7 +473,7 @@
                      OR   (FLG-SYORI       =   1  )
                IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOSTYMD)
                  AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD)
-      *            £Ä£Â¹¹¿·
+      *            ï¼¤ï¼¢æ›´æ–°
                    MOVE    NYUKHN-YUKOEDYMD
                                            TO  NYUKHN-UPYUKOEDYMD
                    MOVE    NYUKHNWK-INF    TO  NYUKHN-INF
@@ -504,7 +504,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ºï½ü  ½èÍý
+      *    å‰Šé™¤  å‡¦ç†
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
@@ -531,7 +531,7 @@
                      OR   (FLG-SYORI       =   1  )
                IF     (NYUKHN-YUKOSTYMD    <=  NYUKHNWK-YUKOSTYMD)
                  AND  (NYUKHN-YUKOEDYMD    >=  NYUKHNWK-YUKOEDYMD)
-      *            £Ä£Âºï½ü
+      *            ï¼¤ï¼¢å‰Šé™¤
                    PERFORM 20101-NYUKHN-DEL-SEC
                    MOVE    1               TO  FLG-SYORI
                ELSE
@@ -557,7 +557,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£ÂÄÉ²Ã  ½èÍý
+      *    ï¼¤ï¼¢è¿½åŠ   å‡¦ç†
       *****************************************************************
        20101-NYUKHN-INS-SEC        SECTION.
       *
@@ -587,7 +587,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¹¹¿·  ½èÍý
+      *    ï¼¤ï¼¢æ›´æ–°  å‡¦ç†
       *****************************************************************
        20101-NYUKHN-UPD-SEC        SECTION.
       *
@@ -613,7 +613,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Âºï½ü  ½èÍý
+      *    ï¼¤ï¼¢å‰Šé™¤  å‡¦ç†
       *****************************************************************
        20101-NYUKHN-DEL-SEC        SECTION.
       *
@@ -637,16 +637,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡¦ç†
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ¥¨¥é¡¼½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›
            MOVE    NYUKHNWK-REC    TO  ERR-NYUKHNWK-REC
            WRITE   ERR-NYUKHNWK-REC
            ADD     1               TO  CNT-ERR
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
            PERFORM 20401-PLF-OUT-SEC
       *
            .
@@ -654,7 +654,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›å‡¦ç†
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -666,18 +666,18 @@
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "Æþ±¡´ðËÜÎÁ¥Þ¥¹¥¿ÅÐÏ¿ºÑ¤ß"
+                   MOVE  "å…¥é™¢åŸºæœ¬æ–™ãƒžã‚¹ã‚¿ç™»éŒ²æ¸ˆã¿"
                                            TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "ÄÉ²Ã¥¨¥é¡¼"      TO  WRK-MSG-01
+                   MOVE  "è¿½åŠ ã‚¨ãƒ©ãƒ¼"      TO  WRK-MSG-01
                WHEN    3
-                   MOVE  "¹¹¿·¥¨¥é¡¼"      TO  WRK-MSG-01
+                   MOVE  "æ›´æ–°ã‚¨ãƒ©ãƒ¼"      TO  WRK-MSG-01
                WHEN    4
-                   MOVE  "ºï½ü¥¨¥é¡¼"      TO  WRK-MSG-01
+                   MOVE  "å‰Šé™¤ã‚¨ãƒ©ãƒ¼"      TO  WRK-MSG-01
                WHEN    5
-                   MOVE  "¹¹¿·ÂÐ¾Ý¤Ê¤·"    TO  WRK-MSG-01
+                   MOVE  "æ›´æ–°å¯¾è±¡ãªã—"    TO  WRK-MSG-01
                WHEN    6
-                   MOVE  "ºï½üÂÐ¾Ý¤Ê¤·"    TO  WRK-MSG-01
+                   MOVE  "å‰Šé™¤å¯¾è±¡ãªã—"    TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA    TO  PLF-REC
@@ -689,7 +689,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -699,7 +699,7 @@
                GO  TO  2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ¥¨¥é¡¼¥ì¥³¡¼¥É½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡¥ª¡¼¥×¥ó
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¬ã‚³ãƒ¼ãƒ‰å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€ã‚ªãƒ¼ãƒ—ãƒ³
            OPEN    OUTPUT             PLF-FILE
            IF      STS-PLF    NOT =   ZERO
                DISPLAY "*(ORCMUP0181)* PLFFILE OPN STS[" STS-PLF "]"
@@ -718,14 +718,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½ªÎ»½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€çµ‚äº†å‡¦ç†
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -758,7 +758,7 @@
            EXIT.
       *
       *****************************************************************
-      *     Æþ±¡´ðËÜÎÁÆÉ¹þ¤ß½èÍý
+      *     å…¥é™¢åŸºæœ¬æ–™èª­è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -780,7 +780,7 @@
           EXIT.
       *
       *****************************************************************
-      *    Æþ±¡´ðËÜÎÁÆÉ¹þ
+      *    å…¥é™¢åŸºæœ¬æ–™èª­è¾¼
       *****************************************************************
        910-NYUKHN-READ-SEC         SECTION.
       *
@@ -799,7 +799,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -818,7 +818,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -837,7 +837,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-TBL-CLOSE-SEC           SECTION.
       *
@@ -849,7 +849,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
       *

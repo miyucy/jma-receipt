@@ -1,107 +1,107 @@
 kanri_cd    : "9000"
-name        : "£Ã£Ì£Á£É£ÍÀÜÂ³¾ğÊó"
+name        : "ï¼£ï¼¬ï¼¡ï¼©ï¼­æ¥ç¶šæƒ…å ±"
 class_cd    : "*"
 item_max    : 17
 item_list   :
 - item_no   : 1
   item      : "SETUZOKU"
-  item_jp   : "£Ã£Ì£Á£É£ÍÀÜÂ³"
+  item_jp   : "ï¼£ï¼¬ï¼¡ï¼©ï¼­æ¥ç¶š"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "CODE"
-  item_jp   : "Á÷¿®ÍÑ¥³¡¼¥É"
+  item_jp   : "é€ä¿¡ç”¨ã‚³ãƒ¼ãƒ‰"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "UKEBUTTON1"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ¼õÉÕ¡İÉ½¼¨Ìµ"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’å—ä»˜âˆ’è¡¨ç¤ºç„¡"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "UKEBUTTON2"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ¼õÉÕ¡İÉ½¼¨Í­"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’å—ä»˜âˆ’è¡¨ç¤ºæœ‰"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "KANBUTTON1"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ´µ¼ÔÅĞÏ¿¡İÉ½¼¨Ìµ"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’æ‚£è€…ç™»éŒ²âˆ’è¡¨ç¤ºç„¡"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "KANBUTTON2"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ´µ¼ÔÅĞÏ¿¡İÉ½¼¨Í­"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’æ‚£è€…ç™»éŒ²âˆ’è¡¨ç¤ºæœ‰"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "SYNBUTTON1"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ¿ÇÎÅ¹Ô°Ù¡İÉ½¼¨Ìµ"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’è¨ºç™‚è¡Œç‚ºâˆ’è¡¨ç¤ºç„¡"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "SYNBUTTON2"
-  item_jp   : "Á÷¿®»ş¥İ¥Ã¥×¥¢¥Ã¥×¡İ¿ÇÎÅ¹Ô°Ù¡İÉ½¼¨Í­"
+  item_jp   : "é€ä¿¡æ™‚ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—âˆ’è¨ºç™‚è¡Œç‚ºâˆ’è¡¨ç¤ºæœ‰"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 9
   item      : "PT-FLG"
-  item_jp   : "´µ¼ÔÅĞÏ¿Á÷¿®"
+  item_jp   : "æ‚£è€…ç™»éŒ²é€ä¿¡"
   type      : "X"
   start     : 9
   length    : 1
 - item_no   : 10
   item      : "RECEDEN-FLG"
-  item_jp   : "¿ÇÎÅ²Ê¥ì¥»ÅÅÁ÷¿®"
+  item_jp   : "è¨ºç™‚ç§‘ãƒ¬ã‚»é›»é€ä¿¡"
   type      : "X"
   start     : 10
   length    : 1
 - item_no   : 11
   item      : "BYOMEI-SYU-FLG"
-  item_jp   : "ÉÂÌ¾½¸Ìó"
+  item_jp   : "ç—…åé›†ç´„"
   type      : "X"
   start     : 11
   length    : 1
 - item_no   : 12
   item      : "BYOMEI-DOUKI-FLG"
-  item_jp   : "ÉÂÌ¾Æ±´ü"
+  item_jp   : "ç—…ååŒæœŸ"
   type      : "X"
   start     : 12
   length    : 1
 - item_no   : 13
   item      : "NYU-ORDER-FLG"
-  item_jp   : "Æş±¡¥ª¡¼¥À¡¼¼è¹ş"
+  item_jp   : "å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼å–è¾¼"
   type      : "X"
   start     : 13
   length    : 1
 - item_no   : 14
   item      : "MULTIHOST-FLG"
-  item_jp   : "Ê£¿ô¥Û¥¹¥ÈÁ÷¿®"
+  item_jp   : "è¤‡æ•°ãƒ›ã‚¹ãƒˆé€ä¿¡"
   type      : "X"
   start     : 14
   length    : 1
 - item_no   : 15
   item      : "RESEND-FLG"
-  item_jp   : "ºÆÁ÷¡Ê³°Íè¡Ë¼õ¿®"
+  item_jp   : "å†é€ï¼ˆå¤–æ¥ï¼‰å—ä¿¡"
   type      : "X"
   start     : 15
   length    : 1
 - item_no   : 16
   item      : "SINSATU-FLG"
-  item_jp   : "³°Íè¿Ç»¡ÎÁÅ¸³«"
+  item_jp   : "å¤–æ¥è¨ºå¯Ÿæ–™å±•é–‹"
   type      : "X"
   start     : 16
   length    : 1
 - item_no   : 17
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 17
   length    : 483

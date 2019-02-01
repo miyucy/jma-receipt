@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,131 +16,131 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ��������    ������ COPY  (CPJYURRK.INC)    *
+      *    受診履歴　    　　　 COPY  (CPJYURRK.INC)    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-¿��Ǽ   02/04/10  ϫ���ɲ�
-      *  01.00.02    NACL-¿��Ǽ  02/10/21  ������ʬ�ɲ�
-      *  01.00.03    NACL-��Ʀ��  04/07/01  �ǽ���ʬ���
-      *                                     �ޤȤ�������ɼ�ֹ��ɲ�
-      *                                     �ޤȤ�����Ϣ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-多々納   02/04/10  労災追加
+      *  01.00.02    NACL-多々納  02/10/21  入外区分追加
+      *  01.00.03    NACL-小豆沢  04/07/01  最終区分削除
+      *                                     まとめ入力伝票番号追加
+      *                                     まとめ入力連番追加
       ************************************************************
       *01  JYURRK-REC.
-      *��������
+      *受診履歴
            03  JYURRK-KEY.
-      *  ���ŵ��أɣ�
+      *  医療機関ＩＤ
                05  JYURRK-HOSPNUM           PIC 9(2).
-      *  ���ԣɣ�
+      *  患者ＩＤ
                05  JYURRK-PTID             PIC  9(10).
-      *  ������ʬ
+      *  入外区分
                05  JYURRK-NYUGAIKBN        PIC  X(01).
-      *  ���Ų�
+      *  診療科
                05  JYURRK-SRYKA            PIC  X(02).
-      *  ������
+      *  診療日
                05  JYURRK-SRYYMD           PIC  X(08).
-      *  Ϣ�֡ʣ������Ʊ��Ϣ�֡�
+      *  連番（１からの同日連番）
                05  JYURRK-RENNUM           PIC  9(01).
-      *  Ʊ������Ϣ�֡ʣ�����³�ʤ����������Ϣ�֡���³�����
+      *  同時診療連番（０：継続なし、１からの連番：継続あり）
                05  JYURRK-DOUJI-RENNUM     PIC  9(01).
-      *  ���Ϣ�֡ʲ�׾���������Ϣ�֡�
+      *  会計連番（会計情報修正時の連番）
                05  JYURRK-KAIKEI-RENNUM    PIC  9(03).
-      *  ���֡ʣ����ţ����ްʾ�λ��ˣ������Ϣ�֡�
+      *  枝番（１診療１５剤以上の時に１からの連番）
                05  JYURRK-EDANUM           PIC  9(01).
-      *�ɥ�����
+      *ドクター
            03  JYURRK-DRCD                 PIC X(05).
-      *�ݸ��ȹ��ֹ�
+      *保険組合番号
            03  JYURRK-HKNCOMBINUM          PIC X(04).
-      *�ݸ���ʬ�ʣ������̡�����ϫ�ҡ����������ա��������ʡ�̤���ѡ�
-      *          ���������աʷ��ݽ��ˡ�������̳�ҳ��ʷ��ݽ��ˡ�
-      *          ����������
+      *保険区分（０：一般、１：労災、２：自賠責、３：歯科（未使用）
+      *          ４：自賠責（健保準拠）、５：公務災害（健保準拠）、
+      *          ６：公害）
            03  JYURRK-HKNKBN               PIC X(01).
-      *��ɼ�ֹ�
+      *伝票番号
            03  JYURRK-DENPNUM              PIC 9(07).
-      *�ޤȤ�������ɼ�ֹ�
+      *まとめ入力伝票番号
            03  JYURRK-GRP-DENPNUM          PIC 9(07).
-      *�ޤȤ�����Ϣ��
+      *まとめ入力連番
            03  JYURRK-GRP-RENNUM           PIC 9(02).
-      *��Ǽ������ʬ
+      *収納更新区分
            03  JYURRK-SYU-UPDKBN           PIC  X(01).
-      *���Ŷ�ʬ
+      *診療区分
            03  JYURRK-SRYKBN-G.
-      *  ���Ŷ�ʬ��
+      *  診療区分１
              05  JYURRK-SRYKBN1            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分２
              05  JYURRK-SRYKBN2            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分３
              05  JYURRK-SRYKBN3            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分４
              05  JYURRK-SRYKBN4            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分５
              05  JYURRK-SRYKBN5            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分６
              05  JYURRK-SRYKBN6            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分７
              05  JYURRK-SRYKBN7            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分８
              05  JYURRK-SRYKBN8            PIC  X(02).
-      *  ���Ŷ�ʬ��
+      *  診療区分９
              05  JYURRK-SRYKBN9            PIC  X(02).
-      *  ���Ŷ�ʬ����
+      *  診療区分１０
              05  JYURRK-SRYKBN10           PIC  X(02).
-      *  ���Ŷ�ʬ����
+      *  診療区分１１
              05  JYURRK-SRYKBN11           PIC  X(02).
       *
            03  JYURRK-SRYKBN-R         REDEFINES   JYURRK-SRYKBN-G.
-      * ���Ŷ�ʬ
+      * 診療区分
              05  JYURRK-SRYKBN             PIC  X(02)
                                            OCCURS   11.
-      *���ֹ�
+      *剤番号
            03  JYURRK-ZAINUM-G.
-      *  ���ֹ棱
+      *  剤番号１
              05  JYURRK-ZAINUM1            PIC  9(08).
-      *  ���ֹ棲
+      *  剤番号２
              05  JYURRK-ZAINUM2            PIC  9(08).
-      *  ���ֹ棳
+      *  剤番号３
              05  JYURRK-ZAINUM3            PIC  9(08).
-      *  ���ֹ棴
+      *  剤番号４
              05  JYURRK-ZAINUM4            PIC  9(08).
-      *  ���ֹ棵
+      *  剤番号５
              05  JYURRK-ZAINUM5            PIC  9(08).
-      *  ���ֹ棶
+      *  剤番号６
              05  JYURRK-ZAINUM6            PIC  9(08).
-      *  ���ֹ棷
+      *  剤番号７
              05  JYURRK-ZAINUM7            PIC  9(08).
-      *  ���ֹ棸
+      *  剤番号８
              05  JYURRK-ZAINUM8            PIC  9(08).
-      *  ���ֹ棹
+      *  剤番号９
              05  JYURRK-ZAINUM9            PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１０
              05  JYURRK-ZAINUM10           PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１１
              05  JYURRK-ZAINUM11           PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１２
              05  JYURRK-ZAINUM12           PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１３
              05  JYURRK-ZAINUM13           PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１４
              05  JYURRK-ZAINUM14           PIC  9(08).
-      *  ���ֹ棱��
+      *  剤番号１５
              05  JYURRK-ZAINUM15           PIC  9(08).
       *
            03  JYURRK-ZAINUM-R         REDEFINES   JYURRK-ZAINUM-G.
-      *  ���ֹ�
+      *  剤番号
              05  JYURRK-ZAINUM             PIC  9(08)
                                            OCCURS 15.
-      *ü���ɣ�
+      *端末ＩＤ
            03  JYURRK-TERMID               PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  JYURRK-OPID                 PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  JYURRK-CREYMD               PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  JYURRK-UPYMD                PIC  X(08).
-      *��������
+      *更新時間
            03  JYURRK-UPHMS                PIC  X(06).
-      *�����祭�������ѹ���
+      *　　主キー更新用項目
            03  JYURRK-UPKEY.
                05  JYURRK-UPHOSPNUM           PIC 9(2).
                05  JYURRK-UPPTID             PIC  9(10).

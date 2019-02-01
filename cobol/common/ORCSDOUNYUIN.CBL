@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSDOUNYUIN.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æ±ÆüºÆÆþ±¡È½Äê¥µ¥Ö
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : åŒæ—¥å†å…¥é™¢åˆ¤å®šã‚µãƒ–
       *                      
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  12/03/17    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  12/03/17    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *
@@ -42,55 +42,55 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
            03  IDX2                        PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-PTNYUINRRK              PIC X(01).
       *
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    Æ±ÆüºÆÆþ±¡È½Äê¥Ñ¥é¥á¥¿
+      *    åŒæ—¥å†å…¥é™¢åˆ¤å®šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSDOUNYUIN.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -99,7 +99,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -108,13 +108,13 @@
            INITIALIZE                  WRK-AREA
            MOVE    ZERO                TO  LNK-DOUNYUIN-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-DOUNYUIN-RC     NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      LNK-DOUNYUIN-RC     =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -126,11 +126,11 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                        PTINF-REC
            MOVE    LNK-DOUNYUIN-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-DOUNYUIN-PTID     TO  PTINF-PTID
@@ -140,7 +140,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    Á°ÎòÍ­Ìµ¤Î¥Á¥§¥Ã¥¯
+      *    å‰æ­´æœ‰ç„¡ã®ãƒã‚§ãƒƒã‚¯
            IF    LNK-DOUNYUIN-RRKNUM     =   1
                MOVE    8                 TO  LNK-DOUNYUIN-RC
                GO  TO  100-PRM-CHK-EXT
@@ -151,12 +151,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¼èÆÀ
+      *    ä¸»å–å¾—
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    °ú¿ô¤«¤éÆþ±¡ÍúÎòÈÖ¹æ¤ÎÁ°Îò¤ò¸¡º÷¤·¡¢Á°Îò¤ÎÂà±¡Æü¤ÈºÆÆþ±¡Æü¤¬
-      *    Æ±Æü¤Î¾ì¹ç¡¢Æþ±¡ÎÁ»»Äê³«»ÏÆü¤òÊÖµÑ¤¹¤ë
+      *    å¼•æ•°ã‹ã‚‰å…¥é™¢å±¥æ­´ç•ªå·ã®å‰æ­´ã‚’æ¤œç´¢ã—ã€å‰æ­´ã®é€€é™¢æ—¥ã¨å†å…¥é™¢æ—¥ãŒ
+      *    åŒæ—¥ã®å ´åˆã€å…¥é™¢æ–™ç®—å®šé–‹å§‹æ—¥ã‚’è¿”å´ã™ã‚‹
            MOVE    ZERO                 TO  FLG-PTNYUINRRK
            INITIALIZE                       PTNYUINRRK-REC
            MOVE    LNK-DOUNYUIN-HOSPNUM TO  PTNYUINRRK-HOSPNUM
@@ -176,7 +176,7 @@
                         MOVE    0     TO   LNK-DOUNYUIN-RC
                     ELSE
                         MOVE    1     TO   LNK-DOUNYUIN-RC
-      *                 Æþ±¡²ñ·×ºîÀ®Æü¤Î¥»¥Ã¥È
+      *                 å…¥é™¢ä¼šè¨ˆä½œæˆæ—¥ã®ã‚»ãƒƒãƒˆ
                         INITIALIZE         STS-AREA-DAY
                         INITIALIZE         LNK-DAY6-AREA
                         MOVE   "61"   TO   LNK-DAY6-IRAI
@@ -195,7 +195,7 @@
                END-IF
            END-IF
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -205,7 +205,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -244,7 +244,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -263,7 +263,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC        SECTION.
       *
@@ -284,7 +284,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

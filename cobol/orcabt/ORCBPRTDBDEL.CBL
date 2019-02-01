@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,23 +19,23 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBPRTDBDEL.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ·î¼¡Ä¢É¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Ä¢É¼£Ä£Â¤Îºï½ü
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  07/05/25    NACL-Æ£¸¶     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æœˆæ¬¡å¸³ç¥¨
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å¸³ç¥¨ï¼¤ï¼¢ã®å‰Šé™¤
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  07/05/25    NACL-è—¤åŽŸ     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.08.00    NACL-ÂÀÅÄ    15/03/06  Æþ±¡¥ª¡¼¥À¡¼ÄÉ²Ã
-      *                                     °õºþ¥Ç¡¼¥¿Åùºï½üµ¡Ç½¾ðÊó
-      *                                     ¤ÎÄÉ²Ã½èÍý¤òÄÉ²Ã
-      *  04.08.00    NACL-ÂÀÅÄ    16/11/30  MONBLOBºï½üµ¡Ç½ÄÉ²Ã
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.08.00    NACL-å¤ªç”°    15/03/06  å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼è¿½åŠ 
+      *                                     å°åˆ·ãƒ‡ãƒ¼ã‚¿ç­‰å‰Šé™¤æ©Ÿèƒ½æƒ…å ±
+      *                                     ã®è¿½åŠ å‡¦ç†ã‚’è¿½åŠ 
+      *  04.08.00    NACL-å¤ªç”°    16/11/30  MONBLOBå‰Šé™¤æ©Ÿèƒ½è¿½åŠ 
       *
-      *  05.00.01    NACL-Æ£¸¶    19/01/18  tbl_onrece_kanri tbl_onrece_body
-      *                                     ¤Îºï½üµ¡Ç½ÄÉ²Ã
-      *                                     ¡Ê¥ì¥»ÅÅ¸ÄÊÌºîÀ®ÍÑ¤Î¤ß¡Ë
+      *  05.00.01    NACL-è—¤åŽŸ    19/01/18  tbl_onrece_kanri tbl_onrece_body
+      *                                     ã®å‰Šé™¤æ©Ÿèƒ½è¿½åŠ 
+      *                                     ï¼ˆãƒ¬ã‚»é›»å€‹åˆ¥ä½œæˆç”¨ã®ã¿ï¼‰
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,7 +46,7 @@
        DATA                        DIVISION.
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -70,42 +70,42 @@
            03  CONST-MONTHLY       PIC 9(03)  VALUE 36.
            03  CONST-NORDER        PIC 9(03)  VALUE 36.
       *
-      *    ¥ï¡¼¥¯°õºþ¥Ç¡¼¥¿ºï½üÀßÄê¾ðÊó
+      *    ãƒ¯ãƒ¼ã‚¯å°åˆ·ãƒ‡ãƒ¼ã‚¿å‰Šé™¤è¨­å®šæƒ…å ±
            COPY    "CPSK8000.INC"  REPLACING  //SYS-8000//
                                    BY         //WRK-SYS-8000//.
       *
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    °õºþ´ÉÍý¥Ç¡¼¥¿
+      *    å°åˆ·ç®¡ç†ãƒ‡ãƒ¼ã‚¿
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    °õºþ¥Ç¡¼¥¿
+      *    å°åˆ·ãƒ‡ãƒ¼ã‚¿
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".          
       *
-      *    ¥×¥ì¥Ó¥å¡¼°õºþÍÑ´ÉÍý¥Ç¡¼¥¿
+      *    ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼å°åˆ·ç”¨ç®¡ç†ãƒ‡ãƒ¼ã‚¿
            COPY    "CPPRVKANRI.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSYSKANRI.INC".
       *
-      *    °õºþ¥Ç¡¼¥¿ºï½üÀßÄê¾ðÊó
+      *    å°åˆ·ãƒ‡ãƒ¼ã‚¿å‰Šé™¤è¨­å®šæƒ…å ±
            COPY    "CPSK8000.INC".
       *
-      *    Æþ±¡¥ª¡¼¥À¡¼
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
-      *    Æþ±¡¥ª¡¼¥À¡¼¹àÌÜ
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼é …ç›®
        01  ODRITEM-REC.
            COPY    "CPODRITEM.INC".
       *
@@ -116,20 +116,20 @@
            COPY    "CPONRECE-BODY.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
@@ -143,7 +143,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -157,7 +157,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -175,20 +175,20 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
       *****MOVE    "STS"           TO  SJOBKANRI-MODE
       *    INITIALIZE                  JOBKANRI-REC
       *    MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
       *    MOVE    WRK-PARA-SHELLID
       *                            TO  JOB-SHELLID
       *    MOVE    "ORCBPRTDBDEL"  TO  JOB-PGID
-      *    MOVE    "Ä¢É¼£Ä£Âºï½ü½èÍý"
+      *    MOVE    "å¸³ç¥¨ï¼¤ï¼¢å‰Šé™¤å‡¦ç†"
       *                            TO  JOB-SHELLMSG
       *    CALL    "ORCSJOB"       USING
       *                            ORCSJOBKANRIAREA  
       *****                            JOBKANRI-REC
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -207,7 +207,7 @@
       *
            DISPLAY "SMCNDATE-YMD=" SMCNDATE-YMD " WRK=" WRK-SMCNDATE-YMD
       *
-      *    °õºþ¥Ç¡¼¥¿ºï½üÀßÄê¾ðÊó¤Î¹¹¿·
+      *    å°åˆ·ãƒ‡ãƒ¼ã‚¿å‰Šé™¤è¨­å®šæƒ…å ±ã®æ›´æ–°
            MOVE    SPACE               TO  SYS-8000-REC
            INITIALIZE                      SYS-8000-REC
            MOVE    "8000"              TO  SYS-8000-KANRICD
@@ -255,7 +255,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *
            IF      FLG-END                 =   ZERO
       *
-      *        Æü¼¡¾ðÊóºï½ü
+      *        æ—¥æ¬¡æƒ…å ±å‰Šé™¤
                IF    ( SYS-8000-DAILY-YM   =   WRK-SMCNDATE-YM )
                OR    ( SYS-8000-DAILY      =   999             )
                    CONTINUE
@@ -264,7 +264,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SMCNDATE-YMD    TO  SYS-8000-DAILY-UPYMD
                    MOVE    1               TO  FLG-SYS-8000-DLT
                END-IF    
-      *        ·î¼¡¾ðÊóºï½ü
+      *        æœˆæ¬¡æƒ…å ±å‰Šé™¤
                IF    ( SYS-8000-MONTHLY-YM =   WRK-SMCNDATE-YM )
                OR    ( SYS-8000-MONTHLY    =   999             )
                    CONTINUE
@@ -273,7 +273,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    SMCNDATE-YMD    TO  SYS-8000-MONTHLY-UPYMD
                    MOVE    1               TO  FLG-SYS-8000-DLT
                END-IF
-      *        Æþ±¡¥ª¡¼¥À¡¼ºï½ü
+      *        å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼å‰Šé™¤
                IF    ( SYS-8000-NORDER-YM  =   WRK-SMCNDATE-YM )
                OR    ( SYS-8000-NORDER     =   999             )
                    CONTINUE
@@ -283,7 +283,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                    MOVE    1               TO  FLG-SYS-8000-DLT
                END-IF
       *
-      *        ¥·¥¹¥Æ¥à´ÉÍý¹¹¿·½èÍý
+      *        ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ›´æ–°å‡¦ç†
                IF      FLG-SYS-8000-DLT    =   1
                    MOVE    SMCNDATE-YMD        TO  SYS-8000-UPYMD
                    MOVE    SMCNDATE-HMS        TO  SYS-8000-UPHMS
@@ -312,11 +312,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
-      *    Æü¼¡¾ðÊóºï½ü
+      *    æ—¥æ¬¡æƒ…å ±å‰Šé™¤
       *
            DISPLAY "DAILY       YM=" WRK-SYS-8000-DAILY-YM 
                                 "   DAILY=" WRK-SYS-8000-DAILY
@@ -380,7 +380,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            PERFORM 900-DBCOMMIT-SEC
            PERFORM 900-DBSTART-SEC
       *    
-      *    ·î¼¡¾ðÊóºï½ü
+      *    æœˆæ¬¡æƒ…å ±å‰Šé™¤
       *
            DISPLAY "MONTHLY     YM=" WRK-SYS-8000-MONTHLY-YM
                                 " MONTHLY="WRK-SYS-8000-MONTHLY
@@ -480,11 +480,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¥ª¡¼¥À¡¼ºï½ü½èÍý
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼å‰Šé™¤å‡¦ç†
       *****************************************************************
        2001-NORDER-DEL-SEC         SECTION.
       *
-      *    Æþ±¡¥ª¡¼¥À¡¼ºï½ü
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼å‰Šé™¤
            DISPLAY "NORDER      YM=" WRK-SYS-8000-NORDER-YM
                                 " NORDER="WRK-SYS-8000-NORDER
       *
@@ -534,11 +534,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
        2001-NORDER-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *     
-      *****¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *****ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
       *    MOVE    "STE"           TO  SJOBKANRI-MODE
       *    INITIALIZE                  JOBKANRI-REC
       *    MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -556,7 +556,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¥­¡¼¡Ë
+      *    ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -585,7 +585,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼¥ï¼¬ï¼¥ï¼£ï¼´å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -602,7 +602,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *    ï¼¤ï¼¢ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -614,7 +614,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -626,7 +626,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -639,7 +639,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -657,7 +657,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -675,7 +675,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡£Ã£Ï£Í£Í£É£Ô½èÍý
+      *    ï¼¤ï¼¢ã€€ï¼£ï¼¯ï¼­ï¼­ï¼©ï¼´å‡¦ç†
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -689,7 +689,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡£Ó£Ô£Á£Ò£Ô½èÍý
+      *    ï¼¤ï¼¢ã€€ï¼³ï¼´ï¼¡ï¼²ï¼´å‡¦ç†
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

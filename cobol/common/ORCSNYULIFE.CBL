@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,36 +18,36 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSNYULIFE.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
-      *                      ¡ÊÊ¿À®£±£¸Ç¯£±£°·î²þÀµÂÐ±þ¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  06/09/12    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ã‚µãƒ–
+      *                      ï¼ˆå¹³æˆï¼‘ï¼˜å¹´ï¼‘ï¼æœˆæ”¹æ­£å¯¾å¿œï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  06/09/12    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-ÂÀÅÄ    07/05/10  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *              NACL-¾®Æ¦Âô  07/07/12  ´µ¼Ô½êÆÀ¾ðÊó¤Î¼èÆÀ¤ò¥µ¥Ö
-      *                                     ¥ë¡¼¥Á¥ó¤ËÊÑ¹¹
-      *  04.01.00    NACL-¾®Æ¦Âô  07/12/17  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡
-      *                                     ÍâÆü¿©»ö»»ÄêÂÐ±þ
-      *Ê¿À®£²£°Ç¯£´·î²þÄêÂÐ±þ
-      *  04.02.00    NACL-¾®Æ¦Âô  08/03/05  ¸å´ü¹âÎð¼Ô¤ÎÈ½ÄêÊÑ¹¹
-      *                                     À¸³èÎÅÍÜ¤ÎÆþ±¡ÎÁÈ½ÄêÄÉ²Ã
-      *                                       Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
-      *                                       ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±
-      *                                       ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²
-      *  04.02.00    NACL-¾®Æ¦Âô  08/04/11  ¸å´ü¹âÎð¼Ô¤ÎÈ½Äê¤ò¥µ¥Ö¥ë¡¼¥Á¥ó»ÈÍÑ
-      *                                     ¤ËÊÑ¹¹
-      *  04.02.00    NACL-¾®Æ¦Âô  08/05/02  ÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Ë£Á£Ä£ÌÆþÎÏ¤«¤é
-      *                                     °åÎÅÅÙ¤Î¹â¤¤´µ¼Ô¤òÈ½Äê
-      *Ê¿À®£²£·Ç¯£±·îÆñÉÂÂÐ±þ
-      *  04.07.00    NACL-¾®Æ¦Âô  15/06/02  ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁµÚ¤Ó
-      *                                     ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ¤Î
-      *                                     »»Äê¤ÇÆñÉÂ¸øÈñ¤Î»»Äê»þ¤Ë
-      *                                     °åÎÅÅÙ¤Î¹â¤¤´µ¼Ô¤È¤¹¤ëÈ½ÄêÄÉ²Ã
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤ªç”°    07/05/10  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *              NACL-å°è±†æ²¢  07/07/12  æ‚£è€…æ‰€å¾—æƒ…å ±ã®å–å¾—ã‚’ã‚µãƒ–
+      *                                     ãƒ«ãƒ¼ãƒãƒ³ã«å¤‰æ›´
+      *  04.01.00    NACL-å°è±†æ²¢  07/12/17  çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ã®å…¥é™¢
+      *                                     ç¿Œæ—¥é£Ÿäº‹ç®—å®šå¯¾å¿œ
+      *å¹³æˆï¼’ï¼å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  04.02.00    NACL-å°è±†æ²¢  08/03/05  å¾ŒæœŸé«˜é½¢è€…ã®åˆ¤å®šå¤‰æ›´
+      *                                     ç”Ÿæ´»ç™‚é¤Šã®å…¥é™¢æ–™åˆ¤å®šè¿½åŠ 
+      *                                       çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“
+      *                                       å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘
+      *                                       å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’
+      *  04.02.00    NACL-å°è±†æ²¢  08/04/11  å¾ŒæœŸé«˜é½¢è€…ã®åˆ¤å®šã‚’ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ä½¿ç”¨
+      *                                     ã«å¤‰æ›´
+      *  04.02.00    NACL-å°è±†æ²¢  08/05/02  ç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã«ï¼¡ï¼¤ï¼¬å…¥åŠ›ã‹ã‚‰
+      *                                     åŒ»ç™‚åº¦ã®é«˜ã„æ‚£è€…ã‚’åˆ¤å®š
+      *å¹³æˆï¼’ï¼—å¹´ï¼‘æœˆé›£ç—…å¯¾å¿œ
+      *  04.07.00    NACL-å°è±†æ²¢  15/06/02  åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™åŠã³
+      *                                     åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™ã®
+      *                                     ç®—å®šã§é›£ç—…å…¬è²»ã®ç®—å®šæ™‚ã«
+      *                                     åŒ»ç™‚åº¦ã®é«˜ã„æ‚£è€…ã¨ã™ã‚‹åˆ¤å®šè¿½åŠ 
       *****************************************************************
       *
       *
@@ -62,7 +62,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -78,7 +78,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-HKNCOMBI                PIC 9(01).
            03  FLG-NANBYO                  PIC 9(01).
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -87,45 +87,45 @@
            03  IDX-SEI                     PIC 9(04).
            03  IDX-SEI2                    PIC 9(04).
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
-      *    À¸³èÎÅÍÜ¤Ë´Ø¤¹¤ëÆþ±¡¿ÇÎÅ¥³¡¼¥É
+      *    ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤
+      *    ç”Ÿæ´»ç™‚é¤Šã«é–¢ã™ã‚‹å…¥é™¢è¨ºç™‚ã‚³ãƒ¼ãƒ‰
        01  CONSTANT-AREA.
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’
            03   CONS-RYOYO2A               PIC X(09) VALUE "190123710".
            03   CONS-RYOYO2B               PIC X(09) VALUE "190123810".
            03   CONS-RYOYO2C               PIC X(09) VALUE "190123910".
            03   CONS-RYOYO2D               PIC X(09) VALUE "190124010".
            03   CONS-RYOYO2E               PIC X(09) VALUE "190124110".
            03   CONS-RYOYO2TOKU            PIC X(09) VALUE "190124210".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£²
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼’
            03   CONS-SRYOYO2A              PIC X(09) VALUE "190124310".
            03   CONS-SRYOYO2B              PIC X(09) VALUE "190124410".
            03   CONS-SRYOYO2C              PIC X(09) VALUE "190124510".
            03   CONS-SRYOYO2D              PIC X(09) VALUE "190124610".
            03   CONS-SRYOYO2E              PIC X(09) VALUE "190124710".
            03   CONS-SRYOYO2TOKU           PIC X(09) VALUE "190124810".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™
            03   CONS-KAIFUKU               PIC X(09) VALUE "190124910".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±¡ÊÊ¿À®£²£²Ç¯°Ê¹ß¤Ï´ð½àÌ¤Å¬¹ç¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆå¹³æˆï¼’ï¼’å¹´ä»¥é™ã¯åŸºæº–æœªé©åˆï¼‰
            03   CONS-KAIFUKU1              PIC X(09) VALUE "190129510".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²¡ÊÊ¿À®£²£²Ç¯°Ê¹ß¤Ï´ð½àÌ¤Å¬¹ç¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆå¹³æˆï¼’ï¼’å¹´ä»¥é™ã¯åŸºæº–æœªé©åˆï¼‰
            03   CONS-KAIFUKU2              PIC X(09) VALUE "190129710".
-      *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
+      *    è¨ºç™‚æ‰€è€äººåŒ»ç™‚ç®¡ç†æ–™
            03   CONS-ROUKAN1               PIC X(09) VALUE "190125010".
            03   CONS-ROUKAN2               PIC X(09) VALUE "190125110".
            03   CONS-ROUKAN3               PIC X(09) VALUE "190125210".
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’
            03   CONS-TANKI2                PIC X(09) VALUE "190125310".
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“
            03   CONS-TANKI3                PIC X(09) VALUE "190130510".
       *
-      *    Ê¿À®£²£²Ç¯ÅÙ²þÄêÄÉ²ÃÊ¬
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Æ¤«¤é£Ç¤ÎÀ¸³èÎÅÍÜ¡Ë
+      *    å¹³æˆï¼’ï¼’å¹´åº¦æ”¹å®šè¿½åŠ åˆ†
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¦ã‹ã‚‰ï¼§ã®ç”Ÿæ´»ç™‚é¤Šï¼‰
            03   CONS-H22-RYOYO1F           PIC X(09) VALUE "190131710".
            03   CONS-H22-RYOYO1G           PIC X(09) VALUE "190131910".
            03   CONS-H22-RYOYO1H           PIC X(09) VALUE "190132110".
            03   CONS-H22-RYOYO1I           PIC X(09) VALUE "190132310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡Ê£Á¤«¤é£É¤ÎÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆï¼¡ã‹ã‚‰ï¼©ã®ç”Ÿæ´»ç™‚é¤Šï¼‰
            03   CONS-H22-RYOYO2A           PIC X(09) VALUE "190132510".
            03   CONS-H22-RYOYO2B           PIC X(09) VALUE "190132710".
            03   CONS-H22-RYOYO2C           PIC X(09) VALUE "190132910".
@@ -135,354 +135,354 @@
            03   CONS-H22-RYOYO2G           PIC X(09) VALUE "190133710".
            03   CONS-H22-RYOYO2H           PIC X(09) VALUE "190133910".
            03   CONS-H22-RYOYO2I           PIC X(09) VALUE "190134110".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   CONS-H22-KAIFUKU1          PIC X(09) VALUE "190141710".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   CONS-H22-KAIFUKU2          PIC X(09) VALUE "190141910".
       *
-      *    Ê¿À®£²£´Ç¯ÅÙ²þÄêÀ¸³èÎÅÍÜÈ½ÄêÍÑ
-      *  ¡Ê°åÎÅÅÙ¤Î¹â¤¤À¸³èÎÅÍÜ¤ò¾å°Ì¤Ë¤Þ¤È¤á¤Æ¤¤¤ë¤Î¤Ç¡¢¥Ç¡¼¥¿¤ÎÊÂ¤Ó¤ËÃí°Õ¤¹¤ë¤³¤È¡Ë
-      *  ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¤ÏÆÃÊÌ¤ÊÈ½Äê¤¬¤¢¤ë¤³¤È¤«¤é¥Ç¡¼¥¿¤ÎºÇ¸å¤È¤¹¤ë¡Ë
+      *    å¹³æˆï¼’ï¼”å¹´åº¦æ”¹å®šç”Ÿæ´»ç™‚é¤Šåˆ¤å®šç”¨
+      *  ï¼ˆåŒ»ç™‚åº¦ã®é«˜ã„ç”Ÿæ´»ç™‚é¤Šã‚’ä¸Šä½ã«ã¾ã¨ã‚ã¦ã„ã‚‹ã®ã§ã€ãƒ‡ãƒ¼ã‚¿ã®ä¸¦ã³ã«æ³¨æ„ã™ã‚‹ã“ã¨ï¼‰
+      *  ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ã¯ç‰¹åˆ¥ãªåˆ¤å®šãŒã‚ã‚‹ã“ã¨ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã®æœ€å¾Œã¨ã™ã‚‹ï¼‰
        01  TBL-H24-SEIKATSU-AREA.
-      *  °åÎÅÅÙ¤Î¹â¤¤À¸³èÎÅÍÜ
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *  åŒ»ç™‚åº¦ã®é«˜ã„ç”Ÿæ´»ç™‚é¤Š
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190150210".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190719610".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190141710".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190719810".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼“ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190141910".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼“ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190720010".
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190125310".
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190130510".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124310".
-      *10  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *10  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190711510".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124410".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190711710".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ã¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124510".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ã¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190711910".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190155410".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á¡ÊÀ¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190155510".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Â¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190155810".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Â¡ÊÀ¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190155910".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ã¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190156210".
-      *20  ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ã¡ÊÀ¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *20  ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190156310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190701010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123810".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190701210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190701410".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190701610".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124110".
-      *30  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *30  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190701810".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190131710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190702010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190702810".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190703010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190703210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133110".
-      *40  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *40  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190703410".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190703610".
-      *   ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *   ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190703810".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190157410".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Á¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¡ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190157510".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190157810".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Â¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¢ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190157910".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190158210".
-      *50  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ã¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *50  ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼£ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190158310".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190158610".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ä¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¤ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190158710".
-      *   ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *   ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190159010".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Å¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¥ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190159110".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190159410".
-      *56  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Æ¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *56  ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¦ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190159510".
       *
-      *  °åÎÅÅÙ¤Î¹â¤¯¤Ê¤¤À¸³èÎÅÍÜ
-      *57  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ä¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *  åŒ»ç™‚åº¦ã®é«˜ããªã„ç”Ÿæ´»ç™‚é¤Š
+      *57  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124610".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ä¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190712110".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Å¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124710".
-      *60  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Å¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *60  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190712310".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ä¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190156610".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ä¡ÊÀ¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190156710".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Å¡ÊÀ¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190157110".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Å¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190157010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190131910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190702210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190702410".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132310".
-      *70  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *70  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190702610".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190704010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190704210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190134110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190704410".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190159810".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£Ç¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼§ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190159910".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190160210".
-      *80  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£È¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *80  ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼¨ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190160310".
-      *    ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190160610".
-      *82  ÆÃÄê°ìÈÌÉÂÅï¡¦ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡Ê£É¡¦À¸³èÎÅÍÜ¡¦±É´É·Ð²áÁ¼ÃÖ¡Ë
+      *82  ç‰¹å®šä¸€èˆ¬ç—…æ£Ÿãƒ»ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆï¼©ãƒ»ç”Ÿæ´»ç™‚é¤Šãƒ»æ „ç®¡çµŒéŽæŽªç½®ï¼‰
            03   FILLER                     PIC X(09) VALUE "190160710".
       *
-      *83  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *83  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124810".
-      *84  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *84  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124210".
       *
        01  TBL-H24-SEIKATSU-R     REDEFINES  TBL-H24-SEIKATSU-AREA.
            03   TBL-H24-SEISRYCD           PIC X(09)  OCCURS  84.
       *
-      *    Ê¿À®£²£¶Ç¯ÅÙ²þÄêÀ¸³èÎÅÍÜÈ½ÄêÍÑ
-      *  ¡Ê°åÎÅÅÙ¤Î¹â¤¤À¸³èÎÅÍÜ¤ò¾å°Ì¤Ë¤Þ¤È¤á¤Æ¤¤¤ë¤Î¤Ç¡¢¥Ç¡¼¥¿¤ÎÊÂ¤Ó¤ËÃí°Õ¤¹¤ë¤³¤È¡Ë
-      *  ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¤ÏÆÃÊÌ¤ÊÈ½Äê¤¬¤¢¤ë¤³¤È¤«¤é¥Ç¡¼¥¿¤ÎºÇ¸å¤È¤¹¤ë¡Ë
+      *    å¹³æˆï¼’ï¼–å¹´åº¦æ”¹å®šç”Ÿæ´»ç™‚é¤Šåˆ¤å®šç”¨
+      *  ï¼ˆåŒ»ç™‚åº¦ã®é«˜ã„ç”Ÿæ´»ç™‚é¤Šã‚’ä¸Šä½ã«ã¾ã¨ã‚ã¦ã„ã‚‹ã®ã§ã€ãƒ‡ãƒ¼ã‚¿ã®ä¸¦ã³ã«æ³¨æ„ã™ã‚‹ã“ã¨ï¼‰
+      *  ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ã¯ç‰¹åˆ¥ãªåˆ¤å®šãŒã‚ã‚‹ã“ã¨ã‹ã‚‰ãƒ‡ãƒ¼ã‚¿ã®æœ€å¾Œã¨ã™ã‚‹ï¼‰
        01  TBL-H26-SEIKATSU-AREA.
-      *  °åÎÅÅÙ¤Î¹â¤¤À¸³èÎÅÍÜ
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *  åŒ»ç™‚åº¦ã®é«˜ã„ç”Ÿæ´»ç™‚é¤Š
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190150210".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190141710".
-      *    ²óÉü´ü¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥óÉÂÅïÆþ±¡ÎÁ£³¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    å›žå¾©æœŸãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ç—…æ£Ÿå…¥é™¢æ–™ï¼“ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190141910".
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190125310".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Á¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124310".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Â¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124410".
-      *    Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ã¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124510".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Á¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¡ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190155410".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Â¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¢ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190155810".
-      *10  ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ã¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *10  ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼£ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190156210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123810".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190123910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190131710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132910".
-      *20  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *20  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133510".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190166210".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190166410".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190166610".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190166810".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190167010".
-      *28  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *28  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190167210".
       *
-      *  °åÎÅÅÙ¤Î¹â¤¯¤Ê¤¤À¸³èÎÅÍÜ
-      *29  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Ä¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *  åŒ»ç™‚åº¦ã®é«˜ããªã„ç”Ÿæ´»ç™‚é¤Š
+      *29  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124610".
-      *30  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ£Å¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *30  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124710".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Ä¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¤ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190156610".
-      *    ÎÅÍÜÉÂ¾²°Ê³°¡¦Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡£Å¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…åºŠä»¥å¤–ãƒ»æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢ï¼¥ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190157010".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190131910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£±¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190132310".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133710".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190133910".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190134110".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190167410".
-      *40  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *40  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190167610".
-      *    ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
+      *    ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
            03   FILLER                     PIC X(09) VALUE "190167810".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190177710".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190177910".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190178110".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190178310".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190178510".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190178710".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190178910".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190179110".
-      *50  Ã»¼ê£³
+      *50  çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190179310".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190179510".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190179710".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190179910".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190180110".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190180310".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190180510".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190180710".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190180910".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190181110".
-      *60  Ã»¼ê£³
+      *60  çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190181310".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190181510".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190181710".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190181910".
-      *    Ã»¼ê£³
+      *    çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190182110".
-      *65  Ã»¼ê£³
+      *65  çŸ­æ‰‹ï¼“
            03   FILLER                     PIC X(09) VALUE "190182850".
-      *66  ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *66  åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190175410".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190175610".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190175810".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190176010".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÆÃÄêÃÏ°è¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆç‰¹å®šåœ°åŸŸï¼‰
            03   FILLER                     PIC X(09) VALUE "190176210".
-      *    ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£±¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÆÃÄêÃÏ°è¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™ï¼‘ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆç‰¹å®šåœ°åŸŸï¼‰
            03   FILLER                     PIC X(09) VALUE "190176410".
-      *    ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÆÃÄêÃÏ°è¡Ë
+      *    åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆç‰¹å®šåœ°åŸŸï¼‰
            03   FILLER                     PIC X(09) VALUE "190176610".
-      *73  ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ£²¡ÊÀ¸³èÎÅÍÜ¡Ë¡ÊÆÃÄêÃÏ°è¡Ë
+      *73  åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™ï¼’ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ï¼ˆç‰¹å®šåœ°åŸŸï¼‰
            03   FILLER                     PIC X(09) VALUE "190176810".
       *
-      *74  Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *74  æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124810".
-      *75  ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *75  ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03   FILLER                     PIC X(09) VALUE "190124210".
       *
        01  TBL-H26-SEIKATSU-R     REDEFINES  TBL-H26-SEIKATSU-AREA.
            03   TBL-H26-SEISRYCD           PIC X(09)  OCCURS  75.
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
       *
            03  WRK-YMD.
@@ -490,98 +490,98 @@
                05  WRK-DD                  PIC 9(02).
            03  WRK-RJN-TBL.
                05  WRK-RJN                 PIC 9(01)   OCCURS   31.
-      *    µßµÞÈÂÁ÷¿ÇÎÅÎÁ¤ò»»Äê¤·¡¢¤«¤Ä¡¢Æþ±¡ÎÁÌ¤»»Äê¤ÎÆü
+      *    æ•‘æ€¥æ¬é€è¨ºç™‚æ–™ã‚’ç®—å®šã—ã€ã‹ã¤ã€å…¥é™¢æ–™æœªç®—å®šã®æ—¥
            03  WRK-KYUKYU-DAY              PIC 9(02).
            03  WRK-KYUKYU-YMD              PIC X(08).
            03  WRK-KYUKYU-NYUINCD          PIC X(09).
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÂàÈò
+      *    ä¿é™ºçµ„åˆã›é€€é¿
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
                    07  WRK-HKNCOMBI-DAY    PIC 9(03).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…å…¬è²»æƒ…å ±ãƒžã‚¹ã‚¿âˆ’
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿âˆ’
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    Äã½êÆÀ
+      *    ä½Žæ‰€å¾—
        01  TSYRRK-REC.
            COPY    "CPTSYRRK.INC".
       *
-      *    Ç¯¶â
+      *    å¹´é‡‘
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+      *    ä¿é™ºç®—å®šç”¨å¹´é½¢ãƒ»å‰²åˆè¨ˆç®—ã‚µãƒ–
            COPY    "CPORCSAGECHK.INC".
       *
-      *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
+      *    æ‚£è€…æ‰€å¾—æƒ…å ±ç·¨é›†ã‚µãƒ–
            COPY    "CPORCSSYOTOKU.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    °åÎÅ¶èÊ¬¼èÆÀ¥µ¥Ö
+      *    åŒ»ç™‚åŒºåˆ†å–å¾—ã‚µãƒ–
            COPY    "CPORCSS008.INC".
       *
-      *    ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
+      *    ç‰¹å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
            COPY  "CPORCSTOKNYUIN.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿
+      *    å…¥é™¢ä¼šè¨ˆä½œæˆç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSNYULIFE.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -590,7 +590,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -600,13 +600,13 @@
            INITIALIZE                  LNK-NYULIFE-HENKYAKU-AREA
            MOVE    ZERO                TO  LNK-NYULIFE-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-NYULIFE-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      LNK-NYULIFE-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -624,18 +624,18 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    »»ÄêÇ¯·î¥Á¥§¥Ã¥¯
+      *    ç®—å®šå¹´æœˆãƒã‚§ãƒƒã‚¯
            IF     (LNK-NYULIFE-SANTEIYM    =   SPACE)  OR
                   (LNK-NYULIFE-SANTEIYM    >=  "201604")
                MOVE    1               TO  LNK-NYULIFE-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                       PTINF-REC
            MOVE    LNK-NYULIFE-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-NYULIFE-PTID     TO  PTINF-PTID
@@ -645,7 +645,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    Æþ±¡Ãæ¤Î¥Á¥§¥Ã¥¯¡ÊÆþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷¡Ë
+      *    å…¥é™¢ä¸­ã®ãƒã‚§ãƒƒã‚¯ï¼ˆå…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢ï¼‰
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-NYULIFE-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-NYULIFE-PTID     TO  NACCT-PTID
@@ -661,7 +661,7 @@
                MOVE    "key17"          TO  MCP-PATHNAME
                PERFORM 910-NYUINACCT-READ-SEC
                IF   FLG-NYUINACCT       =   ZERO
-      *             ÆñÉÂ¸øÈñÈ½ÄêÍÑ¤ËÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ¤òÂàÈò
+      *             é›£ç—…å…¬è²»åˆ¤å®šç”¨ã«ä¿é™ºçµ„åˆã›ç•ªå·ã‚’é€€é¿
                     PERFORM    VARYING   IDX1   FROM   1   BY   1
                                UNTIL     IDX1   >      31
                         MOVE   NACCT-DAY (IDX1) TO 
@@ -672,7 +672,7 @@
                END-IF
            END-IF
       *
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -681,11 +681,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¼èÆÀ
+      *    ä¸»å–å¾—
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    °åÎÅ¶èÊ¬¼èÆÀ¥µ¥Ö¤Î¸Æ½Ð¤·¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Î°åÎÅ¶èÊ¬È½ÄêÍÑ¡Ë
+      *    åŒ»ç™‚åŒºåˆ†å–å¾—ã‚µãƒ–ã®å‘¼å‡ºã—ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã®åŒ»ç™‚åŒºåˆ†åˆ¤å®šç”¨ï¼‰
            INITIALIZE                      SS008-AREA
            MOVE    LNK-NYULIFE-HOSPNUM     TO  SPA-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  SPA-PTID
@@ -693,8 +693,8 @@
            CALL   "ORCSS008"       USING   SS008-AREA
                                            SPA-AREA
       *
-      *    µßµÞÈÂÁ÷¿ÇÎÅÎÁ¤ò»»Äê¤·¡¢¤«¤Ä¡¢Æþ±¡ÎÁÌ¤»»Äê¤ÎÆü¤òÆÃÄê¤·¡¢
-      *    ³ºÅöÆü¤Î¿©»ö¤¬À¸³èÎÅÍÜ¤Ë³ºÅö¤¹¤ë¤«È½Äê¡Ê¥µ¥Ö¥×¥í¤è¤ê¼èÆÀ¡Ë
+      *    æ•‘æ€¥æ¬é€è¨ºç™‚æ–™ã‚’ç®—å®šã—ã€ã‹ã¤ã€å…¥é™¢æ–™æœªç®—å®šã®æ—¥ã‚’ç‰¹å®šã—ã€
+      *    è©²å½“æ—¥ã®é£Ÿäº‹ãŒç”Ÿæ´»ç™‚é¤Šã«è©²å½“ã™ã‚‹ã‹åˆ¤å®šï¼ˆã‚µãƒ–ãƒ—ãƒ­ã‚ˆã‚Šå–å¾—ï¼‰
            MOVE    ZERO                    TO  WRK-KYUKYU-DAY
            MOVE    SPACE                   TO  WRK-KYUKYU-YMD
            INITIALIZE                          ORCSNYUINDAY-AREA
@@ -717,7 +717,7 @@
                    END-PERFORM
            END-IF
            IF   WRK-KYUKYU-DAY             NOT =   ZERO
-      *      ´µ¼ÔÆþ±¡ÍúÎò¤«¤é»»ÄêÆþ±¡ÎÁ¤Î¼èÆÀ
+      *      æ‚£è€…å…¥é™¢å±¥æ­´ã‹ã‚‰ç®—å®šå…¥é™¢æ–™ã®å–å¾—
              INITIALIZE                          PTNYUINRRK-REC
              MOVE   LNK-NYULIFE-HOSPNUM    TO  PTNYUINRRK-HOSPNUM
              MOVE   LNK-NYULIFE-PTID       TO  PTNYUINRRK-PTID
@@ -737,7 +737,7 @@
       *
                    IF  (PTNYUINRRK-TENNYUYMD  <=  WRK-KYUKYU-YMD) AND
                        (WRK-KYUKYU-YMD        <=  PTNYUINRRK-TENSTUYMD)
-      *               ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¤ò¥µ¥Ö¥×¥í¤è¤ê¼èÆÀ
+      *               ç‰¹å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ã‚’ã‚µãƒ–ãƒ—ãƒ­ã‚ˆã‚Šå–å¾—
                       INITIALIZE             ORCSTOKNYUIN-AREA
                       MOVE  PTNYUINRRK-TOKUTEI-KBN
                                            TO  LNK-TOKNYUIN-KBN
@@ -774,7 +774,7 @@
              PERFORM   900-CLOSE-SEC
            END-IF
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñ¤Î³ºÅöÆü¤È·Ú¸º¶èÊ¬£²¡ÊÆþ±¡ÎÁÈ½Äê¡Ë¤ò¼èÆÀ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»ã®è©²å½“æ—¥ã¨è»½æ¸›åŒºåˆ†ï¼’ï¼ˆå…¥é™¢æ–™åˆ¤å®šï¼‰ã‚’å–å¾—
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-NYULIFE-HOSPNUM     TO  NACCT-HOSPNUM
@@ -793,10 +793,10 @@
                        CONTINUE
                    ELSE
       *
-      *            ¡ÊÊ¿À®£²£²Ç¯£³·î°ÊÁ°¡Ë
+      *            ï¼ˆå¹³æˆï¼’ï¼’å¹´ï¼“æœˆä»¥å‰ï¼‰
                      IF   LNK-NYULIFE-SANTEIYM <=  "201003"
-      *                À¸³èÎÅÍÜ¤Ë³ºÅö¤¹¤ëÆþ±¡ÎÁ¤òÈ½Äê¤·¡¢
-      *                ÊÖµÑÃÍ¤ÎÂÐ¾Ý¶èÊ¬¤òÀßÄê¤¹¤ë
+      *                ç”Ÿæ´»ç™‚é¤Šã«è©²å½“ã™ã‚‹å…¥é™¢æ–™ã‚’åˆ¤å®šã—ã€
+      *                è¿”å´å€¤ã®å¯¾è±¡åŒºåˆ†ã‚’è¨­å®šã™ã‚‹
                        PERFORM    210-NYUINACT-GET-SEC
                        IF   NSRY-SRYCD(1)   =  CONS-RYOYO2A     OR
                                                CONS-RYOYO2B     OR
@@ -823,8 +823,8 @@
                             IF     NACCT-DAY(IDX1)  NOT =  ZERO
                                MOVE   "1"     TO   LNK-NYULIFE-KBN(IDX1)
                                MOVE    1      TO   FLG-OK
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆþ±¡ÎÁÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆå…¥é™¢æ–™åˆ¤æ–­ï¼‰
                                IF  NSRY-SRYCD(1)  =  CONS-RYOYO2A  OR
                                                      CONS-RYOYO2B  OR
                                                      CONS-RYOYO2C  OR
@@ -840,9 +840,9 @@
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Î
-      *                                                    £Á£Ä£ÌÆþÎÏÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã®
+      *                                                    ï¼¡ï¼¤ï¼¬å…¥åŠ›åˆ¤æ–­ï¼‰
                                IF (NSRY-SRYCD(1)  =  CONS-RYOYO2TOKU OR
                                                      CONS-SRYOYO2TOKU)
                                                  AND
@@ -856,11 +856,11 @@
                        END-IF
                      END-IF
       *
-      *            ¡ÊÊ¿À®£²£²Ç¯£´·î¤«¤éÊ¿À®£²£´Ç¯£³·î¤Þ¤Ç¡Ë
+      *            ï¼ˆå¹³æˆï¼’ï¼’å¹´ï¼”æœˆã‹ã‚‰å¹³æˆï¼’ï¼”å¹´ï¼“æœˆã¾ã§ï¼‰
                      IF  (LNK-NYULIFE-SANTEIYM >=  "201004")    AND
                          (LNK-NYULIFE-SANTEIYM <=  "201203")
-      *                À¸³èÎÅÍÜ¤Ë³ºÅö¤¹¤ëÆþ±¡ÎÁ¤òÈ½Äê¤·¡¢
-      *                ÊÖµÑÃÍ¤ÎÂÐ¾Ý¶èÊ¬¤òÀßÄê¤¹¤ë
+      *                ç”Ÿæ´»ç™‚é¤Šã«è©²å½“ã™ã‚‹å…¥é™¢æ–™ã‚’åˆ¤å®šã—ã€
+      *                è¿”å´å€¤ã®å¯¾è±¡åŒºåˆ†ã‚’è¨­å®šã™ã‚‹
                        PERFORM    210-NYUINACT-GET-SEC
                        IF   NSRY-SRYCD(1)   =  CONS-RYOYO2A     OR
                                                CONS-RYOYO2B     OR
@@ -898,8 +898,8 @@
                             IF     NACCT-DAY(IDX1)  NOT =  ZERO
                                MOVE   "1"     TO   LNK-NYULIFE-KBN(IDX1)
                                MOVE    1      TO   FLG-OK
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆþ±¡ÎÁÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆå…¥é™¢æ–™åˆ¤æ–­ï¼‰
                                IF  NSRY-SRYCD(1)  =  CONS-RYOYO2A  OR
                                                      CONS-RYOYO2B  OR
                                                      CONS-RYOYO2C  OR
@@ -924,9 +924,9 @@
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Î
-      *                                                    £Á£Ä£ÌÆþÎÏÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã®
+      *                                                    ï¼¡ï¼¤ï¼¬å…¥åŠ›åˆ¤æ–­ï¼‰
                                IF (NSRY-SRYCD(1)  =  CONS-RYOYO2TOKU OR
                                                      CONS-SRYOYO2TOKU)
                                                  AND
@@ -940,11 +940,11 @@
                        END-IF
                      END-IF
       *
-      *            ¡ÊÊ¿À®£²£´Ç¯£´·î¤«¤éÊ¿À®£²£¶Ç¯£³·î¤Þ¤Ç¡Ë
+      *            ï¼ˆå¹³æˆï¼’ï¼”å¹´ï¼”æœˆã‹ã‚‰å¹³æˆï¼’ï¼–å¹´ï¼“æœˆã¾ã§ï¼‰
                      IF  (LNK-NYULIFE-SANTEIYM >=  "201204")  AND
                          (LNK-NYULIFE-SANTEIYM <=  "201403")
-      *                À¸³èÎÅÍÜ¤Ë³ºÅö¤¹¤ëÆþ±¡ÎÁ¤òÈ½Äê¤·¡¢
-      *                ÊÖµÑÃÍ¤ÎÂÐ¾Ý¶èÊ¬¤òÀßÄê¤¹¤ë
+      *                ç”Ÿæ´»ç™‚é¤Šã«è©²å½“ã™ã‚‹å…¥é™¢æ–™ã‚’åˆ¤å®šã—ã€
+      *                è¿”å´å€¤ã®å¯¾è±¡åŒºåˆ†ã‚’è¨­å®šã™ã‚‹
                        PERFORM    210-NYUINACT-GET-SEC
                        MOVE       ZERO        TO   FLG-SEI
                                                    IDX-SEI2
@@ -963,16 +963,16 @@
                             IF     NACCT-DAY(IDX1)  NOT =  ZERO
                                MOVE   "1"     TO   LNK-NYULIFE-KBN(IDX1)
                                MOVE    1      TO   FLG-OK
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆþ±¡ÎÁÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆå…¥é™¢æ–™åˆ¤æ–­ï¼‰
                                IF  (IDX-SEI2   >=   1 )   AND
                                    (IDX-SEI2   <=   56)
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Î
-      *                                                    £Á£Ä£ÌÆþÎÏÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã®
+      *                                                    ï¼¡ï¼¤ï¼¬å…¥åŠ›åˆ¤æ–­ï¼‰
                                IF (IDX-SEI2   =   83  OR  84)    AND
                                   (SS008-MEDKBNDAY(IDX1)  =  "2" OR
                                                              "3" )
@@ -984,10 +984,10 @@
                        END-IF
                      END-IF
       *
-      *            ¡ÊÊ¿À®£²£¶Ç¯£´·î¤«¤é¡Ë
+      *            ï¼ˆå¹³æˆï¼’ï¼–å¹´ï¼”æœˆã‹ã‚‰ï¼‰
                      IF  LNK-NYULIFE-SANTEIYM >=  "201404"
-      *                À¸³èÎÅÍÜ¤Ë³ºÅö¤¹¤ëÆþ±¡ÎÁ¤òÈ½Äê¤·¡¢
-      *                ÊÖµÑÃÍ¤ÎÂÐ¾Ý¶èÊ¬¤òÀßÄê¤¹¤ë
+      *                ç”Ÿæ´»ç™‚é¤Šã«è©²å½“ã™ã‚‹å…¥é™¢æ–™ã‚’åˆ¤å®šã—ã€
+      *                è¿”å´å€¤ã®å¯¾è±¡åŒºåˆ†ã‚’è¨­å®šã™ã‚‹
                        PERFORM    210-NYUINACT-GET-SEC
                        MOVE       ZERO        TO   FLG-SEI
                                                    IDX-SEI2
@@ -1006,19 +1006,19 @@
                             IF     NACCT-DAY(IDX1)  NOT =  ZERO
                                MOVE   "1"     TO   LNK-NYULIFE-KBN(IDX1)
                                MOVE    1      TO   FLG-OK
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆþ±¡ÎÁÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆå…¥é™¢æ–™åˆ¤æ–­ï¼‰
                                IF  (IDX-SEI2   >=   1 )   AND
                                    (IDX-SEI2   <=   28)
                                    MOVE   "1"   TO   
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                END-IF
-      *                        ÆñÉÂ¸øÈñ¤ÎÈ½ÄêÄÉ²Ã¡Ê°Ê²¼Æþ±¡ÎÁ¤Î¾ì¹ç¤Î¤ß¡Ë
-      *                        ¡¦ÃÏ°èÊñ³ç¥±¥¢ÉÂÅïÆþ±¡ÎÁ
-      *                        ¡¦ÃÏ°èÊñ³ç¥±¥¢Æþ±¡°åÎÅ´ÉÍýÎÁ
+      *                        é›£ç—…å…¬è²»ã®åˆ¤å®šè¿½åŠ ï¼ˆä»¥ä¸‹å…¥é™¢æ–™ã®å ´åˆã®ã¿ï¼‰
+      *                        ãƒ»åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢ç—…æ£Ÿå…¥é™¢æ–™
+      *                        ãƒ»åœ°åŸŸåŒ…æ‹¬ã‚±ã‚¢å…¥é™¢åŒ»ç™‚ç®¡ç†æ–™
                                IF  (IDX-SEI2   >=   66)   AND
                                    (IDX-SEI2   <=   73)
-      *                          ÆñÉÂ¸øÈñ¤ò»ÈÍÑ¤µ¤ì¤Æ¤¤¤ë¤«È½Äê
+      *                          é›£ç—…å…¬è²»ã‚’ä½¿ç”¨ã•ã‚Œã¦ã„ã‚‹ã‹åˆ¤å®š
                                  MOVE   ZERO       TO   FLG-NANBYO
                                  IF  WRK-HKNCOMBI-DAY(IDX1) NOT =  ZERO
                                      INITIALIZE            HKNCOMBI-REC
@@ -1046,7 +1046,7 @@
                                          END-IF
                                        END-IF
                                      END-IF
-      *                              ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
+      *                              ä¿é™ºçµ„åˆã›ã‚¯ãƒ­ãƒ¼ã‚º
                                      MOVE    "tbl_hkncombi"
                                                         TO  MCP-TABLE
                                      MOVE    "key"      TO  MCP-PATHNAME
@@ -1058,9 +1058,9 @@
                                              LNK-NYULIFE-FTNKBN2(IDX1)
                                  END-IF
                                END-IF
-      *                        ÉÂ¾õ¤ÎÄøÅÙ¡¢¼£ÎÅ¤ÎÆâÍÆ¤ò¤·¤ó¼à¤·¤ÆÉ¸½à
-      *                        ÉéÃ´³Û¤ò·Ú¸º¤¹¤ë´µ¼Ô¤ÎÈ½Äê¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ»»Äê»þ¤Î
-      *                                                    £Á£Ä£ÌÆþÎÏÈ½ÃÇ¡Ë
+      *                        ç—…çŠ¶ã®ç¨‹åº¦ã€æ²»ç™‚ã®å†…å®¹ã‚’ã—ã‚“é…Œã—ã¦æ¨™æº–
+      *                        è² æ‹…é¡ã‚’è»½æ¸›ã™ã‚‹æ‚£è€…ã®åˆ¤å®šï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ç®—å®šæ™‚ã®
+      *                                                    ï¼¡ï¼¤ï¼¬å…¥åŠ›åˆ¤æ–­ï¼‰
                                IF (IDX-SEI2   =   74  OR  75)    AND
                                   (SS008-MEDKBNDAY(IDX1)  =  "2" OR
                                                              "3" )
@@ -1080,13 +1080,13 @@
                END-PERFORM
            END-IF
       *
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡ÊÃ»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³¡Ë¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü
-      *    ¤Ë¤Ä¤¤¤ÆÀ¸³èÎÅÍÜ¤Î³ºÅöÆü¤È·Ú¸º¶èÊ¬£²¤Î¾ðÊó¤ò¼èÆÀ¡Ê¥µ¥Ö¥×¥í¤è¤ê¼èÆÀ¡Ë
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ï¼ˆçŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“ï¼‰ã®å…¥é™¢æ–™æœªç®—å®šæ—¥
+      *    ã«ã¤ã„ã¦ç”Ÿæ´»ç™‚é¤Šã®è©²å½“æ—¥ã¨è»½æ¸›åŒºåˆ†ï¼’ã®æƒ…å ±ã‚’å–å¾—ï¼ˆã‚µãƒ–ãƒ—ãƒ­ã‚ˆã‚Šå–å¾—ï¼‰
            INITIALIZE                          ORCSNYUINDAY-AREA
            MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-NYULIFE-PTID        TO  LNK-NYUINDAY-PTID
@@ -1111,8 +1111,8 @@
                END-IF
            END-IF
       *
-      *¡Ý¡Ý¡Ý¡Ý°åÎÅµ¡´Ø¿©»ö¾ðÊó¼èÆÀ¤³¤³¤«¤é¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý
-      *°åÎÅµ¡´Ø¿©»ö¾ðÊó¤Î¼èÆÀ¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+      *âˆ’âˆ’âˆ’âˆ’åŒ»ç™‚æ©Ÿé–¢é£Ÿäº‹æƒ…å ±å–å¾—ã“ã“ã‹ã‚‰âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’
+      *åŒ»ç™‚æ©Ÿé–¢é£Ÿäº‹æƒ…å ±ã®å–å¾—ï¼ˆã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šï¼‰
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    LNK-NYULIFE-HOSPNUM TO  SYS-HOSPNUM
@@ -1130,12 +1130,12 @@
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
                PERFORM  910-SYSKANRI-READ-SEC
-      *        ¿©»ö¾ðÊó¤ÎÂàÈò
+      *        é£Ÿäº‹æƒ…å ±ã®é€€é¿
                IF     SYS-5000-SHOKUJIRYOYOCD  NOT =  SPACE
                    PERFORM    VARYING   IDX1  FROM  1  BY  1
                           UNTIL     IDX1   >    31
                        IF    LNK-NYULIFE-KBN(IDX1)   =   "1"
-      *                   Æþ±¡»þ¿©»öÎÅÍÜÈñ
+      *                   å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šè²»
                            IF   SYS-5000-SHOKUJIRYOYOCD  = "197000110"
                                 MOVE   "1"     TO  
                                           LNK-NYULIFE-SKJKBN(IDX1)
@@ -1147,18 +1147,18 @@
                    END-PERFORM
                END-IF
            END-IF
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
-      *¡Ý¡Ý¡Ý¡Ý°åÎÅµ¡´Ø¿©»ö¾ðÊó¼èÆÀ¼èÆÀ¤³¤³¤Þ¤Ç¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’åŒ»ç™‚æ©Ÿé–¢é£Ÿäº‹æƒ…å ±å–å¾—å–å¾—ã“ã“ã¾ã§âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’
       *
       *
            IF    FLG-OK   =    1
       *
-      *        Ï·¿ÍÅ¬ÍÑ¤Î¥Á¥§¥Ã¥¯
+      *        è€äººé©ç”¨ã®ãƒã‚§ãƒƒã‚¯
                IF      LNK-NYULIFE-SANTEIYM <=  "200803"
-      *          ¡ÊÊ¿À®£²£°Ç¯£³·î°ÊÁ°¤ÏÏ·¿ÍÊÝ·ò¤ÎÈ½Äê¥Á¥§¥Ã¥¯¡Ë
+      *          ï¼ˆå¹³æˆï¼’ï¼å¹´ï¼“æœˆä»¥å‰ã¯è€äººä¿å¥ã®åˆ¤å®šãƒã‚§ãƒƒã‚¯ï¼‰
                    MOVE    ZERO                 TO  FLG-RJN 
                    INITIALIZE                       PTKOHINF-REC
                    MOVE    LNK-NYULIFE-HOSPNUM  TO  PTKOH-HOSPNUM
@@ -1180,12 +1180,12 @@
                            PERFORM 910-PTKOHINF-READ-SEC
                        END-PERFORM
                    END-IF
-      *            ´µ¼Ô¸øÈñ¾ðÊó¥¯¥í¡¼¥º
+      *            æ‚£è€…å…¬è²»æƒ…å ±ã‚¯ãƒ­ãƒ¼ã‚º
                    MOVE    "tbl_ptkohinf"       TO  MCP-TABLE
                    MOVE    "key4"               TO  MCP-PATHNAME
                    PERFORM   900-CLOSE-SEC
                ELSE
-      *          ¡ÊÊ¿À®£²£°Ç¯£´·î°Ê¹ß¤Ï¥µ¥Ö¥ë¡¼¥Á¥ó¤Ë¤è¤ê¥Á¥§¥Ã¥¯¡Ë
+      *          ï¼ˆå¹³æˆï¼’ï¼å¹´ï¼”æœˆä»¥é™ã¯ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ã«ã‚ˆã‚Šãƒã‚§ãƒƒã‚¯ï¼‰
                    PERFORM  VARYING    IDX-RJN    FROM   1   BY  1
                      UNTIL  IDX-RJN    >   31
                        INITIALIZE                   ORCSAGECHKAREA
@@ -1203,7 +1203,7 @@
                    END-PERFORM
                END-IF
       *
-      *¡Ý¡Ý¡Ý¡Ý¥µ¥Ö¥ë¡¼¥Á¥ó¤Ç¤Î´µ¼Ô½êÆÀ¾ðÊó¤Î¼èÆÀ¤³¤³¤«¤é¡Ý¡Ý¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ã§ã®æ‚£è€…æ‰€å¾—æƒ…å ±ã®å–å¾—ã“ã“ã‹ã‚‰âˆ’âˆ’âˆ’âˆ’âˆ’
                INITIALIZE                          ORCSSYOTOKUAREA
                MOVE    LNK-NYULIFE-HOSPNUM     TO  LNK-SYOTOKU-HOSPNUM
                MOVE    LNK-NYULIFE-PTID        TO  LNK-SYOTOKU-PTID
@@ -1228,10 +1228,10 @@
                ELSE
                     DISPLAY "ORCSSYTOKU RC = " LNK-SYOTOKU-RC
                END-IF
-      *¡Ý¡Ý¡Ý¡Ý¥µ¥Ö¥ë¡¼¥Á¥ó¤Ç¤Î´µ¼Ô½êÆÀ¾ðÊó¤Î¼èÆÀ¤³¤³¤Þ¤Ç¡Ý¡Ý¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’ã‚µãƒ–ãƒ«ãƒ¼ãƒãƒ³ã§ã®æ‚£è€…æ‰€å¾—æƒ…å ±ã®å–å¾—ã“ã“ã¾ã§âˆ’âˆ’âˆ’âˆ’âˆ’
       *
       *
-      *¡Ý¡Ý¡Ý¡Ý¿©»öÎÅÍÜ¡¢´Ä¶­ÎÅÍÜ¥³¡¼¥É¡¢Ã±²ÁÀßÄê¤³¤³¤«¤é¡Ý¡Ý¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’é£Ÿäº‹ç™‚é¤Šã€ç’°å¢ƒç™‚é¤Šã‚³ãƒ¼ãƒ‰ã€å˜ä¾¡è¨­å®šã“ã“ã‹ã‚‰âˆ’âˆ’âˆ’âˆ’âˆ’
              PERFORM   VARYING   IDX1   FROM   1  BY  1
                UNTIL   IDX1   >    31
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
@@ -1257,10 +1257,10 @@
                     END-EVALUATE
                 END-IF
              END-PERFORM
-      *¡Ý¡Ý¡Ý¡Ý¿©»öÎÅÍÜ¡¢´Ä¶­ÎÅÍÜ¥³¡¼¥É¡¢Ã±²ÁÀßÄê¤³¤³¤Þ¤Ç¡Ý¡Ý¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’é£Ÿäº‹ç™‚é¤Šã€ç’°å¢ƒç™‚é¤Šã‚³ãƒ¼ãƒ‰ã€å˜ä¾¡è¨­å®šã“ã“ã¾ã§âˆ’âˆ’âˆ’âˆ’âˆ’
       *
-      *¡Ý¡Ý¡Ý¡Ý¿©»öÉéÃ´¡¢´Ä¶­ÎÅÍÜÉéÃ´¥³¡¼¥É¡¢Ã±²ÁÀßÄê¤³¤³¤«¤é¡Ý¡Ý¡Ý
-      *      À¸³èÎÅÍÜ¿©»öÉ¸½àÉéÃ´³ÛÀßÄê¡Ê°ìÈÌ¡Ë
+      *âˆ’âˆ’âˆ’âˆ’é£Ÿäº‹è² æ‹…ã€ç’°å¢ƒç™‚é¤Šè² æ‹…ã‚³ãƒ¼ãƒ‰ã€å˜ä¾¡è¨­å®šã“ã“ã‹ã‚‰âˆ’âˆ’âˆ’
+      *      ç”Ÿæ´»ç™‚é¤Šé£Ÿäº‹æ¨™æº–è² æ‹…é¡è¨­å®šï¼ˆä¸€èˆ¬ï¼‰
              PERFORM   VARYING   IDX1   FROM   1  BY  1
                UNTIL   IDX1   >    31
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
@@ -1279,23 +1279,23 @@
                 END-IF
              END-PERFORM
       *
-      *      À¸³èÎÅÍÜ¿©»öÉ¸½àÉéÃ´³ÛÀßÄê¡Ê·Ú¸º¤¢¤ê¤Î´µ¼Ô¡Ë
+      *      ç”Ÿæ´»ç™‚é¤Šé£Ÿäº‹æ¨™æº–è² æ‹…é¡è¨­å®šï¼ˆè»½æ¸›ã‚ã‚Šã®æ‚£è€…ï¼‰
              PERFORM   VARYING   IDX1   FROM   1  BY  1
                UNTIL   IDX1   >    31
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
                     EVALUATE  LNK-NYULIFE-FTNKBN2(IDX1)
                         WHEN  SPACE
-      *                   ½êÆÀ¤Î¾õ¶·¤Ë¤è¤ë·Ú¸º
+      *                   æ‰€å¾—ã®çŠ¶æ³ã«ã‚ˆã‚‹è»½æ¸›
                             EVALUATE   LNK-NYULIFE-FTNKBN1(IDX1)
                                 WHEN   "1"
                                 WHEN   "2"
-      *                           ¡ÊÄã£²¡Ë
+      *                           ï¼ˆä½Žï¼’ï¼‰
                                     MOVE  "197002210"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   210          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                 WHEN   "3"
-      *                           ¡ÊÄã£±¡Ë
+      *                           ï¼ˆä½Žï¼‘ï¼‰
                                     IF  (FLG-RJN         =  0)   AND
                                         (WRK-RJN(IDX1)   =  0)                                        
                                        MOVE  "197002310"   TO
@@ -1309,36 +1309,36 @@
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                     END-IF
                                 WHEN   "4"
-      *                           ¡ÊÄã£±¡ÝÏ·ÎðÊ¡»ãÇ¯¶â¼õµë¼Ô¡Ë
+      *                           ï¼ˆä½Žï¼‘âˆ’è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…ï¼‰
                                     MOVE  "197002510"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   100          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                             END-EVALUATE
                         WHEN  "1"
-      *                   ÉÂ¾õ¤ÎÄøÅÙ¤Ë¤è¤ë·Ú¸º
+      *                   ç—…çŠ¶ã®ç¨‹åº¦ã«ã‚ˆã‚‹è»½æ¸›
                             EVALUATE   LNK-NYULIFE-FTNKBN1(IDX1)
                                 WHEN   SPACE
-      *                           ¡Ê°åÎÅ¶èÊ¬£²¡¢£³¡Ê°ìÈÌ¡Ë¡Ë
+      *                           ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ã€ï¼“ï¼ˆä¸€èˆ¬ï¼‰ï¼‰
                                     MOVE  "197002710"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   260          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                 WHEN   "1"
-      *                           ¡Ê°åÎÅ¶èÊ¬£²¡¢£³¡ÊÄã£²¡¡£¹£°Æü°Ê²¼¡Ë¡Ë
+      *                           ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ã€ï¼“ï¼ˆä½Žï¼’ã€€ï¼™ï¼æ—¥ä»¥ä¸‹ï¼‰ï¼‰
                                     MOVE  "197002810"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   210          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                 WHEN   "2"
-      *                           ¡Ê°åÎÅ¶èÊ¬£²¡¢£³¡ÊÄã£²¡¡£¹£°ÆüÄ¶¡Ë¡Ë
+      *                           ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ã€ï¼“ï¼ˆä½Žï¼’ã€€ï¼™ï¼æ—¥è¶…ï¼‰ï¼‰
                                     MOVE  "197002910"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   160          TO
                                          LNK-NYULIFE-SKJFTN-MONEY(IDX1)
                                 WHEN   "3"
                                 WHEN   "4"
-      *                           ¡Ê°åÎÅ¶èÊ¬£²¡¢£³¡ÊÄã£±¡Ë¡Ë
+      *                           ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ã€ï¼“ï¼ˆä½Žï¼‘ï¼‰ï¼‰
                                     MOVE  "197003010"   TO
                                          LNK-NYULIFE-SKJFTN-SRYCD(IDX1)
                                     MOVE   100          TO
@@ -1348,7 +1348,7 @@
                 END-IF
              END-PERFORM
       *
-      *      À¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³ÛÀßÄê
+      *      ç”Ÿæ´»ç™‚é¤Šç’°å¢ƒç™‚é¤Šæ¨™æº–è² æ‹…é¡è¨­å®š
              PERFORM   VARYING   IDX1   FROM   1  BY  1
                UNTIL   IDX1   >    31
                 IF   LNK-NYULIFE-KBN(IDX1)   =   "1"
@@ -1358,7 +1358,7 @@
                         MOVE  320       TO
                                         LNK-NYULIFE-KANFTN-MONEY(IDX1)
                     END-IF
-      *             Ï·ÎðÊ¡»ãÇ¯¶â¼õµë¼Ô¤Ï´Ä¶­ÎÅÍÜ´µ¼ÔÉéÃ´Ìµ¤·¤ËÃÖ´¹¤¨
+      *             è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…ã¯ç’°å¢ƒç™‚é¤Šæ‚£è€…è² æ‹…ç„¡ã—ã«ç½®æ›ãˆ
                     IF  LNK-NYULIFE-FTNKBN1(IDX1)   =   "4"
                         MOVE  SPACE  TO   LNK-NYULIFE-KANFTN-SRYCD(IDX1)
                         MOVE  ZERO   TO   LNK-NYULIFE-KANFTN-MONEY(IDX1)
@@ -1366,7 +1366,7 @@
                 END-IF
              END-PERFORM
       *
-      *¡Ý¡Ý¡Ý¡Ý¿©»öÉéÃ´¡¢´Ä¶­ÎÅÍÜÉéÃ´¥³¡¼¥É¡¢Ã±²ÁÀßÄê¤³¤³¤Þ¤Ç¡Ý¡Ý¡Ý
+      *âˆ’âˆ’âˆ’âˆ’é£Ÿäº‹è² æ‹…ã€ç’°å¢ƒç™‚é¤Šè² æ‹…ã‚³ãƒ¼ãƒ‰ã€å˜ä¾¡è¨­å®šã“ã“ã¾ã§âˆ’âˆ’âˆ’
       *
            END-IF
       *
@@ -1403,7 +1403,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¼èÆÀ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºå–å¾—
       *****************************************************************
        210-NYUINACT-GET-SEC            SECTION.
       *
@@ -1422,7 +1422,7 @@
                PERFORM   910-NYUINACT-READ-SEC
            END-IF
       *
-      *    Æþ±¡¹Ô°Ù¥¯¥í¡¼¥º
+      *    å…¥é™¢è¡Œç‚ºã‚¯ãƒ­ãƒ¼ã‚º
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1432,7 +1432,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1450,7 +1450,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1483,7 +1483,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -1500,7 +1500,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -1518,7 +1518,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTHKNINF-SELECT-SEC        SECTION.
       *
@@ -1535,7 +1535,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÊÝ¸±¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ä¿é™ºæƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTHKNINF-READ-SEC        SECTION.
       *
@@ -1553,7 +1553,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¬è²»æƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
@@ -1570,7 +1570,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¸øÈñ¾ðÊó¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¬è²»æƒ…å ±ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
@@ -1588,7 +1588,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -1605,7 +1605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -1628,7 +1628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Äã½êÆÀ¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ä½Žæ‰€å¾—ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-TSYRRK-SELECT-SEC        SECTION.
       *
@@ -1645,7 +1645,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Äã½êÆÀ¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ä½Žæ‰€å¾—ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TSYRRK-READ-SEC        SECTION.
       *
@@ -1663,7 +1663,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÄãÇ¯¶â¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ä½Žå¹´é‡‘ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-TNKRRK-SELECT-SEC        SECTION.
       *
@@ -1680,7 +1680,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÄãÇ¯¶â¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ä½Žå¹´é‡‘ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TNKRRK-READ-SEC        SECTION.
       *
@@ -1698,7 +1698,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -1715,7 +1715,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
@@ -1733,7 +1733,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -1750,7 +1750,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC        SECTION.
       *
@@ -1768,7 +1768,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼¥ï¼¬ï¼¥ï¼£ï¼´å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1779,7 +1779,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *    ï¼¤ï¼¢ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1791,7 +1791,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1804,7 +1804,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-CLOSE-SEC                 SECTION.
       *

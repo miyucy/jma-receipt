@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,25 +18,25 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC54201404.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ź԰٥����å������������
-      *                      �ȣ������������б�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療行為チェック、算定（麻酔）
+      *                      Ｈ２６．４改正対応
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     MCC-¿��Ǽ   02/06/12  ���ֳ������ɲ�
-      * 01.00.02     NACL-¿��Ǽ  02/12/09  ϫ�Ҳû��ɲ�
-      * 01.00.03     NACL-¿��Ǽ  03/02/12  ǯ��û������ֳ��û��׻�����
-      * 01.00.04     NACL-¿��Ǽ  03/07/30  ��§�û���ʬ�ɲ�
-      * 01.00.05     NACL-¿��Ǽ  06/01/13  ���Х֥��å���ʣ�����å��ɲ�
-      * 04.02.00     NACL-¿��Ǽ  08/03/26  ʿ������ǯ�����б�
-      * 04.05.00     NACL-¿��Ǽ  10/03/XX  ʿ������ǯ�����б�
-      * 04.06.00     NACL-¿��Ǽ  10/07/01  �����Ѵ���ư�����б�
-      * 04.07.00     NACL-¿��Ǽ  14/03/XX  ʿ������ǯ�����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     MCC-多々納   02/06/12  時間外特例追加
+      * 01.00.02     NACL-多々納  02/12/09  労災加算追加
+      * 01.00.03     NACL-多々納  03/02/12  年齢加算・時間外加算計算修正
+      * 01.00.04     NACL-多々納  03/07/30  通則加算区分追加
+      * 01.00.05     NACL-多々納  06/01/13  神経ブロック重複チェック追加
+      * 04.02.00     NACL-多々納  08/03/26  平成２０年４月対応
+      * 04.05.00     NACL-多々納  10/03/XX  平成２２年４月対応
+      * 04.06.00     NACL-多々納  10/07/01  残量廃棄自動算定対応
+      * 04.07.00     NACL-多々納  14/03/XX  平成２６年４月対応
       *****************************************************************
       *
       *
@@ -51,7 +51,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SANTEI          PIC 9(01).
@@ -70,7 +70,7 @@
            03  FLG-SYUGI           PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -103,7 +103,7 @@
            03  IDXM                PIC 9(04).
       *
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -118,21 +118,21 @@
            03  WRK-TENSUKEI-9      PIC 9(08).
            03  WRK-TENSUKEI-G      PIC 9(08).
            03  WRK-TENSUKEI-K      PIC 9(08).
-      *    ��§�оݳ�
+      *    通則対象外
            03  WRK-TENGAKEI-G          PIC S9(10).
            03  WRK-TENGAKEI-K          PIC S9(10).
-      *    �굻�����
+      *    手技料合計
            03  WRK-GOK-TENSUKEI        PIC S9(10).
            03  WRK-GOK-TENGAKEI        PIC S9(10).
-      *    ������
+      *    点数計
            03  WRK-SUM-TENSUKEI        PIC 9(08)V99.
-      *    �����ס���§�û��оݳ��ס�
+      *    点数計（通則加算対象外計）
            03  WRK-SUM-TENGAKEI        PIC 9(08)V99.
       *
            03  WRK-SYOKEIS         PIC 9(08)V9999.
            03  WRK-SYOKEIS2        PIC 9(08)V99.
            03  WRK-SYOKEI          PIC 9(08).
-      *   �������͹԰ٺƷ׻���
+      *   きざみ値行為再計算用
            03  WRK-SATU-TEN        PIC 9(08)V9(03).
            03  WRK-KEI-TEN         PIC 9(08)V9(03).
            03  WRK-KEI-TEN1        PIC 9(08)V9(03).
@@ -154,18 +154,18 @@
                05  WRK-SURYO-S2    PIC 9(05).
       *
        01  WRK-AREA2.
-      *    �ĺ��۴ļ����ο���
+      *    閉鎖循環式麻酔の数量
            03  WRK-SURYO-G         PIC 9(05)V9(05).
            03  WRK-MASUI-CNT       PIC 9(03).
            03  WRK-MASUI           PIC 9(03).
       *
-      *    �ĺ��۴ļ����ο��̥����å�
+      *    閉鎖循環式麻酔の数量チェック
        01  TBL-MASUICHK-AREA.
            03  TBL-MASUICHK-OCC            OCCURS   400.
                05  TBL-SURYO-Z         PIC S9(05)V9(05).
                05  TBL-CHK             PIC X(01).
       *
-      *    ���Х֥��å����ȥꥬ���ݥ��������Ƚ��
+      *    神経ブロック・トリガーポイント注射判定
        01  TBL-CHK-AREA.
            03  TBL-CHK-OCC             OCCURS   31.
                05  TBL-CHK-L100        PIC 9(01).
@@ -173,42 +173,42 @@
                05  TBL-CHK-L104        PIC 9(01).
       *
       *
-      *    ��¸��
+      *    保存用
        01  HOZ-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //HOZ-//.
       *
-      *    ���ǥ����ɥơ��֥�
+      *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
       *    COPY    "CPTENSU.INC".
       *
-      *    ��������
+      *    算定履歴
       *01  SANTEI-REC.
       *    COPY    "CPSANTEI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���Ź԰ٻ����Խ��ѥ�᥿
+      *    診療行為算定編集パラメタ
            COPY    "CPORCSC90TEN2.INC".
       *
-      *    ���Ź԰ٻ���������å��ѥ�᥿
+      *    診療行為算定歴チェックパラメタ
            COPY    "CPORCSC91.INC".
       *
-      *    ���Ź԰ٻ���������å��ѥ�᥿
+      *    診療行為算定歴チェックパラメタ
            COPY    "CPORCSC92.INC".
       *
       *01  MCPDATA-REC                 PIC X(5000).
@@ -216,20 +216,20 @@
       **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC00.INC".
       *
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -240,22 +240,22 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            EVALUATE    LNK-ORCSC-KBN
-      *        ���̡������å����Խ�����ư����
+      *        剤別　チェック、編集、自動算定
                WHEN    "1"
                    PERFORM 100-SEL-SYORI-SEC
-      *        ���ΤΥ����å�
+      *        全体のチェック
                WHEN    "2"
                    IF      SPA-HKNCOMBINUM     =   "9999"
                        CONTINUE
                    ELSE
                        PERFORM 200-ALL-SYORI-SEC
                    END-IF
-      *        ��ư����
+      *        自動算定
                WHEN    "3"
                    PERFORM 300-AUTO-SYORI-SEC
                WHEN    OTHER
@@ -266,11 +266,11 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���̤Υ����å����Խ�����ư�������
+      *    剤別のチェック、編集、自動算定処理
       *****************************************************************
        100-SEL-SYORI-SEC                SECTION.
       *
-      *    �����å�����ư����
+      *    チェック、自動算定
            PERFORM 1001-NAI-CHK-SEC
            IF     (WRK-GMN-INPUTCD(IDX-MAX)(1:1)
                                        =   "."   )  OR
@@ -278,7 +278,7 @@
                CONTINUE
            ELSE
       *
-      *        �����׻�
+      *        点数計算
                PERFORM 1002-TENSU-KEI-SEC
            END-IF
       *
@@ -287,7 +287,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        1001-NAI-CHK-SEC                  SECTION.
       *
@@ -314,7 +314,7 @@
                        MOVE    "7"                     TO  WRK-MOJI
                    END-IF
                END-IF
-      *        ϫ�Ҳû����ؤ�
+      *        労災加算振替え
                IF      WRK-COM-INPUTCD(IDX-Z)  =   "099509901"
                    MOVE    "1"                 TO  WRK-MOJI
                END-IF
@@ -327,12 +327,12 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10011-CHK-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    ���Ǥ�����Ψ��ưȯ������
+      *    酸素の補正率を自動発生する
            IF     (SPA-ERRCD           =   SPACE)   AND
                   (IDX-SANSO           >   ZERO )
                MOVE    SPA-ERRCD          TO  WRK-ERRCD
@@ -342,7 +342,7 @@
            END-IF
       *
            IF      IDX-ZS              >   ZERO
-      *        ���Ļ������ֳ��μ�ư�û����ɲä���
+      *        乳幼児、時間外の自動加算を追加する
                MOVE    SPA-ERRCD          TO  WRK-ERRCD
                MOVE    SPACE              TO  SPA-ERRCD
                PERFORM 1002-JIDO-KASAN-SEC
@@ -354,44 +354,44 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ƥ����å�����ư�����Խ�����
+      *    明細別内容チェック、自動算定編集処理
       *****************************************************************
        10011-CHK-SEC                  SECTION.
       *
-      *    �ƥ����å�����
+      *    各チェック処理
            EVALUATE    WRK-MOJI
                WHEN    "1"
-      *            �굻�� �û������å�
+      *            手技料 加算チェック
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "2"
                        PERFORM 1005-KASAN-CHK-SEC
                    END-IF
-      *            ̤�ϻ��û������å�
+      *            未熟児加算チェック
                    IF      WRK-COM-INPUTCD (IDX-Z) =   "150286690"
                        PERFORM 10013-MIJYUKUJI-SEC
                    END-IF
-      *            �굻��
+      *            手技料
                    IF      WRK-COM-DATAKBN (IDX-Z) =   "1"
-      *                �ĺ��۴ļ��������Ƚ��
+      *                閉鎖循環式全身麻酔判定
                        PERFORM 10014-MASUI-CHK-SEC
                        MOVE    IDX-Z           TO  IDX-ZS
                    END-IF
-      *        ����
+      *        薬剤
                WHEN    "6"
-      *            ���Ƕ�ʬ
+      *            麻毒区分
                    IF      WRK-COM-MADOKUKBN (IDX-Z)   =   1
                        MOVE   1                TO  FLG-MADOKU
                    END-IF
-      *            ��ʪ��Ū���޶�ʬ
+      *            生物学的製剤区分
                    IF      WRK-COM-SEIBUTUKBN(IDX-Z)   =   1
                        MOVE   1                TO  FLG-SEIBETU
                    END-IF
-      *            �����Ѵ�
+      *            残量廃棄
                    PERFORM 1006-HAIKI-SYORI-SEC
-      *        ���
+      *        器材
                WHEN    "7"
-      *            ���Ƕ�ʬȽ��
+      *            酸素区分判定
                    IF      WRK-COM-SANSOKBN (IDX-Z)    =   1
-      *                ���Ǥλ�����������Ψ��ư�û�
+      *                酸素の時、酸素補正率を自動加算
                        MOVE    WRK-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
                        PERFORM 100115-SANSO-CHK-SEC
                        IF      FLG-SANSO-OK        =   1
@@ -411,14 +411,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ĺ��۴ļ��������Ƚ�����
+      *    閉鎖循環式全身麻酔判定処理
       *****************************************************************
        10014-MASUI-CHK-SEC           SECTION.
       *
            IF      (WRK-COM-CDKBN-KBN       (IDX-Z) =   "L"  )
               AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
               AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
-      *        �ĺ��۴ļ��������ν���
+      *        閉鎖循環式全身麻酔の集計
                ADD     1                       TO  WRK-MASUI-CNT
                IF     (IDX-ZS          NOT =   ZERO )
                   AND (WRK-MASUI-CNT       =   1    )
@@ -450,7 +450,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Ƚ�����
+      *    酸素判定処理
       *****************************************************************
        100115-SANSO-CHK-SEC           SECTION.
       *
@@ -468,7 +468,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Ψ��ư�û�����
+      *    酸素補正率自動加算処理
       *****************************************************************
        10011-SANSO-ADD-SEC                  SECTION.
       *
@@ -486,18 +486,18 @@
            IF      FLG-ARI             =   ZERO
                MOVE    IDX-SANSO           TO  IDX-S
            END-IF
-      *    ��������Ψ��ư�û�
+      *    酸素補正率自動加算
            PERFORM 1002-KASAN-SET-SEC
       *
            .
        10011-SANSO-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ������Ȥ�̵ͭ
+      *    残量廃棄コメントの有無
       *****************************************************************
        1006-HAIKI-SYORI-SEC           SECTION.
       *
-      *    ����ץ�λ��������ʲ�Ƚ��
+      *    アンプルの時、小数以下判定
            IF     (WRK-COM-TANICD (IDX-Z)  =   "014" OR "022" OR "046" )
            AND    (LNK-ORCSC-HAIKIKBN-FLG  =   "2"            )
       *
@@ -512,7 +512,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �˴������ȼ�ưȯ��������
+      *    破棄コメント自動発生成処理
       *****************************************************************
        10011-HAIKI-ADD-SEC             SECTION.
       *
@@ -530,17 +530,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ̤�ϻ��û������å�����
+      *    未熟児加算チェック処理
       *****************************************************************
        10013-MIJYUKUJI-SEC        SECTION.
       *
            MOVE    ZERO                TO  FLG-OK
       *
-      *    ǯ��Ƚ��ʣ����������
+      *    年齢判定（９０日以内）
            IF     (LNK-ORCSC-NENREI-YY =   ZERO )  AND
                   (LNK-ORCSC-NENREI-MM <=  3    )
       *
-      *        ǯ����ֻ���
+      *        年齢期間算定
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY5-AREA
                MOVE    "51"                TO  LNK-DAY5-IRAI
@@ -560,7 +560,7 @@
            ELSE
                MOVE    1               TO  WRK-COM-SANFLG(IDX-Z)
                MOVE    1               TO  FLG-MIJYU
-      *        ��§ǯ���ʬ��������Τ�
+      *        通則年齢区分がある場合のみ
                IF     (IDX-ZS          >   ZERO )  AND
                       (WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1" )
                    CONTINUE
@@ -577,7 +577,7 @@
       *
       *
       *****************************************************************
-      *    ��ư�û��ɲý���
+      *    自動加算追加処理
       *****************************************************************
        1002-JIDO-KASAN-SEC        SECTION.
       *
@@ -590,14 +590,14 @@
                    UNTIL      (IDX1        >   SPA-MAX-LINE   )   OR
                               (WRK-GMN-INPUTCD (IDX1)  =   SPACE  AND
                                WRK-COM-INPUTCD (IDX1)  =   SPACE )
-      *        �礿��굻��Ƚ���оݤȤ���
+      *        主たる手技を判定対象とする
                IF     (WRK-COM-DATAKBN (IDX1)  =   "1"   )   AND
                       (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )
                    IF      IDX-SYU         =   ZERO
                        MOVE    IDX1            TO  IDX-SYU
                   END-IF
                END-IF
-      *        �Ǹ����§�û��оݰ���
+      *        最後の通則加算対象位置
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
                       (WRK-COM-TUSOKUGAIKBN(IDX1)  NOT =   "1" )
                    MOVE    IDX1            TO  IDX-NEN
@@ -607,12 +607,12 @@
            MOVE    IDX-SYU             TO  IDX-ZS
       *
       **** MOVE    IDX-ZS              TO  IDX-S
-      *    ǯ��û�����
+      *    年齢加算処理
            PERFORM 10013-NENREI-SET-SEC
       *
-      *    ���Ļ��û�
+      *    乳幼児加算
            IF      FLG-ADD             =   ZERO
-      *        ǯ��û������ɤʤ�
+      *        年齢加算コードなし
                IF     (LNK-ORCSC-NENREI-YY <   6  )  AND
                       (FLG-MIJYU           =   ZERO)
                    PERFORM 10011-YOUJIKASAN-SET-SEC
@@ -622,7 +622,7 @@
       *
            END-IF
       *
-      *    ����ǿǻ�����̵�����λ��ֲû�
+      *    外来で診察料の無い場合の時間加算
            IF      (SPA-NYUGAIKBN          =   "2"  )  AND
                    (LNK-ORCSC-PG           =   "K02")  AND
                    (LNK-ORCSC-SYORIFLG     =   ZERO )  AND
@@ -639,24 +639,24 @@
                END-IF
            END-IF
       *
-      *    ���ֲû�
+      *    時間加算
            IF      (LNK-ORCSC-TIMEFLG          NOT =   ZERO   OR
                     WRK-COM-TIMEFLG (IDX-ZS)   NOT =   ZERO )  AND
                    (WRK-COM-TIMEKSNKBN(IDX-ZS) NOT =   ZERO )
                PERFORM 10012-JIKANKASAN-SET-SEC
            END-IF
       *
-      *    ǯ��û�����
+      *    年齢加算処理
       *    PERFORM 10013-NENREI-SET-SEC
            .
        1002-JIDO-KASAN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ļ��û����ɲý���
+      *    乳幼児加算料追加処理
       *****************************************************************
        10011-YOUJIKASAN-SET-SEC        SECTION.
       *
-      *    ��§ǯ���ʬ��������Τ�
+      *    通則年齢区分がある場合のみ
            IF      WRK-COM-TSUSOKUAGE (IDX-ZS) =   "1"
                CONTINUE
            ELSE
@@ -665,41 +665,41 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
-      *    �������û�
+      *    新生児加算
            MOVE    "150231590"         TO  WRK-SRYCD
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
            IF      FLG-ARI             =   ZERO
-      *        �Ǹ����§ǯ��û�����
+      *        最後の通則年齢加算位置
                MOVE    IDX-NEN             TO  IDX-S
            END-IF
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
                MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
                GO      TO      10011-YOUJIKASAN-SET-EXT
            END-IF
       *
-      *    ���Ļ��βû�
+      *    乳幼児の加算
            MOVE    "150231690"         TO  WRK-SRYCD
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
            IF      FLG-ARI             =   ZERO
-      *        �Ǹ����§ǯ��û�����
+      *        最後の通則年齢加算位置
                MOVE    IDX-NEN             TO  IDX-S
            END-IF
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
                MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
                GO      TO      10011-YOUJIKASAN-SET-EXT
            END-IF
       *
-      *    �Ļ��û�
+      *    幼児加算
            MOVE    "150265390"         TO  WRK-SRYCD
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 100111-KASAN-CHK-SEC
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
                MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
@@ -709,14 +709,14 @@
        10011-YOUJIKASAN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ļ��û��������å�����
+      *    乳幼児加算料チェック処理
       *****************************************************************
        10013-YOUJIKASAN-CHK-SEC        SECTION.
       *
-      *    ̤�ϻ��û����ϻ������Ļ��û����ʤ�����
+      *    未熟児加算入力時、乳幼児加算がないこと
            IF      FLG-MIJYU           =   1
       *
-      *        �������û�
+      *        新生児加算
                MOVE    "150231590"         TO  WRK-SRYCD
                PERFORM 100111-KASAN-CHK-SEC
                IF      FLG-ARI             =   1
@@ -725,7 +725,7 @@
                    GO      TO      10013-YOUJIKASAN-CHK-EXT
                END-IF
       *
-      *        ���Ļ��βû�
+      *        乳幼児の加算
                MOVE    "150231690"         TO  WRK-SRYCD
                PERFORM 100111-KASAN-CHK-SEC
                IF      FLG-ARI             =   1
@@ -739,11 +739,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�û���¸�ߥ����å��ý���
+      *    自動加算　存在チェック加処理
       *****************************************************************
        100111-KASAN-CHK-SEC        SECTION.
       *
-      *    ���ּ�ư�û���¸�ߥ����å�
+      *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -760,17 +760,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǿǻ�����̵�����λ��ֲû�����
+      *    外来で診察料の無い場合の時間加算処理
       *****************************************************************
        10019-JIKANKASAN-CHK-SEC        SECTION.
       *
-      *    ���ֳ���̵ͭ
+      *    時間外の有無
            IF     (WRK-GMN-INPUTCD (IDX-ZS)(1:1)       NUMERIC  ) AND
                   (WRK-GMN-INPUTCD (IDX-ZS)(2:1)       =   SPACE) AND
                   (WRK-GMN-INPUTCD (IDX-ZS)(3:)    NOT =   SPACE)
                CONTINUE
            ELSE
-      *        ���ֳ�����
+      *        時間外設定
                MOVE    WRK-GMN-INPUTCD (IDX-ZS)    TO  WRK-INPUTCD
                MOVE    SPACE                       TO  WRK-GMN-INPUTCD
                                                          (IDX-ZS)
@@ -787,7 +787,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֲû��û����ɲý���
+      *    時間加算加算料追加処理
       *****************************************************************
        10012-JIKANKASAN-SET-SEC        SECTION.
       *
@@ -799,10 +799,10 @@
                MOVE    WRK-COM-TIMEFLG(IDX-ZS)     TO  WRK-TIMEFLG
            END-IF
       *
-      *    �����λ����굻���λ��ֳ��ե饰��ͥ�褹��
+      *    入院の時、手技料の時間外フラグを優先する
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
                   (WRK-COM-TIMEFLG(IDX-ZS) NOT =   ZERO )
-      *        ���ֳ���ʬ��̵�����ϥ��ꥢ����
+      *        時間外区分の無い場合はクリアする
                IF     (WRK-GMN-INPUTCD(IDX-ZS)(1:1)    NUMERIC) AND
                       (WRK-GMN-INPUTCD(IDX-ZS)(2:1)    =   SPACE )  AND
                       (WRK-GMN-INPUTCD(IDX-ZS)(3:) NOT =   SPACE )
@@ -816,18 +816,18 @@
                END-IF
            END-IF
       *
-      *    ���ֲû�
+      *    時間加算
            EVALUATE    WRK-TIMEFLG
-      *      /* ���ֳ� */
+      *      /* 時間外 */
                WHEN    1
                    MOVE    "150231790"     TO  WRK-SRYCD
-      *     /* ���� */
+      *     /* 休日 */
                WHEN    2
                    MOVE    "150231890"     TO  WRK-SRYCD
-      *        /* ���� */
+      *        /* 深夜 */
                WHEN    3
                    MOVE    "150231990"     TO  WRK-SRYCD
-      *        /* ���� */
+      *        /* 深夜 */
                WHEN    4
                    MOVE    "150232090"     TO  WRK-SRYCD
            END-EVALUATE
@@ -836,7 +836,7 @@
                GO      TO      10012-JIKANKASAN-SET-EXT
            END-IF
       *
-      *    ���ּ�ư�û���¸�ߥ����å�
+      *    時間自動加算　存在チェック
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  IDX-T
            MOVE    ZERO                TO  IDX-TUS
@@ -850,7 +850,7 @@
                     MOVE    1              TO  FLG-ARI
                     MOVE    IDX1           TO  IDX-T
                END-IF
-      *        �Ǹ���̲û��оݰ���
+      *        最後の通加算対象位置
                IF     (WRK-COM-INPUTCD (IDX1)(1:1) =   "1" )  AND
                       (WRK-COM-TUSOKUGAIKBN (IDX1) =   "0" )
                    MOVE    IDX1            TO  IDX-TUS
@@ -865,13 +865,13 @@
            ELSE
                MOVE    IDX-T               TO  IDX-S
            END-IF
-      *    �û����ɲý���
+      *    加算料追加処理
            PERFORM 1002-KASAN-SET-SEC
            IF      FLG-ADD             =   1
                MOVE    1               TO  WRK-COM-SANFLG(IDX-S)
            END-IF
       *
-      *    �����λ����굻���˻��ֳ��ե饰�����ꤹ��
+      *    入院の時、手技料に時間外フラグを設定する
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
                   (WRK-COM-TIMEFLG(IDX-ZS) =   ZERO )
                MOVE    WRK-TIMEFLG         TO  WRK-COM-TIMEFLG(IDX-ZS)
@@ -882,7 +882,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ǯ��û��ɲý����ʶ��̡�
+      *    年齢加算追加処理（共通）
       *****************************************************************
        10013-NENREI-SET-SEC            SECTION.
       *
@@ -891,15 +891,15 @@
                               (WRK-COM-AGEKSNSRYCD(IDX-ZS IDX2)
                                                =   SPACE  OR
                                                    ZERO )
-      *        �û��ɲ�
+      *        加算追加
                MOVE    WRK-COM-AGEKSNSRYCD (IDX-ZS IDX2)  TO  WRK-SRYCD
-      *        �û��������å�����
+      *        加算料チェック処理
                PERFORM 100111-KASAN-CHK-SEC
                IF      FLG-ARI             =   ZERO
-      *            �Ǹ����§ǯ��û�����
+      *            最後の通則年齢加算位置
                    MOVE    IDX-NEN             TO  IDX-S
                END-IF
-      *        �û����ɲý���
+      *        加算料追加処理
                PERFORM 1002-KASAN-SET-SEC
                IF      FLG-ADD             =   1
                    MOVE    2               TO  WRK-COM-SANFLG(IDX-S)
@@ -912,7 +912,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �û����ɲý���
+      *    加算料追加処理
       *****************************************************************
        1002-KASAN-SET-SEC              SECTION.
       *
@@ -924,7 +924,7 @@
                MOVE    IDX-T           TO  IDX-S
            END-IF
       *
-      *    �����ޥ����Խ������ܥ����å�
+      *    点数マスタ編集・基本チェック
            MOVE    WRK-SCR-REC         TO  HOZ-SCR-REC
            INITIALIZE                  ORCSC92AREA
            IF      FLG-ARI             =   ZERO
@@ -947,7 +947,7 @@
                                        WRK-SCR-REC
                                        SPA-AREA
       *
-      *    ���顼�λ����ɲäʤ�
+      *    エラーの時、追加なし
            IF     (SPA-ERRCD           NOT =   SPACE )  OR
                   (LNK-SC92-ERRAREA    NOT =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
@@ -965,7 +965,7 @@
            MOVE    WRK-COM-SRYSYUKBN (IDX-S - 1)
                                        TO  WRK-COM-SRYSYUKBN(IDX-S)
       *
-      *    ��ư�ɲ�ʬ�����ϻ����ɲá�
+      *    自動追加分（入力時に追加）
            MOVE    "2"                 TO  WRK-COM-AUTOKBN (IDX-S)
       *
            ADD     1                   TO  WRK-GMN-MAX
@@ -977,11 +977,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �û��������å�����
+      *    加算料チェック処理
       *****************************************************************
        1005-KASAN-CHK-SEC                  SECTION.
       *
-      *    �û��ǡ����λ������˼굻�������뤳��
+      *    加算データの時、前に手技料があること
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    1   BY  1
                    UNTIL       IDX1    >=  IDX-Z
@@ -1002,12 +1002,12 @@
                MOVE    "1"             TO  WRK-COM-CUR(IDX-Z)
            END-IF
       *
-      *    ��ɡ�м���������û�
+      *    副鼻腔手術用内視鏡加算
            IF     (SPA-ERRCD           =   SPACE )
               AND (IDX-SYU2        NOT =   ZERO  )
               AND (WRK-COM-YOBI1 (IDX-Z)(4:1)
                                    NOT =   ZERO  )
-      *        �굻���βû����԰��פϥ��顼
+      *        手技料の加算と不一致はエラー
                IF      WRK-COM-YOBI1(IDX-SYU2)(4:1)
                                    NOT =   WRK-COM-YOBI1 (IDX-Z)(4:1)
                    MOVE    "0541"          TO  SPA-ERRCD
@@ -1020,11 +1020,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻��Խ�����
+      *    点数計算編集処理
       *****************************************************************
        1002-TENSU-KEI-SEC                  SECTION.
       *
-      *    �ĺ��۴ļ�������줬ʣ��
+      *    閉鎖循環式全身麻酔が複数
            IF      WRK-MASUI-CNT       >   1
                PERFORM 10022-HEIMA-SYORI-SEC
            END-IF
@@ -1049,7 +1049,7 @@
                MOVE    SPACE               TO  WRK-GMN-KAISU (IDX-Z)
                MOVE    ZERO                TO  WRK-GMN-KEI   (IDX-Z)
       *
-      *        �굻��
+      *        手技毎
                INITIALIZE                  WRK-COM-PLUS-AREA (IDX-Z)
       *
                IF      WRK-GMN-INPUTCD(IDX-Z)(1:1)     =   "."
@@ -1070,23 +1070,23 @@
                        CONTINUE
       *
                    WHEN    OTHER
-      *                �Խ������å���
+      *                編集チェックへ
                        PERFORM 10021-KEISAN-SEC
                END-EVALUATE
            END-PERFORM
       *
-      *    �ǽ���
-      *    �굻���η׻�
+      *    最終行
+      *    手技料の計算
            IF      IDX-ZS              >   ZERO
                COMPUTE IDX-Z           =   IDX-MAX    +  1
                MOVE    2               TO  FLG-SYUGI
                PERFORM 100212-TENSUKEI-SEC
            END-IF
-      *    ��������׻����Խ��ʣ�����ι�������ΤߤȤ����
+      *    合計点数計算・編集（１剤毎の合計点数のみとする）
            COMPUTE LNK-SC90-TENSU      =   WRK-GOK-TENSUKEI
                                        +   WRK-GOK-TENGAKEI
       *
-      *    ��������׻����Խ�
+      *    合計点数計算・編集
            MOVE    "2"                 TO  LNK-SC90-KBN
            MOVE    ZERO                TO  LNK-SC90-IDX
            MOVE    1                   TO  LNK-SC90-IDX-STR
@@ -1094,11 +1094,11 @@
            CALL    "ORCSC90TEN2"       USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
-      *    ��
+      *    計
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
       *
-      *    ���å��ѹ������
+      *    セット用合計点数
            MOVE    WRK-COM-KEI  (IDX-MAX)  TO  LNK-ORCSC-ZAIKEI
            MOVE    WRK-COM-TENSU(IDX-MAX)  TO  LNK-ORCSC-ZAITEN
       *
@@ -1107,26 +1107,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �����׻�����
+      *    点数計算処理
       *****************************************************************
        10021-KEISAN-SEC                  SECTION.
       *
-      *    �굻��Ƚ��
+      *    手技料判定
            IF      (WRK-MOJI                   =   "1"  )  AND
                    (WRK-COM-DATAKBN (IDX-Z)    =   "1"  )
                IF      IDX-ZS              >   ZERO
-      *            �굻���η׻�
+      *            手技料の計算
                    MOVE    1               TO  FLG-SYUGI
                    PERFORM 100212-TENSUKEI-SEC
                END-IF
                MOVE    IDX-Z               TO  IDX-ZS
            END-IF
       *
-      *    �굻������
+      *    手技料集計
            IF       WRK-MOJI                   =   "1"
                PERFORM 100212-SYUGI-KEI-SEC
            END-IF
-      *    ���
+      *    回数
            MOVE    LNK-ORCSC-KAISU     TO  WRK-COM-KAISU (IDX-Z)
       *
            .
@@ -1134,17 +1134,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �굻���׻�����
+      *    手技料計算処理
       *****************************************************************
        100212-SYUGI-KEI-SEC            SECTION.
-      *    ����
-      *        ��û��������Ͻ��פ��ʤ�
+      *    点数
+      *        ％加算・減算は集計しない
            IF      WRK-COM-TENSIKIBETU (IDX-Z)   =   5
                                                  OR  6
                GO      TO      100212-SYUGI-KEI-EXT
            END-IF
       *!!
-      *    �ĺ��۴ļ��������������Ʒ׻�
+      *    閉鎖循環式全身麻酔の点数再計算
            IF     (WRK-COM-DATAKBN         (IDX-Z) =   "1"  )
              AND  (WRK-COM-CDKBN-KBN       (IDX-Z) =   "L"  )
              AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
@@ -1152,7 +1152,7 @@
                IF      WRK-MASUI-CNT       >   1
                    PERFORM 100214-HEISA-TENKEI-SEC
                ELSE
-      *            �Ʒ׻�
+      *            再計算
                    MOVE    WRK-COM-SURYO (IDX-Z)
                                                TO  WRK-COM-SURYO2(IDX-Z)
                    PERFORM 1002141-HEIMA-KEISAN01-SEC
@@ -1160,7 +1160,7 @@
                END-IF
            END-IF
       *!!
-      *    ��§�û��оݳ���ʬȽ��
+      *    通則加算対象外区分判定
            IF      WRK-COM-TUSOKUGAIKBN (IDX-Z)    =   "1"
                ADD     WRK-COM-KISOTEN (IDX-Z) TO  WRK-SUM-TENGAKEI
            ELSE
@@ -1172,7 +1172,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ĺ��۴ļ��������ʣ������
+      *    閉鎖循環式全身麻酔複数処理
       *****************************************************************
        10022-HEIMA-SYORI-SEC             SECTION.
       *
@@ -1181,20 +1181,20 @@
            MOVE    ZERO                TO  WRK-SURYO-G
            MOVE    ZERO                TO  WRK-SURYO-H
            INITIALIZE                  TBL-MASUICHK-AREA
-      *    ü���ʳ��ο���
+      *    端数以外の数量
            PERFORM VARYING     IDX-Z   FROM    1   BY  1
                    UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
                               (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-      *        �ĺ��۴ļ��������ο��̽���
+      *        閉鎖循環式全身麻酔の数量集計
                IF     (WRK-COM-DATAKBN         (IDX-Z) =   "1"  )
                  AND  (WRK-COM-CDKBN-KBN       (IDX-Z) =   "L"  )
                  AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
                  AND  (WRK-COM-CDKBN-KBNNUM-EDA(IDX-Z) =   "00" )
-      *            ���Ѥο��̻��Ѥ��Ƥ������ͷ׻���Ԥ�
+      *            外用の数量使用してきざみ値計算を行う
                    MOVE    ZERO            TO  WRK-COM-SURYO2 (IDX-Z)
                    IF      IDX-MSYU            =   ZERO
                        MOVE    IDX-Z               TO  IDX-MSYU
-      *                �ǽ�����ϲ����ͤޤ�
+      *                最初の麻酔は下限値まで
                        MOVE    WRK-COM-KZMKGN (IDX-Z)
                                                TO  WRK-COM-SURYO2(IDX-Z)
                        COMPUTE WRK-SURYO-H     =   WRK-COM-SURYO (IDX-Z)
@@ -1218,7 +1218,7 @@
                                                           (IDX-Z)
                        END-IF
                    ELSE
-      *                ����������˿���
+      *                きざみ値毎に数量
                        MOVE    WRK-COM-SURYO (IDX-Z)
                                                TO  WRK-SURYO-K
                        PERFORM
@@ -1250,14 +1250,14 @@
                END-IF
            END-PERFORM
       *
-      *    ü������̤زû�
+      *    端数を数量へ加算
            PERFORM 
                    UNTIL      (WRK-SURYO-H     <=  ZERO  )
                MOVE    ZERO                TO  WRK-SURYO
                PERFORM VARYING     IDX-Z   FROM    1   BY  1
                        UNTIL      (IDX-Z       >   SPA-MAX-LINE  )   OR
                                   (WRK-GMN-INPUTCD (IDX-Z) =   SPACE )
-      *            �ĺ��۴ļ��������ο��̽���
+      *            閉鎖循環式全身麻酔の数量集計
                    IF     (WRK-COM-DATAKBN         (IDX-Z) =   "1"  )
                      AND  (WRK-COM-CDKBN-KBN       (IDX-Z) =   "L"  )
                      AND  (WRK-COM-CDKBN-KBNNUM    (IDX-Z) =   "008")
@@ -1288,7 +1288,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �굻���η׻�����
+      *    手技料の計算処理
       *****************************************************************
        100214-HEISA-TENKEI-SEC             SECTION.
       *
@@ -1298,38 +1298,38 @@
            END-IF
       *
            IF      WRK-MASUI           =   1
-      *        �Ʒ׻�
+      *        再計算
                PERFORM 1002141-HEIMA-KEISAN01-SEC
            ELSE
-      *        ���û��������׻�
+      *        注加算の点数計算
                PERFORM 1002142-HEIMA-KEISAN02-SEC
            END-IF
-      *    ���̥��ꥢ
+      *    数量クリア
            MOVE    ZERO                TO  WRK-COM-SURYO2(IDX-Z)
            .
        100214-HEISA-TENKEI-EXT.
            EXIT.
       *****************************************************************
-      *    �굻���κƷ׻�����
+      *    手技料の再計算処理
       *****************************************************************
        1002141-HEIMA-KEISAN01-SEC             SECTION.
       *
-      *    �������ͷ׻�
+      *    きざみ値計算
            MOVE    WRK-COM-SURYO2 (IDX-Z)  TO  WRK-SURYO
            MOVE    WRK-COM-TEN (IDX-Z)     TO  WRK-KEI-TEN2
-      *    ��������Ƚ��
+      *    きざみ値判定
            EVALUATE    TRUE
-      *            �ǡ�����ʲ����͡ݤ������͡�
+      *            データ≦（下限値−きざみ値）
                WHEN    WRK-SURYO       <=  (WRK-COM-KZMKGN(IDX-Z)
                                         -   WRK-COM-KZM   (IDX-Z) )
                    IF      WRK-COM-KZMERR (IDX-Z)  =   2  OR  3
                        MOVE    "0021"          TO  SPA-ERRCD
                    END-IF
       *
-      *            �����͡�ǡ���������
+      *            下限値＜データ≦上限値
                WHEN     (WRK-COM-KZMKGN (IDX-Z)    <   WRK-SURYO )   AND
                         (WRK-COM-KZMJGN (IDX-Z)    >=  WRK-SURYO )
-      *            �����׻�����
+      *            点数計算式１
                    COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
                                            -   WRK-COM-KZMKGN (IDX-Z))
                                            /   WRK-COM-KZM (IDX-Z)
@@ -1340,12 +1340,12 @@
                                            *   WRK-COM-KZMTEN (IDX-Z))
                    COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
       *
-      *            ����͡�ǡ���
+      *            上限値＜データ
                WHEN    WRK-COM-KZMJGN (IDX-Z)  <   WRK-SURYO
                    IF      WRK-COM-KZMERR (IDX-Z)  =   0  OR  2
-      *            �ٹ𥨥顼�Ȥ���
+      *            警告エラーとする
                        MOVE    "K030"          TO  SPA-ERRCD
-      *            �����׻�����
+      *            点数計算式１
                        COMPUTE WRK-KEI-TEN1    =  (WRK-SURYO
                                                -   WRK-COM-KZMKGN
                                                                (IDX-Z))
@@ -1358,7 +1358,7 @@
                                                                (IDX-Z))
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
-      *            �����׻�����
+      *            点数計算式２
                        COMPUTE WRK-KEI-TEN1    =  (WRK-COM-KZMJGN(IDX-Z)
                                                -   WRK-COM-KZMKGN
                                                                 (IDX-Z))
@@ -1383,23 +1383,23 @@
        1002141-HEIMA-KEISAN01-EXT.
            EXIT.
       *****************************************************************
-      *    ���û��κƷ׻�����
+      *    注加算の再計算処理
       *****************************************************************
        1002142-HEIMA-KEISAN02-SEC             SECTION.
       *
            MOVE    WRK-COM-SURYO2 (IDX-Z)  TO  WRK-SURYO
            MOVE    ZERO                TO  WRK-KEI-TEN1 
            MOVE    ZERO                TO  WRK-KEI-TEN2 
-      *    ��������Ƚ��
+      *    きざみ値判定
            EVALUATE    TRUE
-      *            �ǡ����夭������
+      *            データ≦きざみ値
       ******   WHEN   (WRK-SURYO       <   WRK-COM-KZM   (IDX-Z)
                WHEN   (WRK-SURYO       =   ZERO          )
                    CONTINUE
       *
-      *            �ǡ���������
+      *            データ≦上限値
                WHEN     (WRK-COM-KZMJGN (IDX-Z)    >=  WRK-SURYO )
-      *            �����׻�����
+      *            点数計算式１
                    COMPUTE WRK-KEI-TEN1    =   WRK-SURYO
                                            /   WRK-COM-KZM (IDX-Z)
                                            +   0.999
@@ -1408,10 +1408,10 @@
                                            *   WRK-COM-KZMTEN (IDX-Z)
                    COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
       *
-      *            ����͡�ǡ���
+      *            上限値＜データ
                WHEN    WRK-COM-KZMJGN (IDX-Z)      <   WRK-SURYO
                    IF      WRK-COM-KZMERR (IDX-Z)  =   0  OR  2
-      *            �����׻�����
+      *            点数計算式１
                        COMPUTE WRK-KEI-TEN1    =   WRK-SURYO
                                                /   WRK-COM-KZM (IDX-Z)
                                                +   0.999
@@ -1421,7 +1421,7 @@
                                                                (IDX-Z)
                        COMPUTE WRK-KEI-TEN2    =   WRK-KEI-TEN    +  0.5
                    ELSE
-      *            �����׻�����
+      *            点数計算式２
                        COMPUTE WRK-KEI-TEN1    =  (WRK-COM-KZMJGN
                                                              (IDX-Z)
                                                -   WRK-COM-KZMKGN
@@ -1448,20 +1448,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �굻���η׻�����
+      *    手技料の計算処理
       *****************************************************************
        100212-TENSUKEI-SEC             SECTION.
       *
-      *    ���׺������Խ�
+      *    集計済点数編集
       *    MOVE    WRK-SUM-TENGAKEI    TO  LNK-SC90-TENGAKEI
       *    MOVE    WRK-SUM-TENSUKEI    TO  LNK-SC90-TENSUKEI
       *
            MOVE    IDX-Z               TO  HZN-IDX
            PERFORM 1006-KASAN-SET-SEC
       *
-      *    �굻���ι�פ��Խ�����
+      *    手技料の合計を編集する
            MOVE    WRK-SUM-TENSUKEI    TO  WRK-COM-SYUTEN2 (IDX-ZS)
-      *    ϫ�Ҥγ�������û��ɤ��ؤ�����
+      *    労災の外来管理加算読み替え処理
            IF      SPA-HKNKBN          =   1
              AND  (SPA-RSI-HKNKBN  NOT =   "5" )
                IF     (WRK-COM-RSIGIRI (IDX-ZS)
@@ -1479,7 +1479,7 @@
            MOVE    ZERO                TO  WRK-SUM-TENSUKEI
            MOVE    ZERO                TO  WRK-SUM-TENGAKEI
       *
-      *    �Ǹ�μ굻�����ˡ��ʲ��η׻���Ԥ�
+      *    最後の手技料時に、以下の計算を行う
            IF      FLG-SYUGI           =   2
                PERFORM 1007-KASAN-SET-ALL-SEC
            END-IF
@@ -1489,26 +1489,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û��׻�����
+      *    割合加算計算処理
       *****************************************************************
        1006-KASAN-SET-SEC              SECTION.
       *
-      *    ��ư�û��ʳ��βû��ʻ��ֳ���ǯ��ʳ���
+      *    自動加算以外の加算（時間外、年齢以外）
            MOVE    ZERO                TO  WRK-TENSUKEI-G
            MOVE    ZERO                TO  WRK-TENSUKEI-K
       *
-      *    �굻������������������Ȥ���
+      *    手技料の点数を所定点数とする
            PERFORM VARYING     IDX     FROM    IDX-ZS  BY  1
                    UNTIL      (IDX         >=  HZN-IDX     )   OR
                               (WRK-GMN-INPUTCD (IDX)   =   SPACE )
-      *        ���ֳ��û��Τ�Τϡ���ư�û��Ȥ���
+      *        時間外加算のものは、自動加算とする
                IF     (WRK-COM-DATAKBN    (IDX)        =   "2"  )  AND
                       (WRK-COM-TIMEKSNKBN (IDX)    NOT =   ZERO )  AND
                       (WRK-COM-TENSIKIBETU(IDX)        =   5    )
                    MOVE    1               TO  WRK-COM-SANFLG (IDX)
                END-IF
       *
-      *        ��û�
+      *        ％加算
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   ZERO )
@@ -1520,14 +1520,14 @@
                                                +   0.5
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
       *
-      *            ��§�û��оݳ���ʬȽ��
+      *            通則加算対象外区分判定
                    IF      WRK-COM-TUSOKUGAIKBN (IDX-ZS)  =   "1"
                        ADD     WRK-TENSUKEI-9  TO  WRK-TENGAKEI-K
                    ELSE
                        ADD     WRK-TENSUKEI-9  TO  WRK-TENSUKEI-K
                    END-IF
                END-IF
-      *        �󸺻�
+      *        ％減算
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   6   )  AND
                       (WRK-COM-SANFLG     (IDX)    =   ZERO )
@@ -1538,7 +1538,7 @@
                                                /   100
                    MOVE    WRK-TENSUKEI        TO  WRK-TENSUKEI-9
       *
-      *            ��§�û��оݳ���ʬȽ��
+      *            通則加算対象外区分判定
                    IF      WRK-COM-TUSOKUGAIKBN (IDX-ZS)  =   "1"
                        ADD     WRK-TENSUKEI-9  TO  WRK-TENGAKEI-G
                    ELSE
@@ -1560,16 +1560,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���û��׻����������Ρ�
+      *    割合加算計算処理（全体）
       *****************************************************************
        1007-KASAN-SET-ALL-SEC              SECTION.
       *
-      *    �Ļ��û��η׻�
+      *    幼児加算の計算
            MOVE    ZERO                TO  WRK-TENSUKEI-K
       *
            PERFORM VARYING     IDX     FROM    1       BY  1
                    UNTIL       IDX         >=  HZN-IDX
-      *        ��û����Ļ��û���
+      *        ％加算（幼児加算）
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -1587,12 +1587,12 @@
            COMPUTE WRK-GOK-TENSUKEI    =   WRK-GOK-TENSUKEI
                                        +   WRK-TENSUKEI-K
       *
-      *    ��ư�û��βû��ʻ��ֳ���ǯ����Ļ��û��ʳ��ˡ�
+      *    自動加算の加算（時間外、年齢（幼児加算以外））
            MOVE    ZERO                TO  WRK-TENSUKEI-K
       *
            PERFORM VARYING     IDX     FROM    1       BY  1
                    UNTIL       IDX         >=  HZN-IDX
-      *        ��û��ʻ��ֳ������Ļ��û���
+      *        ％加算（時間外・乳幼児加算）
                IF     (WRK-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                       (WRK-COM-INPUTCD(IDX)(1:3)   NOT =   "101" )  AND
                       (WRK-COM-TENSIKIBETU(IDX)    =   5   )  AND
@@ -1615,7 +1615,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ź԰٥����å�����
+      *    全診療行為チェック処理
       *****************************************************************
        200-ALL-SYORI-SEC                SECTION.
       *
@@ -1625,7 +1625,7 @@
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
                               (WRK-GMN-INPUTCD(IDX) =   SPACE)  OR
                               (SPA-ERRCD        NOT =   SPACE)
-      *        ���Х֥��å�Ƚ��
+      *        神経ブロック判定
                IF     (WRK-COM-SRYKBN  (IDX)   =   "54" ) AND
                       (WRK-COM-DATAKBN  (IDX)  =   "1"  ) AND
                       (WRK-COM-CDKBN-KBN (IDX) =   "L"  )  AND
@@ -1635,13 +1635,13 @@
                                                    OR  "104" )
                    PERFORM 2001-JYUFUKU-CHK-SEC
                END-IF
-      *        Ĺ�����������û������å�
+      *        長時間麻酔管理加算チェック
                IF     (WRK-COM-SRYKBN  (IDX)       =   "54" ) AND
                       (WRK-COM-INPUTCD (IDX)(1:1)  =  "1"  ) AND
                       (WRK-COM-DATAKBN (IDX)       =   "2"  ) AND
                       (WRK-COM-YOBI1   (IDX)(4:1)
                                                NOT =   ZERO  )
-      *            Ĺ�����������û�����
+      *            長時間麻酔管理加算あり
                    PERFORM 2002-MASUIKANRI-CHK-SEC
                END-IF
            END-PERFORM
@@ -1650,7 +1650,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʣȽ�����
+      *    重複判定処理
       *****************************************************************
        2001-JYUFUKU-CHK-SEC                SECTION.
       *
@@ -1658,7 +1658,7 @@
                MOVE    SPA-SRYYMD(7:2)     TO  IDD
                PERFORM 20011-BUROKU-CHK-SEC
            ELSE
-      *        ������ʬ�Υ����å�
+      *        入力日分のチェック
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2    >   31  )   OR
                                   (SPA-ERRCD   NOT =   SPACE )
@@ -1668,7 +1668,7 @@
                        IF      SPA-ERRCD       NOT =   SPACE
                            MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
                            STRING  IDD             DELIMITED  BY  SIZE
-                                   "����Ʊ������Ȥʤ�ޤ���"
+                                   "日に同時算定となります。"
                                                    DELIMITED  BY  SIZE
                                            INTO    LNK-ORCSC-ERRMSG
                            END-STRING
@@ -1681,7 +1681,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Х֥��å����ȥꥬ���ݥ�������ͽ�ʣȽ�����
+      *    神経ブロック・トリガーポイント注射重複判定処理
       *****************************************************************
        20011-BUROKU-CHK-SEC                SECTION.
       *
@@ -1729,7 +1729,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ĺ�����������û������å�����
+      *    長時間麻酔管理加算チェック処理
       *****************************************************************
        2002-MASUIKANRI-CHK-SEC                SECTION.
       *
@@ -1745,7 +1745,7 @@
                  AND  (WRK-COM-INPUTCD (IDXM)(1:1) =   "1"   ) 
                  AND  (WRK-COM-DATAKBN (IDXM)      =   "1"   )
                  AND  (WRK-COM-YOBI1   (IDXM)(4:1) =   "2"   )
-      *            ��Ѥ�Ĺ�����������û��ᣲ�����뤳��
+      *            手術に長時間麻酔管理加算＝２があること
                    MOVE    1                   TO  FLG-CHK
                END-IF
            END-PERFORM
@@ -1764,7 +1764,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ư�������
+      *    自動算定処理
       *****************************************************************
        300-AUTO-SYORI-SEC                SECTION.
       *
@@ -1772,7 +1772,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������å�����
+      *    算定履歴チェック処理
       *****************************************************************
        3001-SANTEI-CHK-SEC         SECTION.
       *
@@ -1788,10 +1788,10 @@
       *                                SPA-AREA
       *
            IF      LNK-SC91-ERRCD      =   SPACE
-      *        �ɲä���
+      *        追加あり
                MOVE    ZERO            TO  FLG-ERR
            ELSE
-      *        �ɲäʤ�
+      *        追加なし
                MOVE    1               TO  FLG-ERR
            END-IF
       *

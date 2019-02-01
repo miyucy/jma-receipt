@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,31 +18,31 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGP97.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ��̾�����ʣУ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 氏名検索（Ｐ９７）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *   01.00.01    MCC-ƣ��     01/04/10��LINKAREA�ν�����κ��
-      *   01.00.02    MCC-����     01/05/24  �����ֹ湽���������ɲ�
-      *   01.00.03    MCC-¿��Ǽ   01/08/20  ��̾�����Ѵ��������ɲ�
-      *                                      ���������ʤθ����ΰ층��
-      *   01.00.04    MCC-ƣ��     01/09/19  �ֹ���Խ�    
-      *   01.01.01    MCC-ƣ��     01/09/21  JOIN�ν���      
-      *   01.00.06    MCC-¿��Ǽ   01/09/25  ����ɽ������ɲ�
-      *   01.00.07    NACL-¿��Ǽ  02/12/12  ���������ɲ�
-      *   01.00.08    NACL-����    03/02/06  ���ϰ�����̾�������ꤵ���
-      *                                      ������������Ѵ����ƻȤ�
-      *   01.00.09    NACL-¿��Ǽ  04/07/22  �ݸ����ɲ�
-      *   01.00.10    NACL-¿��Ǽ  05/11/10  MONFUNC�ν���
-      *   03.03.00    NACL-¿��Ǽ  06/10/06  ̾���������ɲ�
-      *   03.05.00    NACL-¿��Ǽ  07/06/05  �����象���ζ��̲�
-      *   04.01.00    NACL-¿��Ǽ  08/01/30  ���Ǥβ���ɽ���ɲ�
-      *   04.05.00    NACL-¿��Ǽ  09/10/27  ��ĥ�����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *   01.00.01    MCC-藤原     01/04/10　LINKAREAの初期化の削除
+      *   01.00.02    MCC-太田     01/05/24  患者番号構成管理の追加
+      *   01.00.03    MCC-多々納   01/08/20  仮名入力変換処理の追加
+      *                                      漢字・かなの検索の一元化
+      *   01.00.04    MCC-藤原     01/09/19  番号の編集    
+      *   01.01.01    MCC-藤原     01/09/21  JOINの修正      
+      *   01.00.06    MCC-多々納   01/09/25  一覧表選択の追加
+      *   01.00.07    NACL-多々納  02/12/12  検索条件の追加
+      *   01.00.08    NACL-太田    03/02/06  入力引数に名前が設定されて
+      *                                      いる場合は全角変換して使う
+      *   01.00.09    NACL-多々納  04/07/22  保険の追加
+      *   01.00.10    NACL-多々納  05/11/10  MONFUNCの修正
+      *   03.03.00    NACL-多々納  06/10/06  名前検索の追加
+      *   03.05.00    NACL-多々納  07/06/05  前回来院日の共通化
+      *   04.01.00    NACL-多々納  08/01/30  次頁の画面表示追加
+      *   04.05.00    NACL-多々納  09/10/27  拡張漢字対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -56,7 +56,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  SPA-P97.
@@ -111,7 +111,7 @@
                            11  SPA-NAI-BIRTH      PIC X(08).
                            11  SPA-NAI-PTID       PIC X(10).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -127,18 +127,18 @@
            03  FLG-NYUIN           PIC 9(01).
            03  FLG-NAMEKEN         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(01).
@@ -150,7 +150,7 @@
            03  IDX-S1              PIC 9(04).
            03  IDX-S2              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -185,7 +185,7 @@
       *
            03  WRK-MCP-WIDGET          PIC X(64).
            03  WRK-ORC-DBPATH          PIC X(64).
-      *    ǯ��׻�
+      *    年齢計算
            03  WRK-NENREI.
                05  WRK-NENREI-YY       PIC 9(03).
                05  WRK-NENREI-MM       PIC 9(02).
@@ -208,7 +208,7 @@
            03  WRK-H-NAME-G.
                05  WRK-H-NAME1         PIC X(02).
       *
-      *   ǯ��ɽ��
+      *   年齢表示
        01  WRK-NENREI-G.
            03  WRK-NENREI-Z        PIC ZZ9.
            03  WRK-NENREI-MEI      PIC X(04).
@@ -234,60 +234,60 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    ���ѥ����å��ѥ�᥿�ʳ�ĥ��
+      *    全角チェックパラメタ（拡張）
            COPY    "CPORCSKANACHK2.INC".
       *
-      *    ��ĥʸ���б�
+      *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
       *
-      *    �����象������ѥ�᥿
+      *    前回来院日設定パラメタ
            COPY    "CPORCSLASTYMD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1005.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ���Ų�����
+      *    診療科履歴
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    ������������
+      *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
@@ -296,7 +296,7 @@
            COPY    "CPORCSLOCK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -316,7 +316,7 @@
            LINKAREA
            SCRAREA.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -333,15 +333,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -353,7 +353,7 @@
            EXIT    PROGRAM.
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                   SECTION.
       *
@@ -361,14 +361,14 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "P97ERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5011-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -384,7 +384,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -392,7 +392,7 @@
       *
            MOVE    1               TO  SPA-GMN-CUR
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
       *****IF      LINKAREA        NOT =   SPACE
            IF      LNK-KYOUTU      NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
@@ -406,7 +406,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -414,14 +414,14 @@
       *
            MOVE    1                   TO  SPA-GMN-CUR
       *
-           MOVE    "0 ����"            TO  SPA-GMN-KSEX-LIST (01)
-           MOVE    "1 ��"              TO  SPA-GMN-KSEX-LIST (02)
-           MOVE    "2 ��"              TO  SPA-GMN-KSEX-LIST (03)
+           MOVE    "0 全体"            TO  SPA-GMN-KSEX-LIST (01)
+           MOVE    "1 男"              TO  SPA-GMN-KSEX-LIST (02)
+           MOVE    "2 女"              TO  SPA-GMN-KSEX-LIST (03)
            MOVE    SPA-GMN-KSEX-LIST (01)  TO  SPA-GMN-KSEX-G
       *
-           MOVE    "0 ����"            TO  SPA-GMN-KNYUGAIKBN-LIST (01)
-           MOVE    "1 ����"            TO  SPA-GMN-KNYUGAIKBN-LIST (02)
-           MOVE    "2 ����"            TO  SPA-GMN-KNYUGAIKBN-LIST (03)
+           MOVE    "0 全体"            TO  SPA-GMN-KNYUGAIKBN-LIST (01)
+           MOVE    "1 入院"            TO  SPA-GMN-KNYUGAIKBN-LIST (02)
+           MOVE    "2 外来"            TO  SPA-GMN-KNYUGAIKBN-LIST (03)
            MOVE    SPA-GMN-KNYUGAIKBN-LIST (01)
                                        TO  SPA-GMN-KNYUGAIKBN-G
       *
@@ -434,7 +434,7 @@
            MOVE    SPACE               TO  SPA-GMN-KBIRTHDAY
            MOVE    SPACE               TO  SPA-NAI-KBIRTHDAY
       *
-      *    ���β��̤�ꡢ��̾�μ������
+      *    前の画面より、氏名の受け取り
            IF      SPA-NAME        NOT =   SPACE
                MOVE    SPA-NAME            TO  SPA-GMN-NAMEKEN
       *
@@ -451,18 +451,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *            ��λ
+      *            終了
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *            ���ꥢ
+      *            クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 220-CLEAR-SEC
-      *            ����
+      *            次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 440-ATOGMN-SEC
            END-EVALUATE
@@ -472,7 +472,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -481,23 +481,23 @@
            MOVE    ZERO                TO  FLG-KNJHEN
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *????    �����������ϡ��Ѵ���
+      *????    検索項目入力（変換）
                WHEN    "CHANGED"       ALSO    "NAMEKEN"
                    MOVE    1           TO  FLG-KNJHEN
-      *            ���ϥ����å�����
+      *            入力チェック処理
                    PERFORM 410-INPUT-CHK-SEC
                    IF      FLG-KNJHEN          =   1
                        MOVE    1               TO  SPA-GMN-CUR
                    END-IF
-      *        �ֹ���������
+      *        番号選択入力
                WHEN    "ACTIVATE"      ALSO    "SELNO"
                    PERFORM 202-SELNO-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "LIST"
                    PERFORM 203-SELECT-SEC
       *
                WHEN    OTHER
-      *            ���ϥ����å�����
+      *            入力チェック処理
                    PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
@@ -506,13 +506,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -520,7 +520,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -539,7 +539,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
@@ -558,7 +558,7 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 202-NYUGAIKBN-SEC
            END-IF
-      *    ��������
+      *    検索処理
            IF      SPA-ERRCD           =   SPACE
                PERFORM 201-NAMEKEN-SEC
            END-IF
@@ -568,13 +568,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾���Ͻ���
+      *    氏名入力処理
       *****************************************************************
        209-NAMEKEN-SEC                 SECTION.
       *
-      *    �����Ѵ�����
+      *    全角変換処理
            IF      SPA-ENCODING        =   2
-      *        ��ĥ�����б�
+      *        拡張漢字対応
                INITIALIZE                  ORCSKANACHK2AREA
                MOVE    "2"                 TO  KANACHK2-SYORI
                MOVE    SPA-GMN-NAMEKEN     TO  KANACHK2-MAE-INPUT
@@ -586,7 +586,7 @@
                                            TO  SPA-GMN-NAMEKEN
                END-IF
            ELSE
-      *        ��ĥ�����Բ�
+      *        拡張漢字不可
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI
                MOVE    SPA-GMN-NAMEKEN     TO  KANACHK-MAE-INPUT
@@ -602,7 +602,7 @@
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
            ELSE
                MOVE    SPACE               TO  SPA-NAI-NAMEKEN
-      *        ��̾�������Խ�
+      *        氏名検索用編集
                PERFORM 2091-NAME-HEN-SEC
            END-IF
       *
@@ -611,27 +611,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ�����
+      *    氏名編集処理
       *****************************************************************
        2091-NAME-HEN-SEC                 SECTION.
       *
            MOVE    SPA-GMN-NAMEKEN     TO  WRK-NAME
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
-      *    ���μ��Ρ����
+      *    ＊の次の　削除
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "sub"               TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "����"              TO  ORCSSTR-STRING2
-           MOVE    "��"                TO  ORCSSTR-STRING3
+           MOVE    "＊　"              TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING3
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            MOVE    ORCSSTR-STRING1     TO  WRK-NAME
-      *    ����̾���Ȥ���
+      *    ＊は名前とする
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME            TO  ORCSSTR-STRING1
-           MOVE    "��"                TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
@@ -673,9 +673,9 @@
       *    MOVE    1                   TO  IDX2
       *    PERFORM VARYING     IDX     FROM    1   BY  2
       *            UNTIL       IDX     >   KANACHK-MAX
-      *        IF      SPA-GMN-NAMEKEN(IDX:2)  =   "��"
+      *        IF      SPA-GMN-NAMEKEN(IDX:2)  =   "＊"
       *            COMPUTE IDX3            =   IDX     +  2
-      *            IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "��"
+      *            IF      SPA-GMN-NAMEKEN (IDX3:2)    =   "　"
       *                COMPUTE IDX3            =   IDX3     +  2
       *            END-IF
       *            IF      SPA-GMN-NAMEKEN (IDX3:) =   SPACE
@@ -703,7 +703,7 @@
                   (WRK-NAME2       NOT =   SPACE )
                STRING  WRK-NAME1       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
-                       "��"            DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    SPA-NAI-NAMEKEN
@@ -712,7 +712,7 @@
            IF     (WRK-NAME1           =   SPACE ) AND
                   (WRK-NAME2       NOT =   SPACE )
                STRING  "%"             DELIMITED  BY  SIZE
-                       "��"            DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    SPA-NAI-NAMEKEN
@@ -724,7 +724,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǯ�������ϡ�����
+      *    生年月日入力　処理
       *****************************************************************
        201-BIRTHDAY-SEC                 SECTION.
       *
@@ -762,7 +762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ϡ�����
+      *    性別入力　処理
       *****************************************************************
        202-SEX-SEC                 SECTION.
       *
@@ -789,7 +789,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ϡ�����
+      *    入外入力　処理
       *****************************************************************
        202-NYUGAIKBN-SEC                 SECTION.
       *
@@ -819,7 +819,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ϡ�����
+      *    検索項目入力　処理
       *****************************************************************
        201-NAMEKEN-SEC                 SECTION.
       *
@@ -841,10 +841,10 @@
            END-IF
       *
            MOVE    1                   TO  SPA-GMN-PAGE
-      *    ��������
+      *    検索処理
            PERFORM 2011-KNJKEN-HEN-SEC
       *
-      *    �оݤ�������������
+      *    対象がある時、選択へ
            IF      SPA-GMN-MAX     >   ZERO
                MOVE    4               TO  SPA-GMN-CUR
            ELSE
@@ -856,7 +856,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������
+      *    患者検索処理
       *****************************************************************
        2011-KNJKEN-HEN-SEC        SECTION.
       *
@@ -864,12 +864,12 @@
            INITIALIZE                  SPA-NAI-TBLG
            MOVE    ZERO                TO  SPA-GMN-MAX
       *
-      *    ���Ųʥ��å�
+      *    診療科セット
            PERFORM 20119-SRYKA-HEN-SEC
       *
            MOVE    ZERO                TO  IDX
       *
-      *    ����
+      *    検索
            INITIALIZE                  PTINF-REC
       *****MOVE    SPA-HOSPID          TO  PTINF-HOSPID
            MOVE    SPACE               TO  PTINF-NAME
@@ -901,7 +901,7 @@
                   (SPA-NAI-KBIRTHDAY   NOT =   SPACE )
                MOVE    "key9"              TO  WRK-ORC-DBPATH
            END-IF
-      *    ���ԥޥ������������̾�Ǹ���
+      *    患者マスターを漢字氏名で検索
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
@@ -943,7 +943,7 @@
                    END-IF
                END-IF
                MOVE    SPACE               TO  WRK-HKNCOMBI
-      *        �¼��Խ�
+      *        病室編集
                PERFORM 20111-NYUINCHK-SEC
       *
                IF      FLG-OK          =   1
@@ -958,7 +958,7 @@
                MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
                PERFORM 810-PTINF-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    WRK-ORC-DBPATH      TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -973,7 +973,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ����Խ�����
+      *    患者マスタ編集処理
       *****************************************************************
        2012-PTINF-HENSYU-SEC          SECTION.
       *
@@ -984,7 +984,7 @@
            ELSE
                MOVE    IDX                 TO  SPA-GMN-NO  (IDX)
       *
-      *    �����ֹ��Ѵ���ꡢ����ID��괵��NO���������
+      *    患者番号変換より、患者IDより患者NOを取得する
       *
                MOVE    PTINF-PTID          TO  SPA-NAI-PTID  (IDX)
       *
@@ -1003,20 +1003,20 @@
                MOVE    PTINF-SEX           TO  SPA-NAI-SEX    (IDX)
                EVALUATE    SPA-NAI-SEX (IDX)
                    WHEN    "1"
-                       MOVE    "��"        TO  SPA-GMN-SEX (IDX)
+                       MOVE    "男"        TO  SPA-GMN-SEX (IDX)
                    WHEN    "2"
-                       MOVE    "��"        TO  SPA-GMN-SEX (IDX)
+                       MOVE    "女"        TO  SPA-GMN-SEX (IDX)
                END-EVALUATE  
                MOVE    PTINF-BIRTHDAY      TO  SPA-NAI-BIRTH  (IDX)
                MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
                PERFORM 700-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTH  (IDX)
-      *****    �ǽ����������å�
+      *****    最終受診日セット
       *        IF      FLG-NYUIN           =   ZERO
       *            PERFORM 20121-JYURRK-HEN-SEC
       *****    END-IF
                MOVE    WRK-LSTYMDW        TO  SPA-GMN-RRKYMD (IDX)
-      *        ���Ų��Խ�
+      *        診療科編集
                SET     SRYKA-IDX           TO  1
                SEARCH      TBL-SRYKA-OCC   VARYING   SRYKA-IDX
                    AT  END
@@ -1025,11 +1025,11 @@
                        MOVE    TBL-SRYKAMEI (SRYKA-IDX)
                                                 TO  SPA-GMN-SRYKA (IDX)
                END-SEARCH
-      *        �¼�
+      *        病室
                MOVE    WRK-BRMNUM          TO  SPA-GMN-BRMNUM (IDX)
-      *        ǯ��׻�
+      *        年齢計算
                PERFORM 20122-NENREI-KEI-SEC
-      *        �ݸ�ɽ��
+      *        保険表示
       ******   PERFORM 20123-HKNCOMBI-MEI-SEC
                MOVE    WRK-HKNCOMBI-MEI    TO  SPA-GMN-HKNCOMBI (IDX)
                MOVE    WRK-HONKZKKBN-MEI   TO  SPA-GMN-HONKZKKBN (IDX)
@@ -1041,7 +1041,7 @@
            EXIT.
            .
       *****************************************************************
-      *    �ǽ����������åȽ���
+      *    最終受診日セット処理
       *****************************************************************
        20121-JYURRK-HEN-SEC               SECTION.
       *
@@ -1080,7 +1080,7 @@
            END-IF
       *
            IF      WRK-LSTYMD          =   SPACE
-      *        ���Ų����򤫤�
+      *        診療科履歴から
                PERFORM 201211-SRYKARRK-HEN-SEC
            END-IF
            IF      WRK-LSTYMD      NOT =   SPACE
@@ -1095,10 +1095,10 @@
            .
       *
       *****************************************************************
-      *    ���Ų����򤫤��Խ�����
+      *    診療科履歴から編集処理
       *****************************************************************
        201211-SRYKARRK-HEN-SEC               SECTION.
-      *    ���Ų���򸡺�
+      *    診療科歴を検索
            MOVE    SPACE               TO  SRYKARRK-REC
            INITIALIZE                  SRYKARRK-REC
       *****MOVE    PTINF-HOSPID        TO  KARRK-HOSPID
@@ -1119,7 +1119,7 @@
                INITIALIZE                  SRYKARRK-REC
            END-IF
            PERFORM UNTIL       FLG-SRYKARRK    =   1
-      *        �ǽ�������
+      *        最終受診日
                IF     (KARRK-SRYKA     NOT =   SPACE      ) AND
                       (KARRK-LASTYMD   NOT =   SPACE      ) AND
                       (KARRK-LASTYMD       >=  WRK-LSTYMD )
@@ -1141,11 +1141,11 @@
            .
       *
       *****************************************************************
-      *    �¼��Խ�����
+      *    病室編集処理
       *****************************************************************
        20111-NYUINCHK-SEC               SECTION.
       *
-      *    �����象���Խ�
+      *    前回来院日編集
            INITIALIZE                  ORCSLASTYMDAREA
            MOVE    PTINF-PTID          TO  ORCSLASTYMD-PTID
            CALL    "ORCSLASTYMD"       USING
@@ -1173,12 +1173,12 @@
                    END-IF
            END-EVALUATE
       *TEST
-      *    �ʲ����
+      *    以下削除
            GO      TO  20111-NYUINCHK-EXT.
-      *    �¼��Խ�
+      *    病室編集
            MOVE    ZERO                TO  FLG-NYUIN
       *
-      *    ��������Ƚ��
+      *    入院履歴判定
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
       *****MOVE    SPA-HOSPID          TO  PTNYUINRRK-HOSPID
@@ -1202,7 +1202,7 @@
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key11"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �ǽ�Σ����ܤ��оݤȤ���
+      *    最初の１件目を対象とする
            IF      FLG-PTNYUINRRK      =   ZERO
                MOVE    SPACE               TO  WRK-BRMNUM
                MOVE    PTNYUINRRK-BRMNUM(1:2)      TO  WRK-BRMNUM1
@@ -1246,12 +1246,12 @@
        20111-NYUINCHK-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ��׻�����
+      *    年齢計算処理
       *****************************************************************
        20122-NENREI-KEI-SEC               SECTION.
       *
            MOVE    ZERO                TO  WRK-NENREI
-      *    ǯ��׻�
+      *    年齢計算
            MOVE    PTINF-BIRTHDAY      TO  WRK-YMDS1
            MOVE    SPA-SYSYMD          TO  WRK-YMDS2
            COMPUTE WRK-NENREI-YY       =   WRK-YYS2
@@ -1270,13 +1270,13 @@
                                            -   1
            END-IF
       *
-      *    ����ɽ����
+      *    画面表示用
            IF      WRK-NENREI-YY       =   ZERO
                MOVE    WRK-NENREI-MM       TO  WRK-NENREI-ZN
-               MOVE    "����"              TO  WRK-NENREI-MEIN
+               MOVE    "ヶ月"              TO  WRK-NENREI-MEIN
            ELSE
                MOVE    WRK-NENREI-YY       TO  WRK-NENREI-Z
-               MOVE    "��"                TO  WRK-NENREI-MEI
+               MOVE    "才"                TO  WRK-NENREI-MEI
            END-IF
            MOVE    WRK-NENREI-G        TO  SPA-GMN-NENREI (IDX)
       *
@@ -1284,20 +1284,20 @@
        20122-NENREI-KEI-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ųʥ��åȽ���
+      *    診療科セット処理
       *****************************************************************
        20119-SRYKA-HEN-SEC               SECTION.
       *
-      *    ���Ųʥ��å�
+      *    診療科セット
            INITIALIZE                  TBL-SRYKA-AREA
            SET     SRYKA-IDX           TO  ZERO
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1332,7 +1332,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ�ɽ������
+      *    保険表示処理
       *****************************************************************
        20123-HKNCOMBI-MEI-SEC          SECTION.
       *
@@ -1352,7 +1352,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ�ɽ������
+      *    保険表示処理
       *****************************************************************
        201231-HKNCOMBI-CHK1-SEC          SECTION.
       *
@@ -1392,7 +1392,7 @@
        201231-HKNCOMBI-CHK1-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ�ɽ������
+      *    保険表示処理
       *****************************************************************
        201232-HKNCOMBI-CHK2-SEC          SECTION.
       *
@@ -1440,22 +1440,22 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻̾���Խ�����
+      *    保険組合せ名称編集処理
       *****************************************************************
        201231-HKNCOMBI-MEI-SEC               SECTION.
-      *    ���ݸ����ʤ���
+      *    主保険がない時
            IF      COMB-SYU-TANSEIDONAME   =   SPACE
                MOVE    COMB-KOH1-TANSEIDONAME  TO  WRK-HKNCOMBI-MEI
            ELSE
                MOVE    COMB-SYU-TANSEIDONAME   TO  WRK-HKNCOMBI-MEI
                MOVE    COMB-HKNNUM             TO  WRK-HKNNUM
            END-IF
-      *    �ܿͲ�²
+      *    本人家族
            EVALUATE    COMB-HONKZKKBN
                WHEN    "1"
-                   MOVE    "��"            TO  WRK-HONKZKKBN-MEI
+                   MOVE    "本"            TO  WRK-HONKZKKBN-MEI
                WHEN    "2"
-                   MOVE    "��"            TO  WRK-HONKZKKBN-MEI
+                   MOVE    "家"            TO  WRK-HONKZKKBN-MEI
                WHEN    OTHER
                    MOVE    SPACE           TO  WRK-HONKZKKBN-MEI
            END-EVALUATE
@@ -1465,12 +1465,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ϡ�����
+      *    検索項目入力　処理
       *****************************************************************
        202-SELNO-SEC               SECTION.
       *
            MOVE    P97-SELNO           TO  SPA-GMN-SELNO
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF      SPA-GMN-SELNO       =   ZERO
                MOVE    1               TO  SPA-GMN-CUR
                GO      TO              202-SELNO-EXT
@@ -1481,7 +1481,7 @@
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *H25.6
-      *    ͽ���������Τߡ���¾�����å��ʤ�
+      *    予約日検索のみ、排他チェックなし
            IF     (SPA-MOTOPG          =   "Y05" )
              OR   (SPA-NAI-MOTOPG      =   "Y05" )
                PERFORM 2021-SPA-OKSET-SEC
@@ -1489,7 +1489,7 @@
                GO      TO      202-SELNO-EXT
            END-IF
       *
-      *    ��¾��������å�
+      *    排他制御チェック
            MOVE    1                   TO  SLOCK-MODE
            MOVE    SPA-GMN-SELNO       TO  IDX
            MOVE    SPA-NAI-PTID  (IDX) TO  SLOCK-PTID
@@ -1507,11 +1507,11 @@
            IF      SLOCK-RETURN        NOT =   ZERO
                MOVE    "9999"          TO  SPA-ERRCD
            END-IF
-      *    ��¾��ǹ����Τߤλ�
+      *    排他中で更新のみの時
            IF      SPA-LOCK            =   1
                MOVE    SPACE           TO  SPA-ERRCD
            END-IF
-      *        �ϣˤλ����ӣУ�����塢���β��̤�
+      *        ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
                PERFORM 210-BACK
@@ -1521,7 +1521,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ϡ�����
+      *    画面選択入力　処理
       *****************************************************************
        203-SELECT-SEC               SECTION.
       *
@@ -1532,14 +1532,14 @@
               END-IF
            END-PERFORM
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF      SPA-GMN-SELNO       =   ZERO   OR
                                        >   SPA-GMN-MAX
                MOVE    "0002"          TO  SPA-ERRCD
            END-IF
       *
       *H25.6
-      *    ͽ���������Τߡ���¾�����å��ʤ�
+      *    予約日検索のみ、排他チェックなし
            IF     (SPA-MOTOPG          =   "Y05" )
              OR   (SPA-NAI-MOTOPG      =   "Y05" )
                PERFORM 2021-SPA-OKSET-SEC
@@ -1547,7 +1547,7 @@
                GO      TO      203-SELNO-EXT
            END-IF
       *
-      *    ��¾��������å�
+      *    排他制御チェック
            MOVE    1                   TO  SLOCK-MODE
            MOVE    SPA-GMN-SELNO       TO  IDX
            MOVE    SPA-NAI-PTID  (IDX) TO  SLOCK-PTID
@@ -1565,12 +1565,12 @@
            IF      SLOCK-RETURN      NOT =   ZERO
                MOVE    "9999"          TO  SPA-ERRCD
            END-IF
-      *    ��¾��ǹ����Τߤλ�
+      *    排他中で更新のみの時
            IF      SPA-LOCK            =   1
                MOVE    SPACE           TO  SPA-ERRCD
            END-IF
       *
-      *    �ϣˤλ����ӣУ�����塢���β��̤�
+      *    ＯＫの時、ＳＰＡ確定後、元の画面へ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 2021-SPA-OKSET-SEC
                PERFORM 210-BACK
@@ -1580,7 +1580,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ���̰ܹ��ѤΣӣУ��Խ�
+      *   画面移行用のＳＰＡ編集
       *****************************************************************
        2021-SPA-OKSET-SEC          SECTION.
       *
@@ -1602,7 +1602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -1626,7 +1626,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǡ�����
+      *    前頁　処理
       *****************************************************************
        430-MAEGMN-SEC             SECTION.
       *
@@ -1635,7 +1635,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǡ�����
+      *    次頁　処理
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
       *
@@ -1644,7 +1644,7 @@
            END-IF
       *
            ADD     1                   TO  SPA-GMN-PAGE
-      *    ��������
+      *    検索処理
            PERFORM 2011-KNJKEN-HEN-SEC
       *
            .
@@ -1652,7 +1652,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ������
+      *    クリア　処理
       *****************************************************************
        220-CLEAR-SEC             SECTION.
       *
@@ -1663,7 +1663,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        700-SEIWA-HEN-SEC             SECTION.
       *
@@ -1682,7 +1682,7 @@
                                                    LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMDG
            END-IF
-      *    ���������ѹ�
+      *    西暦和暦変更
            IF      WRK-SYMD            =   ALL "9"  OR   SPACE
                MOVE    ALL "9"             TO  WRK-WYMD
            ELSE
@@ -1701,7 +1701,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1726,7 +1726,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    画面内容編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1771,9 +1771,9 @@
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  P97-COUNT
       *
-      *    ���Ǥ���
+      *    次頁あり
            IF      SPA-GMN-NEXT        =   1
-               MOVE    "�μ���ͭ���"      TO  P97-NEXT-VALUE
+               MOVE    "［次頁有り］"      TO  P97-NEXT-VALUE
                MOVE    "red"               TO  P97-NEXT-STYLE
            ELSE
                MOVE    SPACE               TO  P97-NEXT-VALUE
@@ -1787,7 +1787,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5011-MAPCUR-SEC             SECTION.
       *
@@ -1808,28 +1808,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        502-ERRSET-SEC              SECTION.
       *
             EVALUATE    SPA-ERRCD
                 WHEN    "0001"
-                    MOVE    "��ǯ�������ϥ��顼"
+                    MOVE    "生年月日入力エラー"
                                                 TO  SPA-ERRMSG
                 WHEN    "0002"
-                    MOVE    "�����ֹ椬ͭ��ޤ���"
+                    MOVE    "選択番号が有りません"
                                                 TO  SPA-ERRMSG
                 WHEN    "0003"
-                    MOVE    "�оݼԤ��������Ͱʾ夤�ޤ�"
+                    MOVE    "対象者が１００人以上います"
                                                 TO  SPA-ERRMSG
                 WHEN    "0004"
-                    MOVE    "���̤Τߤθ����ϤǤ��ޤ���"
+                    MOVE    "性別のみの検索はできません。"
                                                 TO  SPA-ERRMSG
                 WHEN    "0005"
-                    MOVE    "������ʬ�Τߤθ����ϤǤ��ޤ���"
+                    MOVE    "入外区分のみの検索はできません。"
                                                 TO  SPA-ERRMSG
                 WHEN    "9999"
-                    MOVE    "¾ü���ǻ�����Ǥ�"
+                    MOVE    "他端末で使用中です"
                                                 TO  SPA-ERRMSG
                     MOVE   SLOCK-MSG 
                                                 TO  SPA-ERRMSG(19:)
@@ -1857,7 +1857,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        810-PTINF-READ-SEC         SECTION.
       *
@@ -1877,7 +1877,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        900-JYURRK-READ-SEC         SECTION.
       *
@@ -1897,7 +1897,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų���ǡ����祭������
+      *    診療科歴データ主キー検索
       *****************************************************************
        975-SRYKARRK-READ-SEC           SECTION.
       *
@@ -1916,7 +1916,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    入院履歴マスター読込
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
@@ -1936,7 +1936,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-READ-SEC         SECTION.
       *
@@ -1953,7 +1953,7 @@
        900-KANRIMST-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -1970,7 +1970,7 @@
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ��������ޥ������ɹ�
+      *    受診履歴マスター読込
       *****************************************************************
        970-JYURRK-READ-SEC         SECTION.
       *
@@ -1987,7 +1987,7 @@
        970-JYURRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2001,7 +2001,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2016,7 +2016,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2031,7 +2031,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

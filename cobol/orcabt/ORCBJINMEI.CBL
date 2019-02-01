@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBJINMEI.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : øÔª˛
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : øÕÃæº≠ΩÒ∫∆∫Ó¿Æ
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  05/05/26    NACL-æÆ∆¶¬Ù   ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÈöèÊôÇ
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ‰∫∫ÂêçËæûÊõ∏ÂÜç‰ΩúÊàê
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  05/05/26    NACL-Â∞èË±ÜÊ≤¢   Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  03.05.01     NACL-øπœ∆   07/06/08  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  03.05.01     NACL-Ê£ÆËÑá   07/06/08  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  RECEERR-FILE.
        01  RECEERR-REC                     PIC X(200).
       *
@@ -50,23 +50,23 @@
       *
            COPY    "CPRECEERR.INC".
       *
-      *    •π•∆°º•ø•πŒŒ∞Ë
+      *    „Çπ„ÉÜ„Éº„Çø„ÇπÈ†òÂüü
        01  STS-AREA.
            03  STS-RECEERR                 PIC X(02).
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-JINMEI                  PIC 9(01).
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-DBRC                    PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-LINE                    PIC 9(05).
            03  CNT-PAGE                    PIC 9(05).
            03  CNT-JOB-UPDCNT              PIC 9(06).
       *
-      *    •∑•π•∆•‡ŒŒ∞Ë
+      *    „Ç∑„Çπ„ÉÜ„É†È†òÂüü
        01  SYS-AREA.
            03  SYS-TIME                    PIC 9(08).
            03  SYS-YMD.
@@ -74,13 +74,13 @@
                05  SYS-MM                  PIC 9(02).
                05  SYS-DD                  PIC 9(02).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                         PIC 9(05).
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
       *
-      *    •—•È•·•øŒŒ∞Ë
+      *    „Éë„É©„É°„ÇøÈ†òÂüü
        01  PARA-AREA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -89,7 +89,7 @@ grpsys*DD  03  WRK-PARA-HOSPID                     PIC X(24).
 grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
       *     03  WRK-PARA-SRYYM                      PIC X(06).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-DBPATH                          PIC X(100).
            03  WRK-RECEERR                         PIC X(200).
@@ -100,35 +100,35 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
       *
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ¥µº‘æ Û
+      *    ÊÇ£ËÄÖÊÉÖÂ†±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    øÕÃæ
+      *    ‰∫∫Âêç
        01  JINMEI-REC.
            COPY    "CPJINMEI.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ¡¥≥—•¡•ß•√•Ø•—•È•·•ø
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØ„Éë„É©„É°„Çø
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ∞Ïª˛•’•°•§•ÎÃæ ‘Ω∏
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÁ∑®ÈõÜ
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -137,7 +137,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -151,7 +151,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -167,7 +167,7 @@ grpsys     03  WRK-PARA-HOSPNUM                    PIC 9(02).
            STOP    RUN
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -204,14 +204,14 @@ grosys                                 RECEERR
            END-UNSTRING
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
 grpsys     MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBJINMEI"        TO  JOB-PGID
-           MOVE    "øÕÃæº≠ΩÒ∫∆∫Ó¿Æ"    TO  JOB-SHELLMSG
+           MOVE    "‰∫∫ÂêçËæûÊõ∏ÂÜç‰ΩúÊàê"    TO  JOB-SHELLMSG
       *
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -242,11 +242,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ¥µº‘∏°∫˜
+      *    ÊÇ£ËÄÖÊ§úÁ¥¢
            MOVE    ZERO                 TO      FLG-PTINF
            INITIALIZE                           PTINF-REC
 grpsys     MOVE    SPA-HOSPNUM          TO  PTINF-HOSPNUM
@@ -278,7 +278,7 @@ grpsys     MOVE    "all"           TO  MCP-PATHNAME
            EXIT.
       *
       *****************************************************************
-      *    øÕÃæº≠ΩÒ∫∆≈–œøΩËÕ˝
+      *    ‰∫∫ÂêçËæûÊõ∏ÂÜçÁôªÈå≤Âá¶ÁêÜ
       *****************************************************************
        2001-JINMEI-INS-SEC          SECTION.
       *
@@ -288,10 +288,10 @@ grpsys     MOVE    "all"           TO  MCP-PATHNAME
                                          WRK-KANJI-MEI
            PERFORM   VARYING   IDX   FROM  1  BY  2
              UNTIL  (IDX       >     100)   OR
-                    (PTINF-KANANAME(IDX:2)  = "°°")
+                    (PTINF-KANANAME(IDX:2)  = "„ÄÄ")
                CONTINUE
            END-PERFORM
-           IF    PTINF-KANANAME(IDX:2)  = "°°"
+           IF    PTINF-KANANAME(IDX:2)  = "„ÄÄ"
                COMPUTE   IDX1   =   IDX   -   1
                MOVE   PTINF-KANANAME(1:IDX1)  TO  WRK-KANA-SEI
                COMPUTE   IDX2   =   IDX   +   2
@@ -300,10 +300,10 @@ grpsys     MOVE    "all"           TO  MCP-PATHNAME
       *
            PERFORM   VARYING   IDX   FROM  1  BY  2
              UNTIL  (IDX       >     100)   OR
-                    (PTINF-NAME(IDX:2)  = "°°")
+                    (PTINF-NAME(IDX:2)  = "„ÄÄ")
                CONTINUE
            END-PERFORM
-           IF    PTINF-NAME(IDX:2)  = "°°"
+           IF    PTINF-NAME(IDX:2)  = "„ÄÄ"
                COMPUTE   IDX1   =   IDX   -   1
                MOVE   PTINF-NAME(1:IDX1)  TO  WRK-KANJI-SEI
                COMPUTE   IDX2   =   IDX   +   2
@@ -403,11 +403,11 @@ grpsys             MOVE    "key"           TO  MCP-PATHNAME
        2001-JINMEI-INS-EXT.
            EXIT.
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -426,7 +426,7 @@ grpsys                                 SPA-AREA
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -436,7 +436,7 @@ grpsys                                 SPA-AREA
            WRITE   RECEERR-REC
            CLOSE   RECEERR-FILE
       *
-      *    •∏•Á•÷¥…Õ˝Ω™ŒªΩËÕ˝
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
            MOVE    "JBE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -459,7 +459,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•Ø•Ì°º•∫ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
@@ -477,7 +477,7 @@ grpsys*DD                              MCPDATA-REC
        900-TBL-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬°°•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -506,7 +506,7 @@ grpsys*DD                              MCPDATA-REC.
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -536,7 +536,7 @@ grpsys*DD                              MCPDATA-REC.
            EXIT.
       *      
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        910-DBCLOSE-SEC                 SECTION.
       *
@@ -555,7 +555,7 @@ grpsys*DD                              MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘æ Û•ﬁ•π•ø°º∏°∫˜
+      *    ÊÇ£ËÄÖÊÉÖÂ†±„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-PTINF-SELECT-SEC        SECTION.
       *
@@ -579,7 +579,7 @@ grpsys*DD                               MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘æ Û•ﬁ•π•ø°º∆…π˛
+      *    ÊÇ£ËÄÖÊÉÖÂ†±„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-PTINF-READ-SEC        SECTION.
       *
@@ -604,7 +604,7 @@ grpsys*DD                               MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    øÕÃæ•ﬁ•π•ø°º∏°∫˜
+      *    ‰∫∫Âêç„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-JINMEI-SELECT-SEC        SECTION.
       *
@@ -628,7 +628,7 @@ grpsys*DD                               MCPDATA-REC
            EXIT.
       *
       *****************************************************************
-      *    øÕÃæ•ﬁ•π•ø°º∆…π˛
+      *    ‰∫∫Âêç„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-JINMEI-READ-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,40 +18,40 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGZ91.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ޥ�������
-      *  ����ݡ��ͥ��̾  : �����ޥ�������������̡ʣڣ�����
-      *  ������            : 
-      *  02/01/11    MCC-���ơ�   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 点数マスタ設定
+      *  コンポーネント名  : 点数マスタ出力設定画面（Ｚ９１）
+      *  管理者            : 
+      *  02/01/11    MCC-森脇　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00-00-01    ����         02/04/02  ���Ϸ����ɲ�
-      *  01.00.02    MCC-ƣ��     02/04/24  ���������������ģ¡�
-      *                                     ����ִ����ģ¤��ɲ�
-      *  01.00.03    MCC-ƣ��     02/05/15  �������˥���ִ�����������
-      *  01.00.04    MCC-ƣ��     02/05/22  �ư����ܥ��󡦾������ܥ����ɲ�
-      *  01.00.05    NACL-ƣ��    02/09/12  �ǥ��쥯�ȥ�򥵥֥ץ���
-      *  01.01.01    NACL-����    02/12/06  �������ɲ�
-      *  01.01.02    NACL-ƣ��    03/05/12  �������ϡ���λ�Ǥ��Խ��ν��� 
-      *  01.01.03    NACL-����    03/07/02  ������ץ�󥿥����ɲ�
-      *                                     �������롦���ʤ��Υܥ����ɲ�
-      *  01.01.04    NACL-����    03/07/11  �����ɲ�
-      *  01.01.05    NACL-����    03/08/22  ʬ���ʬ�ɲ�
-      *  02.00.01    NACL-����    03/12/24  ����¾�����ɲ�
-      *  02.00.02    NACL-����    04/07/29  ľ������ִ��������å��ɲ�
-      *  02.00.03    NACL-����    04/10/26  ���Ź԰������ϰϽ���
-      *  02.00.04    NACL-����    04/10/27  ���Ź԰������ѹ�
-      *  02.00.05    NACL-¿��Ǽ  05/12/12  MONFUNC�б� ¾
-      *  02.00.06    NACL-����    06/03/20  �ץ�ӥ塼ɽ��
-      *  02.00.07    NACL-����    06/07/27  ��Хǡ����Ƚ��Ͻ�˼������Ѥ��ɲ�
-      *  03.05.01    NACL-����    07/05/29  ���롼�׿����б�
-      *  04.01.01    NACL-����    08/01/17  ��ྦ���ɲ�
-      *  04.02.01    NACL-����    08/03/13  ���������ɲ�
-      *  04.03.01    NACL-����    08/06/13  �ãӣֽ����б�
-      *  04.08.01    NACL-����    14/08/21  ����ե�����ǥ��쥯�ȥ�����
-      *                           14/09/03  GINBEE�б�
-      *  05.00.00    NACL-����    17/11/29  ���饤����Ȱ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00-00-01    森脇         02/04/02  出力形式追加
+      *  01.00.02    MCC-藤原     02/04/24  印刷管理・印刷ＤＢ・
+      *                                     ジョブ管理ＤＢの追加
+      *  01.00.03    MCC-藤原     02/05/15  処理前にジョブ管理を削除する
+      *  01.00.04    MCC-藤原     02/05/22  再印刷ボタン・情報削除ボタン追加
+      *  01.00.05    NACL-藤原    02/09/12  ディレクトリをサブプロへ
+      *  01.01.01    NACL-森脇    02/12/06  コメント追加
+      *  01.01.02    NACL-藤原    03/05/12  印刷開始・終了頁の編集の修正 
+      *  01.01.03    NACL-太田    03/07/02  出力先プリンタサブ追加
+      *                                     印刷する・しないのボタン追加
+      *  01.01.04    NACL-太田    03/07/11  自費追加
+      *  01.01.05    NACL-森脇    03/08/22  分類区分追加
+      *  02.00.01    NACL-森脇    03/12/24  その他材料追加
+      *  02.00.02    NACL-森脇    04/07/29  直前ジョブ管理チェック追加
+      *  02.00.03    NACL-森脇    04/10/26  診療行為注射範囲修正
+      *  02.00.04    NACL-森脇    04/10/27  診療行為選択変更
+      *  02.00.05    NACL-多々納  05/12/12  MONFUNC対応 他
+      *  02.00.06    NACL-森脇    06/03/20  プレビュー表示
+      *  02.00.07    NACL-森脇    06/07/27  抽出データと出力順に自院採用を追加
+      *  03.05.01    NACL-森脇    07/05/29  グループ診療対応
+      *  04.01.01    NACL-森脇    08/01/17  器材商品追加
+      *  04.02.01    NACL-森脇    08/03/13  病理診療追加
+      *  04.03.01    NACL-森脇    08/06/13  ＣＳＶ出力対応
+      *  04.08.01    NACL-森脇    14/08/21  一時ファイルディレクトリ設定
+      *                           14/09/03  GINBEE対応
+      *  05.00.00    NACL-森脇    17/11/29  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -59,36 +59,36 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  TENSUERR-FILE   ASSIGN  TENSUERR
                                    FILE    STATUS  IS  STS-TENSUERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  TENSUERR-FILE.
        01  TENSUERR-REC            PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ�
+      *    エラーファイル 名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TENSUERR//.
       *
-      *    ���̳��������
+      *    画面活性非活性
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ޥ��������Ѷ��̥ѥ�᥿
+      *    点数マスタ設定用共通パラメタ
            COPY    "Z01COMMON-SPA".
       *
-      *    ���̣ӣУ����ꥢ
+      *    画面ＳＰＡエリア
            COPY    "Z01SCR-SPA".
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
@@ -97,19 +97,19 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-CSV             PIC X(01).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-TENSUERR        PIC X(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    �����Ѹƽ�SHELL
+      *    印刷用呼出SHELL
            COPY    "CPHCMLSHELL.INC".
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -154,26 +154,26 @@
        01  WRK-LNK-AREA.
            COPY    "CPORCSPRTLNK.INC".
       *
-      *    �ץ�ӥ塼�Ѿ���
+      *    プレビュー用情報
            COPY    "CPXC01LNK.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
        01  WRK-CONS-AREA.
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����
+      *    システム管理ＤＢ（３００３）のキー値
            03  WRK-CONS-3003-KBNCD         PIC X(08)   VALUE   "102".
-      *    ���������ģ¤Υ�����
+      *    印刷管理ＤＢのキー値
            03  WRK-CONS-PRTKANRI-TBL-KEY   PIC X(08)   VALUE   "TENSU".
            03  WRK-CONS-PRTKANRI-TBL-GROUP PIC X(14)   VALUE   SPACE.
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-JOB-SHELLID        PIC X(08)   VALUE   "TENSU".
            03  WRK-CONS-JOB-JOBID          PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1031.INC".
@@ -186,47 +186,47 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *----(04.08.01)--ADD-START---
-      *    ���饤�������¸���ݾ����������
+      *    クライアント保存可否情報取得サブ
            COPY    "CPORCSCLIENTSV.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *----(05.00.00)--ADD-START---
-      *    ���饤����Ȱ�������
+      *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
       *----(05.00.00)--ADD-END-----
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                    SECTION.
       *
@@ -244,7 +244,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -262,15 +262,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -283,21 +283,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "ZERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END         =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD   NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -319,15 +319,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
       *
-      *        ���β��̤��᤹
+      *        元の画面へ戻す
                IF    (  SPA-MOTOPG     =   "XA01" OR "XB01" OR "XC01" )
                    MOVE    LNK-COMMON      TO  SPA-KYOTUKEY
                    MOVE    LNK-SCRSPA      TO  SPA-Z01FREE
@@ -339,7 +339,7 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-      *    ��ɽ����
+      *    作表処理
                WHEN    "ZID1"
                    PERFORM 330-ZID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
@@ -361,7 +361,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -422,34 +422,34 @@
            MOVE    "80"            TO  SPA-GMN-SRYSTRL(13)
            MOVE    "90"            TO  SPA-GMN-SRYSTRL(14)
       *
-           MOVE    "�����"        TO  SPA-GMN-SRYSTRMEIL(1)
-           MOVE    "�ƿ���"        TO  SPA-GMN-SRYSTRMEIL(2)
-           MOVE    "��Ƴ��"        TO  SPA-GMN-SRYSTRMEIL(3)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(4)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(5)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(6)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(7)
-           MOVE    "�����"        TO  SPA-GMN-SRYSTRMEIL(8)
-           MOVE    "�����"        TO  SPA-GMN-SRYSTRMEIL(9)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(10)
-           MOVE    "��������"      TO  SPA-GMN-SRYSTRMEIL(11)
-           MOVE    "����������"    TO  SPA-GMN-SRYSTRMEIL(12)
-           MOVE    "����¾��"      TO  SPA-GMN-SRYSTRMEIL(13)
-           MOVE    "������"        TO  SPA-GMN-SRYSTRMEIL(14)
+           MOVE    "初診料"        TO  SPA-GMN-SRYSTRMEIL(1)
+           MOVE    "再診料"        TO  SPA-GMN-SRYSTRMEIL(2)
+           MOVE    "指導料"        TO  SPA-GMN-SRYSTRMEIL(3)
+           MOVE    "在宅料"        TO  SPA-GMN-SRYSTRMEIL(4)
+           MOVE    "投薬料"        TO  SPA-GMN-SRYSTRMEIL(5)
+           MOVE    "注射料"        TO  SPA-GMN-SRYSTRMEIL(6)
+           MOVE    "処置料"        TO  SPA-GMN-SRYSTRMEIL(7)
+           MOVE    "手術料"        TO  SPA-GMN-SRYSTRMEIL(8)
+           MOVE    "麻酔料"        TO  SPA-GMN-SRYSTRMEIL(9)
+           MOVE    "検査料"        TO  SPA-GMN-SRYSTRMEIL(10)
+           MOVE    "病理診断"      TO  SPA-GMN-SRYSTRMEIL(11)
+           MOVE    "画像診断料"    TO  SPA-GMN-SRYSTRMEIL(12)
+           MOVE    "その他料"      TO  SPA-GMN-SRYSTRMEIL(13)
+           MOVE    "入院料"        TO  SPA-GMN-SRYSTRMEIL(14)
       *
            MOVE    14              TO  SPA-SRYSTR-MAX
       *
            MOVE    SPA-GMN-SRYSTR-AREA
                                    TO  SPA-GMN-SRYEND-AREA
       *
-      *    �ޥ������ե��å�
+      *    マスタ日付セット
            MOVE    SPA-SYSYMD      TO  SPA-NAI-MSTYMD
            MOVE    SPA-SYSYMDWH    TO  SPA-GMN-MSTYMD
       *
            MOVE    1               TO  SPA-Z91-GMN-CUR
       *
       *----(04.08.01)--ADD-START---
-      *    ���饤�������¸���ݾ����������
+      *    クライアント保存可否情報取得サブ
            INITIALIZE                      ORCSCLIENTSVAREA
            CALL    "ORCSCLIENTSV"          USING
                                            ORCSCLIENTSVAREA
@@ -461,7 +461,7 @@
        310-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ���̣ϣ˽���
+      *    確認画面ＯＫ処理
       *****************************************************************
        330-ZID1-SET-SEC            SECTION.
       *
@@ -488,7 +488,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣãɣģ��ˣϣ˽���
+      *    確認画面（ＣＩＤ２）ＯＫ処理
       *****************************************************************
       * 340-ZID2-SET-SEC            SECTION.
       *
@@ -498,7 +498,7 @@
       *     EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣڣɣģ��ˣϣ˽���
+      *    確認画面（ＺＩＤ３）ＯＫ処理
       *****************************************************************
        350-ZID3-SET-SEC            SECTION.
       *
@@ -520,7 +520,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣڣɣģ��ˣϣ˽���
+      *    確認画面（ＺＩＤ３）ＯＫ処理
       *****************************************************************
        350-Z100-SET-SEC            SECTION.
       *
@@ -542,7 +542,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ������������
+      *    処理表示画面戻り処理
       *****************************************************************
        340-Z97-SET-SEC             SECTION.
       *
@@ -572,11 +572,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ץ�ӥ塼����
+      *    プレビュー処理
       *****************************************************************
        4501-NEXT-GMN-SEC           SECTION.
       *
-      *    ���̰ܹ��ѤΥѥ�᥿�ѹ�
+      *    画面移行用のパラメタ変更
            MOVE    "Z91"           TO  SPA-MOTOPG
            MOVE    "XC01"          TO  SPA-SAKIPG
       *
@@ -614,34 +614,34 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *        ���ꥢ
+      *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 310-SPASET-SEC
-      *        �ư���
+      *        再印刷
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 450-REPRINT-SEC
-      *        ������
+      *        情報削除
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 490-JYOUHOU-DEL-SEC
       *        CSV
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-CSV-MAE-SEC
-      *        ����
+      *        印刷
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-PRINT-MAE-SEC
-      *        ������ǧ
+      *        処理確認
                WHEN    "CLICKED"       ALSO    "B13"
                    PERFORM 490-KAKUNIN-SEC
-      *        ���Ź԰٥����å�
+      *        診療行為チェック
                WHEN    "CLICKED"       ALSO    "SRYCHK"
                    EVALUATE    SPA-GMN-SRYCHK
                        WHEN    "T"
@@ -679,7 +679,7 @@
                            MOVE    "T"         TO  SPA-GMN-SRY(2)
                            MOVE    4           TO  SPA-Z91-GMN-CUR
                    END-EVALUATE
-      *        �����ʥ����å�
+      *        医薬品チェック
                WHEN    "CLICKED"       ALSO    "IYKCHKALL"
                    EVALUATE    SPA-GMN-IYKCHKALL
                        WHEN    "T"
@@ -698,7 +698,7 @@
                            MOVE    "F"     TO  SPA-GMN-IPN
                    END-EVALUATE
                    MOVE    6           TO  SPA-Z91-GMN-CUR
-      *        ����̾�����å�
+      *        一般名チェック
                WHEN    "CLICKED"       ALSO    "IPNCHKALL"
                    EVALUATE    SPA-GMN-IPNCHKALL
                        WHEN    "T"
@@ -777,7 +777,7 @@
                            MOVE    "T"     TO  SPA-GMN-IYKCHK(7)
                    END-EVALUATE
                    MOVE    13          TO  SPA-Z91-GMN-CUR
-      *        ����������å�
+      *        特定器材チェック
                WHEN    "CLICKED"       ALSO    "TOKCHK"
                    EVALUATE    SPA-GMN-TOKCHK
                        WHEN    "T"
@@ -786,19 +786,19 @@
                            MOVE    "T"     TO  SPA-GMN-TOKCHK
                    END-EVALUATE
                    MOVE    14          TO  SPA-Z91-GMN-CUR
-      *        ����¾���������å�
+      *        その他材料チェック
                WHEN    "CLICKED"       ALSO    "HOKACHK"
                    MOVE    Z91-HOKACHK     TO  SPA-GMN-HOKACHK
                    MOVE    15              TO  SPA-Z91-GMN-CUR
-      *        ��ྦ�ʥ����å�
+      *        器材商品チェック
                WHEN    "CLICKED"       ALSO    "KZICHK" 
                    MOVE    Z91-KZICHK      TO  SPA-GMN-KZICHK
                    MOVE    31              TO  SPA-Z91-GMN-CUR
-      *        ��������å�
+      *        自費チェック
                WHEN    "CLICKED"       ALSO    "JIHCHK" 
                    MOVE    Z91-JIHCHK      TO  SPA-GMN-JIHCHK
                    MOVE    16              TO  SPA-Z91-GMN-CUR
-      *        �����ȥ����å�
+      *        コメントチェック
                WHEN    "CLICKED"       ALSO    "COMCHKALL"
                    EVALUATE    SPA-GMN-COMCHKALL
                        WHEN    "T"
@@ -922,7 +922,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -940,7 +940,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -957,7 +957,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -985,7 +985,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       * 
@@ -1008,7 +1008,7 @@
            EXIT.
       *
       *****************************************************************
-      *  ���ޥ���ǯ���������å�
+      *  　マスタ年月日チェック
       *****************************************************************
        400-MSTYMD-CHK-SEC          SECTION.
       *
@@ -1035,7 +1035,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ŷ�ʬ����
+      *    診療区分開始
       *****************************************************************
        400-SRYSTR-SEC              SECTION.
       *
@@ -1056,7 +1056,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ŷ�ʬ��λ
+      *    診療区分終了
       *****************************************************************
        400-SRYEND-SEC              SECTION.
       *
@@ -1075,7 +1075,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ų��϶�ʬ�����å�
+      *    診療開始区分チェック
       *****************************************************************
        410-SRYSTR-CHK-SEC          SECTION.
       *
@@ -1107,7 +1107,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ž�λ��ʬ�����å�
+      *    診療終了区分チェック
       *****************************************************************
        410-SRYEND-CHK-SEC          SECTION.
       *
@@ -1144,7 +1144,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    �ư������̤�
+      *    再印刷画面へ
       *****************************************************************
        490-JYOUHOU-DEL-SEC             SECTION.
       *
@@ -1152,7 +1152,7 @@
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-Z01FREE         TO  LNK-SCRSPA
       *
-      *    ���̰ܹ��ѤΥѥ�᥿�ѹ�
+      *    画面移行用のパラメタ変更
            MOVE    "Z91"               TO  SPA-MOTOPG
            MOVE    "XB01"              TO  SPA-SAKIPG
       *
@@ -1174,7 +1174,7 @@
       *
       *
       *****************************************************************
-      *    �ư������̤�
+      *    再印刷画面へ
       *****************************************************************
        450-REPRINT-SEC             SECTION.
       *
@@ -1182,7 +1182,7 @@
            MOVE    SPA-KYOUTU          TO  LNK-COMMON
            MOVE    SPA-Z01FREE         TO  LNK-SCRSPA
       *
-      *    ���̰ܹ��ѤΥѥ�᥿�ѹ�
+      *    画面移行用のパラメタ変更
            MOVE    "Z91"               TO  SPA-MOTOPG
            MOVE    "XA01"              TO  SPA-SAKIPG
       *
@@ -1203,7 +1203,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        4501-JOBKANRI-CHK-SEC       SECTION.
       *
@@ -1220,7 +1220,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -1236,9 +1236,9 @@
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "7777"          TO  SPA-ERRCD
                            MOVE    SPACE           TO  WRK-SHORIERR
-                           STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE
+                                   "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-SHORIERR
                            END-STRING
                            MOVE    SYS-3003-JOBID  TO  IDX
@@ -1252,7 +1252,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ǧ����
+      *    印刷前確認処理
       *****************************************************************
        490-PRINT-MAE-SEC                   SECTION.
       *
@@ -1303,7 +1303,7 @@
            EXIT.               
       *
       *****************************************************************
-      *    ��������ǧ����
+      *    印刷前確認処理
       *****************************************************************
        490-CSV-MAE-SEC                   SECTION.
       *
@@ -1372,7 +1372,7 @@
                MOVE    "T"             TO  SPA-CSV-CHK(8)
            END-IF
       *
-      *    ��å�����
+      *    メッセージ
            MOVE    SPACE           TO  SPA-MOTOPG
            MOVE    SPA-Z01KYOUTU   TO  SPA-WORK
            MOVE    SPA-AREA        TO  SPA-COMMON
@@ -1408,7 +1408,7 @@
            EXIT.               
       *
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        490-PRINT-SEC                       SECTION.
       *
@@ -1418,7 +1418,7 @@
            INITIALIZE                      SPA-Z97-AREA
            MOVE    ZERO                TO  SPA-Z97-FILESV-CHK-FLG
       *
-      *    �ʣϣ£ɣġʣ��������˺������
+      *    ＪＯＢＩＤ（３００４）削除処理
            MOVE    SPACE               TO  SYS-3003-REC 
            INITIALIZE                      SYS-3003-REC
            MOVE    "3003"              TO  SYS-3003-KANRICD
@@ -1447,7 +1447,7 @@
                END-IF
            END-IF                 
       * 
-      *    ����ִ����������
+      *    ジョブ管理削除処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-SHELLID
@@ -1477,7 +1477,7 @@
            MOVE    SPA-TERMID          TO  TENSUERR-TERMID
            MOVE    SPA-HOSPNUM         TO  TENSUERR-HOSPNUM
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -1493,10 +1493,10 @@
       *
            INITIALIZE                  SHELL-AREA
       *
-      *    ���Ź԰٥����å����å�
+      *    診療行為チェックセット
            IF      SPA-GMN-SRYCHK      =   "T"
                MOVE    1                   TO  SHELL-SRYCHK
-      *        ���Ŷ�ʬ���å�
+      *        診療区分セット
                IF      SPA-GMN-SRY(2)  =   "T"
                    MOVE  2                 TO  SHELL-SRYKBN
                    IF    SPA-Z91-SRYSTRL   <=  SPA-Z91-SRYENDL
@@ -1521,7 +1521,7 @@
                END-IF
            END-IF
       *     
-      *    �����ʥ����å����å�
+      *    医薬品チェックセット
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   7
                IF      SPA-GMN-IYKCHK(IDX)     =  "T"
@@ -1544,35 +1544,35 @@
                END-IF
            END-PERFORM
       *
-      *    ����������å����å�
+      *    特定器材チェックセット
            IF      SPA-GMN-TOKCHK      =   "T"
                MOVE  1                     TO  SHELL-TOKCHK
            ELSE
                MOVE  ZERO                  TO  SHELL-TOKCHK 
            END-IF
       *
-      *    ����¾�����å����å�
+      *    その他チェックセット
            IF      SPA-GMN-HOKACHK     =   "T"
                MOVE  1                     TO  SHELL-HOKACHK
            ELSE
                MOVE  ZERO                  TO  SHELL-HOKACHK
            END-IF
       *
-      *    ��ྦ�ʥ����å����å�
+      *    器材商品チェックセット
            IF      SPA-GMN-KZICHK     =   "T"
                MOVE  1                     TO  SHELL-KZICHK
            ELSE
                MOVE  ZERO                  TO  SHELL-KZICHK
            END-IF
       *
-      *    ��������å����å�
+      *    自費チェックセット
            IF      SPA-GMN-JIHCHK      =   "T"
                MOVE  1                     TO  SHELL-JIHCHK
            ELSE
                MOVE  ZERO                  TO  SHELL-JIHCHK 
            END-IF
       *
-      *    �����ȥ����å����å�
+      *    コメントチェックセット
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   3
                IF      SPA-GMN-COMCHK(IDX)     =  "T"
@@ -1582,7 +1582,7 @@
                END-IF
            END-PERFORM     
       *
-      *    ��ж�ʬ���å�
+      *    抽出区分セット
            EVALUATE    TRUE
                WHEN    SPA-GMN-CYU(1)      =   "T"
                    MOVE  1                     TO  SHELL-CYUKBN
@@ -1592,14 +1592,14 @@
                    MOVE  3                     TO  SHELL-CYUKBN
            END-EVALUATE
       *
-      *    ���̥����å����å�
+      *    一般チェックセット
            IF      SPA-GMN-IPN         =   "T"
                MOVE  1                     TO  SHELL-IPN
            ELSE
                MOVE  ZERO                  TO  SHELL-IPN
            END-IF
       *
-      *    ���϶�ʬ���å�
+      *    出力区分セット
            EVALUATE    TRUE
                WHEN    SPA-GMN-SYU (1) =   "T"
                    MOVE    1               TO  SHELL-SYUKBN
@@ -1611,10 +1611,10 @@
                    MOVE    4               TO  SHELL-SYUKBN
            END-EVALUATE
       *
-      *    �ޥ������ե����å�
+      *    マスタ日付チェック
            MOVE  SPA-NAI-MSTYMD        TO  SHELL-MSTYMD
       *
-      *    ��������
+      *    印刷処理
            MOVE    WRK-SYSYMD          TO
                                        WRK-CONS-PRTKANRI-TBL-GROUP (1:8)
            MOVE    SYS-TIME            TO
@@ -1784,7 +1784,7 @@
                END-IF
            END-IF
       *
-      *    ��������
+      *    印刷処理
       *
            IF      SPA-ZID1-FLG        =   "OK"  OR "PV"
                PERFORM 45011-JOBKANRI-HENSYU-SEC
@@ -1800,7 +1800,7 @@
                MOVE    SPACE               TO  SHELLTBL
       *****    MOVE    "/usr/local/orca/scripts/allways/print.sh"
       *****                                TO  SHELLTBL-NAME
-      *        �ե�����ǥ��쥯�ȥ���ֻ���
+      *        ファイルデイレクトリ位置指定
                MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPACE               TO  LNK-PRTKANRI-AREA
                INITIALIZE                      LNK-PRTKANRI-AREA
@@ -1870,7 +1870,7 @@
                                                SPA-AREA
            END-IF
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *
            PERFORM 45012-JOBID-UPD-SEC 
       *     
@@ -1881,7 +1881,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    印刷編集処理
       *****************************************************************
        4901-PRINT-SYORI-SEC            SECTION.
       *
@@ -1907,7 +1907,7 @@
       *
            MOVE    SPACE               TO  SHELLTBL 
       *****MOVE    WRK-SHELL           TO  SHELLTBL-NAME
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            MOVE    "tensu.sh"      TO  SHELLTBL-NAME
            MOVE    LNK-PRTKANRI-RENNUM
                                    TO  SHELLTBL-ARG1       
@@ -1963,7 +1963,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
       *****************************************************************
        45011-JOBKANRI-HENSYU-SEC       SECTION.
       *
@@ -1999,7 +1999,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *****************************************************************
        45012-JOBID-UPD-SEC    SECTION.
       *
@@ -2049,7 +2049,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -2080,7 +2080,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -2112,15 +2112,15 @@
                        MOVE    WRK-PAGE        TO  Z97-PAGE     (IDX)
                        MOVE    JOB-YOBI        TO  Z97-ERRMSG   (IDX)
                        IF      JOB-ENDYMD      =   SPACE
-                           MOVE    "������Ǥ�"    TO  Z97-MSG
+                           MOVE    "処理中です"    TO  Z97-MSG
                        ELSE
                            IF      JOB-ERRCD       =   SPACE
                                CONTINUE
                            ELSE
                                STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "【"        DELIMITED  BY  SIZE
                                       JOB-SHELLMSG DELIMITED  BY  SPACE
-                                      "��"         DELIMITED  BY  SIZE
+                                      "】"         DELIMITED  BY  SIZE
                                                    INTO  Z97-MSG
                                END-STRING
                            END-IF                          
@@ -2134,16 +2134,16 @@
            IF    ( Z97-MSG             =   SPACE )
                MOVE    "B01"           TO  MCP-WIDGET
                IF    ( Z97-COUNT       >   ZERO )
-                   MOVE    "����������˽�λ���ޤ���"
+                   MOVE    "処理は正常に終了しました"
                                                TO  Z97-MSG
                ELSE
-                   MOVE    "������������Ϥ���ޤ���"
+                   MOVE    "該当する処理はありません"
                                                TO  Z97-MSG
                END-IF
            END-IF
       *
            IF    ( SPA-ZID1-FLG    =   "PV" )
-               MOVE    "F12:�ץ�ӥ塼"    TO  Z97-B12-LABEL
+               MOVE    "F12:プレビュー"    TO  Z97-B12-LABEL
                IF    ( WRK-PRT-PAGE    >   ZERO )
                    MOVE    WIDGET-NORMAL   TO  Z97-B12-STATE
                    MOVE    "B12"           TO  MCP-WIDGET
@@ -2165,7 +2165,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -2199,7 +2199,7 @@
        500-SET-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -2299,9 +2299,9 @@
                                                Z91-IYKCHK7-STATE
            END-IF
       *----(04.08.01)--ADD-START---
-      *    GINBEE�ΤȤ�
+      *    GINBEEのとき
            IF      SPA-MW      =   SPA-GINBEE
-      *        ���饤�������¸��ǽ�Ǥ���Уãӣ֥ܥ��������
+      *        クライアント保存可能であればＣＳＶボタン活性化
                IF      SPA-Z100-CLIENT-SAVE    =   "1"
                    MOVE    WIDGET-NORMAL       TO  Z91-B11-STATE
                ELSE
@@ -2312,14 +2312,14 @@
            END-IF
       *----(04.08.01)--ADD-END-----
       *
-      *    �����������
+      *    カーソル位置
            PERFORM 5001-MAPCUR-SEC
            .
        500-GMNHEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ����������ֽ���
+      *    カーソル位置処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -2399,7 +2399,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -2407,29 +2407,29 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0002"
-                   MOVE    "�������ϥ��顼"           TO  SPA-ERRMSG
+                   MOVE    "日付入力エラー"           TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���դ����Ϥ�����ޤ���"   TO  SPA-ERRMSG
+                   MOVE    "日付に入力がありません"   TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�ѥ�᥿�����Ϥ���Ƥʤ����ܤ�����ޤ�"
+                   MOVE    "パラメタが入力されてない項目があります"
                                                       TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "���Ŷ�ʬ���򥨥顼"       TO  SPA-ERRMSG
+                   MOVE    "診療区分選択エラー"       TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "���Ŷ�ʬ�����򤵤�Ƥ��ޤ���"
+                   MOVE    "診療区分が選択されていません"
                                                       TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "���Ϥ�꽪λ���������ʤäƤ��ޤ�"
+                   MOVE    "開始より終了が小さくなっています"
                                                       TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "���Ϥ��Ǥ��ޤ���Ǥ���"
+                   MOVE    "出力ができませんでした"
                                                       TO  SPA-ERRMSG
                WHEN    "1004"
-                   MOVE    "����ִ����ģ¤�����Ǥ��ޤ���Ǥ���"
+                   MOVE    "ジョブ管理ＤＢが削除できませんでした"
                                                        TO  SPA-ERRMSG
                WHEN    "1005"
                    MOVE
-                   "�����ƥ�����ģ¡ʣ��������ˤ�����Ǥ��ޤ���Ǥ���"
+                   "システム管理ＤＢ（３００３）が削除できませんでした"
                                                        TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-SHORIERR               TO  SPA-ERRMSG
@@ -2457,7 +2457,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-ZIDSET-SEC              SECTION.
       *
@@ -2465,10 +2465,10 @@
       *
            EVALUATE    SPA-ZIDCD
                WHEN    "6666"
-                   MOVE    "����������Ǥ�"
+                   MOVE    "印刷処理中です"
                                             TO  WRK-ZIDMSG
                WHEN    "8888"
-                   MOVE    "���������ｪλ���ޤ���"
+                   MOVE    "処理が正常終了しました"
                                             TO  WRK-ZIDMSG
            END-EVALUATE
       *
@@ -2493,7 +2493,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        540-ZID3SET-SEC                 SECTION.
       *
@@ -2501,10 +2501,10 @@
       *
            EVALUATE    SPA-ZIDCD
            WHEN    "1001"
-               MOVE    "�������Ƥ˽���Ģɼ��������ޤ�"
+               MOVE    "設定内容に従い帳票を印刷します"
                                        TO  WRK-ZIDMSG
            WHEN    "1002"
-               MOVE    "�������Ƥ˽������ϥ�����Ģɼ��������ޤ�"
+               MOVE    "設定内容に従い入力コード帳票を印刷します"
                                        TO  WRK-ZIDMSG
            END-EVALUATE
       *
@@ -2529,7 +2529,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ����ǯ����������ǯ�����ʵ�ǽ������
+      *   和暦年月日→西暦年月日（機能１２）
       *****************************************************************
        831-YMDCONV12-SEC                         SECTION.
       *
@@ -2537,7 +2537,7 @@
       *
            INITIALIZE                            STS-AREA-DAY
            IF  WRK-LNKYMD  NOT  =  SPACE
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                      ORCSGDAYAREA
                MOVE    WRK-LNKYMD          TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -2555,7 +2555,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -2596,7 +2596,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
@@ -2610,7 +2610,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

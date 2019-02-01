@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,45 +16,45 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK5015.INC)   *
-      *         ¡Ê£µ£°£±£µ¡Ë                            *
-      *         °åÎÅ¶èÊ¬¡¦£Á£Ä£ÌÅÀ¿ô¾ðÊó                *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK5015.INC)   *
+      *         ï¼ˆï¼•ï¼ï¼‘ï¼•ï¼‰                            *
+      *         åŒ»ç™‚åŒºåˆ†ãƒ»ï¼¡ï¼¤ï¼¬ç‚¹æ•°æƒ…å ±                *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-5015-REC.
            03  SYS-5015-KEY.
                05  SYS-5015-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-5015-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-5015-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-5015-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-5015-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-5015-TBL.
-      *£Á£Ä£ÌÅÀ¿ôÆþÎÏ¶èÊ¬
+      *ï¼¡ï¼¤ï¼¬ç‚¹æ•°å…¥åŠ›åŒºåˆ†
                05  SYS-5015-ADLINPUTKBN PIC  X(01).
-      *°åÎÅ¶èÊ¬°ú·Ñ¤®¶èÊ¬
+      *åŒ»ç™‚åŒºåˆ†å¼•ç¶™ãŽåŒºåˆ†
                05  SYS-5015-SETMEDKBN
                                         PIC  X(01).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-5015-YOBI        PIC  X(498).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-5015-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-5015-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-5015-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-5015-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-5015-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-5015-UPD-KEY.
                05  SYS-5015-UPD-HOSPNUM     PIC 9(2).
                05  SYS-5015-UPD-KANRICD     PIC X(04).

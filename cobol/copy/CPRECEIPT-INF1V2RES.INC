@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥ쥻�ץȾ���ʥ쥻�ץȤ������������(xml2)
+      *    ＡＰＩレセプト情報（レセプトの枚数、点数）(xml2)
       *                                   COPY (CPRECEIPT-INF1V2RES.INC)
       ******************************************************************
        01  XML-RECEIPT-INFRES.
@@ -29,21 +29,21 @@
            02  RECEIPT-INFS-MODE               PIC S9(9)   BINARY.
            02  RECEIPT-INFS-RECORDNAME         PIC X(128).
            02  RECEIPT-INFS-RECEIPT-INF-RES.
-      *        �»���
+      *        実施日
                03  RECEIPT-INFS-INFORMATION-DATE   PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                03  RECEIPT-INFS-INFORMATION-TIME   PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                03  RECEIPT-INFS-API-RESULT         PIC X(2).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                03  RECEIPT-INFS-API-RESULT-MSG     PIC X(100).
                03  RECEIPT-INFS-RESKEY             PIC X(100).
       *
-      *        �쥻�ץȾ���
+      *        レセプト情報
                03  RECEIPT-INFS-INFO-G.
-      *            ����ǯ��
+      *            診療年月
                    05  RECEIPT-INFS-PERFORM-MONTH PIC X(7).
-      *            �쥻�ץ������
+      *            レセプト総枚数
                    05  RECEIPT-INFS-RECEIPT-COUNT PIC X(6).
-      *            �쥻�ץ�������
+      *            レセプト総点数
                    05  RECEIPT-INFS-RECEIPT-POINT PIC X(10).

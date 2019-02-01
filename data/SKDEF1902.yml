@@ -1,54 +1,54 @@
 kanri_cd    : "1902"
-name        : "°åÎÅµ¡´ØÊÔ½¸¾ğÊó"
+name        : "åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±"
 class_cd    : "*"
 item_max    : 8
 item_list   :
 - item_no   : 1
   item      : "POST"
-  item_jp   : "Í¹ÊØÈÖ¹æ"
+  item_jp   : "éƒµä¾¿ç•ªå·"
   type      : "X"
   start     : 1
   length    : 7
 - item_no   : 2
   item      : "ADRS1"
-  item_jp   : "½êºßÃÏ¡Ê£±¹ÔÌÜ¡Ë"
+  item_jp   : "æ‰€åœ¨åœ°ï¼ˆï¼‘è¡Œç›®ï¼‰"
   type      : "X"
   start     : 8
   length    : 152
 - item_no   : 3
   item      : "ADRS2"
-  item_jp   : "½êºßÃÏ¡Ê£²¹ÔÌÜ¡Ë"
+  item_jp   : "æ‰€åœ¨åœ°ï¼ˆï¼’è¡Œç›®ï¼‰"
   type      : "X"
   start     : 160
   length    : 152
 - item_no   : 4
   item      : "ADRS3"
-  item_jp   : "½êºßÃÏ¡Ê£³¹ÔÌÜ¡Ë"
+  item_jp   : "æ‰€åœ¨åœ°ï¼ˆï¼“è¡Œç›®ï¼‰"
   type      : "X"
   start     : 312
   length    : 152
 - item_no   : 5
   item      : "TEL"
-  item_jp   : "ÅÅÏÃÈÖ¹æ"
+  item_jp   : "é›»è©±ç•ªå·"
   type      : "X"
   start     : 464
   length    : 15
 - item_no   : 6
   item      : "FAX"
-  item_jp   : "£Æ£Á£ØÈÖ¹æ"
+  item_jp   : "ï¼¦ï¼¡ï¼¸ç•ªå·"
   type      : "X"
   start     : 479
   length    : 15
 - item_no   : 7
   item      : "ADRS1MOJI"
-  item_jp   : "½êºßÃÏ¡Ê£±¹ÔÌÜ¡ËÊ¸»ú¿ô"
+  item_jp   : "æ‰€åœ¨åœ°ï¼ˆï¼‘è¡Œç›®ï¼‰æ–‡å­—æ•°"
   type      : "9"
   start     : 494
   length    : 2
   precision : 0
 - item_no   : 8
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 496
   length    : 5

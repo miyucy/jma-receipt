@@ -1,19 +1,19 @@
 --                                    --
---  ���Ծ���ʥץ�ӥ塼�ѡ˥ơ��֥���ѹ� --
+--  患者情報（プレビュー用）テーブルの変更 --
 --                                    --
--- ���ܤ��ɲ�                         --
---     �����ȯ�ԥե饰 SKYPRTFLG     --
+-- 項目の追加                         --
+--     請求書発行フラグ SKYPRTFLG     --
 --                                    --
 -- Update Date : 2006/05/17           --
 --                                    --
 
 \set ON_ERROR_STOP
 
--- TBL_PTINF_PRV ��� --
+-- TBL_PTINF_PRV 削除 --
 
 DROP TABLE tbl_ptinf_prv ;
 
--- TBL_PTINF_PRV ���� --
+-- TBL_PTINF_PRV 作成 --
 
 CREATE TABLE "tbl_ptinf_prv" (
 	"hospid" character(24) NOT NULL,

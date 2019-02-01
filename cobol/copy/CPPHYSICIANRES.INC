@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Ï•π•›•Û•π•…•Ø•ø°ºæ Û∞ÏÕ˜      COPY (CPPHYSICIANRES.INC)
+      *    Ôº°Ôº∞Ôº©„É¨„Çπ„Éù„É≥„Çπ„Éâ„ÇØ„Çø„ÉºÊÉÖÂ†±‰∏ÄË¶ß      COPY (CPPHYSICIANRES.INC)
       ******************************************************************
         01  XML-PHYSICIANRES.
             02  PHYSRES-OBJECT         PIC X(36).
             02  PHYSRES-MODE           PIC S9(9)   BINARY.
             02  PHYSRES-APPOINTRES.
-      *       º¬ª‹∆¸
+      *       ÂÆüÊñΩÊó•
               03  PHYSRES-INFORMATION-DATE    PIC X(10).
-      *       º¬ª‹ª˛¥÷
+      *       ÂÆüÊñΩÊôÇÈñì
               03  PHYSRES-INFORMATION-TIME    PIC X(8).
-      *        ÷µ—•≥°º•…
+      *       ËøîÂç¥„Ç≥„Éº„Éâ
               03  PHYSRES-API-RESULT          PIC X(2).
-      *        ÷µ—•·•√•ª°º•∏
+      *       ËøîÂç¥„É°„ÉÉ„Çª„Éº„Ç∏
               03  PHYSRES-API-RESULT-MSG      PIC X(100).
       *
               03  PHYSRES-RESKEY              PIC X(100).
-      *       ¥Ω‡∆¸
+      *       Âü∫Ê∫ñÊó•
               03  PHYSRES-BASE-DATE           PIC X(10).
-      *       •…•Ø•ø°º∞ÏÕ˜
+      *       „Éâ„ÇØ„Çø„Éº‰∏ÄË¶ß
               03  PHYSRES-PHYSICIAN-INFOMATION.
                   05  PHYSRES-PHYSICIAN-INFO       OCCURS   100.
-      *                •…•Ø•ø°º•≥°º•…
+      *                „Éâ„ÇØ„Çø„Éº„Ç≥„Éº„Éâ
                        07  PHYSRES-DRCD            PIC X(5).
-      *                ª·Ãæ
+      *                Ê∞èÂêç
                        07  PHYSRES-NAME            PIC X(80).
-      *                •´• ª·Ãæ
+      *                „Ç´„ÉäÊ∞èÂêç
                        07  PHYSRES-KANANAME        PIC X(80).
-      *                ∞Â¿“≈–œø»÷πÊ
+      *                ÂåªÁ±çÁôªÈå≤Áï™Âè∑
                        07  PHYSRES-ISEKINUM        PIC  X(08).
-      *                À„ÃÙ•È•§•ª•Û•π
+      *                È∫ªËñ¨„É©„Ç§„Çª„É≥„Çπ
                        07  PHYSRES-MAYAKULICENSE   PIC  X(40).
-      *                ¿ÏÃÁ≤ •≥°º•…
+      *                Â∞ÇÈñÄÁßë„Ç≥„Éº„Éâ
                        07  PHYSRES-SEMONKACD       OCCURS  5.
                            09  PHYSRES-SEMONKACD-X    PIC  X(02).
       *

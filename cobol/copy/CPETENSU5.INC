@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      ÅÅ»ÒÅÀ¿ôÉ½¡¡»»Äê²ó¿ô¥Æ¡¼¥Ö¥ë COPY (CPETENSU5.INC) *
+      *      é›»å­ç‚¹æ•°è¡¨ã€€ç®—å®šå›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ« COPY (CPETENSU5.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  ETENSU5-REC.
            03  ETENSU5-KEY.
-      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *        è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  ETENSU5-SRYCD               PIC  X(09).
-      *        Í­¸ú³«»ÏÆü
+      *        æœ‰åŠ¹é–‹å§‹æ—¥
                05  ETENSU5-YUKOSTYMD           PIC  X(08).
-      *        Í­¸ú½ªÎ»Æü
+      *        æœ‰åŠ¹çµ‚äº†æ—¥
                05  ETENSU5-YUKOEDYMD           PIC  X(08).
-      *        »»ÄêÃ±°Ì¥³¡¼¥É
+      *        ç®—å®šå˜ä½ã‚³ãƒ¼ãƒ‰
                05  ETENSU5-TANICD              PIC  9(03).
-      *    »»ÄêÃ±°ÌÌ¾¾Î
+      *    ç®—å®šå˜ä½åç§°
            03  ETENSU5-TANINAME                PIC  X(12).
-      *    »»Äê²ó¿ô
+      *    ç®—å®šå›žæ•°
            03  ETENSU5-KAISU                   PIC  9(03).
-      *    ÆÃÎã¾ò·ï
+      *    ç‰¹ä¾‹æ¡ä»¶
            03  ETENSU5-TOKUREI                 PIC  9(01).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  ETENSU5-CHGYMD                  PIC  X(08).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  ETENSU5-UP-KEY.
                05  ETENSU5-UPSRYCD             PIC  X(09).
                05  ETENSU5-UPYUKOSTYMD         PIC  X(08).

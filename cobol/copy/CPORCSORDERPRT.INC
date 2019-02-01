@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    Æþ±¡»Ø¼¨¤»¤óÄ¢É¼¥ª¡¼¥À¡¼ºîÀ®¥Ñ¥é   COPY (CPORCSORDERPRT.INC)
+      *    å…¥é™¢æŒ‡ç¤ºã›ã‚“å¸³ç¥¨ã‚ªãƒ¼ãƒ€ãƒ¼ä½œæˆãƒ‘ãƒ©   COPY (CPORCSORDERPRT.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.07.00     NACL-Â¿¡¹Ç¼  11/10/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.07.00     NACL-å¤šã€…ç´  11/10/XX  åŒæ—¥å†å…¥é™¢å¯¾å¿œ
       ************************************************************
       *
        01  ORCSORDERPRTAREA.
-      *    ½èÍý£Ð£Ç
+      *    å‡¦ç†ï¼°ï¼§
            03  LNK-ORDERPRT-PG         PIC X(04).
-      *    ÂÐ¾Ý¥Õ¥¡¥¤¥ë½èÍý
+      *    å¯¾è±¡ãƒ•ã‚¡ã‚¤ãƒ«å‡¦ç†
            03  LNK-ORDERPRT-KBN        PIC X(01).
-      *    Æþ±¡½èÊýäµÈ¯¹Ô
+      *    å…¥é™¢å‡¦æ–¹ç®‹ç™ºè¡Œ
            03  LNK-ORDERPRT-SYOHOU     PIC 9(01).
-      *    Ãí¼Í½èÊýäµÈ¯¹Ô
+      *    æ³¨å°„å‡¦æ–¹ç®‹ç™ºè¡Œ
            03  LNK-ORDERPRT-CHUSYA     PIC 9(01).
-      *    »Ø¼¨äµÈ¯¹Ô
+      *    æŒ‡ç¤ºç®‹ç™ºè¡Œ
            03  LNK-ORDERPRT-SIJISEN    PIC 9(01).
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  LNK-ORDERPRT-DRCD       PIC X(05).
-      *    Æ±ÆüºÆÆþ±¡¶èÊ¬
+      *    åŒæ—¥å†å…¥é™¢åŒºåˆ†
            03  LNK-ORDERPRT-DOUJITSUKBN    PIC X(01).
       *
-      *    ½ÐÎÏ
-      *    È¯¹ÔÆü
+      *    å‡ºåŠ›
+      *    ç™ºè¡Œæ—¥
            03  LNK-ORDERPRT-PRINTYMD   PIC X(08).
-      *    È¯¹Ô»þ´Ö
+      *    ç™ºè¡Œæ™‚é–“
            03  LNK-ORDERPRT-PRINTHMS   PIC X(06).
       *
-      *    Éüµ¢¥³¡¼¥É
+      *    å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  LNK-ORDERPRT-RCD        PIC 9(02).
       *

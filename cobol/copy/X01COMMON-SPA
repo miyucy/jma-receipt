@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,17 +17,17 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¾ðÊóÀßÄê ¶¦ÄÌ£Ó£Ð£Á
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿æƒ…å ±è¨­å®š å…±é€šï¼³ï¼°ï¼¡
       *          
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.02    NACL-¿¹ÏÆ    06/03/20  ¥×¥ì¥Ó¥å¡¼¥Õ¥é¥°ÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.02    NACL-æ£®è„‡    06/03/20  ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ãƒ•ãƒ©ã‚°è¿½åŠ 
       *****************************************************************
       *
        01  SPA-X01KYOUTU.
            05  SPA-X01-MOTOPG              PIC X(20).
-      *Í­¸ú´ü´Ö
+      *æœ‰åŠ¹æœŸé–“
            05  SPA-X01-STYUKYMD            PIC 9(08).
            05  SPA-X01-EDYUKYMD            PIC 9(08).
            05  SPA-X01-STYUKYMDH           PIC X(09).
@@ -36,15 +36,15 @@
            05  SPA-X01-SEL-STYUKYMD        PIC X(08).
            05  SPA-X01-SEL-EDYUKYMD        PIC X(08).
       *
-      *´ð½àÆü
+      *åŸºæº–æ—¥
            05  SPA-X01-KJNYMD              PIC X(08).
       *
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            05  SPA-X01-SRYCD               PIC X(09).
            05  SPA-X01-ID                  PIC 9(09).
            05  SPA-X01-NAME                PIC X(100).
            05  SPA-X01-SRYBYO              PIC 9(01).
-      *¥Á¥§¥Ã¥¯¶èÊ¬ 
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ† 
            05  SPA-X01-CHKKBN-G.
                07  SPA-X01-CHKKBN              PIC X(01).
                07  SPA-X01-CHKKBNFL            PIC X(01).
@@ -52,9 +52,9 @@
            05  SPA-X01-USERBYOMEI-G.
                07  SPA-X01-SELKBN          PIC X(01).
                07  SPA-X01-POSITION        PIC 9(01).
-      *¸¡º÷Ê¬Îà¥³¡¼¥É
+      *æ¤œç´¢åˆ†é¡žã‚³ãƒ¼ãƒ‰
                07  SPA-X01-BUNRUICD        PIC 9(03).
-      *¸¡º÷¼«±¡ÉÂÌ¾¥³¡¼¥É¡Ê¥³¡¼¥É¸¡º÷»þ¤Î¤ßÀßÄê¡Ë
+      *æ¤œç´¢è‡ªé™¢ç—…åã‚³ãƒ¼ãƒ‰ï¼ˆã‚³ãƒ¼ãƒ‰æ¤œç´¢æ™‚ã®ã¿è¨­å®šï¼‰
                07  SPA-X01-BYOMEIINPUTCD   PIC X(10).
                07  SPA-X01-INDEX           PIC 9(01).
                07  SPA-X01-BYOSEL          PIC 9(05).
@@ -63,7 +63,7 @@
                07  SPA-X01-INPUTCD-G.
                    09  SPA-X01-INPUTCD     PIC X(20)
                                            OCCURS  6.
-      *ÁªÂòÈÖ¹æ
+      *é¸æŠžç•ªå·
            05  SPA-X01-SELNUM              PIC 9(03).
            05  SPA-X01-BYOSTATUS           PIC X(1).
            05  SPA-X01-JYKNKBN             PIC X(1).
@@ -82,20 +82,20 @@
            05  SPA-X91-TBL-GROUP           PIC  X(14).
            05  SPA-X91-JOB-JOBID           PIC  9(07).
       *----(01.00.02)--ADD-END-----
-      *·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
            05  SPA-XIDCD                   PIC X(04).
-      *·Ù¹ð²èÌÌ¤è¤ê
+      *è­¦å‘Šç”»é¢ã‚ˆã‚Š
            05  SPA-XID1-AREA. 
                07  SPA-XID1-FLG            PIC X(02).
       *----(01.00.02)--ADD-START---
                07  SPA-X97-FLG                 PIC X(02).
       *----(01.00.02)--ADD-END-----
-      *£Ø£°£¶²èÌÌ¤è¤ê
+      *ï¼¸ï¼ï¼–ç”»é¢ã‚ˆã‚Š
            05  SPA-X06-AREA.
                07  SPA-X06-MAX             PIC 9(05).
                07  SPA-X06-TEKCD           PIC X(09)
                                            OCCURS  100.
-      *£Ø£¹£¸²èÌÌ¤è¤ê
+      *ï¼¸ï¼™ï¼˜ç”»é¢ã‚ˆã‚Š
            05  SPA-X98-AREA.
                07  SPA-X98-SYORIKBN        PIC X(01).
                07  SPA-X98-CHK-IDX         PIC 9(03).
@@ -113,7 +113,7 @@
       *
                07  SPA-X98-RC              PIC 9(04).
       *
-      *£Ø£¹£¹²èÌÌ¤è¤ê
+      *ï¼¸ï¼™ï¼™ç”»é¢ã‚ˆã‚Š
            05  SPA-X99-AREA.
                07  SPA-X99-BYOMEI          PIC X(100).
                07  SPA-X99-BYOSTATUS       PIC X(1).

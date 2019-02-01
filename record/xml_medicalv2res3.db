@@ -9,7 +9,7 @@ xml_medicalv2res3 {
 	Api_Result				varchar(3);
 	Api_Result_Message			varchar(100);
 	Reskey					varchar(100);
-#---    ´µ¼Ô¾ğÊó
+#---    æ‚£è€…æƒ…å ±
 	Patient_Information {
 		Patient_ID			varchar(20);
         	WholeName			varchar(100);
@@ -17,14 +17,14 @@ xml_medicalv2res3 {
         	BirthDate			varchar(10);
         	Sex				varchar(1);
         	};
-#---    ½é¿Ç»»ÄêÆü
+#---    åˆè¨ºç®—å®šæ—¥
 	First_Calculation_Date		varchar(10);
-#---    ºÇ½ªÍè±¡Æü
+#---    æœ€çµ‚æ¥é™¢æ—¥
 	LastVisit_Date			varchar(10);
-#---    ¿ÇÎÅ²Ê
+#---    è¨ºç™‚ç§‘
         Department_Code			varchar(2);
         Department_Name			varchar(80);
-#---    ½é²óÍè±¡Æü
+#---    åˆå›æ¥é™¢æ—¥
 	FirstVisit_Date		varchar(10);
     	};
 };

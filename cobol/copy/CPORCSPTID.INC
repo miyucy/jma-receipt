@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ֹ��Ѵ��ѥ�᥿                         *
+      *    患者番号変換パラメタ                         *
       *                         COPY  (CPORCSPTID.INC)  *
       *
-      *     SPTID-RC    : ZERO �����ｪλ��
-      *                  1     (�ͥ��顼��
+      *     SPTID-RC    : ZERO （正常終了）
+      *                  1     (値エラー）
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSPTIDAREA.
-      *������
+      *入力値
            03  SPTID-HOSPNUM            PIC 9(2).
-      *    �����ֹ湽�����󸡺���ʬ
+      *    患者番号構成情報検索区分
            03  SPTID-SYS1009-KBN        PIC 9(1).
       *
            03  SPTID-PTNUM              PIC X(20).
@@ -38,6 +38,6 @@
            03  SPTID-DBSUBNAME          PIC X(20).
       *---- TAKE MOD ED 
       *
-      *����������
+      *復帰コード
            03  SPTID-RC                 PIC S9(9)   BINARY.
       *

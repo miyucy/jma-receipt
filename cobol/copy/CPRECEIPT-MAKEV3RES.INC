@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       ******************************************************************
-      *    £¡£–£…•Ï•ª•◊•»æ Û° •Ï•ª•◊•»∫Ó¿Æ°À(xml2)
+      *    Ôº°Ôº∞Ôº©„É¨„Çª„Éó„ÉàÊÉÖÂ†±Ôºà„É¨„Çª„Éó„Éà‰ΩúÊàêÔºâ(xml2)
       *                                   COPY (CPRECEIPT-MAKEV3RES.INC)
       ******************************************************************
        01  XML-RECEIPT-MAKERES.
@@ -29,25 +29,25 @@
            02  RECEMAKES-MODE              PIC S9(9)   BINARY.
            02  RECEMAKES-RECORDNAME        PIC X(128).
            02  RECEMAKES-RECEIPT-MAKE-RES.
-      *        •Í•Ø•®•π•»»÷πÊ
+      *        „É™„ÇØ„Ç®„Çπ„ÉàÁï™Âè∑
                03  RECEMAKES-REQUEST-NUMBER    PIC X(2).
       *
                03  RECEMAKES-RESPONS-NUMBER    PIC X(2).
-      *        •´•Î•∆UID
+      *        „Ç´„É´„ÉÜUID
                03  RECEMAKES-KARTE-UID         PIC X(36).
-      *        •™•Î•´UID
+      *        „Ç™„É´„Ç´UID
                03  RECEMAKES-ORCA-UID          PIC X(36).
-      *        º¬ª‹∆¸
+      *        ÂÆüÊñΩÊó•
                03  RECEMAKES-INFORMATION-DATE  PIC X(10).
-      *        º¬ª‹ª˛¥÷
+      *        ÂÆüÊñΩÊôÇÈñì
                03  RECEMAKES-INFORMATION-TIME  PIC X(8).
-      *         ÷µ—•≥°º•…
+      *        ËøîÂç¥„Ç≥„Éº„Éâ
                03  RECEMAKES-API-RESULT        PIC X(3).
-      *         ÷µ—•·•√•ª°º•∏
+      *        ËøîÂç¥„É°„ÉÉ„Çª„Éº„Ç∏
                03  RECEMAKES-API-RESULT-MSG    PIC X(100).
-      *        •Ô°º•À•Û•∞•≥°º•…
+      *        „ÉØ„Éº„Éã„É≥„Ç∞„Ç≥„Éº„Éâ
                03  RECEMAKES-API-WARNING       PIC X(3).
-      *        •Ô°º•À•Û•∞•·•√•ª°º•∏
+      *        „ÉØ„Éº„Éã„É≥„Ç∞„É°„ÉÉ„Çª„Éº„Ç∏
                03  RECEMAKES-API-WARNING-MSG   PIC X(100).
       *
                03  RECEMAKES-RESKEY            PIC X(100).
@@ -55,43 +55,43 @@
                03  RECEMAKES-PERFORM-MONTH     PIC X(7).
       *
                03  RECEMAKES-PERFORM-TITLE     PIC X(100).
-      *        •®•È°º¥µº‘∞ÏÕ˜
+      *        „Ç®„É©„ÉºÊÇ£ËÄÖ‰∏ÄË¶ß
                03  RECEMAKES-ERR-INFORMATION       OCCURS  100.
                    05  RECEMAKES-PATIENT-ID   PIC X(20).
                    05  RECEMAKES-PERFORM-DATE PIC X(7).
                    05  RECEMAKES-ERROR-CODE   PIC X(3).
                    05  RECEMAKES-ERROR-MSG    PIC X(100).
-      *        ∞ı∫˛ΩÁ
+      *        Âç∞Âà∑È†Ü
                03  RECEMAKES-RECEIPT-PRINT-ORDER
                                                PIC X(30)
                                                        OCCURS  3.
-      *        ¡Ì∑ÔøÙ
+      *        Á∑è‰ª∂Êï∞
                03  RECEMAKES-ALL-COUNT             PIC X(5).
-      *        ¡ÌÀÁøÙ
+      *        Á∑èÊûöÊï∞
                03  RECEMAKES-ALL-NUMBER-OF-SHEETS  PIC X(5).
       *
                03  RECEMAKES-RECEIPT-INFORMATION.
                    05  RECEMAKES-SUBMISSION-INFO   OCCURS  19.
-      *                œ¢»÷
+      *                ÈÄ£Áï™
                        07  RECEMAKES-SUBMISSION-POSITION
                                                    PIC X(5).
       *
                        07  RECEMAKES-SUBMISSION-TITLE
                                                    PIC X(30).
                        07  RECEMAKES-DETAIL-INFORMATION OCCURS  36.
-      *                    œ¢»÷
+      *                    ÈÄ£Áï™
                            09  RECEMAKES-DETAIL-POSITION
                                                        PIC X(5).
-      *                    ƒÛΩ–¿Ë
+      *                    ÊèêÂá∫ÂÖà
                            09  RECEMAKES-SUBMISSION-IDENT
                                                        PIC X(2).
-      *                    ºÔ Ã≈˘•≥°º•…
+      *                    Á®ÆÂà•Á≠â„Ç≥„Éº„Éâ
                            09  RECEMAKES-SUBMISSION-CODE
                                                        PIC X(10).
-      *                    ºÔ Ã
+      *                    Á®ÆÂà•
                            09  RECEMAKES-SUBMISSION-TYPE
                                                        PIC X(100).
-      *                    ∑ÔøÙ
+      *                    ‰ª∂Êï∞
                            09  RECEMAKES-COUNT         PIC X(5).
-      *                    ÀÁøÙ
+      *                    ÊûöÊï∞
                            09  RECEMAKES-NUMBER-OF-SHEETS PIC X(5).

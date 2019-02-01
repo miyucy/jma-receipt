@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,123 +16,123 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹴��Ծ������       COPY (CPPATIENTXMLRES.INC)
+      *    ＡＰＩレスポンス患者情報取得       COPY (CPPATIENTXMLRES.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.00    NACL-¿��Ǽ  12/10/01  �ش������������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  12/10/01  禁忌〜コメント等追加
       *****************************************************************
         01  XML-PATIENTINFORES.
             02  PTRES-OBJECT           PIC X(36).
             02  PTRES-MODE             PIC S9(9)   BINARY.
             02  PTRES-PATIENTINFORES.
-      *       �»���
+      *       実施日
               03  PTRES-INFORMATION-DATE   PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  PTRES-INFORMATION-TIME   PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  PTRES-API-RESULT         PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  PTRES-API-RESULT-MSG     PIC X(100).
               03  PTRES-RESKEY             PIC X(100).
-      *       ���Ծ���
+      *       患者情報
               03  PTRES-PATIENT-INFOMATION.
-      *           �����ֹ�
+      *           患者番号
                   04  PTRES-PATIENTID          PIC X(20).
-      *           ������̾
+      *           漢字氏名
                   04  PTRES-NAME               PIC X(100).
-      *           ���ʻ�̾
+      *           カナ氏名
                   04  PTRES-KANANAME           PIC X(100).
-      *           ��ǯ����
+      *           生年月日
                   04  PTRES-BIRTHDAY           PIC X(10).
-      *           ����
+      *           性別
                   04  PTRES-SEX                PIC X(1).
       *!!
-      *           ���Ӽ�̾
+      *           世帯主名
                   04  PTRES-SETAI-NAME         PIC X(100).
-      *           ³��
+      *           続柄
                   04  PTRES-ZOKUGARA           PIC X(60).
       *!!
-      *           ���Լ������
+      *           患者自宅情報
                   04  PTRES-ADDRESS-INFO.
-      *               ͹���ֹ�
+      *               郵便番号
                       06  PTRES-HOME-ZIP-CODE      PIC X(7).
-      *               ����
+      *               住所
                       06  PTRES-HOME-ADDRESSES1    PIC X(200).
-      *               �����ֹ�
+      *               番地番号
                       06  PTRES-HOME-ADDRESSES2    PIC X(200).
-      *               ���������ֹ�����
+      *               自宅電話番号（昼）
                       06  PTRES-HOME-HPONE1        PIC X(15).
-      *               ���������ֹ�����
+      *               自宅電話番号（昼）
                       06  PTRES-HOME-HPONE2        PIC X(15).
       *!!
-      *           �ش���
+      *           禁忌１
                   04  PTRES-TABOO-1              PIC  X(200).
-      *           �ش���
+      *           禁忌２
                   04  PTRES-TABOO-2              PIC  X(200).
-      *           ����륮����
+      *           アレルギー１
                   04  PTRES-ALLERGY-1            PIC  X(200).
-      *           ����륮����
+      *           アレルギー２
                   04  PTRES-ALLERGY-2            PIC  X(200).
-      *           �����ɣ�
+      *           感染症１
                   04  PTRES-KANSENSYO-1          PIC  X(200).
-      *           �����ɣ�
+      *           感染症２
                   04  PTRES-KANSENSYO-2          PIC  X(200).
-      *           �����ȣ�
+      *           コメント１
                   04  PTRES-COMMENT-1            PIC  X(200).
-      *           �����ȣ�
+      *           コメント２
                   04  PTRES-COMMENT-2            PIC  X(200).
       *!!
-      *           �ݸ�����
+      *           保険情報
                   04  PTRES-INSURANCE-INFO     OCCURS  20 TIMES.
-      *               �ݸ��ȹ礻�ֹ�
+      *               保険組合せ番号
                       06  PTRES-COMBINATION-NUMBER     PIC X(04).
-      *               �ݸ��μ���
+      *               保険の種類
                       06  PTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *               �ݸ����ֹ�
+      *               保険者番号
                       06  PTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *               �ݸ��μ���̾��
+      *               保険の種類名称
                       06  PTRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *               ����
+      *               記号
                       06  PTRES-MAIN-MARK              PIC X(80).
-      *               �ֹ�
+      *               番号
                       06  PTRES-MAIN-NUMBER            PIC X(80).
-      *               ��³��ʬ
+      *               継続区分
                       06  PTRES-MAIN-CONTINUATION      PIC X(01).
-      *               �����ʬ
+      *               補助区分
                       06  PTRES-MAIN-ASSISTANCE        PIC X(01).
-      *               �����ʬ̾��
+      *               補助区分名称
                       06  PTRES-MAIN-ASSISTANCE-NAME   PIC X(20).
-      *               �ܿͲ�²��ʬ
+      *               本人家族区分
                       06  PTRES-MAIN-FAMILY            PIC X(01).
-      *               ���ݸ���̾
+      *               被保険者名
                       06  PTRES-MAIN-POLICYHOLDER      PIC X(100).
-      *               ͭ��������
+      *               有効開始日
                       06  PTRES-MAIN-START-DATE        PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       06  PTRES-MAIN-END-DATE          PIC X(10).
-      *               �������
+      *               公費情報
                       06  PTRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *                 ����μ���
+      *                 公費の種類
                         07  PTRES-INSURANCE-CLASS         PIC X(03).
-      *                 ����μ���̾��
+      *                 公費の種類名称
                         07  PTRES-INSURANCE-NAME          PIC X(20).
-      *                 ��ô���ֹ�
+      *                 負担者番号
                         07  PTRES-PROVIDER-NUMBER         PIC X(08).
-      *                 ������ֹ�
+      *                 受給者番号
                         07  PTRES-RECIPIENT-NUMBER        PIC X(20).
-      *                 ��������ôΨ�ʳ��
+      *                 入院−負担率（割）
                         07  PTRES-RATE-ADMISSION          PIC X(04).
-      *                 �����ݸ����
+      *                 入院−固定額
                         07  PTRES-MONEY-ADMISSION         PIC X(06).
-      *                 �������ôΨ�ʳ��
+      *                 外来−負担率（割）
                         07  PTRES-RATE-OUTPATIENT         PIC X(04).
-      *                 ����ݸ����
+      *                 外来−固定額
                         07  PTRES-MONEY-OUTPATIENT        PIC X(06).
-      *                 ͭ��������
+      *                 有効開始日
                         07  PTRES-INSURANCE-START-DATE    PIC X(10).
-      *                 ͭ����λ��
+      *                 有効終了日
                         07  PTRES-INSURANCE-END-DATE      PIC X(10).
       *

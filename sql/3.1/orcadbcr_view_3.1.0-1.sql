@@ -1,6 +1,6 @@
 --                                    --
---  ¼ıÇ¼¥Æ¡¼¥Ö¥ëÊÑ¹¹¤ËÈ¼¤¦½èÍı        --
---  ¤ÈÆş±¡´µ¼Ô¾È²ñ¥Ó¥å¡¼¤ÎÊÑ¹¹(Âà±¡»öÍ³ÄÉ²Ã) --
+--  åç´ãƒ†ãƒ¼ãƒ–ãƒ«å¤‰æ›´ã«ä¼´ã†å‡¦ç†        --
+--  ã¨å…¥é™¢æ‚£è€…ç…§ä¼šãƒ“ãƒ¥ãƒ¼ã®å¤‰æ›´(é€€é™¢äº‹ç”±è¿½åŠ ) --
 --                                    --
 
 \set ON_ERROR_STOP
@@ -27,7 +27,7 @@ CREATE VIEW "view_bd001" as SELECT a.hospid,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd001" IS '¼ıÇ¼¥Ó¥å¡¼';
+COMMENT ON VIEW "view_bd001" IS 'åç´ãƒ“ãƒ¥ãƒ¼';
 
 CREATE VIEW "view_bd002" as SELECT a.hospid,
            a.nyugaikbn,
@@ -328,7 +328,7 @@ CREATE VIEW "view_bd002" as SELECT a.hospid,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd002" IS '¼ıÇ¼¥Ó¥å¡¼2';
+COMMENT ON VIEW "view_bd002" IS 'åç´ãƒ“ãƒ¥ãƒ¼2';
 
 CREATE VIEW "view_bd003" as SELECT a.hospid,
            a.nyugaikbn,
@@ -345,7 +345,7 @@ CREATE VIEW "view_bd003" as SELECT a.hospid,
            ptid,
            denpnum));
 
-COMMENT ON VIEW "view_bd003" IS '¼ıÇ¼¥Ó¥å¡¼3';
+COMMENT ON VIEW "view_bd003" IS 'åç´ãƒ“ãƒ¥ãƒ¼3';
 
 CREATE VIEW "view_i001" as SELECT a.hospid,
            a.ptid,
@@ -393,6 +393,6 @@ CREATE VIEW "view_i001" as SELECT a.hospid,
        AND ((b.jtikbn <> '5'::bpchar) 
        AND (b.jtikbn <> '6'::bpchar)));
 
-COMMENT ON VIEW "view_i001" IS 'Æş±¡´µ¼Ô¾È²ñ¥Ó¥å¡¼';
+COMMENT ON VIEW "view_i001" IS 'å…¥é™¢æ‚£è€…ç…§ä¼šãƒ“ãƒ¥ãƒ¼';
 
 

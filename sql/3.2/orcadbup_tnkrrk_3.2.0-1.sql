@@ -1,8 +1,8 @@
 --                                    --
--- Ç¯¶âÍúÎò¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹             --
+-- å¹´é‡‘å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´             --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¡¡Ï·ÎğÊ¡»ãÇ¯¶â¼õµë¼Ô¾Ú¶èÊ¬       --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ã€€è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…è¨¼åŒºåˆ†       --
 --            RRI_FUKUSHI_KBN         --
 --                                    --
 -- Create Date : 2006/09/06           --
@@ -10,7 +10,7 @@
 
 \set ON_ERROR_STOP
 
--- TBL_TNKRRKWK ºîÀ®                 --
+-- TBL_TNKRRKWK ä½œæˆ                 --
 
 create table TBL_TNKRRKWK (
 HOSPID				char(24)	not null,
@@ -24,16 +24,16 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TNKRRKWK_primary_key primary key (HOSPID,PTID,STYMD));
 
--- TBL_TNKRRK ¢ª TBL_TNKRRKWK   --
+-- TBL_TNKRRK â†’ TBL_TNKRRKWK   --
 
 insert into TBL_TNKRRKWK
 select * from TBL_TNKRRK;
 
--- TBL_TNKRRK ºï½ü               --
+-- TBL_TNKRRK å‰Šé™¤               --
 
 drop table TBL_TNKRRK;
 
--- TBL_TNKRRK ºîÀ®               --
+-- TBL_TNKRRK ä½œæˆ               --
 
 create table TBL_TNKRRK (
 HOSPID				char(24)	not null,
@@ -48,7 +48,7 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TNKRRK_primary_key primary key (HOSPID,PTID,STYMD));
 
--- TBL_TNKRRKWK ¢ª TBL_TNKRRK   --
+-- TBL_TNKRRKWK â†’ TBL_TNKRRK   --
 
 insert into TBL_TNKRRK
 (HOSPID,
@@ -76,9 +76,9 @@ UPHMS
 
 from TBL_TNKRRKWK;
 
--- Ï·ÎğÊ¡»ãÇ¯¶â¤ÎÈ½Äê            --
+-- è€é½¢ç¦ç¥‰å¹´é‡‘ã®åˆ¤å®š            --
 UPDATE TBL_TNKRRK SET RRI_FUKUSHI_KBN = '1' WHERE (SELECT B.BIRTHDAY FROM TBL_PTINF B WHERE B.PTID = TBL_TNKRRK.PTID) <= '19110401';
 UPDATE TBL_TNKRRK SET RRI_FUKUSHI_KBN = '0' WHERE (SELECT B.BIRTHDAY FROM TBL_PTINF B WHERE B.PTID = TBL_TNKRRK.PTID) > '19110401';
--- TBL_TNKRRKWK ºï½ü             --
+-- TBL_TNKRRKWK å‰Šé™¤             --
 
 drop table TBL_TNKRRKWK;

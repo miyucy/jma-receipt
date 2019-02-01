@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,93 +16,93 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    •Ï•ª≈≈ø«Œ≈≤ •≥°º•…•∆°º•÷•Î   COPY (CMRECEDENSRYKACD.INC)      *
+      *    „É¨„ÇªÈõªË®∫ÁôÇÁßë„Ç≥„Éº„Éâ„ÉÜ„Éº„Éñ„É´   COPY (CMRECEDENSRYKACD.INC)      *
       *----------------------------------------------------------------*
       *****************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  03.03.01    NACL-∆£∏∂    06/10/16  ø¥Œ≈∆‚≤ §ÀΩ§¿µ
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  03.03.01    NACL-Ëó§Âéü    06/10/16  ÂøÉÁôÇÂÜÖÁßë„Å´‰øÆÊ≠£
       *
-      *  04.05.01    NACL-∆£∏∂    10/03/23   ø¿Æ£≤£≤«Ø£¥∑Ó≤˛¿µ¬–±˛
+      *  04.05.01    NACL-Ëó§Âéü    10/03/23  Âπ≥ÊàêÔºíÔºíÂπ¥ÔºîÊúàÊîπÊ≠£ÂØæÂøú
       *****************************************************************
       *
-      *    •Ï•ª≈≈ø«Œ≈≤ •≥°º•…•∆°º•÷•Î
+      *    „É¨„ÇªÈõªË®∫ÁôÇÁßë„Ç≥„Éº„Éâ„ÉÜ„Éº„Éñ„É´
        01  TBL-RECEDENSRYKACD-AREA.
                05  FILLER          PIC X(02)   VALUE   "01". 
-               05  FILLER          PIC X(20)   VALUE   "∆‚≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂÜÖÁßë".
                05  FILLER          PIC X(02)   VALUE   "02". 
-               05  FILLER          PIC X(20)   VALUE   "¿∫ø¿≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Á≤æÁ•ûÁßë".
                05  FILLER          PIC X(02)   VALUE   "03". 
-               05  FILLER          PIC X(20)   VALUE   "ø¿∑–≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Á•ûÁµåÁßë".
                05  FILLER          PIC X(02)   VALUE   "04". 
-               05  FILLER          PIC X(20)   VALUE   "ø¿∑–∆‚≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Á•ûÁµåÂÜÖÁßë".
                05  FILLER          PIC X(02)   VALUE   "05". 
-               05  FILLER          PIC X(20)   VALUE   "∏∆µ€¥Ô≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂëºÂê∏Âô®Áßë".
                05  FILLER          PIC X(02)   VALUE   "06". 
-               05  FILLER          PIC X(20)   VALUE   "æ√≤Ω¥Ô≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Ê∂àÂåñÂô®Áßë".
                05  FILLER          PIC X(02)   VALUE   "07". 
-               05  FILLER          PIC X(20)   VALUE   "∞ﬂƒ≤≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ËÉÉËÖ∏Áßë".
                05  FILLER          PIC X(02)   VALUE   "08". 
-               05  FILLER          PIC X(20)   VALUE   "Ω€¥ƒ¥Ô≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Âæ™Áí∞Âô®Áßë".
                05  FILLER          PIC X(02)   VALUE   "09". 
-               05  FILLER          PIC X(20)   VALUE   "æÆª˘≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Â∞èÂÖêÁßë".
                05  FILLER          PIC X(02)   VALUE   "10". 
-               05  FILLER          PIC X(20)   VALUE   "≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Â§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "11". 
-               05  FILLER          PIC X(20)   VALUE   "¿∞∑¡≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Êï¥ÂΩ¢Â§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "12". 
-               05  FILLER          PIC X(20)   VALUE   "∑¡¿Æ≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂΩ¢ÊàêÂ§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "13". 
-               05  FILLER          PIC X(20)   VALUE   "»˛Õ∆≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÁæéÂÆπÂ§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "14". 
-               05  FILLER          PIC X(20)   VALUE   "«æø¿∑–≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ËÑ≥Á•ûÁµåÂ§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "15". 
-               05  FILLER          PIC X(20)   VALUE   "∏∆µ€¥Ô≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂëºÂê∏Âô®Â§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "16". 
-               05  FILLER          PIC X(20)   VALUE   "ø¥¬°∑Ï¥…≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂøÉËáìË°ÄÁÆ°Â§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "17". 
-               05  FILLER          PIC X(20)   VALUE   "æÆª˘≥∞≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Â∞èÂÖêÂ§ñÁßë".
                05  FILLER          PIC X(02)   VALUE   "18". 
-               05  FILLER          PIC X(20)   VALUE   "»È…Ê»Á«¢¥Ô≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÁöÆËÜöÊ≥åÂ∞øÂô®Áßë".
                05  FILLER          PIC X(02)   VALUE   "19". 
-               05  FILLER          PIC X(20)   VALUE   "»È…Ê≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÁöÆËÜöÁßë".
                05  FILLER          PIC X(02)   VALUE   "20". 
-               05  FILLER          PIC X(20)   VALUE   "»Á«¢¥Ô≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Ê≥åÂ∞øÂô®Áßë".
                05  FILLER          PIC X(02)   VALUE   "21". 
-               05  FILLER          PIC X(20)   VALUE   "¿≠…¬≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÊÄßÁóÖÁßë".
                05  FILLER          PIC X(02)   VALUE   "22". 
-               05  FILLER          PIC X(20)   VALUE   "§≥§¶ÃÁ≤ ".
+               05  FILLER          PIC X(20)   VALUE   "„Åì„ÅÜÈñÄÁßë".
                05  FILLER          PIC X(02)   VALUE   "23". 
-               05  FILLER          PIC X(20)   VALUE   "ª∫…ÿøÕ≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Áî£Â©¶‰∫∫Áßë".
                05  FILLER          PIC X(02)   VALUE   "24". 
-               05  FILLER          PIC X(20)   VALUE   "ª∫≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Áî£Áßë".
                05  FILLER          PIC X(02)   VALUE   "25". 
-               05  FILLER          PIC X(20)   VALUE   "…ÿøÕ≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Â©¶‰∫∫Áßë".
                05  FILLER          PIC X(02)   VALUE   "26". 
-               05  FILLER          PIC X(20)   VALUE   "¥„≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÁúºÁßë".
                05  FILLER          PIC X(02)   VALUE   "27". 
-               05  FILLER          PIC X(20)   VALUE   "º™…°§§§Û§≥§¶≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ËÄ≥Èºª„ÅÑ„Çì„Åì„ÅÜÁßë".
                05  FILLER          PIC X(02)   VALUE   "28". 
-               05  FILLER          PIC X(20)   VALUE   "µ§¥…ø©∆ª≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Ê∞óÁÆ°È£üÈÅìÁßë".
                05  FILLER          PIC X(02)   VALUE   "30". 
-               05  FILLER          PIC X(20)   VALUE   " ¸ºÕ¿˛≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÊîæÂ∞ÑÁ∑öÁßë".
                05  FILLER          PIC X(02)   VALUE   "31". 
-               05  FILLER          PIC X(20)   VALUE   "À„øÏ≤ ".
+               05  FILLER          PIC X(20)   VALUE   "È∫ªÈÖîÁßë".
                05  FILLER          PIC X(02)   VALUE   "33". 
-               05  FILLER          PIC X(20)   VALUE   "ø¥Œ≈∆‚≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÂøÉÁôÇÂÜÖÁßë".
                05  FILLER          PIC X(02)   VALUE   "34". 
-               05  FILLER          PIC X(20)   VALUE   "•¢•Ï•Î•Æ°º≤ ".
+               05  FILLER          PIC X(20)   VALUE   "„Ç¢„É¨„É´„ÇÆ„ÉºÁßë".
                05  FILLER          PIC X(02)   VALUE   "35". 
-               05  FILLER          PIC X(20)   VALUE   "•Í•¶•ﬁ•¡≤ ".
+               05  FILLER          PIC X(20)   VALUE   "„É™„Ç¶„Éû„ÉÅÁßë".
                05  FILLER          PIC X(02)   VALUE   "36". 
                05  FILLER          PIC X(20)   VALUE
-                                               "•Í•œ•”•Í•∆°º•∑•Á•Û≤ ".
+                                               "„É™„Éè„Éì„É™„ÉÜ„Éº„Ç∑„Éß„É≥Áßë".
                05  FILLER          PIC X(02)   VALUE   "37". 
-               05  FILLER          PIC X(20)   VALUE   "…¬Õ˝ø«√«≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÁóÖÁêÜË®∫Êñ≠Áßë".
                05  FILLER          PIC X(02)   VALUE   "38". 
-               05  FILLER          PIC X(20)   VALUE   "Œ◊æ≤∏°∫∫≤ ".
+               05  FILLER          PIC X(20)   VALUE   "Ëá®Â∫äÊ§úÊüªÁßë".
                05  FILLER          PIC X(02)   VALUE   "39". 
-               05  FILLER          PIC X(20)   VALUE   "µﬂµﬁ≤ ".
+               05  FILLER          PIC X(20)   VALUE   "ÊïëÊÄ•Áßë".
       *
        01  TBL-RECEDENSRYKACD-AREA-R   REDEFINES
                                                TBL-RECEDENSRYKACD-AREA.

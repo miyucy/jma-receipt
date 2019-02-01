@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,25 +18,25 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSSYUACC.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : 
-      *  ����ݡ��ͥ��̾  : ��ʥơ��֥륢����������
-      *  ������            : 
-      *  06/02/01    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 
+      *  コンポーネント名  : 主科テーブルアクセスサブ
+      *  管理者            : 
+      *  06/02/01    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.04.01    NACL-ƣ��    06/12/27  ����������������ˤ����ʳ�
-      *                                     �ǲʤ�����Ǥ��ʤ������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.04.01    NACL-藤原    06/12/27  主科設定情報（入院）が２以外
+      *                                     で科が設定できない場合の対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    11/12/12  �����쥻������������б�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -48,21 +48,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYUKA           PIC 9(01).
       *
            03  FLG-DELETE          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYACC-AREA.
                05  WRK-SRYACC-OCC          OCCURS  100.
@@ -79,27 +79,27 @@
            03  WRK-MCP-PATHNAME    PIC X(64).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��ʥơ��֥�
+      *    主科テーブル
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -113,7 +113,7 @@
                                     ORCSSYUACCAREA.
      *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -129,7 +129,7 @@
            .
       *     
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -143,7 +143,7 @@
            .
       *     
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC               SECTION.
       *
@@ -168,7 +168,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʥơ��֥�����������
+      *    主科テーブル情報取得処理
       *****************************************************************
        2001-KBN01-HENSYU-SEC       SECTION.
       *
@@ -251,7 +251,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
       *    
-      *    ���������ˤ�륷���ƥ��ʤ������������
+      *    請求点数によるシステム主科の設定（入院）
            INITIALIZE              WRK-SRYACC-AREA
       *
            IF    ( SPA-NYUGAIKBN       =   "1" )
@@ -307,16 +307,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ֵ��ͤ�����ʼ����Ϥˤ����������˽���
+      *    返却値の設定（手入力による主科設定時）処理
       *****************************************************************
        20011-KBN01-SYUACC-HENSYU-SEC       SECTION.
       *
-      *    �����ϼ��
+      *    手入力主科
            IF      SYUKA-SRYKA-INPUT   NOT =   SPACE 
                MOVE    SYUKA-SRYKA-INPUT
                                    TO  LNK-SYUACC-IO-SYUKA-INPUT (IDX)
            END-IF
-      *    �����ƥ���
+      *    システム主科
            IF    ( SPA-NYUGAIKBN       =   "1" )
            AND   ( SYUKA-TEN-KBN       =   "2" )
                EVALUATE    SPA-SYUKA-NYUIN
@@ -418,7 +418,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-EVALUATE 
            END-IF
       *
-      *    ���̾���  
+      *    科別情報  
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   IDY     >       50
                IF      LNK-SYUACC-IO-SRYKA (IDX IDY)   =   SPACE
@@ -450,16 +450,16 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ϥˤ�����������
+      *    手入力による主科設定処理
       *****************************************************************
        2002-KBN02-HENSYU-SEC       SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �����Ϥˤ���ʾ���ι���
+      *    手入力による主科情報の更新
            INITIALIZE                  SYUKA-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SPA-PTID        TO  SYUKA-PTID
@@ -508,7 +508,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
            GO  TO  2002-KBN02-HENSYU-EXT
       * 
-      *    �����Ϥˤ���ʾ���ʳ��ι���
+      *    手入力による主科情報以外の更新
            IF      FLG-END         =   ZERO
                INITIALIZE                  SYUKA-REC
 grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
@@ -539,16 +539,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����������������������������
+      *    入院基本料・診療点数更新処理
       *****************************************************************
        2003-KBN03-HENSYU-SEC       SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �оݥ쥻�ץȤ�¸�ߤ��ʤ��Ȥ�����ե饰�򥻥å�
+      *    対象レセプトが存在しないとき削除フラグをセット
            IF      LNK-SYUACC-IO-TEISYUTUSAKI (1)
                                        =   ZERO
                INITIALIZE                  SYUKA-REC
@@ -575,7 +575,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                GO  TO  2003-KBN03-HENSYU-EXT
            END-IF        
       *
-      *    �������󤫤鹹��
+      *    取得情報から更新
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       100 
                    OR      LNK-SYUACC-IO-TEISYUTUSAKI (IDX)
@@ -758,7 +758,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                END-IF
            END-PERFORM        
       *
-      *    ��������ˤʤ��ơ��֥�κ���ե饰������
+      *    取得情報にないテーブルの削除フラグの設定
            IF      FLG-END             =   ZERO
                INITIALIZE                  SYUKA-REC
 grpsys         MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
@@ -825,7 +825,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-PERFORM
       *
-      *            �оݤʤ��ΤȤ�����ե饰���å�
+      *            対象なしのとき削除フラグセット
                    IF      FLG-DELETE          =   ZERO
                        MOVE    "1"                 TO  SYUKA-DLT-FLG
                        MOVE    SMCNDATE-YMD        TO  SYUKA-UPYMD
@@ -858,13 +858,13 @@ grpsys                 PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ʥơ��֥�����������
+      *    主科テーブル情報取得処理
       *****************************************************************
        2006-KBN06-HENSYU-SEC       SECTION.
       *
            INITIALIZE              WRK-SRYACC-AREA
       *
-      *    �����Ϥˤ���ʾ���μ���
+      *    手入力による主科情報の取得
            INITIALIZE                  SYUKA-REC
 grpsys     MOVE    SPA-HOSPNUM     TO  SYUKA-HOSPNUM
            MOVE    SPA-PTID        TO  SYUKA-PTID
@@ -933,7 +933,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            PERFORM 900-CLOSE-SEC
       *
       *    
-      *    ���������ˤ�륷���ƥ��ʤ������������
+      *    請求点数によるシステム主科の設定（入院）
            INITIALIZE              WRK-SRYACC-AREA
       *
            IF    ( SPA-NYUGAIKBN       =   "1" )
@@ -985,7 +985,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��ʥơ��֥�����������
+      *    主科テーブル情報取得処理
       *****************************************************************
        2007-KBN07-HENSYU-SEC       SECTION.
       *
@@ -1046,7 +1046,7 @@ grpsys             OR      LNK-IO2-SYU-HOSPNUM (IDW)   =   ZERO
                END-IF          
            END-PERFORM   
       *    
-      *    ���������ˤ�륷���ƥ��ʤ������������
+      *    請求点数によるシステム主科の設定（入院）
            INITIALIZE              WRK-SRYACC-AREA
       *
            IF    ( SPA-NYUGAIKBN       =   "1" )
@@ -1102,7 +1102,7 @@ grpsys             OR      LNK-IO2-SYU-HOSPNUM (IDW)   =   ZERO
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1112,7 +1112,7 @@ grpsys             OR      LNK-IO2-SYU-HOSPNUM (IDW)   =   ZERO
            EXIT. 
       *
       *****************************************************************
-      *    ��ʥơ��֥��ɹ�
+      *    主科テーブル読込
       *****************************************************************
        900-SYUKA-READ-SEC         SECTION.
       *
@@ -1138,7 +1138,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *     
       *****************************************************************
-      *    ��ʥơ��֥��ɹ�
+      *    主科テーブル読込
       *****************************************************************
        910-SYUKA-READ-N-SEC         SECTION.
       *
@@ -1154,7 +1154,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1165,7 +1165,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1177,7 +1177,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1189,7 +1189,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

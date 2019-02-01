@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    …¬Ãæ•∑•π•∆•‡ÕΩÃÛ•≥°º•…•∆°º•÷•Î   COPY (CMBYOMEICD.INC)      *
+      *    ÁóÖÂêç„Ç∑„Çπ„ÉÜ„É†‰∫àÁ¥Ñ„Ç≥„Éº„Éâ„ÉÜ„Éº„Éñ„É´   COPY (CMBYOMEICD.INC)      *
       *----------------------------------------------------------------*
       *****************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
-      *    …¬Ãæ•≥°º•…•∆°º•÷•Î
+      *    ÁóÖÂêç„Ç≥„Éº„Éâ„ÉÜ„Éº„Éñ„É´
        01  TBL-BYOMEICD-AREA.
-               05  FILLER          PIC X(02)   VALUE   "° ". 
+               05  FILLER          PIC X(02)   VALUE   "Ôºà". 
                05  FILLER          PIC X(07)   VALUE   "ZZZ(101".
-               05  FILLER          PIC X(02)   VALUE   "°Œ". 
+               05  FILLER          PIC X(02)   VALUE   "Ôºª". 
                05  FILLER          PIC X(07)   VALUE   "ZZZ(102".
-               05  FILLER          PIC X(02)   VALUE   "°⁄". 
+               05  FILLER          PIC X(02)   VALUE   "„Äê". 
                05  FILLER          PIC X(07)   VALUE   "ZZZ(103".
-               05  FILLER          PIC X(02)   VALUE   "°–". 
+               05  FILLER          PIC X(02)   VALUE   "ÔΩõ". 
                05  FILLER          PIC X(07)   VALUE   "ZZZ(104".
-               05  FILLER          PIC X(02)   VALUE   "°÷". 
+               05  FILLER          PIC X(02)   VALUE   "„Äå". 
                05  FILLER          PIC X(07)   VALUE   "ZZZ(105".
-               05  FILLER          PIC X(02)   VALUE   "°ÿ".
+               05  FILLER          PIC X(02)   VALUE   "„Äé".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(106".
-               05  FILLER          PIC X(02)   VALUE   "°À".
+               05  FILLER          PIC X(02)   VALUE   "Ôºâ".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(201".
-               05  FILLER          PIC X(02)   VALUE   "°œ".
+               05  FILLER          PIC X(02)   VALUE   "ÔºΩ".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(202".
-               05  FILLER          PIC X(02)   VALUE   "°€".
+               05  FILLER          PIC X(02)   VALUE   "„Äë".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(203".
-               05  FILLER          PIC X(02)   VALUE   "°—".
+               05  FILLER          PIC X(02)   VALUE   "ÔΩù".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(204".
-               05  FILLER          PIC X(02)   VALUE   "°◊".
+               05  FILLER          PIC X(02)   VALUE   "„Äç".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(205".
-               05  FILLER          PIC X(02)   VALUE   "°Ÿ".
+               05  FILLER          PIC X(02)   VALUE   "„Äè".
                05  FILLER          PIC X(07)   VALUE   "ZZZ(206".
-               05  FILLER          PIC X(02)   VALUE   "°¢".
+               05  FILLER          PIC X(02)   VALUE   "„ÄÅ".
                05  FILLER          PIC X(07)   VALUE   "ZZZC001".
-               05  FILLER          PIC X(02)   VALUE   "°§".
+               05  FILLER          PIC X(02)   VALUE   "Ôºå".
                05  FILLER          PIC X(07)   VALUE   "ZZZC002".
-               05  FILLER          PIC X(02)   VALUE   "°¶".
+               05  FILLER          PIC X(02)   VALUE   "„Éª".
                05  FILLER          PIC X(07)   VALUE   "ZZZC003".
       *
        01  TBL-BYOMEICD-AREA-R     REDEFINES   TBL-BYOMEICD-AREA.
@@ -62,7 +62,7 @@
                05  TBL-YYK-BYOMEI  PIC X(02).
                05  TBL-YYK-BYOMEICD
                                    PIC X(07).
-      *    …¬Ãæ•≥°º•…•’•È•∞
+      *    ÁóÖÂêç„Ç≥„Éº„Éâ„Éï„É©„Ç∞
        01  FLG-BYOMEICD-OK         PIC 9(01).
       *
        01  TBL-BYOMEICD-MAX        PIC 9(02)   VALUE   15.

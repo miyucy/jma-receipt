@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORCGN22.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ÌôºÞ¾ðÊóÀßÄê
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÌôºÞ¾ðÊó¡Ê£Î£²£²¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/12/13    NACL¡Ý¿¹ÏÆ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è–¬å‰¤æƒ…å ±è¨­å®š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : è–¬å‰¤æƒ…å ±ï¼ˆï¼®ï¼’ï¼’ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/12/13    NACLâˆ’æ£®è„‡    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
-      *  01.01.01    NACL-¿¹ÏÆ     06/09/09  ¥¸¥ç¥Ö´ÉÍýºï½ü
-      *  01.01.02    NACL-¿¹ÏÆ     06/10/11  ¥¿¥¤¥Þ¡¼¥¤¥Ù¥ó¥ÈÄÉ²Ã
-      *  04.02.01    NACL-¿¹ÏÆ     08/02/20  »²¾È¾ðÊóÉ½¼¨ÄÉ²Ã
-      *                                      ¥ê¥¹¥È¹Ô¿ô£µ£°¢ª£´£°¤ËÊÑ¹¹
-      *                                      ¥¿¥¤¥Þ¡¼¥¤¥Ù¥ó¥È¥¯¥ê¥¢ÄÉ²Ã
-      *  04.06.00    NACL-¿¹ÏÆ     11/02/07  ¾ðÊóºï½üÄÉ²Ã
-      *  04.07.00    NACL-°ËÆ£     11/12/01  »²¾È¥¹¥¯¥ê¥×¥ÈÊÑ¹¹
-      *  04.08.01    NACL-¿¹ÏÆ     14/07/07  °ì»þ¥Õ¥¡¥¤¥ë¥Ñ¥¹¥»¥Ã¥È
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…        æ—¥ä»˜      å†…å®¹
+      *  01.01.01    NACL-æ£®è„‡     06/09/09  ã‚¸ãƒ§ãƒ–ç®¡ç†å‰Šé™¤
+      *  01.01.02    NACL-æ£®è„‡     06/10/11  ã‚¿ã‚¤ãƒžãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆè¿½åŠ 
+      *  04.02.01    NACL-æ£®è„‡     08/02/20  å‚ç…§æƒ…å ±è¡¨ç¤ºè¿½åŠ 
+      *                                      ãƒªã‚¹ãƒˆè¡Œæ•°ï¼•ï¼â†’ï¼”ï¼ã«å¤‰æ›´
+      *                                      ã‚¿ã‚¤ãƒžãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆã‚¯ãƒªã‚¢è¿½åŠ 
+      *  04.06.00    NACL-æ£®è„‡     11/02/07  æƒ…å ±å‰Šé™¤è¿½åŠ 
+      *  04.07.00    NACL-ä¼Šè—¤     11/12/01  å‚ç…§ã‚¹ã‚¯ãƒªãƒ—ãƒˆå¤‰æ›´
+      *  04.08.01    NACL-æ£®è„‡     14/07/07  ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚»ãƒƒãƒˆ
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -46,10 +46,10 @@
       *
        WORKING-STORAGE         SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "N21COMMON-SPA".
       *
            COPY    "N21SCR-SPA".
@@ -64,16 +64,16 @@
            03  FLG-END             PIC 9(01).
            03  FLG-TEMP            PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(03).
            03  IDY                 PIC 9(03).
       *
-      *    ½èÍý¶èÊ¬ÎÎ°è
+      *    å‡¦ç†åŒºåˆ†é ˜åŸŸ
        01  SKBN-AREA.
            03  SKBN-RUN            PIC X(03).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-IN              PIC X(01).
            03  WRK-ZZZZ9           PIC ZZZZ9.
@@ -91,46 +91,46 @@
       *----(04.08.01)--UPD-END-----
       *
        01  WRK-CONS-AREA.
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢ã®ã‚­ãƒ¼å€¤  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "YKJMST".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
            03  WRK-CONS-MEDIMGDIR  PIC X(08)   VALUE   "medimage".
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ÌôºÞ¾ðÊó»²¾ÈÍÑ£Ä£Â
+      *    è–¬å‰¤æƒ…å ±å‚ç…§ç”¨ï¼¤ï¼¢
            COPY    "CPYAKUJYOTEMP.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
            COPY    "ORCA-BLOB".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
-      *    LIKE»ÈÍÑKEYÂÐ±þ
+      *    LIKEä½¿ç”¨KEYå¯¾å¿œ
            COPY    "CPORCSADDSIGN.INC".
       *
-      *    ¥Õ¥¡¥¤¥ëÂ¸ºß¥Á¥§¥Ã¥¯
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCSFILECHK.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    °ì»þ¥Õ¥¡¥¤¥ë¥Ñ¥¹¥»¥Ã¥È
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‘ã‚¹ã‚»ãƒƒãƒˆ
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                SECTION.
       *
@@ -156,7 +156,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -174,15 +174,15 @@
            EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
                WHEN    "LINK"      ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN    "PUTG"      ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ÆþÎÏ
+      *    å…¥åŠ›
                WHEN    OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ²èÌÌÁ«°Ü¤¬¤Ê¤¤»þ¡¢²èÌÌÉ½¼¨¤Ø
+      *    ç”»é¢é·ç§»ãŒãªã„æ™‚ã€ç”»é¢è¡¨ç¤ºã¸
            IF      FLG-END         =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -195,7 +195,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -203,9 +203,9 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ½é´ü²èÌÌ¥»¥Ã¥È
+      *    åˆæœŸç”»é¢ã‚»ãƒƒãƒˆ
            PERFORM 300-SCREEN-SEC
-      *    ²èÌÌÊÔ½¸
+      *    ç”»é¢ç·¨é›†
            PERFORM 500-GMNHEN-SEC
       *
       *----(01.01.01)--UPD-START---
@@ -223,28 +223,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
                WHEN    "CLICKED"   ALSO    "B01"
                    MOVE    SPACE           TO  SPA-N22-FLG
                    PERFORM 450-BACK
-      *    ¾ðÊóºï½ü
+      *    æƒ…å ±å‰Šé™¤
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 201-DELETE-SEC
-      *    ¾õ¶·
+      *    çŠ¶æ³
       *----(01.01.02)---ADD-START---
                WHEN    "CLICKED"   ALSO    "pandatimer1"
       *----(01.01.02)---ADD-END-----
                WHEN    "CLICKED"   ALSO    "B10"
                    PERFORM 400-JYOKYO-SEC
-      *    Ìä¹ç¤»
+      *    å•åˆã›
                WHEN    "CLICKED"   ALSO    "B11"
                    PERFORM 400-JYOUHOU-SEC
-      *    ÅÐÏ¿
+      *    ç™»éŒ²
                WHEN    "CLICKED"   ALSO    "B12"
                    PERFORM 480-TOUROKU-SEC
            END-EVALUATE
@@ -253,7 +253,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ²ñÏÃ¡¡½èÍý
+      *    ä¼šè©±ã€€å‡¦ç†
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -273,12 +273,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ½é´ü²èÌÌ½èÍý
+      *    åˆæœŸç”»é¢å‡¦ç†
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-MOTOPG
-      *        ³ÎÇ§²èÌÌ£Ï£Ë½èÍý
+      *        ç¢ºèªç”»é¢ï¼¯ï¼«å‡¦ç†
                WHEN    "N21ID1"
                    PERFORM 490-JYOUHOU-DEL-SEC
                    GO  TO  300-SCREEN-EXT
@@ -294,10 +294,10 @@
                                        SPA-N22-OBJECT(2)
                                        SPA-N22-OBJECT(3)
       *
-      *    ¼è¹þ¶èÊ¬¥³¥ó¥Ü
-           MOVE    "1 ¥Þ¡¼¥¸"      TO  SPA-N22-COPYKBNLST(1)
-           MOVE    "2 ÃÖ¤­´¹¤¨"    TO  SPA-N22-COPYKBNLST(2)
-           MOVE    "3 ¼Ì¿¿¤Î¤ß"    TO  SPA-N22-COPYKBNLST(3)
+      *    å–è¾¼åŒºåˆ†ã‚³ãƒ³ãƒœ
+           MOVE    "1 ãƒžãƒ¼ã‚¸"      TO  SPA-N22-COPYKBNLST(1)
+           MOVE    "2 ç½®ãæ›ãˆ"    TO  SPA-N22-COPYKBNLST(2)
+           MOVE    "3 å†™çœŸã®ã¿"    TO  SPA-N22-COPYKBNLST(3)
            EVALUATE    SPA-N22-COPY
                WHEN    "1"
                  MOVE    SPA-N22-COPYKBNLST(1)
@@ -324,7 +324,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¾ðÊóÆþ¼ê
+      *    æƒ…å ±å…¥æ‰‹
       *****************************************************************
        400-JYOUHOU-SEC             SECTION.
       *
@@ -332,18 +332,18 @@
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "½èÍýÃæ¤Ç¤¹"    TO  SPA-N22-MESSAGE
+               MOVE    "å‡¦ç†ä¸­ã§ã™"    TO  SPA-N22-MESSAGE
                MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
                GO  TO  400-JYOUHOU-SEC-EXT
            END-IF
       *
-      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†å‰Šé™¤
            PERFORM 820-JOBKANRI-DEL-SEC
       *
-      *    ¥¸¥ç¥Ö´ÉÍýºîÀ®
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ä½œæˆ
            PERFORM 820-JOBKANRI-JBS-SEC
       *
-      *    ½èÍý
+      *    å‡¦ç†
            MOVE    SPACE           TO  SHELLTBL
            MOVE    SHELL-NAME1     TO  SHELLTBL-NAME
            MOVE    SPA-N22-KENCD   TO  SHELLTBL-ARG1
@@ -372,7 +372,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
      *****************************************************************
-      *    ¾õ¶·
+      *    çŠ¶æ³
       *****************************************************************
        400-JYOKYO-SEC              SECTION.
       *
@@ -380,7 +380,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 820-JOBKANRI-READ-SEC
       *
            IF      SKBN-RUN        =   "RUN"
-               MOVE    "½èÍýÃæ¤Ç¤¹"    TO  SPA-N22-MESSAGE
+               MOVE    "å‡¦ç†ä¸­ã§ã™"    TO  SPA-N22-MESSAGE
                MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
       *----(04.02.01)--ADD-START---
                MOVE    1               TO  SPA-N22-DURATION
@@ -394,11 +394,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                ELSE
                    MOVE    JOB-YOBI        TO  SPA-N22-MESSAGE
                    IF      JOB-YOBI(9:16)  =   "No route to host"
-                       MOVE    "[ERROR] ¥µ¡¼¥Ð¤¬¸«¤Ä¤«¤ê¤Þ¤»¤ó"
+                       MOVE    "[ERROR] ã‚µãƒ¼ãƒãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“"
                                            TO  SPA-N22-MESSAGE
                    END-IF
                    IF      JOB-YOBI(9:3)   =   "404"
-                       MOVE    "[ERROR] ¥Õ¥¡¥¤¥ë¤¬¸«¤Ä¤«¤ê¤Þ¤»¤ó"
+                       MOVE    "[ERROR] ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“"
                                            TO  SPA-N22-MESSAGE
                    END-IF
                    IF      MCP-STATUS      =   "LINK"
@@ -435,7 +435,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                IF     (TEMP-PHOTO1-FILENAME    NOT =   SPACE)
                    OR (TEMP-PHOTO2-FILENAME    NOT =   SPACE)
                    OR (TEMP-PHOTO3-FILENAME    NOT =   SPACE)
-                   MOVE    "¡û"            TO  SPA-N22-TGAZO(IDX)
+                   MOVE    "â—‹"            TO  SPA-N22-TGAZO(IDX)
                END-IF
                PERFORM 900-TEMP-FETCH-SEC
            END-PERFORM
@@ -451,7 +451,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF      SPA-N22-MAX     =  ZERO
                MOVE    SPACE         TO  SKBN-RUN
-               MOVE    "¹¹¿·¥Ç¡¼¥¿¤Ï¤¢¤ê¤Þ¤»¤ó¡£"
+               MOVE    "æ›´æ–°ãƒ‡ãƒ¼ã‚¿ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚"
                                      TO  SPA-N22-MESSAGE
                MOVE    "blue"        TO  SPA-N22-MESSAGE-STYLE
                GO  TO  400-JYOKYO-EXT
@@ -462,7 +462,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ²èÁü¥³¥Ô¡¼
+      *    ç”»åƒã‚³ãƒ”ãƒ¼
       *****************************************************************
        400-GAZOCOPY-SEC            SECTION.
       *
@@ -490,7 +490,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ÁªÂòÈÖ¹æ½èÍý
+      *     é¸æŠžç•ªå·å‡¦ç†
       *****************************************************************
        4111-SELNUM-SEC         SECTION.
       *
@@ -520,14 +520,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ÁªÂòÈÖ¹æ¥Á¥§¥Ã¥¯½èÍý
+      *     é¸æŠžç•ªå·ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4111-SELNUM-CHK-SEC     SECTION.
       *
            IF     (SPA-N22-SELNUM  <=  ZERO)
                OR (SPA-N22-SELNUM  =   SPACE)
                OR (SPA-N22-SELNUM  >   SPA-N22-MAX)
-               MOVE    "ÈÏ°Ï³°¤ÎÈÖ¹æ¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤Þ¤¹"
+               MOVE    "ç¯„å›²å¤–ã®ç•ªå·ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã™"
                                    TO  SPA-N22-MESSAGE
                MOVE    "red"       TO  SPA-N22-MESSAGE-STYLE
            ELSE
@@ -540,7 +540,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ²èÁü·ÁÂÖ½èÍý
+      *     ç”»åƒå½¢æ…‹å‡¦ç†
       *****************************************************************
        4112-GAZOKBN-SEC        SECTION.
       *
@@ -560,7 +560,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ²èÁü·ÁÂÖ½èÍý
+      *     ç”»åƒå½¢æ…‹å‡¦ç†
       *****************************************************************
        4112-GAZOKBN-CHK-SEC        SECTION.
       *
@@ -580,7 +580,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      WRK-HENFLG          =   ZERO
-               MOVE    "ÈÏ°Ï³°¤ÎÈÖ¹æ¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤Þ¤¹"
+               MOVE    "ç¯„å›²å¤–ã®ç•ªå·ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã™"
                                        TO  SPA-N22-MESSAGE
                MOVE    "red"           TO  SPA-N22-MESSAGE-STYLE
            ELSE
@@ -593,7 +593,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ¼è¹þ·ÁÂÖ½èÍý
+      *     å–è¾¼å½¢æ…‹å‡¦ç†
       *****************************************************************
        4112-COPYKBN-SEC            SECTION.
       *
@@ -613,7 +613,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ¼è¹þ·ÁÂÖ½èÍý
+      *     å–è¾¼å½¢æ…‹å‡¦ç†
       *****************************************************************
        4112-COPYKBN-CHK-SEC        SECTION.
       *
@@ -633,7 +633,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-PERFORM
       *
            IF      WRK-HENFLG          =   ZERO
-               MOVE    "ÈÏ°Ï³°¤ÎÈÖ¹æ¤¬ÆþÎÏ¤µ¤ì¤Æ¤¤¤Þ¤¹"
+               MOVE    "ç¯„å›²å¤–ã®ç•ªå·ãŒå…¥åŠ›ã•ã‚Œã¦ã„ã¾ã™"
                                        TO  SPA-N22-MESSAGE
                MOVE    "red"           TO  SPA-N22-MESSAGE-STYLE
            ELSE
@@ -646,7 +646,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ·ë²Ì¥ê¥¹¥È ¥Á¥§¥Ã¥¯½èÍý
+      *    çµæžœãƒªã‚¹ãƒˆ ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4113-KEKKALST-SEC           SECTION.
       *
@@ -676,7 +676,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹¥»¥Ã¥È½èÍý
+      *     ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        4114-COMBOSET-SEC           SECTION.
       *
@@ -687,9 +687,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                    SPA-N22-OBJECT(3)
            MOVE    ZERO            TO  IDX
       *
-           IF  SPA-N22-TGAZO(SPA-N22-SELNUM)   =   "¡û"
+           IF  SPA-N22-TGAZO(SPA-N22-SELNUM)   =   "â—‹"
                COMPUTE IDX =   IDX     +   1
-               MOVE    "0 ¼è¤ê¹þ¤Þ¤Ê¤¤"    TO  SPA-N22-GAZOKBNLST(IDX)
+               MOVE    "0 å–ã‚Šè¾¼ã¾ãªã„"    TO  SPA-N22-GAZOKBNLST(IDX)
                IF      SPA-N22-GAZO        =   "0"
                    MOVE    SPA-N22-GAZOKBNLST(IDX)
                                            TO  SPA-N22-GAZOKBN-G
@@ -700,9 +700,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-N22-PHOTO1(SPA-N22-SELNUM)  TO  WRK-GAZO
                PERFORM 4115-GAZOSET-SEC
                MOVE    WRK-OBJECT          TO  SPA-N22-OBJECT(IDX)
-               MOVE    "¡Ú¡¡Íç¡¡ÂÎ¡¡¡Û"    TO  SPA-N22-LABEL(IDX)
+               MOVE    "ã€ã€€è£¸ã€€ä½“ã€€ã€‘"    TO  SPA-N22-LABEL(IDX)
                COMPUTE IDX =   IDX     +   1
-               MOVE    "1 ÍçÂÎ"            TO  SPA-N22-GAZOKBNLST(IDX)
+               MOVE    "1 è£¸ä½“"            TO  SPA-N22-GAZOKBNLST(IDX)
                IF     (SPA-N22-GAZOKBN-G   =   SPACE)
                    OR (SPA-N22-GAZO        =   "1")
                    MOVE    SPA-N22-GAZOKBNLST(IDX)
@@ -714,9 +714,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-N22-PHOTO2(SPA-N22-SELNUM)  TO  WRK-GAZO
                PERFORM 4115-GAZOSET-SEC
                MOVE    WRK-OBJECT          TO  SPA-N22-OBJECT(IDX)
-               MOVE    "¡Ú£Ð£Ô£ÐÊñÁõ¡Û"    TO  SPA-N22-LABEL(IDX)
+               MOVE    "ã€ï¼°ï¼´ï¼°åŒ…è£…ã€‘"    TO  SPA-N22-LABEL(IDX)
                COMPUTE IDX =   IDX     +   1
-               MOVE    "2 £Ð£Ô£ÐÊñÁõ"      TO  SPA-N22-GAZOKBNLST(IDX)
+               MOVE    "2 ï¼°ï¼´ï¼°åŒ…è£…"      TO  SPA-N22-GAZOKBNLST(IDX)
                IF     (SPA-N22-GAZOKBN-G   =   SPACE)
                    OR (SPA-N22-GAZO        =   "2")
                    MOVE    SPA-N22-GAZOKBNLST(IDX)
@@ -728,9 +728,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-N22-PHOTO3(SPA-N22-SELNUM)  TO  WRK-GAZO
                PERFORM 4115-GAZOSET-SEC
                MOVE    WRK-OBJECT          TO  SPA-N22-OBJECT(IDX)
-               MOVE    "¡Ú¡¡¤½¤ÎÂ¾¡¡¡Û"    TO  SPA-N22-LABEL(IDX)
+               MOVE    "ã€ã€€ãã®ä»–ã€€ã€‘"    TO  SPA-N22-LABEL(IDX)
                COMPUTE IDX =   IDX     +   1
-               MOVE    "3 ¤½¤ÎÂ¾"          TO  SPA-N22-GAZOKBNLST(IDX)
+               MOVE    "3 ãã®ä»–"          TO  SPA-N22-GAZOKBNLST(IDX)
                IF     (SPA-N22-GAZOKBN-G   =   SPACE)
                    OR (SPA-N22-GAZO        =   "3")
                    MOVE    SPA-N22-GAZOKBNLST(IDX)
@@ -759,7 +759,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     ²èÁü¥»¥Ã¥È½èÍý
+      *     ç”»åƒã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        4115-GAZOSET-SEC            SECTION.
       *
@@ -793,13 +793,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *     END-PERFORM
       *----(04.08.01)-UPD-END-----
       *
-      *    ¥Õ¥¡¥¤¥ëÂ¸ºß¥Á¥§¥Ã¥¯
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSFILECHKAREA
            MOVE    WRK-GAZOFILE    TO  FILECHK-NAME
            CALL    "ORCSFILECHK"       USING
                                        ORCSFILECHKAREA
            IF      FILECHK-RC      NOT =   0
-               MOVE    "²èÁü¥Õ¥¡¥¤¥ë¤Î¥Ñ¥¹¤¬Àµ¤·¤¯¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒ‘ã‚¹ãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“"
                                        TO  SPA-N22-MESSAGE
                MOVE    "red"           TO  SPA-N22-MESSAGE-STYLE
                MOVE    SPACE           TO  WRK-OBJECT
@@ -820,7 +820,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        450-BACK                    SECTION.
       *
@@ -830,7 +830,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE   "JOIN"           TO  MCP-PUTTYPE
            MOVE    SPA-SAKIPG      TO  MCP-WINDOW
       *
-      *    £Ð£Õ£Ô½èÍý
+      *    ï¼°ï¼µï¼´å‡¦ç†
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -841,12 +841,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *       ÅÐÏ¿Á°½èÍý
+      *       ç™»éŒ²å‰å‡¦ç†
       *****************************************************************
        480-TOUROKU-SEC             SECTION.
       *
            IF      SPA-N22-MAX     =   ZERO
-               MOVE    "³ºÅö¤¹¤ë¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "è©²å½“ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“"
                                    TO  SPA-N22-MESSAGE
                MOVE    "red"       TO  SPA-N22-MESSAGE-STYLE
                GO  TO  480-TOUROKU-EXT
@@ -910,11 +910,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¾ðÊóºï½ü¡¡½èÍý
+      *    æƒ…å ±å‰Šé™¤ã€€å‡¦ç†
       *****************************************************************
        201-DELETE-SEC                  SECTION.
       *
-      *    £Ê£Ï£Â´ÉÍý¸¡º÷
+      *    ï¼ªï¼¯ï¼¢ç®¡ç†æ¤œç´¢
            MOVE    3               TO  WRK-CONS-JOB-JOBID
            PERFORM 820-JOBKANRI-READ-SEC
       *
@@ -923,7 +923,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPACE           TO  SPA-N22-MESSAGE
                MOVE    SPACE           TO  SPA-N22-MESSAGE-STYLE
            ELSE
-               MOVE    "£Ê£Ï£Â´ÉÍý¾ðÊó¤Ï¡¢¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "ï¼ªï¼¯ï¼¢ç®¡ç†æƒ…å ±ã¯ã€ã‚ã‚Šã¾ã›ã‚“"
                                        TO  SPA-N22-MESSAGE
                MOVE    "blue"          TO  SPA-N22-MESSAGE-STYLE
            END-IF
@@ -932,12 +932,12 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¾ðÊóºï½ü
+      *    æƒ…å ±å‰Šé™¤
       *****************************************************************
        490-JYOUHOU-DEL-SEC             SECTION.
       *
            IF      SPA-N21ID1-FLG    =   "OK"
-      *        ¥¸¥ç¥Ö´ÉÍýºï½ü
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†å‰Šé™¤
                MOVE    3               TO  WRK-CONS-JOB-JOBID
                PERFORM 820-JOBKANRI-DEL-SEC
                MOVE    4               TO  WRK-CONS-JOB-JOBID
@@ -952,14 +952,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¼«²èÌÌÊÔ½¸½èÍý
+      *    è‡ªç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
-      *    ²èÌÌÊÔ½¸½èÍý
+      *    ç”»é¢ç·¨é›†å‡¦ç†
            PERFORM 500-GMNHEN-SEC
       *
-      *    ³ÎÇ§¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
+      *    ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºå‡¦ç†
            IF      SPA-N21IDCD     NOT =   SPACE
                PERFORM 520-N21IDSET-SEC
                GO  TO  500-SET-SCREEN-EXT
@@ -970,14 +970,14 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "CURRENT"       TO  MCP-PUTTYPE.
            MOVE    "N22    "       TO  MCP-WINDOW.
       *
-      *    £Ð£Õ£Ô½èÍý
+      *    ï¼°ï¼µï¼´å‡¦ç†
            PERFORM 900-PUT-WINDOW.
            .
        500-SET-SCREEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÊÔ½¸½èÍý
+      *    ç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1043,7 +1043,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³ÎÇ§¥á¥Ã¥»¡¼¥¸É½¼¨½èÍý
+      *    ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        520-N21IDSET-SEC            SECTION.
       *
@@ -1052,7 +1052,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EVALUATE    SPA-N21IDCD
                WHEN    "0001"
                    MOVE
-                   "£Ê£Ï£Â´ÉÍý¾ðÊó¤òºï½ü¤·¤Þ¤¹¡£¤è¤í¤·¤¤¤Ç¤¹¤«¡©"
+                   "ï¼ªï¼¯ï¼¢ç®¡ç†æƒ…å ±ã‚’å‰Šé™¤ã—ã¾ã™ã€‚ã‚ˆã‚ã—ã„ã§ã™ã‹ï¼Ÿ"
                                            TO  WRK-N21IDMSG
            END-EVALUATE
       *
@@ -1068,7 +1068,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "NEW"           TO  MCP-PUTTYPE
            MOVE    "N21ID1"        TO  MCP-WINDOW
       *
-      *    £Ð£Õ£Ô½èÍý
+      *    ï¼°ï¼µï¼´å‡¦ç†
            PERFORM 900-PUT-WINDOW
       *
            MOVE    1               TO  FLG-END
@@ -1078,7 +1078,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
+      *    ç”»é¢ã‚«ãƒ¼ã‚½ãƒ«ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        530-MAPCUR-SEC              SECTION.
       *
@@ -1104,7 +1104,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍýÆÉ¹þ
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†èª­è¾¼
       *****************************************************************
        820-JOBKANRI-READ-SEC       SECTION.
       *
@@ -1144,11 +1144,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†å‰Šé™¤
       *****************************************************************
        820-JOBKANRI-DEL-SEC        SECTION.
       *
-      *    ¥¸¥ç¥Ö´ÉÍýºï½ü
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†å‰Šé™¤
            MOVE    "DEL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -1166,7 +1166,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍýºîÀ®
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ä½œæˆ
       *****************************************************************
        820-JOBKANRI-JBS-SEC        SECTION.
       *
@@ -1178,10 +1178,10 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                    TO  JOB-SHELLID
            EVALUATE    WRK-CONS-JOB-JOBID
                WHEN    3
-                   MOVE    "ÌôºÞ¾ðÊóÌä¹ç¤»"
+                   MOVE    "è–¬å‰¤æƒ…å ±å•åˆã›"
                                    TO  JOB-SHELLMSG
                WHEN    4
-                   MOVE    "ÌôºÞ¾ðÊó¼è¹þ¤ß"
+                   MOVE    "è–¬å‰¤æƒ…å ±å–è¾¼ã¿"
                                    TO  JOB-SHELLMSG
            END-EVALUATE
       *
@@ -1196,7 +1196,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞ¾ðÊó¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¡Ê¥­¡¼¡Ë
+      *    è–¬å‰¤æƒ…å ±ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-TEMP-SELECT-SEC         SECTION.
       *
@@ -1224,7 +1224,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞ¾ðÊó¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¡Ê¥­¡¼¡Ë
+      *    è–¬å‰¤æƒ…å ±ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-TEMP-FETCH-SEC          SECTION.
       *
@@ -1247,7 +1247,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞ¾ðÊó¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¡Ê¥­¡¼¡Ë
+      *    è–¬å‰¤æƒ…å ±ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿ï¼ˆã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-TEMP-CLOSE-SEC          SECTION.
       *
@@ -1263,7 +1263,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ð£Õ£Ô½èÍý
+      *    ï¼°ï¼µï¼´å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £¡£–£…•Í•Ø•®•π•»ºı…’∞ÏÕ˜°°°°      COPY (CPACCPTLSTV2REQ.INC)
+      *    Ôº°Ôº∞Ôº©„É™„ÇØ„Ç®„Çπ„ÉàÂèó‰ªò‰∏ÄË¶ß„ÄÄ„ÄÄ      COPY (CPACCPTLSTV2REQ.INC)
       ******************************************************************
         01  XML-ACCEPTLSTREQ.
             02  ACPLSTREQ-CONTEXT          PIC S9(9)   BINARY.
@@ -24,11 +24,11 @@
             02  ACPLSTREQ-MODE             PIC S9(9)   BINARY.
             02  ACPLSTREQ-RECORDNAME       PIC X(128).
             02  ACPLSTREQ-APPOINT.
-      *       ºı…’∆¸
+      *       Âèó‰ªòÊó•
               03  ACPLSTREQ-ACCEPT-DATE        PIC X(10).
-      *       ø«Œ≈≤ 
+      *       Ë®∫ÁôÇÁßë
               03  ACPLSTREQ-ACCEPT-DEP-CODE    PIC X(2).
-      *       •…•Ø•ø°º•≥°º•…
+      *       „Éâ„ÇØ„Çø„Éº„Ç≥„Éº„Éâ
               03  ACPLSTREQ-ACCEPT-DR-CODE     PIC X(5).
-      *       ø«Œ≈∆‚Õ∆•≥°º•…
+      *       Ë®∫ÁôÇÂÜÖÂÆπ„Ç≥„Éº„Éâ
               03  ACPLSTREQ-ACCEPT-DEP-INFO    PIC X(2).

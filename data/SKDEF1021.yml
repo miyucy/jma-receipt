@@ -1,17 +1,17 @@
 kanri_cd    : "1021"
-name        : "ÉÂÌ¾ÉÑÍÑ¸¡º÷¡İÊ¬ÎàÌ¾"
+name        : "ç—…åé »ç”¨æ¤œç´¢âˆ’åˆ†é¡å"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "BUNRUINAME"
-  item_jp   : "Ê¬ÎàÌ¾"
+  item_jp   : "åˆ†é¡å"
   type      : "X"
   start     : 1
   length    : 80
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 81
   length    : 420

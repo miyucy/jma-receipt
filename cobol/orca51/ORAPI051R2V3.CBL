@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI051R2V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ��������װ�������  (xml2)
-      *  ������            :
-      *  ��������    ��ȼ�      ����
-      *  18/05/10    NACL��ƣ��  ��������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 日次月次統計一覧取得  (xml2)
+      *  管理者            :
+      *  作成日付    作業者      記述
+      *  18/05/10    NACL−藤原  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.00.01    NACL-ƣ��    18/10/15  �ͣϣΣ£̣ϣ¥��顼�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,27 +39,27 @@
       *
        WORKING-STORAGE         SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ�
+      *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
       *
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �������׶��̥ѥ�᥿
+      *    日次統計共通パラメタ
            COPY    "L01COMMON-SPA".
       *
-      *    �������ײ����ѣӣУ�
+      *    日次統計画面用ＳＰＡ
            COPY    "L01SCR-SPA".
       *
-      *    ����׶��̥ѥ�᥿
+      *    月次統計共通パラメタ
            COPY    "G01COMMON-SPA".
       *
-      *    ����ײ����ѣӣУ�
+      *    月次統計画面用ＳＰＡ
            COPY    "G01SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -68,7 +68,7 @@
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ENABLED             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -86,7 +86,7 @@
            03  IDXT                    PIC 9(04).
            03  IDXU                    PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -98,7 +98,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -109,7 +109,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-ERR-1               PIC X(100).
@@ -127,7 +127,7 @@
            03  ST-IDX                  PIC 9(04).
            03  ED-IDX                  PIC 9(04).
       *
-      *    �ѥ�᥿�;���
+      *    パラメタ値情報
            03  WRK-PARM-G.
                05  WRK-PARM-FLG-OCC    OCCURS  10.
                    07  WRK-PARM-PAGE   PIC 9(02).
@@ -138,11 +138,11 @@
                                        PIC 9(3).
                    07  WRK-PARM-PARM-NO
                                        PIC 9(2)    OCCURS  10.
-      *    �ꥯ�����Ⱦ��� 
+      *    リクエスト情報 
            03  WRK-LSTREQ-G.
                05  WRK-LSTREQ-PROGRAM-NO
                                        PIC 9(3)    OCCURS  100.
-      *    �Ǿ���
+      *    頁情報
            03  WRK-PAGE-G.
                05  WRK-PAGE-MAX        PIC 9(02).
                05  WRK-PAGE-OCC        OCCURS  10.
@@ -155,7 +155,7 @@
            03  WRK-UPDCNT-X.
                05  WRK-UPDCNT          PIC 9(10).
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  WRK-JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC"
                                    REPLACING  //JOB//
@@ -165,76 +165,76 @@
                                    BY         //TAIHI-MCP//.
       *
        01  WRK-CONS-AREA.
-      *    �ץ���������Ŀ�
+      *    プログラム最大個数
            03  WRK-CONS-PROCESSING-MAX PIC 9(02)   VALUE   10.
       *
-      *    �ѥ�᡼������Ŀ�
+      *    パラメータ最大個数
            03  WRK-CONS-PARA-MAX       PIC 9(05)   VALUE   10.
            03  WRK-CONS-PARA-L01-MAX   PIC 9(05)   VALUE   8.
            03  WRK-CONS-PARA-G01-MAX   PIC 9(05)   VALUE   10.
-      *    �������ٿ�
+      *    最大明細数
            03  WRK-CONS-LINE-MAX       PIC 9(05)   VALUE   100.
-      *    �����̤�����κ������ٿ�
+      *    １画面あたりの最大明細数
            03  WRK-CONS-SCR-MAX        PIC 9(05)   VALUE   10.
       *
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����
+      *    システム管理ＤＢ（３００３）のキー値
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "051".
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-JOB-SHELLID    PIC X(08)   VALUE   "DAILY".
            03  WRK-CONS-JOB-JOBID      PIC 9(07)   VALUE   ZERO.
       *
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����
+      *    システム管理ＤＢ（３００３）のキー値
            03  WRK-CONS-52-3003-KBNCD  PIC X(08)   VALUE   "052".
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-52-JOB-SHELLID PIC X(08)   VALUE   "MONTHLY".
            03  WRK-CONS-52-JOB-JOBID   PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPSTATISTICSFORMV3REQ.INC".
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPSTATISTICSFORMV3RES.INC".
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ作成作成
            COPY    "CPORCSTEMPDIR.INC".
       *
            COPY    "MONBLOB".
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
-      *    �ʿ��������
+      *    （職員情報）
            COPY    "CPSK1010.INC".
-      *    �ʰ��ŵ��ؾ����
+      *    （医療機関情報）
       *    COPY    "CPSK1001.INC".
       *
            COPY    "CPSK3003.INC".
@@ -245,12 +245,12 @@
       *
            COPY    "ORCA-BLOB".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -268,7 +268,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -288,18 +288,18 @@
       *
            MOVE    MCPAREA             TO  TAIHI-MCPAREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "E99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST10-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -311,13 +311,13 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      XML-LSTRES
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -327,14 +327,14 @@
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
       *
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  LSTRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  LSTRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å�
+      *    医療機関識別番号セット
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -343,7 +343,7 @@
                MOVE   "E99"            TO  WRK-ERRCD
                GO  TO 100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -361,11 +361,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -376,7 +376,7 @@
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE   LSTREQ-REQUEST-NUMBER
                WHEN    "00"
-      *            �������
+      *            情報取得
                    MOVE    9                   TO  FLG-SYORI
                WHEN    "01"
                    MOVE    1                   TO  FLG-SYORI
@@ -386,7 +386,7 @@
                    MOVE    "E91"               TO  WRK-ERRCD
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -396,10 +396,10 @@
       *
            EVALUATE   LSTREQ-REQUEST-NUMBER
                WHEN    "01"
-      *            �����»�
+      *            処理実施
                    PERFORM 2002-SYORI-01-SEC
                WHEN    "02"
-      *            ��̾����ֵ�
+      *            結果情報返却
                    PERFORM 2003-SYORI-02-SEC
            END-EVALUATE
            .
@@ -407,7 +407,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -441,13 +441,13 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
-      *    ���顼��å�����
+      *    エラーメッセージ
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    9
                        MOVE    "01"        TO  LSTRES-RESPONSE-NUMBER
@@ -458,13 +458,13 @@
                MOVE    ZERO                TO  LSTRES-API-RESULT
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "�����»ܽ�λ"
+                       MOVE    "処理実施終了"
                                            TO  LSTRES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "������ǧ��λ"
+                       MOVE    "処理確認終了"
                                            TO  LSTRES-API-RESULT-MSG
                    WHEN    9
-                       MOVE    "���������λ"
+                       MOVE    "情報取得終了"
                                            TO  LSTRES-API-RESULT-MSG
                END-EVALUATE
            ELSE
@@ -475,13 +475,13 @@
                        MOVE    "01"        TO  LSTRES-RESPONSE-NUMBER
                END-EVALUATE
                IF      WRK-ERRMSG          =   SPACE
-      *            ���顼���ٹ��å�����
+      *            エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                MOVE    WRK-ERRCD           TO  LSTRES-API-RESULT
                MOVE    WRK-ERRMSG          TO  LSTRES-API-RESULT-MSG
       *
-      *        ���顼���Ͻ��������򥯥ꥢ
+      *        エラー時は処理一覧をクリア
                IF    ( FLG-SYORI          =   2     )
                AND   ( WRK-ERRCD          =   "E30" )
                    CONTINUE
@@ -519,7 +519,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        3001-LSTRES-SEC        SECTION.
       *
@@ -550,7 +550,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ƥ����å�
+      *    情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
@@ -559,13 +559,13 @@
       *
            MOVE    ZERO                TO  WRK-ERR-PARAMETER-IDX
       *
-      *    �����UID
+      *    カルテUID
            IF     LSTREQ-KARTE-UID     =   SPACE
                MOVE    "E04"               TO  WRK-ERRCD
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *    ���륫UID
+      *    オルカUID
            IF     LSTREQ-REQUEST-NUMBER
                                        =   "00"    OR  "01"
                CONTINUE
@@ -576,7 +576,7 @@
                END-IF
            END-IF
       *
-      *    �ؼ���ʬ
+      *    指示区分
            EVALUATE    LSTREQ-STATISTICS-MODE
                WHEN    "Daily"
                WHEN    "Monthly"
@@ -591,11 +591,11 @@
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *    �����»ܤΤȤ��������������å�
+      *    処理実施のとき処理一覧チェック
            IF      LSTREQ-REQUEST-NUMBER
                                        =   "01"
                PERFORM 20011-PROCESSING-CHECK-SEC
-      *        ���顼������н�����λ
+      *        エラーがあれば処理終了
                IF    ( WRK-ERRCD       NOT =   SPACE )
                OR    ( WRK-ERR-PROCESSING-MAX
                                            >   ZERO  )
@@ -615,14 +615,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �������������å�����
+      *    処理一覧チェック処理
       *****************************************************************
        20011-PROCESSING-CHECK-SEC      SECTION.
       *
            INITIALIZE                  WRK-PARM-G
                                        WRK-PAGE-G
       *
-      *    �ѥ�᥿�����å�
+      *    パラメタチェック
            IF      LSTREQ-PROCESSING-G =   SPACE
                MOVE    "E17"               TO  WRK-ERRCD
                GO  TO  20011-PROCESSING-CHECK-EXT
@@ -658,7 +658,7 @@
                        END-EVALUATE
                    END-IF
                END-IF
-      *        �ץ������̾�Υ����å�
+      *        プログラム名のチェック
                IF       LSTREQ-PROGRAM-NAME (IDX)
                                        =   SPACE
                    MOVE    "E19"           TO  WRK-PROCESSING-ERRCD
@@ -676,7 +676,7 @@
                         MOVE    "E20"           TO  WRK-PROCESSING-ERRCD
                   END-IF
                END-IF
-      *        �ѥ�᥿�Υ����å�
+      *        パラメタのチェック
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       WRK-CONS-PARA-MAX
                        OR      LSTREQ-PARAMETER-INFO (IDX IDY)
@@ -756,19 +756,19 @@
                END-IF
            END-PERFORM
       *
-      *    ���顼������н�����λ
+      *    エラーがあれば処理終了
            IF      WRK-ERR-PROCESSING-MAX
                                        >   ZERO
                GO  TO  20011-PROCESSING-CHECK-EXT
            END-IF
       *
-      *    ��ʣ�����å�
+      *    重複チェック
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       WRK-CONS-PROCESSING-MAX
                    OR      LSTREQ-PROCESSING-INFO (IDX)
                                =       SPACE
                MOVE    SPACE           TO  WRK-PROCESSING-ERRCD
-      *        �ץ������̾�ν�ʣ�����å�
+      *        プログラム名の重複チェック
                COMPUTE IDY =   IDX +   1
                PERFORM VARYING IDYY    FROM    IDY  BY  1
                        UNTIL   IDYY    >       WRK-CONS-PROCESSING-MAX
@@ -779,7 +779,7 @@
                        MOVE    "E27"       TO  WRK-PROCESSING-ERRCD
                    END-IF
                END-PERFORM
-      *        �ѥ�᥿�ֹ�ν�ʣ�����å�
+      *        パラメタ番号の重複チェック
                PERFORM VARYING IDY FROM    1   BY  1
                        UNTIL   IDY >       WRK-CONS-PARA-MAX
                        OR      LSTREQ-PARAMETER-INFO (IDX IDY)
@@ -810,11 +810,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������׽��������å�
+      *    日次統計処理チェック
       *****************************************************************
        20012-DAILY-CHECK-SEC      SECTION.
       *
-      *    ����̾���
+      *    初画面情報
            MOVE    SPACE               TO  LINKAREA
                                            SPA-MOTOPG
            INITIALIZE                  SPA-L01KYOUTU
@@ -824,7 +824,7 @@
       *
            PERFORM 800-ORCGL01-CALL-SEC
       *
-      *    ��������ΤȤ��������������
+      *    情報取得のとき処理一覧を取得
            IF      LSTREQ-REQUEST-NUMBER
                                        =   "00"
                MOVE    ZERO            TO  IDXX
@@ -887,14 +887,14 @@
                        END-PERFORM
                    END-IF
                END-PERFORM
-      *        �����ƥ��������Ͽ�����ʤ�
+      *        システム管理に登録処理なし
                IF      IDXX                =   ZERO
                    MOVE    "E16"               TO  WRK-ERRCD
                END-IF
                GO  TO  20012-DAILY-CHECK-EXT
            END-IF
       *
-      *    �����ƥ��������Ͽ���ƤȤΥ����å�
+      *    システム管理の登録内容とのチェック
       *****INITIALIZE                  WRK-PARM-G
       *
            PERFORM VARYING IDX FROM    1   BY  1
@@ -904,7 +904,7 @@
                MOVE    SPACE           TO  WRK-PROCESSING-ERRCD
                MOVE    ZERO            TO  FLG-CHK
       *
-      *        �ץ�������ֹ�������ϻ����ֹ�ǥ����å�
+      *        プログラム番号設定時は指定番号でチェック
                IF      LSTREQ-PROGRAM-NO (IDX)
                                    NOT =   SPACE
                    MOVE    WRK-PARM-PROGRAM-NO (IDX)
@@ -921,7 +921,7 @@
                        OR      FLG-CHK >       ZERO
                        OR      WRK-PROCESSING-ERRCD
                                    NOT =   SPACE
-      *            �ץ�������ֹ�������Υץ������̾��¸�ߥ����å�
+      *            プログラム番号設定時のプログラム名の存在チェック
                    IF      LSTREQ-PROGRAM-NO (IDX)
                                    NOT =   SPACE
                        IF     SPA-GMN-L01-PRGNAME (IDXX)
@@ -930,7 +930,7 @@
                        END-IF
                    END-IF
       *
-      *            �ץ������̾�Υ����å�
+      *            プログラム名のチェック
                    IF     LSTREQ-PROGRAM-NAME (IDX)
                                        =   SPA-GMN-L01-PRGNAME (IDXX)
                      MOVE    IDXX          TO  IDXI
@@ -954,7 +954,7 @@
                            MOVE    IDZ             TO  WRK-PAGE-MAX
                        END-IF
       *
-      *                �ѥ�᥿���̤Υ����å�
+      *                パラメタ種別のチェック
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       WRK-CONS-PARA-L01-MAX
                                OR      LSTREQ-PARM-NO (IDX IDY)
@@ -987,7 +987,7 @@
                        MOVE    IDX         TO  WRK-LSTREQ-PROGRAM-NO
                                                                   (IDXX)
       *
-      *                �����������ֵ�
+      *                処理一覧に返却
                        MOVE    IDXX        TO  WRK-NUM
                        MOVE    WRK-NUM-X   TO  LSTRES-PROGRAM-NO   (IDX)
                        MOVE    SPA-GMN-L01-PRGNAME (IDXX)
@@ -1020,13 +1020,13 @@
                END-IF
            END-PERFORM
       *
-      *    ���顼������н�����λ
+      *    エラーがあれば処理終了
            IF      WRK-ERR-PROCESSING-MAX
                                        >   ZERO
                GO  TO  20012-DAILY-CHECK-EXT
            END-IF
       *
-      *    �ѥ�᥿�ͤ����ϥ����å�
+      *    パラメタ値の入力チェック
            MOVE    ZERO               TO  IDZZ
            PERFORM         UNTIL   IDZZ    >=  WRK-PAGE-MAX
                MOVE    SPA-GMN-L01-PAGE    TO  IDZZ
@@ -1035,7 +1035,7 @@
                        UNTIL   IDX >       WRK-CONS-PROCESSING-MAX
                        OR      LSTREQ-PROCESSING-INFO (IDX)
                                    =       SPACE
-      *            �����Ǥ����ꤵ�줿����������Ȥ��ѥ�᥿�ͤ�����
+      *            該当頁に設定された処理があるときパラメタ値を設定
                    IF     IDZZ     =    WRK-PARM-PAGE (IDX)
                        MOVE    WRK-PARM-INDEX (IDX)
                                                    TO  IDY
@@ -1082,10 +1082,10 @@
                MOVE    "CLICKED"       TO  MCP-EVENT
                IF      SPA-GMN-L01-PAGE
                                        =   WRK-PAGE-MAX
-      *            �����������å�
+      *            更新前チェック
                    MOVE    "B12"           TO  MCP-WIDGET
                ELSE
-      *            ���ǥ����å�
+      *            次頁チェック
                    MOVE    "B07"           TO  MCP-WIDGET
                END-IF
       *
@@ -1114,11 +1114,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����׽��������å�
+      *    月次統計処理チェック
       *****************************************************************
        20013-MONTHLY-CHECK-SEC      SECTION.
       *
-      *    ����̾���
+      *    初画面情報
            MOVE    SPACE               TO  LINKAREA
                                            SPA-MOTOPG
            INITIALIZE                  SPA-G01KYOUTU
@@ -1128,7 +1128,7 @@
       *
            PERFORM 800-ORCGL01-CALL-SEC
       *
-      *    ��������ΤȤ��������������
+      *    情報取得のとき処理一覧を取得
            IF      LSTREQ-REQUEST-NUMBER
                                        =   "00"
                MOVE    ZERO            TO  IDXX
@@ -1191,14 +1191,14 @@
                        END-PERFORM
                    END-IF
                END-PERFORM
-      *        �����ƥ��������Ͽ�����ʤ�
+      *        システム管理に登録処理なし
                IF      IDXX                =   ZERO
                    MOVE    "E16"               TO  WRK-ERRCD
                END-IF
                GO  TO  20013-MONTHLY-CHECK-EXT
            END-IF
       *
-      *    �����ƥ��������Ͽ���ƤȤΥ����å�
+      *    システム管理の登録内容とのチェック
       *****INITIALIZE                  WRK-PARM-G
       *
            PERFORM VARYING IDX FROM    1   BY  1
@@ -1208,7 +1208,7 @@
                MOVE    SPACE           TO  WRK-PROCESSING-ERRCD
                MOVE    ZERO            TO  FLG-CHK
       *
-      *        �ץ�������ֹ�������ϻ����ֹ�ǥ����å�
+      *        プログラム番号設定時は指定番号でチェック
                IF      LSTREQ-PROGRAM-NO (IDX)
                                    NOT =   SPACE
                    MOVE    WRK-PARM-PROGRAM-NO (IDX)
@@ -1225,7 +1225,7 @@
                        OR      FLG-CHK >       ZERO
                        OR      WRK-PROCESSING-ERRCD
                                    NOT =   SPACE
-      *            �ץ�������ֹ�������Υץ������̾��¸�ߥ����å�
+      *            プログラム番号設定時のプログラム名の存在チェック
                    IF      LSTREQ-PROGRAM-NO (IDX)
                                    NOT =   SPACE
                        IF     SPA-GMN-G01-PRGNAME (IDXX)
@@ -1234,7 +1234,7 @@
                        END-IF
                    END-IF
       *
-      *            �ץ������̾�Υ����å�
+      *            プログラム名のチェック
                    IF     LSTREQ-PROGRAM-NAME (IDX)
                                        =   SPA-GMN-G01-PRGNAME (IDXX)
                      MOVE    IDXX          TO  IDXI
@@ -1258,7 +1258,7 @@
                            MOVE    IDZ             TO  WRK-PAGE-MAX
                        END-IF
       *
-      *                �ѥ�᥿���̤Υ����å�
+      *                パラメタ種別のチェック
                        PERFORM VARYING IDY FROM    1   BY  1
                                UNTIL   IDY >       WRK-CONS-PARA-G01-MAX
                                OR      LSTREQ-PARM-NO (IDX IDY)
@@ -1291,7 +1291,7 @@
                        MOVE    IDX         TO  WRK-LSTREQ-PROGRAM-NO
                                                                   (IDXX)
       *
-      *                �����������ֵ�
+      *                処理一覧に返却
                        MOVE    IDXX        TO  WRK-NUM
                        MOVE    WRK-NUM-X   TO  LSTRES-PROGRAM-NO   (IDX)
                        MOVE    SPA-GMN-G01-PRGNAME (IDXX)
@@ -1324,13 +1324,13 @@
                END-IF
            END-PERFORM
       *
-      *    ���顼������н�����λ
+      *    エラーがあれば処理終了
            IF      WRK-ERR-PROCESSING-MAX
                                        >   ZERO
                GO  TO  20013-MONTHLY-CHECK-EXT
            END-IF
       *
-      *    �ѥ�᥿�ͤ����ϥ����å�
+      *    パラメタ値の入力チェック
            MOVE    ZERO               TO  IDZZ
            PERFORM         UNTIL   IDZZ    >=  WRK-PAGE-MAX
                MOVE    SPA-GMN-G01-PAGE    TO  IDZZ
@@ -1339,7 +1339,7 @@
                        UNTIL   IDX >       WRK-CONS-PROCESSING-MAX
                        OR      LSTREQ-PROCESSING-INFO (IDX)
                                    =       SPACE
-      *            �����Ǥ����ꤵ�줿����������Ȥ��ѥ�᥿�ͤ�����
+      *            該当頁に設定された処理があるときパラメタ値を設定
                    IF     IDZZ     =    WRK-PARM-PAGE (IDX)
                        MOVE    WRK-PARM-INDEX (IDX)
                                                    TO  IDY
@@ -1391,10 +1391,10 @@
                MOVE    "CLICKED"       TO  MCP-EVENT
                IF      SPA-GMN-G01-PAGE
                                        =   WRK-PAGE-MAX
-      *            �����������å�
+      *            更新前チェック
                    MOVE    "B12"           TO  MCP-WIDGET
                ELSE
-      *            ���ǥ����å�
+      *            次頁チェック
                    MOVE    "B07"           TO  MCP-WIDGET
                END-IF
       *
@@ -1423,7 +1423,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����̥��顼����
+      *    処理別エラー処理
       *****************************************************************
        20019-PROCESSING-ERR-SEC     SECTION.
       *
@@ -1440,71 +1440,71 @@
                                                (WRK-ERR-PROCESSING-MAX)
                EVALUATE    WRK-PROCESSING-ERRCD
                    WHEN    "E14"
-                       MOVE    "�ץ�������ֹ������˸��꤬����ޤ���"
+                       MOVE    "プログラム番号の設定に誤りがあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E18"
-                       MOVE    "���ꤷ���ץ������̾��̤��Ͽ�Ǥ���"
+                       MOVE    "設定したプログラム名が未登録です。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E19"
-                       MOVE    "�ץ������̾��̤����Ǥ���"
+                       MOVE    "プログラム名が未設定です。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E20"
-                       MOVE    "�ץ������̾������˸��꤬����ޤ���"
+                       MOVE    "プログラム名の設定に誤りがあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E21"
-                       MOVE    "�ѥ�᥿�ֹ椬̤����Ǥ���"
+                       MOVE    "パラメタ番号が未設定です。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E22"
-                       MOVE    "�ѥ�᥿�ֹ������˸��꤬����ޤ���"
+                       MOVE    "パラメタ番号の設定に誤りがあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E23"
-                       MOVE    "�ѥ�᥿���̤�̤����Ǥ���"
+                       MOVE    "パラメタ種別が未設定です。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E24"
-                       MOVE    "�ѥ�᥿���̤�����˸��꤬����ޤ���"
+                       MOVE    "パラメタ種別の設定に誤りがあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E25"
                        MOVE
-                   "���ꤷ���ѥ�᥿�ֹ�˥ѥ�᥿����Ͽ������ޤ���"
+                   "設定したパラメタ番号にパラメタの登録がありません。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E26"
-                       MOVE    "�ѥ�᥿�ͤ�����˸��꤬����ޤ���"
+                       MOVE    "パラメタ値の設定に誤りがあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E27"
                        MOVE
-                           "�ץ������̾����ʣ�������ꤷ�Ƥ���ޤ���"
+                           "プログラム名が重複して設定してあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E28"
                        MOVE
-                           "�ѥ�᥿�ֹ椬��ʣ�������ꤷ�Ƥ���ޤ���"
+                           "パラメタ番号が重複して設定してあります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E29"
-                       MOVE    "��Ͽ���Ƥ���ѥ�᥿���̤Ȱۤʤ�ޤ���"
+                       MOVE    "登録してあるパラメタ種別と異なります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E31"
-                       MOVE    "��Ͽ���Ƥ���ץ������̾�Ȱۤʤ�ޤ���"
+                       MOVE    "登録してあるプログラム名と異なります。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E32"
                        MOVE
-                      "���ꤷ���ץ�������ֹ�˽�������Ͽ������ޤ���"
+                      "設定したプログラム番号に処理の登録がありません。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                    WHEN    "E33"
-                       MOVE   "���ꤷ���ץ������Ͻ����Ǥ��ޤ���"
+                       MOVE   "設定したプログラムは処理できません。"
                                                TO  LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                END-EVALUATE
@@ -1550,15 +1550,15 @@
                                MOVE    SPACE       TO  WRK-ERR-1
                                                        WRK-ERR-2
                                UNSTRING    SPA-ERRMSG
-                                                   DELIMITED  BY  "��"
+                                                   DELIMITED  BY  "【"
                                                    INTO    WRK-ERR-1
                                                            WRK-ERR-2
                                END-UNSTRING
                                STRING  WRK-ERR-1   DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "【"        DELIMITED  BY  SIZE
                                        SPA-GMN-L01-PARAHYOJI (IDCC IDBB)
                                                    DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "】"        DELIMITED  BY  SIZE
                                            INTO    LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                                END-STRING
@@ -1600,15 +1600,15 @@
                                MOVE    SPACE       TO  WRK-ERR-1
                                                        WRK-ERR-2
                                UNSTRING    SPA-ERRMSG
-                                                   DELIMITED  BY  "��"
+                                                   DELIMITED  BY  "【"
                                                    INTO    WRK-ERR-1
                                                            WRK-ERR-2
                                END-UNSTRING
                                STRING  WRK-ERR-1   DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "【"        DELIMITED  BY  SIZE
                                        SPA-GMN-G01-PARAHYOJI (IDCC IDBB)
                                                    DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "】"        DELIMITED  BY  SIZE
                                            INTO    LSTRES-ERROR-MSG
                                                (WRK-ERR-PROCESSING-MAX)
                                END-STRING
@@ -1625,7 +1625,7 @@
                END-IF
            END-IF
       *
-      *    �ѥ�᥿���ֵ�
+      *    パラメタ値返却
            IF      WRK-ERR-PARAMETER-IDX
                                    =   ZERO
                MOVE    LSTREQ-PARAMETER-G  (IDX)
@@ -1643,15 +1643,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �����»ܽ���
+      *    処理実施処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            PERFORM 20021-UID-GET-SEC
            MOVE    C-UID           TO  LSTREQ-ORCA-UID
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            PERFORM 800-JOBKANRI-CHK-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  2002-SYORI-01-EXT
@@ -1713,11 +1713,11 @@
            EXIT.
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        20021-UID-GET-SEC           SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -1727,11 +1727,11 @@
        20021-UID-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ��̾����ֵѽ���
+      *    結果情報返却処理
       *****************************************************************
        2003-SYORI-02-SEC           SECTION.
       *
-      *    ����ִ��������å�
+      *    ジョブ管理チェック
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -1751,7 +1751,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CH2"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -1775,7 +1775,7 @@
                            GO  TO  2003-SYORI-02-EXT
                        END-IF
       *
-      *                �����������ֵ�
+      *                処理一覧に返却
                        IF      JOB-PGID        =   "ORCBPRT1"
                                                OR  "ORCBPUSH"
                            CONTINUE
@@ -1796,25 +1796,25 @@
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "E70"           TO  WRK-ERRCD
                            MOVE    SPACE           TO  WRK-ERRMSG
-                           STRING  "������Ǥ���"  DELIMITED   BY  SIZE
+                           STRING  "処理中です【"  DELIMITED   BY  SIZE
                                    JOB-SHELLMSG    DELIMITED   BY  SPACE
-                                   "��"            DELIMITED   BY  SIZE
+                                   "】"            DELIMITED   BY  SIZE
                                                INTO    WRK-ERRMSG
                            END-STRING
                            GO  TO  2003-SYORI-02-EXT
                        ELSE
                            IF    ( JOB-ERRCD   =   SPACE               )
       *********************OR    ( JOB-YOBI    =
-      *********************        "�����оݤΥǡ���������ޤ���Ǥ���")
+      *********************        "処理対象のデータがありませんでした")
                                CONTINUE
                            ELSE
                                MOVE    "E30"       TO  WRK-ERRCD
                                MOVE    SPACE       TO  WRK-ERRMSG
                                STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "【"        DELIMITED  BY  SIZE
                                        JOB-SHELLMSG
                                                    DELIMITED  BY  SPACE
-                                       "��"        DELIMITED  BY  SIZE
+                                       "】"        DELIMITED  BY  SIZE
                                                    INTO  WRK-ERRMSG
                                END-STRING
       *************************GO  TO  2003-SYORI-02-EXT
@@ -1831,7 +1831,7 @@
                END-PERFORM
            END-IF
       *
-      *    �ڡ������ֵ�
+      *    ページ数返却
            MOVE    WRK-JOB-UPDCNT      TO  WRK-UPDCNT
            MOVE    WRK-UPDCNT-X        TO  LSTRES-OUTPUT-COUNT
            .
@@ -1839,11 +1839,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        800-JOBKANRI-CHK-SEC       SECTION.
       *
-      *    ����ִ��������å�
+      *    ジョブ管理チェック
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -1863,7 +1863,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CH2"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -1882,9 +1882,9 @@
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "E70"           TO  WRK-ERRCD
                            MOVE    SPACE           TO  WRK-ERRMSG
-                           STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE
+                                   "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-ERRMSG
                            END-STRING
                            GO  TO  800-JOBKANRI-CHK-EXT
@@ -1897,7 +1897,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������׽���
+      *    日次月次統計処理
       *****************************************************************
        800-ORCGL01-CALL-SEC                SECTION.
       *
@@ -1938,7 +1938,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ作成処理
       *****************************************************************
        800-TEMPDIR-SEC             SECTION.
       *
@@ -1947,7 +1947,7 @@
            INSPECT SPA-TERMID      REPLACING   ALL " " BY  "0"
            MOVE    SPACE           TO  SPA-TERMID (37:)
       *
-      *    ����ǥ��쥯�ȥ����
+      *    一時ディレクトリ作成
            INITIALIZE                  STEMPDIR-AREA
            CALL    "ORCSTEMPDIR"   USING
                                        STEMPDIR-AREA
@@ -1958,7 +1958,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ѳ��ݥ����å�����
+      *    使用可否チェック処理
       *****************************************************************
        800-IS-ENABLED-SEC        SECTION.
       *
@@ -2022,7 +2022,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -2051,7 +2051,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -2060,7 +2060,7 @@
            MOVE    WRK-HEN-MM          TO  WRK-SMM
            MOVE    WRK-HEN-DD          TO  WRK-SDD
       *
-      *    "9999-99"�ϥ��顼�Ȥ���
+      *    "9999-99"はエラーとする
            IF      WRK-SYMD (1:6)      =   "999999"
                MOVE    "12"                TO  WRK-SMM
                MOVE    "99"                TO  WRK-SDD
@@ -2080,7 +2080,7 @@
        802-DAYHEN02-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
@@ -2093,76 +2093,76 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "E04"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "E05"
-               MOVE    "���륫�գɣĤ�̤����Ǥ���"
+               MOVE    "オルカＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "E15"
-               MOVE    "�ؼ���ʬ������˸��꤬����ޤ���"
+               MOVE    "指示区分の設定に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "E16"
-               MOVE    "�����ƥ�����˽�������Ͽ���Ƥ���ޤ���"
+               MOVE    "システム管理に処理が登録してありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E17"
-               MOVE    "�оݤν�����̤����Ǥ���"
+               MOVE    "対象の処理が未設定です。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "E40"
-               MOVE    "�оݤΥ���ִ���������ޤ���"
+               MOVE    "対象のジョブ管理がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E41"
-               MOVE    "�оݤν����Ϥ���ޤ���"
+               MOVE    "対象の処理はありません。"
                                                TO  WRK-ERRMSG
-      *        ���̥��顼
+      *        画面エラー
            WHEN    "E60"
            WHEN    "E61"
            WHEN    "E88"
                MOVE    SPA-ERRMSG              TO  WRK-ERRMSG
       *
            WHEN    "E80"
-               MOVE    "����ǥ��쥯�ȥ꤬�����Ǥ��ޤ���"
+               MOVE    "一時ディレクトリが取得できません。"
                                                TO  WRK-ERRMSG
-      *���̥��顼
+      *共通エラー
            WHEN    "E89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません。"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "E90"
-                   MOVE    "¾ü���ǻ�����Ǥ���"
+                   MOVE    "他端末で使用中です。"
                                                TO  WRK-ERRMSG
            WHEN    "E91"
-                   MOVE    "�ꥯ�������ֹ椬�����Ǥ���"
+                   MOVE    "リクエスト番号が不正です。"
                                                TO  WRK-ERRMSG
            WHEN    "E97"
-                   MOVE   "�������Ƥ˸��꤬����ޤ���"
+                   MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "E98"
-                   MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                TO  WRK-ERRMSG
            WHEN    "E99"
-                   MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+                   MOVE    "ユーザＩＤが未登録です。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -2170,7 +2170,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -2184,7 +2184,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -2213,7 +2213,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2227,7 +2227,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -2241,7 +2241,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

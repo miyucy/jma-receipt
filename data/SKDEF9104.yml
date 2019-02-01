@@ -1,23 +1,23 @@
 kanri_cd    : "9104"
-name        : "°åÎÅ¾ğÊóÂåÍıµ¡´Ø¾ğÊó"
+name        : "åŒ»ç™‚æƒ…å ±ä»£ç†æ©Ÿé–¢æƒ…å ±"
 class_cd    : "*"
 item_max    : 3
 item_list   :
 - item_no   : 1
   item      : "RECEDEN"
-  item_jp   : "ÅÅ»Ò¥ì¥»¥×¥È¥Ç¡¼¥¿"
+  item_jp   : "é›»å­ãƒ¬ã‚»ãƒ—ãƒˆãƒ‡ãƒ¼ã‚¿"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "JMAMR"
-  item_jp   : "Æü°åÈÇ¿ÇÎÅ¾ğÊó¥Ç¡¼¥¿"
+  item_jp   : "æ—¥åŒ»ç‰ˆè¨ºç™‚æƒ…å ±ãƒ‡ãƒ¼ã‚¿"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 3
   length    : 498

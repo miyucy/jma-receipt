@@ -1,22 +1,22 @@
 --                                                  --
--- ÅÀ¿ô¥Ş¥¹¥¿¤ÎÀßÄê                                 --
+-- ç‚¹æ•°ãƒã‚¹ã‚¿ã®è¨­å®š                                 --
 --                                                  --
 -- Create Date : 2007/01/11                         --
 --                                                  --
--- 099800112 ¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü   --
--- 099800122 Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü   --
--- 099800132 ±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü         --
--- 099800142 ¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü         --
--- 099800152 Àİ¿©µ¡Ç½ÎÅË¡½ªÎ»Æü                     --
--- 099800162 ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü       --
--- 099800172 ¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü   --
+-- 099800112 å¿ƒå¤§è¡€ç®¡ç–¾æ‚£ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥   --
+-- 099800122 è„³è¡€ç®¡ç–¾æ‚£ç­‰ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥   --
+-- 099800132 é‹å‹•å™¨ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥         --
+-- 099800142 å‘¼å¸å™¨ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥         --
+-- 099800152 æ‘‚é£Ÿæ©Ÿèƒ½ç™‚æ³•çµ‚äº†æ—¥                     --
+-- 099800162 é›£ç—…æ‚£è€…ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥       --
+-- 099800172 éšœå®³å…ï¼ˆè€…ï¼‰ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥   --
 
 insert into tbl_tensu (srycd,yukostymd,yukoedymd,srykbn,srysyukbn,yukoketa,name,kanayukoketa,kananame,tensikibetu,ten,tanicd,datakbn,hkntekkbn,nyugaitekkbn,
 jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,ageksnsrycd1,ageksnkgn2,ageksnjgn2,ageksnsrycd2,ageksnkgn3,ageksnjgn3,ageksnsrycd3,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800112','00000000','99999999','80','810',18,'¿´Âç·ì´É¼À´µ¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800112','00000000','99999999','80','810',18,'å¿ƒå¤§è¡€ç®¡ç–¾æ‚£ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -26,7 +26,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800122','00000000','99999999','80','810',18,'Ç¾·ì´É¼À´µÅù¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800122','00000000','99999999','80','810',18,'è„³è¡€ç®¡ç–¾æ‚£ç­‰ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -36,7 +36,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800132','00000000','99999999','80','810',15,'±¿Æ°´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800132','00000000','99999999','80','810',15,'é‹å‹•å™¨ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -46,7 +46,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800142','00000000','99999999','80','810',15,'¸ÆµÛ´ï¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800142','00000000','99999999','80','810',15,'å‘¼å¸å™¨ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -56,7 +56,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800152','00000000','99999999','80','810',9,'Àİ¿©µ¡Ç½ÎÅË¡½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800152','00000000','99999999','80','810',9,'æ‘‚é£Ÿæ©Ÿèƒ½ç™‚æ³•çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -66,7 +66,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800162','00000000','99999999','80','810',16,'ÆñÉÂ´µ¼Ô¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800162','00000000','99999999','80','810',16,'é›£ç—…æ‚£è€…ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');
@@ -76,7 +76,7 @@ jgncnt1d,chuksncd,chuksntsuban,kgnage,jgnage,santeirrkkbn,ageksnkgn1,ageksnjgn1,
 ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099800172','00000000','99999999','80','810',18,'¾ã³²»ù¡Ê¼Ô¡Ë¥ê¥Ï¥Ó¥ê¥Æ¡¼¥·¥ç¥ó½ªÎ»Æü',0,'',0,0,'000',1,0,0,
+('099800172','00000000','99999999','80','810',18,'éšœå®³å…ï¼ˆè€…ï¼‰ãƒªãƒãƒ“ãƒªãƒ†ãƒ¼ã‚·ãƒ§ãƒ³çµ‚äº†æ—¥',0,'',0,0,'000',1,0,0,
  1,'0000','0','00','00',1,'00','00','         ','00','00','         ','00','00','         ',
  '00','00','         ',' ',' ','         ','            ','         ',
  '        ','        ','        ','20070111','00000000','000000');

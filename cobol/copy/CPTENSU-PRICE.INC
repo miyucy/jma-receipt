@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ≈¿øÙ•ﬁ•π•ø°°¥Ô∫‡≈¿øÙæ Û    COPY (CPTENSU-PRICE.INC)     *
+      *         ÁÇπÊï∞„Éû„Çπ„Çø„ÄÄÂô®ÊùêÁÇπÊï∞ÊÉÖÂ†±    COPY (CPTENSU-PRICE.INC)     *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
       *01  TENSU-PRICE-REC.
            03  TNSPR-KEY.
@@ -28,7 +28,7 @@
                05  TNSPR-SRYCD           PIC  X(09).
                05  TNSPR-YUKOSTYMD       PIC  X(08).
                05  TNSPR-YUKOEDYMD       PIC  X(08).
-      *    ∂‚≥€
+      *    ÈáëÈ°ç
            03  TNSPR-PRICE               PIC  9(09)V9(02).
       *
            03  TNSPR-TERMID              PIC  X(16).
@@ -36,7 +36,7 @@
            03  TNSPR-CREYMD              PIC  X(08).
            03  TNSPR-UPYMD               PIC  X(08).
            03  TNSPR-UPHMS               PIC  X(06).
-      *°°°°ºÁ•≠°ºππø∑Õ—π‡Ã‹
+      *„ÄÄ„ÄÄ‰∏ª„Ç≠„ÉºÊõ¥Êñ∞Áî®È†ÖÁõÆ
            03  TNSPR-UP-KEY.
                05  TNSPR-UP-HOSPNUM       PIC 9(2).
                05  TNSPR-UP-SRYCD         PIC  X(09).

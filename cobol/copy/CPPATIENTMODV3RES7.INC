@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɴ�����Ͽ����ʴ��Զش����ޡ�(���β���V3)
+      *    ＡＰＩ患者登録情報（患者禁忌薬剤）(一体化　V3)
       *                                   COPY (CPPATIENTMODV3RES7.INC)
       ******************************************************************
        01  XML-PATIENTMODRES.
@@ -29,57 +29,57 @@
            02  PTMODRES-MODE              PIC S9(9)   BINARY.
            02  PTMODRES-RECORDNAME        PIC X(128).
            02  PTMODRES-APPOINTRES.
-      *      �ꥯ�������ֹ�
+      *      リクエスト番号
              03  PTMODRES-REQUEST-NUMBER    PIC X(2).
-      *      �쥹�ݥ��ֹ�
+      *      レスポンス番号
              03  PTMODRES-RESPONSE-NUMBER   PIC X(2).
-      *      UID���Żҥ���ơ�
+      *      UID（電子カルテ）
              03  PTMODRES-KARTE-UID         PIC X(36).
-      *      UID�ʥ��륫��
+      *      UID（オルカ）
              03  PTMODRES-ORCA-UID          PIC X(36).
-      *      ��³��ʬ
+      *      継続区分
              03  PTMODRES-CONT-MODE         PIC X(05).
-      *      �»���
+      *      実施日
              03  PTMODRES-INFORMATION-DATE  PIC X(10).
-      *      �»ܻ���
+      *      実施時間
              03  PTMODRES-INFORMATION-TIME  PIC X(8).
-      *      �ֵѥ�����
+      *      返却コード
              03  PTMODRES-API-RESULT        PIC X(3).
-      *      �ֵѥ�å�����
+      *      返却メッセージ
              03  PTMODRES-API-RESULT-MSG    PIC X(100).
       *
              03  PTMODRES-RESKEY              PIC X(100).
-      *      �����ֹ�
+      *      患者番号
              03  PTMODRES-PATIENTID        PIC X(20).
-      *      ���Ծ���
+      *      患者情報
              03  PTMODRES-PTINF-INFO.
-      *        ���Ի�̾
+      *        患者氏名
                05  PTMODRES-NAME             PIC X(100).
-      *        ���ԥ��ʻ�̾
+      *        患者カナ氏名
                05  PTMODRES-KANANAME         PIC X(100).
-      *        ��ǯ����
+      *        生年月日
                05  PTMODRES-BIRTHDAY         PIC X(10).
-      *        ����
+      *        性別
                05  PTMODRES-SEX              PIC X(01).
       *
-      *       ���Զش����޾���
+      *       患者禁忌薬剤情報
               03  PTMODRES-PTKINKI-INFO-G.
-      *          ���Զش����޾���
+      *          患者禁忌薬剤情報
                  05  PTMODRES-PTKINKI-G       OCCURS   500.
-      *              �ش����ޥ�����
+      *              禁忌薬剤コード
                      07  PTMODRES-DRUGCD-CODE      PIC X(09).
-      *              �ش�����̾��
+      *              禁忌薬剤名称
                      07  PTMODRES-DRUGCD-NAME      PIC X(80).
-      *              ͭ����λ���ʥޥ�����λ����
+      *              有効終了日（マスタ終了日）
                      07  PTMODRES-DRUGCD-END-DATE  PIC X(10).
-      *              �в��������ܹܰԥ�����
+      *              経過措置品目移行コード
                      07  PTMODRES-CHANGE-CODE      PIC X(09).
                      07  PTMODRES-CHANGE-NAME      PIC X(80).
-      *              �ش�������
+      *              禁忌開始日
                      07  PTMODRES-START-DATE       PIC X(10).
-      *              ��Ϳ��
+      *              投与日
                      07  PTMODRES-TOUYO-DATE       PIC X(10).
-      *              ���顼������
+      *              エラーコード
                      07  PTMODRES-ERRCD            PIC X(04).
                      07  PTMODRES-ERRCD-MSG        PIC X(100).
       *

@@ -1,29 +1,29 @@
 kanri_cd    : "1018"
-name        : "´µ¼Ô¾õÂÖ¥³¥á¥ó¥È¾ğÊó"
+name        : "æ‚£è€…çŠ¶æ…‹ã‚³ãƒ¡ãƒ³ãƒˆæƒ…å ±"
 class_cd    : "*"
 item_max    : 4
 item_list   :
 - item_no   : 1
   item      : "CONDITION-BODY"
-  item_jp   : "¾õÂÖÆâÍÆ"
+  item_jp   : "çŠ¶æ…‹å†…å®¹"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "CONDITION-WORD"
-  item_jp   : "ÈæÓÈÃ±¸ì"
+  item_jp   : "æ¯”å–©å˜èª"
   type      : "X"
   start     : 41
   length    : 40
 - item_no   : 3
   item      : "ICON-FILENAME"
-  item_jp   : "¥¢¥¤¥³¥ó¥Õ¥¡¥¤¥ëÌ¾"
+  item_jp   : "ã‚¢ã‚¤ã‚³ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«å"
   type      : "X"
   start     : 81
   length    : 100
 - item_no   : 4
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 181
   length    : 356

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGS04.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��Ǽ��Ͽ
-      *  ����ݡ��ͥ��̾  : ��ʧ������ȯ�ԡʣӣ�����
-      *  ������            : 
-      *  02/12/19    NACL�ݿ���   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 収納登録
+      *  コンポーネント名  : 支払証明書発行（Ｓ０４）
+      *  管理者            : 
+      *  02/12/19    NACL−森脇   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.01.01     NACL-����    04/11/15  ��������ѹ�
-      * 03.04.00     NACL-����    06/12/15  �����ѹ�
-      * 03.04.01     NACL-����    06/12/19  �ץ�ӥ塼ɽ��
-      * 03.05.00     NACL-����    07/05/20  ���롼�׿����б�
-      * 04.03.00     NACL-����    08/06/18  �����ƥ���������������
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.01.01     NACL-森脇    04/11/15  設定画面変更
+      * 03.04.00     NACL-森脇    06/12/15  画面変更
+      * 03.04.01     NACL-森脇    06/12/19  プレビュー表示
+      * 03.05.00     NACL-太田    07/05/20  グループ診療対応
+      * 04.03.00     NACL-太田    08/06/18  システム管理より初期値設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -44,19 +44,19 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���Ź԰��Ѷ��̥ѥ�᥿
+      *    診療行為用共通パラメタ
            COPY    "S01COMMON-SPA".
       *
-      *    ��ʧ������ѥ�᡼��
+      *    支払証明書パラメータ
            COPY    "CPORCHCM31.INC".
       *
-      *    ���̳��������
+      *    画面活性非活性
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  SPA-S04.
            03  SPA-GMN-CUR                 PIC 9(03).
            03  SPA-GMN-AREA.
@@ -171,7 +171,7 @@
                    07  SPA-NAI-ENDMM       PIC 9(02).
                    07  SPA-NAI-ENDDD       PIC 9(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-OK              PIC 9(01).
@@ -179,11 +179,11 @@
            03  FLG-INIT            PIC 9(01).
            03  FLG-API             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(05).
       *
-      *    ����ΰ�
+      *    作業領域
        01  WRK-AREA.
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-LNKYMD          PIC X(10).
@@ -204,53 +204,53 @@
       *
        01  CONST-AREA.
       *
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����
+      *    システム管理ＤＢ（３００３）のキー値
            03  CONST-3003-KBNCD            PIC X(08)   VALUE "023".
       *
-      *    ���������ģ¤Υ�����
+      *    印刷管理ＤＢのキー値
            03  CONST-PRTKANRI-TBL-KEY      PIC X(08)   VALUE "ORCBS01".
            03  CONST-PRTKANRI-TBL-GROUP    PIC X(14)   VALUE SPACE.
       *
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  CONST-JOB-SHELLID           PIC X(08)   VALUE "ORCBS01".
            03  CONST-JOB-JOBID             PIC 9(07)   VALUE ZERO.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1039.INC".
            COPY    "CPSK3003.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -269,7 +269,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -286,15 +286,15 @@
            EVALUATE    MCP-STATUS  ALSO    MCP-EVENT
                WHEN    "LINK"      ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *        ��������
+      *        画面遷移
                WHEN     "PUTG"     ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *        ����
+      *        入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -307,24 +307,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "SERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END         =   1 )
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -346,7 +346,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
@@ -354,7 +354,7 @@
       *
       *----(03.04.01)--UPD-START---
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
            WHEN    "CLICKED"   ALSO    "B01"
                INITIALIZE              SPA-S01-SHIHARAI-PARA
                MOVE    SPACE       TO  SPA-S01-SHR-ORDER
@@ -363,7 +363,7 @@
            WHEN    "CLICKED"   ALSO    "B02"
                INITIALIZE              SPA-S04-AREA
                PERFORM 310-SPASET-SEC
-      *    �ץ�ӥ塼
+      *    プレビュー
            WHEN    "CLICKED"   ALSO    "B10"
                PERFORM 410-PRINT-MAE-CHK-SEC
                IF    ( SPA-ERRCD   =   SPACE )
@@ -371,7 +371,7 @@
                    MOVE    "PV"        TO  SPA-S01-SHR-ORDER
                    PERFORM 400-PRINT-SEC
                END-IF
-      *    ��Ͽ
+      *    登録
            WHEN    "CLICKED"   ALSO    "B12"
                PERFORM 410-PRINT-MAE-CHK-SEC
                IF    ( SPA-ERRCD   =   SPACE )
@@ -387,7 +387,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -398,7 +398,7 @@
       *    WHEN    OTHER
       *
                MOVE    ZERO        TO  SPA-GMN-CUR
-      *        ���ϥ����å�����
+      *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
       *
       *    END-EVALUATE
@@ -408,15 +408,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            IF    ( SPA-ERRCD       =   SPACE )
-      *        ���ܥ����å�����
+      *        基本チェック処理
                PERFORM 4102-KIHON-CHK-SEC
            END-IF
       *
@@ -425,7 +425,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
@@ -444,7 +444,7 @@
        4101-GMN-SPA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
@@ -492,7 +492,7 @@
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -531,7 +531,7 @@
            EXIT.
       *
       *************************************************************
-      *    ������̽���
+      *    初期画面処理
       *************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -553,7 +553,7 @@
       *
       *----(03.04.01)--UPD-START---
       *****************************************************************
-      *    ��ǧ���̡ʣӣɣģ��ˣϣ˽���
+      *    確認画面（ＳＩＤ２）ＯＫ処理
       *****************************************************************
       * 330-SID2-SET-SEC            SECTION.
       *
@@ -575,7 +575,7 @@
       *
       *----(03.04.01)--UPD-END-----
       *************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -646,7 +646,7 @@
            EXIT.
       *
       *************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *************************************************************
        3101-SPASET-SEC                     SECTION.
       *
@@ -670,7 +670,7 @@
        3101-SPASET-EXT.
            EXIT.
       *************************************************************
-      *    ���Уɰ��������å�
+      *    ＡＰＩ印刷チェック
       *************************************************************
        3101-APIPRINT-CHK-SEC               SECTION.
       *
@@ -708,7 +708,7 @@
        3101-APIPRINT-CHK-EXT.
            EXIT.
       *************************************************************
-      *    ����ܽ������
+      *    コンボ初期処理
       *************************************************************
        3101-COMBO-SYOKI-SEC        SECTION.
       *
@@ -732,15 +732,15 @@
        3101-COMBO-SYOKI-EXT.
            EXIT.
       *************************************************************
-      *    Ģɼ�����ʬ������������
+      *    帳票指定区分コンボ設定処理
       *************************************************************
        3101-SIHARAILIST-SET-SEC    SECTION.
       *
            INITIALIZE                  SPA-GMN-SIHARAILIST-G
       *
-           MOVE    "0 ȯ�Ԥ��ʤ�"  TO  SPA-GMN-SIHARAILIST(1)
-           MOVE    "1 ���̾�����"  TO  SPA-GMN-SIHARAILIST(2)
-           MOVE    "2 ���̾�����"  TO  SPA-GMN-SIHARAILIST(3)
+           MOVE    "0 発行しない"  TO  SPA-GMN-SIHARAILIST(1)
+           MOVE    "1 日別証明書"  TO  SPA-GMN-SIHARAILIST(2)
+           MOVE    "2 月別証明書"  TO  SPA-GMN-SIHARAILIST(3)
       *
            MOVE    3               TO  SPA-GMN-SIHARAILIST-MAX
       *
@@ -748,15 +748,15 @@
        3101-SIHARAILIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ������ʬ������������
+      *    入外区分コンボ設定処理
       *************************************************************
        3101-NYUGAILIST-SET-SEC     SECTION.
       *
            INITIALIZE                  SPA-GMN-NYUGAILIST-G
       *
-           MOVE    "0 ����"        TO  SPA-GMN-NYUGAILIST(1)
-           MOVE    "1 ����"        TO  SPA-GMN-NYUGAILIST(2)
-           MOVE    "2 ����"        TO  SPA-GMN-NYUGAILIST(3)
+           MOVE    "0 全て"        TO  SPA-GMN-NYUGAILIST(1)
+           MOVE    "1 入院"        TO  SPA-GMN-NYUGAILIST(2)
+           MOVE    "2 外来"        TO  SPA-GMN-NYUGAILIST(3)
       *
            MOVE    3               TO  SPA-GMN-NYUGAILIST-MAX
       *
@@ -764,15 +764,15 @@
        3101-NYUGAILIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ���ֻ����ʬ������������
+      *    期間指定区分コンボ設定処理
       *************************************************************
        3101-SRYLIST-SET-SEC        SECTION.
       *
            INITIALIZE                  SPA-GMN-SRYLIST-G
       *
-           MOVE    "1 ǯ����"      TO  SPA-GMN-SRYLIST(1)
-           MOVE    "2 ǯ"          TO  SPA-GMN-SRYLIST(2)
-           MOVE    "3 ǯ��"        TO  SPA-GMN-SRYLIST(3)
+           MOVE    "1 年月日"      TO  SPA-GMN-SRYLIST(1)
+           MOVE    "2 年"          TO  SPA-GMN-SRYLIST(2)
+           MOVE    "3 年度"        TO  SPA-GMN-SRYLIST(3)
       *
            MOVE    3               TO  SPA-GMN-SRYLIST-MAX
       *
@@ -780,14 +780,14 @@
        3101-SRYLIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ���ֶ�ʬ������������
+      *    期間区分コンボ設定処理
       *************************************************************
        3101-KIKANLIST-SET-SEC      SECTION.
       *
            INITIALIZE                  SPA-GMN-KIKANLIST-G
       *
-           MOVE    "1 ���Ŵ���"    TO  SPA-GMN-KIKANLIST(1)
-           MOVE    "2 ��ʧ����"    TO  SPA-GMN-KIKANLIST(2)
+           MOVE    "1 診療期間"    TO  SPA-GMN-KIKANLIST(1)
+           MOVE    "2 支払期間"    TO  SPA-GMN-KIKANLIST(2)
       *
            MOVE    2               TO  SPA-GMN-KIKANLIST-MAX
       *
@@ -795,16 +795,16 @@
        3101-KIKANLIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ������ʬ�������
+      *    印字区分設定処理
       *************************************************************
        3101-DSPLIST-SET-SEC        SECTION.
       *
            INITIALIZE                  SPA-GMN-DSPLIST-G
       *
-           MOVE    "1 ��������"            TO  SPA-GMN-DSPLIST(1)
-           MOVE    "2 �������ʤ�"          TO  SPA-GMN-DSPLIST(2)
-           MOVE    "3 ����ʬ�Τ߰�������"  TO  SPA-GMN-DSPLIST(3)
-           MOVE    "4 ����ʬ�Τ߰�������"  TO  SPA-GMN-DSPLIST(4)
+           MOVE    "1 印字する"            TO  SPA-GMN-DSPLIST(1)
+           MOVE    "2 印字しない"          TO  SPA-GMN-DSPLIST(2)
+           MOVE    "3 医保分のみ印字する"  TO  SPA-GMN-DSPLIST(3)
+           MOVE    "4 入金分のみ印字する"  TO  SPA-GMN-DSPLIST(4)
       *
            MOVE    4               TO  SPA-GMN-DSPLIST-MAX
       *
@@ -812,15 +812,15 @@
        3101-DSPLIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ���ֳ���������ʬ�λ�ʧ��
+      *    期間開始前診療分の支払い
       *************************************************************
        3101-SUMKBNLIST-SET-SEC         SECTION.
       *
            INITIALIZE                  SPA-GMN-SUMKBNLIST-G
       *
-           MOVE    "1 ��ʧ�ۤ˴ޤ��"      TO  SPA-GMN-SUMKBNLIST(1)
+           MOVE    "1 支払額に含める"      TO  SPA-GMN-SUMKBNLIST(1)
       *
-           MOVE    "2 ��ʧ�ۤ˴ޤ�ʤ�"    TO  SPA-GMN-SUMKBNLIST(2)
+           MOVE    "2 支払額に含めない"    TO  SPA-GMN-SUMKBNLIST(2)
       *
            MOVE    2               TO  SPA-GMN-SUMKBNLIST-MAX
       *
@@ -828,15 +828,15 @@
        3101-SUMKBNLIST-SET-EXT.
            EXIT.
       *************************************************************
-      *    ������ʬ�������
+      *    処理区分設定処理
       *************************************************************
        3101-SYORILIST-SET-SEC      SECTION.
       *
            INITIALIZE                  SPA-GMN-SYORILIST-G
       *
-           MOVE    "1 ��ʧ�ۤ˴ޤ��"      TO  SPA-GMN-SYORILIST(1)
+           MOVE    "1 支払額に含める"      TO  SPA-GMN-SYORILIST(1)
       *
-           MOVE    "2 ��ʧ�ۤ˴ޤ�ʤ�"    TO  SPA-GMN-SYORILIST(2)
+           MOVE    "2 支払額に含めない"    TO  SPA-GMN-SYORILIST(2)
       *
            MOVE    2               TO  SPA-GMN-SYORILIST-MAX
       *
@@ -845,15 +845,15 @@
            EXIT.
       *
       *************************************************************
-      *    ����ȯ�Զ�ʬ������������
+      *    自費発行区分コンボ設定処理
       *************************************************************
        3101-JIHILIST-SET-SEC       SECTION.
       *
            INITIALIZE                  SPA-GMN-JIHILIST-G
       *
-           MOVE    "0 ȯ�Ԥ��ʤ�"  TO  SPA-GMN-JIHILIST(1)
-           MOVE    "1 �������ٽ�"  TO  SPA-GMN-JIHILIST(2)
-           MOVE    "2 �������ٽ�"  TO  SPA-GMN-JIHILIST(3)
+           MOVE    "0 発行しない"  TO  SPA-GMN-JIHILIST(1)
+           MOVE    "1 日別明細書"  TO  SPA-GMN-JIHILIST(2)
+           MOVE    "2 月別明細書"  TO  SPA-GMN-JIHILIST(3)
       *
            MOVE    3               TO  SPA-GMN-JIHILIST-MAX
       *
@@ -862,7 +862,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�����ʬ
+      *    帳票設定区分
       *****************************************************************
        4001-SIHARAIKBN-SEC         SECTION.
       *
@@ -888,7 +888,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ
+      *    入外区分
       *****************************************************************
        4001-NYUGAIKBN-SEC          SECTION.
       *
@@ -914,7 +914,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֻ����ʬ
+      *    期間指定区分
       *****************************************************************
        4001-SRYKBN-SEC             SECTION.
       *
@@ -942,7 +942,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֻ����ʬ���å�
+      *    期間指定区分セット
       *****************************************************************
        4002-SRYKBN-SET-SEC         SECTION.
       *
@@ -982,7 +982,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ͽ���ǯ����
+      *    開始診療年月日
       *****************************************************************
        4001-STRSRYYMD-SEC          SECTION.
       *
@@ -1025,7 +1025,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����ǯ����
+      *    終了診療年月日
       *****************************************************************
        4001-ENDSRYYMD-SEC          SECTION.
       *
@@ -1055,7 +1055,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֶ�ʬ
+      *    期間区分
       *****************************************************************
        4001-KIKANKBN-SEC           SECTION.
       *
@@ -1098,7 +1098,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ʬ
+      *    印字区分
       *****************************************************************
        4001-DSPKBN-SEC             SECTION.
       *
@@ -1127,7 +1127,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֳ��Ͽ���ʬ�λ�ʧ��
+      *    期間開始診療分の支払い
       *****************************************************************
        4001-SUMKBN-SEC           SECTION.
       *
@@ -1157,7 +1157,7 @@
        4001-SUMKBN-EXT.
            EXIT.
       *****************************************************************
-      *    ������ʬ
+      *    処理区分
       *****************************************************************
        4001-SYORIKBN-SEC           SECTION.
       *
@@ -1188,7 +1188,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʬ
+      *    自費区分
       *****************************************************************
        4001-JIHIKBN-SEC            SECTION.
       *
@@ -1217,7 +1217,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������å�
+      *    印刷前チェック
       *****************************************************************
        410-PRINT-MAE-CHK-SEC       SECTION.
       *
@@ -1226,7 +1226,7 @@
                GO  TO  410-PRINT-MAE-CHK-EXT
            END-IF
       *
-      *    �����ϰ��羮�����å�
+      *    期間範囲大小チェック
            IF    ( SPA-GMN-SRYKBN       =   "1" )
                IF    ( SPA-NAI-STRSRYYMD   >   SPA-NAI-ENDSRYYMD )
                    MOVE    "0021"          TO  SPA-ERRCD
@@ -1234,7 +1234,7 @@
                    GO  TO  410-PRINT-MAE-CHK-EXT
                END-IF
       *
-      *        ��ǯ�����С������å�
+      *        一年オーバーチェック
                COMPUTE WRK-YY      =   SPA-NAI-ENDYY   -   SPA-NAI-STRYY
                COMPUTE WRK-MM      =   SPA-NAI-ENDMM   -   SPA-NAI-STRMM
       *
@@ -1265,7 +1265,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        400-PRINT-SEC               SECTION.
       *
@@ -1304,7 +1304,7 @@
                    MOVE    "0331"      TO  SPA-S01-SHR-EDYMD (5:)
            END-EVALUATE
       *
-      *    ��ʧ������ե饰
+      *    支払証明書フラグ
            EVALUATE    SPA-GMN-SIHARAIKBN
                WHEN    "0"
                    MOVE    0           TO  SPA-S01-SHR-HCM31FLG
@@ -1325,7 +1325,7 @@
                END-IF
            END-IF
       *
-      *    �����������ٽ�ե饰
+      *    自費内訳明細書フラグ
            EVALUATE    SPA-GMN-JIHIKBN
                WHEN    "0"
                    MOVE    0           TO  SPA-S01-SHR-HCM50FLG
@@ -1344,7 +1344,7 @@
        400-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    API�������ץ�ӥ����򡼥����å�����
+      *    API印刷時プレビュ選択ーチェック処理
       *****************************************************************
        4001-APIPV-CHK-SEC              SECTION.
       *
@@ -1365,11 +1365,11 @@
            EXIT.
       *----(03.04.01)--UPD-START---
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        4900-JOBKANRICHK-SEC            SECTION.
       *
-      *    ����ִ��������å�
+      *    ジョブ管理チェック
            MOVE    SPACE               TO  WRK-ERRMSG
            MOVE    ZERO                TO  FLG-SYSKANRI
       *
@@ -1387,7 +1387,7 @@
                        UNTIL ( IDX >       SYS-3003-JOBID )
                         OR   ( WRK-ERRMSG  NOT =   SPACE )
       *
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"               TO  SJOBKANRI-MODE
                    INITIALIZE                      JOBKANRI-REC
                    MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
@@ -1400,9 +1400,9 @@
                    IF    ( SJOBKANRI-RETURN    =   ZERO )
                        IF    ( JOB-ENDYMD      =   SPACE )
                            MOVE    "7777"      TO  SPA-ERRCD
-                           STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE
+                                   "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-ERRMSG
                            END-STRING
                        END-IF
@@ -1416,7 +1416,7 @@
       *
       *----(03.04.01)--UPD-END-----
       *************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1444,13 +1444,13 @@
            EXIT.
       *
       *************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *************************************************************
        500-GMNHEN-SEC              SECTION.
       *
            INITIALIZE                  S04
       *
-      *    Ģɼ�����ʬ�����
+      *    帳票指定区分コンボ
            MOVE    SPA-GMN-SIHARAIKBN-G    TO  S04-SIHARAIKBN
            MOVE    SPA-GMN-SIHARAILIST-MAX TO  S04-SIHARAI-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1459,7 +1459,7 @@
                                        TO  S04-SIHARAI-LIST(IDX)
            END-PERFORM
       *
-      *    �����ʬ�����
+      *    自費区分コンボ
            MOVE    SPA-GMN-JIHIKBN-G       TO  S04-JIHIKBN
            MOVE    SPA-GMN-JIHILIST-MAX    TO  S04-JIHI-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1468,7 +1468,7 @@
                                        TO  S04-JIHI-LIST(IDX)
            END-PERFORM
       *
-      *    ������ʬ�����
+      *    入外区分コンボ
            MOVE    SPA-GMN-NYUGAIKBN-G     TO  S04-NYUGAIKBN
            MOVE    SPA-GMN-NYUGAILIST-MAX  TO  S04-NYUGAI-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1477,7 +1477,7 @@
                                        TO  S04-NYUGAI-LIST(IDX)
            END-PERFORM
       *
-      *    ���ֻ����ʬ�����
+      *    期間指定区分コンボ
            MOVE    SPA-GMN-SRYKBN-G        TO  S04-SRYKBN
            MOVE    SPA-GMN-SRYLIST-MAX     TO  S04-SRY-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1489,7 +1489,7 @@
            MOVE    SPA-GMN-STRSRYYMD   TO  S04-STRSRYYMD
            MOVE    SPA-GMN-ENDSRYYMD   TO  S04-ENDSRYYMD
       *
-      *    ���ֶ�ʬ�����
+      *    期間区分コンボ
            MOVE    SPA-GMN-KIKANKBN-G      TO  S04-KIKANKBN
            MOVE    SPA-GMN-KIKANLIST-MAX   TO  S04-KIKAN-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1498,7 +1498,7 @@
                                        TO  S04-KIKAN-LIST(IDX)
            END-PERFORM
       *
-      *    ������ʬ�����
+      *    印字区分コンボ
            MOVE    SPA-GMN-DSPKBN-G        TO  S04-DSPKBN
            MOVE    SPA-GMN-DSPLIST-MAX     TO  S04-DSP-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1507,7 +1507,7 @@
                                        TO  S04-DSP-LIST(IDX)
            END-PERFORM
       *
-      *    ���ֳ��Ͽ���ʬ�λ�ʧ��
+      *    期間開始診療分の支払い
            MOVE    SPA-GMN-SUMKBN-G      TO  S04-SUMKBN
            MOVE    SPA-GMN-SUMKBNLIST-MAX   TO  S04-SUMKBN-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1516,7 +1516,7 @@
                                        TO  S04-SUMKBN-LIST(IDX)
            END-PERFORM
       *
-      *    ������ʬ�����
+      *    処理区分コンボ
            MOVE    SPA-GMN-SYORIKBN-G      TO  S04-SYORIKBN
            MOVE    SPA-GMN-SYORILIST-MAX   TO  S04-SYORI-COUNT
            PERFORM VARYING IDX     FROM    1   BY  1
@@ -1526,7 +1526,7 @@
            END-PERFORM
       *
            IF    ( SPA-GMN-SRYKBN   =   "1" )
-               MOVE    "��"                TO  S04-LBLKARA
+               MOVE    "〜"                TO  S04-LBLKARA
                MOVE    WIDGET-NORMAL       TO  S04-ENDSRYYMD-STATE
            ELSE
                MOVE    SPACE               TO  S04-LBLKARA
@@ -1545,9 +1545,9 @@
                                                S04-JIHIKBN-STATE
                                                S04-JIHI-LIST-STATE
            ELSE
-               MOVE    "���ֳ�����������ʬ�λ�ʧ��"
+               MOVE    "期間開始日前診療分の支払い"
                                            TO  S04-LBLSUMKBN
-               MOVE    "���ֽ�λ����λ�ʧ��"
+               MOVE    "期間終了日後の支払い"
                                            TO  S04-LBLSYORIKBN
                MOVE    WIDGET-NORMAL       TO  S04-SYORIKBN-STATE
                                                S04-SYORI-LIST-STATE
@@ -1583,7 +1583,7 @@
       *
       *----(03.04.01)--UPD-START---
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
       * 520-SIDSET-SEC              SECTION.
       *
@@ -1591,7 +1591,7 @@
       *
       *     EVALUATE    SPA-SIDCD
       *     WHEN    "1001"
-      *         MOVE    "������Ԥ��ޤ�"
+      *         MOVE    "印刷を行います"
       *                                  TO  WRK-SIDMSG
       *     END-EVALUATE
       *
@@ -1615,7 +1615,7 @@
       *     EXIT.
       *----(03.04.01)--UPD-END-----
       *************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1654,7 +1654,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ��������ϰ��֤���
+      *    画面カーソルセット処理（入力位置より）
       *****************************************************************
        50011-CUR-SET-SEC           SECTION.
       *
@@ -1706,7 +1706,7 @@
            EXIT.
       *
       **************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       **************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1714,37 +1714,37 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "Ģɼ�����ʬ���ϥ��顼"
+               MOVE    "帳票指定区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "������ʬ���ϥ��顼"
+               MOVE    "入外区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "���ֻ����ʬ���ϥ��顼"
+               MOVE    "期間指定区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "���ֳ������ϥ��顼"
+               MOVE    "期間開始入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0005"
-               MOVE    "���ֽ�λ���ϥ��顼"
+               MOVE    "期間終了入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "���ֶ�ʬ���ϥ��顼"
+               MOVE    "期間区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "�������ư�����ʬ���ϥ��顼"
+               MOVE    "請求内容印字区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0008"
-               MOVE    "��ʧ��ʬ���ϥ��顼"
+               MOVE    "支払区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0009"
-               MOVE    "����ʬȯ�Ի����ʬ���ϥ��顼"
+               MOVE    "自費分発行指定区分入力エラー"
                                            TO  SPA-ERRMSG
            WHEN    "0021"
-               MOVE    "���֤����������Ϥ��Ƥ�������"
+               MOVE    "期間を正しく入力してください"
                                            TO  SPA-ERRMSG
            WHEN    "0022"
-               MOVE    "���ꤵ�줿���֤����������Ķ���Ƥ��ޤ�"
+               MOVE    "指定された期間が１２ヶ月を超えています"
                                            TO  SPA-ERRMSG
            WHEN    "7777"
                MOVE    WRK-ERRMSG          TO  SPA-ERRMSG
@@ -1770,12 +1770,12 @@
            EXIT.
       *
       *****************************************************************
-      *   ����ǯ����������ǯ�����ʵ�ǽ������
+      *   和暦年月日→西暦年月日（機能１２）
       *****************************************************************
        831-YMDCONV12-SEC           SECTION.
       *
            IF      WRK-LNKYMD      NOT =   SPACE
-      *        ���ղ��̥����å�����
+      *        日付画面チェックサブ
                INITIALIZE                  ORCSGDAYAREA
                MOVE    WRK-LNKYMD      TO  SGDAY-INDAY
                CALL    "ORCSGDAY"          USING
@@ -1793,11 +1793,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���������Խ�����
+      *   画面日付編集処理
       *****************************************************************
        800-ORCSGDAY-SEC            SECTION.
       *
-      *    ���ղ��̥����å�����
+      *    日付画面チェックサブ
            INITIALIZE                  ORCSGDAYAREA
            MOVE    "2"             TO  SGDAY-INTYPE
            MOVE    WRK-LNKYMD      TO  SGDAY-INDAY
@@ -1816,7 +1816,7 @@
       *
       *----(03.04.01)--ADD-START---
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC  SECTION.
       *
@@ -1860,7 +1860,7 @@
       *
       *----(03.04.01)--ADD-END-----
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

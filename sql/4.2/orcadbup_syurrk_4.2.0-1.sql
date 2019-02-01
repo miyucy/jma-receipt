@@ -1,15 +1,15 @@
 --                                    --
--- ¼ıÇ¼ÍúÎò¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹       --
+-- åç´å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´       --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ÉÂÍı¿ÇÃÇ   BYR                   --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ç—…ç†è¨ºæ–­   BYR                   --
 --                                    --
 -- Create Date : 2008/03/03           --
 --                                    --
 \set ON_ERROR_STOP
 
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table TBL_SYURRK
    add column BYR_HKNTEN    numeric(07);
 alter table TBL_SYURRK
@@ -19,7 +19,7 @@ alter table TBL_SYURRK
 alter table TBL_SYURRK
    add column BYR_TGMONEY_TAX numeric(07);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYURRK
    alter BYR_HKNTEN set default 0;
 alter table TBL_SYURRK

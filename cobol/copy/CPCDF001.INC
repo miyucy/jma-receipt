@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,152 +16,152 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ǡ����ʴ��ܾ����         COPY (CPCDF001.INC)    *
+      *    収集データ（基本情報）         COPY (CPCDF001.INC)    *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  COLDAT01-REC.
            03  COLDAT01-KEY.
-      *        ���ŵ��أɣ�
+      *        医療機関ＩＤ
                05  COLDAT01-HOSPID         PIC  X(24).
-      *        ����ǯ��
+      *        診療年月
                05  COLDAT01-SRYYM          PIC  9(06).
-      *        ������ʬ
+      *        入外区分
                05  COLDAT01-NYUGAIKBN      PIC  X(01).
-      *        ���ԣɣ�
+      *        患者ＩＤ
                05  COLDAT01-PTID           PIC  9(10).
-      *        �쥻�ץȿ��Ų�
+      *        レセプト診療科
                05  COLDAT01-RECEKA         PIC  X(02).
-      *        ���ݸ��ݸ��ֹ�
+      *        主保険保険番号
                05  COLDAT01-HKNNUM         PIC  X(03).
-      *        ����ɣ�
+      *        公費ＩＤ
                05  COLDAT01-KOHID          PIC  9(10).
-      *        �ݸ����ֹ�
+      *        保険者番号
                05  COLDAT01-HKNJANUM       PIC  X(08).
-      *        �ܿͲ�²��ʬ
+      *        本人家族区分
                05  COLDAT01-HONKZKKBN      PIC  X(01).
-      *        �����ʬ
+      *        補助区分
                05  COLDAT01-HOJOKBN        PIC  X(01).
       *
-      *        ���ݸ��ɣ�
+      *        主保険ＩＤ
            03  COLDAT01-HKNID              PIC  9(10).
       *
-      *    ���ݸ�����
+      *    主保険情報
            03  COLDAT01-HKN-AREA.
                05  COLDAT01-HKN-TBL        OCCURS  5.
-      *            ���ݸ����ݸ��ɣ�
+      *            主保険−保険ＩＤ
                    07  COLDAT01-THKNID     PIC  9(10).
-      *            Ŭ�ѳ���ǯ����
+      *            適用開始年月日
                    07  COLDAT01-TTEKSTYMD  PIC  X(08).
-      *            Ŭ�ѽ�λǯ����
+      *            適用終了年月日
                    07  COLDAT01-TTEKEDYMD  PIC  X(08).
-      *            ���ݸ��ݷ�³��ʬ
+      *            主保険−継続区分
                    07  COLDAT01-TCONTKBN   PIC  X(01).
-      *            ���ݸ��������ʬ
+      *            主保険−補助区分
                    07  COLDAT01-THOJOKBN   PIC X(01).
-      *            ���ݸ����ܿͲ�²��ʬ
+      *            主保険−本人家族区分
                    07  COLDAT01-THONKZKKBN PIC  X(01).
-      *        ���ݸ���ˡ���ֹ�
+      *        主保険−法別番号
                05  COLDAT01-HKNHBTNUM      PIC  X(02).
-      *        ���ݸ��ݸ�����̶�ʬ
+      *        主保険−公費種別区分
                05  COLDAT01-HKNKOHSBTKBN   PIC X(01).
-      *    ������
+      *    実日数
            03  COLDAT01-HKNJNISSU          PIC  9(02).
-      *    �������
+      *    合計点数
            03  COLDAT01-HKNTOTALTENSU      PIC  9(08).
-      *    �������ܲ��
+      *    食事療養回数
            03  COLDAT01-HKNSKJNISSU        PIC  9(02).
-      *    ����������
+      *    食事療養費
            03  COLDAT01-HKNSKJRYOYOHI      PIC  9(08).
-      *    ����������ɸ����ô��
+      *    食事療養費標準負担額
            03  COLDAT01-HKNSKJFTN          PIC  9(08).
       *
-      *    Ϸ���ݷ����
+      *    老人保健情報
            03  COLDAT01-RJNHKN.
-      *        Ϸ���ݸ����ݸ��ֹ�
+      *        老人保険−保険番号
                05  COLDAT01-RJNHKNNUM      PIC  X(03).
-      *        Ϸ�ͻ�ʧ��ʬ
+      *        老人支払区分
                05  COLDAT01-RJNPAYKBN      PIC  X(02).
-      *        Ϸ���ݸ���ˡ���ֹ�
+      *        老人保険−法別番号
                05  COLDAT01-RJNHBTNUM      PIC  X(02).
-      *        Ϸ��Ŭ�ѳ���ǯ����
+      *        老人適用開始年月日
                05  COLDAT01-RJNTEKSTYMD    PIC  X(08).
-      *        Ϸ��Ŭ�ѽ�λǯ����
+      *        老人適用終了年月日
                05  COLDAT01-RJNTEKEDYMD    PIC  X(08).
       *
-      *    �������
+      *    公費情報
            03 COLDAT01-KOHI-AREA.
                05  COLDAT01-KOHI-TBL       OCCURS  10.
-      *            ����ɣ�
+      *            公費ＩＤ
                    07  COLDAT01-TKOHID     PIC  9(10).
-      *            �����ݸ��ֹ�
+      *            公費保険番号
                    07  COLDAT01-TKOHHKNNUM PIC  X(03).
-      *            �����ʧ��ʬ
+      *            公費支払区分
                    07  COLDAT01-TKOHPAYKBN PIC  X(02).
-      *            �����ˡ���ֹ�
+      *            公費−法別番号
                    07  COLDAT01-TKOHHBTNUM PIC  X(02).
-      *            ����ݥ쥻�ץ������ʬ
+      *            公費−レセプト請求区分
                    07  COLDAT01-TRECESKYKBN PIC  X(01).
-      *            Ŭ�ѳ���ǯ����
+      *            適用開始年月日
                    07  COLDAT01-TKOHTEKSTYMD    PIC  X(08).
-      *            Ŭ�ѽ�λǯ����
+      *            適用終了年月日
                    07  COLDAT01-TKOHTEKEDYMD    PIC  X(08).
-      *            ������
+      *            実日数
                    07  COLDAT01-TKOHJNISSU      PIC  9(02).
-      *            �������
+      *            合計点数
                    07  COLDAT01-TKOHTOTALTENSU  PIC  9(08).
-      *            �������ܲ��
+      *            食事療養回数
                    07  COLDAT01-TKOHSKJNISSU    PIC  9(02).
-      *            ����������
+      *            食事療養費
                    07  COLDAT01-TKOHSKJRYOYOHI  PIC  9(08).
-      *            ����������ɸ����ô��
+      *            食事療養費標準負担額
                    07  COLDAT01-TKOHSKJFTN      PIC  9(08).
       *
-      *    ϫ�Ҿ���
+      *    労災情報
            03  COLDAT01-HKN.
-      *        ϫ�ҡ�ϫ���ݸ���ʬ
+      *        労災−労災保険区分
                05  COLDAT01-HKNKBN          PIC  X(01).
-      *        ϫ�ҡݺҳ���ʬ
+      *        労災−災害区分
                05  COLDAT01-SAIGAIKBN       PIC  X(01).
       *
-      *    ���Ծ���
+      *    患者情報
            03  COLDAT01-PTINF-AREA.
-      *        ����
+      *        性別
                05  COLDAT01-SEX             PIC  X(01).
-      *        ��ǯ����
+      *        生年月日
                05  COLDAT01-BIRTHDAY        PIC  9(08).
-      *        ǯ��
+      *        年齢
                05  COLDAT01-AGE             PIC  9(03).
-      *        ��������ʬ�ʣ�����������
+      *        就学前区分（１：就学前）
                05  COLDAT01-SYUGAKUKBN      PIC  9(01).
-      *        �����͹���ֹ�
+      *        自宅−郵便番号
                05  COLDAT01-HOME-POST       PIC  X(07).
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            03  COLDAT01-HKNCOMBIINF.
                05  COLDAT01-HKNCOMBIINF     OCCURS  10.
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                    07  COLDAT01-HKNCOMBI    PIC  9(04).
-      *���ݸ��ֹ�
+      *主保険番号
                    07  COLDAT01-HKNNUMHC    PIC  X(03).
-      *�ȹ礻�����ݸ��ֹ����
+      *組合せ公費保険番号情報
                    07  COLDAT01-KOHNUMHCINF OCCURS  4.
-      *�ȹ礻�����ݸ��ֹ�
+      *組合せ公費保険番号
                        09  COLDAT01-KOHNUMHC
                                             PIC  X(03).
-      *�ȹ礻�����ݸ��ɣ�
+      *組合せ公費保険ＩＤ
                        09  COLDAT01-KOHIDHC PIC  9(10).
-      *    ���Ųʾ���
+      *    診療科情報
            03  COLDAT01-SRYKAINF.
                05  COLDAT01-SRYKA           PIC  X(02)  OCCURS  20.
-      *    ����ǯ����
+      *    入院年月日
            03  COLDAT01-NYUINYMD            PIC  X(08).
-      *    �ౡǯ����
+      *    退院年月日
            03  COLDAT01-TAIINYMD            PIC  X(08).
-      *    ������ʧ����
+      *    審査支払機関
            03  COLDAT01-TEISYUTUSAKI        PIC  9(01).
-      *    �쥻�ץȼ���
+      *    レセプト種別
            03  COLDAT01-RECESYUBETU         PIC  9(04).
       *
-      *    ̤������ʬ
+      *    未訂正区分
            03  COLDAT01-TEISEIKBN           PIC  X(01).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCXRMST3.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥Þ¥¹¥¿¹¹¿·½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¹¹¿·¥Õ¥¡¥¤¥ëºîÀ®½èÍý
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒžã‚¹ã‚¿æ›´æ–°å‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆå‡¦ç†
       *                    : 
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  06/07/14    NACL-°ËÆ£     ¿·µ¬ºîÀ®
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  06/07/14    NACL-ä¼Šè—¤     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,12 +35,12 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÆþÎÏ¡§¥Ñ¥é¥á¡¼¥¿¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ï¼šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  IN-FILE       ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ½ÐÎÏ¡§¹¹¿·¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šæ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  OUT-FILE        ASSIGN
                                    ASS-OUT
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -49,7 +49,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«
        FD  IN-FILE.
        01  IN-REC.
            03  IN-MASTER-KBN           PIC X(02).
@@ -59,7 +59,7 @@
            03  IN-UPFILE               PIC X(100).
            03  IN-UPPG                 PIC X(10).
       *
-      *    ¹¹¿·¥Õ¥¡¥¤¥ë
+      *    æ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«
        FD  OUT-FILE.
        01  OUT-REC.
            03  OUT-MASTER-KBN          PIC X(02).
@@ -72,34 +72,34 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-OUT                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-OUT                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-DBKANRI             PIC 9(01).
            03  FLG-MSTKANRI            PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDZ                     PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-DBRVERSION          PIC X(64).
       *
@@ -119,25 +119,25 @@ grpsys     COPY    "COMMON-SPA".
                "/var/lib/jma-receipt/master/".
       *
            COPY    "ENUM-VALUE".
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
-      *    £Ä£Â´ÉÍý¾ðÊó
+      *    ï¼¤ï¼¢ç®¡ç†æƒ…å ±
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
       *
        01  MSTKANRI-REC.
            COPY    "CPMSTKANRI.INC".
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
        01  PARA-REC.
@@ -149,7 +149,7 @@ grpsys     COPY    "COMMON-SPA".
            USING
            PARA-REC.
       ****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -165,7 +165,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -187,10 +187,10 @@ grpsys     COPY    "COMMON-SPA".
                DISPLAY "DBOPEN ERR"
            END-IF.
       *
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ÆþÎÏ¡¡½é´ü½èÍý
+      *    å…¥åŠ›ã€€åˆæœŸå‡¦ç†
            OPEN    INPUT           IN-FILE
            IF      STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -198,7 +198,7 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
            OPEN    OUTPUT          OUT-FILE
            IF      STS-OUT         NOT =   ZERO
                DISPLAY "*(ORCXRMST3)* OUT-FILE OPN STS["
@@ -206,7 +206,7 @@ grpsys     COPY    "COMMON-SPA".
            END-IF
       *
            PERFORM 101-VERSION-GET-SEC
-      *    MSTKANRI ¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó¤Î¥Æ¡¼¥Ö¥ëÎ¯¤á¹þ¤ß
+      *    MSTKANRI ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®ãƒ†ãƒ¼ãƒ–ãƒ«æºœã‚è¾¼ã¿
            PERFORM 101-DBR-TBL-SET-SEC
       *
            .
@@ -214,7 +214,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¼èÆÀ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±å–å¾—
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
@@ -224,7 +224,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    PARA-HOSPNUM        DELIMITED  BY  SIZE
@@ -234,7 +234,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ½ÐÎÏ¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-OUT
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    PARA-HOSPNUM        DELIMITED  BY  SIZE
@@ -249,11 +249,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    DBKANRI ¥Ð¡¼¥¸¥ç¥ó¼èÆÀ½èÍý
+      *    DBKANRI ãƒãƒ¼ã‚¸ãƒ§ãƒ³å–å¾—å‡¦ç†
       *****************************************************************
        101-VERSION-GET-SEC             SECTION.
       *
-      *    £Ä£Â´ÉÍý¥Þ¥¹¥¿¸¡º÷
+      *    ï¼¤ï¼¢ç®¡ç†ãƒžã‚¹ã‚¿æ¤œç´¢
            INITIALIZE                  DBKANRI-REC
            MOVE    "ORCADB00"          TO  DBKANRI-KANRICD
            MOVE    DBKANRI-REC         TO  MCPDATA-REC
@@ -292,11 +292,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    DBKANRI ¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó¤Î¥Æ¡¼¥Ö¥ëÎ¯¤á¹þ¤ß½èÍý
+      *    DBKANRI ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã®ãƒ†ãƒ¼ãƒ–ãƒ«æºœã‚è¾¼ã¿å‡¦ç†
       *****************************************************************
        101-DBR-TBL-SET-SEC              SECTION.
       *
-      *    ¥Þ¥¹¥¿´ÉÍý¥Þ¥¹¥¿¸¡º÷
+      *    ãƒžã‚¹ã‚¿ç®¡ç†ãƒžã‚¹ã‚¿æ¤œç´¢
            INITIALIZE                  MSTKANRI-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            MOVE    MSTKANRI-REC        TO  MCPDATA-REC
@@ -336,16 +336,16 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    ¥ì¥³¡¼¥É´ÉÍý¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿
            PERFORM 900-IN-READ-SEC
            PERFORM
                UNTIL    FLG-IN         =   1
                MOVE     SPACE          TO  WRK-DBRVERSION
-      *        ³ºÅö¥Þ¥¹¥¿¤Î¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó¼èÆÀ
+      *        è©²å½“ãƒžã‚¹ã‚¿ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³å–å¾—
                SET      DBR-IDX        TO  1
                SEARCH   WRK-TBL-DBRVERSION   VARYING   DBR-IDX
                      AT END
@@ -361,7 +361,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
       *****        END-IF
       *****    END-IF
                IF      WRK-DBRVERSION  NOT =   SPACE
-      *        £Ä£Â¥ì¥³¡¼¥É¥Ð¡¼¥¸¥ç¥ó¤Þ¤Ç½ÐÎÏ¤¹¤ë
+      *        ï¼¤ï¼¢ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒãƒ¼ã‚¸ãƒ§ãƒ³ã¾ã§å‡ºåŠ›ã™ã‚‹
                  IF    IN-DBRVERVION       >   WRK-DBRVERSION
                    IF      IN-DBRVERVION(3:IDY)
                                            >   WRK-DBKANRI-VERSION
@@ -376,11 +376,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  MSTKANRI-HOSPNUM
                  END-IF
                END-IF
       *
-      *        ¥ì¥³¡¼¥É´ÉÍý¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß
+      *        ãƒ¬ã‚³ãƒ¼ãƒ‰ç®¡ç†ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿
                PERFORM 900-IN-READ-SEC
            END-PERFORM
       *
-      *    ¥Þ¥¹¥¿´ÉÍý¥Þ¥¹¥¿¹¹¿·
+      *    ãƒžã‚¹ã‚¿ç®¡ç†ãƒžã‚¹ã‚¿æ›´æ–°
            PERFORM     VARYING  IDX
                        FROM     1     BY   1
                        UNTIL    IDX   =    100   OR
@@ -431,7 +431,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¹¹¿·¥Õ¥¡¥¤¥ë½ÐÎÏ  ½èÍý
+      *    æ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›  å‡¦ç†
       *****************************************************************
        210-OUTFILE-SEC               SECTION.
       *
@@ -450,14 +450,14 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½ªÎ»½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€çµ‚äº†å‡¦ç†
            CLOSE                       IN-FILE
            CLOSE                       OUT-FILE
       *
@@ -469,7 +469,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß½èÍý
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-IN-READ-SEC          SECTION.
       *
@@ -486,7 +486,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
           EXIT.
       *
       *****************************************************************
-      *    ¥Þ¥¹¥¿´ÉÍý¥Õ¥¡¥¤¥ëÆÉ¹þ
+      *    ãƒžã‚¹ã‚¿ç®¡ç†ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
       *****************************************************************
        910-MSTKANRI-READ-SEC           SECTION.
       *
@@ -505,7 +505,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â´ÉÍý¥Õ¥¡¥¤¥ëÆÉ¹þ
+      *    ï¼¤ï¼¢ç®¡ç†ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
       *****************************************************************
        910-DBKANRI-READ-SEC            SECTION.
       *
@@ -524,7 +524,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -538,7 +538,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥º½èÍý
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-CLOSE-SEC                   SECTION.
       *
@@ -550,7 +550,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -568,7 +568,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -586,7 +586,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

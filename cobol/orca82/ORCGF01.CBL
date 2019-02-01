@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,27 +19,27 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGF01.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Хå����å�
-      *  ����ݡ��ͥ��̾  : �Хå����åסʣƣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01/12/03    �Ҥ��ʤ� ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : バックアップ
+      *  コンポーネント名  : バックアップ（Ｆ０１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/12/03    ひさなが 　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     �Ҥ��ʤ�     02/02/04  ����ִ����ơ��֥���ɲ�
-      *                                     �����ơ��֥���ɲ�
-      *                                     �쥻�ץȥ����Ȥ��ɲ�
-      * 01.00.02     �Ҥ��ʤ�     02/04/23  ����ϫ���ݸ��ơ��֥���ɲ�
-      * 01.00.03     �Ҥ��ʤ�     02/05/10  ����ִ��������ɲ�
-      * 01.00.04     �Ҥ��ʤ�     02/05/29  ��ߺ��ѥơ��֥���ɲ�
-      *                                     �����ơ��֥���ɲ�
-      *                                     ��̾�ơ��֥���ɲ�
-      *                                     ����������ֹ���ɲ�
-      * 01.00.05     �Ҥ��ʤ�     03/05/12  ������Ϣ�ơ��֥���ɲ�
-      * 03.05.01     NACL-����    07/06/11  ���롼�׿����б�
-      * 04.08.01     NACL-����    14/08/25  ����ե�����ǥ��쥯�ȥ�����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     ひさなが     02/02/04  ジョブ管理テーブルの追加
+      *                                     雛形テーブルの追加
+      *                                     レセプトコメントの追加
+      * 01.00.02     ひさなが     02/04/23  患者労災保険テーブルの追加
+      * 01.00.03     ひさなが     02/05/10  ジョブ管理検索追加
+      * 01.00.04     ひさなが     02/05/29  相互作用テーブルの追加
+      *                                     機序テーブルの追加
+      *                                     人名テーブルの追加
+      *                                     月代り受給者番号の追加
+      * 01.00.05     ひさなが     03/05/12  入院関連テーブルの追加
+      * 03.05.01     NACL-森脇    07/06/11  グループ診療対応
+      * 04.08.01     NACL-森脇    14/08/25  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -47,7 +47,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �Хå����å׾���ѥե����� 
+      *    バックアップ条件用ファイル 
            SELECT  FIF00-FILE      ASSIGN  FIF00PARA
                                    ORGANIZATION LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-FIF00.
@@ -55,7 +55,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �Хå����å׾���ѥե�����
+      *    バックアップ条件用ファイル
        FD  FIF00-FILE.
        01  FIF00-REC.
            03  FIF00-DATA-AREA     PIC X(1001).
@@ -70,16 +70,16 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �Хå����å׾���ѥե����� ̾���ΰ� 
+      *    バックアップ条件用ファイル 名称領域 
 grpsys     COPY    "CPCOMMONDAT2.INC"
 grpsys                             REPLACING  //RECE01//
 grpsys                             BY         //FIF00//.
 grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
       *
-      *    �Хå����å� �������ΰ�
+      *    バックアップ シェル領域
            COPY    "CPCOMMONSHELLUP.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  SPA-F01.
@@ -100,15 +100,15 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
                05  SPA-NAI-AREA.
                    07  SPA-NAI-MOTOPG         PIC X(08).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
-      *    ����ɥ��ơ������ΰ�
+      *    エンドステータス領域
        01  STS-AREA.
            03  STS-FIF00           PIC X(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                PIC 9(05).
            03  IDX1                PIC 9(03).
@@ -116,24 +116,24 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
            03  IDX3                PIC 9(03).
            03  IDX-NO              PIC 9(03).
       *
-      *    ��å������ΰ�
+      *    メッセージ領域
        01  T-MESSAGE-AREA.
            03  T-MESSAGE-01        PIC X(60)   VALUE
-               "���ꤵ�줿���ǥХå����å���Τ��ᤷ�Ф餯���Ԥ�������
-      -        "����".
+               "指定された条件でバックアップ中のためしばらくお待ちくださ
+      -        "い。".
            03  T-MESSAGE-02        PIC X(32)   VALUE
-               "���ꤵ�줿���ǤΥХå����åפ�".
+               "指定された条件でのバックアップは".
            03  T-MESSAGE-03        PIC X(16)   VALUE
-               "�˽�λ���ޤ�����".
+               "に終了しました。".
            03  T-MESSAGE-04        PIC X(20)   VALUE
-               "�����ơ��֥�̤���ꡣ".
+               "作成テーブル未設定。".
            03  T-MESSAGE-05        PIC X(44)   VALUE
-               "���ꤵ�줿���ǥХå����å׽�����Ԥ��ޤ���".
+               "指定された条件でバックアップ処理を行います。".
       *
        01  WRK-AREA.
            03  WRK-TBLID             PIC X(30).
       *
-      *    ��ȥơ��֥�̾���ΰ�
+      *    作業テーブル名称領域
        01  WK-TBL.
            03  WK-TBLSET       OCCURS  120.
                05  WK-TBL-NO         PIC 9(03).
@@ -143,19 +143,19 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
                    07  WK-TBL-MSG-3-NAME   PIC X(06).
                    07  WK-TBL-MSG-3-IDX    PIC 9(03).
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *
-      *    ����ִ���
+      *    ジョブ管理
        01  WRK-JOBKANRI-AREA.
            03  WRK-JOBKANRI-MODE       PIC X(03).
            03  WRK-JOBKANRI-RETURN     PIC S9(03).
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    フィアルデイレクトリ位置指定サブ
            COPY  "CPMKPASS.INC".
       *
            COPY  "CPSTGTSCM.INC".
@@ -165,18 +165,18 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
       *----(04.08.01)--ADD-START---
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
       *
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *     �ơ��֥륢������
+      *     テーブルアクセス
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
       *
@@ -200,7 +200,7 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
                                                LINKAREA
                                                SCRAREA.
       *****************************************************************
-      *    ��    ��    ��
+      *    主    処    理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -213,10 +213,10 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 530-RIDSET2-SEC
                    IF  SPA-GMN-RUN   =   ZERO   OR   2
@@ -230,7 +230,7 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
                        MOVE    1                   TO  FLG-END
                    END-IF
            END-EVALUATE.
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF.
@@ -242,13 +242,13 @@ grpsys*     03  FILLER              PIC X(04)   VALUE   ".dat".
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
            INITIALIZE                  FLG-AREA.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "FERR" OR "FID1" OR "FID2"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5011-MAPCUR-SEC
@@ -283,7 +283,7 @@ grpsys                                             SPA-AREA
                    MOVE    1                   TO  JOB-JOBID
                    MOVE    "ORCBSF1"           TO  JOB-SHELLID
 grpsys             MOVE    SPA-TERMID          TO  JOB-TERMID
-                   MOVE    "�����Ѵ�"          TO  JOB-SHELLMSG
+                   MOVE    "媒体変換"          TO  JOB-SHELLMSG
                    MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
                    CALL    "ORCSJOB"           USING
                                                WRK-JOBKANRI-AREA
@@ -296,9 +296,9 @@ grpsys                                         SPA-AREA
                    MOVE    SPACE               TO  SPA-GMN-KBN
                END-IF
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF.
       *
@@ -313,11 +313,11 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
                MOVE    LNK-SCRSPA          TO  SPA-F01-AREA
@@ -329,7 +329,7 @@ grpsys                                         SPA-AREA
            END-IF
       *
            MOVE    1                       TO  SPA-GMN-CUR.
-      *    �ơ��֥�̾�Υ��å�
+      *    テーブル名称セット
            INITIALIZE                          SPA-GMN-TBLG
                                                WK-TBL
            INITIALIZE              SPA-F01.
@@ -372,7 +372,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -386,7 +386,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
@@ -418,7 +418,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -436,7 +436,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -459,7 +459,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -480,7 +480,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    画面内容編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -508,9 +508,9 @@ grpsys                                         SPA-AREA
            END-PERFORM.
       *
            MOVE    "red"                 TO  F01-LBLCAUTION-STYLE
-           STRING  "���ǡ����١��������ΥХå����åפ�"
+           STRING  "※データベースの全体バックアップは"
                                              DELIMITED BY SIZE
-                   " pg_dump ���ޥ�ɤǹԤäƤ���������"
+                   " pg_dump コマンドで行ってください。"
                                              DELIMITED BY SIZE
            INTO    F01-LBLCAUTION
            END-STRING
@@ -521,7 +521,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5011-MAPCUR-SEC              SECTION.
       *
@@ -539,7 +539,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -570,11 +570,11 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ��å�����ɽ����
+      *    確認メッセージ表示理
       *****************************************************************
        530-RIDSET2-SEC              SECTION.
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *
            MOVE    "CHK"              TO  WRK-JOBKANRI-MODE.
            INITIALIZE                     JOBKANRI-REC.
@@ -598,9 +598,9 @@ grpsys                                SPA-AREA.
                        MOVE    "8888"             TO  FID2-ID2CODE
                        MOVE    T-MESSAGE-02       TO  FID2-ID2MSG(1:32)
                        MOVE    JOB-ENDTIME(1:2)   TO  FID2-ID2MSG(33:2)
-                       MOVE    "��"               TO  FID2-ID2MSG(35:2)
+                       MOVE    "時"               TO  FID2-ID2MSG(35:2)
                        MOVE    JOB-ENDTIME(3:2)   TO  FID2-ID2MSG(37:2)
-                       MOVE    "ʬ"               TO  FID2-ID2MSG(39:2)
+                       MOVE    "分"               TO  FID2-ID2MSG(39:2)
                        MOVE    T-MESSAGE-03       TO  FID2-ID2MSG(41:16)
                        MOVE    2                  TO  SPA-GMN-RUN
                    END-IF
@@ -639,11 +639,11 @@ grpsys                                SPA-AREA.
            EXIT.
       *
       *****************************************************************
-      *    ����ִ���ɽ����
+      *    ジョブ管理表示理
       *****************************************************************
        530-RIDSET3-SEC              SECTION.
       *
-      *    ���̰ܹ��ѤΥѥ�᥿�ѹ�
+      *    画面移行用のパラメタ変更
            MOVE    "F01"               TO  SPA-MOTOPG.
            MOVE    "XB01"              TO  SPA-SAKIPG.
            INITIALIZE                  SPA-KYOTUKEY.
@@ -663,7 +663,7 @@ grpsys                                SPA-AREA.
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *
@@ -677,7 +677,7 @@ grpsys                                SPA-AREA.
            EXIT.
       *
       *****************************************************************
-      *    �ե�����̾��ǧ ����
+      *    ファイル名確認 処理
       *****************************************************************
        T-000-NAMECHEK-SEC                SECTION.
       *
@@ -687,7 +687,7 @@ grpsys                                SPA-AREA.
            EXIT.
       *
       *****************************************************************
-      *    �����å��ܥ��󥯥�å� ����
+      *    チェックボタンクリック 処理
       *****************************************************************
        T-000-CLICKED-SEC                 SECTION.
       *
@@ -727,7 +727,7 @@ grpsys                                SPA-AREA.
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥� �Хå����å׽���
+      *    テーブル バックアップ処理
       *****************************************************************
        T-000-WRITABLE-SEC                SECTION.
       *
@@ -828,7 +828,7 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
            EXIT.
       *
       *****************************************************************
-      *    �Хå����åץ�����¹Խ���
+      *    バックアップシェル実行処理
       *****************************************************************
        T-000-ORCBSF01-SEC                SECTION.
       *
@@ -867,7 +867,7 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
        T-000-ORCBSF01-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥�̾�� ���åȽ���
+      *    テーブル名称 セット処理
       *****************************************************************
        T-000-SETTABLE-SEC                SECTION.
       *
@@ -890,7 +890,7 @@ grpsys         MOVE    SPA-HOSPNUM       TO  SHELLTBL-ARG7
            EXIT.
       *
       *****************************************************************
-      *    �Хå����å׾�� ���Ͻ���
+      *    バックアップ条件 入力処理
       *****************************************************************
        T-000-READCHEK-SEC                SECTION.
       *
@@ -960,7 +960,7 @@ grpsys     MOVE    SPA-TERMID        TO  FIF00PARA-TERMID.
            EXIT.
       *
       *****************************************************************
-      *    �Хå����å׾�� ���Ͻ���
+      *    バックアップ条件 出力処理
       *****************************************************************
        T-000-READWRIT-SEC                SECTION.
       *

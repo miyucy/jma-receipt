@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSDRSET.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶¦ÄÌ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥É¥¯¥¿¡¼ÊÔ½¸¡¦¥Á¥§¥Ã¥¯½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/02/24    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…±é€š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ãƒ‰ã‚¯ã‚¿ãƒ¼ç·¨é›†ãƒ»ãƒã‚§ãƒƒã‚¯å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/02/24    NACLâˆ’å¤šã€…ç´  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL¡ÝÂ¿¡¹Ç¼ 04/06/25  ¿ÇÎÅ½ê¤Ç£²£°Ì¾°Ê¾å¤ò²ÊÊÌ¤Ø
-      *  01.00.02    NACL¡ÝÂ¿¡¹Ç¼ 06/08/16  ÅöÆüÃ´Åö°åÀßÄêÄÉ²Ã
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.03.00    NACL-Â¿¡¹Ç¼  08/06/XX  ºÇÂç£¹£¹·ïÂÐ±þ
-      *  04.04.00    NACL-Â¿¡¹Ç¼  09/03/05  ÅöÆüÃ´Åö°åÂÐ±þ¤Ê¤·ÄÉ²Ã
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/01/XX  ¿ÇÎÅ²ÊÃ´Åö°å¡¦ÈóÉ½¼¨ÂÐ±þÄÉ²Ã
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACLâˆ’å¤šã€…ç´ 04/06/25  è¨ºç™‚æ‰€ã§ï¼’ï¼åä»¥ä¸Šã‚’ç§‘åˆ¥ã¸
+      *  01.00.02    NACLâˆ’å¤šã€…ç´ 06/08/16  å½“æ—¥æ‹…å½“åŒ»è¨­å®šè¿½åŠ 
+      *  03.05.00    NACL-å¤šã€…ç´  07/04/XX  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.03.00    NACL-å¤šã€…ç´  08/06/XX  æœ€å¤§ï¼™ï¼™ä»¶å¯¾å¿œ
+      *  04.04.00    NACL-å¤šã€…ç´  09/03/05  å½“æ—¥æ‹…å½“åŒ»å¯¾å¿œãªã—è¿½åŠ 
+      *  04.08.00    NACL-å¤šã€…ç´  16/01/XX  è¨ºç™‚ç§‘æ‹…å½“åŒ»ãƒ»éžè¡¨ç¤ºå¯¾å¿œè¿½åŠ 
       *****************************************************************
       *
       *
@@ -48,7 +48,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -64,18 +64,18 @@
            03  FLG-LSDOCTOR            PIC 9(01).
            03  FLG-KADR-ARI            PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDX3                PIC 9(04).
            03  IDX-D               PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-DRCD-TBL-G.
                05  WRK-DRCD-TBL        OCCURS   99.
-      *            ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *            ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
                    07  WRK-DRCD             PIC  X(04).
                    07  WRK-DRCD-H           PIC  X(01).
                    07  WRK-DRCDMEI          PIC  X(24).
@@ -84,33 +84,33 @@
            03  WRK-KEY-DRCD            PIC X(05).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
-      *    ¥É¥¯¥¿¡¼
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼
            COPY    "CPSK1010.INC".
-      *    Ã´Åö°åÀßÄê 
+      *    æ‹…å½“åŒ»è¨­å®š 
            COPY  "CPSK1011.INC".
       *
-      *    ¿ÇÎÅ²ÊÊÌ¥É¥¯¥¿¡¼
+      *    è¨ºç™‚ç§‘åˆ¥ãƒ‰ã‚¯ã‚¿ãƒ¼
        01  LIST-DOCTOR-REC.
            COPY    "CPLIST_DOCTOR.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
@@ -119,13 +119,13 @@
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    ¥É¥¯¥¿¡¼¥»¥Ã¥ÈÎÎ°è
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚»ãƒƒãƒˆé ˜åŸŸ
            COPY    "CPORCSDRSET.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -134,7 +134,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -145,27 +145,27 @@
       *
       *
            EVALUATE    ORCSDR-KBN
-      *        ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÊÔ½¸
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç·¨é›†
                WHEN    "1"
                    PERFORM 100-DR-HENSYU-SEC
-      *            ¥É¥¯¥¿¡¼¥³¡¼¥É¤¬¤¢¤ë»þ¡¢¥É¥¯¥¿¡¼ÊÔ½¸
+      *            ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰ãŒã‚ã‚‹æ™‚ã€ãƒ‰ã‚¯ã‚¿ãƒ¼ç·¨é›†
                    IF      ORCSDR-IN-DRCD  NOT =   SPACE
                        PERFORM 200-DR-CHECK-SEC
                    END-IF
-      *        ¥É¥¯¥¿¡¼¥Á¥§¥Ã¥¯
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒã‚§ãƒƒã‚¯
                WHEN    "2"
                    PERFORM 200-DR-CHECK-SEC
-      *        ¥É¥¯¥¿¡¼¥Á¥§¥Ã¥¯¡Ê½é´üÉ½¼¨ÍÑ¡Ë
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒã‚§ãƒƒã‚¯ï¼ˆåˆæœŸè¡¨ç¤ºç”¨ï¼‰
                WHEN    "3"
                    PERFORM 300-DR-CHECK03-SEC
-      *        ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÊÔ½¸
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç·¨é›†
                WHEN    "4"
                    PERFORM 100-DR-HENSYU-SEC
                    IF      FLG-TANTOU          =   1
-      *                ¥É¥¯¥¿¡¼ÄÉ²ÃÊÔ½¸
+      *                ãƒ‰ã‚¯ã‚¿ãƒ¼è¿½åŠ ç·¨é›†
                        PERFORM 1003-SYS1010-ADDHEN-SEC
                    END-IF
-      *            ¥É¥¯¥¿¡¼¥³¡¼¥É¤¬¤¢¤ë»þ¡¢¥É¥¯¥¿¡¼ÊÔ½¸
+      *            ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰ãŒã‚ã‚‹æ™‚ã€ãƒ‰ã‚¯ã‚¿ãƒ¼ç·¨é›†
                    IF      ORCSDR-IN-DRCD  NOT =   SPACE
                        PERFORM 200-DR-CHECK-SEC
                    END-IF
@@ -178,7 +178,7 @@
            .
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        100-DR-HENSYU-SEC            SECTION.
       *
@@ -186,16 +186,16 @@
            INITIALIZE                  WRK-DRCD-TBL-G
            MOVE    ZERO                TO  IDX3
            MOVE    ZERO                TO  FLG-TANTOU
-      *    ÅöÆüÃ´Åö°å
+      *    å½“æ—¥æ‹…å½“åŒ»
            IF      ORCSDR-KBN2         =   "1"
                CONTINUE
            ELSE
                IF      ORCSDR-SRYKA    NOT =   SPACE
       *H27.12
-      *            ¿ÇÎÅ²ÊÊÌ¤ÎÈ½Äê
+      *            è¨ºç™‚ç§‘åˆ¥ã®åˆ¤å®š
                    PERFORM 1003-LSDOCTOR-HEN-SEC
                    IF      FLG-KADR-ARI        =   ZERO
-      *                ÅöÆüÃ´Åö°åÈ½Äê
+      *                å½“æ—¥æ‹…å½“åŒ»åˆ¤å®š
                        PERFORM 1000-SYS1011-CHK-SEC
                    END-IF
                END-IF
@@ -217,18 +217,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÊÔ½¸½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç·¨é›†å‡¦ç†
       *****************************************************************
        1001-SYS1010-HEN-SEC            SECTION.
       *
-      *    ¿¦°÷¾ðÊó¡Ê¥É¥¯¥¿¡¼¡Ë
+      *    è·å“¡æƒ…å ±ï¼ˆãƒ‰ã‚¯ã‚¿ãƒ¼ï¼‰
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -248,11 +248,11 @@
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
                IF     (SYS-1010-KBNCD(1:1)     =   "1"  )
       *H27.12
-      *            É½¼¨Ê¬¤Î¤ß
+      *            è¡¨ç¤ºåˆ†ã®ã¿
                  AND  (SYS-1010-HYOJIFLG   NOT =   "1"  )
       *
                    MOVE    ZERO                TO  FLG-CHK
-      *            ²ÊÊÌ¤Î»þ¡ÊÉÂ±¡¤Î¡Ë
+      *            ç§‘åˆ¥ã®æ™‚ï¼ˆç—…é™¢ã®ï¼‰
                    IF     (ORCSDR-SRYKA    NOT =   SPACE )  AND
                           (SPA-HOSPSBT         =   1     )
                        PERFORM 1001-SEMONKACD-CHK-SEC
@@ -303,7 +303,7 @@
        1001-SYS1010-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÅöÆüÃ´Åö°å½èÍý
+      *    å½“æ—¥æ‹…å½“åŒ»å‡¦ç†
       *****************************************************************
        1000-SYS1011-CHK-SEC            SECTION.
       *
@@ -313,7 +313,7 @@
            MOVE    ORCSDR-SRYKA        TO  SYS-1011-KBNCD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1011-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1011-EDYUKYMD
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SPA-HOSPNUM         TO  SYS-1011-HOSPNUM
            MOVE    SYS-1011-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -339,7 +339,7 @@
        1000-SYS1011-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É¸¡º÷½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        1002-SYS1011-HEN-SEC            SECTION.
       *
@@ -364,11 +364,11 @@
        1002-SYS1011-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É¸¡º÷½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰æ¤œç´¢å‡¦ç†
       *****************************************************************
        10001-DRCDNAME-HEN-SEC            SECTION.
       *
-      *    ¿¦°÷¾ðÊó¡Ê¥É¥¯¥¿¡¼¡Ë
+      *    è·å“¡æƒ…å ±ï¼ˆãƒ‰ã‚¯ã‚¿ãƒ¼ï¼‰
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -376,7 +376,7 @@
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -401,7 +401,7 @@
            EXIT.
       *H27.11
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÃ´Åö°åÊóÊÔ½¸½èÍý
+      *    è¨ºç™‚ç§‘æ‹…å½“åŒ»å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-LSDOCTOR-HEN-SEC               SECTION.
       *
@@ -453,7 +453,7 @@
        1003-LSDOCTOR-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÃ´Åö°åÅÐÏ¿¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚ç§‘æ‹…å½“åŒ»ç™»éŒ²ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        10031-LSDOCTOR-CHK-SEC               SECTION.
       *
@@ -475,7 +475,7 @@
                MOVE    1               TO  FLG-LSDOCTOR
            END-IF
            IF      FLG-LSDOCTOR         =   ZERO
-      *        ¿ÇÎÅ²ÊÊÌ¤¢¤ê
+      *        è¨ºç™‚ç§‘åˆ¥ã‚ã‚Š
                MOVE    1                   TO  FLG-KADR-ARI
            ELSE
                MOVE    ZERO                TO  FLG-KADR-ARI
@@ -489,7 +489,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²ÊÊÌ¤ÎÊÔ½¸¡Ê¿ÇÎÅ½ê¡Ë½èÍý
+      *    ç§‘åˆ¥ã®ç·¨é›†ï¼ˆè¨ºç™‚æ‰€ï¼‰å‡¦ç†
       *****************************************************************
        1002-DRCD-TBL-SEC            SECTION.
       *
@@ -508,11 +508,11 @@
        1002-DRCD-TBL-EXT.
            EXIT.
       *****************************************************************
-      *    ²ÊÊÌ¤ÎÀìÌç²È¥Á¥§¥Ã¥¯½èÍý
+      *    ç§‘åˆ¥ã®å°‚é–€å®¶ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        1001-SEMONKACD-CHK-SEC            SECTION.
       *
-      *    ÀìÌç²Ê¥³¡¼¥É
+      *    å°‚é–€ç§‘ã‚³ãƒ¼ãƒ‰
            MOVE    ZERO                TO  FLG-OK
            MOVE    ZERO                TO  FLG-CHK
            MOVE    ZERO                TO  FLG-CHK2
@@ -529,7 +529,7 @@
                END-IF
            END-PERFORM
       *
-      *    ÀìÌç²Ê¤¬¤Ê¤¤»þ¡¢Á´²ÊÂÐ¾Ý¤È¤¹¤ë
+      *    å°‚é–€ç§‘ãŒãªã„æ™‚ã€å…¨ç§‘å¯¾è±¡ã¨ã™ã‚‹
            IF      FLG-OK              =   ZERO
                MOVE    1               TO  FLG-CHK
            END-IF
@@ -537,18 +537,18 @@
        1001-SEMONKACD-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÄÉ²ÃÊÔ½¸½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«è¿½åŠ ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-SYS1010-ADDHEN-SEC            SECTION.
       *
-      *    ¿¦°÷¾ðÊó¡Ê¥É¥¯¥¿¡¼¡Ë
+      *    è·å“¡æƒ…å ±ï¼ˆãƒ‰ã‚¯ã‚¿ãƒ¼ï¼‰
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -610,7 +610,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥Á¥§¥Ã¥¯½èÍý
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        200-DR-CHECK-SEC            SECTION.
       *
@@ -618,15 +618,15 @@
                MOVE    SPACE           TO  ORCSDR-IN-DRCD-G
                GO      TO      200-DR-CHECK-EXT
            END-IF
-      *    ¥³¡¼¥ÉÊÑ´¹¡¦¥Æ¡¼¥Ö¥ë¥Á¥§¥Ã¥¯
+      *    ã‚³ãƒ¼ãƒ‰å¤‰æ›ãƒ»ãƒ†ãƒ¼ãƒ–ãƒ«ãƒã‚§ãƒƒã‚¯
            PERFORM 2001-DRCD-TBLCHK-SEC
            IF     (ORCSDR-ERRCD    NOT =   ZERO  )  OR
                   (FLG-OK              =   1     )
                GO      TO      200-DR-CHECK-EXT
            END-IF
       *
-      *    ¥ê¥¹¥È¤Ë¤Ê¤¤»þ
-      *    ¿¦°÷¾ðÊó¡Ê¥É¥¯¥¿¡¼¡Ë
+      *    ãƒªã‚¹ãƒˆã«ãªã„æ™‚
+      *    è·å“¡æƒ…å ±ï¼ˆãƒ‰ã‚¯ã‚¿ãƒ¼ï¼‰
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -635,7 +635,7 @@
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-STYUKYMD
            MOVE    ORCSDR-SYSYMD       TO  SYS-1010-EDYUKYMD
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -652,7 +652,7 @@
                MOVE    MCPDATA-REC         TO  SYS-1010-REC
                MOVE    SPACE               TO  ORCSDR-IN-DRCD-H
                MOVE    SYS-1010-NAME       TO  ORCSDR-OUT-DRCDMEI
-      *        ºÇ¸å¤Î¹Ô¤ØÊÔ½¸¤¹¤ë
+      *        æœ€å¾Œã®è¡Œã¸ç·¨é›†ã™ã‚‹
                IF      ORCSDR-DRCD-MAX     =   99
                    MOVE    99              TO  ORCSDR-DRCD-MAX
                ELSE
@@ -671,11 +671,11 @@
        200-DR-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ê¥¹¥ÈÆâÍÆ¥Á¥§¥Ã¥¯½èÍý¡Ê¶¦ÄÌ¡Ë
+      *    ãƒªã‚¹ãƒˆå†…å®¹ãƒã‚§ãƒƒã‚¯å‡¦ç†ï¼ˆå…±é€šï¼‰
       *****************************************************************
        2001-DRCD-TBLCHK-SEC         SECTION.
       *
-      *    ¥³¡¼¥ÉÊÑ´¹
+      *    ã‚³ãƒ¼ãƒ‰å¤‰æ›
            INITIALIZE                      ORCSNUMAREA
            MOVE    ORCSDR-IN-DRCD      TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -692,7 +692,7 @@
            MOVE    SPACE               TO  ORCSDR-IN-DRCD-H
            MOVE    SPACE               TO  ORCSDR-OUT-DRCDMEI
       *
-      *    ¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
            MOVE    ZERO                TO  ORCSDR-DRCD-IDX
            MOVE    ZERO                TO  FLG-OK
            PERFORM VARYING IDX         FROM    1   BY  1
@@ -710,7 +710,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥Á¥§¥Ã¥¯½èÍý¡Ê³°Íè½é´üÉ½¼¨ÍÑ¡Ë
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒã‚§ãƒƒã‚¯å‡¦ç†ï¼ˆå¤–æ¥åˆæœŸè¡¨ç¤ºç”¨ï¼‰
       *****************************************************************
        300-DR-CHECK03-SEC            SECTION.
       *
@@ -719,26 +719,26 @@
            END-IF
            MOVE    ZERO                TO  FLG-TANTOU
            IF      ORCSDR-DRCD-MAX     =    ZERO
-      *        ¥É¥¯¥¿¡¼¥Æ¡¼¥Ö¥ëÊÔ½¸
+      *        ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ç·¨é›†
                PERFORM 100-DR-HENSYU-SEC
            ELSE
-      *        ÅöÆüÃ´Åö°å
+      *        å½“æ—¥æ‹…å½“åŒ»
       *        IF      ORCSDR-SRYKA    NOT =   SPACE
       *            PERFORM 1000-SYS1011-CHK-SEC
       *        END-IF
       *H27.12
                IF      ORCSDR-SRYKA    NOT =   SPACE
-      *            ¿ÇÎÅ²ÊÊÌ¤ÎÈ½Äê
+      *            è¨ºç™‚ç§‘åˆ¥ã®åˆ¤å®š
                    PERFORM 10031-LSDOCTOR-CHK-SEC
                    IF      FLG-KADR-ARI        =   ZERO
-      *                ÅöÆüÃ´Åö°åÈ½Äê
+      *                å½“æ—¥æ‹…å½“åŒ»åˆ¤å®š
                        PERFORM 1000-SYS1011-CHK-SEC
                    END-IF
                END-IF
            END-IF
            IF      FLG-TANTOU          =   ZERO
              AND   FLG-KADR-ARI        =   ZERO
-      *        ÅöÆüÃ´Åö°åÌµ¤·
+      *        å½“æ—¥æ‹…å½“åŒ»ç„¡ã—
                IF      ORCSDR-IN-DRCD      =   SPACE
                    IF      ORCSDR-DRCD-IDX     =   ZERO
                        MOVE    1               TO  ORCSDR-DRCD-IDX
@@ -746,11 +746,11 @@
                    MOVE    ORCSDR-DRCD-TBL (ORCSDR-DRCD-IDX)
                                            TO  ORCSDR-IN-DRCD-G
                ELSE
-      *            ¥É¥¯¥¿¡¼¥Á¥§¥Ã¥¯
+      *            ãƒ‰ã‚¯ã‚¿ãƒ¼ãƒã‚§ãƒƒã‚¯
                    PERFORM 200-DR-CHECK-SEC
                END-IF
            ELSE
-      *        ¥ê¥¹¥È¤Ë¤Ê¤¤¾ì¹ç¡¢£±·ïÌÜ¤ò½é´ü¤È¤¹¤ë
+      *        ãƒªã‚¹ãƒˆã«ãªã„å ´åˆã€ï¼‘ä»¶ç›®ã‚’åˆæœŸã¨ã™ã‚‹
                PERFORM 2001-DRCD-TBLCHK-SEC
                IF     (ORCSDR-ERRCD        =   ZERO  ) AND
                       (FLG-OK              =   ZERO  )
@@ -763,7 +763,7 @@
        300-DR-CHECK03-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿èª­è¾¼
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -784,7 +784,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ã´Åö°å¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß½èÍý
+      *    æ‹…å½“åŒ»ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-LSDOCTOR-READ-SEC         SECTION.
       *
@@ -802,7 +802,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -815,7 +815,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -830,7 +830,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

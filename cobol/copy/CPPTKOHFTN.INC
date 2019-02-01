@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ը�����ô                  COPY  (CPPTKOHFTN.INC)  *
+      *    患者公費負担                  COPY  (CPPTKOHFTN.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTKOHFTN-REC.
-      *����
+      *キー
            03  PTKOHFTN-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  PTKOHFTN-HOSPNUM         PIC 9(2).
-      *���ԣɣ�
+      *患者ＩＤ
                05  PTKOHFTN-PTID           PIC  9(10).
-      *����ɣ�
+      *公費ＩＤ
                05  PTKOHFTN-KOHID          PIC  9(10).
-      *Ϣ��
+      *連番
                05  PTKOHFTN-RENNUM         PIC  9(03).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
            03  PTKOHFTN-TEKSTYMD           PIC  X(08).
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
            03  PTKOHFTN-TEKEDYMD           PIC  X(08).
-      *�ݸ��ֹ�ʸ����
+      *保険番号（公費）
            03  PTKOHFTN-KOHNUM             PIC  X(03).
-      *��ʧ��ʬ
+      *支払区分
            03  PTKOHFTN-PAYKBN             PIC  X(02).
-      *�����³�
+      *外来上限額
            03  PTKOHFTN-GAIJGNGAK          PIC  9(07).
-      *������³�
+      *入院上限額
            03  PTKOHFTN-NYUJGNGAK          PIC  9(07).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTKOHFTN-TERMID             PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTKOHFTN-OPID               PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTKOHFTN-CREYMD             PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTKOHFTN-UPYMD              PIC  X(08).
-      *��������
+      *更新時間
            03  PTKOHFTN-UPHMS              PIC  X(06).

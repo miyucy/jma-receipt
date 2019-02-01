@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,129 +18,129 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBT010.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����
-      *  ����ݡ��ͥ��̾  : ����ץǡ����Ѵ��ܾ������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/11/12    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : 月次統計データ用基本情報作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/11/12    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    04/02/01  ��̾�����ɣ������ѹ�
-      *  01.00.02    NACL-ƣ��    04/02/06  �����оݤ��ݸ��ȹ礻��������
-      *                                     ���ɲ�
-      *  01.00.03    NACL-ƣ��    04/02/09  ���Լ�����ô�ۤ�����ξ�³�
-      *                                     ����ã���ʤ����Υ쥻����
-      *  01.00.04    NACL-ƣ��    04/03/08  �����ɤˤ�����ݼ�����ֹ���Խ�
-      *  01.00.05    NACL-ƣ��    04/04/05  ��̾�����ɣ��������������ɤ����Ф�
-      *  01.00.06    NACL-ƣ��    04/04/06  �Խ���̾�ΤȤ������ե饰�����
-      *                                     ��̾�������ɲä����
-      *  01.00.07    NACL-ƣ��    04/04/27  �桼���������Ȥ��ɲ�
-      *  01.00.08    NACL-ƣ��    04/08/17  �����࿦�ԡ�Ϸ�ͤΤȤ��ܿͤ�
-      *                                     ������ʬ�Ȥ���
-      *                                     �����ʬ���ɲä�ȼ���쥻�ץ�
-      *                                     ���̤��Խ����ѹ�
-      *  01.00.05    NACL-ƣ��    05/01/30  �����б�
-      *  01.00.06    NACL-ƣ��    05/04/05  ���ֹ�ˤ��쥻�ץȼ��̤�����
-      *                                     �����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *  01.00.02    NACL-藤原    04/02/06  包括の対象に保険組合せ９９９９
+      *                                     を追加
+      *  01.00.03    NACL-藤原    04/02/09  患者自己負担額が公費の上限額
+      *                                     に到達しない場合のレセ種別
+      *  01.00.04    NACL-藤原    04/03/08  シス管による生保受給者番号の編集
+      *  01.00.05    NACL-藤原    04/04/05  病名コード９９９９９９９読み飛ばす
+      *  01.00.06    NACL-藤原    04/04/06  編集病名のとき疑いフラグからの
+      *                                     病名コード追加をやめる
+      *  01.00.07    NACL-藤原    04/04/27  ユーザーコメントの追加
+      *  01.00.08    NACL-藤原    04/08/17  特例退職者＋老人のとき本人の
+      *                                     み不明分とする
+      *                                     補助区分の追加に伴うレセプト
+      *                                     種別の編集を変更
+      *  01.00.05    NACL-藤原    05/01/30  入院対応
+      *  01.00.06    NACL-藤原    05/04/05  県番号によるレセプト種別の設定
+      *                                     を中止
       *
-      *  02.06.01    NACL-ƣ��    05/07/26  Ϸ��������������ԤΤȤ���
-      *                                     ��������ݸ��Ԥ��Ѥ�餺��
-      *                                     �ݸ����ѹ��ˤʤä����ϣ���
-      *                                     �ˤ���
-      *                                     �����������ճ�礬�ѹ��ˤʤ�
-      *                                     �����Ϥ��줾��˥쥻�ץȤ�
-      *                                     ��������
+      *  02.06.01    NACL-藤原    05/07/26  老人又は前期高齢者のとき、
+      *                                     月途中に保険者は変わらずに
+      *                                     保険が変更になった場合は１枚
+      *                                     にする
+      *                                     ただし、給付割合が変更になっ
+      *                                     た場合はそれぞれにレセプトを
+      *                                     作成する
       *
-      *  02.07.01    NACL-ƣ��    05/08/20  �����������б�
-      *  02.07.02    NACL-ƣ��    06/01/25  �����ե饰�������̾���Խ���
-      *                                     ˡ���ѹ�
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *  02.07.02    NACL-藤原    06/01/25  疑いフラグからの病名の編集方
+      *                                     法の変更
       *
-      *  03.00.01    NACL-ƣ��    06/06/07  ���ξ��Υǡ��������ν���
+      *  03.00.01    NACL-藤原    06/06/07  包括の場合のデータ作成の修正
       *
-      *  03.03.02    NACL-ƣ��    06/09/27  ��������ǯ����������б�
-      *  03.03.02    NACL-ƣ��    06/10/10  ���ݸ����ʤ���硢����������
-      *                                     ����ñ�ȤΥ쥻�ץȤȤ���
-      *  03.03.05    NACL-ƣ��    06/10/27  �쥻�ץȤ������ݸ�����᤬��
-      *                                     ����絭�ܤ��оݤȤ��ʤ�
-      *  03.03.06    NACL-ƣ��    06/12/15  ���������Υǡ��������ν���
+      *  03.03.02    NACL-藤原    06/09/27  ２００６年１０月改正対応
+      *  03.03.02    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
+      *  03.03.05    NACL-藤原    06/10/27  レセプトで生活保護の請求がな
+      *                                     い場合記載の対象としない
+      *  03.03.06    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
       *
-      *  03.04.01    NACL-ƣ��    07/02/06  ������μ�����ֹ��ѹ����б�
-      *  03.04.02    NACL-ƣ��    07/03/06  ������Ƚ����ɲ�
-      *  03.04.03    NACL-ƣ��    07/04/04  �����࿦���Ťμ��̷�����ν���
+      *  03.04.01    NACL-藤原    07/02/06  月途中の受給者番号変更に対応
+      *  03.04.02    NACL-藤原    07/03/06  包括診療判定の追加
+      *  03.04.03    NACL-藤原    07/04/04  特例退職医療の種別決定条件の修正
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.01.01    NACL-��Ʀ��  07/11/16  ��̳�ҳ��������μ���Ƚ���ɲ�
-      *  04.01.02    NACL-ƣ��    07/01/21  ���������ô���ֹ��ѹ��б�
-      *                                     �����ݤθ���ñ�ȤΤߡ� 
+      *  04.01.01    NACL-小豆沢  07/11/16  公務災害、公害の種別判定追加
+      *  04.01.02    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ） 
       *
-      *  04.02.01    NACL-ƣ��    08/04/10  ʿ������ǯ��������б�
-      *  04.02.02    NACL-ƣ��    08/04/23  �������Ԥ������ݸ����ܿͤȤ���
-      *  04.02.03    NACL-����    08/08/07  �����̱���������Ƚ���ɲ�
+      *  04.02.01    NACL-藤原    08/04/10  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/23  後期高齢者の船員保険を本人とする
+      *  04.02.03    NACL-門脇    08/08/07  精神通院の請求点判定追加
       *
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *  04.03.02    NACL-����    08/09/02  ������Ƚ���ɲ�
-      *  04.03.03    NACL-����    08/12/17  ʿ������ǯ��������б�
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-門脇    08/09/02  請求点判定追加
+      *  04.03.03    NACL-門脇    08/12/17  平成２１年１月改正対応
       *
-      *  04.04.01    NACL-ƣ��    09/01/14  ������˰��ݤ����ݤ�ʻ�Ѥ���
-      *                                     ����ñ�Ȥˤʤä��Ȥ��ΤޤȤ�
-      *  04.04.02    NACL-ƣ��    09/04/09  ����������������������������
-      *                                     ���ܽ��ϻ���Ϣ�֤ν����
-      *  04.04.03    NACL-ƣ��    09/10/21  ���������ô���ֹ��ѹ��б�
-      *                                     �ʼ�Ω�ٱ�θ���ñ�ȡ� 
-      *  04.04.04    NACL-ƣ��    09/12/17  ������˰��ݤȼ�Ω�ٱ��ʻ��
-      *                                     ���鼫Ω�ٱ�ñ�Ȥˤʤä��Ȥ�
-      *                                     �ΤޤȤ��б�
-      *  04.04.05    NACL-ƣ��    10/08/23  ������������б�
-      *                                     �ʹ�������ɼ���ʤ����� 
-      *  04.04.06    NACL-ƣ��    10/09/14  ���Ŵѻ�ˡ�б�
-      *                                     ����ñ�ȤΥ쥻�ץȤȤ���
+      *  04.04.01    NACL-藤原    09/01/14  月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
+      *  04.04.02    NACL-藤原    09/04/09  入院基本料・特定入院料・食事
+      *                                     療養出力時の連番の初期化
+      *  04.04.03    NACL-藤原    09/10/21  月途中の負担者番号変更対応
+      *                                     （自立支援の公費単独） 
+      *  04.04.04    NACL-藤原    09/12/17  月途中に医保と自立支援の併用
+      *                                     から自立支援単独になったとき
+      *                                     のまとめ対応
+      *  04.04.05    NACL-藤原    10/08/23  後期高齢非該当対応
+      *                                     （高齢受給者票がない場合） 
+      *  04.04.06    NACL-藤原    10/09/14  医療観察法対応
+      *                                     公費単独のレセプトとする
       *
-      *  04.05.01    NACL-ƣ��    10/03/12  ʿ������ǯ��������б�
-      *                                     ʿ������ǯ����ʬ�ʹߤ����ܴ�
-      *                                     ���򥨥顼�Ȥ���
-      *  04.05.06    NACL-ƣ��    11/08/25  ����ñ���б�
-      *                                     �������磵�����ѹ�
-      *  04.05.07    NACL-ƣ��    12/07/02  �����������������ɲ�
-      *  04.05.08    NACL-ƣ��    12/11/15  ���������Υޥ��ʥ�ɽ���б�
+      *  04.05.01    NACL-藤原    10/03/12  平成２２年４月改正対応
+      *                                     平成２２年４月分以降の政府管
+      *                                     掌をエラーとする
+      *  04.05.06    NACL-藤原    11/08/25  公費単独対応
+      *                                     公費を最大５０に変更
+      *  04.05.07    NACL-藤原    12/07/02  住所欄に番地方書を追加
+      *  04.05.08    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
       *
-      *  04.06.01    NACL-ƣ��    10/11/05  ��­�������б�
-      *  04.06.02    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.03    NACL-ƣ��    11/02/01  ���ݸ����ʤ���硢��Ƹ�ݸ�(53)
-      *                                     �ϸ���ñ�ȤΥ쥻�ץȤȤ���
-      *  04.06.04    NACL-ƣ��    11/02/24  ������˰��ݤȻ�Ƹ�ݸ�(53)��
-      *                                     ʻ�Ѥ���ñ�Ȥˤʤä��Ȥ��ΤޤȤ�
-      *  04.06.05    NACL-ƣ��    12/10/04  Ʊ��쥻�ץȤθ��񤬣��Ĥ�Ķ
-      *                                     �������μ��������б�
-      *  04.06.06    NACL-ƣ��    12/09/27  �����ݸ���ֽ�ʣ�б�
-      *  04.06.07    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-藤原    10/11/05  補足コメント対応
+      *  04.06.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.03    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
+      *  04.06.04    NACL-藤原    11/02/24  月途中に医保と児童保護(53)の
+      *                                     併用から単独になったときのまとめ
+      *  04.06.05    NACL-藤原    12/10/04  同一レセプトの公費が４つを超
+      *                                     えた場合の種別不明対応
+      *  04.06.06    NACL-藤原    12/09/27  生活保護期間重複対応
+      *  04.06.07    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-ƣ��    12/12/17  ʣ����쥻�ץ�ʬ���б�
-      *  04.07.02    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
-      *  04.07.03    NACL-ƣ��    14/06/03  Ʊ���������б�
-      *  04.07.04    NACL-ƣ��    14/06/05  ������ΤޤȤ�ΤȤ��������
-      *                                     �ޥ�Ĺ�ΤȤ����оݤȤ���
-      *  04.07.05    NACL-ƣ��    14/08/18  �����аʾ�γ����ｻ�ԣ����б�
-      *  04.07.06    NACL-����    14/09/01  ʿ������ǯ����������б�
-      *  04.07.07    NACL-����    15/03/16  ʿ������ǯ��������б�
-      *  04.07.08    NACL-ƣ��    15/05/12  ¸�ߤ��ʤ��ݸ��ȹ礻�ξ�������
+      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
+      *  04.07.02    NACL-藤原    14/03/30  平成２６年４月改正対応
+      *  04.07.03    NACL-藤原    14/06/03  同日再入院対応
+      *  04.07.04    NACL-藤原    14/06/05  月途中のまとめのとき第二公費
+      *                                     マル長のときも対象とする
+      *  04.07.05    NACL-藤原    14/08/18  ７５歳以上の海外居住者２割対応
+      *  04.07.06    NACL-門脇    14/09/01  平成２６年１０月改正対応
+      *  04.07.07    NACL-門脇    15/03/16  平成２７年４月改正対応
+      *  04.07.08    NACL-藤原    15/05/12  存在しない保険組合せの情報設定
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    15/10/08  ʣ����쥻�ץ�ʬ���б�
-      *                                     ����ñ�ȤΣ���ʾ��ʬ���б�
-      *  04.08.03    NACL-ƣ��    15/11/13  ���ťǡ������ʤ������оݤ�
-      *                                     ��̾�����äƤ���̾�ǡ�����������ʤ�
-      *  04.08.04    NACL-����    16/03/28  ʿ������ǯ��������б�
-      *  04.08.05    NACL-��Ʀ��  16/09/16  �������Ͻ��Ϥ��ʤ��褦�б�
-      *  04.08.06    NACL-����    17/12/13  ��������θ������ˡ����ʬ�Υޥ��ʥ�
-      *                                     �����б�
-      *  04.08.07    NACL-ƣ��    18/03/28  ʿ������ǯ��������б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    15/10/08  複数枚レセプト分割対応
+      *                                     公費単独の２回以上の分割対応
+      *  04.08.03    NACL-藤原    15/11/13  診療データがない場合は対象の
+      *                                     病名があっても病名データも作成しない
+      *  04.08.04    NACL-門脇    16/03/28  平成２８年４月改正対応
+      *  04.08.05    NACL-小豆沢  16/09/16  持参薬は出力しないよう対応
+      *  04.08.06    NACL-門脇    17/12/13  包括点数の公害補償法減点分のマイナス
+      *                                     集計対応
+      *  04.08.07    NACL-藤原    18/03/28  平成３０年４月改正対応
       *
-      *  05.00.01    NACL-����    17/11/21  �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌�б�
+      *  05.00.01    NACL-太田    17/11/21  入院料と異なる食事算定保険組み合わせ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -148,35 +148,35 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ����ץǡ����ʴ��ܾ����
+      *    月次統計データ（基本情報）
            SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI01-KEY
                                    FILE    STATUS  IS  STS-TOUKEI01.
       *
-      *    ����ץǡ��������׾����
+      *    月次統計データ（統計情報）
            SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
       *
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
            SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI03-KEY
                                    FILE    STATUS  IS  STS-TOUKEI03.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  TOUKEIERR-FILE  ASSIGN  TOUKEIERR
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ����ץǡ���
+      *    月次統計データ
        FD  TOUKEI01-FILE.
        01  TOUKEI01-REC. 
            COPY    "CPTCF001.INC".
@@ -184,17 +184,17 @@
                05  TOUKEI01-SEIHO-KEY
                                    PIC X(50)   OCCURS  10.
       *
-      *    ����ץǡ���
+      *    月次統計データ
        FD  TOUKEI02-FILE.
        01  TOUKEI02-REC. 
            COPY    "CPTCF002.INC".
       *
-      *    ����ץǡ���
+      *    月次統計データ
        FD  TOUKEI03-FILE.
        01  TOUKEI03-REC. 
            COPY    "CPTCF003.INC".
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  TOUKEIERR-FILE.
        01  TOUKEIERR-REC           PIC X(200). 
       *
@@ -215,7 +215,7 @@
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //TOUKEIERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-TOUKEI01                    PIC X(02).
            03  STS-TOUKEI02                    PIC X(02).
@@ -250,7 +250,7 @@
            03  FLG-SEIHO                       PIC 9(01).
            03  FLG-WRITE                       PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                          PIC 9(06).
            03  CNT-TOUKEI01                    PIC 9(06).
@@ -286,7 +286,7 @@
                05  KEY-O-PTID                  PIC 9(10).
                05  KEY-O-HKNCOMBI              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-TERMID             PIC X(32).
@@ -338,21 +338,21 @@
       *
            03  WRK-RECEIPT-KBN         PIC X(10).
       *
-      *    �������������ե饰
+      *    後期高齢者非該当フラグ
            03  WRK-KOUKI-FLG           PIC 9(01).
       *
            03  WRK-TEKSTYMD.
                05  WRK-TEKSTYYMM       PIC 9(06).
                05  WRK-TEKSTDD         PIC 9(02).
       *
-      *    ����̾�Խ�
+      *    傷病名編集
            03  WRK-BYOMEI          PIC X(150).
            03  WRK-BYOMEIW         PIC X(150).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（疑い）
            03  WRK-HENFLG1         PIC X(01).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（急性）
            03  WRK-HENFLG2         PIC X(01). 
-      *    ��̾ʸ����         
+      *    病名文字数         
            03  WRK-MOJISU          PIC 9(03).
       *
            03  WRK-YM              PIC 9(06).
@@ -360,7 +360,7 @@
            03  WRK-HKNCOMBINUM-G.
                05  WRK-HKNCOMBINUM PIC 9(04).
       *
-      *    �쥻�ץȼ���Ƚ�����ΰ�
+      *    レセプト種別判定用領域
        01  WK-RECESYUBETU-AREA.
            03  WK-KOKUHO                               PIC X(01).
            03  WK-IHO                                  PIC X(01).
@@ -378,13 +378,13 @@
                    07  WRK-1033-EDYUKYMD 
                                    PIC X(08).
       *              
-      *    ���Ų���ơ��֥����������ѡ��������ܡ������ȹ礻��
+      *    診療回数テーブル（入院会計用　１：基本　２：組合せ）
            03  WRK-DAY-AREA.
                05  WRK-DAY-TBL         OCCURS  2.
                    07  WRK-DAY         PIC 9(03)
                                            OCCURS   31.
       *     
-      *    ����ݸ��ȹ礻����������ѡ� 
+      *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
            02  WRK-HKNCOMBI-REC        OCCURS  10. 
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
@@ -407,7 +407,7 @@
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
                                    BY         //WRK-SEIHO-TOUKEI01//.
       *
-      *    ������ݤޤȤ�
+      *    ワーク生保まとめ
        01  TBL-SEIHO-TOUKEI01-AREA.
            02  TBL-SEIHO-TOUKEI01-REC  OCCURS  50. 
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
@@ -422,22 +422,22 @@
            COPY    "CPTCF001.INC"  REPLACING  //TOUKEI01//
                                    BY         //WRK-KOH-TOUKEI01//.
       *
-      *    ���������̾
+      *    ワーク患者病名
        01  WRK-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING  //PTBYO//
                                    BY         //WRK-PTBYO//.
       *
-      *    �����ΰ� ���
+      *    スパ領域 ワーク
            COPY    "COMMON-SPA"
                    REPLACING   //SPA-//    BY //WRK-SPA-//.
       *
            COPY    "MCPAREA".
       *
-      *    �����ޥ���������
+      *    点数マスタ退避ワーク
            COPY    "CPTTNS.INC".
       * 
-      *    �ݸ��ֹ�ޥ���������
+      *    保険番号マスタ退避ワーク
        01  WRK-HKNNUM-AREA.
            03  WRK-HKNNUM-IDX                  PIC 9(05).
            03  WRK-HKNNUM-MAX                  PIC 9(05).
@@ -452,7 +452,7 @@
        01  TBL-HKNNUM-CONST-MAX                PIC 9(05)
                                                VALUE   2000.
       *
-      *    �����������ʣ����������������������ΰ�
+      *    施設入所情報（９５０、９５１）退避用領域
        01  TABLE-PTKOHINF-AREA.
            02  TBL-PTKOHINF-REC        OCCURS  100.
            COPY    "CPPTKOHINF.INC"
@@ -460,7 +460,7 @@
                                    BY          //TBL-PTKOH//.
            02  TBL-PTKOHINF-MAX    PIC 9(03).
       *
-      *    ���ԥ쥻�ץ�ʬ������������ΰ�
+      *    患者レセプト分割情報退避用領域
        01  TBL-PT-HDIST-DAY-T.
          02  TBL-PT-HDIST-DAY-REC      OCCURS  10.
            COPY    "CPPT-HDIST-DAY.INC"
@@ -470,45 +470,45 @@
       *
        01  WRK-CONS-AREA.
       *    
-      *    �����ݸ��ݸ��ֹ� 
+      *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012". 
-      *    ����αˮ�����ݸ��ֹ� 
+      *    中国残留邦人等保険番号 
            03  WRK-CONS-ZANRYUU-HKNNUM PIC X(03)   VALUE   "025". 
-      *    �����ݸ��ֹ� 
+      *    自費保険番号 
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980". 
-      *    ϫ���ݸ��ֹ� 
+      *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
-      *    �������ݸ��ֹ� 
+      *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
-      *    �����ݸ��ֹ� 
+      *    原爆保険番号 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
-      *    �����ݸ��ֹ� 
+      *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM  PIC X(03)   VALUE   "975".
       *
-      *    �ޥ��ʥ�ɽ����Ԥ����Ź԰٥�����
-      *    �����������ʹ绻���������Ķ��
+      *    マイナス表記を行う診療行為コード
+      *    薬剤料減点（合算薬剤料上限超）
            03  WRK-CONS-SRYCD1         PIC X(09)   VALUE   "630010001".
-      *    �����������ʣ������������ˡ���������
+      *    薬剤料逓減（９０／１００）（内服薬）
            03  WRK-CONS-SRYCD2         PIC X(09)   VALUE   "630010002".
-      *    ��������μ�������ʬ
+      *    包括点数の治験減点分
            03  WRK-CONS-SRYCD3         PIC X(09)   VALUE   "199000210".
-      *    �����������ʣ������������ˡʸ�������¿����Ϳ��
+      *    薬剤料逓減（８０／１００）（向精神薬多剤投与）
            03  WRK-CONS-SRYCD4         PIC X(09)   VALUE   "630010005".
-      *    �����������ʣ������������ˡʾҲ�Ψ���㤤���±��������ʾ�������
+      *    薬剤料逓減（６０／１００）（紹介率が低い大病院３０日以上投薬）
            03  WRK-CONS-SRYCD5         PIC X(09)   VALUE   "630010006".
-      *    �����������ʼ��������������Ķ��
+      *    薬剤料減点（湿布薬薬剤料上限超）
            03  WRK-CONS-SRYCD6         PIC X(09)   VALUE   "630010007".
-      *    ��������θ������ˡ����ʬ
+      *    包括点数の公害補償法減点分
            03  WRK-CONS-SRYCD7         PIC X(09)   VALUE   "199000410".
       *
-      *    ����
-           03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "�ε���".
+      *    疑い
+           03  WRK-CONS-UTAGAI     PIC X(06)   VALUE   "の疑い".
            03  WRK-CONS-UTAGAI-MOJISU
                                    PIC 9(02)   VALUE   6.       
            03  WRK-CONS-BYOMEICD-UTAGAI
                                    PIC X(07)   VALUE   "ZZZ8002".   
-      *    ����
-           03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "����".      
+      *    急性
+           03  WRK-CONS-KYUSEI     PIC X(04)   VALUE   "急性".      
            03  WRK-CONS-KYUSEI-MOJISU
                                    PIC 9(02)   VALUE   4. 
            03  WRK-CONS-BYOMEICD-KYUSEI
@@ -518,132 +518,132 @@
            03  WRK-CONS-SRYYM-201004   PIC 9(06)   VALUE   201004.      
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
       *
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
       *     
-      *    ���ⰷ���ݸ��Ծ���
+      *    県内扱い保険者情報
            COPY    "CPSK1033.INC".
       *
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
       *     
            COPY    "CPSK2005.INC".
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰�
+      *    診療行為
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    �ݸ�����
+      *    保険情報
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����������
+      *    旧姓履歴情報
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
       *
-      *    �����������ֹ�
+      *    月代わり受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
-      *    ����
+      *    点数
            COPY    "CPTENSU.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
        COPY    "CPPTCOM.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ����ޥ���
+      *    住所マスタ
        01  ADRS-REC.
            COPY    "CPADRS.INC".
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ���ԥ쥻�ץ�ʬ��
+      *    患者レセプト分割
        01  PT-HDIST-DAY-REC.
            COPY    "CPPT-HDIST-DAY.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ��������Խ�����
+      *    入院会計編集サブ
            COPY    "CPORCHCM34S01.INC".
       *
-      *    �����ղþ����������
+      *    公費付加情報取得サブ
            COPY    "CPORCSKOHPLUS.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *   �ݸ�������ǯ�𡦳��׻�����
+      *   保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
-      *    ���Լ�����ô��쥻�ץȵ���Ƚ��
+      *    患者自己負担金レセプト記載判定
            COPY    "CPORCSFTNJGNCHK.INC".
       *
-      *    ��̾��Ω����
+      *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    �쥻�ץȼ����ֵѥ���
+      *    レセプト種別返却サブ
            COPY    "CPORCSSYUBETUGET.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌��������
+      *    入院料と異なる食事算定保険組み合わせ取得サブ
            COPY    "CPORCSSKJHKN.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -658,7 +658,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -671,7 +671,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -732,15 +732,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBT010"      TO  JOB-PGID
-           MOVE    "����ץǡ�������"
+           MOVE    "月次統計データ作成"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ����ǯ���Խ�
+      *    診療年月編集
            MOVE    WRK-PARA-SRYYM  TO  WRK-SYMD (1:6)
            MOVE    "01"            TO  WRK-SYMD (7:2)
       *
@@ -754,7 +754,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                                            LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI TO  WRK-EDYMD
       *
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -766,12 +766,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+               MOVE    "医療機関情報が取得できませんでした。"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    �����ֹ湽�����������Խ�
+      *    患者番号構成管理情報編集
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -793,12 +793,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
-               MOVE    "�����ֹ湽���������󤬼����Ǥ��ޤ���Ǥ���"
+               MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *     
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            INITIALIZE                  SYS-2005-REC
            MOVE    "2005"              TO  SYS-2005-KANRICD
            MOVE    "*"                 TO  SYS-2005-KBNCD
@@ -816,7 +816,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
            END-IF
       * 
-      *    ���ⰷ���ݸ��Ծ���
+      *    県内扱い保険者情報
            MOVE    SPACE           TO  WRK-1033-TABLE
       *     
            MOVE    SPACE           TO  SYS-1033-REC
@@ -868,13 +868,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            EVALUATE    WRK-PARA-NYUGAIKBN
                WHEN    "1" 
-      *            ��������ɤ߹��ߡʴ��ԣɣġ����Ųʡ��޼��̶�ʬ���
+      *            入院会計読み込み（患者ＩＤ、診療科、剤識別区分順）
                    INITIALIZE                  NYUINACCT-REC
 grpsys             MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
                    MOVE    WRK-PARA-SRYYM      TO  NACCT-SRYYM
@@ -899,7 +899,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    MOVE    "key13"             TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
                WHEN    "2" 
-      *            ���Ų���ɤ߹��ߡʴ��ԣɣġ��ݸ��ȹ礻���
+      *            診療会計読み込み（患者ＩＤ、保険組合せ順）
                    INITIALIZE                  SRYACCT-REC
 grpsys             MOVE    WRK-PARA-HOSPNUM    TO  ACCT-HOSPNUM
                    MOVE    WRK-PARA-SRYYM      TO  ACCT-SRYYM
@@ -931,7 +931,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
            EXIT. 
       *            
       *****************************************************************
-      *    ��������
+      *    入院処理
       *****************************************************************
        2001-NYUIN-HENSYU-SEC              SECTION.
       *
@@ -939,7 +939,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
            MOVE    ZERO                TO  WRK-RENNUM
       *     
-      *    �ƥ��ȴ��ԤΤȤ����ɤ����Ф�
+      *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
            MOVE    NACCT-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -957,7 +957,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                END-PERFORM
            ELSE
       *
-      *        ���ԥ쥻�ץ�ʬ��������
+      *        患者レセプト分割情報情報
                MOVE    NACCT-PTID              TO  WRK-PTID
                PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
@@ -966,7 +966,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
       *
                PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                                OR      NACCT-PTID  NOT =   PTINF-PTID
-      *            �޼��̶�ʬ�̥ơ��֥��Խ�
+      *            剤識別区分別テーブル編集
                    EVALUATE    NACCT-ZAISKBKBN
                        WHEN    "1"
                            MOVE    1               TO  IDX
@@ -985,15 +985,15 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
       *
-      *        Ʊ���������Υ����å�
+      *        同日再入院のチェック
                PERFORM 500-ORCSNYUINDAY-CHECK-SEC
       *
-      *        �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌�Υ����å�
+      *        入院料と異なる食事算定保険組み合わせのチェック
                IF    ( WRK-PARA-SRYYM          >=  "201710" )
                    PERFORM 500-ORCSSKJHKN-CHECK-SEC
                END-IF
       *
-      *        ������פ��ݸ��ȹ礻��ޤȤ��
+      *        入院会計の保険組合せをまとめる
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       31
                    IF  ( ( WRK-DAY (1 IDX)     >   ZERO )  OR
@@ -1015,20 +1015,20 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    MOVE    "1"                 TO  WRK-DATAKBN
                    PERFORM 2001-FILE-SYORI-SEC
       *
-      *            ����������������
+      *            入院基本料等処理
                    IF      WRK-HKNCOMBI-SYOKBN (IDX2)  NOT =   "1"
                        PERFORM 20013-NYUIN-KIHON-SEC
                    END-IF
                END-PERFORM
       *
-      *        ���Ų���Խ�����
+      *        診療会計編集処理
                PERFORM 20012-NYUIN-SRYACCT-HENSYU-SEC
       *
                IF      TBL-PT-HDIST-DAY-MAX
                                            =   ZERO
                    MOVE    1               TO  ST-IDX
                    MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *            ���ܥե�������Ͻ���
+      *            基本ファイル出力処理
                    PERFORM   2002-KIHON-WRITE-SEC
                ELSE
                    MOVE    ZERO            TO  ST-IDX
@@ -1049,7 +1049,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                        END-PERFORM
       *
                        IF      ST-IDX          >   ZERO
-      *                    ���ܥե�������Ͻ���
+      *                    基本ファイル出力処理
                            PERFORM   2002-KIHON-WRITE-SEC
                        ELSE
                            MOVE    999             TO  ST-IDX
@@ -1062,14 +1062,14 @@ grpsys             PERFORM 900-DBSELECT-SEC
            EXIT. 
       *            
       *****************************************************************
-      *    ������ץ����å�����
+      *    入院会計チェック処理
       *****************************************************************
        20011-NYUINACCT-HENSYU-SEC           SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
       *
-      *        �ݸ��ȹ礻�ɲ�
+      *        保険組合せ追加
                IF      WRK-COMB-HKNCOMBINUM (IDX1) =   ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    WRK-PARA-HOSPNUM
@@ -1094,7 +1094,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
       *
-      *        Ŭ���ϰϤ������å����ϰϳ��ΤȤ����򥻥åȡ�
+      *        適用範囲かチェック（範囲外のとき２をセット）
                IF      WRK-HKNCOMBINUM     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
@@ -1120,7 +1120,7 @@ grpsys             PERFORM 900-DBSELECT-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ���Ų���Խ�������������
+      *    診療会計編集処理（入院）
       *****************************************************************
        20012-NYUIN-SRYACCT-HENSYU-SEC           SECTION.
       *
@@ -1148,7 +1148,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-IF
       *
            PERFORM UNTIL       FLG-SRYACCT     =   1
-      *        ̤����ʬ�����뤫
+      *        未訂正分があるか
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
@@ -1159,7 +1159,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM 
                    MOVE    ZERO                TO  FLG-HKNCOMBI 
                ELSE
-      *            �ݸ��ȹ礻�ɹ���
+      *            保険組合せ読込み
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
                    MOVE    PTINF-PTID          TO  COMB-PTID
@@ -1190,7 +1190,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    PERFORM 2001-FILE-SYORI-SEC 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
-      *                Ʊ�����ԣɣġ����Ųʡ��ݸ��ȹ礻���ɤ����Ф�
+      *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                        MOVE    KEY-NEW             TO  KEY-OLD
                        PERFORM     UNTIL   FLG-SRYACCT =   1 
                                    OR      KEY-NEW NOT =   KEY-OLD
@@ -1218,11 +1218,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ���������������������������������Խ�����
+      *    入院基本料・特定入院料・食事療養編集処理
       *****************************************************************
        20013-NYUIN-KIHON-SEC           SECTION.
       *
-      *    ���ץǡ�������̾�ˤΤߤΤȤ�
+      *    統計データ（病名）のみのとき
            IF      WRK-PARA-DATAKBN    =   "2"
                GO  TO  20013-NYUIN-KIHON-EXT
            END-IF
@@ -1237,11 +1237,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    COMB-HKNCOMBINUM    TO  HCM34S01-HKNCOMBI
            MOVE    COMB-HKNNUM         TO  HCM34S01-HKNNUM
            IF    ( COMB-HKNNUM         =   "971" OR "973" )
-      *        ϫ�Ҽ�����������Խ�����
+      *        労災自賠入院会計編集サブ
                CALL    "ORCHCM34S02"       USING HCM34S01-AREA
                                                  WRK-SPA-AREA
            ELSE
-      *        ������������Խ�����
+      *        医療入院会計編集サブ
                CALL    "ORCHCM34S01"       USING HCM34S01-AREA
                                                  WRK-SPA-AREA
            END-IF
@@ -1257,7 +1257,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPACE               TO  TOUKEI02-REC
                INITIALIZE                      TOUKEI02-REC
       *
-      *        ���Ų�ץǡ����Խ�
+      *        診療会計データ編集
                MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY
                ADD     1                   TO  WRK-RENNUM
                MOVE    WRK-RENNUM          TO  TOUKEI02-SEQNO
@@ -1272,7 +1272,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    HCM34S01-HKNCOMBI       TO  TOUKEI02-HKNCOMBI
                MOVE    HCM34S01-DAY-TBL (IDX4) TO  TOUKEI02-DAY-AREA
       *
-      *        ���Ź԰٥ǡ����Խ�
+      *        診療行為データ編集
                MOVE    HCM34S01-SRYKBN  (IDX4) TO  TOUKEI02-SRYSYUKBN
                MOVE    HCM34S01-SRYCD   (IDX4 IDX5)
                                                TO  TOUKEI02-SRYCD
@@ -1304,7 +1304,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                ELSE
                    MOVE    SPACE               TO  WRK-TOUKEIERR
                    STRING
-                       "����ץǡ��������׾���� �񤭹��ߥ��顼 STS="
+                       "月次統計データ（統計情報） 書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                            STS-TOUKEI02            DELIMITED  BY  SIZE
                                                    INTO    WRK-TOUKEIERR
@@ -1315,7 +1315,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
       *
                ADD     1               TO  CNT-TOUKEI02 
       *
-      *        ����ñ�Ȥ��̥ե����뤬����Ȥ�
+      *        生保単独で別ファイルがあるとき
                IF    ( WRK-SEIHO-TOUKEI01-HOSPNUM )
                                        >   ZERO
                AND   ( WRK-SEIHO-TOUKEI01-SRYYM
@@ -1329,7 +1329,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    ELSE
                        MOVE    SPACE               TO  WRK-TOUKEIERR
                        STRING
-                       "����ץǡ��������׾���� �񤭹��ߥ��顼 STS="
+                       "月次統計データ（統計情報） 書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                                STS-TOUKEI02        DELIMITED  BY  SIZE
                                                    INTO    WRK-TOUKEIERR
@@ -1347,13 +1347,13 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル処理
       *****************************************************************
        2001-NYUINGAI-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  WRK-TOUKEI01-TABLE
            INITIALIZE                      WRK-ERR-AREA
-      *    �ƥ��ȴ��ԤΤȤ����ɤ����Ф�
+      *    テスト患者のときは読み飛ばす
            MOVE    WRK-PARA-HOSPNUM        TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID              TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -1371,17 +1371,17 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    PERFORM 900-SRYACCT-READ-SEC
                END-PERFORM
            ELSE
-      *        �����������
+      *        施設入所情報
                PERFORM 500-SISETU-HENSYU-SEC
       *
-      *        ���ԥ쥻�ץ�ʬ��������
+      *        患者レセプト分割情報情報
                MOVE    KEY-N-PTID              TO  WRK-PTID
                PERFORM 500-PT-HDIST-DAY-HENSYU-SEC
       *
                MOVE    KEY-NEW             TO  KEY-OLD
                PERFORM         UNTIL   FLG-SRYACCT     =   1 
                                OR      KEY-N-PTID  NOT =   KEY-O-PTID
-      *            ̤����ʬ�����뤫
+      *            未訂正分があるか
                    MOVE    SPACE               TO  WRK-ERR-AREA
                    INITIALIZE                      WRK-ERR-AREA
       *
@@ -1392,7 +1392,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                        MOVE    KEY-N-HKNCOMBI      TO  COMB-HKNCOMBINUM
                        MOVE    ZERO                TO  FLG-HKNCOMBI 
                    ELSE
-      *                �ݸ��ȹ礻�ɹ���
+      *                保険組合せ読込み
                        INITIALIZE                  HKNCOMBI-REC
                        MOVE    WRK-PARA-HOSPNUM    TO  COMB-HOSPNUM
                        MOVE    KEY-N-PTID          TO  COMB-PTID
@@ -1423,7 +1423,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                        PERFORM 2001-FILE-SYORI-SEC 
       *
                        IF      WRK-UPDKBN          =   SPACE                   
-      *                    Ʊ�����ԣɣġ����Ųʡ��ݸ��ȹ礻���ɤ����Ф�
+      *                    同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                            MOVE    KEY-NEW             TO  KEY-OLD
                            PERFORM     UNTIL   FLG-SRYACCT =   1 
                                        OR      KEY-NEW NOT =   KEY-OLD
@@ -1448,7 +1448,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                AND   ( TBL-PTKOHINF-MAX    =   ZERO )
                    MOVE    1               TO  ST-IDX
                    MOVE    SPACE           TO  WRK-RECEIPT-KBN
-      *            ���ܥե�������Ͻ���
+      *            基本ファイル出力処理
                    PERFORM   2002-KIHON-WRITE-SEC
                ELSE
                    MOVE    ZERO            TO  ST-IDX
@@ -1469,7 +1469,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                        END-PERFORM
       *
                        IF      ST-IDX          >   ZERO
-      *                    ���ܥե�������Ͻ���
+      *                    基本ファイル出力処理
                            PERFORM   2002-KIHON-WRITE-SEC
                        ELSE
                            MOVE    999             TO  ST-IDX
@@ -1482,7 +1482,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル処理
       *****************************************************************
        2001-FILE-SYORI-SEC              SECTION.
       *
@@ -1493,7 +1493,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    END-IF        
                WHEN    "2"
                    IF      WRK-UPDKBN          =   "1"
-      *                �ݸ�������������Ƥ��뤫
+      *                保険の訂正がされているか
                        IF      COMB-TEKSTYMD(1:6)  =   WRK-STYMD (1:6)
                            MOVE    COMB-TEKSTYMD       TO  WRK-YMD
                            PERFORM VARYING IDX FROM    1   BY  1
@@ -1528,7 +1528,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    END-IF
             END-EVALUATE
       *
-      *    ǯ��
+      *    年齢
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    PTINF-HOSPNUM   TO  AGECHK-HOSPNUM
            MOVE    PTINF-PTID      TO  AGECHK-PTID
@@ -1539,14 +1539,14 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                                        ORCSAGECHKAREA
                                        SPA-AREA
       *
-      *    ʿ������ǯ����ʹߤ�Ϸ���ݸ����ѤΤȤ�
+      *    平成２０年４月以降に老人保険使用のとき
            IF    ( WRK-TEISEIKBN       =   SPACE                 )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-KOH1HKNNUM     =   "027"                 )
                MOVE    "1"                 TO  WRK-TEISEIKBN
            END-IF
       *
-      *    ʿ������ǯ����ʹߤ��࿦���ݤǣ����аʾ�ΤȤ�
+      *    平成２０年４月以降に退職国保で６５歳以上のとき
            IF    ( WRK-TEISEIKBN       =   SPACE                 )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-200804 )
            AND   ( COMB-HKNNUM         =   "067"                 )
@@ -1555,14 +1555,14 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-IF
           END-IF
       *
-      *    ʿ������ǯ����ʹߤ����ܴɾ�����ѤΤȤ�
+      *    平成２２年４月以降に政府管掌を使用のとき
            IF    ( WRK-TEISEIKBN       =   SPACE                 )
            AND   ( WRK-STYMD (1:6)     >=  WRK-CONS-SRYYM-201004 )
            AND   ( COMB-HKNNUM         =   "001"                 )
                MOVE    "1"                 TO  WRK-TEISEIKBN
            END-IF
       *
-      *   ���ݸ������ɤ߽Ф�
+      *   主保険情報読み出し
            INITIALIZE                      PTHKNINF-REC
                                            PTRSIINF-REC
            IF      COMB-HKNID          NOT =   ZERO
@@ -1587,7 +1587,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-EVALUATE 
            END-IF
       *
-      *    �ե������Խ�����
+      *    ファイル編集処理
            INITIALIZE                      TOUKEI01-REC
            MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI01-HOSPNUM
            MOVE    WRK-PARA-SRYYM      TO  TOUKEI01-SRYYM
@@ -1817,7 +1817,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                MOVE    "9999999"            TO  TOUKEI01-HKNJANUM
            END-IF
       *
-      *    ���������̵ͭ
+      *    施設入所の有無
            IF    ( TOUKEI01-RECEIPT-KBN (1:1)
                                            =   SPACE )
            AND   ( TBL-PTKOHINF-MAX        >   ZERO  )
@@ -1852,7 +1852,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-PERFORM
            END-IF
       *
-      *    ���ԥ쥻�ץ�ʬ������̵ͭ
+      *    患者レセプト分割情報の有無
            IF    ( TOUKEI01-RECEIPT-KBN (2:3)
                                            =   SPACE )
            AND   ( TBL-PT-HDIST-DAY-MAX    >   ZERO  )
@@ -1920,7 +1920,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            END-PERFORM
       *
            INITIALIZE                  WRK-SEIHO-TOUKEI01-REC
-      *    ����ñ�Ȥξ������ݡ�����αˮ��������Ω�ٱ��
+      *    公費単独の場合（生保、中国残留邦人等、自立支援）
            IF    ( COMB-HKNNUM         =   SPACE )
            AND   ( COMB-KOHHKNNUM (1)  =   "012"
                                        OR  "015"
@@ -1935,7 +1935,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
            EXIT. 
       *            
       *****************************************************************
-      *    �ɲý���
+      *    追加処理
       *****************************************************************
        20011-TOUKEI01-WRITE-SEC              SECTION.
       *
@@ -1945,7 +1945,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                EVALUATE    TOUKEI01-HKNNUM
                  WHEN    WRK-CONS-ROUSAI-HKNNUM
                  WHEN    WRK-CONS-JIBAI-HKNNUM
-      *            ϫ�Ҿ��� 
+      *            労災情報 
                    MOVE   PTRSI-HKNID      TO  TOUKEI01-HKNID
                    MOVE   PTRSI-HKNKBN     TO  TOUKEI01-HKNKBN
                    MOVE   PTRSI-KOFUNUM    TO  TOUKEI01-KOFUNUM
@@ -1988,7 +1988,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE   PTRSI-HIHKNJANAME
                                            TO  TOUKEI01-HIHKNJANAME
                  WHEN    OTHER
-      *            ���ݸ����� 
+      *            主保険情報 
                    MOVE    PTHKN-HKNID     TO  TOUKEI01-HKNID
                                                TOUKEI01-THKNID     (1)
                    MOVE    PTHKN-TEKSTYMD  TO  TOUKEI01-TTEKSTYMD  (1)
@@ -2024,7 +2024,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                        END-IF
                    END-IF
                    MOVE    PTHKN-HONKZKKBN TO  TOUKEI01-THONKZKKBN (1)
-      *            ˡ���ֹ�
+      *            法別番号
                    INITIALIZE                      HKNNUM-REC
                    MOVE    WRK-PARA-HOSPNUM    TO  HKN-HOSPNUM
                    MOVE    PTHKN-HKNNUM        TO  HKN-HKNNUM
@@ -2041,7 +2041,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-EVALUATE
            END-IF    
       *
-      *    Ϸ���ݸ�����
+      *    老人保険情報
            IF      TOUKEI01-KOHID  >   ZERO   
                MOVE    COMB-KOH1HKNNUM TO  TOUKEI01-RJNHKNNUM
       *
@@ -2057,7 +2057,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                    MOVE    PTKOH-JKYSNUM       TO  TOUKEI01-RJNJKYSNUM
                    MOVE    PTKOH-TEKSTYMD      TO  TOUKEI01-RJNTEKSTYMD
                    MOVE    PTKOH-TEKEDYMD      TO  TOUKEI01-RJNTEKEDYMD
-      *            ˡ���ֹ�Υ��å�
+      *            法別番号のセット
                    INITIALIZE                  HKNNUM-REC
                    MOVE    WRK-PARA-HOSPNUM
                                            TO  HKN-HOSPNUM
@@ -2073,7 +2073,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                END-IF
            END-IF
       *
-      *    �����ֹ�
+      *    患者番号
            INITIALIZE                  ORCSPTIDAREA
            MOVE    TOUKEI01-HOSPNUM
                                    TO  SPTID-HOSPNUM
@@ -2082,7 +2082,7 @@ grpsys         MOVE    SPA-HOSPNUM             TO  TNS-HOSPNUM
                                                SPA-AREA
            MOVE    SPTID-PTNUM     TO  TOUKEI01-PTNUM
       *
-      *    ���Ծ���
+      *    患者情報
            MOVE    PTINF-KANANAME  TO  TOUKEI01-KANANAME
            MOVE    PTINF-NAME      TO  TOUKEI01-NAME
            MOVE    PTINF-SEX       TO  TOUKEI01-SEX
@@ -2100,7 +2100,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            PERFORM 900-ADRS-INV-SEC
            MOVE    ADRS-LPUBCD     TO  TOUKEI01-LPUBCD
       *
-      *    ��������μ���
+      *    旧姓履歴の取得
            INITIALIZE                  KYUSEIRRK-REC
            MOVE    TOUKEI01-HOSPNUM
                                    TO  KYUSEI-HOSPNUM
@@ -2119,7 +2119,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
                MOVE    KYUSEI-KANANAME TO  TOUKEI01-KANANAME
            END-IF
       *
-      *    ǯ��
+      *    年齢
            INITIALIZE                  ORCSAGECHKAREA
            MOVE    TOUKEI01-HOSPNUM
                                    TO  AGECHK-HOSPNUM
@@ -2151,7 +2151,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ѹ�����
+      *    変更処理
       *****************************************************************
        20011-TOUKEI01-REWRITE-SEC            SECTION.
       *
@@ -2159,7 +2159,7 @@ grpsys                                 SPA-AREA
       *
            PERFORM 20012-KOHID-CHECK-SEC
       *
-      *    ���ݸ����� 
+      *    主保険情報 
            IF      TOUKEI01-HKNNUM     NOT =   SPACE
              EVALUATE    TOUKEI01-HKNNUM
                WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -2278,11 +2278,11 @@ grpsys                                 SPA-AREA
            EXIT.
       * 
       *****************************************************************
-      *    �����ֹ�����å�����
+      *    公費番号チェック処理
       *****************************************************************
        20012-KOHID-CHECK-SEC              SECTION.
       *
-      *    Ϸ���ݸ��ʳ��θ��������Խ�
+      *    老人保険以外の公費情報を編集
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX         >   4
                    OR      COMB-KOHID (IDX)    =   ZERO
@@ -2308,7 +2308,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    公費番号編集処理
       *****************************************************************
        200121-KOHID-HENSYU-SEC                SECTION.
       *
@@ -2327,7 +2327,7 @@ grpsys                                 SPA-AREA
                MOVE   PTKOH-TEKEDYMD   TO  TOUKEI01-TKOHTEKEDYMD (IDY)
                MOVE   PTKOH-JKYSNUM    TO  TOUKEI01-TKOHJKYSNUM  (IDY)
       *             
-      *        ���ݤΤȤ������������ֹ�ޥ�����������ֹ�򥻥å� 
+      *        生保のとき月代わり受給者番号マスタより受給者番号をセット 
                IF    ( PTKOH-KOHNUM    =   WRK-CONS-SEIHO-HKNNUM )
                    MOVE    WRK-PARA-HOSPNUM
                                            TO  MONTHLYNUM-HOSPNUM
@@ -2383,7 +2383,7 @@ grpsys                                 SPA-AREA
                    END-IF
                END-IF
       *    
-      *        ˡ���ֹ�Υ��å�
+      *        法別番号のセット
                INITIALIZE                 HKNNUM-REC
                MOVE    WRK-PARA-HOSPNUM
                                        TO HKN-HOSPNUM
@@ -2396,7 +2396,7 @@ grpsys                                 SPA-AREA
                IF      FLG-HKNNUM      =   ZERO
                     MOVE   HKN-HBTNUM      TO  TOUKEI01-TKOHHBTNUM (IDY)
                END-IF
-      *        ��������ΤȤ��쥻�ץ������ʬ�����
+      *        地方公費のときレセプト請求区分を取得
                IF    ( COMB-KOHHKNNUM (IDX)(1:1)
                                            >=  "1" AND <=  "8" )
                OR    ( COMB-KOHHKNNUM (IDX)(1:2)
@@ -2426,29 +2426,29 @@ grpsys                                 SPA-AREA
                            END-IF
                    END-EVALUATE
                    IF     TOUKEI01-TRECESKYKBN (IDY)   =   1
-      *                ��������쥻����Ƚ��
+      *                地方公費レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPNUM
                                            TO  LNK-FTNJGNCHK-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    WRK-PARA-NYUGAIKBN
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
-      *                ����ǯ��
+      *                診療年月
                        MOVE    WRK-PARA-SRYYM
                                            TO  LNK-FTNJGNCHK-SRYYM
-      *                �����ֹ�
+      *                公費番号
                        MOVE    COMB-KOHHKNNUM (IDX)
                                            TO  LNK-FTNJGNCHK-KOHNUM
-      *                ����ɣ�
+      *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                ��ƻ�ܸ��ֹ�
+      *                都道府県番号
                        MOVE    SYS-1001-PREFNUM
                                            TO  LNK-FTNJGNCHK-PREFNUM
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        MOVE    COMB-HKNCOMBINUM
                                            TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                ���ݸ��ݣɣ�
+      *                主保険−ＩＤ
                        MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK" USING
@@ -2459,35 +2459,35 @@ grpsys                                         SPA-AREA
                        END-IF
                    END-IF
                ELSE
-      *            �������ΤȤ���Ĺ����
+      *            全国公費のとき（長期）
                    IF      HKN-HKNKOHSBTKBN    =   "2" 
                        GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
-      *            �������ΤȤ������ݡ�
+      *            全国公費のとき（生保）
       **>          IF   COMB-KOHHKNNUM (IDX)   =   "012" OR "021"
-      *                �쥻����Ƚ��
+      *                レセ記載判定
                        INITIALIZE          ORCSFTNJGNCHKAREA
                        MOVE    COMB-HOSPNUM
                                            TO  LNK-FTNJGNCHK-HOSPNUM
                        MOVE    COMB-PTID   TO  LNK-FTNJGNCHK-PTID
                        MOVE    WRK-PARA-NYUGAIKBN
                                            TO  LNK-FTNJGNCHK-NYUGAIKBN
-      *                ����ǯ��
+      *                診療年月
                        MOVE    WRK-PARA-SRYYM
                                            TO  LNK-FTNJGNCHK-SRYYM
-      *                �����ֹ�
+      *                公費番号
                        MOVE    COMB-KOHHKNNUM (IDX)
                                            TO  LNK-FTNJGNCHK-KOHNUM
-      *                ����ɣ�
+      *                公費ＩＤ
                        MOVE    COMB-KOHID (IDX)
                                            TO  LNK-FTNJGNCHK-KOHID
-      *                ��ƻ�ܸ��ֹ�
+      *                都道府県番号
                        MOVE    SYS-1001-PREFNUM
                                            TO  LNK-FTNJGNCHK-PREFNUM
-      *                �ݸ��ȹ礻�ֹ�
+      *                保険組合せ番号
                        MOVE    COMB-HKNCOMBINUM
                                            TO  LNK-FTNJGNCHK-HKNCOMBINUM
-      *                ���ݸ��ݣɣ�
+      *                主保険−ＩＤ
                        MOVE    COMB-HKNID  TO  LNK-FTNJGNCHK-HKNID
       *
                        CALL    "ORCSFTNJGNCHK" USING
@@ -2500,7 +2500,7 @@ grpsys                                         SPA-AREA
                        END-IF
       **>              GO  TO  200121-KOHID-HENSYU-EXT
       **>          END-IF
-      *            �������ΤȤ���Ϸ�͸�����
+      *            全国公費のとき（老人原爆）
                    IF    ( TOUKEI01-RJNHKNNUM
                                        NOT =   SPACE                   )
                    AND   ( COMB-KOHHKNNUM (IDX)
@@ -2517,7 +2517,7 @@ grpsys                                         SPA-AREA
                        END-IF
       **>              GO  TO  200121-KOHID-HENSYU-EXT
                    END-IF
-      *            �������ΤȤ���Ĺ����Ϸ�͸��������ݡ������ʳ���
+      *            全国公費のとき（長期・老人原爆・生保・精神以外）
       **>          MOVE    "1"         TO  TOUKEI01-TRECESKYKBN(IDY)
                END-IF       
            END-IF
@@ -2526,7 +2526,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *            
       *****************************************************************
-      *    ���Ͻ���������ñ�ȤΤȤ��Τߡ�
+      *    出力処理（生保単独のときのみ）
       *****************************************************************
        20013-SEIHO-TOUKEI01-WRITE-SEC              SECTION.
       *
@@ -2536,7 +2536,7 @@ grpsys                                         SPA-AREA
            MOVE    WRK-SEIHO-TOUKEI01-KEY
                                        TO  TOUKEI01-KEY
            MOVE    COMB-TEKSTYMD       TO  TOUKEI01-HKNJANUM
-      *    �����ݸ���ֽ�ʣ�б��Τ���
+      *    生活保護期間重複対応のため
            IF      COMB-KOHHKNNUM (1)  =   "012"
                MOVE    COMB-KOH1ID         TO  TOUKEI01-KOH-KOHID
            END-IF
@@ -2562,14 +2562,14 @@ grpsys                                         SPA-AREA
            EXIT.
       *            
       *****************************************************************
-      *    ʡ������������å�����
+      *    福岡県公費チェック処理
       *****************************************************************
        20011-PREFKBN-40-CHECK-SEC      SECTION.
       *
            MOVE    SPACE               TO  WRK-PREFKBN
                                            WRK-PREFNUM
       *
-      *    �����������ݸ��Ԥϥ쥻�ץȤص��ܤ��ʤ�
+      *    県外扱いの保険者はレセプトへ記載しない
            IF      PTHKN-HKNJANUM (1:2)    =   "67"
                MOVE    PTHKN-HKNJANUM (3:2)
                                        TO  WRK-PREFNUM
@@ -2599,7 +2599,7 @@ grpsys                                         SPA-AREA
                END-PERFORM
            END-IF
       *        
-      *    ���ⰷ���ξ�硢�����ղþ�����쥻�ץ������ʬ�����
+      *    県内扱いの場合、公費付加情報よりレセプト請求区分を取得
            IF      WRK-PREFKBN         =   SPACE
                MOVE    "2"                 TO  TOUKEI01-TRECESKYKBN(IDY)
            ELSE
@@ -2628,7 +2628,7 @@ grpsys                                         SPA-AREA
            EXIT. 
       *
       *****************************************************************
-      *    ���ܥե�������Ͻ���
+      *    基本ファイル出力処理
       *****************************************************************
        2002-KIHON-WRITE-SEC              SECTION.
       *
@@ -2638,8 +2638,8 @@ grpsys                                         SPA-AREA
       *
            MOVE    ZERO                TO  WRK-SEIHO-FLG
       *
-      *    ����ñ�Ȥ���������ݡ�����αˮ��������Ω�ٱ�ˤ�¾��
-      *    ����ñ�ȤΥ����å������������Ͻ�����    
+      *    公費単独の退避（生保、中国残留邦人等、自立支援）と他の
+      *    公費単独のチェック（精神入院は除く）    
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       WRK-TOUKEI01-TABLE-MAX
                    OR      WRK-TOUKEI01-HOSPNUM (IDXX) =   ZERO
@@ -2647,7 +2647,7 @@ grpsys                                         SPA-AREA
                                        WRK-TOUKEI01-RECEIPT-KBN (IDXX)
                MOVE    WRK-TOUKEI01-OCC (IDXX)     TO  TOUKEI01-REC
       *
-      *        ����ñ�Ȥξ������������������Ӽ������ʳ���
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
                                                        "030"     )
@@ -2700,8 +2700,8 @@ grpsys                                         SPA-AREA
       *****************************            =   "012"   OR  "025"
       *****************************            OR  "015"   OR  "016"
       *****************************            OR  "021"   OR  SPACE )
-      *****************************    ���ݡ�����αˮ��������Ω�ٱ�Τ�
-      *****************************    �θ���ñ�Ȥξ������
+      *****************************    生保、中国残留邦人等、自立支援のみ
+      *****************************    の公費単独の場合退避
       *****************************    MOVE    TOUKEI01-REC      TO
       *****************************                WRK-KOH-TOUKEI01-REC
       *****************************ELSE
@@ -2712,7 +2712,7 @@ grpsys                                         SPA-AREA
                                MOVE    1           TO  FLG-SEIHO
                            END-IF
                        ELSE
-      *                    ����ñ�Ȥξ������
+      *                    生保単独の場合退避
                            ADD     1        TO  TBL-SEIHO-TOUKEI01-MAX
                            MOVE    TOUKEI01-REC
                                             TO  TBL-SEIHO-TOUKEI01-REC
@@ -2736,7 +2736,7 @@ grpsys                                         SPA-AREA
       *
                MOVE    ZERO            TO  FLG-WRITE 
       *
-      *        ����ñ�Ȥξ������������������Ӽ������ʳ���
+      *        公費単独の場合（精神入院・心身喪失・包括以外）
                IF      TOUKEI01-HKNNUM     =   SPACE
                    IF    ( TOUKEI01-TKOHHKNNUM (1) =   "020"   OR
                                                        "030"     )
@@ -2744,12 +2744,12 @@ grpsys                                         SPA-AREA
                        CONTINUE
                    ELSE 
                        IF      TOUKEI01-HKNJANUM       =   SPACE
-      *                    ����ñ�Ȥξ������ݡ�����αˮ��������Ω�ٱ��
+      *                    公費単独の場合（生保、中国残留邦人等、自立支援）
                            IF    ( TOUKEI01-TKOHHKNNUM (1) =
                                                    "012"   OR  "025"
                                                OR  "015"   OR  "016"
                                                OR  "021"            )
-      *                        Ʊ������θ���ñ�Ȥξ��
+      *                        同じ公費の公費単独の場合
                                IF    ( TOUKEI01-TKOHHKNNUM  (2)
                                                     =
                                            TOUKEI01-TKOHHKNNUM (1) 
@@ -2809,7 +2809,7 @@ grpsys                                         SPA-AREA
                   END-IF
                END-IF
       *
-      *        ���ݤǸ���ʻ�Ѥξ������ݡ�����αˮ��������Ω�ٱ硢��Ƹ�ݸ��
+      *        社保で公費併用の場合（生保、中国残留邦人等、自立支援、児童保護）
                IF    ( TOUKEI01-HKNNUM   NOT =   SPACE )
                AND   ( TOUKEI01-TKOHHKNNUM (1)
                                            =   "012"   OR  "025"   OR 
@@ -2875,7 +2875,7 @@ grpsys                                         SPA-AREA
                END-IF
       *
                IF      FLG-WRITE            =   ZERO
-      *            �쥻�ץȼ���
+      *            レセプト種別
                    PERFORM 20021-RECESYUBETU-SET-SEC
       *
                    MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
@@ -2887,7 +2887,7 @@ grpsys                                         SPA-AREA
                    ELSE
                        MOVE    SPACE               TO  WRK-TOUKEIERR
                        STRING
-                       "����ץǡ����ʴ��ܾ���� �񤭹��ߥ��顼 STS="
+                       "月次統計データ（基本情報） 書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                                STS-TOUKEI01        DELIMITED  BY  SIZE
                                                    INTO    WRK-TOUKEIERR
@@ -2903,14 +2903,14 @@ grpsys                                         SPA-AREA
              END-IF
            END-PERFORM
       *
-      *    ����ñ�ȥ쥻�ν��Ͻ���
+      *    公費単独レセの出力処理
            IF    ( WRK-SEIHO-FLG           =   ZERO )
            AND   (  WRK-KOH-TOUKEI01-HOSPNUM
                                            >   ZERO )
-      *        ���ݸ��ȤΤޤȤ᤬�ʤ����ݡ�����αˮ��������Ω�ٱ�ʳ��Ȥ�
-      *        ����ñ�Ȥξ��
+      *        主保険とのまとめがなく生保、中国残留邦人等、自立支援以外との
+      *        公費単独の場合
                MOVE    WRK-KOH-TOUKEI01-REC  TO  TOUKEI01-REC
-      *        �쥻�ץȼ���
+      *        レセプト種別
                PERFORM 20021-RECESYUBETU-SET-SEC
       *
       *???     MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
@@ -2921,9 +2921,9 @@ grpsys                                         SPA-AREA
                    CONTINUE
                ELSE
                    MOVE    SPACE           TO  WRK-TOUKEIERR
-                   STRING  "����ץǡ����ʴ��ܾ����"
+                   STRING  "月次統計データ（基本情報）"
                                                DELIMITED  BY  SIZE
-                           "�񤭹��ߥ��顼 STS="
+                           "書き込みエラー STS="
                                                DELIMITED  BY  SIZE
                            STS-TOUKEI01    DELIMITED  BY  SIZE
                                            INTO    WRK-TOUKEIERR
@@ -2943,7 +2943,7 @@ grpsys                                         SPA-AREA
                        ELSE
                            MOVE    TBL-SEIHO-TOUKEI01-REC (IDXX)
                                                TO  TOUKEI01-REC
-      *                    �쥻�ץȼ���
+      *                    レセプト種別
                            PERFORM 20021-RECESYUBETU-SET-SEC
       *
                            MOVE    WRK-TOUKEI01-SEIHO-OCC (IDXX)
@@ -2955,9 +2955,9 @@ grpsys                                         SPA-AREA
                            ELSE
                                MOVE    SPACE           TO  WRK-TOUKEIERR
                                STRING
-                                   "����ץǡ����ʴ��ܾ����"
+                                   "月次統計データ（基本情報）"
                                                    DELIMITED  BY  SIZE
-                                   "�񤭹��ߥ��顼 STS="
+                                   "書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                                    STS-TOUKEI01    DELIMITED  BY  SIZE
                                                    INTO    WRK-TOUKEIERR
@@ -2972,7 +2972,7 @@ grpsys                                         SPA-AREA
                END-IF
            END-IF
       *
-      *    ��̾�ե�������Ͻ���
+      *    病名ファイル出力処理
            IF      WRK-TOUKEI01-HOSPNUM (1)    >   ZERO
                PERFORM 20022-BYOMEI-HENSYU-SEC
            END-IF
@@ -2981,26 +2981,26 @@ grpsys                                         SPA-AREA
            EXIT. 
       *
       *****************************************************************
-      *    �쥻�ץȼ��̥��åȽ���
+      *    レセプト種別セット処理
       *****************************************************************
        20021-RECESYUBETU-SET-SEC              SECTION.
       *
            MOVE    SPACE               TO  WK-RECESYUBETU-AREA
            INITIALIZE                      WK-RECESYUBETU-AREA
       *
-      *    �ݸ��ѹ��塢�������Ƥ��ʤ��Ȥ�
-      *    �ݸ��ȹ礻���ʤ��Ȥ�
+      *    保険変更後、訂正していないとき
+      *    保険組合せがないとき
            IF      TOUKEI01-TEISEIKBN  =   "1"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ���񤬣��Ĥ�Ķ�����
+      *    公費が４つを超える時
            IF      TOUKEI01-TKOHHKNNUM (5)
                                    NOT =   SPACE
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
       *
-      *    ���ΤȤ�
+      *    包括のとき
            IF      TOUKEI01-HKNJANUM   =   "9999999"
                GO  TO  20021-RECESYUBETU-SET-EXT
            END-IF
@@ -3054,7 +3054,7 @@ grpsys                                         SPA-AREA
                MOVE    TOUKEI01-SAIGAIKBN  TO  LNK-SYUBETUGET-SAIGAIKBN
            END-IF
       *
-      *    �������������̵ͭ����
+      *    後期高齢非該当の有無設定
            MOVE    ZERO            TO  WRK-KOUKI-FLG
       *
            IF    ( LNK-SYUBETUGET-AGE    >=  70                    )
@@ -3122,7 +3122,7 @@ grpsys                                         SPA-AREA
            END-IF
            MOVE    TOUKEI01-BIRTHDAY   TO  LNK-SYUBETUGET-BIRTHDAY
       *
-      *    ���ݤΤȤ��������θ����̵ͭ
+      *    国保のとき９７７の公費の有無
            IF    ( LNK-SYUBETUGET-BIRTHDAY
                                        <   19440402 )
            AND   ( LNK-SYUBETUGET-HKNNUM
@@ -3182,7 +3182,7 @@ grpsys                                         SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾������Ͻ���
+      *    病名情報出力処理
       *****************************************************************
        20022-BYOMEI-HENSYU-SEC              SECTION.
       *
@@ -3190,7 +3190,7 @@ grpsys                                         SPA-AREA
                GO  TO  20022-BYOMEI-HENSYU-EXT
            END-IF
       *    
-      *    ������̾�ɤ߹���
+      *    患者病名読み込み
            INITIALIZE                  PTBYOMEI-REC
            MOVE    WRK-PARA-HOSPNUM    TO  PTBYO-HOSPNUM
            MOVE    PTINF-PTID          TO  PTBYO-PTID
@@ -3222,11 +3222,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *            
       *****************************************************************
-      *    ������̾���Ͻ���
+      *    患者病名出力処理
       *****************************************************************
        200221-BYOMEI-WRITE-SEC         SECTION.
       *
-      *    ���ų�����
+      *    診療開始日
            IF      PTBYO-SRYYMD(1:6)    =   WRK-PARA-SRYYM
                CONTINUE
            ELSE
@@ -3245,7 +3245,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    ������ʬ
+      *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE
                CONTINUE
            ELSE
@@ -3254,7 +3254,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
       *
-      *    "999999"�Υ����ɤ��ɤ����Ф�
+      *    "999999"のコードを読み飛ばす
            INITIALIZE                  WRK-PTBYOMEI-REC
            MOVE    ZERO                TO  IDY
            PERFORM VARYING IDX FROM    1   BY  1
@@ -3274,7 +3274,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-PTBYO-BYOMEICDSU
                                        TO  PTBYO-BYOMEICDSU    
       *
-      *    �����ե饰�����̾���Խ�
+      *    疑いフラグより病名を編集
            IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
            OR    ( PTBYO-HOSOKU-COMMENT
                                    NOT =   SPACE )
@@ -3325,7 +3325,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    OR      PTBYO-BYOMEICD (IDX)    =   SPACE
                MOVE    IDX                 TO  TOUKEI03-BYOMEICDSU
            END-PERFORM
-      *    �쥻�ץȿ��Ų�
+      *    レセプト診療科
            IF      PTBYO-SRYKA     NOT =   SPACE    
                INITIALIZE                      SYS-1005-REC
                MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -3349,7 +3349,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                CONTINUE
            ELSE
                MOVE    SPACE               TO  WRK-TOUKEIERR
-               STRING "����ץǡ�������̾����� �񤭹��ߥ��顼 STS="
+               STRING "月次統計データ（病名情報） 書き込みエラー STS="
                                            DELIMITED  BY  SIZE
                        STS-TOUKEI03        DELIMITED  BY  SIZE
                                            INTO    WRK-TOUKEIERR
@@ -3364,18 +3364,18 @@ grpsys         MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ס����Ź԰٥ǡ����Խ�����
+      *    診療会計・診療行為データ編集処理
       *****************************************************************
        2003-SRYACCT-HENSYU-SEC              SECTION.
       *
-      *    ���ץǡ�������̾�ˤΤߤΤȤ�
+      *    統計データ（病名）のみのとき
            IF      WRK-PARA-DATAKBN    =   "2"
                GO  TO  2003-SRYACCT-HENSYU-EXT
            END-IF
       *
            MOVE    ZERO                TO  WRK-RENNUM
       *     
-      *    �쥻�ץȿ��Ų�
+      *    レセプト診療科
            INITIALIZE                      SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    ACCT-SRYKA          TO  SYS-1005-KBNCD
@@ -3390,7 +3390,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
                INITIALIZE                      SYS-1005-REC
            END-IF
       *
-      *    ���Ź԰٥ǡ����ɤ߹���
+      *    診療行為データ読み込み
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -3425,7 +3425,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ���ž�����Ͻ���
+      *    診療情報出力処理
       *****************************************************************
        20031-SRYACT-HENSYU-SEC               SECTION.
       *
@@ -3436,7 +3436,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    SPACE               TO  TOUKEI02-REC
                INITIALIZE                      TOUKEI02-REC
       *
-      *        ���Ų�ץǡ����Խ�
+      *        診療会計データ編集
                MOVE    TOUKEI01-KEY        TO  TOUKEI02-KEY
                MOVE    ACCT-ZAINUM         TO  TOUKEI02-ZAINUM
                ADD     1                   TO  WRK-RENNUM
@@ -3465,7 +3465,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE    ACCT-HKNCOMBI       TO  TOUKEI02-HKNCOMBI
                MOVE    ACCT-DAY-TBL (1)    TO  TOUKEI02-DAY-AREA
       *
-      *        ���Ź԰٥ǡ����Խ�
+      *        診療行為データ編集
                MOVE    SRY-RENNUM          TO  TOUKEI02-RENNUM
                IF      SRY-SRYSYUKBN       =   SPACE
                    MOVE    ACCT-SRYKBN     TO  TOUKEI02-SRYSYUKBN (1:2)
@@ -3541,7 +3541,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                ELSE
                    MOVE    SPACE               TO  WRK-TOUKEIERR
                    STRING
-                       "����ץǡ��������׾���� �񤭹��ߥ��顼 STS="
+                       "月次統計データ（統計情報） 書き込みエラー STS="
                                                DELIMITED  BY  SIZE
                            STS-TOUKEI02        DELIMITED  BY  SIZE
                                                INTO    WRK-TOUKEIERR
@@ -3552,7 +3552,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
       * 
                ADD     1               TO  CNT-TOUKEI02 
       *
-      *        ����ñ�Ȥ��̥ե����뤬����Ȥ�
+      *        生保単独で別ファイルがあるとき
                IF    ( WRK-SEIHO-TOUKEI01-HOSPNUM )
                                        >   ZERO
                AND   ( WRK-SEIHO-TOUKEI01-SRYYM
@@ -3566,7 +3566,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                    ELSE
                        MOVE    SPACE               TO  WRK-TOUKEIERR
                        STRING
-                       "����ץǡ��������׾���� �񤭹��ߥ��顼 STS="
+                       "月次統計データ（統計情報） 書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                                STS-TOUKEI02        DELIMITED  BY  SIZE
                                                    INTO    WRK-TOUKEIERR
@@ -3584,7 +3584,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -3598,7 +3598,7 @@ grpsys         MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                WRITE   TOUKEIERR-REC
                CLOSE   TOUKEIERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-TOUKEIERR   TO  JOB-YOBI
@@ -3612,7 +3612,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -3629,7 +3629,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ************************************ *****************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -3638,12 +3638,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    TOUKEI03-FILE
       *
            IF      CNT-TOUKEI01           =   ZERO  
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
@@ -3659,7 +3659,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������������
+      *    施設入所情報処理
       *****************************************************************
        500-SISETU-HENSYU-SEC             SECTION.
       *
@@ -3672,16 +3672,16 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    KEY-N-PTID          TO  PTKOH-PTID
                EVALUATE    IDZ4
                    WHEN    1
-      *                ��������Ϸʻ��
+      *                ９５０（老併）
                        MOVE    "950"               TO  PTKOH-KOHNUM
                    WHEN    2
-      *                ��������Ϸ���
+      *                ９５１（老健）
                        MOVE    "951"               TO  PTKOH-KOHNUM
                    WHEN    3
-      *                �������ʰ�ʻ��
+      *                ９４８（医併）
                        MOVE    "948"               TO  PTKOH-KOHNUM
                    WHEN    4
-      *                �������ʰ��š�
+      *                ９４９（医療）
                        MOVE    "949"               TO  PTKOH-KOHNUM
                END-EVALUATE
                MOVE    PTKOHINF-REC        TO  MCPDATA-REC
@@ -3724,7 +3724,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ��������
+      *    患者レセプト分割情報処理
       *****************************************************************
        500-PT-HDIST-DAY-HENSYU-SEC     SECTION.
       *
@@ -3774,7 +3774,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�������������å�����
+      *    同日再入院チェック処理
       *****************************************************************
        500-ORCSNYUINDAY-CHECK-SEC          SECTION.
       *
@@ -3805,7 +3805,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
        500-ORCSNYUINDAY-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    �������Ȱۤʤ뿩�������ݸ��Ȥ߹�碌�����å�����
+      *    入院料と異なる食事算定保険組み合わせチェック処理
       *****************************************************************
        500-ORCSSKJHKN-CHECK-SEC            SECTION.
       *
@@ -3838,7 +3838,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3853,7 +3853,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -3882,7 +3882,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ����ңţ���
+      *    診療会計マスタＲＥＡＤ
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -3895,7 +3895,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            END-IF
       *
            IF      FLG-SRYACCT         =   ZERO
-      *        ����ޤޤʤ��Ȥ�
+      *        包括を含まないとき
                IF    ( WRK-PARA-HOUKATUKBN =   "1"  )
                    IF    ( ACCT-ZAITEN         =   ZERO   )
                    OR    ( ACCT-HKNCOMBI       =   "9999" )
@@ -3903,7 +3903,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
                        GO  TO  900-SRYACCT-READ-SEC
                    END-IF
                END-IF
-      *        ����ޤ�Ȥ��Ǥ����������ʬ�Ͻ��Ϥ��ʤ�
+      *        包括を含むときでも持参薬入力分は出力しない
                IF    ( WRK-PARA-HOUKATUKBN =   "2"  )
                    IF    ( ACCT-JIHOKBN        =   "1"   )
                    AND   ( ACCT-ZAIKBN         =   3  OR  4 )
@@ -3919,7 +3919,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ������ңţ���
+      *    入院会計マスタ　ＲＥＡＤ
       *****************************************************************
        900-NYUINACCT-READ-SEC          SECTION.
       *
@@ -3940,7 +3940,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɹ�
+      *    保険組合せマスタ読込
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
       *
@@ -3980,7 +3980,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ�����ޥ����ɹ�
+      *    患者保険情報マスタ読込
       *****************************************************************
        910-PTHKNINF-INV-SEC         SECTION.
       *
@@ -4013,7 +4013,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ��ʼ祭����
+      *    患者マスター読込（主キー）
       *****************************************************************
        900-PTKOHINF-READ-SEC         SECTION.
       *
@@ -4047,7 +4047,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������ɹ�
+      *    患者公費情報読込
       *****************************************************************
        900-PTKOHINF-READ-N-SEC           SECTION.
       *
@@ -4068,7 +4068,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ�����������
+      *    保険番号マスタ検索処理
       *****************************************************************
        900-HKNNUM-CHK-SEC              SECTION.
       *
@@ -4080,7 +4080,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            INITIALIZE                      HKNNUM-REC
       *
-      *    �ݸ��ֹ�ޥ��������������å�
+      *    保険番号マスタ退避ワークチェック
       *
            PERFORM VARYING WRK-HKNNUM-IDX    FROM    1   BY  1
                    UNTIL   WRK-HKNNUM-IDX    >   WRK-HKNNUM-MAX
@@ -4098,7 +4098,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
                END-IF
            END-PERFORM
       *
-      *    ��������¸�ߤ��ʤ����ϣģ¤򸡺�
+      *    退避ワークに存在しない場合はＤＢを検索
            IF      HKN-HKNNUM          =   SPACE
                INITIALIZE                      HKNNUM-REC
                MOVE    WRK-PARA-HOSPNUM    TO  HKN-HOSPNUM
@@ -4119,7 +4119,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                END-IF
       *
                IF      FLG-HKNNUM          =   ZERO
-      *            ���������Խ�
+      *            退避ワークに編集
                    IF      TBL-HKNNUM-CONST-MAX
                                                >   WRK-HKNNUM-MAX
                        COMPUTE WRK-HKNNUM-MAX
@@ -4140,7 +4140,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ֹ�ʼ祭�����ɹ�����
+      *    保険番号（主キー）読込処理
       *****************************************************************
        900-HKNNUM-INV-SEC         SECTION.
       *
@@ -4166,7 +4166,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *
       *****************************************************************
-      *    �ݸ��ֹ�ޥ������ɹ�
+      *    保険番号マスター読込
       *****************************************************************
        900-HKNNUM-READ-SEC         SECTION.
       *
@@ -4184,7 +4184,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ��ʼ祭����
+      *    患者マスター読込（主キー）
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -4218,7 +4218,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    旧姓履歴マスタ読み込み
       *****************************************************************
        900-KYUSEIRRK-READ-SEC          SECTION.
       *
@@ -4248,7 +4248,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����������ֹ�ޥ����ɹ�
+      *    月代わり受給者番号マスタ読込
       *****************************************************************
        910-MONTHLYNUM-READ-SEC         SECTION.
       *
@@ -4278,7 +4278,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ����ȥޥ����ɤ߹���
+      *    患者コメントマスタ読み込み
       *****************************************************************
        950-PTCOM-READ-SEC           SECTION.
       *
@@ -4311,7 +4311,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ɹ�
+      *    点数読込
       *****************************************************************
        900-TENSU-READ-SEC           SECTION.
       *
@@ -4322,10 +4322,10 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
            MOVE    TNS-SRYCD           TO  TTNS-CHK-SRYCD
       *
-      *    �����ޥ��������������å�
+      *    点数マスタ退避ワークチェック
            PERFORM 9001-TTNS-CHK-SEC
       *
-      *    ��������¸�ߤ��ʤ����ϣģ¤򸡺�
+      *    退避ワークに存在しない場合はＤＢを検索
            IF    ( TTNS-FLG            =   ZERO )
                INITIALIZE                      TNS-TENSU-REC
                MOVE    TTNS-CHK-SRYCD      TO  TNS-SRYCD
@@ -4344,7 +4344,7 @@ grpsys             PERFORM 900-DBFETCH-SEC
                        MOVE    MCPDATA-REC     TO  TNS-TENSU-REC
                        MOVE    ZERO            TO  FLG-TENSU
       *
-      *                �����ޥ������������Խ�����
+      *                点数マスタ退避ワークに編集する
                        PERFORM 9001-TTNS-HEN-SEC
                    ELSE
                        INITIALIZE                  TNS-TENSU-REC
@@ -4365,7 +4365,7 @@ grpsys             PERFORM 900-DBFETCH-SEC
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ��������������å�����
+      *    点数マスタ退避ワークチェック処理
       *****************************************************************
        9001-TTNS-CHK-SEC               SECTION.
       *
@@ -4391,7 +4391,7 @@ grpsys             PERFORM 900-DBFETCH-SEC
        9001-TTNS-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����������Խ�����
+      *    点数マスタ退避ワーク編集処理
       *****************************************************************
        9001-TTNS-HEN-SEC               SECTION.
       *
@@ -4412,7 +4412,7 @@ grpsys             PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ɹ�
+      *    点数読込
       *****************************************************************
        900-ADRS-INV-SEC            SECTION.
       *
@@ -4444,7 +4444,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰��ɹ�
+      *    診療行為読込
       *****************************************************************
        900-SRYACT-READ-SEC           SECTION.
       *
@@ -4462,7 +4462,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ϫ���ݸ�����ޥ����ɹ�
+      *    患者労災保険情報マスタ読込
       *****************************************************************
        900-PTRSIINF-INV-SEC         SECTION.
       *
@@ -4497,7 +4497,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ����ңţ���
+      *    患者病名マスタＲＥＡＤ
       *****************************************************************
        900-PTBYO-READ-SEC         SECTION.
       *
@@ -4513,7 +4513,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ԥ쥻�ץ�ʬ���ɹ�
+      *    患者レセプト分割読込
       *****************************************************************
        900-PT-HDIST-DAY-READ-N-SEC         SECTION.
       *
@@ -4531,7 +4531,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץ����ٽ��ɹ�
+      *    レセプト明細書読込
       *****************************************************************
        900-TOUKEI01-READ-SEC             SECTION.
       *
@@ -4546,7 +4546,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -4563,7 +4563,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -4580,7 +4580,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -4592,7 +4592,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -4604,7 +4604,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -4617,7 +4617,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -4635,7 +4635,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,51 +16,51 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¿ÇÎÅ¾ðÊó¥·¥¹¥Æ¥àÍÑ  (CPFILE-MIS.INC)      *
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±è¨ºç™‚æƒ…å ±ã‚·ã‚¹ãƒ†ãƒ ç”¨  (CPFILE-MIS.INC)      *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  FILE-MIS-REC.
       *
            03  FILE-MIS-KEY.
       *
                05  FILE-MIS-HOSPNUM    PIC 9(02).
-      *£Ë£Å£Ù
+      *ï¼«ï¼¥ï¼¹
                05  FILE-MIS-TBL-KEY    PIC X(08).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  FILE-MIS-RENNUM     PIC 9(04).
-      *¥°¥ë¡¼¥×
+      *ã‚°ãƒ«ãƒ¼ãƒ—
                05  FILE-MIS-TBL-GROUP  PIC X(14).
-      *½èÍýÆâÏ¢ÈÖ
+      *å‡¦ç†å†…é€£ç•ª
                05  FILE-MIS-SHORI-RENNUM
                                        PIC 9(04).
-      *¥·¥§¥ë£É£Ä
+      *ã‚·ã‚§ãƒ«ï¼©ï¼¤
            03  FILE-MIS-SHELLID        PIC X(20).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
            03  FILE-MIS-SRYYM          PIC X(06).
-      *¿ÇÎÅÇ¯·îÆü
+      *è¨ºç™‚å¹´æœˆæ—¥
            03  FILE-MIS-SRYYMD         PIC X(08).
-      *·ï¿ô
+      *ä»¶æ•°
            03  FILE-MIS-CNT            PIC 9(07).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  FILE-MIS-NYUGAIKBN      PIC X(01).
-      *Àè³ÊÇ¼¾ì½ê
+      *å…ˆæ ¼ç´å ´æ‰€
            03  FILE-MIS-TO-FOLDER      PIC X(200).
-      *Àè¥Õ¥¡¥¤¥ëÌ¾
+      *å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
            03  FILE-MIS-TO-DATA        PIC X(200).
-      *¥³¡¼¥É¶èÊ¬¡Ê¶õÇò¡¢£±¡§£Å£Õ£Ã £²¡§£Ó¡Ý£ê£é£ó¡Ë
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†ï¼ˆç©ºç™½ã€ï¼‘ï¼šï¼¥ï¼µï¼£ ï¼’ï¼šï¼³âˆ’ï½Šï½‰ï½“ï¼‰
            03  FILE-MIS-CODE-TYPE      PIC X(01).
-      *½ÐÎÏ¥Õ¥é¥°
+      *å‡ºåŠ›ãƒ•ãƒ©ã‚°
            03  FILE-MIS-PUTFLG         PIC X(1).
-      *¥¿¥¤¥È¥ë
+      *ã‚¿ã‚¤ãƒˆãƒ«
            03  FILE-MIS-TITLE          PIC X(100).
       *UUID
            03  FILE-MIS-TBL-UUID       PIC X(36).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  FILE-MIS-CREYMD         PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  FILE-MIS-UPYMD          PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  FILE-MIS-UPHMS          PIC  X(06).

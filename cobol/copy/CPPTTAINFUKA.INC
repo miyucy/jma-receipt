@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,33 +16,33 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼ÔÂ¾±¡ÎòÉÕ²Ã¾ðÊó        COPY (CPPTTAINFUKA.INC)     *
+      *    æ‚£è€…ä»–é™¢æ­´ä»˜åŠ æƒ…å ±        COPY (CPPTTAINFUKA.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTTAINFUKA-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTTAINFUKA-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTTAINFUKA-HOSPNUM              PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTTAINFUKA-PTID                PIC  9(10).
-      *Æþ±¡ÍúÎòÈÖ¹æ¡ÊÆþ±¡£±²ó¤Ç¡Ü£±¤º¤ÄºÎÈÖ¡Ë
+      *å…¥é™¢å±¥æ­´ç•ªå·ï¼ˆå…¥é™¢ï¼‘å›žã§ï¼‹ï¼‘ãšã¤æŽ¡ç•ªï¼‰
                05  PTTAINFUKA-RRKNUM              PIC  9(03).
-      *ÉÂÌ¾
+      *ç—…å
            03  PTTAINFUKA-BYOMEI                  PIC  X(80)
                                                   OCCURS   5.
-      *Æþ±¡´ðËÜÎÁ
+      *å…¥é™¢åŸºæœ¬æ–™
            03  PTTAINFUKA-KHNRYO                  PIC  X(80).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTTAINFUKA-TERMID                  PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTTAINFUKA-OPID                    PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTTAINFUKA-CREYMD                  PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTTAINFUKA-UPYMD                   PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTTAINFUKA-UPHMS                   PIC  X(06).

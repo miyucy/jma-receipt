@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,40 +16,40 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ģ´�������    �� COPY  (CPPGKANRI.INC)  *
+      *    ＤＢ管理情報　    　 COPY  (CPPGKANRI.INC)  *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PGKANRI-REC.
-      *����
+      *キー
            03  PGKANRI-KEY.
-      *�ǥӥ���С������
+      *デビアンバージョン
                05  PGKANRI-DEBIANVERSION   PIC  X(24).
-      *�����ƥ�С������
+      *システムバージョン
                05  PGKANRI-SYSTEMVERSION   PIC  X(10).
-      *�ץ�������ֹ�
+      *プログラム番号
                05  PGKANRI-PGNO            PIC  X(03).
-      *��꡼��ǯ����
+      *リリース年月日
            03  PGKANRI-RELEASEYMD          PIC  X(08).
-      *�ץ������̾
+      *プログラム名
            03  PGKANRI-PGNAME              PIC  X(64).
-      *�����ե饰
+      *更新フラグ
            03  PGKANRI-UPDATEFLG           PIC  X(01).
-      *�Ƶ�ư�ե饰
+      *再起動フラグ
            03  PGKANRI-RESTARTFLG          PIC  X(01).
-      *���󥹥ȡ������
+      *インストール位置
            03  PGKANRI-INSTALLDIR          PIC  X(256).
-      *����
+      *内容
            03  PGKANRI-COMMENT             PIC  X(400).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PGKANRI-TERMID              PIC  X(32).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PGKANRI-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PGKANRI-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PGKANRI-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  PGKANRI-UPHMS               PIC  X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,7 +17,7 @@
       ********************************************************************
        01  SS002-AREA.
            03  SS002-IN.
-      *        ¶õÇò:ÀÁµá¡¦ÄûÀµ/1:Êİ¸±ÊÑ¹¹/2:Ä´À°¶â/3:ºÇ¿·ÈÖ¹æ¼èÆÀ
+      *        ç©ºç™½:è«‹æ±‚ãƒ»è¨‚æ­£/1:ä¿é™ºå¤‰æ›´/2:èª¿æ•´é‡‘/3:æœ€æ–°ç•ªå·å–å¾—
                05  SS002-UPDKBN            PIC X(01).
                05  SS002-IN-SYURRKNUM      PIC S9(09).
                05  SS002-IN-SYUEDANUM      PIC S9(09).

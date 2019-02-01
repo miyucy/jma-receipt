@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡¥ª¡¼¥À¡¼²ñ·×ºîÀ®  COPY (CPORCSODRNACCT.INC)       *
+      *    å…¥é™¢ã‚ªãƒ¼ãƒ€ãƒ¼ä¼šè¨ˆä½œæˆ  COPY (CPORCSODRNACCT.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ     ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜     å†…å®¹
       ************************************************************
        01  SODRNACCT-AREA.
-      *    °ÛÆ°»öÍ³
+      *    ç•°å‹•äº‹ç”±
            03  SODRNACCT-ORDERID       PIC X(04).
-      *    Æþ±¡ÎÁ¶èÊ¬¡Ê01:°ìÈÌ¡¿02:ÆÃÄêÆþ±¡¡Ë
+      *    å…¥é™¢æ–™åŒºåˆ†ï¼ˆ01:ä¸€èˆ¬ï¼02:ç‰¹å®šå…¥é™¢ï¼‰
            03  SODRNACCT-NYUKBN        PIC X(02).
-      *    Æþ±¡ÎÁ²Ã»»
+      *    å…¥é™¢æ–™åŠ ç®—
            03  SODRNACCT-KSN-G.
                05  SODRNACCT-KSN-MAX   PIC 9(03).
                05  SODRNACCT-KSN-SRYCD PIC X(09)   OCCURS  3.
-      *    ³°Çñ¡¦¿©»öµ¯»»Æü
+      *    å¤–æ³Šãƒ»é£Ÿäº‹èµ·ç®—æ—¥
            03  SODRNACCT-STARTYMD      PIC X(08).
-      *    ³°Çñ½ªÎ»Æü
+      *    å¤–æ³Šçµ‚äº†æ—¥
            03  SODRNACCT-ENDYMD        PIC X(08).
-      *    ³°Çñ¡¦¿©»ö»þ´Ö
+      *    å¤–æ³Šãƒ»é£Ÿäº‹æ™‚é–“
            03  SODRNACCT-SKJTIME       PIC X(02).
-      *    Æü¿ô
+      *    æ—¥æ•°
            03  SODRNACCT-DAY-G.
                05  SODRNACCT-DAY       PIC 9(1)
                                        OCCURS  31.
-      *    ¿©»ö·ÑÂ³¶èÊ¬
+      *    é£Ÿäº‹ç¶™ç¶šåŒºåˆ†
            03  SODRNACCT-SAME-AFTER    PIC X(1).
       *
-      *    ¿ÇÎÅ²Ê¡ÊÅ¾²ÊÎò¡Ë
+      *    è¨ºç™‚ç§‘ï¼ˆè»¢ç§‘æ­´ï¼‰
            03  SODRNACCT-SRYKA-G.
                05  SODRNACCT-SRYKA-CNT PIC 9(05).
                05  SODRNACCT-OCC       OCCURS  50.
@@ -54,5 +54,5 @@
            03  SODRNACCT-UPYMD         PIC X(08).
            03  SODRNACCT-UPHMS         PIC X(06).
       *
-      *    ÊÖµÑÃÍ
+      *    è¿”å´å€¤
            03  SODRNACCT-RC            PIC S9(02).

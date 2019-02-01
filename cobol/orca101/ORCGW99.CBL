@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,22 +19,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGW99.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : �ạ̃��ɣ���³����ʣף�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : ＣＬＡＩＭ接続情報（Ｗ９９）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL������   04/01/29  �������ɥ쥹���������
-      *                                     ������˳�ĥ
-      *                                     ��������б�
-      *  01.00.02    NACL������   04/03/03  ������Ͽ�����ܥ������ɲ�
-      *  02.07.00    NACL������   06/02/15  ����������������ܥ����ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
-      *  03.05.01    NACL-¿��Ǽ  07/07/17  ����ǻ���Ÿ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−太田   04/01/29  送信アドレスを最大件数を
+      *                                     ２０件に拡張
+      *                                     一括入力対応
+      *  01.00.02    NACL−太田   04/03/03  患者登録送信ボタン等追加
+      *  02.07.00    NACL−太田   06/02/15  入院オーダー取込ボタン追加
+      *  03.05.00    NACL-多々納  07/05/02  グループ診療対応
+      *  03.05.01    NACL-多々納  07/07/17  外来診察料展開追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,13 +46,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W99.
            03  SPA-W99-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -134,7 +134,7 @@
                                               PIC X(05).
                                13  SPA-GMN-SMEMO
                                               PIC X(40).
-      *            ����ǻ���Ÿ���ɲ�
+      *            外来診察料展開追加
                    07  SPA-GMN-SINSATU-FLG-G.
                        09  SPA-GMN-SINSATU-FLG     PIC X(01).
                        09  SPA-GMN-SINSATU-F1      PIC X(01).
@@ -171,12 +171,12 @@
       *
            03  FLG-OK              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -185,7 +185,7 @@
            03  IDXA                PIC 9(04).
            03  IDXB                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-Z9              PIC Z9.
@@ -229,42 +229,42 @@
        01  WRK-KBNCD               PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    �ạ̃��ɣͰ��ŵ��ؾ���
+      *    ＣＬＡＩＭ医療機関情報
            COPY  "CPSK9000.INC".
-      *    �ạ̃��ɣ���³�������
+      *    ＣＬＡＩＭ接続設定情報
            COPY  "CPSK9001.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
       *
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
       *     
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -285,7 +285,7 @@
       *
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -299,15 +299,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -320,24 +320,24 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "WERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -357,11 +357,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -379,7 +379,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣãɣģ��ˣϣ˽���
+      *    確認画面（ＣＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
@@ -394,7 +394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -404,25 +404,25 @@
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-EDYUKYMD
       *     
            MOVE    "0"                 TO  SPA-GMN-SETUZOKUL    (1)
-           MOVE    "���ʤ�"            TO  SPA-GMN-SETUZOKUMEIL (1)
+           MOVE    "しない"            TO  SPA-GMN-SETUZOKUMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SETUZOKUL    (2)
-           MOVE    "����"              TO  SPA-GMN-SETUZOKUMEIL (2)
+           MOVE    "する"              TO  SPA-GMN-SETUZOKUMEIL (2)
            MOVE    2                   TO  SPA-GMN-SETUZOKU-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-SCODEL      (1)
-           MOVE    "�ţգ�"            TO  SPA-GMN-SCODEMEIL   (1)
+           MOVE    "ＥＵＣ"            TO  SPA-GMN-SCODEMEIL   (1)
            MOVE    "2"                 TO  SPA-GMN-SCODEL      (2)
-           MOVE    "�ӡݣ���"        TO  SPA-GMN-SCODEMEIL   (2)
+           MOVE    "Ｓ−ｊｉｓ"        TO  SPA-GMN-SCODEMEIL   (2)
            MOVE    "3"                 TO  SPA-GMN-SCODEL      (3)
-           MOVE    "�գԣơݣ�"        TO  SPA-GMN-SCODEMEIL   (3)
+           MOVE    "ＵＴＦ−８"        TO  SPA-GMN-SCODEMEIL   (3)
            MOVE    3                   TO  SPA-GMN-SCODE-MAX 
       * 
            MOVE    SPA-GMN-SETUZOKULST (1)
                                        TO  SPA-GMN-SETUZOKU-G
-      *    ����ǻ���Ÿ��
-           MOVE    "0 ɸ���Ѵ��ʺƿ����Τߡ�"
+      *    外来診察料展開
+           MOVE    "0 標準変換（再診料のみ）"
                                        TO  SPA-GMN-SINSATU-LST (1)
-           MOVE    "1 �ǻ����Ѵ�"      TO  SPA-GMN-SINSATU-LST (2)
+           MOVE    "1 診察料変換"      TO  SPA-GMN-SINSATU-LST (2)
            MOVE    2                   TO  SPA-GMN-SINSATU-MAX
       * 
            MOVE    SPACE               TO  SYS-9000-REC
@@ -531,7 +531,7 @@
                    MOVE    "T"         TO  SPA-GMN-RESEND (1)
                    MOVE    "F"         TO  SPA-GMN-RESEND (2)
                END-IF
-      *        ����ǻ���Ÿ��
+      *        外来診察料展開
                MOVE    SYS-9000-SINSATU-FLG    TO  SPA-GMN-SINSATU-FLG
            ELSE
                MOVE    "T" 
@@ -563,7 +563,7 @@
                MOVE    "F"             TO  SPA-GMN-RESEND (2)
       *
            END-IF             
-      *    ����ǻ���Ÿ��
+      *    外来診察料展開
            EVALUATE    SPA-GMN-SINSATU-FLG
                WHEN    "1"
                    MOVE    SPA-GMN-SINSATU-LST(2)
@@ -611,7 +611,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRI-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -628,61 +628,61 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *    ���ڡ���
+      *    前ページ
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MAEPAGE-SEC
-      *    ���ڡ���
+      *    次ページ
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-TUGIPAGE-SEC
-      *    ��Ͽ
+      *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
-      *    ���եܥ������
+      *    受付ボタン処理
                WHEN    "CLICKED"       ALSO    "UKEBUTTON1"
                WHEN    "CLICKED"       ALSO    "UKEBUTTON2"
                    PERFORM 430-UKEBUTTON-SEC
-      *    ������Ͽ�ܥ������
+      *    患者登録ボタン処理
                WHEN    "CLICKED"       ALSO    "KANBUTTON1"
                WHEN    "CLICKED"       ALSO    "KANBUTTON2"
                    PERFORM 440-KANBUTTON-SEC
-      *    ���Ź԰٥ܥ������
+      *    診療行為ボタン処理
                WHEN    "CLICKED"       ALSO    "SYNBUTTON1"
                WHEN    "CLICKED"       ALSO    "SYNBUTTON2"
                    PERFORM 450-SYNBUTTON-SEC
-      *    ������Ͽ�����ܥ������
+      *    患者登録送信ボタン処理
                WHEN    "CLICKED"       ALSO    "PTINF_SEND1"
                WHEN    "CLICKED"       ALSO    "PTINF_SEND2"
                    PERFORM 450-PTINF-SEND-SEC
-      *    ���Ųʥ쥻����������
+      *    診療科レセ電送信処理
                WHEN    "CLICKED"       ALSO    "RECEDENKA_SEND1"
                WHEN    "CLICKED"       ALSO    "RECEDENKA_SEND2"
                    PERFORM 450-RECEDENKA-SEND-SEC
-      *    ��̾����
+      *    病名集約
                WHEN    "CLICKED"       ALSO    "BYOMEI_AGG1"
                WHEN    "CLICKED"       ALSO    "BYOMEI_AGG2"
                    PERFORM 450-BYOMEI-AGG-SEC
-      *    ��̾Ʊ��
+      *    病名同期
                WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC1"
                WHEN    "CLICKED"       ALSO    "BYOMEI_SYNC2"
                    PERFORM 450-BYOMEI-SYNC-SEC
-      *    ���������������
+      *    入院オーダー取込
                WHEN    "CLICKED"       ALSO    "NYU_ORDER1"
                WHEN    "CLICKED"       ALSO    "NYU_ORDER2"
                    PERFORM 450-NYU-ORDER-SEC
-      *    �ޥ���ۥ���
+      *    マルチホスト
                WHEN    "CLICKED"       ALSO    "MULTIHOST1"
                WHEN    "CLICKED"       ALSO    "MULTIHOST2"
                    PERFORM 450-MULTIHOST-SEC
-      *    ������
+      *    再送信
                WHEN    "CLICKED"       ALSO    "RESEND1"
                WHEN    "CLICKED"       ALSO    "RESEND2"
                    PERFORM 450-RESEND-SEC
@@ -692,28 +692,28 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
       *    EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
       *    WHEN    "XXXX"
-      *        ���ϸĽ�Υ��å�
+      *        入力個所のセット
       *        PERFORM 400-GMN-INPUT-SEC
-      *        ���ϥ����å�����
+      *        入力チェック処理
       *        PERFORM 410-INPUT-CHK-SEC
       *    END-EVALUATE
       *
-      *    ���ϸĽ�Υ��å�
+      *    入力個所のセット
            PERFORM 400-GMN-INPUT-SEC
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
       *
            .
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -725,14 +725,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       ***  IF    ( SPA-ERRCD   NOT =   SPACE )
       *      OR  ( FLG-END     NOT =   ZERO  )
@@ -745,16 +745,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
-      *    �ạ̃��ɣ���³��ʬ
+      *    ＣＬＡＩＭ接続区分
            MOVE    W99-SETUZOKU            TO  SPA-GMN-SETUZOKU-G 
       *
-      *    �����ѥ�����
+      *    送信用コード
            MOVE    W99-SCODE               TO  SPA-GMN-SCODE-G  
-      *    ����ǻ���
+      *    外来診察料
            MOVE    W99-SINSATU-FLG         TO  SPA-GMN-SINSATU-FLG-G
       *
            PERFORM VARYING IDXA    FROM    1   BY  1
@@ -764,13 +764,13 @@
                                *   WRK-CONS-GMN-LINE-MAX
                                +   IDXA
       *
-      *        �ɣХ��ɥ쥹
+      *        ＩＰアドレス
                MOVE    W99-ADDRESS (IDXA)  TO  SPA-GMN-SADDRESS (IDX)
-      *        �ݡ��ȣ�
+      *        ポート１
                MOVE    W99-PORT1   (IDXA)  TO  SPA-GMN-SPORT1   (IDX)
-      *        �ݡ��ȣ�
+      *        ポート２
                MOVE    W99-PORT2   (IDXA)  TO  SPA-GMN-SPORT2   (IDX)
-      *        �������
+      *        メモ入力
                MOVE    W99-MEMO    (IDXA)  TO  SPA-GMN-SMEMO    (IDX)
            END-PERFORM
       *
@@ -780,15 +780,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC              SECTION.
       *
-      *    �ạ̃��ɣ���³��ʬ�����å�
+      *    ＣＬＡＩＭ接続区分チェック
            PERFORM 4100-SETUZOKU-CHK-SEC
       *
            IF    ( SPA-GMN-SETUZOKU    =   "1" )
-      *        �����ѥ����ɥ����å�
+      *        送信用コードチェック
                IF      SPA-ERRCD           =   SPACE
                    PERFORM 4101-CODE-CHK-SEC
                END-IF
@@ -802,28 +802,28 @@
                                *   WRK-CONS-GMN-LINE-MAX
                                +   IDXA
       *
-      *        �ɣХ��ɥ쥹���ϥ����å����� 
+      *        ＩＰアドレス入力チェック処理 
                IF    ( SPA-ERRCD       =   SPACE )
                    PERFORM 4102-ADDRESS-CHK-SEC
                END-IF
       *
-      *        �ݡ��ȣ����ϥ����å�����
+      *        ポート１入力チェック処理
                IF    ( SPA-ERRCD       =   SPACE )
                    PERFORM 4103-PORT1-CHK-SEC
                END-IF
       *
-      *        �ݡ��ȣ����ϥ����å�����
+      *        ポート２入力チェック処理
                IF    ( SPA-ERRCD       =   SPACE )
                    PERFORM 4104-PORT2-CHK-SEC
                END-IF
       *
-      *        ������ϥ����å�����
+      *        メモ入力チェック処理
                IF    ( SPA-ERRCD       =   SPACE )
                    PERFORM 4105-MEMO-CHK-SEC
                END-IF
            END-PERFORM
       *
-      *    ����ǻ���Ÿ��
+      *    外来診察料展開
            IF    ( SPA-ERRCD       =   SPACE )
                PERFORM 4106-SINSATU-CHK-SEC
            END-IF
@@ -832,11 +832,11 @@
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *   ���եܥ������ 
+      *   受付ボタン処理 
       *****************************************************************
        430-UKEBUTTON-SEC           SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-UKEBUTTON1         TO  SPA-GMN-UKEBUTTON (1) 
@@ -849,11 +849,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ������Ͽ�ܥ������ 
+      *   患者登録ボタン処理 
       *****************************************************************
        440-KANBUTTON-SEC           SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-KANBUTTON1         TO  SPA-GMN-KANBUTTON (1) 
@@ -866,11 +866,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���Ź԰٥ܥ������ 
+      *   診療行為ボタン処理 
       *****************************************************************
        450-SYNBUTTON-SEC           SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-SYNBUTTON1         TO  SPA-GMN-SYNBUTTON (1) 
@@ -883,11 +883,11 @@
        450-SYNBUTTON-SEC-EXT.
            EXIT.
       *****************************************************************
-      *   ������Ͽ�����ܥ������
+      *   患者登録送信ボタン処理
       *****************************************************************
        450-PTINF-SEND-SEC              SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-PTINF-SEND1     TO  SPA-GMN-PTINF-SEND (1) 
@@ -899,11 +899,11 @@
        450-PTINF-SEND-EXT.
            EXIT.
       *****************************************************************
-      *   ���Ųʥ쥻����������
+      *   診療科レセ電送信処理
       *****************************************************************
        450-RECEDENKA-SEND-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-RECEDENKA-SEND1 TO  SPA-GMN-RECEDENKA-SEND (1)
@@ -915,11 +915,11 @@
        450-RECEDENKA-SEND-EXT.
            EXIT.
       *****************************************************************
-      *   ��̾����
+      *   病名集約
       *****************************************************************
        450-BYOMEI-AGG-SEC              SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-BYOMEI-AGG1     TO  SPA-GMN-BYOMEI-AGG (1)
@@ -931,11 +931,11 @@
        450-BYOMEI-AGG-EXT.
            EXIT.
       *****************************************************************
-      *   ��̾Ʊ��
+      *   病名同期
       *****************************************************************
        450-BYOMEI-SYNC-SEC              SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-BYOMEI-SYNC1    TO  SPA-GMN-BYOMEI-SYNC (1)
@@ -947,11 +947,11 @@
        450-BYOMEI-SYNC-EXT.
            EXIT.
       *****************************************************************
-      *   ���������������
+      *   入院オーダー取込
       *****************************************************************
        450-NYU-ORDER-SEC               SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-NYU-ORDER1      TO  SPA-GMN-NYU-ORDER (1)
@@ -964,11 +964,11 @@
        450-NYU-ORDER-EXT.
            EXIT.
       *****************************************************************
-      *   �ޥ���ۥ���
+      *   マルチホスト
       *****************************************************************
        450-MULTIHOST-SEC               SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-MULTIHOST1      TO  SPA-GMN-MULTIHOST (1)
@@ -981,11 +981,11 @@
        450-MULTIHOST-EXT.
            EXIT.
       *****************************************************************
-      *   ������
+      *   再送信
       *****************************************************************
        450-RESEND-SEC               SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            MOVE    W99-RESEND1      TO  SPA-GMN-RESEND (1)
@@ -998,13 +998,13 @@
        450-RESEND-EXT.
            EXIT.
       *****************************************************************
-      *   �ɣХ��ɥ쥹���ϥ����å����� 
+      *   ＩＰアドレス入力チェック処理 
       *****************************************************************
        4102-ADDRESS-CHK-SEC       SECTION.
       *
            COMPUTE WRK-GMN-CUR            =   9  +  4 * (IDX  - 1)
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            IF      SPA-GMN-SADDRESS (IDX) NOT =   SPACE     
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -1033,14 +1033,14 @@
            EXIT.
       *
       *****************************************************************
-      *   �ݡ��ȣ����ϥ����å����� 
+      *   ポート１入力チェック処理 
       *****************************************************************
        4103-PORT1-CHK-SEC          SECTION.
       *
            COMPUTE WRK-GMN-CUR         =   10
                                        +   4 * (IDX  - 1)
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            IF      SPA-GMN-SPORT1 (IDX) NOT =   SPACE     
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -1062,13 +1062,13 @@
            EXIT.
       *
       *****************************************************************
-      *   �ݡ��ȣ����ϥ����å����� 
+      *   ポート２入力チェック処理 
       *****************************************************************
        4104-PORT2-CHK-SEC          SECTION.
       *
            COMPUTE WRK-GMN-CUR         =   9 +  4 * (IDX  - 1)
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            IF      SPA-GMN-SPORT2 (IDX) NOT =   SPACE     
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -1090,13 +1090,13 @@
            EXIT.
       *
       *****************************************************************
-      *   ������ϥ����å����� 
+      *   メモ入力チェック処理 
       *****************************************************************
        4105-MEMO-CHK-SEC       SECTION.
       *
            COMPUTE WRK-GMN-CUR             =   12 +  4 * (IDX  - 1)
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            IF      SPA-GMN-SMEMO (IDX)     NOT =   SPACE
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI 
@@ -1117,7 +1117,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǻ���Ÿ����ʬ�����å�
+      *    外来診察料展開区分チェック
       *****************************************************************
        4106-SINSATU-CHK-SEC       SECTION.
       *
@@ -1142,7 +1142,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ạ̃��ɣ���³��ʬ�����å�
+      *    ＣＬＡＩＭ接続区分チェック
       *****************************************************************
        4100-SETUZOKU-CHK-SEC       SECTION.
       *
@@ -1165,7 +1165,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ����ɥ����å�
+      *    送信用コードチェック
       *****************************************************************
        4101-CODE-CHK-SEC       SECTION.
       *
@@ -1195,7 +1195,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��٥��ֹ��Խ�����
+      *    ラベル番号編集処理
       *****************************************************************
        4200-LBLNO-HEN-SEC              SECTION.
       *
@@ -1225,7 +1225,7 @@
        4200-LBLNO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
       *
@@ -1244,7 +1244,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ڡ�������
+      *    前ページ処理
       *****************************************************************
        460-MAEPAGE-SEC                 SECTION.
       *
@@ -1266,7 +1266,7 @@
        460-MAEPAGE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ڡ�������
+      *    次ページ処理
       *****************************************************************
        470-TUGIPAGE-SEC                SECTION.
       *
@@ -1289,14 +1289,14 @@
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ������
+      *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
       *
-      *    ���ܥ����å�
+      *    基本チェック
            PERFORM 410-INPUT-CHK-SEC
       *
-      *    ��Ϣ�����å�
+      *    関連チェック
            IF      SPA-ERRCD           =   SPACE
                PERFORM 4900-KANRENCHK-SEC
            END-IF
@@ -1310,7 +1310,7 @@
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ����
+      *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
@@ -1318,7 +1318,7 @@
            MOVE    SMCNDATE-YMD        TO  SYS-UPYMD
            MOVE    SMCNDATE-HMS        TO  SYS-UPHMS
       *
-      *    ϫ�Ұ��ŵ��ؾ���
+      *    労災医療機関情報
            MOVE    SPACE               TO  SYS-9000-REC
            INITIALIZE                      SYS-9000-REC
            MOVE    "9000"                  TO  SYS-9000-KANRICD
@@ -1347,7 +1347,7 @@
            MOVE    SPA-GMN-UKEBUTTON-G     TO  SYS-9000-UKEBUTTON-G
            MOVE    SPA-GMN-KANBUTTON-G     TO  SYS-9000-KANBUTTON-G
            MOVE    SPA-GMN-SYNBUTTON-G     TO  SYS-9000-SYNBUTTON-G
-      *    ����ǻ���Ÿ�� 
+      *    外来診察料展開 
            MOVE    SPA-GMN-SINSATU-FLG     TO  SYS-9000-SINSATU-FLG
       *     
            IF    ( SPA-GMN-PTINF-SEND (2)      =   "T" )
@@ -1404,7 +1404,7 @@
            MOVE    SPA-HOSPNUM         TO  SYS-9000-HOSPNUM
            MOVE    SYS-9000-REC        TO  SYSKANRI-REC
       *
-      *    �ạ̃��ɣ���³����
+      *    ＣＬＡＩＭ接続情報
            MOVE    "99999999"          TO  SYS-STYUKYMD
            MOVE    "00000000"          TO  SYS-EDYUKYMD
            MOVE    SYSKANRI-REC        TO  MCPDATA-REC
@@ -1432,7 +1432,7 @@
                GO  TO  490-KOUSHIN-EXT
            END-IF
       *
-      *    �ạ̃��ɣ���³����̾�κ������
+      *    ＣＬＡＩＭ接続設定名称削除処理
            INITIALIZE                      SYS-9001-REC
            MOVE    "9001"                  TO  SYS-9001-KANRICD
            MOVE    "99999999"              TO  SYS-9001-STYUKYMD
@@ -1452,7 +1452,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF
       *
-      *    �ạ̃��ɣ���³������Ͽ����
+      *    ＣＬＡＩＭ接続設定登録処理
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL  (IDX >       WRK-CONS-LINE-MAX )
                        OR (SPA-ERRCD   NOT =   SPACE     )
@@ -1502,7 +1502,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *       ���Ϲ��ܤδ�Ϣ�����å�����
+      *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
@@ -1512,7 +1512,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1539,7 +1539,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        500-SET-SCREEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1612,7 +1612,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-GMN-MULTIHOST (2)       TO   W99-MULTIHOST2
            MOVE    SPA-GMN-RESEND (1)          TO   W99-RESEND1
            MOVE    SPA-GMN-RESEND (2)          TO   W99-RESEND2
-      *    ����ǻ���Ÿ��
+      *    外来診察料展開
            MOVE    SPA-GMN-SINSATU-FLG-G   TO  W99-SINSATU-FLG
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-SINSATU-MAX
@@ -1628,7 +1628,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��̳�������������
+      *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -1651,38 +1651,38 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�ạ̃��ɣ���³��ʬ�����Ϥ˸��꤬����ޤ�"
+                   MOVE    "ＣＬＡＩＭ接続区分の入力に誤りがあります"
                                                          TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�����ѥ����ɤ����Ϥ˸��꤬����ޤ�"
+                   MOVE    "送信用コードの入力に誤りがあります"
                                                          TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "Ⱦ�Ѥ����Ϥ��Ʋ�����"
+                   MOVE    "半角で入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "Ⱦ�Ѥ����Ϥ��Ʋ�����"        TO  SPA-ERRMSG
+                   MOVE    "半角で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "���Ѥ����Ϥ��Ʋ�����"        TO  SPA-ERRMSG
+                   MOVE    "全角で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "���������Ϥ��Ʋ�����"        TO  SPA-ERRMSG
+                   MOVE    "数字で入力して下さい"        TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "����ǻ���Ÿ����ʬ������ޤ���"
+                   MOVE    "外来診察料展開区分がありません"
                                                          TO  SPA-ERRMSG
                WHEN    "0099"
-                   MOVE    "̤���Ϥι��ܤ�����ޤ�"
+                   MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "�������Ǥ��ޤ���Ǥ���"
+                   MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "������Ǥ��ޤ���Ǥ���"
+                   MOVE    "削除ができませんでした"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -1706,7 +1706,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -1714,7 +1714,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "�ạ̃��ɣ�����������Ͽ���ޤ�"
+                   MOVE    "ＣＬＡＩＭ設定情報を登録します"
                                                 TO  WRK-WIDMSG
            END-EVALUATE
       *
@@ -1739,7 +1739,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���    
+      *    画面カーソルセット処理    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1885,7 +1885,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ϸĽ�Υ��åȽ���
+      *    入力個所のセット処理
       *****************************************************************
        5011-INPUT-CUR-SEC              SECTION.
       *
@@ -2003,7 +2003,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        5011-INPUT-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ���ե����å����Խ�����
+      *    日付チェック・編集処理
       *****************************************************************
        5002-HIZUKE-CHK-SEC         SECTION.
       *
@@ -2035,7 +2035,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -2060,7 +2060,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -2071,7 +2071,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -2095,7 +2095,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -2109,7 +2109,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2122,7 +2122,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2137,7 +2137,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2151,7 +2151,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

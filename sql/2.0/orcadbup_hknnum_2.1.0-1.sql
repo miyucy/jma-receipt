@@ -1,18 +1,18 @@
 --                                    --
--- Êİ¸±ÈÖ¹æ¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹             --
+-- ä¿é™ºç•ªå·ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´             --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ´µ¼ÔÉéÃ´³Û¤¬Êİ¸±¤Î¼«¸ÊÉéÃ´¾å¸Â³Û --
---   ¤ËËş¤¿¤Ê¤¤¾ì¹ç¤Î¥ì¥»¥×¥Èµ­ºÜ¤Î   --
---   ¼è°·¶èÊ¬  : RECEJGNDSPKBN        --
+-- é …ç›®ã®è¿½åŠ                          --
+--   æ‚£è€…è² æ‹…é¡ãŒä¿é™ºã®è‡ªå·±è² æ‹…ä¸Šé™é¡ --
+--   ã«æº€ãŸãªã„å ´åˆã®ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰ã®   --
+--   å–æ‰±åŒºåˆ†  : RECEJGNDSPKBN        --
 --                                    --
---   ¿©»öÉéÃ´½õÀ®³Û¡ÊÆü¡Ë             --
+--   é£Ÿäº‹è² æ‹…åŠ©æˆé¡ï¼ˆæ—¥ï¼‰             --
 --             : NYUSKJJYOGAK         --
 --                                    --
 -- Create Date : 2004/02/06           --
 --                                    --
 
--- TBL_HKNNUMWK ºîÀ® --
+-- TBL_HKNNUMWK ä½œæˆ --
 
 create table TBL_HKNNUMWK (
 hospid			character(24) NOT NULL,
@@ -121,16 +121,16 @@ Constraint "tbl_hknnumwk_primary_key" Primary Key ("hospid", "hknnum", "tekstymd
 );
 
 
--- TBL_HKNNUM ¢ª TBL_HKNNUMWK --
+-- TBL_HKNNUM â†’ TBL_HKNNUMWK --
 
 insert into TBL_HKNNUMWK
 select * from TBL_HKNNUM;
 
--- TBL_HKNNUM ºï½ü --
+-- TBL_HKNNUM å‰Šé™¤ --
 
 drop table TBL_HKNNUM;
 
--- TBL_HKNNUM ºîÀ® --
+-- TBL_HKNNUM ä½œæˆ --
 create table TBL_HKNNUM (
 hospid			character(24) NOT NULL,
 hknnum			character(3) NOT NULL,
@@ -242,7 +242,7 @@ uphms			character(6),
 Constraint "tbl_hknnum_primary_key" Primary Key ("hospid", "hknnum", "tekstymd", "paykbn")
 );
 
--- TBL_HKNNUMWK ¢ª TBL_HKNNUM --
+-- TBL_HKNNUMWK â†’ TBL_HKNNUM --
 
 insert into TBL_HKNNUM
 (hospid,
@@ -457,6 +457,6 @@ upymd,
 uphms
 from TBL_HKNNUMWK;
 
--- TBL_HKNNUMWK ºï½ü --
+-- TBL_HKNNUMWK å‰Šé™¤ --
 
 drop table TBL_HKNNUMWK;

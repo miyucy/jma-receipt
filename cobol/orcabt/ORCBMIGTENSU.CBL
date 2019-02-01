@@ -1,19 +1,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBMIGTENSU.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥»¥Ã¥È¥¢¥Ã¥×½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÅÀ¿ô¥Þ¥¹¥¿¹¹¿·
-      *                    : ÅÀ¿ô¥Þ¥¹¥¿Ê¬Î¥¤ËÈ¼¤¤¥æ¡¼¥¶¡¼¤¬ÄûÀµ¤·¤¿ÆâÍÆ
-      *                    : ¤Ë¤Ä¤¤¤Æ¤Ï¥æ¡¼¥¶¡¼ÅÀ¿ô¤È¤¹¤ë
-      *                    : ÆÃÄê´ïºà¤Î¥æ¡¼¥¶¡¼¤ÏÀßÄê¤¹¤ë¶â³Û¤ÏÅÀ¿ô¶â³Û
-      *                    : ¥Æ¡¼¥Ö¥ë¤ØÄÉ¤¤½Ð¤¹
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  17/ 2/22    NACL-°ËÆ£     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ã‚»ãƒƒãƒˆã‚¢ãƒƒãƒ—å‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ç‚¹æ•°ãƒžã‚¹ã‚¿æ›´æ–°
+      *                    : ç‚¹æ•°ãƒžã‚¹ã‚¿åˆ†é›¢ã«ä¼´ã„ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒè¨‚æ­£ã—ãŸå†…å®¹
+      *                    : ã«ã¤ã„ã¦ã¯ãƒ¦ãƒ¼ã‚¶ãƒ¼ç‚¹æ•°ã¨ã™ã‚‹
+      *                    : ç‰¹å®šå™¨æã®ãƒ¦ãƒ¼ã‚¶ãƒ¼ã¯è¨­å®šã™ã‚‹é‡‘é¡ã¯ç‚¹æ•°é‡‘é¡
+      *                    : ãƒ†ãƒ¼ãƒ–ãƒ«ã¸è¿½ã„å‡ºã™
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  17/ 2/22    NACL-ä¼Šè—¤     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -21,7 +21,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  PRF-FILE        ASSIGN
                                    ASS-PRF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -30,20 +30,20 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
        FD  PRF-FILE.
        01  PRF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-PRF                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-PRF                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PRF                 PIC 9(01).
@@ -54,15 +54,15 @@
            03  FLG-TEN2PRICE           PIC 9(01).
            03  FLG-PRICE               PIC 9(01).
            03  FLG-TOUSER              PIC 9(01).
-      *        (0:É¸½à 1:ÅÀ¿ô¢ª¥æ¡¼¥¶¡¼ÅÐÏ¿ 2:É¸½à¢ªÅÀ¿ô)
+      *        (0:æ¨™æº– 1:ç‚¹æ•°â†’ãƒ¦ãƒ¼ã‚¶ãƒ¼ç™»éŒ² 2:æ¨™æº–â†’ç‚¹æ•°)
            03  FLG-DECIMAL             PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-SRYCDLIST           PIC 9(06).
            03  CNT-PRF                 PIC 9(06).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDI                     PIC 9(04).
            03  IDX                     PIC 9(04).
@@ -71,7 +71,7 @@
            03  IDM                     PIC 9(04).
            03  IDO                     PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -131,20 +131,20 @@
            03  COL-START               PIC 9(03) VALUE  4.
            03  LIMIT-MSG.
                05  FILLER              PIC X(42) VALUE
-                    "¡ú¡¡¥×¥ë¡¼¥Õ·ï¿ô¤¬¥ê¥ß¥Ã¥¿¡¼¤ËÅþÃ£¤·¤Þ¤·¤¿".
+                    "â˜…ã€€ãƒ—ãƒ«ãƒ¼ãƒ•ä»¶æ•°ãŒãƒªãƒŸãƒƒã‚¿ãƒ¼ã«åˆ°é”ã—ã¾ã—ãŸ".
                05  FILLER              PIC X(16) VALUE
-                    "¤Î¤Ç½ªÎ»¤·¤Þ¤¹¡£".
+                    "ã®ã§çµ‚äº†ã—ã¾ã™ã€‚".
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ëÎÎ°è
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(25) VALUE
-                                       "Ver5.1 ÅÀ¿ô¥Þ¥¹¥¿°Ü¹Ô½èÍý".
+                                       "Ver5.1 ç‚¹æ•°ãƒžã‚¹ã‚¿ç§»è¡Œå‡¦ç†".
                05  FILLER              PIC X(14) VALUE
                                        "(ORCBMIGTENSU)".
                05  FILLER              PIC X(01) VALUE   ",".
                05  FILLER              PIC X(06) VALUE
-                                       "½èÍýÆü".
+                                       "å‡¦ç†æ—¥".
                05  FILLER              PIC X(01) VALUE   ",".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
@@ -157,25 +157,25 @@
                05  MES-TITLE1-HOSPNAME PIC X(120) VALUE SPACE.
       *
            03  MES-TITLE2.
-               05  FILLER              PIC X(04) VALUE   "·ë²Ì".
+               05  FILLER              PIC X(04) VALUE   "çµæžœ".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(10) VALUE   "¿ÇÎÅ¥³¡¼¥É".
+               05  FILLER              PIC X(10) VALUE   "è¨ºç™‚ã‚³ãƒ¼ãƒ‰".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(06) VALUE   "³«»ÏÆü".
+               05  FILLER              PIC X(06) VALUE   "é–‹å§‹æ—¥".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(06) VALUE   "½ªÎ»Æü".
+               05  FILLER              PIC X(06) VALUE   "çµ‚äº†æ—¥".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(04) VALUE   "Ì¾¾Î".
+               05  FILLER              PIC X(04) VALUE   "åç§°".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(04) VALUE   "ÆâÍÆ".
+               05  FILLER              PIC X(04) VALUE   "å†…å®¹".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(04) VALUE   "¹àÌÜ".
+               05  FILLER              PIC X(04) VALUE   "é …ç›®".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(10) VALUE   "¥ª¥ê¥¸¥Ê¥ë".
+               05  FILLER              PIC X(10) VALUE   "ã‚ªãƒªã‚¸ãƒŠãƒ«".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(06) VALUE   "¥æ¡¼¥¶".
+               05  FILLER              PIC X(06) VALUE   "ãƒ¦ãƒ¼ã‚¶".
                05  FILLER              PIC X(01) VALUE   ",".
-               05  FILLER              PIC X(06) VALUE   "¹¹¿·Æü".
+               05  FILLER              PIC X(06) VALUE   "æ›´æ–°æ—¥".
       *
        01  WRK-PRF-AREA.
            03  WRK-PRF-ANS             PIC X(100).
@@ -189,14 +189,14 @@
                05  WRK-PRF-MST         PIC X(500).
                05  WRK-PRF-USR         PIC X(500).
       *
-      *    ¹àÌÜÌ¾¾Î¥Æ¡¼¥Ö¥ë
+      *    é …ç›®åç§°ãƒ†ãƒ¼ãƒ–ãƒ«
            COPY    "CPTENSUNAMETBL.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿
            COPY    "CPTENSU.INC".
            COPY    "CPTENSU.INC"       REPLACING
                                        //TNS-// BY //MST-//
@@ -210,14 +210,14 @@
        01  TENSU-PRICE-REC.
            COPY    "CPTENSU-PRICE.INC".
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¡Ý´ðËÜ¾ðÊó 
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’åŸºæœ¬æƒ…å ± 
            COPY    "CPSK1001.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
@@ -229,7 +229,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       ****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -239,7 +239,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
            DISPLAY "ORCBMIGTENSU: START"
@@ -297,11 +297,11 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *D   DISPLAY "[ " WRK-SRYCD " ]"
-      *    tbl_tensu_user¤Ë³ºÅö¿ÇÎÅ¥³¡¼¥É¤Î¥ì¥³¡¼¥É¤¬¤¢¤ë¾ì¹ç¤Ï¥¹¥­¥Ã¥×
+      *    tbl_tensu_userã«è©²å½“è¨ºç™‚ã‚³ãƒ¼ãƒ‰ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ãŒã‚ã‚‹å ´åˆã¯ã‚¹ã‚­ãƒƒãƒ—
            PERFORM 900-TENSUUSER-READ-SEC
            IF      FLG-TENSU-USER      =   ZERO
                MOVE    1                   TO  FLG-GUID
@@ -314,13 +314,13 @@
            MOVE    ZERO                TO  FLG-PRICE
            PERFORM 9001-TENSU-SAVE-SEC
            PERFORM 9002-TENSU-SAVE-SEC
-      *            9002-TENSU-SAVE-SEC ¤ÇÆÃÄê´ïºà¡¡¶â³Û¤òÅÀ¿ô¶â³Û¤Ø
-      *            ÅÐÏ¿¤¹¤ë¥Þ¥¹¥¿¤Ç¤¢¤ë¤«¤Î¥Õ¥é¥°¤òÀßÄê FLG-TEN2PRICE
+      *            9002-TENSU-SAVE-SEC ã§ç‰¹å®šå™¨æã€€é‡‘é¡ã‚’ç‚¹æ•°é‡‘é¡ã¸
+      *            ç™»éŒ²ã™ã‚‹ãƒžã‚¹ã‚¿ã§ã‚ã‚‹ã‹ã®ãƒ•ãƒ©ã‚°ã‚’è¨­å®š FLG-TEN2PRICE
       *D   DISPLAY "org      [ " WRK-OCNT " ]"
       *D   DISPLAY "master   [ " WRK-MCNT " ]"
       *
            IF      WRK-SRYCD(1:1)  NOT =   "7"
-      *        ÆÃÄê´ïºà°Ê³°¤Î½èÍý
+      *        ç‰¹å®šå™¨æä»¥å¤–ã®å‡¦ç†
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL  (IDX         >   WRK-OCNT)   OR
                               (FLG-TOUSER  NOT =   ZERO)
@@ -337,8 +337,8 @@
                        EXIT    PERFORM
                    END-IF
                    PERFORM 2001-COMP-ITEM-SEC
-review*            ¥¨¥é¡¼¤Ï¤É¤Î¹àÌÜ¤¬ÉÔ°ìÃ×¤Î¾ì¹ç¤È¤¹¤ë¤«¤è¤¯¹Í¤¨¤Æ¸«Ä¾¤¹
-      *            ÊÑ¹¹¤µ¤ì¤Æ¤¤¤Æ¤âÌäÂê¤Ê¤¤¹àÌÜ¤ÏÈæ³Ó¥Á¥§¥Ã¥¯¤«¤é½ü¤¯
+review*            ã‚¨ãƒ©ãƒ¼ã¯ã©ã®é …ç›®ãŒä¸ä¸€è‡´ã®å ´åˆã¨ã™ã‚‹ã‹ã‚ˆãè€ƒãˆã¦è¦‹ç›´ã™
+      *            å¤‰æ›´ã•ã‚Œã¦ã„ã¦ã‚‚å•é¡Œãªã„é …ç›®ã¯æ¯”è¼ƒãƒã‚§ãƒƒã‚¯ã‹ã‚‰é™¤ã
                    IF      TBL-ERR-AREA        =   ZERO
                        CONTINUE
                    ELSE
@@ -348,7 +348,7 @@ review*            ¥¨¥é¡¼¤Ï¤É¤Î¹àÌÜ¤¬ÉÔ°ìÃ×¤Î¾ì¹ç¤È¤¹¤ë¤«¤è¤¯¹Í¤¨¤Æ¸«Ä¾¤¹
                    END-IF
                END-PERFORM
            ELSE
-      *        ÆÃÄê´ïºà½èÍý
+      *        ç‰¹å®šå™¨æå‡¦ç†
       *     IF     (WRK-SRYCD(1:1)      =   "7")  AND
       *            (FLG-TOUSER          =   1)
                PERFORM 2001-TOKUTEIKIZAI-SEC
@@ -356,11 +356,11 @@ review*            ¥¨¥é¡¼¤Ï¤É¤Î¹àÌÜ¤¬ÉÔ°ìÃ×¤Î¾ì¹ç¤È¤¹¤ë¤«¤è¤¯¹Í¤¨¤Æ¸«Ä¾¤¹
            END-IF
            IF      FLG-TOUSER          =   1  OR  2
       *D       IF      FLG-TOUSER          =   1
-      *            ÅÀ¿ô¥æ¡¼¥¶¡¼¥Æ¡¼¥Ö¥ë¤ËÅÐÏ¿¡Ê¥æ¡¼¥¶¡¼´ÉÍý¥Þ¥¹¥¿¡Ë
-      *D           DISPLAY "[ " WRK-SRYCD " ] ¥æ¡¼¥¶¡¼´ÉÍý¥Þ¥¹¥¿·èÄê¡ª"
+      *            ç‚¹æ•°ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã«ç™»éŒ²ï¼ˆãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†ãƒžã‚¹ã‚¿ï¼‰
+      *D           DISPLAY "[ " WRK-SRYCD " ] ãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†ãƒžã‚¹ã‚¿æ±ºå®šï¼"
       *D                   " FLG-GUID [ " FLG-GUID " ]"
       *D       ELSE
-      *D           DISPLAY "[ " WRK-SRYCD " ] É¸½à¥Þ¥¹¥¿·èÄê¡ª"
+      *D           DISPLAY "[ " WRK-SRYCD " ] æ¨™æº–ãƒžã‚¹ã‚¿æ±ºå®šï¼"
       *D       END-IF
                PERFORM 2100-TENSU-USER-SEC
            END-IF
@@ -371,16 +371,16 @@ review*            ¥¨¥é¡¼¤Ï¤É¤Î¹àÌÜ¤¬ÉÔ°ìÃ×¤Î¾ì¹ç¤È¤¹¤ë¤«¤è¤¯¹Í¤¨¤Æ¸«Ä¾¤¹
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    Í­¸ú´ü´ÖÈæ³Ó½èÍý
+      *    æœ‰åŠ¹æœŸé–“æ¯”è¼ƒå‡¦ç†
       *****************************************************************
        2001-COMP-KIKAN-SEC         SECTION.
            IF     (ORG-YUKOSTYMD       =   MST-YUKOSTYMD)  AND
                   (ORG-YUKOEDYMD       =   MST-YUKOEDYMD)
-      *        ´ü´Ö°ìÃ×
+      *        æœŸé–“ä¸€è‡´
                CONTINUE
            ELSE
-      *        ´ü´ÖÉÔ°ìÃ×
-      *D       DISPLAY "Í­¸ú´ü´Ö [ " ORG-YUKOSTYMD " / "
+      *        æœŸé–“ä¸ä¸€è‡´
+      *D       DISPLAY "æœ‰åŠ¹æœŸé–“ [ " ORG-YUKOSTYMD " / "
       *D                             MST-YUKOSTYMD " - "
       *D                             ORG-YUKOEDYMD " / "
       *D                             MST-YUKOEDYMD " ]"
@@ -392,7 +392,7 @@ review*            ¥¨¥é¡¼¤Ï¤É¤Î¹àÌÜ¤¬ÉÔ°ìÃ×¤Î¾ì¹ç¤È¤¹¤ë¤«¤è¤¯¹Í¤¨¤Æ¸«Ä¾¤¹
        2001-COMP-KIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    ¹àÌÜÊÌÈæ³Ó½èÍý
+      *    é …ç›®åˆ¥æ¯”è¼ƒå‡¦ç†
       *****************************************************************
        2001-COMP-ITEM-SEC          SECTION.
            MOVE    ZERO                TO  TBL-ERR-AREA
@@ -430,8 +430,8 @@ review*     IF     (ORG-TENSIKIBETU     =   2  OR  4) AND
       *         CONTINUE
       *     ELSE
                IF      ORG-TEN         NOT =   MST-TEN
-      *            ¥¯¥ê¡¼¥ó¥¤¥ó¥¹¥È¡¼¥ë¤Î¥À¥ó¥×¥Ç¡¼¥¿¤Î¸í¤ê¤òµßºÑ
-      *            ´ãÄì¥«¥á¥é¸¡ººÍÑ¥¤¥ó¥¹¥¿¥ó¥È¥Õ¥£¥ë¥à 50±ß
+      *            ã‚¯ãƒªãƒ¼ãƒ³ã‚¤ãƒ³ã‚¹ãƒˆãƒ¼ãƒ«ã®ãƒ€ãƒ³ãƒ—ãƒ‡ãƒ¼ã‚¿ã®èª¤ã‚Šã‚’æ•‘æ¸ˆ
+      *            çœ¼åº•ã‚«ãƒ¡ãƒ©æ¤œæŸ»ç”¨ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆãƒ•ã‚£ãƒ«ãƒ  50å††
                    IF     (ORG-SRYCD           =   "729780000")  AND
                           (ORG-TEN             =   50) AND
                           (MST-TEN             =   0)
@@ -883,12 +883,12 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
                    MOVE    1                   TO  TBL-ERR (138)
                END-IF
            END-IF
-      *    139 Ã¼Ëö£É£Ä
-      *    140 ¥ª¥Ú¥ì¡¼¥¿¡¼£É£Ä
-      *    141 ºîÀ®Ç¯·îÆü
-      *    142 ¹¹¿·Ç¯·îÆü
-      *    143 ¹¹¿·»þ´Ö
-      *    144 °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ
+      *    139 ç«¯æœ«ï¼©ï¼¤
+      *    140 ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãƒ¼ï¼©ï¼¤
+      *    141 ä½œæˆå¹´æœˆæ—¥
+      *    142 æ›´æ–°å¹´æœˆæ—¥
+      *    143 æ›´æ–°æ™‚é–“
+      *    144 åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·
            IF      ORG-GAZOOPESUP  NOT =   MST-GAZOOPESUP
                MOVE    1                   TO  TBL-ERR (145)
            END-IF
@@ -899,7 +899,7 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
            IF      ORG-MASUISKBKBN NOT =   MST-MASUISKBKBN
                MOVE    1                   TO  TBL-ERR (147)
            END-IF
-      *H24.4ÄÉ²Ã£´¤Ä
+      *H24.4è¿½åŠ ï¼”ã¤
            IF      ORG-FUKUBIKUNAIKBN
                                    NOT =   MST-FUKUBIKUNAIKBN 
                MOVE    1                   TO  TBL-ERR (148)
@@ -932,7 +932,7 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
            IF      ORG-SISIKSN     NOT =   MST-SISIKSN
                MOVE    1                   TO  TBL-ERR (156)
            END-IF
-      *H30.4ÄÉ²Ã£±¤Ä
+      *H30.4è¿½åŠ ï¼‘ã¤
            IF      ORG-AKUSEIBYORIKSN
                                    NOT =   MST-AKUSEIBYORIKSN
                MOVE    1                   TO  TBL-ERR (157)
@@ -941,22 +941,22 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
        2001-COMP-ITEM-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄê´ïºà¤ÎÆÃÊÌ½èÍý
+      *    ç‰¹å®šå™¨æã®ç‰¹åˆ¥å‡¦ç†
       *****************************************************************
        2001-TOKUTEIKIZAI-SEC       SECTION.
-      *    ÆÃÄê´ïºà¤Ï´ü´Ö¤¬°ã¤Ã¤Æ¤¤¤Æ¤â¥æ¡¼¥¶¡¼´ÉÍý¤È¤Ï¤·¤Ê¤¤
-      *    ¤¹¤Ù¤Æ¤Î´ü´Ö¤Ç¹àÌÜÆâÍÆ¤¬É¸½à¤È°ìÃ×¤·¤Æ¤¤¤ë¾ì¹ç¤ÏÉ¸½à¤È¤¹¤ë
+      *    ç‰¹å®šå™¨æã¯æœŸé–“ãŒé•ã£ã¦ã„ã¦ã‚‚ãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†ã¨ã¯ã—ãªã„
+      *    ã™ã¹ã¦ã®æœŸé–“ã§é …ç›®å†…å®¹ãŒæ¨™æº–ã¨ä¸€è‡´ã—ã¦ã„ã‚‹å ´åˆã¯æ¨™æº–ã¨ã™ã‚‹
            PERFORM 2201-KIZAI-ITEM-CHECK-SEC
       *D   DISPLAY "2201-KIZAI-ITEM-CHECK END ! [ " FLG-TOUSER " ]"
            .
        2001-TOKUTEIKIZAI-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÅÐÏ¿½èÍý
-      *      ÅÀ¿ô¥Æ¡¼¥Ö¥ë ¢ª ÅÀ¿ô¥æ¡¼¥¶¡¼¥Æ¡¼¥Ö¥ë¤ØÊ£¼Ì
-      *        ÆÃÄê´ïºà¤Î¶â³ÛÀßÄê¥Þ¥¹¥¿¤Ç¤ÏÊ£¼Ì¤·¤Ê¤¤¾ì¹ç¤¢¤ê
-      *      ÅÀ¿ô¥Æ¡¼¥Ö¥ë¤«¤é¥ì¥³¡¼¥Éºï½ü
-      *      É¸½à¥Æ¡¼¥Ö¥ë ¢ª ÅÀ¿ô¥Æ¡¼¥Ö¥ë¤ØÊ£¼Ì
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ç™»éŒ²å‡¦ç†
+      *      ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ« â†’ ç‚¹æ•°ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã¸è¤‡å†™
+      *        ç‰¹å®šå™¨æã®é‡‘é¡è¨­å®šãƒžã‚¹ã‚¿ã§ã¯è¤‡å†™ã—ãªã„å ´åˆã‚ã‚Š
+      *      ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã‹ã‚‰ãƒ¬ã‚³ãƒ¼ãƒ‰å‰Šé™¤
+      *      æ¨™æº–ãƒ†ãƒ¼ãƒ–ãƒ« â†’ ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ã¸è¤‡å†™
       *****************************************************************
        2100-TENSU-USER-SEC         SECTION.
            PERFORM VARYING IDX FROM    1   BY  1
@@ -965,7 +965,7 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
                MOVE    ORG-TENSU-BODY (IDX)
                                            TO  TNS-TENSU-REC
                MOVE    TNS-TENSU-REC       TO  MCPDATA-REC
-      *        FLG-TOUSER=2¤Î»þ¤ÏÅÀ¿ô¥æ¡¼¥¶¡¼¥Æ¡¼¥Ö¥ë¤Ë¤ÏÅÐÏ¿¤·¤Ê¤¤
+      *        FLG-TOUSER=2ã®æ™‚ã¯ç‚¹æ•°ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã«ã¯ç™»éŒ²ã—ãªã„
                IF      FLG-TOUSER          =   1
                    MOVE    "tbl_tensu_user"    TO  MCP-TABLE
                    MOVE    "key"               TO  MCP-PATHNAME
@@ -981,7 +981,7 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
        2100-TENSU-USER-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¶â³Û¥Æ¡¼¥Ö¥ëÅÐÏ¿½èÍý
+      *    ç‚¹æ•°é‡‘é¡ãƒ†ãƒ¼ãƒ–ãƒ«ç™»éŒ²å‡¦ç†
       *****************************************************************
        2200-TENSU-PRICE-SEC        SECTION.
            INITIALIZE  WRK-TENSU-PRICE-AREA
@@ -1035,7 +1035,7 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
        2200-TENSU-PRICE-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄê´ïºà¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    ç‰¹å®šå™¨æé …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2201-KIZAI-ITEM-CHECK-SEC   SECTION.
            MOVE    1                   TO  IDO
@@ -1058,26 +1058,26 @@ review*    IF     (ORG-OLDTENSKB       =   2  OR  4) AND
                IF     (FLG-TEN2PRICE       =   1)  AND
                      ((TBL-ERR (12)        =   1)  OR
                       (TBL-ERR (13)        =   1))
-      *            ÅÀ¿ô¶â³Û¥Æ¡¼¥Ö¥ë¤ØÅÐÏ¿
+      *            ç‚¹æ•°é‡‘é¡ãƒ†ãƒ¼ãƒ–ãƒ«ã¸ç™»éŒ²
                    IF      FLG-PRICE           =   ZERO
                        PERFORM 2200-TENSU-PRICE-SEC
                        MOVE    1                   TO  FLG-PRICE
                    END-IF
-      *            Èæ³Ó½ü³°¹àÌÜ¥ê¥»¥Ã¥È(ÆÃÄê´ïºà¡¿ÅÀ¿ô¼±ÊÌ¡¢ÅÀ¿ô)
+      *            æ¯”è¼ƒé™¤å¤–é …ç›®ãƒªã‚»ãƒƒãƒˆ(ç‰¹å®šå™¨æï¼ç‚¹æ•°è­˜åˆ¥ã€ç‚¹æ•°)
                    MOVE    ZERO                TO  TBL-ERR (12)
                    MOVE    ZERO                TO  TBL-ERR (13)
                END-IF
-review*        ¸øÉ½½ç½øÈÖ¹æ¡¢ÊÑ¹¹Ç¯·îÆü¡¢ÇÑ»ßÇ¯·îÆü¡Ê¥Æ¥¹¥È¡Ë
+review*        å…¬è¡¨é †åºç•ªå·ã€å¤‰æ›´å¹´æœˆæ—¥ã€å»ƒæ­¢å¹´æœˆæ—¥ï¼ˆãƒ†ã‚¹ãƒˆï¼‰
                MOVE    ZERO                TO  TBL-ERR (132)
                MOVE    ZERO                TO  TBL-ERR (136)
                MOVE    ZERO                TO  TBL-ERR (137)
                IF      TBL-ERR-AREA        =   ZERO
-      *            ÊÑ¹¹¤Ê¤·
+      *            å¤‰æ›´ãªã—
                    CONTINUE
-      *D           DISPLAY "¡ùÆÃÄê´ïºà¡¡Áê°ã¤Ê¤·"
+      *D           DISPLAY "â˜†ç‰¹å®šå™¨æã€€ç›¸é•ãªã—"
                ELSE
-      *            ÊÑ¹¹Ê¬¥á¥Ã¥»¡¼¥¸½ÐÎÏ
-      *D           DISPLAY "¡úÆÃÄê´ïºà¡¡Áê°ã¤¢¤ê"
+      *            å¤‰æ›´åˆ†ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
+      *D           DISPLAY "â˜…ç‰¹å®šå™¨æã€€ç›¸é•ã‚ã‚Š"
                    MOVE    1                   TO  FLG-TOUSER
                    MOVE    3                   TO  FLG-GUID
                    PERFORM 20102-PRF-SET-SEC
@@ -1085,7 +1085,7 @@ review*        ¸øÉ½½ç½øÈÖ¹æ¡¢ÊÑ¹¹Ç¯·îÆü¡¢ÇÑ»ßÇ¯·îÆü¡Ê¥Æ¥¹¥È¡Ë
                END-IF
                IF      ORG-YUKOEDYMD       <=  MST-YUKOEDYMD
                    IF      IDO                 >=  WRK-OCNT
-      *D               DISPLAY "¡ú£Ï£Ë"
+      *D               DISPLAY "â˜…ï¼¯ï¼«"
                        MOVE    2                   TO  FLG-TOUSER
                    ELSE
                        ADD     1                   TO  IDO
@@ -1095,7 +1095,7 @@ review*        ¸øÉ½½ç½øÈÖ¹æ¡¢ÊÑ¹¹Ç¯·îÆü¡¢ÇÑ»ßÇ¯·îÆü¡Ê¥Æ¥¹¥È¡Ë
                    END-IF
                ELSE
                IF      ORG-YUKOEDYMD       >   MST-YUKOEDYMD
-      *            ORG-YUKOSTYMD¤òÉ¸½à¤Î½ªÎ»Æü¤ÎÍâÆü¤Ë¤¹¤ë
+      *            ORG-YUKOSTYMDã‚’æ¨™æº–ã®çµ‚äº†æ—¥ã®ç¿Œæ—¥ã«ã™ã‚‹
                    INITIALIZE  STS-AREA-DAY
                    INITIALIZE  LNK-DAY6-AREA
                    MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -1105,9 +1105,9 @@ review*        ¸øÉ½½ç½øÈÖ¹æ¡¢ÊÑ¹¹Ç¯·îÆü¡¢ÇÑ»ßÇ¯·îÆü¡Ê¥Æ¥¹¥È¡Ë
                    CALL    "ORCSDAY"       USING   STS-AREA-DAY
                                                    LNK-DAY6-AREA
                    MOVE    LNK-DAY6-KEISAN     TO  ORG-YUKOSTYMD
-      *D           DISPLAY "¡úÍâÆü [ " ORG-YUKOSTYMD " ]"
+      *D           DISPLAY "â˜…ç¿Œæ—¥ [ " ORG-YUKOSTYMD " ]"
                    IF      IDM                 >=  WRK-MCNT
-      *D               DISPLAY "¡ú¥¢¥¦¥È"
+      *D               DISPLAY "â˜…ã‚¢ã‚¦ãƒˆ"
                        MOVE    1                   TO  FLG-TOUSER
                    ELSE
                        ADD     1                   TO  IDM
@@ -1116,21 +1116,21 @@ review*        ¸øÉ½½ç½øÈÖ¹æ¡¢ÊÑ¹¹Ç¯·îÆü¡¢ÇÑ»ßÇ¯·îÆü¡Ê¥Æ¥¹¥È¡Ë
                        GO  TO  2201-KIZAI-ITEM-CHECK-10
                    END-IF
                ELSE
-review*            ËÜÅö¤Ë¥¢¥¦¥È¤«¥í¥¸¥Ã¥¯¤ò¸«Ä¾¤¹
-review*            ELSE¤òºÆ¹Í¤¹¤ë
-      *D           DISPLAY "¡ú¥¢¥¦¥È"
+review*            æœ¬å½“ã«ã‚¢ã‚¦ãƒˆã‹ãƒ­ã‚¸ãƒƒã‚¯ã‚’è¦‹ç›´ã™
+review*            ELSEã‚’å†è€ƒã™ã‚‹
+      *D           DISPLAY "â˜…ã‚¢ã‚¦ãƒˆ"
                    MOVE    1                   TO  FLG-TOUSER
                END-IF
                END-IF
            ELSE
            IF      ORG-YUKOSTYMD       <   MST-YUKOSTYMD
-      *D       DISPLAY "¡ú¥¢¥¦¥È"
+      *D       DISPLAY "â˜…ã‚¢ã‚¦ãƒˆ"
                MOVE    1                   TO  FLG-TOUSER
            ELSE
            IF      ORG-YUKOSTYMD       >   MST-YUKOEDYMD
                ADD     1                   TO  IDM
                IF      IDM             >   WRK-MCNT
-      *D           DISPLAY "¡ú¥¢¥¦¥È"
+      *D           DISPLAY "â˜…ã‚¢ã‚¦ãƒˆ"
                    MOVE    1                   TO  FLG-TOUSER
                ELSE
                    MOVE    MST-TENSU-BODY (IDM)
@@ -1138,7 +1138,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                    GO  TO  2201-KIZAI-ITEM-CHECK-10
                END-IF
            ELSE
-      *D       DISPLAY "¡ú¥¢¥¦¥È"
+      *D       DISPLAY "â˜…ã‚¢ã‚¦ãƒˆ"
                MOVE    1                   TO  FLG-TOUSER
            END-IF
            END-IF
@@ -1147,7 +1147,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        2201-KIZAI-ITEM-CHECK-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÑ¹¹¸Ä½êÉ½¼¨½èÍý
+      *    å¤‰æ›´å€‹æ‰€è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        20102-PRF-SET-SEC           SECTION.
            PERFORM VARYING IDX     FROM    COL-START  BY  1
@@ -1540,12 +1540,12 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                        WHEN    138
                            MOVE    ORG-KEIKASOCHIYMD   TO  WRK-PRF-USR
                            MOVE    MST-KEIKASOCHIYMD   TO  WRK-PRF-MST
-      *    139 Ã¼Ëö£É£Ä
-      *    140 ¥ª¥Ú¥ì¡¼¥¿¡¼£É£Ä
-      *    141 ºîÀ®Ç¯·îÆü
-      *    142 ¹¹¿·Ç¯·îÆü
-      *    143 ¹¹¿·»þ´Ö
-      *    144 °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ
+      *    139 ç«¯æœ«ï¼©ï¼¤
+      *    140 ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ãƒ¼ï¼©ï¼¤
+      *    141 ä½œæˆå¹´æœˆæ—¥
+      *    142 æ›´æ–°å¹´æœˆæ—¥
+      *    143 æ›´æ–°æ™‚é–“
+      *    144 åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·
                        WHEN    145
                            MOVE    ORG-GAZOOPESUP      TO  WRK-PRF-USR
                            MOVE    MST-GAZOOPESUP      TO  WRK-PRF-MST
@@ -1555,7 +1555,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                        WHEN    147
                            MOVE    ORG-MASUISKBKBN     TO  WRK-PRF-USR
                            MOVE    MST-MASUISKBKBN     TO  WRK-PRF-MST
-      *H24.4ÄÉ²Ã£´¤Ä
+      *H24.4è¿½åŠ ï¼”ã¤
                        WHEN    148
                            MOVE    ORG-FUKUBIKUNAIKBN  TO  WRK-PRF-USR
                            MOVE    MST-FUKUBIKUNAIKBN  TO  WRK-PRF-MST
@@ -1568,7 +1568,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                        WHEN    151
                            MOVE    ORG-DPCKBN          TO  WRK-PRF-USR
                            MOVE    MST-DPCKBN          TO  WRK-PRF-MST
-      *H28.4ÄÉ²Ã£µ¤Ä
+      *H28.4è¿½åŠ ï¼•ã¤
                        WHEN    152
                            MOVE    ORG-HISINSYUMONITORKSN
                                                        TO  WRK-PRF-USR
@@ -1586,7 +1586,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                        WHEN    156
                            MOVE    ORG-SISIKSN         TO  WRK-PRF-USR
                            MOVE    MST-SISIKSN         TO  WRK-PRF-MST
-      *H30.4ÄÉ²Ã£±¤Ä
+      *H30.4è¿½åŠ ï¼‘ã¤
                        WHEN    157
                            MOVE    ORG-AKUSEIBYORIKSN  TO  WRK-PRF-USR
                            MOVE    MST-AKUSEIBYORIKSN  TO  WRK-PRF-MST
@@ -1598,7 +1598,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        20102-PRF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥ë¡¼¥Õ½ÐÎÏ
+      *    ãƒ—ãƒ«ãƒ¼ãƒ•å‡ºåŠ›
       *****************************************************************
        20102-PRF-OUT-SEC           SECTION.
            IF      CNT-PRF             =   ZERO
@@ -1611,7 +1611,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
            EVALUATE    FLG-GUID
                WHEN    1
                    MOVE    SPACE               TO  WRK-PRF-AREA
-                   MOVE    "¥æ¡¼¥¶¡¼ÅÀ¿ô´ûÂ¸¡¡¥¹¥­¥Ã¥×"
+                   MOVE    "ãƒ¦ãƒ¼ã‚¶ãƒ¼ç‚¹æ•°æ—¢å­˜ã€€ã‚¹ã‚­ãƒƒãƒ—"
                                                TO  WRK-PRF-ANS
                    MOVE    WRK-SRYCD           TO  WRK-PRF-SRYCD
                    MOVE    TNS-YUKOSTYMD       TO  WRK-PRF-STYMD
@@ -1620,10 +1620,10 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                    MOVE    SPACE               TO  TNS-UPYMD
                WHEN    2
                    MOVE    SPACE               TO  WRK-PRF-AREA
-                   MOVE    "´ü´ÖÉÔ°ìÃ×"        TO  WRK-PRF-ANS
+                   MOVE    "æœŸé–“ä¸ä¸€è‡´"        TO  WRK-PRF-ANS
                    MOVE    WRK-SRYCD           TO  WRK-PRF-SRYCD
                    MOVE    MST-NAME            TO  WRK-PRF-NAME
-                   MOVE    "Í­¸ú´ü´Ö"          TO  WRK-PRF-ITM
+                   MOVE    "æœ‰åŠ¹æœŸé–“"          TO  WRK-PRF-ITM
                    STRING  MST-YUKOSTYMD       DELIMITED BY SIZE
                            " - "               DELIMITED BY SIZE
                            MST-YUKOEDYMD       DELIMITED BY SIZE
@@ -1636,9 +1636,9 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                    END-STRING
                WHEN    3
                    IF      FLG-TOUSER          =   1
-                       MOVE    "¥æ¡¼¥¶¡¼´ÉÍý"      TO  WRK-PRF-ANS
+                       MOVE    "ãƒ¦ãƒ¼ã‚¶ãƒ¼ç®¡ç†"      TO  WRK-PRF-ANS
                    END-IF
-                   MOVE    "¹àÌÜÃÍÊÑ¹¹"        TO  WRK-PRF-GUID
+                   MOVE    "é …ç›®å€¤å¤‰æ›´"        TO  WRK-PRF-GUID
                    MOVE    WRK-SRYCD           TO  WRK-PRF-SRYCD
                    MOVE    MST-YUKOSTYMD       TO  WRK-PRF-STYMD
                    MOVE    MST-YUKOEDYMD       TO  WRK-PRF-EDYMD
@@ -1648,8 +1648,8 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                    END-IF
                WHEN    4
                    MOVE    SPACE               TO  WRK-PRF-AREA
-                   MOVE    "ÆÃÄê´ïºà"          TO  WRK-PRF-ANS
-                   MOVE    "¶â³Û"              TO  WRK-PRF-GUID
+                   MOVE    "ç‰¹å®šå™¨æ"          TO  WRK-PRF-ANS
+                   MOVE    "é‡‘é¡"              TO  WRK-PRF-GUID
                    MOVE    WRK-SRYCD           TO  WRK-PRF-SRYCD
                    MOVE    TNSPR-YUKOSTYMD     TO  WRK-PRF-STYMD
                    MOVE    TNSPR-YUKOEDYMD     TO  WRK-PRF-EDYMD
@@ -1696,7 +1696,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        201021-PRF-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
            PERFORM 900-DBDISCONNECT-SEC
@@ -1713,7 +1713,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ¾®¿ôÅÀ½èÍý
+      *    å°æ•°ç‚¹å‡¦ç†
       *****************************************************************
        800-DECIMAL-SEC             SECTION.
            MOVE    WRK-PRF-MST-R       TO  WRK-DECIMAL
@@ -1755,7 +1755,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        800-DECIMAL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Þ¥¹¥¿ÅÀ¿ô¥Æ¡¼¥Ö¥ëÆÉ¹þ
+      *    ãƒžã‚¹ã‚¿ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼
       *****************************************************************
        900-SRYCDLIST-SELECT-SEC    SECTION.
            INITIALIZE  TNS-TENSU-REC
@@ -1771,7 +1771,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-SRYCDLIST-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Þ¥¹¥¿ÅÀ¿ô¥Æ¡¼¥Ö¥ëÆÉ¹þ
+      *    ãƒžã‚¹ã‚¿ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼
       *****************************************************************
        900-SRYCDLIST-FETCH-SEC     SECTION.
            INITIALIZE  MCPDATA-REC
@@ -1795,7 +1795,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-SRYCDLIST-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥æ¡¼¥¶¡¼ÅÀ¿ô¥Æ¡¼¥Ö¥ë¥ì¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    ãƒ¦ãƒ¼ã‚¶ãƒ¼ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        900-TENSUUSER-READ-SEC      SECTION.
            INITIALIZE  TNS-TENSU-REC
@@ -1824,7 +1824,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-TENSUUSER-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Êtbl_tensu_org:°Ü¹ÔÁ°¤ÎÅÀ¿ô¥Æ¡¼¥Ö¥ë¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆtbl_tensu_org:ç§»è¡Œå‰ã®ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼‰
       *****************************************************************
        9001-TENSU-SAVE-SEC         SECTION.
            INITIALIZE  ORG-TENSU-AREA
@@ -1871,7 +1871,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        9001-TENSU-SAVE-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Êtbl_tensu_master:É¸½àÄó¶¡¤ÎÅÀ¿ô¥Æ¡¼¥Ö¥ë¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆtbl_tensu_master:æ¨™æº–æä¾›ã®ç‚¹æ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼‰
       *****************************************************************
        9002-TENSU-SAVE-SEC         SECTION.
            INITIALIZE  MST-TENSU-AREA
@@ -1892,7 +1892,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                    PERFORM 900-DBFETCH-SEC
                    IF      MCP-RC              =   ZERO
                        MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
-      *                °Ü¹ÔÁ°¤Ë²áÆü´ü´Ö¤Î¥ì¥³¡¼¥É¤òºï½ü¤µ¤ì¤Æ¤¤¤¿ÂÐ±þ
+      *                ç§»è¡Œå‰ã«éŽæ—¥æœŸé–“ã®ãƒ¬ã‚³ãƒ¼ãƒ‰ã‚’å‰Šé™¤ã•ã‚Œã¦ã„ãŸå¯¾å¿œ
                        IF      WRK-YUKOSTYMD-COMP  >   TNS-YUKOEDYMD
                            CONTINUE
                        ELSE
@@ -1905,7 +1905,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
                                MOVE    TNS-TENSU-REC       TO
                                                    MST-TENSU-BODY (IDM)
                            END-IF
-      * ÆÃÄê´ïºà¡¡¶â³Û¤òÅÀ¿ô¶â³Û¤ØÅÐÏ¿¤¹¤ë¥Þ¥¹¥¿¤Ç¤¢¤ë¤«È½Äê
+      * ç‰¹å®šå™¨æã€€é‡‘é¡ã‚’ç‚¹æ•°é‡‘é¡ã¸ç™»éŒ²ã™ã‚‹ãƒžã‚¹ã‚¿ã§ã‚ã‚‹ã‹åˆ¤å®š
                            IF     (TNS-SRYCD(1:1)      =   "7")  AND
                                  ((TNS-TENSIKIBETU     =   2)    OR
                                   (TNS-SANSOKBN        =   2 OR 3 OR 4
@@ -1926,7 +1926,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        9002-TENSU-SAVE-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -1942,7 +1942,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†èª­è¾¼
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -1975,7 +1975,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -1989,7 +1989,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥³¡¼¥ÉÃê½Ð½èÍý
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰æŠ½å‡ºå‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -1998,7 +1998,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥º½èÍý
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -2007,7 +2007,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥³¡¼¥ÉÁÞÆþ½èÍý
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰æŒ¿å…¥å‡¦ç†
       *****************************************************************
        900-INSERT-SEC              SECTION.
            MOVE    "DBINSERT"          TO  MCP-FUNC
@@ -2016,7 +2016,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥³¡¼¥Éºï½ü½èÍý
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰å‰Šé™¤å‡¦ç†
       *****************************************************************
        900-DELETE-SEC              SECTION.
            MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -2025,7 +2025,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-DELETE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -2040,7 +2040,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -2055,7 +2055,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
            CALL    "ORCDBMAIN"     USING   MCPAREA
@@ -2065,7 +2065,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¹¹¿·¥¨¥é¡¼¶¯À©½ªÎ»½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ›´æ–°ã‚¨ãƒ©ãƒ¼å¼·åˆ¶çµ‚äº†å‡¦ç†
       *****************************************************************
        900-DBABORT-SEC             SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG
@@ -2084,7 +2084,7 @@ review*            ELSE¤òºÆ¹Í¤¹¤ë
        900-DBABORT-EXT.
            EXIT.
       *****************************************************************
-      *    ÇÛÎó¥ª¡¼¥Ð¡¼¶¯À©½ªÎ»½èÍý
+      *    é…åˆ—ã‚ªãƒ¼ãƒãƒ¼å¼·åˆ¶çµ‚äº†å‡¦ç†
       *****************************************************************
        900-ARRAYABORT-SEC          SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG

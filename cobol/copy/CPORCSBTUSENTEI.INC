@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,41 +16,41 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÉÂÅïÁªÄêÆþ±¡¼«¸ÊÉéÃ´¼èÆÀ  COPY (CPORCSBTUSENTEI.INC)  *
+      *    ç—…æ£Ÿé¸å®šå…¥é™¢è‡ªå·±è² æ‹…å–å¾—  COPY (CPORCSBTUSENTEI.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSBTUSENTEIAREA.
-      *  °åÎÅµ¡´Ø¥³¡¼¥É
+      *  åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
            03  SBTUSENTEI-HOSPNUM          PIC 9(2).
-      *  ´µ¼Ô£É£Ä
+      *  æ‚£è€…ï¼©ï¼¤
            03  SBTUSENTEI-PTID             PIC  9(10).
-      *    ¿ÇÎÅÇ¯·î
+      *    è¨ºç™‚å¹´æœˆ
            03  SBTUSENTEI-SRYYM            PIC  X(06).
       *
-      *  ½ÐÎÏÎÎ°è
-      *    ÄÌ»»Æü¿ô
+      *  å‡ºåŠ›é ˜åŸŸ
+      *    é€šç®—æ—¥æ•°
            03  SBTUSENTEI-OUT-AREA.
                05  SBTUSENTEI-DAY-AREA.
                    07  SBTUSENTEI-DAY-OCC  OCCURS  31.
-      *                ÉÂÅïÈÖ¹æ
+      *                ç—…æ£Ÿç•ªå·
                        09  SBTUSENTEI-DAY-BTUNUM
                                            PIC  X(02).
-      *                ÁªÄêÆþ±¡ÀßÄê¶èÊ¬
-      *                1:ÄêÎ¨ÀßÄê / 2:Äê³ÛÀßÄê
+      *                é¸å®šå…¥é™¢è¨­å®šåŒºåˆ†
+      *                1:å®šçŽ‡è¨­å®š / 2:å®šé¡è¨­å®š
                        09  SBTUSENTEI-DAY-FTNKBN
                                            PIC  X(01).
-      *                ¾ÃÈñÀÇ¶èÊ¬
-      *                0:¤Ê¤· / 1:¤¢¤ê
+      *                æ¶ˆè²»ç¨ŽåŒºåˆ†
+      *                0:ãªã— / 1:ã‚ã‚Š
                        09  SBTUSENTEI-DAY-TAXKBN
                                            PIC  X(01).
-      *                ÅÀ¿ôÃ±²Á¡ÊÄêÎ¨ÀßÄê»þÍ­¸ú¡Ë
+      *                ç‚¹æ•°å˜ä¾¡ï¼ˆå®šçŽ‡è¨­å®šæ™‚æœ‰åŠ¹ï¼‰
                        09  SBTUSENTEI-DAY-TANKA
                                            PIC  9(02).
-      *                £±ÆüËè¤Î¶â³Û¡ÊÄê³ÛÀßÄê»þÍ­¸ú¡Ë
+      *                ï¼‘æ—¥æ¯Žã®é‡‘é¡ï¼ˆå®šé¡è¨­å®šæ™‚æœ‰åŠ¹ï¼‰
                        09  SBTUSENTEI-DAY-KINGAKU
                                            PIC  9(04).
-      *  ¥ê¥¿¡¼¥ó¥³¡¼¥É
+      *  ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
            03  SBTUSENTEI-RC               PIC 9(02).

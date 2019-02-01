@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,35 +18,35 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR1200.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �����쥻�ץȡ�������
-      *                      ���ܾ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/11/16    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 公害レセプト（入院）
+      *                      基本情報
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/11/16    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.04.01    NACL-ƣ��    09/03/10  ���̤ʴط��ˤ���¾�������
-      *                                     �������Ȥ��Ƶ������쥻�ץȵ�
-      *                                     �ܤ�Ԥʤ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.04.01    NACL-藤原    09/03/10  特別な関係にある他院歴を初回
+      *                                     入院日として起算しレセプト記
+      *                                     載を行なう対応
       *
-      *  04.05.01    NACL-ƣ��    11/11/18  ¾�ݸ��Ǥ�Ʊ�������������ݸ�
-      *                                     �����б�
-      *  04.05.02    NACL-ƣ��    11/11/22  Ʊ���������б�
+      *  04.05.01    NACL-藤原    11/11/18  他保険での同日再入院時の保険
+      *                                     履歴対応
+      *  04.05.02    NACL-藤原    11/11/22  同日再入院対応
       *
-      *  04.07.01    NACL-ƣ��    14/02/07  ������פ��ݸ��ȹ礻������
-      *                                     �����ʳ��ΤȤ��ΰ������ν���
-      *  04.07.02    NACL-����    14/03/28  ʿ������ǯ��������б�
-      *  04.07.03    NACL-ƣ��    15/01/24  Ʊ���������������ౡ����ε�Ͽ
-      *                                     ����
-      *                                    �����������ౡ����Ʊ���Ȥ���
+      *  04.07.01    NACL-藤原    14/02/07  入院会計の保険組合せが全て
+      *                                     公害以外のときの一括処理の修正
+      *  04.07.02    NACL-門脇    14/03/28  平成２６年４月改正対応
+      *  04.07.03    NACL-藤原    15/01/24  同日再入院時の入退院履歴の記録
+      *                                     を修正
+      *                                    （入院日と退院日が同じとき）
       *
-      *  04.08.01    NACL-ƣ��    12/01/08  ������ʬ�������ѥ쥻�ץȵ�
-      *                                     ���б�
-      *  04.08.02    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.03    NACL-ƣ��    17/03/31  Ʊ�������������ౡ����Υ����å�
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.03    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,19 +54,19 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���ܾ���ե�����
+      *    基本情報ファイル
            SELECT  RECE200-FILE    ASSIGN  RECE200PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE200-KEY
                                    FILE    STATUS  IS  STS-RECE200.
-      *    ���ౡ�������ե�����
+      *    入退院履歴情報ファイル
            SELECT  RECE250-FILE     ASSIGN  RECE250PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE250-KEY
                                    FILE    STATUS  IS  STS-RECE250.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -81,31 +81,31 @@
        01  RECE250-REC. 
            COPY    "CPRCF250.INC".
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *     �쥻�ץ����٥ե����� ̾���ΰ�
+      *     レセプト明細ファイル 名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE200//.
       *
-      *     ���ౡ�������ե����� ̾���ΰ�
+      *     入退院履歴情報ファイル 名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE250//.
       *
-      *    ���顼�ե�����̾���ΰ�
+      *    エラーファイル名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե�����̾���ΰ�
+      *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE200         PIC X(02).
            03  STS-RECE250         PIC X(02).
@@ -132,7 +132,7 @@
       *
            03  FLG-SET             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN-CANCEL       PIC 9(06).
            03  CNT-RECE200         PIC 9(06).
@@ -235,7 +235,7 @@
       *
            03  WRK-DBKBN               PIC X(01).
       *              
-      *    ���Ų���ơ��֥����������� �������� �����ȹ礻��
+      *    診療回数テーブル（入院会計用 １：基本 ２：組合せ）
            03  WRK-DAY-AREA.
                05  WRK-DAY-TBL         OCCURS  2.
                    07  WRK-DAY         PIC 9(03)
@@ -249,33 +249,33 @@
            03  WRK-ERR-FILE-MSG    PIC X(100).
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ�
+      *    エラーファイル名称領域
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
-      *    �����ʬ�ơ��֥�                                             
+      *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
            03  WRK-BYOTOKBN-T            OCCURS  4.                     
                05  WRK-BYOTOKBN          PIC X(02).                     
       *                                                                 
        01  WRK-BYOTOKBN-DATA             PIC X(02).                     
-      *    ����ֹ�(�ǿ���������ʬ)                                                                 
+      *    初回番号(最新の入院歴分)                                                                 
        01  WRK-SHONUM                    PIC 9(03).                     
       *
-      *    ������ౡ����
+      *    ワーク入退院履歴
        01  WRK-RECE250-REC. 
            COPY    "CPRCF250.INC"  REPLACING  //RECE250//
                                    BY         //WRK-RECE250//.
       *
-      *    �����������
+      *    ワーク入院履歴
        01  WRK-PTNRRK-REC.
            COPY    "CPPTNYUINRRK.INC"  REPLACING  //PTNYUINRRK-//
                                        BY         //WRK-PTNRRK-//.
       *     
-      *    ����ݸ��ȹ礻����������ѡ� 
+      *    ワーク保険組合せ（入院会計用） 
        01  WRK-HKNCOMBI-TABLE.
            02  WRK-HKNCOMBI-REC        OCCURS  10. 
            COPY    "CPHKNCOMBI.INC"    REPLACING  //COMB-//
@@ -293,99 +293,99 @@
                                    BY          //TBL-RECE200//.
        01  TBL-RECE200-MAX         PIC 9(03)   VALUE   200.
       *
-      *    ���ŵ��ءʴ��ܾ�����������ΰ�
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  100.
                05  TBL-SYS1001     PIC X(610).
       *
        01  WRK-CONS-AREA.
-      *    �����ݸ��ֹ� 
+      *    公害保険番号 
            03  WRK-CONS-KOUGAI-HKNNUM
                                    PIC X(03)   VALUE   "975". 
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY  "CPSK1001.INC".
       *
-      *    �����ֹ湽����������
+      *    患者番号構成管理情報
            COPY    "CPSK1009.INC".
-      *    �쥻�ץȺ����ؼ�������
+      *    レセプト作成指示コード
            COPY    "CPSK2001.INC".
-      *    �쥻�ץȺ����ؼ��ʸ��̻ؼ��˥�����
+      *    レセプト作成指示（個別指示）コード
            COPY    "CPSK2002.INC".
       *
-      *    �������                                                     
+      *    病棟情報                                                     
            COPY    "CPSK5001.INC".                                      
       *
-      *    ���Ų��
+      *    診療会計
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ݸ�����
+      *    患者保険情報
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �������
+      *    入院会計
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    �����������
+      *    旧姓履歴情報
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
-      *    ���
+      *    主科
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
       *
-      *    ��������
+      *    入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
-      *    �ݸ�������ǯ�𡦳��׻�����
+      *    保険算定用年齢・割合計算サブ
            COPY    "CPORCSAGECHK.INC".
       *
-      *    ������̤��������������
+      *    入院料未算定日取得サブ
            COPY    "CPORCSNYUINDAY.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -400,7 +400,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -417,7 +417,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -460,22 +460,22 @@
            MOVE   SGETTEMP-ST          TO  WRK-SGETTEMP-ST
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        �ģ¥����ץ����
+      *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR1200"          TO  JOB-PGID
-               MOVE    "�оݴ������"      TO  JOB-SHELLMSG
+               MOVE    "対象患者抽出"      TO  JOB-SHELLMSG
                PERFORM   900-CALL-ORCSJOB-SEC
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
            IF      FLG-END             =   ZERO
                IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *            ���ŵ��أɣ��Խ�
+      *            医療機関ＩＤ編集
                    INITIALIZE                  SYS-1001-REC
                    MOVE    "1001"              TO  SYS-1001-KANRICD
                    MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -490,7 +490,7 @@
                    IF      FLG-SYSKANRI        =   ZERO
                        MOVE    MCPDATA-REC         TO  SYS-1001-REC
                    ELSE
-                       MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                       MOVE    "医療機関情報が取得できませんでした。"
                                                    TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
@@ -524,7 +524,7 @@
                            PERFORM 900-SYSKANRI-READ-SEC
                        END-PERFORM
                    ELSE
-                       MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                       MOVE    "医療機関情報が取得できませんでした。"
                                                  TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
@@ -534,7 +534,7 @@
                    PERFORM 900-CLOSE-SEC
                END-IF
       *
-      *        �����ֹ湽�����������Խ�
+      *        患者番号構成管理情報編集
                INITIALIZE                  SYS-1009-REC
                MOVE    "1009"              TO  SYS-1009-KANRICD
                MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -557,27 +557,27 @@
                    MOVE    SYS-1009-HJNKSIRENNUMKETA
                                            TO  SPA-1009-HJNKSIRENNUMKETA
                ELSE
-                   MOVE    "�����ֹ湽���������󤬼����Ǥ��ޤ���Ǥ���"
+                   MOVE    "患者番号構成管理情報が取得できませんでした"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
       *
                IF        WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            �ѥ�᥿�ģ��ɤ߹���
+      *            パラメタＤＢ読み込み
                    INITIALIZE                  BTPARA-REC
                    MOVE    WRK-PARA-SHELLID
                                            TO  BTPARA-SHELLID
                    MOVE    WRK-PARA-JOBID  TO  BTPARA-JOBID
                    PERFORM 900-BTPARA-READ-SEC
                    IF      FLG-BTPARA      NOT =   ZERO
-                       MOVE    "�ѥ�᥿���󤬼����Ǥ��ޤ���Ǥ�����"
+                       MOVE    "パラメタ情報が取得できませんでした。"
                                                    TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
                END-IF
            END-IF
       *
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
            OPEN    OUTPUT              RECE200-FILE
            CLOSE                       RECE200-FILE
            OPEN    OUTPUT              RECE250-FILE
@@ -590,7 +590,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -607,14 +607,14 @@
            EXIT.             
       * 
       *****************************************************************
-      *    �쥻�ץȰ���������
+      *    レセプト一括作成処理
       *****************************************************************
        2001-IKKATU-SYORI-SEC               SECTION.
       *
-      *    ��������������
+      *    処理中止設定処理
            PERFORM 500-CANCEL-HENSYU-SEC
       *
-      *    ����ǯ���Խ�
+      *    診療年月編集
            MOVE    WRK-PARA-SRYYM      TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
            INITIALIZE                      STS-AREA-DAY
@@ -626,7 +626,7 @@
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
            IF      FLG-END             =   ZERO 
-      *        ��������ɤ߹���
+      *        入院会計読み込み
                MOVE    "2"                 TO  WRK-DBKBN 
       *
                MOVE    LOW-VALUE           TO  KEY-AREA
@@ -672,13 +672,13 @@
            EXIT. 
       *            
       *****************************************************************
-      *    ����Խ�����
+      *    一括編集処理
       *****************************************************************
        20012-IKKATU-HENSYU-SEC              SECTION.
       *
            INITIALIZE                  TABLE-RECE200-AREA
       *
-      *    ���Ծ������
+      *    患者情報取得
            MOVE    SPA-HOSPNUM     TO  PTINF-HOSPNUM
            MOVE    KEY-N-PTID      TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
@@ -691,7 +691,7 @@
                    " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
       *****        " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
-      *    �ƥ��ȴ��Ԥ��ɤ����Ф�
+      *    テスト患者は読み飛ばす
            IF   ( PTINF-TSTPTNUMKBN    =   "1"  )
       *****OR   ( SYUKA-MISEIKYU-FLG   =   "01" )
                MOVE    KEY-NEW             TO  KEY-OLD
@@ -705,13 +705,13 @@
                    PERFORM 900-NYUINACCT-READ-SEC
                END-PERFORM
            ELSE
-      *        Ʊ���������������
+      *        同日再入院情報取得
                PERFORM 500-ORCSNYUINDAY-CALL-SEC
       *
-      *       ��������Խ�����
+      *       入院会計編集処理
                PERFORM 200121-NYUINACCT-HENSYU-SEC
       *
-      *        ���Ų�׽���
+      *        診療会計処理
                IF    ( FLG-END             =   ZERO ) 
       *********AND   ( TBL-RECE200-HOSPNUM (1)
       *********                            >   ZERO )
@@ -734,7 +734,7 @@
                    END-IF
                    PERFORM 200122-SRYACCT-HENSYU-SEC
       *
-      *            ���ܥե�������Ͻ���
+      *            基本ファイル出力処理
                    PERFORM 200123-KIHON-WRITE-SEC
                END-IF
            END-IF
@@ -743,7 +743,7 @@
            EXIT. 
       *            
       *****************************************************************
-      *    ��������Խ�����
+      *    入院会計編集処理
       *****************************************************************
        200121-NYUINACCT-HENSYU-SEC              SECTION.
       *     
@@ -754,7 +754,7 @@
            PERFORM         UNTIL   FLG-NYUINACCT   =   1 
                            OR      FLG-END         =   1      
                            OR      KEY-NEW     NOT =   KEY-OLD
-      *        �޼��̶�ʬ�̥ơ��֥��Խ�
+      *        剤識別区分別テーブル編集
                EVALUATE    NACCT-ZAISKBKBN
                    WHEN    "1"
                        MOVE    1               TO  IDX
@@ -776,7 +776,7 @@
            END-PERFORM
       *
            IF      FLG-END             =   ZERO
-      *        Ʊ���������Υ����å�
+      *        同日再入院のチェック
                PERFORM 500-ORCSNYUINDAY-CHECK-SEC
       *
                PERFORM VARYING IDX FROM    1   BY  1
@@ -784,12 +784,12 @@
                    IF    ((WRK-DAY (1 IDX)        >   ZERO) OR
                           (LNK-NYUINDAY-KBN(IDX)  =   "1" ))  AND
                          ( WRK-DAY (2 IDX)        >   ZERO )
-      *                ������ץ����å�����
+      *                入院会計チェック処理
                        PERFORM 2001211-NYUINACCT-CHK-SEC
                    END-IF
                END-PERFORM        
       *
-      *        ������פ����ݸ��ȹ礻���ɲ�
+      *        入院会計から保険組合せを追加
                PERFORM VARYING IDX2    FROM    1   BY  1
                        UNTIL   IDX2    >       10
                        OR      WRK-COMB-HKNCOMBINUM (IDX2) =   ZERO
@@ -813,7 +813,7 @@
                            MOVE    WRK-COMB-HKNCOMBINUM (IDX2)  TO
                                                WRK-ERR-HKNCOMBINUM
                        END-IF        
-      *                ���ܥե������Խ�����
+      *                基本ファイル編集処理
                        PERFORM 2001212-KIHON-HENSYU-SEC
                    END-IF 
                END-PERFORM
@@ -823,14 +823,14 @@
            EXIT. 
       *            
       *****************************************************************
-      *    ������ץ����å�����
+      *    入院会計チェック処理
       *****************************************************************
        2001211-NYUINACCT-CHK-SEC           SECTION.
       *
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       10
       *
-      *        �ݸ��ȹ礻�ɲ�
+      *        保険組合せ追加
                IF      WRK-COMB-HKNCOMBINUM (IDX1) =   ZERO
                    INITIALIZE                  HKNCOMBI-REC
                    MOVE    SYS-1001-HOSPNUM TO  COMB-HOSPNUM
@@ -839,11 +839,11 @@
                                            COMB-HKNCOMBINUM 
                    MOVE    HKNCOMBI-REC    TO  MCPDATA-REC
                    PERFORM 910-HKNCOMBI-INV-SEC
-      *            ���оݳ����ȹ礻�ϣ��򥻥åȡ�
+      *            （対象外の組合せは１をセット）
                    IF      FLG-HKNCOMBI    =   ZERO
                        MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
-      *                ���ݰʳ��ɤ����Ф�
+      *                医保以外読み飛ばし
                        IF      COMB-HKNNUM     =
                                            WRK-CONS-KOUGAI-HKNNUM
                            CONTINUE
@@ -855,7 +855,7 @@
                        IF      COMB-DELKBN         =   "1"
                            MOVE    HKNCOMBI-REC    TO
                                                WRK-HKNCOMBI-REC  (IDX1)
-      *                    �����ʳ��ɤ����Ф�
+      *                    公害以外読み飛ばし
                            IF      COMB-HKNNUM     =
                                                WRK-CONS-KOUGAI-HKNNUM
                                MOVE    "2"         TO
@@ -873,11 +873,11 @@
                    END-IF
                END-IF
       *
-      *        Ŭ���ϰϤ������å����ϰϳ��ΤȤ����򥻥åȡ�
+      *        適用範囲かチェック（範囲外のとき２をセット）
                IF      WRK-DAY (2 IDX)     =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
                    IF      WRK-HKNCOMBI-SYOKBN (IDX1)   NOT =   SPACE
-      *                �����ʳ��ΤȤ����������
+      *                公害以外のとき初期化する
       ****             IF      WRK-HKNCOMBI-SYOKBN (IDX1)  =   "1"
       ****                 MOVE    ZERO            TO  WRK-DAY (2 IDX)
       ****             END-IF
@@ -905,7 +905,7 @@
            EXIT. 
       *            
       *****************************************************************
-      *    ���ܥե������Խ�����
+      *    基本ファイル編集処理
       *****************************************************************
        2001212-KIHON-HENSYU-SEC           SECTION.
       *     
@@ -936,7 +936,7 @@
            EXIT. 
       *            
       *****************************************************************
-      *    ���ܥե������Խ��ʿ����˽���
+      *    基本ファイル編集（新規）処理
       *****************************************************************
        20012121-RECE200-WRITE-SEC           SECTION.
       *
@@ -955,7 +955,7 @@
                END-PERFORM
            END-IF    
       *    
-      *    ���ݸ�����
+      *    主保険情報
            INITIALIZE                      PTHKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    COMB-PTID           TO  PTHKN-PTID
@@ -967,21 +967,21 @@
            MOVE    PTHKN-KIGO          TO  WRK-RECE200-KIGO
            MOVE    PTHKN-NUM           TO  WRK-RECE200-NUM
       *
-      *    ���Ծ���
+      *    患者情報
            MOVE   PTINF-KANANAME       TO  WRK-RECE200-KANANAME
            MOVE   PTINF-NAME           TO  WRK-RECE200-NAME
            MOVE   PTINF-SEX            TO  WRK-RECE200-SEX
            MOVE   PTINF-BIRTHDAY       TO  WRK-RECE200-BIRTHDAY
            MOVE   PTINF-DEATHKBN       TO  WRK-RECE200-DEATHKBN
            MOVE   PTINF-TSTPTNUMKBN    TO  WRK-RECE200-TSTPTNUMKBN
-      *    �����ֹ�
+      *    患者番号
            INITIALIZE                      ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-RECE200-PTID    TO  SPTID-PTID
            CALL    "ORCSPTID"          USING   ORCSPTIDAREA
                                                SPA-AREA
            MOVE    SPTID-PTNUM         TO  WRK-RECE200-PTNUM
-      *    ǯ��
+      *    年齢
            INITIALIZE                      ORCSAGECHKAREA
            MOVE    SPA-HOSPNUM         TO  AGECHK-HOSPNUM
            MOVE    WRK-RECE200-PTID    TO  AGECHK-PTID
@@ -994,7 +994,7 @@
            IF      AGECHK-RC           =   ZERO
                MOVE  AGECHK-NENREI         TO  WRK-RECE200-AGE
            END-IF
-      *    ��������
+      *    旧姓履歴
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            MOVE    WRK-RECE200-PTID    TO  KYUSEI-PTID
@@ -1006,21 +1006,21 @@
                MOVE    KYUSEI-KANANAME     TO  WRK-RECE200-KANANAME
            END-IF
       *
-      *    ������ʸ��̺������θ��̻���Τߡ�
+      *    印刷順（個別作成時の個別指定のみ）
            IF    ( WRK-PARA-SYOKBN     =   "2"              )
            AND   ( BTPARA-INFO-KBN     =   "01"    OR  "04"
                                                    OR  "05" )
                ADD     1                   TO  WRK-PRTSEQ
                MOVE    WRK-PRTSEQ          TO  WRK-RECE200-PRTSEQ
            END-IF
-      *    ̤����ե饰
+      *    未請求フラグ
       *****MOVE    SYUKA-MISEIKYU-FLG  TO  WRK-RECE200-MISEIKYU-FLG
-      *    �쥻�ץ��о�ǯ��������
+      *    レセプト対象年月日情報
            MOVE    WRK-RECE200-TEKSTYMD
                                        TO  WRK-RECE200-TEKSTYMD-X
            MOVE    COMB-TEKEDYMD       TO  WRK-RECE200-TEKEDYMD-X
       *
-      *    �쥻�ץȼ����������顼����
+      *    レセプト種別不明エラー情報
            MOVE    WRK-TEISEIKBN       TO  WRK-RECE200-TEISEIKBN
            IF      WRK-TEISEIKBN       =   "1"
                MOVE    WRK-ERR-ERRKBN      TO  WRK-RECE200-ERR-ERRKBN
@@ -1032,12 +1032,12 @@
                MOVE    WRK-ERR-TEKEDYMD    TO  WRK-RECE200-ERR-TEKEDYMD
            END-IF 
       *
-      *    �±������Ž��ʬ
+      *    病院・診療所区分
            MOVE    SYS-1001-HOSPSBT TO  WRK-RECE200-HOSPSBT
       *        
-      *    ��������������ե饰
+      *    入院料情報取得フラグ
            MOVE    1               TO  WRK-RECE200-DOUJITSU-FLG
-      *    ��������������ʬ�ˤ��ݸ��ȹ礻���������ϻ��ֶ�ʬ
+      *    日再入院（入院分）の保険組合せ、食事開始時間区分
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL   IDX3    >       31
                MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
@@ -1047,7 +1047,7 @@
                                            TO
                                    WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
            END-PERFORM
-      *    ������ʬ
+      *    入院区分
            MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
       *
            MOVE    WRK-RECE200-REC     TO  TBL-RECE200-OCC (IDXX)
@@ -1057,7 +1057,7 @@
            EXIT.
       *            
       *****************************************************************
-      *    ���ܥե���������ʹ����˽���
+      *    基本ファイル作成（更新）処理
       *****************************************************************
        20012122-RECE200-REWRITE-SEC            SECTION.
       *
@@ -1087,9 +1087,9 @@
            END-IF    
       *        
            IF      WRK-RECE200-DOUJITSU-FLG =   ZERO
-      *        ��������������ե饰
+      *        入院料情報取得フラグ
                MOVE    1               TO  WRK-RECE200-DOUJITSU-FLG
-      *        Ʊ��������������ʬ�ˤ��ݸ��ȹ礻���������ϻ��ֶ�ʬ
+      *        同日再入院（入院分）の保険組合せ、食事開始時間区分
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL   IDX3    >       31
                    MOVE    LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDX3)
@@ -1099,7 +1099,7 @@
                                                TO
                                    WRK-RECE200-DOUJITSU-SKJKBN   (IDX3)
                END-PERFORM
-      *        ������ʬ
+      *        入院区分
                MOVE    LNK-NYUINDAY-TBL    TO  WRK-RECE200-NYUINDAY-TBL
            END-IF
       *
@@ -1123,7 +1123,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥե�������Ͻ���
+      *    基本ファイル出力処理
       *****************************************************************
        200123-KIHON-WRITE-SEC              SECTION.
       *
@@ -1132,11 +1132,11 @@
                    OR      TBL-RECE200-HOSPNUM (IDXX)  =   ZERO
                MOVE    TBL-RECE200-OCC (IDXX)      TO  WRK-RECE200-REC
       *
-      *        ���ౡ������������
+      *        入退院履歴より情報取得
                PERFORM 240-PTNYUINRRK-SYORI-SEC
                MOVE    WRK-RECE200-REC             TO  RECE200-REC
       *
-      *        �쥻�ץȼ���
+      *        レセプト種別
                PERFORM 2001231-RECESYUBETU-SET-SEC
       *
                DISPLAY "RECE200 PTNUM=" RECE200-PTNUM
@@ -1162,7 +1162,7 @@
        200123-KIHON-WRITE-EXT.
       *
       *****************************************************************
-      *    �쥻�ץȼ��̥��åȽ���
+      *    レセプト種別セット処理
       *****************************************************************
        2001231-RECESYUBETU-SET-SEC         SECTION.
       *
@@ -1176,7 +1176,7 @@
            EXIT.
       *            
       *****************************************************************
-      *    ���Ų���Խ�����
+      *    診療会計編集処理
       *****************************************************************
        200122-SRYACCT-HENSYU-SEC              SECTION.
       *
@@ -1211,7 +1211,7 @@
            EXIT. 
       *
       *****************************************************************
-      *    ���Ų�ץ����å�����
+      *    診療会計チェック処理
       *****************************************************************
        2001221-SRYACCT-CHEKCK-SEC                SECTION.
       *
@@ -1222,7 +1222,7 @@
                MOVE    ACCT-HKNCOMBI       TO  KEY-N1-HKNCOMBI
                MOVE    ACCT-PTID           TO  KEY-N1-PTID 
                MOVE    ACCT-SRYKA          TO  KEY-N1-SRYKA
-      *        �ݸ��ȹ礻�ɹ���
+      *        保険組合せ読込み
                INITIALIZE                  HKNCOMBI-REC
                MOVE    SYS-1001-HOSPNUM    TO  COMB-HOSPNUM
                MOVE    ACCT-PTID           TO  COMB-PTID
@@ -1230,7 +1230,7 @@
                MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                PERFORM  910-HKNCOMBI-INV-SEC
       *
-      *        ̤����ʬ�����뤫
+      *        未訂正分があるか
                MOVE    SPACE               TO  WRK-ERR-AREA
                INITIALIZE                      WRK-ERR-AREA
       *
@@ -1260,7 +1260,7 @@
                    END-IF 
       *
                    IF      WRK-UPDKBN          =   SPACE                   
-      *                Ʊ�����ԣɣġ����Ųʡ��ݸ��ȹ礻���ɤ����Ф�
+      *                同じ患者ＩＤ・診療科・保険組合せは読み飛ばす
                        MOVE    KEY-NEW1            TO  KEY-OLD1
                        PERFORM     UNTIL   FLG-SRYACCT     =   1 
                                    OR      FLG-END         =   1      
@@ -1286,12 +1286,12 @@
            EXIT.
       *            
       *****************************************************************
-      *    ���Ų�ץե������Խ�����
+      *    診療会計ファイル編集処理
       *****************************************************************
        20012212-SRYSCCT-FILE-SYORI-SEC              SECTION.
       *                  
            IF      WRK-UPDKBN          =   "1"
-      *        �ݸ�������������Ƥ��뤫
+      *        保険の訂正がされているか
                IF      COMB-TEKSTYMD(1:6)  =   WRK-STYMD (1:6)
                    MOVE    COMB-TEKSTYMD       TO  WRK-YMD
                    PERFORM VARYING IDX FROM    1   BY  1
@@ -1341,14 +1341,14 @@
                END-IF    
            END-IF
       *
-      *    ���ܥե������Խ�����
+      *    基本ファイル編集処理
            PERFORM 2001212-KIHON-HENSYU-SEC
            .
        20012212-SRYSCCT-FILE-SYORI-EXT.
            EXIT. 
       * 
       *****************************************************************
-      *    ���̽���
+      *    個別処理
       *****************************************************************
        2002-KOBETU-SYORI-SEC               SECTION.
       *
@@ -1358,7 +1358,7 @@
                GO  TO    2002-KOBETU-SYORI-EXT
            END-IF
       *
-      *    �쥻�ץȻؼ��ʸ��̻ؼ��˥������ɤ߹���
+      *    レセプト指示（個別指示）コード読み込み
            INITIALIZE                      SYS-2002-REC
            MOVE    "2002"              TO  SYS-2002-KANRICD
            MOVE    ZERO                TO  SYS-2002-STYUKYMD
@@ -1389,7 +1389,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    個別編集処理
       *****************************************************************
        20021-KOBETU-REAL-SEC              SECTION.
       *
@@ -1407,7 +1407,7 @@
                    " SRYYM="   SYS-2002-SRYYM 
       **             " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
-      *    ��������ǯ��ΰ��ŵ��ؾ������
+      *    該当診療年月の医療機関情報取得
            MOVE  ZERO           TO  FLG-SET
            MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
            MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
@@ -1422,7 +1422,7 @@
                 END-IF
            END-PERFORM
            IF     FLG-SET              =   ZERO
-               STRING   "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������ǯ���"
+               STRING   "医療機関情報が取得できませんでした。診療年月＝"
                                            DELIMITED  BY  SIZE
                         SYS-2002-SRYYM     DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -1431,13 +1431,13 @@
                GO       TO      20021-KOBETU-REAL-EXT
            END-IF
       *
-      *    ���Ծ������
+      *    患者情報取得
            MOVE    SYS-1001-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    SYS-2002-PTID       TO  PTINF-PTID
            PERFORM 900-PTINF-READ-SEC
            MOVE    "1"                 TO  PTINF-TSTPTNUMKBN
       *
-      *    ����ǯ���Խ�
+      *    診療年月編集
            MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
            INITIALIZE                      STS-AREA-DAY
@@ -1448,10 +1448,10 @@
                                                LNK-DAY7-AREA
            MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD
       *
-      *    Ʊ���������������
+      *    同日再入院情報取得
            PERFORM 500-ORCSNYUINDAY-CALL-SEC
       *
-      *    ���Ų���ɤ߹���
+      *    診療会計読み込み
            MOVE    "1"                 TO  WRK-DBKBN 
       *   
            INITIALIZE                  SRYACCT-REC
@@ -1468,7 +1468,7 @@
            END-IF
            PERFORM 200122-SRYACCT-HENSYU-SEC
       *
-      *    ��������ɤ߹���
+      *    入院会計読み込み
            MOVE    "2"                 TO  WRK-DBKBN 
       *
            MOVE    LOW-VALUE           TO  KEY-AREA
@@ -1500,14 +1500,14 @@
                    OR          FLG-END           =   1
                PERFORM 200121-NYUINACCT-HENSYU-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    WRK-NYUINACCT-MCP-TABLE
                                        TO  MCP-TABLE
            MOVE    WRK-NYUINACCT-MCP-PATHNAME
                                        TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ���ܥե�������Ͻ���
+      *    基本ファイル出力処理
            PERFORM 200123-KIHON-WRITE-SEC
       *
            .
@@ -1515,7 +1515,7 @@
            EXIT.
       *     
       *****************************************************************
-      *    �����Խ�����
+      *    個別編集処理
       *****************************************************************
        20021-KOBETU-HENSYU-SEC              SECTION.
       *
@@ -1531,12 +1531,12 @@
                    " SRYYM="   SYS-2002-SRYYM 
       **           " MISEIKYU-FLG=" SYUKA-MISEIKYU-FLG
       *
-      ***  ̤������������ɤ����Ф�
+      ***  未請求設定時は読み飛ばす
       ***  IF    SYUKA-MISEIKYU-FLG  =   "01"
       ***      CONTINUE
       ***  ELSE
       *
-      *        ���ŵ��أɣ��Խ�
+      *        医療機関ＩＤ編集
                MOVE  ZERO           TO  FLG-SET
                MOVE  SYS-2002-SRYYM TO  WRK-SYS-SRYYMD(1:6)
                MOVE  "01"           TO  WRK-SYS-SRYYMD(7:2)
@@ -1554,7 +1554,7 @@
                END-PERFORM
                IF     FLG-SET  =  ZERO
                    STRING
-                       "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������ǯ���"
+                       "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                             SYS-2002-SRYYM     DELIMITED  BY  SIZE
                                                INTO    WRK-RECEERR
@@ -1563,12 +1563,12 @@
                    GO       TO      20021-KOBETU-HENSYU-EXT
                END-IF
       *
-      *        ���Ծ������
+      *        患者情報取得
                MOVE    SYS-1001-HOSPNUM    TO  PTINF-HOSPNUM
                MOVE    SYS-2002-PTID       TO  PTINF-PTID
                PERFORM 900-PTINF-READ-SEC
       *
-      *        ����ǯ���Խ�
+      *        診療年月編集
                MOVE    SYS-2002-SRYYM      TO  WRK-STYMD (1:6)
                MOVE    "01"                TO  WRK-STYMD (7:2)
                INITIALIZE                      STS-AREA-DAY
@@ -1579,14 +1579,14 @@
                                                LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI     TO  WRK-EDYMD 
       *
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
       *
                IF      FLG-END             =   ZERO
-      *            Ʊ���������������
+      *            同日再入院情報取得
                    PERFORM 500-ORCSNYUINDAY-CALL-SEC
       *
-      *            ���Ų���ɤ߹���
+      *            診療会計読み込み
                    MOVE    "1"                 TO  WRK-DBKBN 
       *      
                    INITIALIZE                  SRYACCT-REC
@@ -1607,7 +1607,7 @@
                END-IF 
       *
                IF      FLG-END             =   ZERO
-      *            ��������ɤ߹���
+      *            入院会計読み込み
                    MOVE    "2"                 TO  WRK-DBKBN 
       *
                    MOVE    LOW-VALUE           TO  KEY-AREA
@@ -1648,7 +1648,7 @@
                                                TO  MCP-PATHNAME
                    PERFORM 900-CLOSE-SEC
       *
-      *            ���ܥե�������Ͻ���
+      *            基本ファイル出力処理
                    PERFORM 200123-KIHON-WRITE-SEC
                END-IF
       ***  END-IF
@@ -1661,7 +1661,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    ���ౡ����������������
+      *    入退院履歴より情報取得処理
       *****************************************************************
        240-PTNYUINRRK-SYORI-SEC                   SECTION.
       *
@@ -1670,7 +1670,7 @@
            MOVE      SPACE             TO  WK-PTNYUINRRK-TENSTUYMD2
            MOVE      SPACE             TO  WK-PTNYUINRRK-TENNYUYMD
       *
-      *    ���ŷ�������ౡ����
+      *    診療月内の入退院情報
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    WRK-RECE200-HOSPNUM TO  PTNYUINRRK-HOSPNUM
            MOVE    WRK-RECE200-PTID    TO  PTNYUINRRK-PTID
@@ -1707,7 +1707,7 @@
                    MOVE    PTNYUINRRK-TAIINYMD TO  WRK-SRYYMD
                    MOVE    WRK-SRYDD           TO  IDX5
                END-IF
-      *        �ݸ��ȹ礻�Υ����å��ʲ�פ��оݤ��ȹ礻���ʤ��Ȥ������ơ�
+      *        保険組合せのチェック（会計に対象の組合せがないときは全て）
                IF      WRK-RECE200-DAY-AREA    =   ALL "0"
                    MOVE    "1"                 TO
                                                WRK-RECE200-NYUINRYOFLG
@@ -1719,7 +1719,7 @@
                        AND   ( WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
                                                =
                                                PTNYUINRRK-HKNCOMBINUM )
-      *                    Ʊ���������ΤȤ�������ʬ���ݸ��ȹ礻������å�
+      *                    同日再入院のとき再入院分の保険組合せをチェック
                            IF      WRK-RECE200-DOUJITSU-HKNCOMBI (IDX)
                                                =   WRK-RECE200-HKNCOMBI
                                PERFORM 2401-PTNYUINRRK-HENSYU-SEC
@@ -1743,13 +1743,13 @@
            MOVE    "key23"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ���Ųʾ���̤�Խ��ΤȤ�
+      *    診療科情報が未編集のとき
            IF      WRK-RECE200-SRYKA (1)   =   SPACE
                MOVE    WRK-RECE200-LASTSRYKA
                                            TO  WRK-RECE200-SRYKA (1)
            END-IF
       *                                                                
-      *    �����ʬ���ؤ�
+      *    病棟区分並替え
       *                                                                
            PERFORM    VARYING   IDX3     FROM    1   BY  1             
                   UNTIL  ( IDX3                   >   4    )           
@@ -1785,14 +1785,14 @@
            EXIT.
       * 
       *****************************************************************
-      *    ���ౡ��������Խ�����
+      *    入退院履歴情報編集処理
       *****************************************************************
        2401-PTNYUINRRK-HENSYU-SEC           SECTION.
       *
-      *    �����ʬ���å�
+      *    病棟区分セット
            PERFORM    24011-BYOTOKBN-SET-SEC
       *
-      *    ���Ųʾ���Υ��å�
+      *    診療科情報のセット
            PERFORM VARYING IDW FROM    1   BY  1
                    UNTIL   IDW >       20
                    OR      PTNYUINRRK-NYUINKA
@@ -1807,7 +1807,7 @@
                END-IF
            END-PERFORM
       *
-      *    ����ǯ�������ǽ���
+      *    入院年月日・最終科
            IF      WRK-RECE200-LASTSRYKA   =   SPACE
                MOVE    PTNYUINRRK-NYUINYMD TO  WRK-RECE200-NYUINYMD
                MOVE    PTNYUINRRK-NYUINKA  TO  WRK-RECE200-LASTSRYKA
@@ -1816,10 +1816,10 @@
                MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
            END-IF
       *
-      *    ���ౡ�������
+      *    入退院履歴情報
            PERFORM 24012-RECE250-WRITE-SEC
       *
-      *    ���ŷ�������ౡ���������
+      *    診療月内の入退院情報の履歴
            IF      FLG-RECE250          =   1                            
                MOVE    PTNYUINRRK-REC      TO  WRK-PTNRRK-REC
                INITIALIZE                      PTNYUINRRK-REC
@@ -1838,7 +1838,7 @@
                    MOVE    1               TO  FLG-PTNYUINRRK22 
                END-IF
       *
-      *        ����ǯ����
+      *        入院年月日
                IF    ( PTNYUINRRK-NYUINYMD <   WRK-RECE200-NYUINYMD )
                AND   ( PTNYUINRRK-SHONUM   =   WRK-SHONUM           )
                    MOVE    PTNYUINRRK-NYUINYMD TO  WRK-RECE200-NYUINYMD
@@ -1863,11 +1863,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ʬ���å�                                              
+      *    病棟区分セット                                              
       *****************************************************************
        24011-BYOTOKBN-SET-SEC                SECTION.
       *
-      *    ��ư�ˤ��ž�����ξ���ž�������������֤�������
+      *    異動による転室等の場合は転出日を前日に置き換える
            MOVE    SPACE               TO  WK-PTNYUINRRK-TENSTUYMD
            IF      PTNYUINRRK-TENSTUYMD
                                        =  PTNYUINRRK-TAIINYMD
@@ -1901,7 +1901,7 @@
                MOVE    LNK-DAY6-KEISAN TO WK-PTNYUINRRK-TENSTUYMD
            END-IF
       *
-      *    �������                                           
+      *    病棟情報                                           
            INITIALIZE                      SYS-5001-REC     
            MOVE    "5001"              TO  SYS-5001-KANRICD      
            MOVE    PTNYUINRRK-BTUNUM   TO  SYS-5001-KBNCD        
@@ -1944,7 +1944,7 @@
                                             WK-PTNYUINRRK-TENNYUYMD
                END-IF
       *
-      *        �����ֹ桦����
+      *        病棟番号・種別
                MOVE    WRK-RECE200-SRYYM        TO  WRK-SRYYYMM
                PERFORM VARYING IDX3    FROM    1   BY  1
                        UNTIL   IDX3    >       31
@@ -1967,11 +1967,11 @@
            EXIT.                                                       
       *
       *****************************************************************
-      *    ���ౡ������Ͻ���
+      *    入退院履歴出力処理
       *****************************************************************
        24012-RECE250-WRITE-SEC         SECTION.
       *
-      *    ¾���������ϵ��ܤ��ʤ�
+      *    他院歴の履歴は記載しない
            IF    ( PTNYUINRRK-JTIKBN        =   "5" )
            AND   ( PTNYUINRRK-TAINRELKBN    =   "1" )
                GO  TO  24012-RECE250-WRITE-EXT
@@ -2016,7 +2016,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -2031,7 +2031,7 @@
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -2046,7 +2046,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -2057,26 +2057,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -2108,7 +2108,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -2121,7 +2121,7 @@
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -2134,7 +2134,7 @@
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -2151,7 +2151,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -2159,13 +2159,13 @@
                    RECE250-FILE
       *
            IF      CNT-RECE200            =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״�����λ����
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                PERFORM   900-CALL-ORCSJOB-SEC
@@ -2180,7 +2180,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�������������������
+      *    同日再入院情報取得処理
       *****************************************************************
        500-ORCSNYUINDAY-CALL-SEC      SECTION.
       *
@@ -2204,7 +2204,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�������������å�����
+      *    同日再入院チェック処理
       *****************************************************************
        500-ORCSNYUINDAY-CHECK-SEC          SECTION.
       *
@@ -2216,7 +2216,7 @@
                PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >   10
       *
-      *            �ݸ��ȹ礻�ɲ�
+      *            保険組合せ追加
                    IF      WRK-COMB-HKNCOMBINUM (IDX1) =   ZERO
                        INITIALIZE                      HKNCOMBI-REC
                        MOVE    SYS-1001-HOSPNUM    TO  COMB-HOSPNUM
@@ -2225,11 +2225,11 @@
                                                    TO  COMB-HKNCOMBINUM 
                        MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
                        PERFORM  910-HKNCOMBI-INV-SEC
-      *                ���оݳ����ȹ礻�ϣ��򥻥åȡ�
+      *                （対象外の組合せは１をセット）
                        IF      FLG-HKNCOMBI    =   ZERO
                            MOVE    HKNCOMBI-REC    TO
                                            WRK-HKNCOMBI-REC  (IDX1)
-      *                    ���ݰʳ��ɤ����Ф�
+      *                    医保以外読み飛ばし
                            IF      COMB-HKNNUM     =
                                                WRK-CONS-KOUGAI-HKNNUM
                                CONTINUE
@@ -2241,7 +2241,7 @@
                            IF      COMB-DELKBN         =   "1"
                                MOVE    HKNCOMBI-REC    TO
                                                WRK-HKNCOMBI-REC  (IDX1)
-      *                        ���ݰʳ��ɤ����Ф�
+      *                        医保以外読み飛ばし
                                IF      COMB-HKNNUM     =
                                                WRK-CONS-KOUGAI-HKNNUM
                                    MOVE    "2"             TO
@@ -2261,7 +2261,7 @@
                        END-IF
                    END-IF
       *
-      *            Ŭ���ϰϤ������å����ϰϳ��ΤȤ����򥻥åȡ�
+      *            適用範囲かチェック（範囲外のとき２をセット）
                    IF      LNK-NYUINDAY-DOUJITSU-HKNCOMBI (IDXX)
                                            =
                                        WRK-COMB-HKNCOMBINUM (IDX1)
@@ -2294,7 +2294,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ̤����ե饰�����å�����
+      *    未請求フラグチェック処理
       *****************************************************************
        800-MISEIKYU-CHECK-SEC          SECTION.
       *
@@ -2313,7 +2313,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ե�����̾��������
+      *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -2327,7 +2327,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -2342,7 +2342,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -2371,7 +2371,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ңţ���
+      *    診療行為マスタ　ＲＥＡＤ
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -2399,7 +2399,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ץޥ����ңţ���
+      *    入院会計マスタＲＥＡＤ
       *****************************************************************
        900-NYUINACCT-READ-SEC          SECTION.
       *
@@ -2428,7 +2428,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ɹ�
+      *    保険組合せマスタ読込
       *****************************************************************
        910-HKNCOMBI-INV-SEC         SECTION.
       *
@@ -2463,7 +2463,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ�����ޥ����ɹ�
+      *    患者保険情報マスタ読込
       *****************************************************************
        910-PTHKNINF-INV-SEC         SECTION.
       *
@@ -2496,7 +2496,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ��ʼ祭����
+      *    患者マスター読込（主キー）
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2529,7 +2529,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɤ߹���
+      *    旧姓履歴マスタ読み込み
       *****************************************************************
        900-KYUSEIRRK-READ-SEC          SECTION.
       *
@@ -2559,7 +2559,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
@@ -2586,7 +2586,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-N-SEC          SECTION.
       *
@@ -2604,7 +2604,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʾ����ɹ�
+      *    主科情報読込
       *****************************************************************
        900-SYUKA-READ-SEC         SECTION.
       *
@@ -2635,7 +2635,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ��ʣˣţ٣�����
+      *    入院履歴読込（ＫＥＹ２２）
       *****************************************************************
        900-PTNYUINRRK-KEY22-READ-SEC    SECTION.
       *    
@@ -2660,7 +2660,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ɹ��ʣˣţ٣�����
+      *    入院履歴読込（ＫＥＹ２３）
       *****************************************************************
        900-PTNYUINRRK-KEY23-READ-SEC    SECTION.
       *    
@@ -2678,7 +2678,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ౡ�����ɹ�
+      *    入退院履歴読込
       *****************************************************************
        900-RECE250-READ-SEC            SECTION.
       *
@@ -2693,7 +2693,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -2710,7 +2710,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -2723,7 +2723,7 @@
                INITIALIZE                      WRK-ERRMSG-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -2749,7 +2749,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -2761,7 +2761,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    クローズ処理
       *****************************************************************
        900-CLOSE-SEC                  SECTION.
       *
@@ -2773,7 +2773,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -2786,7 +2786,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -2804,7 +2804,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

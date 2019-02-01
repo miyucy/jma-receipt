@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,63 +16,63 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ϫ�ҥ쥻�ץ����ٽ��������     COPY (CPRCF087.INC)    *
+      *    労災レセプト明細書（入院）     COPY (CPRCF087.INC)    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    05.05.25  ���ż��̶�ʬ�����������ɲ�
-      *  01.00.02    NACL-����    05.07.28  �ޤ���Ƭ�ο��ť����������ɲ�
-      *  03.01.01    NACL-����    06.07.14  ���Ŷ�ʬ�֤������ե饰���ɲ�
-      *  03.05.01    NACL-����    07.06.01  ���롼�׿����б�
-      *  04.04.01    NACL-����    10/03/29  �����������ɲ�
-      *  04.05.01    NACL-����    10/01/19  �޶�ʬ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    05.05.25  診療種別区分、診療日の追加
+      *  01.00.02    NACL-門脇    05.07.28  剤の先頭の診療コード等の追加
+      *  03.01.01    NACL-門脇    06.07.14  診療区分置き換えフラグの追加
+      *  03.05.01    NACL-門脇    07.06.01  グループ診療対応
+      *  04.04.01    NACL-門脇    10/03/29  診療日２の追加
+      *  04.05.01    NACL-門脇    10/01/19  剤区分追加
       *
-      *  04.07.01    NACL-����    13/12/03  �����ա�ϫ�ҽ��ˤΥ쥻�ץ��ͼ�
-      *                                     �ɲ��б�
+      *  04.07.01    NACL-門脇    13/12/03  自賠責（労災準拠）のレセプト様式
+      *                                     追加対応
       *
-      *  04.08.01    NACL-����    13/01/25  ������ʬ�������ѥ쥻�ץȵ����б�
+      *  04.08.01    NACL-門脇    13/01/25  包括診療分の点検用レセプト記載対応
       ************************************************************
       *01  RECE87-REC.
            03  RECE87-KEY.
                05  RECE87-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  RECE87-HOSPNUM     PIC  9(02).
-      *����ǯ��
+      *診療年月
                    07  RECE87-SRYYM       PIC  9(06).
-      *������ʬ
+      *入外区分
                    07  RECE87-NYUGAIKBN   PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  RECE87-PTID        PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                    07  RECE87-RECEKA      PIC  X(02).
-      *�ݸ��ɣ�        
+      *保険ＩＤ        
                    07  RECE87-HKNID       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE87-TEKSTYMD    PIC  X(08). 
-      *���Ŷ�ʬ
+      *診療区分
                05  RECE87-SRYKBN          PIC  X(02).
-      *���ݶ�ʬ
+      *自保区分
                05  RECE87-JIHOKBN         PIC  X(01).
-      *�޶�ʬ
+      *剤区分
                05  RECE87-ZAIKBN          PIC  9(03).
-      *�޼��̶�ʬ
+      *剤識別区分
                05  RECE87-ZAISKBKBN       PIC  X(01).
-      *�޼������ֹ�
+      *剤識別内番号
                05  RECE87-ZAISKBBAN       PIC  9(08).
-      *��ũ���϶�ʬ
+      *点滴出力区分
                05  RECE87-TENTEKIKBN      PIC  9(02).
-      *��ũ���϶�ʬ�����ֹ�
+      *点滴出力区分別内番号
                05  RECE87-TENTEKIBAN      PIC  9(08).
-      *�����»ܶ�ʬ
+      *検査実施区分
                05  RECE87-KNSJISKBN       PIC  9(01).
-      *���ż��̶�ʬ
+      *診療種別区分
                05  RECE87-SRYSYUKBN       PIC  X(03).
-      *������
+      *診療日
                05  RECE87-DAY             PIC  9(02).
-      *���Ŷ�ʬ�֤������ե饰�ʼ����ե���ѡ�
+      *診療区分置き換えフラグ（自賠責リハ用）
                05  RECE87-OKIKAEFLG       PIC  X(01).
-      *ɽ���ֹ�
+      *表用番号
                05  RECE87-CDKBN-SYO           PIC  9(01).
                05  RECE87-CDKBN-BU            PIC  9(02).
                05  RECE87-CDKBN-KBN           PIC  X(01).
@@ -80,31 +80,31 @@
                05  RECE87-CDKBN-KBNNUM-EDA    PIC  9(02).
                05  RECE87-CDKBN-KOUBAN        PIC  9(02).
                05  RECE87-KOUHYOJUNNUM        PIC  9(09).
-      *��������
+      *診療日２
                05  RECE87-DAY2            PIC  9(02).
       *
                05  RECE87-NYUTENTTLKBN    PIC  9(03).
-      *���ť����ɡʺޤ���Ƭ�ο��ť����ɡ�
+      *診療コード（剤の先頭の診療コード）
                05  RECE87-SRYCD1          PIC  X(09).
-      *������
+      *剤点数
                05  RECE87-ZAITEN          PIC  9(08).
-      *���ֹ�
+      *剤番号
                05  RECE87-ZAINUM          PIC  9(08).
-      *Ϣ�ֹ�
+      *連番号
                05  RECE87-LINENUM         PIC  9(05).
-      *�����ٿ�
+      *剤明細数
            03  RECE87-ZAIMEISAISU         PIC  9(03).
-      *�����ֹ�
+      *患者番号
            03  RECE87-PTNUM               PIC  X(20).
-      *���Ų�
+      *診療科
            03  RECE87-SRYKA               PIC  X(02).
-      *Ŭ�������
+      *適要欄情報
            03  RECE87-TEKIYO-INF.
-      *�޶��ڡʡ���
+      *剤区切（＊）
                05  RECE87-ASTER           PIC  X(02).
-      *Ŧ��
+      *摘要
                05  RECE87-TEKIYO          PIC  X(100).
-      *Ŭ�������
+      *適要欄情報２
            03  RECE87-TEKIYO2-INF.
                05  RECE87-TEKIYO2-KISAIFLG  PIC  9(01).
                05  RECE87-TEKIYO2-YENFLG    PIC  9(01).

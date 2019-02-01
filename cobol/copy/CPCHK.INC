@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,53 +16,53 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿        COPY (CPCHK.INC)                     *
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿        COPY (CPCHK.INC)                     *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  CHK-REC.
            03  CHK-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  CHK-HOSPNUM         PIC 9(2).
-      *¥Á¥§¥Ã¥¯¶èÊ¬
+      *ãƒã‚§ãƒƒã‚¯åŒºåˆ†
                05  CHK-CHKKBN          PIC X(1).
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  CHK-SRYCD           PIC X(9).
-      *¥°¥ë¡¼¥×ÈÖ¹æ¡ÊÌ¤»ÈÍÑ¡Ë
+      *ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·ï¼ˆæœªä½¿ç”¨ï¼‰
                05  CHK-GRPNUM          PIC 9(2).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  CHK-YUKOSTYMD       PIC X(8).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  CHK-YUKOEDYMD       PIC X(8).
-      *¥³¡¼¥É¶èÊ¬
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†
                05  CHK-CDKBN           PIC X(1).
-      *Å¬ÍÑ¥³¡¼¥É
+      *é©ç”¨ã‚³ãƒ¼ãƒ‰
                05  CHK-CD              PIC X(9).
-      *Æþ³°¶èÊ¬¡ÊÌ¤»ÈÍÑ¡Ë
+      *å…¥å¤–åŒºåˆ†ï¼ˆæœªä½¿ç”¨ï¼‰
            03  CHK-NYUGAIKBN           PIC X(1).
-      *Æ±°ìÆþ³°À©¸æ¶èÊ¬¡Ê1:Æþ±¡¡¦³°Íè¤ÎÈ½Äê¤ò¹Ô¤¦¡Ë
+      *åŒä¸€å…¥å¤–åˆ¶å¾¡åŒºåˆ†ï¼ˆ1:å…¥é™¢ãƒ»å¤–æ¥ã®åˆ¤å®šã‚’è¡Œã†ï¼‰
            03  CHK-NYUGAIBNDKBN        PIC X(1).
-      *½èÍý¶èÊ¬¡Ê1:ËýÀ­áÖÄË´ÉÍýÎÁ¥Á¥§¥Ã¥¯¡¢2:½é¿ÇÎÁ¥Á¥§¥Ã¥¯¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼ˆ1:æ…¢æ€§ç–¼ç—›ç®¡ç†æ–™ãƒã‚§ãƒƒã‚¯ã€2:åˆè¨ºæ–™ãƒã‚§ãƒƒã‚¯ï¼‰
            03  CHK-SYORIKBN            PIC X(1).
-      *¥¨¥é¡¼½èÍý¡Ê0:¥¨¥é¡¼¡¢9:¥¨¥é¡¼¡¢8:½èÍý¤Ê¤·¡Ë
+      *ã‚¨ãƒ©ãƒ¼å‡¦ç†ï¼ˆ0:ã‚¨ãƒ©ãƒ¼ã€9:ã‚¨ãƒ©ãƒ¼ã€8:å‡¦ç†ãªã—ï¼‰
            03  CHK-CHKERR              PIC 9(1).
-      *¥Ç¡¼¥¿¶èÊ¬¡Ê1:¥Þ¥¹¥¿Äó¶¡¡¢2:¥æ¡¼¥¶ÅÐÏ¿¡Ë
+      *ãƒ‡ãƒ¼ã‚¿åŒºåˆ†ï¼ˆ1:ãƒžã‚¹ã‚¿æä¾›ã€2:ãƒ¦ãƒ¼ã‚¶ç™»éŒ²ï¼‰
            03  CHK-DATAKBN             PIC X(1).
-      *Ï¢ÈÖ¹æ¡Ê²èÌÌÉ½¼¨¡Ë
+      *é€£ç•ªå·ï¼ˆç”»é¢è¡¨ç¤ºï¼‰
            03  CHK-RENNUM              PIC 9(3).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  CHK-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  CHK-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  CHK-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  CHK-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö 
+      *æ›´æ–°æ™‚é–“ 
            03  CHK-UPHMS               PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  CHK-UPDKEY.
                05  CHK-UPHOSPNUM       PIC 9(2).
                05  CHK-UPCHKKBN        PIC X(1).

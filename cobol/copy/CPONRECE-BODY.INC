@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,19 +16,19 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����饤��쥻�����٥ޥ���    COPY (CPONRECE-BODY.INC)*
+      *    オンラインレセ電明細マスタ    COPY (CPONRECE-BODY.INC)*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       *
-      *  04.08.01    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.01    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       ************************************************************
       *01  ONRECE-BODY-REC.
            03  ONRECE-B-HOSPNUM    PIC 9(2).
@@ -40,7 +40,7 @@
            03  ONRECE-B-SCNT       PIC 9(3).
            03  ONRECE-B-RENNUM     PIC 9(3).
            03  ONRECE-B-RECEIPT-NO PIC 9(6).
-      *    ����饤��쥻�ż»���
+      *    オンラインレセ電実施日
            03  ONRECE-B-SYORIYMD   PIC X(8).
            03  ONRECE-B-UKEYMD     PIC X(8).
            03  ONRECE-B-SKYYMD     PIC X(8).
@@ -93,17 +93,17 @@
            03  ONRECE-B-U-YOBI1    PIC X(10). 
            03  ONRECE-B-U-YOBI2    PIC X(10). 
            03  ONRECE-B-END-FLG    PIC 9(1).
-      *ü���ɣ�
+      *端末ＩＤ
            03  ONRECE-B-TERMID     PIC X(64).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  ONRECE-B-OPID       PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  ONRECE-B-CREYMD     PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  ONRECE-B-UPYMD      PIC X(08).
-      *��������
+      *更新時間
            03  ONRECE-B-UPHMS      PIC X(06).
-      *�����ѹ��� 
+      *更新用項目 
            03  ONRECE-B-VIRTUAL.
               05  ONRECE-B-UCNT-V  PIC 9(3).
               05  ONRECE-B-SCNT-V  PIC 9(3).

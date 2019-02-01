@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,152 +16,152 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¼ýÇ¼ÍúÎò¥Þ¥¹¥¿  COPY (CPSYURRK.INC)                   *
+      *    åŽç´å±¥æ­´ãƒžã‚¹ã‚¿  COPY (CPSYURRK.INC)                   *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SYURRK-REC.
            03  SYURRK-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SYURRK-HOSPNUM         PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SYURRK-PTID            PIC  9(10).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SYURRK-NYUGAIKBN       PIC  X(01).
-      *ÅÁÉ¼ÈÖ¹æ
+      *ä¼ç¥¨ç•ªå·
                05  SYURRK-DENPNUM         PIC 9(7).
-      *¼ýÇ¼ÍúÎòÈÖ¹æ
+      *åŽç´å±¥æ­´ç•ªå·
                05  SYURRK-SYURRKNUM       PIC 9(2).
-      *¼ýÇ¼ÍúÎò»ÞÈÖ¹æ
+      *åŽç´å±¥æ­´æžç•ªå·
                05  SYURRK-SYUEDANUM       PIC 9(2).
-      *¾õÂÖ¶èÊ¬
+      *çŠ¶æ…‹åŒºåˆ†
                05  SYURRK-JOUTAIKBN       PIC  X(01).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  SYURRK-SRYKA               PIC  X(02).
-      *ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *ä¿é™ºçµ„åˆã›ç•ªå·
            03  SYURRK-HKNCOMBINUM         PIC  X(04).
-      *ÀÁµáÆâÍÆ
+      *è«‹æ±‚å†…å®¹
            03  SYURRK-SKY-NAIYOU.
                05  SYURRK-SKY-TBL             OCCURS   17.
-      *    ÊÝ¸±ÅÀ¿ô
+      *    ä¿é™ºç‚¹æ•°
                    09  SYURRK-HKNTEN      PIC S9(7).
-      *    ¶â³Û
+      *    é‡‘é¡
                    09  SYURRK-MONEY       PIC S9(7).
-      *    Å¬ÍÑ³°¶â³Û
+      *    é©ç”¨å¤–é‡‘é¡
                    09  SYURRK-TGMONEY     PIC S9(7).
-      *    Å¬ÍÑ³°¶â³Û¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
+      *    é©ç”¨å¤–é‡‘é¡ï¼ˆæ¶ˆè²»ç¨Žã‚ã‚Šï¼‰
                    09  SYURRK-TGMONEY-TAX PIC S9(7).
-      *ÀÁµáÆâÍÆ
+      *è«‹æ±‚å†…å®¹
            03  SYURRK-SKY-NAIYOU-R        REDEFINES   SYURRK-SKY-NAIYOU.
-      *¿ÇÎÅÎÁ(01)
+      *è¨ºç™‚æ–™(01)
               05  SYURRK-SSU.
                   09  SYURRK-SSU-HKNTEN       PIC S9(7).
                   09  SYURRK-SSU-MONEY        PIC S9(7).
                   09  SYURRK-SSU-TGMONEY      PIC S9(7).
                   09  SYURRK-SSU-TGMONEY-TAX  PIC S9(7).
-      *»ØÆ³ÎÁ(02)
+      *æŒ‡å°Žæ–™(02)
               05  SYURRK-SDO.
                   09  SYURRK-SDO-HKNTEN       PIC S9(7).
                   09  SYURRK-SDO-MONEY        PIC S9(7).
                   09  SYURRK-SDO-TGMONEY      PIC S9(7).
                   09  SYURRK-SDO-TGMONEY-TAX  PIC S9(7).
-      *ºßÂðÎÁ(03)
+      *åœ¨å®…æ–™(03)
               05  SYURRK-ZTK.
                   09  SYURRK-ZTK-HKNTEN          PIC S9(7).
                   09  SYURRK-ZTK-MONEY           PIC S9(7).
                   09  SYURRK-ZTK-TGMONEY         PIC S9(7).
                   09  SYURRK-ZTK-TGMONEY-TAX     PIC S9(7).
-      *ÅêÌôÎÁ(04)
+      *æŠ•è–¬æ–™(04)
               05  SYURRK-TYK.
                   09  SYURRK-TYK-HKNTEN          PIC S9(7).
                   09  SYURRK-TYK-MONEY           PIC S9(7).
                   09  SYURRK-TYK-TGMONEY         PIC S9(7).
                   09  SYURRK-TYK-TGMONEY-TAX     PIC S9(7).
-      *Ãí¼ÍÎÁ(05)
+      *æ³¨å°„æ–™(05)
               05  SYURRK-CSY.
                   09  SYURRK-CSY-HKNTEN          PIC S9(7).
                   09  SYURRK-CSY-MONEY           PIC S9(7).
                   09  SYURRK-CSY-TGMONEY         PIC S9(7).
                   09  SYURRK-CSY-TGMONEY-TAX     PIC S9(7).
-      *½èÃÖÎÁ(06)
+      *å‡¦ç½®æ–™(06)
               05  SYURRK-SYC.
                   09  SYURRK-SYC-HKNTEN          PIC S9(7).
                   09  SYURRK-SYC-MONEY           PIC S9(7).
                   09  SYURRK-SYC-TGMONEY         PIC S9(7).
                   09  SYURRK-SYC-TGMONEY-TAX     PIC S9(7).
-      *¼ê½ÑÎÁ(07)
+      *æ‰‹è¡“æ–™(07)
               05  SYURRK-SJT.
                   09  SYURRK-SJT-HKNTEN          PIC S9(7).
                   09  SYURRK-SJT-MONEY           PIC S9(7).
                   09  SYURRK-SJT-TGMONEY         PIC S9(7).
                   09  SYURRK-SJT-TGMONEY-TAX     PIC S9(7).
-      *Ëã¿ì(08)
+      *éº»é…”(08)
               05  SYURRK-MSI.
                   09  SYURRK-MSI-HKNTEN          PIC S9(7).
                   09  SYURRK-MSI-MONEY           PIC S9(7).
                   09  SYURRK-MSI-TGMONEY         PIC S9(7).
                   09  SYURRK-MSI-TGMONEY-TAX     PIC S9(7).
-      *¸¡ººÎÁ(09)
+      *æ¤œæŸ»æ–™(09)
               05  SYURRK-KNS.
                   09  SYURRK-KNS-HKNTEN          PIC S9(7).
                   09  SYURRK-KNS-MONEY           PIC S9(7).
                   09  SYURRK-KNS-TGMONEY         PIC S9(7).
                   09  SYURRK-KNS-TGMONEY-TAX     PIC S9(7).
-      *£ØÀþÎÁ(10)
+      *ï¼¸ç·šæ–™(10)
               05  SYURRK-GZU.
                   09  SYURRK-GZU-HKNTEN          PIC S9(7).
                   09  SYURRK-GZU-MONEY           PIC S9(7).
                   09  SYURRK-GZU-TGMONEY         PIC S9(7).
                   09  SYURRK-GZU-TGMONEY-TAX     PIC S9(7).
-      *¥ê¥Ï(11)
+      *ãƒªãƒ(11)
               05  SYURRK-ETC.
                   09  SYURRK-ETC-HKNTEN          PIC S9(7).
                   09  SYURRK-ETC-MONEY           PIC S9(7).
                   09  SYURRK-ETC-TGMONEY         PIC S9(7).
                   09  SYURRK-ETC-TGMONEY-TAX     PIC S9(7).
-      *Àº¿À²ÊÀìÌçÎÅË¡(12)
+      *ç²¾ç¥žç§‘å°‚é–€ç™‚æ³•(12)
               05  SYURRK-SSN.
                   09  SYURRK-SSN-HKNTEN          PIC S9(7).
                   09  SYURRK-SSN-MONEY           PIC S9(7).
                   09  SYURRK-SSN-TGMONEY         PIC S9(7).
                   09  SYURRK-SSN-TGMONEY-TAX     PIC S9(7).
-      *Êü¼ÍÀþ(13)
+      *æ”¾å°„ç·š(13)
               05  SYURRK-HOU.
                   09  SYURRK-HOU-HKNTEN          PIC S9(7).
                   09  SYURRK-HOU-MONEY           PIC S9(7).
                   09  SYURRK-HOU-TGMONEY         PIC S9(7).
                   09  SYURRK-HOU-TGMONEY-TAX     PIC S9(7).
-      *ÉÂÍý¿ÇÃÇ(14)
+      *ç—…ç†è¨ºæ–­(14)
               05  SYURRK-BYR.
                   09  SYURRK-BYR-HKNTEN          PIC S9(7).
                   09  SYURRK-BYR-MONEY           PIC S9(7).
                   09  SYURRK-BYR-TGMONEY         PIC S9(7).
                   09  SYURRK-BYR-TGMONEY-TAX     PIC S9(7).
-      *Æþ±¡ÎÁ(15)
+      *å…¥é™¢æ–™(15)
               05  SYURRK-NYN.
                   09  SYURRK-NYN-HKNTEN          PIC S9(7).
                   09  SYURRK-NYN-MONEY           PIC S9(7).
                   09  SYURRK-NYN-TGMONEY         PIC S9(7).
                   09  SYURRK-NYN-TGMONEY-TAX     PIC S9(7).
-      *ÎÅÍÜÃ´Åö¼êÅö(16)
+      *ç™‚é¤Šæ‹…å½“æ‰‹å½“(16)
               05  SYURRK-RYO.
                   09  SYURRK-RYO-HKNTEN          PIC S9(7).
                   09  SYURRK-RYO-MONEY           PIC S9(7).
                   09  SYURRK-RYO-TGMONEY         PIC S9(7).
                   09  SYURRK-RYO-TGMONEY-TAX     PIC S9(7).
-      *¹ç·×  (17)
+      *åˆè¨ˆ  (17)
               05  SYURRK-TOTAL.
                   09  SYURRK-TOTAL-HKNTEN        PIC S9(7).
                   09  SYURRK-TOTAL-MONEY         PIC S9(7).
                   09  SYURRK-TOTAL-TGMONEY       PIC S9(7).
                   09  SYURRK-TOTAL-TGMONEY-TAX   PIC S9(7).
-      *½èÊý¤»¤óÎÁºÆ·Ç
+      *å‡¦æ–¹ã›ã‚“æ–™å†æŽ²
            03  SYURRK-SHOHOU-SAI                 PIC S9(7).
-      *ÊÝ¸±Å¬ÍÑ³°¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *ä¿é™ºé©ç”¨å¤–é‡‘é¡âˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  SYURRK-TGMONEY-TAX-SAI            PIC S9(7).
-      *¼«Èñ£±¤«¤é£±£°
+      *è‡ªè²»ï¼‘ã‹ã‚‰ï¼‘ï¼
            03  SYURRK-JIHI-NAIYOU.
                05  SYURRK-JIHI-1              PIC S9(7).
                05  SYURRK-JIHI-1-TAX          PIC S9(7).
@@ -187,97 +187,97 @@
                05  SYURRK-JIHI-TBL            OCCURS   10.
                  07  SYURRK-JIHI-TAXNASI      PIC S9(7).
                  07  SYURRK-JIHI-TAXARI       PIC S9(7).
-      *¼«Èñ¾®·×¡Ê¾ÃÈñÀÇ¤Ê¤·¡Ë
+      *è‡ªè²»å°è¨ˆï¼ˆæ¶ˆè²»ç¨Žãªã—ï¼‰
            03  SYURRK-JIHI-TOTAL          PIC S9(7).
-      *¼«Èñ¾®·×¡Ê¾ÃÈñÀÇ¤¢¤ê¡Ë
+      *è‡ªè²»å°è¨ˆï¼ˆæ¶ˆè²»ç¨Žã‚ã‚Šï¼‰
            03  SYURRK-JIHI-TOTAL-TAX      PIC S9(7).
-      *¼«Èñ¶â³Û¾ÃÈñÀÇ
+      *è‡ªè²»é‡‘é¡æ¶ˆè²»ç¨Ž
            03  SYURRK-JIHI-TAX            PIC S9(7).
-      *Ï·¿Í°ìÉôÉéÃ´¶â
+      *è€äººä¸€éƒ¨è² æ‹…é‡‘
            03  SYURRK-RJN-FTN             PIC S9(7).
-      *¸øÈñ°ìÉôÉéÃ´¶â
+      *å…¬è²»ä¸€éƒ¨è² æ‹…é‡‘
            03  SYURRK-KOH-FTN             PIC S9(7).
-      *ÌôºÞ°ìÉôÉéÃ´¶â
+      *è–¬å‰¤ä¸€éƒ¨è² æ‹…é‡‘
            03  SYURRK-YKZ-FTN             PIC S9(7).
-      *Ä´À°¶â
+      *èª¿æ•´é‡‘
            03  SYURRK-CHOSEI              PIC S9(07).
            03  SYURRK-CHOSEI-NAIYOU.
-      *Ä´À°¶âÆâÌõ£±
+      *èª¿æ•´é‡‘å†…è¨³ï¼‘
                05  SYURRK-CHOSEI1         PIC S9(07).
-      *Ä´À°¶âÆâÌõ£²
+      *èª¿æ•´é‡‘å†…è¨³ï¼’
                05  SYURRK-CHOSEI2         PIC S9(07).
            03  SYURRK-CHOSEI-NAIYOU-R REDEFINES  SYURRK-CHOSEI-NAIYOU.
                05  SYURRK-RCHOSEI         PIC S9(07)
                                           OCCURS  2.
-      *ÊÝ¸±Å¬ÍÑ¶â³Û
+      *ä¿é™ºé©ç”¨é‡‘é¡
            03  SYURRK-HKNTEKMONEY         PIC S9(7).
-      *ÉÂ±¡¸ºÌÈ»öÍ³¶èÊ¬
+      *ç—…é™¢æ¸›å…äº‹ç”±åŒºåˆ†
            03  SYURRK-DISCOUNT-KBN        PIC  X(02).
-      *¸ºÌÈ¶â³Û
+      *æ¸›å…é‡‘é¡
            03  SYURRK-DISCOUNT-MONEY      PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡Ý½é¿ÇÎÁ
+      *åŠ´ç½ä¿é™ºâˆ’åˆè¨ºæ–™
            03  SYURRK-RSISHOSHIN-MONEY    PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡ÝºÆ¿ÇÎÁ
+      *åŠ´ç½ä¿é™ºâˆ’å†è¨ºæ–™
            03  SYURRK-RSISAISHIN-MONEY    PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡Ý»ØÆ³ÎÁ
+      *åŠ´ç½ä¿é™ºâˆ’æŒ‡å°Žæ–™
            03  SYURRK-RSISDO-MONEY        PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡Ý¤½¤ÎÂ¾
+      *åŠ´ç½ä¿é™ºâˆ’ãã®ä»–
            03  SYURRK-RSIETC-MONEY        PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *åŠ´ç½ä¿é™ºâˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  SYURRK-RSI-TAX-SAI         PIC S9(7).
-      *Ï«ºÒÊÝ¸±¡Ý´µ¼ÔÀÁµáÊ¬±ß·ú¤Æ¹ç·×³Û
+      *åŠ´ç½ä¿é™ºâˆ’æ‚£è€…è«‹æ±‚åˆ†å††å»ºã¦åˆè¨ˆé¡
            03  SYURRK-RSI-TOTAL           PIC S9(7).
-      *Ï«ºÒ¼«Çå¡ÝÀÁµá¶â³Û¡ÊÆü·×É½µ­ºÜÍÑ¡Ë
+      *åŠ´ç½è‡ªè³ âˆ’è«‹æ±‚é‡‘é¡ï¼ˆæ—¥è¨ˆè¡¨è¨˜è¼‰ç”¨ï¼‰
            03  SYURRK-RSIJIBAI-SKYMONEY   PIC S9(7).
-      *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *è«‹æ±‚é‡‘é¡âˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  SYURRK-SKYMONEY-TAX-SAI    PIC S9(7).
-      *ÀÁµá¶â³Û
+      *è«‹æ±‚é‡‘é¡
            03  SYURRK-SKYMONEY            PIC S9(7).
-      *¼¼ÎÁº¹³Û
+      *å®¤æ–™å·®é¡
            03  SYURRK-RMSAGAKU            PIC S9(7).
-      *¼¼ÎÁº¹³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *å®¤æ–™å·®é¡âˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  SYURRK-RMSAGAKU-TAX-SAI    PIC S9(7).
-      *¿©»öÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            03  SYURRK-RYOYOHI-SKJ         PIC S9(7).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYURRK-SKYMONEY-SKJ        PIC S9(7).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYURRK-SKYMONEY-SKJ-TAX    PIC S9(7).
-      *¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYURRK-SKYMONEY-SKJ-KEI    PIC S9(7).
-      *¿©»öÎÅÍÜÈñ¡Ê¼«Èñ¡Ë
+      *é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆè‡ªè²»ï¼‰
            03  SYURRK-RYOYOHI-SKJ-JIHI    PIC S9(7).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYURRK-SKYMONEY-SKJ-JIHI   PIC S9(7).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYURRK-SKYMONEY-SKJ-JIHI-TAX    PIC S9(7).
-      *¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYURRK-SKYMONEY-SKJ-JIHI-KEI    PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰
            03  SYURRK-RYOYOHI-LIFE             PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYURRK-SKYMONEY-LIFE            PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYURRK-SKYMONEY-LIFE-TAX        PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYURRK-SKYMONEY-LIFE-KEI        PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÈñ¡Ê¼«Èñ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è²»ï¼ˆè‡ªè²»ï¼‰
            03  SYURRK-RYOYOHI-LIFE-JIHI        PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰
            03  SYURRK-SKYMONEY-LIFE-JIHI       PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰
            03  SYURRK-SKYMONEY-LIFE-JIHI-TAX
                                                PIC S9(7).
-      *Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë
+      *å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰
            03  SYURRK-SKYMONEY-LIFE-JIHI-KEI   PIC S9(7).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYURRK-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYURRK-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYURRK-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYURRK-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYURRK-UPHMS               PIC  X(06).
       *

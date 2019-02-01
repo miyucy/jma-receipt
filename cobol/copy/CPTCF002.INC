@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,117 +16,117 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ����ץǡ����ʴ��ܾ����     COPY (CPTCF002.INC)    *
+      *    月次統計データ（基本情報）     COPY (CPTCF002.INC)    *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.05.01    NACL-ƣ��    12/11/15  ���������Υޥ��ʥ�ɽ���б�
-      *  04.05.02    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
+      *  04.05.01    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
+      *  04.05.02    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *
-      *  04.06.01    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       ************************************************************
       *01  TOUKEI02-REC.
            03  TOUKEI02-KEY.
                05  TOUKEI02-KEY1.
-      *            ���ŵ��أɣ�
+      *            医療機関ＩＤ
                    07  TOUKEI02-HOSPNUM    PIC 9(2).
-      *            ����ǯ��
+      *            診療年月
                    07  TOUKEI02-SRYYM      PIC  9(06).
-      *            ������ʬ
+      *            入外区分
                    07  TOUKEI02-NYUGAIKBN  PIC  X(01).
-      *            ���ԣɣ�
+      *            患者ＩＤ
                    07  TOUKEI02-PTID       PIC  9(10).
-      *            �������ʬ
+      *            入所中区分
                    07  TOUKEI02-RECEIPT-KBN
                                            PIC  X(10).
-      *            �쥻�ץȿ��Ų�
+      *            レセプト診療科
                    07  TOUKEI02-RECEKA     PIC  X(02).
-      *            ���ݸ��ݸ��ֹ�
+      *            主保険保険番号
                    07  TOUKEI02-HKNNUM     PIC  X(03).
-      *            ����ɣ�
+      *            公費ＩＤ
                    07  TOUKEI02-KOHID      PIC  9(10).
-      *            �ݸ����ֹ�        
+      *            保険者番号        
                    07  TOUKEI02-HKNJANUM   PIC  X(08).
-      *            �ܿͲ�²��ʬ
+      *            本人家族区分
                    07  TOUKEI02-HONKZKKBN  PIC  X(01).
-      *            �����ʬ
+      *            補助区分
                    07  TOUKEI02-HOJOKBN    PIC  X(01).
-      *            ����ɣġʸ���ñ�Ȼ����ѡ�
+      *            公費ＩＤ（公費単独時使用）
                    07  TOUKEI02-KOH-KOHID  PIC  9(10).
-      *        ���Ų�
+      *        診療科
                05  TOUKEI02-SRYKA          PIC  X(02).
-      *        ���Ŷ�ʬ
+      *        診療区分
                05  TOUKEI02-SRYKBN         PIC  X(02).
-      *        ���ֹ�
+      *        剤番号
                05  TOUKEI02-ZAINUM         PIC  9(08).
-      *        Ϣ��
+      *        連番
                05  TOUKEI02-SEQNO          PIC  9(03).
-      *Ϣ�ֹ�
+      *連番号
            03  TOUKEI02-RENNUM             PIC  9(02).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  TOUKEI02-HKNCOMBI           PIC  9(04).
       *
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
            03  TOUKEI02-HKNID              PIC  9(10).
-      *����ɣ�
+      *公費ＩＤ
            03  TOUKEI02-KOHID-AREA.
                05  TOUKEI02-TKOHID         PIC  9(10)   OCCURS  4.
-      *�쥻�ſ��Ų�
+      *レセ電診療科
            03  TOUKEI02-RECESRYKA          PIC  X(02).
-      *���ݶ�ʬ
+      *自保区分
            03  TOUKEI02-JIHOKBN            PIC  X(01).
-      *������
+      *剤点数
            03  TOUKEI02-ZAITEN             PIC  S9(08).
-      *�޲��
+      *剤回数
            03  TOUKEI02-ZAIKAISU           PIC  9(04).
-      *���ٿ�
+      *明細数
            03  TOUKEI02-MEISAISU           PIC  9(04).
-      *�굻������
+      *手技点数１
            03  TOUKEI02-SYUTEN1            PIC  S9(07).
-      *�굻������
+      *手技点数２
            03  TOUKEI02-SYUTEN2            PIC  S9(07).
-      *��������
+      *薬剤点数
            03  TOUKEI02-YKZTEN             PIC  S9(07).
-      *�������
+      *器材点数
            03  TOUKEI02-KIZAITEN           PIC  S9(07).
-      *�ɥ�����������
+      *ドクターコード
            03  TOUKEI02-DRCD               PIC  X(05).
-      *��������ơ��֥�
+      *日数回数テーブル
            03  TOUKEI02-DAY-AREA.
-      *        ���Ų���ơ��֥��1:���,2:����,3:����, 4:����ʾ��
+      *        診療回数テーブル（1:合計,2:１回,3:２回, 4:３回以上）
                05  TOUKEI02-KAISUINF       OCCURS  31.
                    07  TOUKEI02-KAISU      PIC  9(03).
-      *���Ź԰پ���
+      *診療行為情報
            03  TOUKEI02-SRYACTINF.
-      *���ż��̶�ʬ
+      *診療種別区分
                05  TOUKEI02-SRYSYUKBN      PIC  X(03).
-      *���ť�����
+      *診療コード
                05  TOUKEI02-SRYCD          PIC  X(09).
-      *����
+      *数量
                05  TOUKEI02-SRYSURYO       PIC  9(05)V9(05).
-      *���
+      *回数
                05  TOUKEI02-SRYKAISU       PIC  9(03).
-      *�������̶�ʬ
+      *点数識別区分
                05  TOUKEI02-TENSIKIBETU    PIC  9(01).
-      *����
+      *点数
                05  TOUKEI02-TEN            PIC  9(09)V9(02).
-      *̾�������ֹ�
+      *名称入力番号
                05  TOUKEI02-INPUTNUM       PIC  9(03).
-      *������
+      *自費金額
                05  TOUKEI02-JIHIMONEY      PIC  9(07).
-      *ñ�̥�����
+      *単位コード
                05  TOUKEI02-TANICD         PIC  X(03).
-      *ñ��̾��
+      *単位名称
                05  TOUKEI02-TANINAME       PIC  X(24).
-      *����̾��
+      *漢字名称
                05  TOUKEI02-NAME           PIC  X(200).
-      *����̾��
+      *正式名称
                05  TOUKEI02-FORMALNAME     PIC  X(400).
-      *������ॳ����
+      *薬価基準コード
                05  TOUKEI02-YAKKAKJNCD     PIC  X(12).
-      *�����󽸷��輱��
+      *点数欄集計先識別
                05  TOUKEI02-TENTTLKBN      PIC  9(03).

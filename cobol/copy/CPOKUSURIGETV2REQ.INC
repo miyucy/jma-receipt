@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����Ȥ�����Ģ����(xml2)
+      *    ＡＰＩリクエストお薬手帳情報(xml2)
       *                                  COPY (CPOKUSURIGETV2REQ.INC)
       ******************************************************************
        01  XML-OKUSURIGETREQ.
@@ -25,13 +25,13 @@
            03  OKUSURIGETREQ-MODE            PIC S9(9)   BINARY.
            03  OKUSURIGETREQ-RECORDNAME      PIC X(128).
            03  OKUSURIGETREQ-OKUSURIGETV2REQ.
-      *        �����ֹ�
+      *        患者番号
                05  OKUSURIGETREQ-PATIENTID   PIC X(20).
-      *        Ϣ��
+      *        連番
                05  OKUSURIGETREQ-RENNUM      PIC X(04).
-      *        ���롼��
+      *        グループ
                05  OKUSURIGETREQ-TBL-GROUP   PIC X(14).
       *        UUID
                05  OKUSURIGETREQ-TBL-UUID    PIC X(36).
-      *        ������Ϣ��
+      *        処理内連番
                05  OKUSURIGETREQ-SHORI-RENNUM    PIC X(04).

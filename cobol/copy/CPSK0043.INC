@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,53 +16,53 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK0043.INC)   *
-      *         �ʣ���������                            *
-      *         �������ץѥ�᡼�������ɸ���󶡡�      *
+      *         システム管理マスタ     (CPSK0043.INC)   *
+      *         （００４３）                            *
+      *         日次統計パラメータ情報（標準提供）      *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SYS-0043-REC.
            03  SYS-0043-KEY.
                05  SYS-0043-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-0043-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-0043-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-0043-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-0043-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-0043-TBL.
-      *Ģɼ̾
+      *帳票名
                05  SYS-0043-HCNAME      PIC  X(160).
-      *�ץ������̾
+      *プログラム名
                05  SYS-0043-PRGNAME     PIC  X(24).
-      *�ѥ�᥿
+      *パラメタ
                05  SYS-0043-PARA-TBL.
                    07  SYS-0043-PARA-G      OCCURS  10.
                        09  SYS-0043-PARAHYOJI
                                         PIC X(20).
                        09  SYS-0043-PARA    PIC X(10).
-      *ɬ�ܶ�ʬ��SPACE or 1:ɬ��2:Ǥ�ա�
+      *必須区分（SPACE or 1:必須2:任意）
                05  SYS-0043-HISSU-KBN   OCCURS  10
                                         PIC X(01).
-      *ͽ��
+      *予備
                05  SYS-0043-YOBI        PIC  X(06).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-0043-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-0043-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-0043-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-0043-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-0043-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-0043-UPD-KEY.
                05  SYS-0043-UPD-HOSPNUM     PIC 9(2).
                05  SYS-0043-UPD-KANRICD     PIC X(04).

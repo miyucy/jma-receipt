@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ¾È²ñÍÑ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ë
+-- ç…§ä¼šç”¨å—è¨ºå±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«
 -- Create Date : 2010/04/09        --
 --
 create  table  tbl_rrksrh (

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,15 +16,15 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ÌôºÞ¾ðÊóÅÐÏ¿ ¶¦ÄÌ²èÌÌ£Ó£Ð£Á  
+      *    è–¬å‰¤æƒ…å ±ç™»éŒ² å…±é€šç”»é¢ï¼³ï¼°ï¼¡  
       *****************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
        01  SPA-N21SCRAREA.
       *
-      *  ÌôºÞ¾ðÊóÅÐÏ¿¡Ê£Î£²£±¡Ë
+      *  è–¬å‰¤æƒ…å ±ç™»éŒ²ï¼ˆï¼®ï¼’ï¼‘ï¼‰
          03  SPA-N21-AREA.
              05  SPA-GMN-FOLDER        PIC X(128).
              05  SPA-GMN-JYOTAIFLG     PIC 9(01).
@@ -32,7 +32,7 @@
              05  SPA-GMN-CUR           PIC 9(02).
              05  SPA-GMN-EVENT         PIC X(01).
       *
-      *      É½¼¨ÍÑ
+      *      è¡¨ç¤ºç”¨
              05  SPA-GMN-AREA.
                07  SPA-GMN-KENCD       PIC X(21).
                07  SPA-GMN-KENNAIYO    PIC X(27).
@@ -58,7 +58,7 @@
                  09  SPA-GMN-PHOTO     PIC X(256).
                  09  SPA-GMN-OBJECT    PIC X(36).
       *
-      *    ÆâÉôÍÑ
+      *    å†…éƒ¨ç”¨
            05  SPA-NAI-AREA.
                07  SPA-NAI-KENCD       PIC X(21).
                07  SPA-NAI-KENNAIYO    PIC X(26).
@@ -78,7 +78,7 @@
                  09  SPA-NAI-PHOTO     PIC X(256).
                  09  SPA-NAI-OBJECT    PIC X(36).
       *
-      *    Ê£¼ÌÍÑ
+      *    è¤‡å†™ç”¨
            05  SPA-COPY-AREA.
                07  SPA-COPY-KENCD      PIC X(21).
                07  SPA-COPY-SELNUM     PIC 9(03).
@@ -88,7 +88,7 @@
                07  SPA-COPY-CAUTION    PIC X(4000).
                07  SPA-COPY-YKZKBN     PIC 9(01).
       *
-      *  ÌôºÞ¾ðÊóÅÐÏ¿¡Ê£Î£²£²¡Ë
+      *  è–¬å‰¤æƒ…å ±ç™»éŒ²ï¼ˆï¼®ï¼’ï¼’ï¼‰
            03  SPA-N22-AREA.
              05  SPA-N22-MAX           PIC 9(05).
              05  SPA-N22-CUR           PIC 9(02).
@@ -151,7 +151,7 @@
                  09  SPA-N22-PHOTO2    PIC X(256).
                  09  SPA-N22-PHOTO3    PIC X(256).
       *
-      *    °õºþ¾ò·ïÀßÄê²èÌÌ
+      *    å°åˆ·æ¡ä»¶è¨­å®šç”»é¢
            03  SPA-N23-AREA.
                05  SPA-N23-MAX     PIC 9(05).
                05  SPA-N23-CUR     PIC 9(02).

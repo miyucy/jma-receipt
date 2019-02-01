@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿     (CPSK1039.INC)   *
-      *         ¡Ê£±£°£³£¸¡Ë                            *
-      *         ¼ýÇ¼µ¡Ç½¾ðÊó                            *
+      *         ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿     (CPSK1039.INC)   *
+      *         ï¼ˆï¼‘ï¼ï¼“ï¼˜ï¼‰                            *
+      *         åŽç´æ©Ÿèƒ½æƒ…å ±                            *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  SYS-1039-REC.
            03  SYS-1039-KEY.
                05  SYS-1039-HOSPNUM     PIC 9(2).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  SYS-1039-KANRICD     PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  SYS-1039-KBNCD       PIC  X(08).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  SYS-1039-STYUKYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  SYS-1039-EDYUKYMD    PIC  X(08).
-      *´ÉÍý¥Æ¡¼¥Ö¥ë
+      *ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«
            03  SYS-1039-TBL.
-      *Æþ¶â´ÉÍý¶èÊ¬
+      *å…¥é‡‘ç®¡ç†åŒºåˆ†
                05  SYS-1039-NYKNKNRKBN  PIC  X(01).
-      *ÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô¶èÊ¬¡Ê³°Íè¡Ë
+      *è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå¤–æ¥ï¼‰
                05  SYS-1039-SKYPRTGKBN  PIC  X(01).
-      *ÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô¶èÊ¬¡ÊÆþ±¡¡Ë
+      *è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå…¥é™¢ï¼‰
                05  SYS-1039-SKYPRTNKBN  PIC  X(01).
-      *Åý·×»þ´Ö
+      *çµ±è¨ˆæ™‚é–“
                05  SYS-1039-STIME.
                    07  SYS-1039-STIME-HH   PIC  X(02).
                    07  SYS-1039-STIME-MM   PIC  X(02).
-      *²¾Äù»þ´Ö
+      *ä»®ç· æ™‚é–“
                05  SYS-1039-KARITIME.
                    07  SYS-1039-KARITIME-OCC1          OCCURS  2.
                        09  SYS-1039-KARIDAY    PIC X   OCCURS  7.
@@ -58,81 +58,81 @@
                            11  SYS-1039-KARIEDTIME.
                                13  SYS-1039-KARIED-HH  PIC X(02).
                                13  SYS-1039-KARIED-MM  PIC X(02).
-      *¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬¡Ê³°Íè¡Ë
+      *è¨ºç™‚è²»æ˜Žç´°æ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå¤–æ¥ï¼‰
                05  SYS-1039-SRYPRTGKBN  PIC  X(01).
-      *¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬¡ÊÆþ±¡¡Ë
+      *è¨ºç™‚è²»æ˜Žç´°æ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå…¥é™¢ï¼‰
                05  SYS-1039-SRYPRTNKBN  PIC  X(01).
-      *°ì³çÆþ¶â²èÌÌÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô¶èÊ¬¡ÊÆþ±¡¡Ë
+      *ä¸€æ‹¬å…¥é‡‘ç”»é¢è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå…¥é™¢ï¼‰
                05  SYS-1039-S06SKYPRTNKBN
                                         PIC  X(01).
-      *°ì³çÆþ¶â²èÌÌÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹Ô¶èÊ¬¡Ê³°Íè¡Ë
+      *ä¸€æ‹¬å…¥é‡‘ç”»é¢è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆå¤–æ¥ï¼‰
                05  SYS-1039-S06SKYPRTGKBN
                                         PIC  X(01).
-      *°ì³çÆþ¶â²èÌÌ³°ÍèÊ¬È¯¹ÔÊýË¡
+      *ä¸€æ‹¬å…¥é‡‘ç”»é¢å¤–æ¥åˆ†ç™ºè¡Œæ–¹æ³•
                05  SYS-1039-S06SKYSUMKBN
                                         PIC  X(01).
-      *ÀÁµá°ìÍ÷²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÈ¯¹ÔÊýË¡
+      *è«‹æ±‚ä¸€è¦§ç”»é¢å¤–æ¥è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸ç™ºè¡Œæ–¹æ³•
                05  SYS-1039-S02SKYSAIKBN
                                         PIC  X(01).
-      *ÀÁµá°ìÍ÷²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÌ¤¼ý°õ»ú¶èÊ¬
+      *è«‹æ±‚ä¸€è¦§ç”»é¢å¤–æ¥è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸æœªåŽå°å­—åŒºåˆ†
                05  SYS-1039-S02SKYMISYUPRTKBN
                                         PIC  X(01).
-      *ÀÁµá³ÎÇ§²èÌÌ³°ÍèÀÁµá½ñ·óÎÎ¼ý½ñÌ¤¼ý°õ»ú¶èÊ¬
+      *è«‹æ±‚ç¢ºèªç”»é¢å¤–æ¥è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸æœªåŽå°å­—åŒºåˆ†
                05  SYS-1039-S03SKYMISYUPRTKBN
                                         PIC  X(01).
-      *ÀÁµá°ìÍ÷²èÌÌ·îÊÌÀÁµá½ñ·óÎÎ¼ý½ñÌ¤¼ý°õ»ú¶èÊ¬
+      *è«‹æ±‚ä¸€è¦§ç”»é¢æœˆåˆ¥è«‹æ±‚æ›¸å…¼é ˜åŽæ›¸æœªåŽå°å­—åŒºåˆ†
                05  SYS-1039-TUKISKYMISYUPRTKBN
                                         PIC  X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ»ÙÊ§¾ÚÌÀ½ñÈ¯¹Ô¶èÊ¬
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢æ”¯æ‰•è¨¼æ˜Žæ›¸ç™ºè¡ŒåŒºåˆ†
                05  SYS-1039-S04SHIHARAIKBN      PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌÆþ³°¶èÊ¬
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢å…¥å¤–åŒºåˆ†
                05  SYS-1039-S04NYUGAIKBN        PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö»ØÄê
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢æœŸé–“æŒ‡å®š
                05  SYS-1039-S04SRYKBN           PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö¶èÊ¬
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢æœŸé–“åŒºåˆ†
                05  SYS-1039-S04KIKANKBN         PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌÀÁµáÆâÍÆ¤Î°õ»ú
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢è«‹æ±‚å†…å®¹ã®å°å­—
                05  SYS-1039-S04DSPKBN           PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö½ªÎ»¸å¤Î»ÙÊ§¤¤
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢æœŸé–“çµ‚äº†å¾Œã®æ”¯æ‰•ã„
                05  SYS-1039-S04SYORIKBN         PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ´ü´Ö³«»ÏÁ°¿ÇÎÅÊ¬¤Î»ÙÊ§¤¤
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢æœŸé–“é–‹å§‹å‰è¨ºç™‚åˆ†ã®æ”¯æ‰•ã„
                05  SYS-1039-S04SUMKBN           PIC X(01).
       *
-      *ÀÁµá°ìÍ÷²èÌÌÊÂ¤Ó½ç
+      *è«‹æ±‚ä¸€è¦§ç”»é¢ä¸¦ã³é †
                05  SYS-1039-S02SORTKBN          PIC X(01).
-      *°ì³çºÆ·×»»½ç
+      *ä¸€æ‹¬å†è¨ˆç®—é †
                05  SYS-1039-IKTSORTKBN          PIC X(01).
-      *°ì³çºÆ·×»»ÊýË¡
+      *ä¸€æ‹¬å†è¨ˆç®—æ–¹æ³•
                05  SYS-1039-IKTKEISANKBN        PIC X(01).
-      *°ì³çÆþ¶â¿ÇÎÅÇ¯·î»ØÄê¶èÊ¬
+      *ä¸€æ‹¬å…¥é‡‘è¨ºç™‚å¹´æœˆæŒ‡å®šåŒºåˆ†
                05  SYS-1039-IKTSRYYMKBN         PIC X(01).
-      *·îÊÌÀÁµá½ñÈ¯¹ÔÊýË¡
+      *æœˆåˆ¥è«‹æ±‚æ›¸ç™ºè¡Œæ–¹æ³•
                05  SYS-1039-TUKIGRPKBN          PIC X(01).
-      *·îÊÌÀÁµá½ñ½¸·×¶èÊ¬
+      *æœˆåˆ¥è«‹æ±‚æ›¸é›†è¨ˆåŒºåˆ†
                05  SYS-1039-TUKISUMKBN          PIC X(01).
-      *ÀÁµá½ñÌ¤¼ý¶â½¸·×´ü´Ö¶èÊ¬¡ÊÆþ±¡¡Ë
+      *è«‹æ±‚æ›¸æœªåŽé‡‘é›†è¨ˆæœŸé–“åŒºåˆ†ï¼ˆå…¥é™¢ï¼‰
                05  SYS-1039-MISYUKIKANKBN       PIC X(01).
-      *ºÆ·×»»³ºÅö¼Ô¥Á¥§¥Ã¥¯
+      *å†è¨ˆç®—è©²å½“è€…ãƒã‚§ãƒƒã‚¯
                05  SYS-1039-SAIKEISANSKYCHK     PIC X(01).
-      *»ÙÊ§¾ÚÌÀ½ñ°õºþ²èÌÌ¼«ÈñÆâÌõÌÀºÙ½ñ
+      *æ”¯æ‰•è¨¼æ˜Žæ›¸å°åˆ·ç”»é¢è‡ªè²»å†…è¨³æ˜Žç´°æ›¸
                05  SYS-1039-S04JIHIPRTKBN       PIC X(01).
-      *ÀÁµá°ìÍ÷²èÌÌ¥³¥é¥à¥ê¥¹¥È½é´üÉ½¼¨
+      *è«‹æ±‚ä¸€è¦§ç”»é¢ã‚³ãƒ©ãƒ ãƒªã‚¹ãƒˆåˆæœŸè¡¨ç¤º
                05  SYS-1039-S02MODE             PIC X(01).
-      *ÀÁµá°ìÍ÷²èÌÌ¥³¥é¥à¥ê¥¹¥ÈºÇÂç·ï¿ô
+      *è«‹æ±‚ä¸€è¦§ç”»é¢ã‚³ãƒ©ãƒ ãƒªã‚¹ãƒˆæœ€å¤§ä»¶æ•°
                05  SYS-1039-S02LIMIT            PIC 9(03).
-      *Í½È÷
+      *äºˆå‚™
                05  SYS-1039-YOBI                PIC  X(418).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SYS-1039-TERMID          PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SYS-1039-OPID            PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SYS-1039-CREYMD          PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SYS-1039-UPYMD           PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SYS-1039-UPHMS           PIC  X(06).
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  SYS-1039-UPD-KEY.
                05  SYS-1039-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1039-UPD-KANRICD     PIC X(04).

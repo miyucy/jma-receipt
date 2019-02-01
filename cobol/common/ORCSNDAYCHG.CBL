@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSNDAYCHG.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¿ÇÎÅÆü°ì³çÆþÎÏÊÑ´¹½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  09/11/20    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è¨ºç™‚è¡Œç‚ºå…¥åŠ›
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : è¨ºç™‚æ—¥ä¸€æ‹¬å…¥åŠ›å¤‰æ›å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  09/11/20    NACLâˆ’å¤šã€…ç´  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 05.00.00     ÂÀÅÄ         2018/3/23 ÆþÎÏÎÎ°è¤ò³ÈÄ¥(54->100)
-      *                                     ½é´üÃÍ¤Ï54¤Ç¿ø¤¨ÃÖ¤¯
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 05.00.00     å¤ªç”°         2018/3/23 å…¥åŠ›é ˜åŸŸã‚’æ‹¡å¼µ(54->100)
+      *                                     åˆæœŸå€¤ã¯54ã§æ®ãˆç½®ã
       *****************************************************************
       *
       *
@@ -43,7 +43,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
@@ -59,7 +59,7 @@
            03  FLG-HANKAKU         PIC 9(01).
            03  FLG-ERR             PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -78,7 +78,7 @@
       *
            03  IDK                 PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-KOUMOKU         PIC X(50).
            03  WRK-LEN             PIC 9(04).
@@ -105,40 +105,40 @@
            03  WRK-KAI             PIC X(100).
            03  WRK-MCNT1           PIC 9(02).
       *
-      *    Æþ±¡´ü´Ö
+      *    å…¥é™¢æœŸé–“
        01  TBL-NYUIN-KAISU-AREA.
            03  TBL-NYUIN-OCC           OCCURS   31.
                05  TBL-HI              PIC 9(02).
                05  TBL-SEL             PIC X(01).
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ²èÌÌÆüÉÕÊÑ´¹¥µ¥Ö
+      *    ç”»é¢æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSGDAY.INC".
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    Á´³Ñ¡¦È¾³Ñ¥Á¥§¥Ã¥¯
+      *    å…¨è§’ãƒ»åŠè§’ãƒã‚§ãƒƒã‚¯
            COPY    "CPORCXKANACONV.INC".
-      *    ³ÈÄ¥Ê¸»úÂÐ±þ
+      *    æ‹¡å¼µæ–‡å­—å¯¾å¿œ
            COPY    "CPORCSSTRING.INC".
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    ¥Ñ¥é¥á¥¿
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSNDAYCHG.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -147,17 +147,17 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
            IF      ORCSNDAYCHG-ERRCD   =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†
            IF     (ORCSNDAYCHG-KBN         =   "1" )  AND
                   (ORCSNDAYCHG-ERRCD   NOT =   SPACE )
                PERFORM 300-ERRMSG-HEN-SEC
@@ -168,7 +168,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC             SECTION.
       *
@@ -177,11 +177,11 @@
            INITIALIZE                      FLG-AREA
            INITIALIZE                      IDX-AREA
            INITIALIZE                      ORCSNDAYCHG-OUTAREA
-      *    ºÇÂçÊ¸»ú¿ô
+      *    æœ€å¤§æ–‡å­—æ•°
            IF      ORCSNDAYCHG-KETA    =   ZERO
                MOVE    54                  TO  ORCSNDAYCHG-KETA
            END-IF
-      *    ºÇÂçÊ¸»ú¿ô¥Á¥§¥Ã¥¯
+      *    æœ€å¤§æ–‡å­—æ•°ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
            MOVE    ORCSNDAYCHG-INPUTCD TO  ORCSSTR-STRING1
@@ -195,23 +195,23 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC             SECTION.
       *
-      *    Æþ±¡²ó¿ôÊÑ´¹
+      *    å…¥é™¢å›žæ•°å¤‰æ›
            PERFORM 2001-NYUINKAISU-SEC
       *
            IF     (ORCSNDAYCHG-KBN         =   "1" )  AND
                   (ORCSNDAYCHG-ERRCD       =   SPACE )
-      *        Æþ±¡´ü´ÖÆüÉÕ¥Á¥§¥Ã¥¯
+      *        å…¥é™¢æœŸé–“æ—¥ä»˜ãƒã‚§ãƒƒã‚¯
                PERFORM 2002-DAY-CHEK-SEC
            END-IF
            .
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¤Î²ó¿ô¤ÎÊÑ´¹½èÍý
+      *    å…¥é™¢ã®å›žæ•°ã®å¤‰æ›å‡¦ç†
       *****************************************************************
        2001-NYUINKAISU-SEC             SECTION.
       *
@@ -239,7 +239,7 @@
                    WHEN    "."
                    WHEN    ","
                    WHEN    "-"
-      *                ¿ô»ú¥Á¥§¥Ã¥¯
+      *                æ•°å­—ãƒã‚§ãƒƒã‚¯
                        MOVE    ORCSNDAYCHG-INPUTCD(IDX:1)
                                                TO  WRK-MAE-CD
                        PERFORM 2001-NISUUSNUM-CHK-SEC
@@ -248,7 +248,7 @@
                        MOVE    1               TO  FLG-HI
                    WHEN    OTHER
       ***              DISPLAY "WRK-ACCT-MCNT=" WRK-ACCT-MCNT
-      *                ²ó¿ô
+      *                å›žæ•°
                        IF      (FLG-AST        =   1   )  AND
                                (FLG-KAI        =   ZERO)
                            ADD     1               TO  WRK-ACCT-MCNT
@@ -256,7 +256,7 @@
                                                    TO  WRK-KAI
                                                       (WRK-ACCT-MCNT:1)
                        END-IF
-      *                Æü¿ô¡¦²ó¿ô¤Î¿ôÃÍ¥Á¥§¥Ã¥¯
+      *                æ—¥æ•°ãƒ»å›žæ•°ã®æ•°å€¤ãƒã‚§ãƒƒã‚¯
       ***              DISPLAY "WRK-MCNT1=" WRK-MCNT1
                        IF      (FLG-AST        =   1   )  AND
                                (FLG-KAI        =   1   )
@@ -276,15 +276,15 @@
                MOVE    "9010"              TO  ORCSNDAYCHG-ERRCD
            END-IF
       *
-      *    ¿ô»ú¥Á¥§¥Ã¥¯
+      *    æ•°å­—ãƒã‚§ãƒƒã‚¯
            IF      WRK-NISUU       NOT =   SPACE
                 MOVE    SPACE              TO  WRK-MAE-CD
                 PERFORM 2001-NISUUSNUM-CHK-SEC
            END-IF
       *
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    WRK-ACCT-MCNT       TO  ORCSNDAYCHG-KAISUCNT
-      *    ²ó¿ô¡¡¿ô»úÊÑ´¹
+      *    å›žæ•°ã€€æ•°å­—å¤‰æ›
            MOVE    ZERO                TO  ORCSNDAYCHG-KAISU
            INITIALIZE                      ORCSNUMAREA
            MOVE    WRK-KAI             TO  SNUM-INX
@@ -299,7 +299,7 @@
                MOVE    SNUM-OUTNUM         TO  ORCSNDAYCHG-KAISU
            END-IF
       *
-      *    ´ü´ÖÊÔ½¸
+      *    æœŸé–“ç·¨é›†
            INITIALIZE                      ORCSNDAYCHG-NYUIN-KAISU
            MOVE    ZERO                TO  IDX
            PERFORM VARYING     IDX-D2      FROM    1   BY  1
@@ -328,11 +328,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ô»ú¥Á¥§¥Ã¥¯½èÍý
+      *    æ•°å­—ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2001-NISUUSNUM-CHK-SEC    SECTION.
       *
-      *    ²ó¿ô¡¡¿ô»úÊÑ´¹
+      *    å›žæ•°ã€€æ•°å­—å¤‰æ›
            IF      WRK-NISUU           =   SPACE
                MOVE    ZERO                TO  WRK-HI
            ELSE
@@ -387,11 +387,11 @@
        2001-NISUUSNUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡´ü´ÖÆüÉÕ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æœŸé–“æ—¥ä»˜ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2002-DAY-CHEK-SEC    SECTION.
       *
-      *    ¿ÇÎÅÆü¤ÎËöÆü¤òµá¤á¤ë
+      *    è¨ºç™‚æ—¥ã®æœ«æ—¥ã‚’æ±‚ã‚ã‚‹
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
            MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -435,34 +435,34 @@
        2002-DAY-CHEK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        300-ERRMSG-HEN-SEC               SECTION.
       *
            EVALUATE    ORCSNDAYCHG-ERRCD
                WHEN    "0001"
-                   MOVE    "Ê¸»ú¿ô¥ª¡¼¥Ð¡¼"
+                   MOVE    "æ–‡å­—æ•°ã‚ªãƒ¼ãƒãƒ¼"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "0002"
-                   MOVE    "Æþ±¡Ãæ¤ÎÆü¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó¡£"
+                   MOVE    "å…¥é™¢ä¸­ã®æ—¥ã§ã¯ã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "0012"
-                   MOVE    "¿ôÎÌ¡¦²ó¿ôÅù¤Î¿ô»ú¡¦·å¿ô¥¨¥é¡¼¤Ç¤¹"
+                   MOVE    "æ•°é‡ãƒ»å›žæ•°ç­‰ã®æ•°å­—ãƒ»æ¡æ•°ã‚¨ãƒ©ãƒ¼ã§ã™"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "9006"
-                   MOVE    "ÆüÉÕ¤Ï£³£±¤Þ¤Ç¤Ç¤¹¡£"
+                   MOVE    "æ—¥ä»˜ã¯ï¼“ï¼‘ã¾ã§ã§ã™ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "9009"
-                   MOVE    "Æþ±¡²ó¿ô¤Î¡¿¤òÆþÎÏ¤·¤Æ²¼¤µ¤¤¡£"
+                   MOVE    "å…¥é™¢å›žæ•°ã®ï¼ã‚’å…¥åŠ›ã—ã¦ä¸‹ã•ã„ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "9010"
-                   MOVE    "Æþ±¡²ó¿ô¤Î¡¿¤Ï£±²ó¤Î¤ß¤Ç¤¹¡£"
+                   MOVE    "å…¥é™¢å›žæ•°ã®ï¼ã¯ï¼‘å›žã®ã¿ã§ã™ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "9012"
-                   MOVE    "ÆüÉÕ¤Ï£²·å¤Þ¤Ç¤Ç¤¹¡£"
+                   MOVE    "æ—¥ä»˜ã¯ï¼’æ¡ã¾ã§ã§ã™ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
                WHEN    "9013"
-                   MOVE    "ÆüÉÕ¡ÝÆüÉÕ¤Î´ü´Ö¤¬°ã¤¤¤Þ¤¹¡£"
+                   MOVE    "æ—¥ä»˜âˆ’æ—¥ä»˜ã®æœŸé–“ãŒé•ã„ã¾ã™ã€‚"
                                                TO  ORCSNDAYCHG-ERRMSG
            END-EVALUATE
       *

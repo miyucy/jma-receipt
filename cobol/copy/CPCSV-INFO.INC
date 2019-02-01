@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,40 +16,40 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �ãӣ��ѣģ�                   (CPCSV-INFO.INC)       *
+      *    ＣＳＶ用ＤＢ                   (CPCSV-INFO.INC)       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  CSV-INFO-REC.
       *
           03  CSV-INFO-KEY.
       *
                05  CSV-INFO-HOSPNUM        PIC 9(2).
-      *�ˣţ�
+      *ＫＥＹ
                05  CSV-INFO-TBL-KEY        PIC X(08).
-      *����ǯ��
+      *診療年月
                05  CSV-INFO-SRYYM          PIC X(06).
-      *������ɣ�
+      *シェルＩＤ
                05  CSV-INFO-SHELLID        PIC X(20).
-      *Ϣ��
+      *連番
                05  CSV-INFO-RENNUM         PIC 9(03).
-      *������Ϣ��
+      *処理内連番
                05  CSV-INFO-SHORI-RENNUM   PIC 9(03).
-      *����Ϣ��
+      *出力連番
                05  CSV-INFO-SEQ-NO         PIC 9(06).
-      *������ʬ
+      *入外区分
            03  CSV-INFO-NYUGAIKBN          PIC X(01).
-      *����ǯ����
+      *請求年月日
            03  CSV-INFO-SKYYMD             PIC X(08).
-      *������ʧ����
+      *審査支払機関
            03  CSV-INFO-TEISYUTUSAKI       PIC X(01).
-      *�Уԣɣ�
+      *ＰＴＩＤ
            03  CSV-INFO-PTID               PIC 9(10).
-      *�ãӣ֥ǡ���
+      *ＣＳＶデータ
            03  CSV-INFO-CSVDATA            PIC X(2000).
-      *������
+      *作成日
            03  CSV-INFO-CREYMD             PIC X(08).
-      *��������
+      *作成時間
            03  CSV-INFO-CREHMS             PIC X(06).

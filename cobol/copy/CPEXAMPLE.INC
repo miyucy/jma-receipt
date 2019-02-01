@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,29 +16,29 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¿÷·Á¥Þ¥¹¥¿¡¼       (CPEXAMPLE.INC)
+      *  é››å½¢ãƒžã‚¹ã‚¿ãƒ¼       (CPEXAMPLE.INC)
       *****************************************************************
-      *  ½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *01  EXAMPLE-REC.
            03  EXAMPLE-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  EXAMPLE-HOSPNUM        PIC 9(2).
-      *¶èÊ¬¡Ê£±¡§Ê¸Îã¿÷·Á¡Ë
+      *åŒºåˆ†ï¼ˆï¼‘ï¼šæ–‡ä¾‹é››å½¢ï¼‰
                05  EXAMPLE-KUBUN         PIC X(01).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  EXAMPLE-RENNUM        PIC 9(03).
-      *¿÷·Á
+      *é››å½¢
            03  EXAMPLE-COMMENT           PIC X(800).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  EXAMPLE-TERMID            PIC X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  EXAMPLE-OPID              PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  EXAMPLE-CREYMD            PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  EXAMPLE-UPYMD             PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  EXAMPLE-UPHMS             PIC X(06).

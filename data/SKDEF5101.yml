@@ -1,17 +1,17 @@
 kanri_cd    : "5101"
-name        : "ÉÂÅï¼ïÊÌ"
+name        : "ç—…æ£Ÿç¨®åˆ¥"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "BTU-SBT-NM"
-  item_jp   : "ÉÂÅï¼ïÊÌÌ¾¾Î"
+  item_jp   : "ç—…æ£Ÿç¨®åˆ¥åç§°"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 21
   length    : 480

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,38 +16,38 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  Äù¤á»þ¹ï´ÉÍý                 (CPHOURS.INC) 
+      *  ç· ã‚æ™‚åˆ»ç®¡ç†                 (CPHOURS.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  HOURS-REC.
       *
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  HOURS-KEY.
                05  HOURS-HOSPNUM       PIC 9(2).
-      *¿ÇÎÅÆü
+      *è¨ºç™‚æ—¥
                05  HOURS-SRYYMD        PIC  X(08).
-      *Äù¤á»þ´Ö
+      *ç· ã‚æ™‚é–“
                05  HOURS-TIME          PIC  X(04).
-      *£É£Ä
+      *ï¼©ï¼¤
            03  HOURS-ID                PIC  X(12).
-      *Äù¤á»þ¹ï¶èÊ¬
+      *ç· ã‚æ™‚åˆ»åŒºåˆ†
            03  HOURS-HOURSKBN          PIC  X(1).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  HOURS-TERMID            PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  HOURS-OPID              PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  HOURS-CREYMD            PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  HOURS-UPYMD             PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  HOURS-UPHMS             PIC  X(06).
-      *Äù¤áÆü³«»Ï
+      *ç· ã‚æ—¥é–‹å§‹
            03  HOURS-STSRYYMD          PIC  X(08).
-      *Äù¤áÆü½ªÎ»
+      *ç· ã‚æ—¥çµ‚äº†
            03  HOURS-EDSRYYMD          PIC  X(08).
       *LIMIT
            03  HOURS-LIMIT             PIC 9(5).

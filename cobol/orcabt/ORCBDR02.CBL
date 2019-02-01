@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBDR02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ͽ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/03/02    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 予約情報削除
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/03/02    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      *  04.08.01    NACL-����     14/08/21  ����ե�����ǥ��쥯�ȥ�����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      *  04.08.01    NACL-森脇     14/08/21  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,14 +35,14 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
@@ -52,20 +52,20 @@
            COPY    "CPRECEERR.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-YYK                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-KENSU               PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -76,7 +76,7 @@
       *----(04.08.01)--UPD-END-----
            03  WRK-PARA-DENPPRTYMD     PIC X(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -95,29 +95,29 @@
            03  WRK-TUKI                PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ͽ��ޥ���
+      *    予約マスタ
        01  YYK-REC.
            COPY    "CPYYK.INC".
       *
-      *    ͽ�󥳥��ȥޥ���
+      *    予約コメントマスタ
        01  YYKCOM-REC.
            COPY    "CPYYKCOM.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -129,7 +129,7 @@
       *----(04.08.01)--ADD-END-----
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -142,7 +142,7 @@
                                    COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -156,7 +156,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -191,7 +191,7 @@
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -199,7 +199,7 @@
                                    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            MOVE    "ORCBDR02"      TO  JOB-PGID
-           MOVE    "ͽ�������"  TO  JOB-SHELLMSG
+           MOVE    "予約情報削除"  TO  JOB-SHELLMSG
            CALL    "ORCSJOB"           USING
                                        ORCSJOBKANRIAREA
                                        JOBKANRI-REC
@@ -226,7 +226,7 @@
                                    TO  RECEERR
       *----(04.08.01)--ADD-END-----
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
            .
@@ -234,45 +234,45 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    ��������
+      *    現在日付
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYMD(3:)
            ADD     2000            TO  WRK-SYY
       *
-      *    �о�ǯ���Խ�
+      *    対象年月編集
            MOVE    WRK-PARA-DENPPRTYMD
                                    TO  WRK-SYSYMD
       *
-      *    �о�ǯ������ǯ����礭����票�顼
+      *    対象年が現在年より大きい場合エラー
            IF      WRK-SYSYY   >   WRK-SYY
-               MOVE    "���������顼"  TO  WRK-RECEERR
+               MOVE    "指定日エラー"  TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
-      *        �о�ǯ������ǯ��Ʊ�����
+      *        対象年が現在年と同じ場合
                IF      WRK-SYSYY   =   WRK-SYY
-      *            �оݷ���߷��꾮�������
+      *            対象月が現在月より小さい場合
                    IF      WRK-SYSMM   <   WRK-SMM
                        COMPUTE WRK-TUKI    =   WRK-SMM -    WRK-SYSMM
-      *                �оݷ���������Ǥ���Х��顼
+      *                対象月が２ヶ月以内であればエラー
                        IF      WRK-TUKI    <=  2
-                           MOVE    "���������顼"  TO  WRK-RECEERR
+                           MOVE    "指定日エラー"  TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                        END-IF
                    ELSE
-                       MOVE    "���������顼"  TO  WRK-RECEERR
+                       MOVE    "指定日エラー"  TO  WRK-RECEERR
                        PERFORM 500-ERR-HENSYU-SEC
                    END-IF
                ELSE
-      *            �оݷ���߷����礭�����
+      *            対象月が現在月より大きい場合
                    IF      WRK-SYSMM   >=  WRK-SMM
                        COMPUTE WRK-TUKI    =   WRK-SYSMM   -   WRK-SMM
-      *                �оݷ���������Ǥ���Х��顼
+      *                対象月が２ヶ月以内であればエラー
                        IF      WRK-TUKI    >=  10
-                           MOVE    "���������顼"  TO  WRK-RECEERR
+                           MOVE    "指定日エラー"  TO  WRK-RECEERR
                            PERFORM 500-ERR-HENSYU-SEC
                        END-IF
                    END-IF
@@ -284,7 +284,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -305,18 +305,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-KENSU       =   ZERO 
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
-               STRING  "���ｪλ��"    DELIMITED BY SIZE
+               STRING  "正常終了　"    DELIMITED BY SIZE
                        CNT-KENSU       DELIMITED BY SIZE
-                       "����"        DELIMITED BY SIZE
+                       "件削除"        DELIMITED BY SIZE
                                INTO    WRK-RECEERR
                END-STRING
                PERFORM 500-ERR-HENSYU-SEC
@@ -325,7 +325,7 @@
            DISPLAY "*** ORCBDR02 DEL "     CNT-KENSU
            DISPLAY "*** ORCBDR02 END ***"
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -345,7 +345,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -359,7 +359,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -381,7 +381,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ���ɤ߹��߳��Ͻ���
+      *    予約読み込み開始処理
       *****************************************************************
        900-YYK-DBSELECT-SEC        SECTION.
       *
@@ -410,7 +410,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ���ɤ߹��߽���
+      *    予約読み込み処理
       *****************************************************************
        900-YYK-DBFETCH-SEC         SECTION.
       *
@@ -435,7 +435,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ���ɤ߹��߽�λ����
+      *    予約読み込み終了処理
       *****************************************************************
        900-YYK-DBCLOSE-SEC         SECTION.
       *
@@ -452,7 +452,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��������
+      *    予約削除処理
       *****************************************************************
        900-YYK-DBDELETE-SEC        SECTION.
       *
@@ -471,7 +471,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ�󥳥��Ⱥ������
+      *    予約コメント削除処理
       *****************************************************************
        900-YYKCOM-DBDELETE-SEC     SECTION.
       *
@@ -497,7 +497,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -521,7 +521,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

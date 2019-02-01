@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * фЭ╟Еи╦╫Ю╔Л╔╩╔в╔х╔╫╔у╔х║йJMA standard receipt software║к
+      * Ф≈╔Е▄╩Ф╗≥Ф╨√Ц┐╛Ц┌╩Ц┐≈Ц┐┬Ц┌╫Ц┐∙Ц┐┬О╪┬JMA standard receipt softwareО╪┴
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ёаёпёи╔Л╔╧╔щ╔С╔╧©гне╡й╬ПйС╟ЛмВ
+      *    О╪║О╪╟О╪╘Ц┐╛Ц┌╧Ц┐²Ц┐ЁЦ┌╧Х╗╨Г≥┌Г╖▒Ф┐┘Е═╠Д╦─Х╕╖
       *                                     COPY (CPDEPARTMETV2RES.INC)
       ******************************************************************
         01  XML-DEPARTMENTRES.
@@ -25,31 +25,31 @@
             02  DEPTRES-MODE               PIC S9(9)   BINARY.
             02  DEPTRES-RECORDNAME         PIC X(128).
             02  DEPTRES-APPOINTRES.
-      *       ╪б╩эфЭ
+      *       Е╝÷Ф√╫Ф≈╔
               03  DEPTRES-INFORMATION-DATE    PIC X(10).
-      *       ╪б╩э╩Ч╢ж
+      *       Е╝÷Ф√╫Ф≥┌И√⌠
               03  DEPTRES-INFORMATION-TIME    PIC X(8).
-      *       йж╣я╔Ё║╪╔и
+      *       Х©■Е█╢Ц┌ЁЦ┐╪Ц┐┴
               03  DEPTRES-API-RESULT          PIC X(2).
-      *       йж╣я╔А╔ц╔╩║╪╔╦
+      *       Х©■Е█╢Ц┐║Ц┐┐Ц┌╩Ц┐╪Ц┌╦
               03  DEPTRES-API-RESULT-MSG      PIC X(100).
       *
               03  DEPTRES-RESKEY              PIC X(100).
-      *       ╢П╫ЮфЭ
+      *       Е÷╨Ф╨√Ф≈╔
               03  DEPTRES-BASE-DATE           PIC X(10).
-      *       ©гне╡й╟ЛмВ
+      *       Х╗╨Г≥┌Г╖▒Д╦─Х╕╖
               03  DEPTRES-DEPARTMET-INFOMATION.
                  05  DEPTRES-DEPARTMET-INFO      OCCURS   100.
-      *               ©гне╡й╔Ё║╪╔и
+      *               Х╗╨Г≥┌Г╖▒Ц┌ЁЦ┐╪Ц┐┴
                       07  DEPTRES-DEP-CODE        PIC X(2).
-      *               ©гне╡йл╬╬н
+      *               Х╗╨Г≥┌Г╖▒Е░█Г╖╟
                       07  DEPTRES-SRYKANAME       PIC X(80).
-      *               ц╩╫лл╬╬нё╠
+      *               Г÷╜Г╦╝Е░█Г╖╟О╪▒
                       07  DEPTRES-SRYKANAME1      PIC X(20).
-      *               ц╩╫лл╬╬нё╡
+      *               Г÷╜Г╦╝Е░█Г╖╟О╪▓
                       07  DEPTRES-SRYKANAME2      PIC X(12).
-      *               ц╩╫лл╬╬нёЁ
+      *               Г÷╜Г╦╝Е░█Г╖╟О╪⌠
                       07  DEPTRES-SRYKANAME3      PIC X(04).
-      *               ╔Л╔╩ее©гне╡й╔Ё║╪╔и
+      *               Ц┐╛Ц┌╩И⌡╩Х╗╨Г≥┌Г╖▒Ц┌ЁЦ┐╪Ц┐┴
                       07  DEPTRES-RECESRYKA       PIC X(02).
       *

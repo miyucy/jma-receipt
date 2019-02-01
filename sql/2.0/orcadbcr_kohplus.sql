@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ¸øÈñÉÕ²Ã¾ðÊó                   --
+-- å…¬è²»ä»˜åŠ æƒ…å ±                   --
 --                                --
 -- Table Name  : TBL_KOHPLUS      --
 -- Create Date : 2003/08/25       --

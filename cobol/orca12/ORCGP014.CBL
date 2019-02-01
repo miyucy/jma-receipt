@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGP014.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �����ֹ�ȯ�ԡʳ�ĥ��P014��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01/12/05    MCC-¿��Ǽ    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者番号発行（拡張（P014）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/12/05    MCC-多々納    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
-      *  05.00.00    NACL-¿��Ǽ  18/10/XX  �����ֹ�����������å��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
+      *  05.00.00    NACL-多々納  18/10/XX  患者番号空白等チェック追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -43,20 +43,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
-      *    �У������̥����ΰ�
+      *    Ｐ０２画面スパ領域
            COPY    "P02SCR-SPA".
-      *    ������ɽ��
+      *    画面非表示
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -64,11 +64,11 @@
            03  FLG-UKETUKE         PIC 9(01).
            03  FLG-KANRIMST        PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -80,7 +80,7 @@
                05  SYS-TSS         PIC 9(02).
                05  SYS-TDD         PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -90,7 +90,7 @@
            03  IDX4                PIC 9(02).
            03  IDX-LINE            PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-ERRMSG          PIC X(40).
@@ -123,45 +123,45 @@
                05  WRK-TMM         PIC 99.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1009.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ��Ѵ��ʴ�����
+      *    患者番号変換（管理）
        01  PTNUM-REC.
            COPY  "CPPTNUM.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   �����å��ǥ��å�
+      *   チェックデジット
            COPY    "CPORCCHKDGT.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
-      *   �����ֹ�ȯ������
+      *   患者番号発生サブ
            COPY    "CPORCSP01.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -207,7 +207,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -226,15 +226,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -248,7 +248,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -257,14 +257,14 @@
            INITIALIZE                  CNT-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "PERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -282,18 +282,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-1009-KKCKSIKBN
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <フリー + 連番号 + フリー>
                WHEN    "1"
                    MOVE    1                   TO  SPA-GMN014-CUR
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ�>
+      *        拡張構成 <フリー + 連番号>
                WHEN    "2"
                    MOVE    1                   TO  SPA-GMN014-CUR
-      *        ��ĥ���� <Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <連番号 + フリー>
                WHEN    "3"
                    MOVE    2                   TO  SPA-GMN014-CUR
            END-EVALUATE
@@ -305,7 +305,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -315,7 +315,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -325,20 +325,20 @@
            MOVE    SPA-GMN014-PTNUM2   TO  P014-PTNUM2
            MOVE    SPA-GMN014-PTNUM3   TO  P014-PTNUM3
       *
-      *    ��ĥ������ʬ
+      *    拡張構成区分
            MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM1-STATE
            MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM2-STATE
            MOVE    WIDGET-INSENSITIVE  TO  P014-PTNUM3-STATE
       *
            EVALUATE    SPA-1009-KKCKSIKBN
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <フリー + 連番号 + フリー>
                WHEN    "1"
                    MOVE    WIDGET-NORMAL       TO  P014-PTNUM1-STATE
                    MOVE    WIDGET-NORMAL       TO  P014-PTNUM3-STATE
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ�>
+      *        拡張構成 <フリー + 連番号>
                WHEN    "2"
                    MOVE    WIDGET-NORMAL       TO  P014-PTNUM1-STATE
-      *        ��ĥ���� <Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <連番号 + フリー>
                WHEN    "3"
                    MOVE    WIDGET-NORMAL       TO  P014-PTNUM2-STATE
            END-EVALUATE
@@ -350,7 +350,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -374,18 +374,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        ��ȯ��
+      *        再発行
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 420-SAIHAKKOU-SEC
-      *        ����
+      *        確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-KAKUTEI-SEC
            END-EVALUATE
@@ -394,7 +394,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -411,14 +411,14 @@
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ棱����
+      *    番号１処理
       *****************************************************************
        4001-PTNUM1-SEC             SECTION.
       *
            MOVE    1                   TO  SPA-GMN014-CUR
            MOVE    P014-PTNUM1         TO  SPA-GMN014-PTNUM1
       *
-      *    ��������å�
+      *    桁数チェック
            MOVE    ZERO              TO  WRK-END
       *H30.10
            PERFORM   VARYING   IDX   FROM    20  BY  -1
@@ -429,7 +429,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��ĥ��������������å�
+      *    拡張構成前桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIMAEKETA
                MOVE    "0001"          TO  SPA-ERRCD
            END-IF
@@ -442,11 +442,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   WRK-END )
                          OR   (SPA-ERRCD   NOT =   SPACE)
-      *        \ �ϥ��顼
+      *        \ はエラー
                IF      SPA-GMN014-PTNUM1(IDX:1)    =   "\"
                   MOVE    "1013"           TO  SPA-ERRCD
                END-IF
-      *        ���򥨥顼
+      *        空白エラー
                IF      SPA-GMN014-PTNUM1(IDX:1)    =   SPACE
                   MOVE    "0001"           TO  SPA-ERRCD
                END-IF
@@ -458,7 +458,7 @@
       *
            IF      SPA-ERRCD           =   SPACE
                EVALUATE    SPA-1009-KKCKSIKBN
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <フリー + 連番号 + フリー>
                    WHEN    "1"
                        MOVE    3               TO  SPA-GMN014-CUR
                    WHEN    OTHER
@@ -469,14 +469,14 @@
        4001-PTNUM1-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ棲����
+      *    番号２処理
       *****************************************************************
        4002-PTNUM2-SEC             SECTION.
       *
            MOVE    2                   TO  SPA-GMN014-CUR
            MOVE    P014-PTNUM2         TO  SPA-GMN014-PTNUM2
       *
-      *    ��������å�
+      *    桁数チェック
            MOVE    ZERO              TO  WRK-END
            PERFORM   VARYING   IDX   FROM    20  BY  -1
                      UNTIL    (IDX           <   1    )
@@ -485,7 +485,7 @@
                    MOVE    IDX                 TO  WRK-END
                END-IF
            END-PERFORM
-      *    ��ĥ�������������å�
+      *    拡張構成後桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
                MOVE    "0001"          TO  SPA-ERRCD
       ***  ELSE
@@ -495,11 +495,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   WRK-END )
                          OR   (SPA-ERRCD   NOT =   SPACE)
-      *        \ �ϥ��顼
+      *        \ はエラー
                IF      SPA-GMN014-PTNUM2(IDX:1)    =   "\"
                   MOVE    "1013"           TO  SPA-ERRCD
                END-IF
-      *        ���򥨥顼
+      *        空白エラー
                IF      SPA-GMN014-PTNUM2(IDX:1)    =   SPACE
                   MOVE    "0001"           TO  SPA-ERRCD
                END-IF
@@ -513,14 +513,14 @@
        4002-PTNUM2-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ棳����
+      *    番号３処理
       *****************************************************************
        4003-PTNUM3-SEC             SECTION.
       *
            MOVE    3                   TO  SPA-GMN014-CUR
            MOVE    P014-PTNUM3         TO  SPA-GMN014-PTNUM3
       *
-      *    ��������å�
+      *    桁数チェック
            MOVE    ZERO              TO  WRK-END
            PERFORM   VARYING   IDX   FROM    20  BY  -1
                      UNTIL    (IDX           <   1 )
@@ -530,7 +530,7 @@
                END-IF
            END-PERFORM
       *
-      *    ��ĥ�������������å�
+      *    拡張構成後桁数チェック
            IF      WRK-END         NOT =   SPA-1009-KKCKSIATOKETA
                MOVE    "0001"          TO  SPA-ERRCD
       ***  ELSE
@@ -541,11 +541,11 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   WRK-END )
                          OR   (SPA-ERRCD   NOT =   SPACE)
-      *        \ �ϥ��顼
+      *        \ はエラー
                IF      SPA-GMN014-PTNUM3(IDX:1)    =   "\"
                   MOVE    "1013"           TO  SPA-ERRCD
                END-IF
-      *        ���򥨥顼
+      *        空白エラー
                IF      SPA-GMN014-PTNUM3(IDX:1)    =   SPACE
                   MOVE    "0001"           TO  SPA-ERRCD
                END-IF
@@ -558,7 +558,7 @@
        4003-PTNUM3-EXT.
            EXIT.
       *****************************************************************
-      *    ��ȯ�Խ���
+      *    再発行処理
       *****************************************************************
        420-SAIHAKKOU-SEC             SECTION.
       *
@@ -578,15 +578,15 @@
            END-IF
       *
            EVALUATE    SPA-1009-KKCKSIKBN
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <フリー + 連番号 + フリー>
                WHEN    "1"
                    MOVE    ORCSP01-PTNUM2      TO  SPA-GMN014-PTNUM2
                    MOVE    1                   TO  SPA-GMN014-CUR
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ�>
+      *        拡張構成 <フリー + 連番号>
                WHEN    "2"
                    MOVE    ORCSP01-PTNUM2      TO  SPA-GMN014-PTNUM2
                    MOVE    1                   TO  SPA-GMN014-CUR
-      *        ��ĥ���� <Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <連番号 + フリー>
                WHEN    "3"
                    MOVE    ORCSP01-PTNUM1      TO  SPA-GMN014-PTNUM1
                    MOVE    2                   TO  SPA-GMN014-CUR
@@ -598,23 +598,23 @@
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    確定処理
       *****************************************************************
        490-KAKUTEI-SEC             SECTION.
       *
       *
-      *    �����������å�
+      *    更新前チェック
            EVALUATE    SPA-1009-KKCKSIKBN
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <フリー + 連番号 + フリー>
                WHEN    "1"
                    PERFORM 4001-PTNUM1-SEC
                    IF      SPA-ERRCD           =   SPACE
                        PERFORM 4003-PTNUM3-SEC
                    END-IF
-      *        ��ĥ���� <�ե꡼ + Ϣ�ֹ�>
+      *        拡張構成 <フリー + 連番号>
                WHEN    "2"
                    PERFORM 4001-PTNUM1-SEC
-      *        ��ĥ���� <Ϣ�ֹ� + �ե꡼>
+      *        拡張構成 <連番号 + フリー>
                WHEN    "3"
                    PERFORM 4002-PTNUM2-SEC
            END-EVALUATE
@@ -624,7 +624,7 @@
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
-      *        ���
+      *        戻る
                PERFORM 210-BACK
            END-IF
       *
@@ -633,11 +633,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    患者番号編集処理
       *****************************************************************
        4901-KAKUTEI-HEN-SEC           SECTION.
       *
-      *    �����ֹ��Խ�
+      *    患者番号編集
            MOVE    SPACE               TO  SPA-GMN014-PTNUM
            STRING  SPA-GMN014-PTNUM1   DELIMITED  BY  " "
                    SPA-GMN014-PTNUM2   DELIMITED  BY  " "
@@ -645,14 +645,14 @@
                    INTO                SPA-GMN014-PTNUM
            END-STRING
       *
-      *    �����ֹ��Ѵ�(�����ˤ򸡺�
+      *    患者番号変換(管理）を検索
            INITIALIZE                      ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    SPA-GMN014-PTNUM    TO  SPTID-PTNUM
            CALL    "ORCSPTID"      USING   ORCSPTIDAREA
                                            SPA-AREA
            IF      SPTID-RC            =   ZERO
-      *        ���˴����ֹ椬��Ͽ����Ƥ�����
+      *        既に患者番号が登録されている場合
                MOVE    "0003"              TO  SPA-ERRCD
                MOVE    05                  TO  SPA-GMN-CUR
                MOVE    SPACE               TO  SPA-GMN014-PTNUM
@@ -663,7 +663,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -685,7 +685,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -693,18 +693,18 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "����Ȱ㤤�ޤ�"        TO  SPA-ERRMSG
+                   MOVE    "桁数と違います"        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�����ֹ椬�����Ǥ��ޤ���Ǥ�����"
+                   MOVE    "検証番号が取得できませんでした。"
                                            TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�����ܤ� �� ������Ǥ��ޤ���"
+                   MOVE    "１桁目に ＊ は設定できません。"
                                            TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "������Ͽ�Ѥδ����ֹ�Ǥ�"  TO  SPA-ERRMSG
+                   MOVE    "既に登録済の患者番号です"  TO  SPA-ERRMSG
       *H30.10
                WHEN    "1013"
-                   MOVE    "�����ֹ�˻��ѤǤ��ʤ�ʸ��������ޤ���"
+                   MOVE    "患者番号に使用できない文字があります。"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -728,7 +728,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -749,7 +749,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

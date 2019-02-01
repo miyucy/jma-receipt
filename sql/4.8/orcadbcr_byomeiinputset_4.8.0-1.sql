@@ -1,5 +1,5 @@
 --
--- ÉÂÌ¾ÆşÎÏ¥»¥Ã¥È
+-- ç—…åå…¥åŠ›ã‚»ãƒƒãƒˆ
 --
 --
 create  table   tbl_byomeiinputset (

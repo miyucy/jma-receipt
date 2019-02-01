@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION                            DIVISION.
        PROGRAM-ID.                               ORCGZS02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ޥ�������
-      *  ����ݡ��ͥ��̾  : �����ޥ����������ղ����ƹ����ʣڣӣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/03/02    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 点数マスタ設定
+      *  コンポーネント名  : 点数マスタ用点数付加内容更新（ＺＳ０２）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/03/02    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/12/09  MONFUNC�б�
-      *  03.04.00    NACL-¿��Ǽ  06/12/05  ��²���ɲá��ѥ�᥿�ѹ�¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/07  ���롼�׿����б�
-      *  04.04.00    NACL-¿��Ǽ  09/01/05  ���󸡺�����ʬ�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/12/09  MONFUNC対応
+      *  03.04.00    NACL-多々納  06/12/05  上限回数追加、パラメタ変更他
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.04.00    NACL-多々納  09/01/05  前回検査日区分追加
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -43,66 +43,66 @@
       *
        WORKING-STORAGE                           SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ޥ��������Ѷ��̥ѥ�᥿
+      *    点数マスタ設定用共通パラメタ
            COPY    "Z01COMMON-SPA".
       *
-      *    �����̣ӣУ����ꥢ
+      *    第一画面ＳＰＡエリア
            COPY    "Z01SCR-SPA".
       *
-      *    �ե饰���ꥢ
+      *    フラグエリア
        01  FLG-AREA.
            03  FLG-END                           PIC 9(01).
            03  FLG-TENSUPLUS                     PIC 9(01).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                               PIC 9(02).
            03  IDX1                              PIC 9(02).
            03  IDX2                              PIC 9(02).
            03  IDX-H                             PIC 9(04).
       *
-      *    ����ΰ�
+      *    ワーク領域
        01  WRK-AREA.
            03  WRK-CDSYU               PIC X(01).
            03  WRK-KETA                PIC 9(04).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ��������ޥ����ղå�����
+      *    ワーク点数マスタ付加コード
         01 TBL-TENSUPLUS-AREA.
           02 TBL-TENSUPLUS-REC         OCCURS  30.
            COPY    "CPTENSUPLUS.INC"   REPLACING
                                        //TNSP-// BY //TBL-TNSP-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
-      *    �ģ¸���
+      *    ＤＢ検索
       *01  MCPDATA-REC                 PIC X(5000).
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
            COPY    "ORCA-SPA".
-      *    �������þ��󹹿�����
+      *    点数附加情報更新内容
            COPY    "CPORCGZS02.INC".
       *
         01 LNK-TENSUPLUS-REC.
@@ -117,7 +117,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                              SECTION.
       *
@@ -128,15 +128,15 @@
            MOVE    SPA-WORK            TO  SPA-Z01KYOUTU
            MOVE    SPA-FREE            TO  SPA-Z01FREE
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �����ޥ����ղþ���������ޥ������ϰϥ����å�
+      *    点数マスタ付加情報と点数マスタの範囲チェック
            PERFORM 100-TENSUPLUS-CHK-SEC
       *
-      *    �����ޥ����ղþ��󹹿�
+      *    点数マスタ付加情報更新
            PERFORM 200-TENSUPLUS-UPD-SEC
       *
            MOVE    SPA-AREA                      TO  SPA-COMMON
@@ -147,7 +147,7 @@
            EXIT.
       *
       *****************************************************************
-      *  �����ޥ����ղþ�������å�����
+      *  点数マスタ付加情報チェック処理
       *****************************************************************
        100-TENSUPLUS-CHK-SEC          SECTION.
       *
@@ -186,13 +186,13 @@
                GO      TO      100-TENSUPLUS-CHK-EXT
            END-IF
       *
-      *    �����ޥ����ȴ��֤��碌��
+      *    点数マスタと期間を合わせる
            MOVE    1                   TO  IDX1
            MOVE    1                   TO  IDX2
            PERFORM UNTIL     (IDX1     >   IDX-H  )
                         AND  (IDX2     >   SPA-Z01-MAX )
                IF       IDX2           >   SPA-Z01-MAX
-      *             ���äΤߺ��
+      *             附加のみ削除
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
                        MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
@@ -220,7 +220,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                        =   TBL-TNSP-YUKOSTYMD(IDX1)) AND
                            (SPA-Z01-TYUKOEDYMD(IDX2)
                                    NOT =   TBL-TNSP-YUKOEDYMD(IDX1))
-      *                ��λ���ѹ�
+      *                終了日変更
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
                        MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
@@ -248,7 +248,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                                        >   TBL-TNSP-YUKOSTYMD(IDX1)) AND
                            (TBL-TNSP-YUKOSTYMD(IDX1)
                                        NOT =   SPACE  )
-      *                �ղþ���Τߤξ�硢���
+      *                付加情報のみの場合、削除
                        MOVE    TBL-TENSUPLUS-REC (IDX1)
                                                    TO  TENSUPLUS-REC
                        MOVE    TNSP-SRYCD          TO  TNSP-UP-SRYCD
@@ -288,11 +288,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *  �����ޥ����ղþ��󹹿�����
+      *  点数マスタ付加情報更新処理
       *****************************************************************
        200-TENSUPLUS-UPD-SEC            SECTION.
       *
-      *    �����ޥ����ղþ��󸡺�
+      *    点数マスタ付加情報検索
            IF      SPA-Z01-SELNUM      >   ZERO
                MOVE    SPACE               TO  TENSUPLUS-REC
                MOVE    SPA-Z01-SRYCD       TO  TNSP-SRYCD
@@ -317,12 +317,12 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBLOSEC-SEC
            ELSE
-      *        ����
+      *        新規
                MOVE    1                   TO  FLG-TENSUPLUS
            END-IF
       *
-      *    �������ղþ�����Ͽ����Ƥ��ʤ��Ȥ��Ϻ������ʤ�
-      *    �����å�
+      *    新規で付加情報が登録されていないときは作成しない
+      *    チェック
            IF    ( LNK-TNSP-SHONAME         =   SPACE  ) AND
                  ( LNK-TNSP-SAIKETUKBN      =   ZERO  ) AND
                  ( LNK-TNSP-ZENKNSKBN       =   ZERO  ) AND
@@ -332,13 +332,13 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                  ( LNK-TNSP-KANZANTANICD    =   SPACE ) AND
                  ( LNK-TNSP-KANZANTANINAME  =   SPACE ) AND
                  ( LNK-TNSP-KANZANCHI       =   ZERO  )
-      *        ��²��
+      *        上限回数
              AND ( LNK-TNSP-SANTEIRRKKBN    =   ZERO  )
              AND ( LNK-TNSP-JGNCNT          =   ZERO  )
              AND ( LNK-TNSP-JGNCNT1D        =   ZERO  )
              AND ( LNK-TNSP-JGNCNT1W        =   ZERO  )
              AND ( LNK-TNSP-JGNCNTERR       =   ZERO  )
-      *        ����̾����
+      *        一般名記載
              AND ( LNK-TNSP-SOURYOHENKBN    =   ZERO  )
              AND ( LNK-TNSP-IPN-KISAIKBN    =   ZERO  )
              AND ( LNK-TNSP-IPN-KANZANTANICD    =   SPACE )
@@ -348,11 +348,11 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    ͭ�����¹���
+      *    有効期限更新
            IF      FLG-TENSUPLUS       =   ZERO
                EVALUATE    SPA-Z01-SYORIKBN
                    WHEN    3
-      *                ����������
+      *                改正時処理
                        MOVE    ZS02-YUKOEDYMD      TO  TNSP-YUKOEDYMD
       *
                        MOVE    SPA-Z01-SRYCD       TO  TNSP-UP-SRYCD
@@ -382,7 +382,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                    WHEN    1
                    WHEN    2
-      *                ����������
+      *                更新時処理
                        MOVE    ZS02-NAI-YUKOSTYMD   TO  TNSP-YUKOSTYMD
                        MOVE    ZS02-NAI-YUKOEDYMD   TO  TNSP-YUKOEDYMD
                        PERFORM 2001-TENSUPLUS-HEN-SEC
@@ -415,7 +415,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
                END-EVALUATE
            END-IF
       *
-      *    �����ɲ�
+      *    新規追加
            IF     (FLG-TENSUPLUS       =   1   )  OR 
                   (SPA-Z01-SYORIKBN    =   3    )
                INITIALIZE                      TENSUPLUS-REC
@@ -448,53 +448,53 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        200-TENSUPLUS-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ����Խ�
+      *    点数マスタ付加情報編集
       *****************************************************************
        2001-TENSUPLUS-HEN-SEC          SECTION.
       *
            MOVE    LNK-TNSP-INPCHKKBN      TO  TNSP-INPCHKKBN
-      *    �η�����ʬ
+      *    採血料区分
            MOVE    LNK-TNSP-SAIKETUKBN     TO  TNSP-SAIKETUKBN
-      *    ���󸡺�����ʬ
+      *    前回検査日区分
            MOVE    LNK-TNSP-ZENKNSKBN      TO  TNSP-ZENKNSKBN
-      *    ����̾��
+      *    処方名称
            MOVE    LNK-TNSP-SHONAME        TO  TNSP-SHONAME
            MOVE    LNK-TNSP-SHOYUKOKETA    TO  TNSP-SHOYUKOKETA
-      *    ʬ���ʬ
+      *    分類区分
            MOVE    LNK-TNSP-TENPUYAKKBN    TO  TNSP-TENPUYAKKBN
-      *    �����̵��ܶ�ʬ
+      *    全数量記載区分
            MOVE    LNK-TNSP-ALLSURYOKBN    TO  TNSP-ALLSURYOKBN
-      *    ���̴���ñ�̥�����
+      *    数量換算単位コード
            MOVE    LNK-TNSP-KANZANTANICD   TO  TNSP-KANZANTANICD
-      *    ���̴���ñ��̾��
+      *    数量換算単位名称
            MOVE    LNK-TNSP-KANZANTANINAME TO  TNSP-KANZANTANINAME
-      *    ���̴�����
+      *    数量換算値
            MOVE    LNK-TNSP-KANZANCHI      TO  TNSP-KANZANCHI
-      *    ���������ʬ
+      *    算定履歴区分
            MOVE    LNK-TNSP-SANTEIRRKKBN   TO  TNSP-SANTEIRRKKBN
-      *    ���²��
+      *    月上限回数
            MOVE    LNK-TNSP-JGNCNT         TO  TNSP-JGNCNT
-      *    ����²��
+      *    日上限回数
            MOVE    LNK-TNSP-JGNCNT1D       TO  TNSP-JGNCNT1D
-      *    ����²��
+      *    週上限回数
            MOVE    LNK-TNSP-JGNCNT1W       TO  TNSP-JGNCNT1W
-      *    ���顼����
+      *    エラー処理
            MOVE    LNK-TNSP-JGNCNTERR      TO  TNSP-JGNCNTERR
-      *    �����Խ���ʬ
+      *    総量編集区分
            MOVE    LNK-TNSP-SOURYOHENKBN   TO  TNSP-SOURYOHENKBN
-      *    ����̾���ܶ�ʬ
+      *    一般名記載区分
            MOVE    LNK-TNSP-IPN-KISAIKBN   TO  TNSP-IPN-KISAIKBN
-      *    ����̾����ñ��
+      *    一般名記載単位
            MOVE    LNK-TNSP-IPN-KANZANTANICD
                                            TO  TNSP-IPN-KANZANTANICD
-      *    ����̾����ñ��̾
+      *    一般名記載単位名
            MOVE    LNK-TNSP-IPN-KANZANTANINAME
                                            TO  TNSP-IPN-KANZANTANINAME
-      *    ����̾���ܴ�����
+      *    一般名記載換算値
            MOVE    LNK-TNSP-IPN-KANZANCHI  TO  TNSP-IPN-KANZANCHI
-      *    ¾���
+      *    他月数
            MOVE    LNK-TNSP-JGNCNTETCM     TO  TNSP-JGNCNTETCM
-      *    ¾���
+      *    他回数
            MOVE    LNK-TNSP-JGNCNTETC      TO  TNSP-JGNCNTETC
       *
            .
@@ -502,7 +502,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ղþ����ɹ�
+      *    点数マスタ付加情報読込
       *****************************************************************
        990-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -520,7 +520,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -533,7 +533,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -547,7 +547,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *   �ģ¥�����������
+      *   ＤＢクローズ処理
       *****************************************************************
        990-DBLOSEC-SEC                 SECTION.
       *

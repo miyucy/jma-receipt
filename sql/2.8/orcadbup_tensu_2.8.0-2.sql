@@ -1,13 +1,13 @@
 --                                    --
--- ÅÀ¿ô¥Ş¥¹¥¿ ¥Æ¡¼¥Ö¥ëÊÑ¹¹            --
+-- ç‚¹æ•°ãƒã‚¹ã‚¿ ãƒ†ãƒ¼ãƒ–ãƒ«å¤‰æ›´            --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¥É¥Ê¡¼Ê¬½¸·×¶èÊ¬ DONORKBN        --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ãƒ‰ãƒŠãƒ¼åˆ†é›†è¨ˆåŒºåˆ† DONORKBN        --
 --                                    --
 -- Create Date : 2006/03/15           --
 --                                    --
 
--- TBL_TENSUWK ºîÀ® --
+-- TBL_TENSUWK ä½œæˆ --
 
 CREATE TABLE "tbl_tensuwk" (
 	"srycd" character(9) NOT NULL,
@@ -155,16 +155,16 @@ CREATE TABLE "tbl_tensuwk" (
 	Constraint "tbl_tensuwk_primary_key" Primary Key ("srycd", "yukostymd", "yukoedymd")
 );
 
--- TBL_TENSU ¢ª TBL_TENSUWK --
+-- TBL_TENSU â†’ TBL_TENSUWK --
 
 insert into TBL_TENSUWK
 select * from TBL_TENSU;
 
--- TBL_TENSU ºï½ü --
+-- TBL_TENSU å‰Šé™¤ --
 
 drop table TBL_TENSU;
 
--- TBL_TENSU ºîÀ® --
+-- TBL_TENSU ä½œæˆ --
 
 CREATE TABLE "tbl_tensu" (
 	"srycd" character(9) NOT NULL,
@@ -314,7 +314,7 @@ CREATE TABLE "tbl_tensu" (
 );
 
 
--- TBL_TENSUWK ¢ª TBL_TENSU   --
+-- TBL_TENSUWK â†’ TBL_TENSU   --
 
 insert into TBL_TENSU
 (
@@ -608,11 +608,11 @@ upymd,
 uphms
 from TBL_TENSUWK;
 
--- TBL_TENSUWK ºï½ü --
+-- TBL_TENSUWK å‰Šé™¤ --
 
 drop table TBL_TENSUWK;
 
--- TBL_TENSU ¥¤¥ó¥Ç¥Ã¥¯¥¹ºîÀ® --
+-- TBL_TENSU ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ä½œæˆ --
 
 CREATE INDEX idx_tensu_name ON tbl_tensu USING btree (name);
 

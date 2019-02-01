@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,39 +16,39 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ·îÂå¤ê¼õµë¼ÔÈÖ¹æ           ¡¡ COPY  (CPMONTHLYNUM.INC)  *
+      *    æœˆä»£ã‚Šå—çµ¦è€…ç•ªå·           ã€€ COPY  (CPMONTHLYNUM.INC)  *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01   NACL-Æ£¸¶     03.01.20  Æþ³°¶èÊ¬¤ÎÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01   NACL-è—¤åŽŸ     03.01.20  å…¥å¤–åŒºåˆ†ã®è¿½åŠ 
       *
-      *  03.04.01   NACL-Æ£¸¶     07.02.06  ¸øÈñ£É£Ä¤ÎÄÉ²Ã
+      *  03.04.01   NACL-è—¤åŽŸ     07.02.06  å…¬è²»ï¼©ï¼¤ã®è¿½åŠ 
       ************************************************************
       *01  MONTHLYNUM-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  MONTHLYNUM-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  MONTHLYNUM-HOSPNUM         PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  MONTHLYNUM-PTID             PIC  9(10).
-      *ÊÝ¸±ÈÖ¹æ¡Ê¸øÈñ¡Ë
+      *ä¿é™ºç•ªå·ï¼ˆå…¬è²»ï¼‰
                05  MONTHLYNUM-KOHNUM           PIC  X(03).
-      *¸øÈñ£É£Ä
+      *å…¬è²»ï¼©ï¼¤
                05  MONTHLYNUM-KOHID            PIC  9(10).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  MONTHLYNUM-SRYYM            PIC  X(06).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  MONTHLYNUM-NYUGAIKBN        PIC  X(01).
-      *¼õµë¼ÔÈÖ¹æ
+      *å—çµ¦è€…ç•ªå·
            03  MONTHLYNUM-JKYSNUM              PIC  X(20).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  MONTHLYNUM-TERMID               PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  MONTHLYNUM-OPID                 PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  MONTHLYNUM-CREYMD               PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  MONTHLYNUM-UPYMD                PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  MONTHLYNUM-UPHMS                PIC  X(06).

@@ -1,22 +1,22 @@
 --                                    --
--- ¼ýÇ¼¥×¥ì¥Ó¥å¡¼¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                 --
+-- åŽç´ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                 --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¿©»ö£¸¡Á¿©»ö£±£°                 --
---   ¿©»öÎÅÍÜÈñ¡ÊÊÝ¸±¡Ë               --
---   ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¡Ë     --
---   ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë--
---   ¿©»öÉéÃ´³Û¡ÊÊÝ¸±¡§¼«¸ÊÉéÃ´¹ç·×¡Ë --
---   ¿©»öÎÅÍÜÈñ¡Ê¼«Èñ¡Ë               --
---   ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¡Ë     --
---   ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¾ÃÈñÀÇ¡Ë--
---   ¿©»öÉéÃ´³Û¡Ê¼«Èñ¡§¼«¸ÊÉéÃ´¹ç·×¡Ë --
+-- é …ç›®ã®è¿½åŠ                          --
+--   é£Ÿäº‹ï¼˜ã€œé£Ÿäº‹ï¼‘ï¼                 --
+--   é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆä¿é™ºï¼‰               --
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…ï¼‰     --
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰--
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆä¿é™ºï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰ --
+--   é£Ÿäº‹ç™‚é¤Šè²»ï¼ˆè‡ªè²»ï¼‰               --
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…ï¼‰     --
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…æ¶ˆè²»ç¨Žï¼‰--
+--   é£Ÿäº‹è² æ‹…é¡ï¼ˆè‡ªè²»ï¼šè‡ªå·±è² æ‹…åˆè¨ˆï¼‰ --
 --                                    --
 -- Create Date : 2006/08/18           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table TBL_SYUNOU_PRV
    add column SHOKUJI8_NISSU			numeric(02);
 alter table TBL_SYUNOU_PRV
@@ -47,7 +47,7 @@ alter table TBL_SYUNOU_PRV
    add column SKYMONEY_LIFE_JIHI_KEI	numeric(07);
 
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYUNOU_PRV
    alter SHOKUJI8_NISSU set default 0;
 alter table TBL_SYUNOU_PRV

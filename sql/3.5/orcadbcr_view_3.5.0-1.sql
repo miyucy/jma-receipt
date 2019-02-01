@@ -22,7 +22,7 @@ CREATE VIEW "view_bd001" as SELECT a.hospnum,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd001" IS '��Ǽ�ӥ塼';
+COMMENT ON VIEW "view_bd001" IS '収納ビュー';
 
 CREATE VIEW "view_bd002" as SELECT a.hospnum,
            a.nyugaikbn,
@@ -323,7 +323,7 @@ CREATE VIEW "view_bd002" as SELECT a.hospnum,
        AND (a.createkbn <> '3'::bpchar)) 
        AND (c.tstptnumkbn <> '1'::bpchar));
 
-COMMENT ON VIEW "view_bd002" IS '��Ǽ�ӥ塼2';
+COMMENT ON VIEW "view_bd002" IS '収納ビュー2';
 
 CREATE VIEW "view_bd003" as SELECT a.hospnum,
            a.nyugaikbn,
@@ -340,7 +340,7 @@ CREATE VIEW "view_bd003" as SELECT a.hospnum,
            ptid,
            denpnum));
 
-COMMENT ON VIEW "view_bd003" IS '��Ǽ�ӥ塼3';
+COMMENT ON VIEW "view_bd003" IS '収納ビュー3';
 
 CREATE VIEW "view_i001" as SELECT a.hospnum,
            a.ptid,
@@ -395,7 +395,7 @@ CREATE VIEW "view_i001" as SELECT a.hospnum,
        AND (b.rrknum = e.rrknum));
 
 COMMENT 
-        ON VIEW "view_i001" IS '�������ԾȲ�ӥ塼';
+        ON VIEW "view_i001" IS '入院患者照会ビュー';
 
 CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospnum,
            tbl_hkncombi.ptid,
@@ -436,7 +436,7 @@ CREATE VIEW "view_q001" as SELECT tbl_hkncombi.hospnum,
        AND (tbl_hkncombi.koh4hknnum = tbl_ptkohinf.kohnum))))));
 
 
-COMMENT ON VIEW "view_q001" IS '���ԾȲ�ӥ塼';
+COMMENT ON VIEW "view_q001" IS '患者照会ビュー';
 
 CREATE VIEW "view_q002" as SELECT a.hospnum,
            a.ptid,
@@ -470,5 +470,5 @@ CREATE VIEW "view_q002" as SELECT a.hospnum,
         OR (a.zainum = b.zainum14)) 
         OR (a.zainum = b.zainum15)));
 
-COMMENT ON VIEW "view_q002" IS '���ԾȲ�ӥ塼2';
+COMMENT ON VIEW "view_q002" IS '患者照会ビュー2';
 

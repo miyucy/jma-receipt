@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSKOHPLUS.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���̸����б�
-      *  ����ݡ��ͥ��̾  : �����ղþ����������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/07/11    NACL�ݾ�Ʀ��  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 特別公費対応
+      *  コンポーネント名  : 公費付加情報取得サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/07/11    NACL−小豆沢  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL�ݾ�Ʀ�� 03/10/07  �����˥쥻�ץ������ʬ���ɲ�
-      *  01.00.02    NACL�ݾ�Ʀ�� 06/12/15  MONFUNC�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−小豆沢 03/10/07  引数にレセプト請求区分の追加
+      *  01.00.02    NACL−小豆沢 06/12/15  MONFUNC対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  04.02.01    NACL-����    08/02/29  ʿ������ǯ��������б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  04.02.01    NACL-門脇    08/02/29  平成２０年４月改正対応
       *****************************************************************
       *
       *
@@ -46,19 +46,19 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PTINF           PIC 9(01).
            03  FLG-HKNCOMBI        PIC 9(01).
            03  FLG-RJNHKN          PIC 9(01).
            03  FLG-PTKOHINF        PIC 9(01).
            03  FLG-KOHPLUS         PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  KOH-IDX             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
@@ -74,46 +74,46 @@
            03  WRK-GENSAN4-MIJISI          PIC 9(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    �����ղþ���
+      *    公費付加情報
        01  KOHPLUS-REC.
            COPY    "CPKOHPLUS.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ղþ�������ѥѥ�᥿
+      *    公費付加情報取得用パラメタ
            COPY    "CPORCSKOHPLUS.INC".
 grpsys*
 grpsys     COPY    "COMMON-SPA".
@@ -124,7 +124,7 @@ grpsys     SPA-AREA
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -134,13 +134,13 @@ grpsys     SPA-AREA
            INITIALIZE                  LNK-SKOHPLUS-HENKYAKU-AREA
            MOVE    ZERO                TO  LNK-SKOHPLUS-RC
       *
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-SKOHPLUS-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    �����
+      *    主処理
            IF      LNK-SKOHPLUS-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -152,7 +152,7 @@ grpsys     SPA-AREA
            .
       *
       *****************************************************************
-      *    �ѥ�᡼�������å�
+      *    パラメータチェック
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
@@ -162,7 +162,7 @@ grpsys     SPA-AREA
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ���ԥޥ���������
+      *    患者マスター検索
            INITIALIZE                      PTINF-REC
 grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-SKOHPLUS-PTID      TO  PTINF-PTID
@@ -177,12 +177,12 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTINF-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主取得
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
       ***  DISPLAY "KOHPLUS MAIN-SEC"
-      *�ݸ��ȹ礻�������
+      *保険組合せ情報取得
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE                       HKNCOMBI-REC
 grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
@@ -198,18 +198,18 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
                MOVE    "key"           TO   MCP-PATHNAME
                PERFORM   910-HKNCOMBI-READ-SEC
            END-IF
-      *    �ݸ��ȹ礻��������
+      *    保険組合せクローズ
            MOVE    "tbl_hkncombi"      TO   MCP-TABLE
            MOVE    "key"               TO   MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Ϸ���ݷ����Ԥ���Ƚ��
+      *老人保健該当者かを判定
            IF     COMB-KOHHKNNUM(1)    =    "027"
            OR     COMB-HKNNUM          =    "039"
                   MOVE     1           TO   FLG-RJNHKN
            END-IF
       *
-      *��������γ�Ǽ��������
+      *地方公費の格納位置特定
            PERFORM  VARYING    IDX   FROM   1   BY  1
                     UNTIL     (COMB-KOHHKNNUM(IDX)  =   SPACE)  OR
                               (IDX   >   4)
@@ -223,7 +223,7 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM
                 MOVE    3              TO  LNK-SKOHPLUS-RC
                 GO   TO    200-MAIN-EXT
            END-IF
-      *��Į¼�ֹ�μ����ʸ�����ô���ֹ�Σ����ܤ���Ĺ�������
+      *市町村番号の取得（公費負担者番号の５桁目から長さ３桁）
            INITIALIZE                         PTKOHINF-REC
 grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTKOH-HOSPNUM
            MOVE    LNK-SKOHPLUS-PTID      TO  PTKOH-PTID
@@ -236,12 +236,12 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  PTKOH-HOSPNUM
                MOVE    "key"              TO  MCP-PATHNAME
                PERFORM   910-PTKOHINF-READ-SEC
            END-IF
-      *    ���Ը�����󥯥�����
+      *    患者公費情報クローズ
            MOVE    "tbl_ptkohinf"         TO  MCP-TABLE
            MOVE    "key"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *�����ղþ���ơ��֥���������
+      *公費付加情報テーブルより情報取得
            INITIALIZE                         KOHPLUS-REC
 grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
            MOVE    LNK-SKOHPLUS-PREFNUM   TO  KOHPLUS-PREFNUM
@@ -259,14 +259,14 @@ grpsys     MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                PERFORM   910-KOHPLUS-READ-SEC
                IF    FLG-KOHPLUS          =   ZERO
       ***          DISPLAY "KOHPLUS FETCH COMPLETE"
-      *            �ֵ��ΰ�Υ��å�
+      *            返却領域のセット
                    MOVE   KOHPLUS-FTNKBN  TO LNK-SKOHPLUS-FTNKBN
                    MOVE   KOHPLUS-NYUSKJRYYKBN
                                           TO  LNK-SKOHPLUS-NYUSKJRYYKBN
                    MOVE   KOHPLUS-RECESKYKBN
                                           TO  LNK-SKOHPLUS-RECESKYKBN
                ELSE
-      *            �����ղþ��󥯥�����
+      *            公費付加情報クローズ
                    MOVE    "tbl_kohplus"          TO  MCP-TABLE
                    MOVE    "key2"                 TO  MCP-PATHNAME
                    PERFORM   910-DB-CLOSE-SEC
@@ -291,7 +291,7 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                        PERFORM   910-KOHPLUS-READ-SEC
                        IF    FLG-KOHPLUS          =   ZERO
       ***                  DISPLAY "KOHPLUS FETCH COMPLETE"
-      *                    �ֵ��ΰ�Υ��å�
+      *                    返却領域のセット
                            MOVE   KOHPLUS-FTNKBN TO LNK-SKOHPLUS-FTNKBN
                            MOVE   KOHPLUS-NYUSKJRYYKBN
                                           TO  LNK-SKOHPLUS-NYUSKJRYYKBN
@@ -310,7 +310,7 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
                DISPLAY "KOHPLUS SELECT ERR "
                MOVE    3              TO  LNK-SKOHPLUS-RC
            END-IF
-      *    �����ղþ��󥯥�����
+      *    公費付加情報クローズ
            MOVE    "tbl_kohplus"          TO  MCP-TABLE
            MOVE    "key2"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -320,7 +320,7 @@ grpsys             MOVE    LNK-SKOHPLUS-HOSPNUM   TO  KOHPLUS-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -353,7 +353,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�����󸡺�
+      *    患者公費情報検索
       *****************************************************************
        910-PTKOHINF-SELECT-SEC        SECTION.
       *
@@ -370,7 +370,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������ɹ�
+      *    患者公費情報読込
       *****************************************************************
        910-PTKOHINF-READ-SEC        SECTION.
       *
@@ -388,7 +388,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ղþ���ޥ���������
+      *    公費付加情報マスター検索
       *****************************************************************
        910-KOHPLUS-SELECT-SEC        SECTION.
       *
@@ -405,7 +405,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ղþ���ޥ������ɹ�
+      *    公費付加情報マスター読込
       *****************************************************************
        910-KOHPLUS-READ-SEC        SECTION.
       *
@@ -423,7 +423,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ���������
+      *    保険組合せマスター検索
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -440,7 +440,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�
+      *    保険組合せマスター読込
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -458,7 +458,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -469,7 +469,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -481,7 +481,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *
@@ -493,7 +493,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

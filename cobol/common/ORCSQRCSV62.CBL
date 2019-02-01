@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSQRCSV62.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ������Ģ���ѣҥǡ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  12/09/03    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : お薬手帳　ＱＲデータ出力
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  12/09/03    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  13/07/XX  �Ż��Ǥ�����Ģ���ץ�Ϣ���б�¾
-      *  04.08.00    NACL-¿��Ǽ  14/07/30  ����ǥ��쥯�ȥ��б�
-      *  04.08.00    NACL-¿��Ǽ  16/11/XX  �ѣҥ�����ver.2.1�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  13/07/XX  電子版お薬手帳アプリ連携対応他
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
+      *  04.08.00    NACL-多々納  16/11/XX  ＱＲコードver.2.1対応
       *****************************************************************
       *
       *
@@ -38,7 +38,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѣҥǡ���
+      *    ＱＲデータ
            SELECT  QRCSV-FILE      ASSIGN  FILE-NAME1
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-FILE1.
@@ -46,17 +46,17 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �ѣҥǡ���
+      *    ＱＲデータ
        FD  QRCSV-FILE.
        01  QRCSV-REC           PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  FILE-NAME1              PIC X(1024).
        01  FILE-NAME2              PIC X(1024).
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  FILE-NAME1-PARA.
       **** 03  FILLER              PIC X(05)   VALUE   "/tmp/".
            03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
@@ -75,11 +75,11 @@
            03  FILLER              PIC X(01)   VALUE   ".".
            03  FILE-SYOHMS2        PIC 9(08)   VALUE   ZERO.
            03  FILLER              PIC X(07)   VALUE   ".qr.png".
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-FILE1           PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SP              PIC 9(01).
@@ -91,7 +91,7 @@
            03  FLG-KIZAI           PIC 9(01).
            03  FLG-ETC             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -107,7 +107,7 @@
            03  TBL-MAX             PIC 9(04).
            03  IDX-B2              PIC 9(03).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(05).
@@ -138,43 +138,43 @@
                05  WRK-SURYO-Z3     PIC ZZZZZ.
            03  WRK-SURYO-H          PIC X(12).
       *
-      *    ����̾��
+      *    薬品名称
            03  WRK-NAME.
                05  WRK-NAME-1          PIC X(80).
                05  WRK-NAME-2          PIC X(20).
       *
-      *    �ѣҥơ��֥�
+      *    ＱＲテーブル
        01  TBL-QRCSV-AREA.
            03  TBL-QRCSV-REC.
                05  TBL-QRCSV-DATA        PIC X(140)  OCCURS  11.
       *
-      *    �ѣҺ�����
+      *    ＱＲ作成用
            COPY    "CPORCSQRENCODE.INC".
-      *    �ãӣ֥ե���������ѥ�᥿
+      *    ＣＳＶファイル作成パラメタ
       ***  COPY    "CPORCSFILEENCODE.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ������Ģ�ǡ������極�֥ѥ�᥿
+      *    お薬手帳データ制御サブパラメタ
            COPY    "CPORCSMNOTE.INC".
       *
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "MCPDATA.INC".
@@ -182,14 +182,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ѣҥѥ�᥿
+      *    ＱＲパラメタ
            COPY    "CPORCSQRCSV62.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -198,7 +198,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -207,13 +207,13 @@
            INITIALIZE                  STS-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  FILE-HOSPNUM1
            MOVE    ORCSQRCSV62-FORM-ID TO  FILE-FORM-ID1
            MOVE    SPA-TERMID          TO  FILE-TERMID1
            MOVE    ORCSQRCSV62-SYSTIME TO  FILE-SYOHMS1
       *ver.4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    FILE-NAME1-PARA     TO  SGETTEMP-BASENAMES (1)
            CALL    "ORCSGETTEMP"       USING
@@ -226,37 +226,37 @@
                MOVE    9               TO  ORCSQRCSV62-ERRCD
            END-IF
       *
-      *    �ģ¸�������
+      *    ＤＢ検索処理
            PERFORM 1001-DBKENSAKU-SEC
       *H28.11
-      *    �С������Ƚ��
+      *    バージョン判定
            IF      ORCSQRCSV62-CSV-KBN =   "2"
       *    ver.2.1
-      *        ���̾������
+      *        共通情報出力
                IF      ORCSQRCSV62-ERRCD   =   ZERO
                    PERFORM 100-HEAD21-SYORI-SEC
                END-IF
            ELSE
       *    ver.1.1
-      *        ���̾������
+      *        共通情報出力
                IF      ORCSQRCSV62-ERRCD   =   ZERO
                    PERFORM 100-HEAD-SYORI-SEC
                END-IF
            END-IF
-      *    ���޾������
+      *    薬剤情報出力
            IF      ORCSQRCSV62-ERRCD   =   ZERO
                PERFORM 200-MAIN-SYORI-SEC
            END-IF
       *
            CLOSE                       QRCSV-FILE
       *
-      *    �ѣҥ��᡼������
+      *    ＱＲイメージ作成
            IF     (ORCSQRCSV62-ERRCD   =   ZERO )
              AND  (ORCSQRCSV62-QR-KBN  =   "1"  )
                PERFORM 400-QRIMAGE-SEC
            END-IF
       *
-      *    CSV�ǡ���
+      *    CSVデータ
            IF     (ORCSQRCSV62-ERRCD   =   ZERO   )    AND
                   (ORCSQRCSV62-CSV-FILENAME
                                    NOT =   SPACE  )
@@ -268,24 +268,24 @@
                MOVE    ORCSQRCSV62-CSV-FILENAME
                                            TO  SMNOTE-TO-DATA
                MOVE    "2"                 TO  SMNOTE-CODE-TYPE
-               MOVE    "������Ģ"          TO  SMNOTE-TITLE
+               MOVE    "お薬手帳"          TO  SMNOTE-TITLE
                MOVE    "MNOTE"             TO  SMNOTE-TBL-KEY
       *v4.8
       ******** MOVE    FILE-NAME1          TO  SMNOTE-CSVFILE
                MOVE    FILE-NAME1-PARA     TO  SMNOTE-CSVFILE
                MOVE    ORCSQRCSV62-CNT     TO  SMNOTE-RENNUM
                MOVE    ORCSQRCSV62-DRCD    TO  SMNOTE-DRCD
-      *        �ǡ����С������
+      *        データバージョン
                MOVE    ORCSQRCSV62-CSV-KBN TO  SMNOTE-DATA-VERSION
-      *        ���Ͼ�ꥳ����
+      *        出力場所コード
                EVALUATE    ORCSQRCSV62-PGKBN
-      *            �����ǧ
+      *            請求確認
                    WHEN    "1"
                        MOVE    "01"        TO  SMNOTE-LOCATION-CD
-      *            ���ӽ�λ
+      *            中途終了
                    WHEN    "2"
                        MOVE    "02"        TO  SMNOTE-LOCATION-CD
-      *            �������
+      *            前回処方
                    WHEN    "3"
                        MOVE    "03"        TO  SMNOTE-LOCATION-CD
                END-EVALUATE
@@ -294,8 +294,8 @@
                                            SPA-AREA
            END-IF
       *
-      *    CSV�ǡ�����JIS�ˤκ���
-      *    CSV�ե�����̾�����ꤵ��Ƥ�����˺�������
+      *    CSVデータ（JIS）の作成
+      *    CSVファイル名が設定されている場合に作成する
       *    IF      ORCSQRCSV62-CSV-FILENAME
       *                            NOT =   SPACE
       *        INITIALIZE                      ORCSFILEENCODEAREA
@@ -310,7 +310,7 @@
       *        END-IF
       *    END-IF
       *
-      *    �ѣҥǡ�������ʣãӣ֤ʤ���
+      *    ＱＲデータ削除（ＣＳＶなし）
            IF      SPA-API-FLG         =   ZERO
                IF      ORCSQRCSV62-CSV-FILENAME
                                        =   SPACE
@@ -326,20 +326,20 @@
            .
       *
       *****************************************************************
-      *    ���̾�����Ͻ���
+      *    共通情報出力処理
       *****************************************************************
        100-HEAD-SYORI-SEC             SECTION.
       *
-      *    �С���������
+      *    バージョン情報
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "JAHISTC01"         TO  TBL-QRCSV-DATA (1)
            MOVE    1                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ���Ծ���쥳����
+      *    患者情報レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "1"                 TO  TBL-QRCSV-DATA (1)
-      *    ���Ի�̾����ĥ�����Ѵ�
+      *    患者氏名　拡張漢字変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    ORCSQRCSV62-NAME    TO  KANACHK-MAE-INPUT
@@ -347,33 +347,33 @@
                                        ORCSKANACHKAREA
            IF      KANACHK-OUT-INPUT(1:40)
                                        =   ORCSQRCSV62-NAME
-      *        ��ĥ�����ʤ�
+      *        拡張漢字なし
                MOVE    ORCSQRCSV62-NAME    TO  TBL-QRCSV-DATA (2)
            ELSE
-      *        ��ĥ�������ꡡ���ʻ�̾
+      *        拡張漢字あり　カナ氏名
                MOVE    ORCSQRCSV62-KANANAME
                                            TO  TBL-QRCSV-DATA (2)
            END-IF
-      *    ����
+      *    性別
            EVALUATE    ORCSQRCSV62-SEX
-               WHEN    "��"
+               WHEN    "男"
                    MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
-               WHEN    "��"
+               WHEN    "女"
                    MOVE    "2"                 TO  TBL-QRCSV-DATA (3)
            END-EVALUATE
-      *    ������ǯ����
+      *    患者生年月日
            MOVE    ORCSQRCSV62-BIRTHDAY    TO  TBL-QRCSV-DATA (4)
            MOVE    4                       TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    Ĵ��ǯ�����쥳����
+      *    調剤年月日レコード
            MOVE    SPACE                   TO  TBL-QRCSV-AREA
            MOVE    "5"                     TO  TBL-QRCSV-DATA (1)
            MOVE    ORCSQRCSV62-SRYYMD      TO  TBL-QRCSV-DATA (2)
            MOVE    2                       TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ���ŵ��إ�����
+      *    医療機関コード
            MOVE    SPACE                   TO  TBL-QRCSV-AREA
            MOVE    "11"                    TO  TBL-QRCSV-DATA (1)
            MOVE    ORCSQRCSV62-HOSPNAME    TO  TBL-QRCSV-DATA (2)
@@ -383,10 +383,10 @@
            MOVE    5                       TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ��ե쥳����
+      *    医師レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "15"                TO  TBL-QRCSV-DATA (1)
-      *    ��ĥ�����Ѵ�
+      *    拡張漢字変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    ORCSQRCSV62-DR-NAME TO  KANACHK-MAE-INPUT
@@ -401,7 +401,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        1001-DBKENSAKU-SEC             SECTION.
       *
@@ -411,7 +411,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ������Ͻ���
+      *    データ出力処理
       *****************************************************************
        400-DATAOUT-SEC             SECTION.
       *
@@ -426,19 +426,19 @@
                COMPUTE WRK-PO-ST      =   WRK-PO-ED   +   1
       *
                MOVE    TBL-QRCSV-DATA (IDK)    TO  WRK-DATA
-      *        �������Խ�����
+      *        項目別編集処理
                PERFORM 4001-KOUMOKU-HEN-SEC
                MOVE    WRK-PO-ST       TO  WRK-PO-ED
            END-PERFORM
       *
-      *    �ѣҥǡ�������
+      *    ＱＲデータ出力
            WRITE   QRCSV-REC
            .
        400-DATAOUT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ǡ������Ͻ���
+      *    データ出力処理
       *****************************************************************
        400-QRIMAGE-SEC             SECTION.
       *
@@ -450,7 +450,7 @@
            MOVE    SPA-TERMID          TO  FILE-TERMID2
            MOVE    ORCSQRCSV62-SYSTIME TO  FILE-SYOHMS2
       *ver.4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    FILE-NAME2-PARA     TO  SGETTEMP-BASENAMES (1)
            CALL    "ORCSGETTEMP"   USING   SGETTEMP-AREA
@@ -462,7 +462,7 @@
            MOVE    "M"                 TO  QREN-SL-OPTION
            MOVE    "1"                 TO  QREN-SS-OPTION
            MOVE    "2"                 TO  QREN-SM-OPTION
-      *������
+      *サイズ
            MOVE    "12"                TO  QREN-SV-OPTION
       **** MOVE    "14"                TO  QREN-SV-OPTION
       **** MOVE    "1"                 TO  QREN-SK-OPTION
@@ -472,7 +472,7 @@
       *
            CALL    "orcqrencode"       USING   ORCSQRENCODEAREA
       *H25.2
-      *    ���������顼�λ��ϡ����ٺ���
+      *    サイズエラーの時は、再度作成
            IF     (QREN-RET            =   "1"  )
                OR (QREN-RET-COUNT      >   12   )
                MOVE    "L"                 TO  QREN-SL-OPTION
@@ -490,14 +490,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    項目別編集処理
       *****************************************************************
        4001-KOUMOKU-HEN-SEC             SECTION.
       *
            MOVE    ZERO                TO  WRK-CNT
            PERFORM VARYING IDX-D       FROM    140   BY  -1
                    UNTIL  (IDX-D       <   1     )
-      *        Ⱦ�Ѷ���ʳ�
+      *        半角空白以外
                IF      WRK-DATA (IDX-D:1)  NOT =   SPACE
                    MOVE    IDX-D           TO  WRK-CNT
                    MOVE    1               TO  IDX-D
@@ -511,7 +511,7 @@
                COMPUTE WRK-PO-ST   =   WRK-PO-ST   +   WRK-CNT
            END-IF
       *
-      *    �ǽ����ܰʳ��� , �ɲ�
+      *    最終項目以外に , 追加
            IF          IDK             <   TBL-MAX
                MOVE    ","             TO  QRCSV-REC(WRK-PO-ST:1)
            END-IF
@@ -520,7 +520,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���޾�����Ͻ���
+      *    薬剤情報出力処理
       *****************************************************************
        200-MAIN-SYORI-SEC             SECTION.
       *
@@ -531,24 +531,24 @@
                MOVE    ZERO                TO  WRK-RP28
                PERFORM VARYING     IDX2    FROM    1   BY  1
                            UNTIL  (IDX2    >   100  )
-      *            ���ޥ쥳����
+      *            薬剤レコード
                    IF     (ORCSQRCSV62-SRYCD(IDX IDX2)(1:1) =  "6"
                                                             OR "7" )
                        OR (ORCSQRCSV62-SRYCD(IDX IDX2)(1:3) =  "059")
-      *                �ʥ��ˤ��о�
+      *                （サ）は対象
                        OR (ORCSQRCSV62-SRYCD(IDX IDX2) =   "820000046")
       *??
                        PERFORM 2003-RP201-SEC
-      *                ��������å�
+      *                種類チェック
                        PERFORM 2004-YKZCHEK-SEC
                    END-IF
       *
-      *            ������­�쥳����
+      *            薬剤補足レコード
                    IF     (ORCSQRCSV62-SRYCD(IDX IDX2)(1:1) =  "8" )
                      OR   (ORCSQRCSV62-SRYCD(IDX IDX2)(1:3) =  "008")
                      OR  ((ORCSQRCSV62-SRYCD(IDX IDX2)(1:3) =  "001")
                       AND (ORCSQRCSV62-YCOMMNTKBN(IDX IDX2) =   "2" ))
-      *                �ʥ��ˤ��оݳ�
+      *                （サ）は対象外
                        IF      ORCSQRCSV62-SRYCD(IDX IDX2)
                                                        =   "820000046"
                            CONTINUE
@@ -557,13 +557,13 @@
                        END-IF
                    END-IF
                END-PERFORM
-      *        ��ˡ�쥳����
+      *        用法レコード
                IF      WRK-RP2             >   ZERO
                    PERFORM 2001-RP301-SYORI-SEC
                END-IF
            END-PERFORM
       *
-      *    ���ͥ쥳����
+      *    備考レコード
            PERFORM VARYING     IDX-B   FROM    1   BY  1
                    UNTIL      (IDX-B   >   10  )
                            OR (ORCSQRCSV62-BIKOU (IDX-B) =   SPACE)
@@ -588,7 +588,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �У��ֹ�����Խ�����
+      *    ＰＲ番号数値編集処理
       *****************************************************************
        20011-SUJIHEN-SEC            SECTION.
       *
@@ -605,7 +605,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���޼�������å�����
+      *    薬剤種類チェック処理
       *****************************************************************
        2004-YKZCHEK-SEC            SECTION.
       *
@@ -626,16 +626,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ˡ�쥳���ɽ���
+      *    用法レコード処理
       *****************************************************************
        2001-RP301-SYORI-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-RP-11
-      *    ��ˡ�쥳���ɤϺǸ�Υ����ɤȤ���
+      *    用法レコードは最後のコードとする
            PERFORM VARYING     IDX2    FROM    100  BY  -1
                    UNTIL      (IDX2    <   1    )
                          OR   (WRK-RP-11   >   ZERO  )
-      *        ��ˡ�쥳����
+      *        用法レコード
                IF     (ORCSQRCSV62-SRYCD(IDX IDX2)(1:3) =   "001")
                AND    (ORCSQRCSV62-YCOMMNTKBN(IDX IDX2) =   "1"
                                                         OR  "0" )
@@ -648,14 +648,14 @@
       *
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   100   )
-      *        ��ˡ����쥳����
+      *        用法補助レコード
                IF     (ORCSQRCSV62-SRYCD(IDX IDX2)(1:3) =  "001")
                AND    (ORCSQRCSV62-YCOMMNTKBN(IDX IDX2) =   "1"
                                                         OR  "0" )
                    PERFORM 20022-RP311-SEC
                END-IF
            END-PERFORM
-      *    ��ˡ���ʤ�������ˡ̾�Τʤ��Ȥ���
+      *    用法がない時、用法名称なしとする
            IF      WRK-RP-11           =   ZERO
                MOVE    SPACE               TO  WRK-NAME
                PERFORM 20021-RP301-SEC
@@ -665,7 +665,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ˡ�쥳���ɽ���
+      *    用法レコード処理
       *****************************************************************
        20021-RP301-SEC            SECTION.
       *
@@ -674,56 +674,56 @@
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "301"               TO  TBL-QRCSV-DATA (1)
            MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (2)
-      *    ��ˡ̾��
+      *    用法名称
            MOVE    WRK-NAME            TO  TBL-QRCSV-DATA (3)
-      *    �����ʿ��̡�
+      *    日数（数量）
            MOVE    ORCSQRCSV62-KAISU (IDX)   TO  WRK-ZZZ
            PERFORM 20011-SUJIHEN-SEC
            MOVE    WRK-H-DATA          TO  TBL-QRCSV-DATA (4)
-      *    Ĵ��ñ��
+      *    調剤単位
            EVALUATE    ORCSQRCSV62-SRYKBN (IDX)
                WHEN    "21"
-      *            ����
-                   MOVE    "��ʬ"          TO  TBL-QRCSV-DATA (5)
+      *            内服
+                   MOVE    "日分"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "1"             TO  TBL-QRCSV-DATA (6)
-      *            ������ũ�Τ�
+      *            内服点滴のみ
                    IF     (FLG-NAI-TEN         =   1    )  AND
                           (FLG-YAKUZAI         =   ZERO )
-                       MOVE    "Ĵ��"          TO  TBL-QRCSV-DATA (5)
+                       MOVE    "調剤"          TO  TBL-QRCSV-DATA (5)
                        MOVE    "2"             TO  TBL-QRCSV-DATA (6)
-      *                �����ᣱ
+      *                日数＝１
                        MOVE    "1"             TO  TBL-QRCSV-DATA (4)
                    END-IF
                WHEN    "22"
-      *            ����
-                   MOVE    "��ʬ"          TO  TBL-QRCSV-DATA (5)
+      *            頓服
+                   MOVE    "回分"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "3"             TO  TBL-QRCSV-DATA (6)
                WHEN    "23"
-      *            ����
-                   MOVE    "Ĵ��"          TO  TBL-QRCSV-DATA (5)
+      *            外用
+                   MOVE    "調剤"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "5"             TO  TBL-QRCSV-DATA (6)
                WHEN    "14"
-      *            ����
-                   MOVE    "Ĵ��"          TO  TBL-QRCSV-DATA (5)
+      *            在宅
+                   MOVE    "調剤"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "10"            TO  TBL-QRCSV-DATA (6)
                    IF     (FLG-YAKUZAI     =   1   ) AND
                           (FLG-KIZAI       =   0   )
-      *                ���ޤΤߺ�������
+      *                薬剤のみ在宅注射
                        MOVE    "4"             TO  TBL-QRCSV-DATA (6)
                    END-IF
                    IF     (FLG-YAKUZAI     =   0   )  AND
                           (FLG-KIZAI       =   1   )
-      *                ���Τ�
+      *                器材のみ
                        MOVE    "9"         TO  TBL-QRCSV-DATA (6)
                    END-IF
                WHEN    "31"
                WHEN    "32"
                WHEN    "33"
-      *            ���͡�������
-                   MOVE    "Ĵ��"          TO  TBL-QRCSV-DATA (5)
+      *            注射（入院）
+                   MOVE    "調剤"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "4"             TO  TBL-QRCSV-DATA (6)
                WHEN    OTHER
-                   MOVE    "Ĵ��"          TO  TBL-QRCSV-DATA (5)
+                   MOVE    "調剤"          TO  TBL-QRCSV-DATA (5)
                    MOVE    "10"            TO  TBL-QRCSV-DATA (6)
            END-EVALUATE
       *
@@ -744,7 +744,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ˡ����쥳���ɽ���
+      *    用法補助レコード処理
       *****************************************************************
        20022-RP311-SEC            SECTION.
       *
@@ -768,7 +768,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ޥ쥳���ɽ���
+      *    薬剤レコード処理
       *****************************************************************
        2003-RP201-SEC            SECTION.
       *
@@ -784,18 +784,18 @@
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "201"               TO  TBL-QRCSV-DATA (1)
            MOVE    WRK-H-RP2           TO  TBL-QRCSV-DATA (2)
-      *    ���ʤ�̾�Τϣ���ʸ���Ȥ���
+      *    薬品の名称は４０文字とする
            MOVE    ORCSQRCSV62-TNS-NAME (IDX IDX2)
                                        TO  WRK-NAME
            MOVE    WRK-NAME-1          TO  TBL-QRCSV-DATA (3)
-      *    ���̡ʿ��̡�
+      *    用量（数量）
            MOVE    ORCSQRCSV62-SURYOU(IDX IDX2)  TO  WRK-SURYO
            PERFORM 20031-SURYO-HEN-SEC
            MOVE    WRK-SURYO-H         TO  TBL-QRCSV-DATA (4)
-      *    ñ��̾
+      *    単位名
            MOVE    ORCSQRCSV62-TANINAME(IDX IDX2)
                                        TO  TBL-QRCSV-DATA (5)
-      *    ���ʥ����ɼ���
+      *    薬品コード種別
            IF     (ORCSQRCSV62-SRYCD(IDX IDX2)(1:1)  =   "6" )
                MOVE    "2"                 TO  TBL-QRCSV-DATA (6)
                MOVE    ORCSQRCSV62-SRYCD(IDX IDX2)
@@ -819,7 +819,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������쥳���ɺ�������
+      *    薬品補助レコード作成処理
       *****************************************************************
        20030-RP281-SYORI-SEC         SECTION.
       *
@@ -834,7 +834,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������쥳���ɽ���
+      *    薬品補助レコード処理
       *****************************************************************
        20032-RP281-SEC         SECTION.
       *
@@ -859,7 +859,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    数量編集処理
       *****************************************************************
        20031-SURYO-HEN-SEC         SECTION.
       *
@@ -895,11 +895,11 @@
       *
       *H28.11
       *****************************************************************
-      *    ���̾�����Ͻ���(ver.2.1)
+      *    共通情報出力処理(ver.2.1)
       *****************************************************************
        100-HEAD21-SYORI-SEC             SECTION.
       *
-      *    ���Ծ���
+      *    患者情報
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
@@ -908,17 +908,17 @@
                INITIALIZE                  PTINF-REC
            END-IF
       *
-      *    �С���������
+      *    バージョン情報
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "JAHISTC04"         TO  TBL-QRCSV-DATA (1)
            MOVE    "1"                 TO  TBL-QRCSV-DATA (2)
            MOVE    2                   TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ���Ծ���쥳����
+      *    患者情報レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "1"                 TO  TBL-QRCSV-DATA (1)
-      *    ���Ի�̾����ĥ�����Ѵ�
+      *    患者氏名　拡張漢字変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    ORCSQRCSV62-NAME    TO  KANACHK-MAE-INPUT
@@ -926,50 +926,50 @@
                                        ORCSKANACHKAREA
            IF      KANACHK-OUT-INPUT(1:40)
                                        =   ORCSQRCSV62-NAME
-      *        ��ĥ�����ʤ�
+      *        拡張漢字なし
                MOVE    ORCSQRCSV62-NAME    TO  TBL-QRCSV-DATA (2)
            ELSE
-      *        ��ĥ�������ꡡ���ʻ�̾
+      *        拡張漢字あり　カナ氏名
                MOVE    ORCSQRCSV62-KANANAME
                                            TO  TBL-QRCSV-DATA (2)
            END-IF
-      *    ����
+      *    性別
            EVALUATE    ORCSQRCSV62-SEX
-               WHEN    "��"
+               WHEN    "男"
                    MOVE    "1"                 TO  TBL-QRCSV-DATA (3)
-               WHEN    "��"
+               WHEN    "女"
                    MOVE    "2"                 TO  TBL-QRCSV-DATA (3)
            END-EVALUATE
-      *    ������ǯ����
+      *    患者生年月日
            MOVE    ORCSQRCSV62-BIRTHDAY    TO  TBL-QRCSV-DATA (4)
-      *    �����͹���ֹ�
+      *    自宅−郵便番号
            MOVE    PTINF-HOME-POST     TO  TBL-QRCSV-DATA (5)
-      *    ����ݽ���
+      *    自宅−住所
            STRING  PTINF-HOME-ADRS
                    PTINF-HOME-BANTI    DELIMITED  BY  SPACE
                                        INTO    TBL-QRCSV-DATA (6)
            END-STRING
-      *    ������������ֹ�
+      *    自宅−昼電話番号
            IF      PTINF-HOME-TEL1     =   SPACE
                MOVE    PTINF-HOME-TEL2     TO  TBL-QRCSV-DATA (7)
            ELSE
                MOVE    PTINF-HOME-TEL1     TO  TBL-QRCSV-DATA (7)
            END-IF
-      *    �۵�Ϣ�����Ϣ�����̾�Ρ��������ֹ��
+      *    緊急連絡先（連絡先−名称、昼電話番号）
            STRING  PTINF-RENRAKU-NAME
                    PTINF-RENRAKU-TEL1  DELIMITED  BY  SPACE
                                        INTO    TBL-QRCSV-DATA (8)
            END-STRING
-      *    ���ʻ�̾
+      *    カナ氏名
            MOVE    ORCSQRCSV62-KANANAME    TO  TBL-QRCSV-DATA (11)
            MOVE    11                      TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
-      *    �����õ�����
+      *    患者特記事項
            IF     (PTINF-ALLERGY-1     =   SPACE )
              AND  (PTINF-ALLERGY-2     =   SPACE )
                CONTINUE
            ELSE
-      *        ����륮���쥳����
+      *        アレルギーレコード
                MOVE    SPACE                   TO  TBL-QRCSV-AREA
                MOVE    "2"                     TO  TBL-QRCSV-DATA (1)
                MOVE    "1"                     TO  TBL-QRCSV-DATA (2)
@@ -986,7 +986,7 @@
              AND  (PTINF-TABOO-2       =   SPACE )
                CONTINUE
            ELSE
-      *        �ش��쥳����
+      *        禁忌レコード
                MOVE    SPACE                   TO  TBL-QRCSV-AREA
                MOVE    "2"                     TO  TBL-QRCSV-DATA (1)
                MOVE    "9"                     TO  TBL-QRCSV-DATA (2)
@@ -999,7 +999,7 @@
                PERFORM 400-DATAOUT-SEC
            END-IF
       *
-      *    Ĵ��ǯ�����쥳����
+      *    調剤年月日レコード
            MOVE    SPACE                   TO  TBL-QRCSV-AREA
            MOVE    "5"                     TO  TBL-QRCSV-DATA (1)
            MOVE    ORCSQRCSV62-SRYYMD      TO  TBL-QRCSV-DATA (2)
@@ -1007,7 +1007,7 @@
            MOVE    3                       TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ���ŵ��إ�����
+      *    医療機関コード
            MOVE    SPACE                   TO  TBL-QRCSV-AREA
            MOVE    "11"                    TO  TBL-QRCSV-DATA (1)
            MOVE    ORCSQRCSV62-HOSPNAME    TO  TBL-QRCSV-DATA (2)
@@ -1021,10 +1021,10 @@
            MOVE    9                       TO  TBL-MAX
            PERFORM 400-DATAOUT-SEC
       *
-      *    ��ե쥳����
+      *    医師レコード
            MOVE    SPACE               TO  TBL-QRCSV-AREA
            MOVE    "15"                TO  TBL-QRCSV-DATA (1)
-      *    ��ĥ�����Ѵ�
+      *    拡張漢字変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    ORCSQRCSV62-DR-NAME TO  KANACHK-MAE-INPUT
@@ -1041,7 +1041,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɤ߹���
+      *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1071,7 +1071,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1084,7 +1084,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɤ߹��߽���
+      *    テーブル読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -1098,7 +1098,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

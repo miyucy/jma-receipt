@@ -9,14 +9,14 @@ fi
 
 . $JMARECEIPT_ENV
 #-------------------------------------------#
-#    �������ν����
+#    決定通知書作成
 #        CPCOMMONSHELL1.INC  
 #        $1 SRYYM TERID SYSYMD
-#        $2 RECEKBN(����ɽ�μ���)
-#           1:���ݡ�2:����
-#        $3 ���顼�ե�����̾ 
+#        $2 RECEKBN(総括表の種類)
+#           1:社保　2:国保
+#        $3 エラーファイル名 
 #        $4 HOSPNUM
-#        $5 ü���ɣġ��ءʣ����� 
+#        $5 端末ＩＤ　Ｘ（３２） 
 #-------------------------------------------#
 
     LOG_FILE="/var/log/jma-receipt/${4}sokatsu${2}.log"
@@ -25,16 +25,16 @@ fi
 
     echo "arg3 =  [" ${3} "]"
 
-##  ���顼�ե�������
+##  エラーファイル削除
     echo "errfile = [" ${MCP_TEMPDIR}/${3}  "]"
     rm  -f ${MCP_TEMPDIR}/${3}
         
-##      �������ν�ʼ��ݡ�
+##      決定通知書（社保）
         if  [ $2 = '1' ]; then
        	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM020 -parameter $1$5,${4},${3}
        	fi    
 
-##      �������ν�ʹ��ݡ�
+##      決定通知書（国保）
         if  [ $2 = '2' ]; then
        	    $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM021 -parameter $1$5,${4},${3}
        	fi    

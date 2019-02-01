@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,29 +18,29 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGDSUB02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ǡ��������å�����
-      *  ����ݡ��ͥ��̾  : �ǡ��������å��¹�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  19/01/06    NACL�����ġ�  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : データチェックサブ
+      *  コンポーネント名  : データチェック実行
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  19/01/06    NACL−太田　  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  DTCHKPRM-FILE   ASSIGN          ASS-DTCHKPRM
                                    ORGANIZATION    IS  SEQUENTIAL.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  DTCHKPRM-FILE.
            COPY    "CPORCBSD01PARA.INC"
                        REPLACING  //ORCBSD01PARA// BY //DTCHKPRM-REC//
@@ -49,12 +49,12 @@
        WORKING-STORAGE             SECTION.
       *
       *
-      *    �ѥ�᡼���ե�����̾
+      *    パラメータファイル名
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //ASS-DTCHKPRM//.
       *
-      *    ���顼�ѥե����� ̾���ΰ� 
+      *    エラー用ファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //DTCHKERR//.
       *
@@ -74,12 +74,12 @@
       *
        01  CONST-AREA.
       *
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����
+      *    システム管理ＤＢ（３００３）のキー値
            03  CONST-3003-KBNCD        PIC X(08) VALUE "041".
-      *    ���������ģ¤Υ�����
+      *    印刷管理ＤＢのキー値
            03  CONST-TBL-KEY           PIC X(08) VALUE "ORCBSD1".
            03  CONST-TBL-GROUP         PIC X(14) VALUE SPACE.
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  CONST-SHELLID           PIC X(08) VALUE "ORCBSD1".
            03  CONST-JOBID             PIC 9(07) VALUE ZERO.
            03  CONST-PUSH-EVENT        PIC X(16) VALUE "data_check".
@@ -88,18 +88,18 @@
            COPY    "CPORCSPRTLNK.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1031.INC".
            COPY    "CPSK3003.INC".
       *
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPSHELLTBL.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -109,25 +109,25 @@
        01  UIDIO-ST                    PIC 9(2).
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -140,7 +140,7 @@
            SPA-AREA
            SPA-D01KYOUTU.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -160,7 +160,7 @@
        000-PROC-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -172,7 +172,7 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
       *
-      *        ����ִ����������
+      *        ジョブ管理削除処理
                MOVE    "ALL"       TO  SJOBKANRI-MODE
                INITIALIZE              JOBKANRI-REC
                MOVE    CONST-SHELLID
@@ -191,7 +191,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ���������������������MCP-TENANT�μ������ͤ��
+      *    システム管理３００３削除処理（MCP-TENANTの取得も兼ねる）
       *****************************************************************
        1001-SYS-3003-DEL-SEC           SECTION.
       *
@@ -217,7 +217,7 @@
        1001-SYS-3003-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -256,7 +256,7 @@
            MOVE    "OR044ERR"          TO  DTCHKERR-FILE-ID
            MOVE    WRK-TERMID          TO  DTCHKERR-TERMID
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -276,7 +276,7 @@
            MOVE    "DATA_CHECK"         TO  WRK-JOBNAME
            PERFORM 2001-JOBKANRI-JBS-SEC
       *
-      *    �����ѥ�����ץȽ���
+      *    印刷用スクリプト処理
            MOVE    SPACE               TO  LNK-PRTKANRI-AREA
            INITIALIZE                      LNK-PRTKANRI-AREA
       *
@@ -293,7 +293,7 @@
            MOVE    SYS-1031-PRTNM (11) TO  LNK-PRTKANRI-PRTNM
       *
            MOVE    SPACE               TO  SHELLTBL
-      *    �ե�����ǥ��쥯�ȥ���ֻ���
+      *    ファイルデイレクトリ位置指定
            MOVE    "orcbsd01.sh"       TO  SHELLTBL-NAME
       *
            MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
@@ -355,7 +355,7 @@
                                        MCPDATA-REC
                                        SPA-AREA
       *
-      *    ��������
+      *    印刷処理
            IF     ( SPA-DID1-FLG        =   "OK"  OR "PV")
             OR    ( ORCBSD01-FROM-API   =   "1" )
       *
@@ -370,7 +370,7 @@
       *
                MOVE    SPACE               TO  SHELLTBL
       *
-      *        �ե�����ǥ��쥯�ȥ���ֻ���
+      *        ファイルデイレクトリ位置指定
                MOVE    "print_prv.sh"      TO  SHELLTBL-NAME
                MOVE    SPA-HOSPNUM         TO  SHELLTBL-HOSPNUM
                MOVE    ORCBSD01-KARTE-UID  TO  SHELLTBL-COMMENT
@@ -441,14 +441,14 @@
                PERFORM 2001-MONBLOBAPI-SEC
            END-IF
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
            PERFORM 2001-JOBID-UPD-SEC
       *
            .
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ����ֳ��ϥ��åȽ���
+      *    ジョブ開始セット処理
       *****************************************************************
        2001-JOBKANRI-JBS-SEC           SECTION.
       *
@@ -482,7 +482,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
       *****************************************************************
        2001-JOBID-UPD-SEC    SECTION.
       *
@@ -511,7 +511,7 @@
        2001-JOBID-UPD-EXT.
            EXIT.
       *****************************************************************
-      *    MONBLOBAPI����
+      *    MONBLOBAPI処理
       *****************************************************************
        2001-MONBLOBAPI-SEC        SECTION.
       *
@@ -578,7 +578,7 @@
        2001-MONBLOBAPI-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -588,7 +588,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    UID��������
+      *    UID取得処理
       *****************************************************************
        800-ORCUIDSET-SEC               SECTION.
       *
@@ -601,7 +601,7 @@
        800-ORCUIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -616,7 +616,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -634,7 +634,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -649,7 +649,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -664,7 +664,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -679,7 +679,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ģţ̣ţԣŽ���
+      *    ＤＢＤＥＬＥＴＥ処理
       *****************************************************************
        910-DBDELETE-SEC                SECTION.
       *
@@ -694,7 +694,7 @@
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ɣΣӣţңԽ���
+      *    ＤＢＩＮＳＥＲＴ処理
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -709,7 +709,7 @@
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£գУģ��ԣŽ���
+      *    ＤＢＵＰＤＡＴＥ処理
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -724,7 +724,7 @@
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    BLOBIMPORT����
+      *    BLOBIMPORT処理
       *****************************************************************
        910-BLOBIMPORT-SEC              SECTION.
       *

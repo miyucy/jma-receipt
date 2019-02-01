@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSTENTEK2.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∆˛±°≤Ò∑◊æ»≤Ò
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∆˛±°Õ—≈¿≈©≤√ªª√ÍΩ–ΩËÕ˝
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  07/03/27    NACL°›æÆ∆¶¬Ù  ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÂÖ•Èô¢‰ºöË®àÁÖß‰ºö
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÂÖ•Èô¢Áî®ÁÇπÊª¥Âä†ÁÆóÊäΩÂá∫Âá¶ÁêÜ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  07/03/27    NACL‚àíÂ∞èË±ÜÊ≤¢  Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *
-      * ø¿Æ£≤£∞«Ø£¥∑Ó≤˛ƒÍ¬–±˛
-      *  04.02.00    NACL-æÆ∆¶¬Ù  08/03/26  Ãµ∂›¿Ω∫ﬁΩËÕ˝≤√ªª§Ú¥À‹π‡Ã‹§À —ππ
+      *Âπ≥ÊàêÔºíÔºêÂπ¥ÔºîÊúàÊîπÂÆöÂØæÂøú
+      *  04.02.00    NACL-Â∞èË±ÜÊ≤¢  08/03/26  ÁÑ°ËèåË£ΩÂâ§Âá¶ÁêÜÂä†ÁÆó„ÇíÂü∫Êú¨È†ÖÁõÆ„Å´Â§âÊõ¥
       *
-      *  04.06.00    NACL-æÆ∆¶¬Ù  10/08/17  ≈¿≈©∆˛Œœ≤˛¡±§Œ¬–±˛
+      *  04.06.00    NACL-Â∞èË±ÜÊ≤¢  10/08/17  ÁÇπÊª¥ÂÖ•ÂäõÊîπÂñÑ„ÅÆÂØæÂøú
       *****************************************************************
       *
       *
@@ -47,7 +47,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -70,7 +70,7 @@
            03  FLG-TAISYOUGAI      PIC 9(01).
            03  FLG-YKZ             PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -79,7 +79,7 @@
            03  IDX4                PIC 9(04).
            03  IDX5                PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -107,52 +107,52 @@
       *
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ¥µº‘•ﬁ•π•ø°›
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø‚àí
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°º
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø„Éº
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø°›
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø‚àí
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *     ›∏±¡»§ﬂπÁ§Ô§ª
+      *    ‰øùÈô∫ÁµÑ„ÅøÂêà„Çè„Åõ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ∆˛±°ø«Œ≈≤Ò∑◊•ﬁ•π•ø°›
+      *    ÂÖ•Èô¢Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø‚àí
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ¥µº‘•≥•·•Û•»
+      *    ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ≈¿øÙ•ﬁ•π•ø°›
+      *    ÁÇπÊï∞„Éû„Çπ„Çø‚àí
            COPY    "CPTENSU.INC".
       *
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *   ªªƒÍÕ˙ŒÚππø∑•µ•÷
+      *   ÁÆóÂÆöÂ±•Ê≠¥Êõ¥Êñ∞„Çµ„Éñ
            COPY    "CPORCSSANTEI.INC".
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -160,13 +160,13 @@
       *
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
-      *    ≈¿≈©≤√ªª√ÍΩ–•—•È•·•øŒŒ∞Ë
+      *    ÁÇπÊª¥Âä†ÁÆóÊäΩÂá∫„Éë„É©„É°„ÇøÈ†òÂüü
            COPY    "CPORCSTENTEK2.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -175,7 +175,7 @@
            .
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -184,13 +184,13 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  LNK-ORCSTEN2-OUT-AREA
       *
-      *    •—•È•·°º•ø•¡•ß•√•Ø
+      *    „Éë„É©„É°„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-ORCSTEN2-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
            IF      LNK-ORCSTEN2-RC       =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -202,17 +202,17 @@
            .
       *
       *****************************************************************
-      *    •—•È•·°º•ø•¡•ß•√•Ø
+      *    „Éë„É©„É°„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    ªªƒÍ«Ø∑Ó•¡•ß•√•Ø
+      *    ÁÆóÂÆöÂπ¥Êúà„ÉÅ„Çß„ÉÉ„ÇØ
            IF    ( LNK-ORCSTEN2-SRYYM  =   SPACE )
                MOVE    1               TO  LNK-ORCSTEN2-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ¥µº‘•ﬁ•π•ø°º∏°∫˜
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
            INITIALIZE                      PTINF-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  PTINF-HOSPNUM
            MOVE    LNK-ORCSTEN2-PTID       TO  PTINF-PTID
@@ -222,7 +222,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *     ›∏±¡»πÁ§ª•¡•ß•√•Ø
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„ÉÅ„Çß„ÉÉ„ÇØ
            IF     LNK-ORCSTEN2-HKNCOMBI    =   ZERO
                MOVE    3               TO  LNK-ORCSTEN2-RC
                GO  TO  100-PRM-CHK-EXT
@@ -247,7 +247,7 @@
                END-IF
            END-IF
       *
-      *     ›∏±¡»πÁ§ª•Ø•Ì°º•∫
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„ÇØ„É≠„Éº„Ç∫
            MOVE    "tbl_hkncombi"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -256,7 +256,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ∆˛±°√Ê§Œ•¡•ß•√•Ø° ∆˛±°≤Ò∑◊§Œ ›∏±¡»πÁ§ª§Ú∏°∫˜°À
+      *    ÂÖ•Èô¢‰∏≠„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØÔºàÂÖ•Èô¢‰ºöË®à„ÅÆ‰øùÈô∫ÁµÑÂêà„Åõ„ÇíÊ§úÁ¥¢Ôºâ
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  NACCT-HOSPNUM
            MOVE    LNK-ORCSTEN2-PTID       TO  NACCT-PTID
@@ -276,7 +276,7 @@
                END-IF
            END-IF
       *
-      *    ∆˛±°≤Ò∑◊•Ø•Ì°º•∫
+      *    ÂÖ•Èô¢‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -286,7 +286,7 @@
       *
       *
       *****************************************************************
-      *    ºÁºË∆¿
+      *    ‰∏ªÂèñÂæó
       *****************************************************************
       *
        200-MAIN-SEC            SECTION.
@@ -300,11 +300,11 @@
            EXIT.
       *
       *****************************************************************
-      *    √ÌºÕ° ≈¿≈©°¶√Êø¥¿≈ÃÆ°À§ŒºË§Íπ˛§ﬂ°  ø¿Æ£≤£∞«Ø£≥∑Ó§ﬁ§«°À
+      *    Ê≥®Â∞ÑÔºàÁÇπÊª¥„Éª‰∏≠ÂøÉÈùôËÑàÔºâ„ÅÆÂèñ„ÇäËæº„ÅøÔºàÂπ≥ÊàêÔºíÔºêÂπ¥ÔºìÊúà„Åæ„ÅßÔºâ
       *****************************************************************
        210-CHUSYA1-SEC      SECTION.
       *
-      *    ≈¿≈©√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -354,12 +354,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *     
-      *    ≈¿≈©√ÌºÕ° ∆˝Õƒª˘°À°‹≈¿≈©√ÌºÕ° ∆˝Õƒª˘°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÔºãÁÇπÊª¥Ê≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -416,12 +416,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    √Êø¥¿≈ÃÆ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -471,12 +471,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    √Êø¥¿≈ÃÆ√ÌºÕ°‹√Êø¥¿≈ÃÆ√ÌºÕ° ∆˝Õƒª˘°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞ÑÔºã‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -533,12 +533,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ≈¿≈©√ÌºÕ° Ãµ∂›¿Ω∫ﬁΩËÕ˝°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞ÑÔºàÁÑ°ËèåË£ΩÂâ§Âá¶ÁêÜÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -603,12 +603,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    √Êø¥¿≈ÃÆ√ÌºÕ° Ãµ∂›¿Ω∫ﬁΩËÕ˝°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞ÑÔºàÁÑ°ËèåË£ΩÂâ§Âá¶ÁêÜÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -673,12 +673,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ≈¿≈©√ÌºÕ° Ãµ∂›¿Ω∫ﬁΩËÕ˝° ∫ŸÀ¶∆«¿≠§ÚÕ≠§π§Î°À°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞ÑÔºàÁÑ°ËèåË£ΩÂâ§Âá¶ÁêÜÔºàÁ¥∞ËÉûÊØíÊÄß„ÇíÊúâ„Åô„ÇãÔºâÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -743,12 +743,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›¿∏ ™≥ÿ≈™¿Ω∫ﬁ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÁîüÁâ©Â≠¶ÁöÑË£ΩÂâ§Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -773,7 +773,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-TENTEK-SET
@@ -809,7 +809,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-CHUJOU-SET
@@ -853,12 +853,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›¿∫Ã©ª˝¬≥≈¿≈©√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÁ≤æÂØÜÊåÅÁ∂öÁÇπÊª¥Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -883,7 +883,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              MOVE    ZERO      TO   FLG-SEIMITSU-SET
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
@@ -921,7 +921,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIMITSU-SET
@@ -969,12 +969,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›À„ÃÙ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÈ∫ªËñ¨Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -999,7 +999,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-TENTEK-SET
@@ -1035,7 +1035,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-CHUJOU-SET
@@ -1079,7 +1079,7 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1105,11 +1105,11 @@
            EXIT.
       *
       *****************************************************************
-      *    √ÌºÕ° ≈¿≈©°¶√Êø¥¿≈ÃÆ°À§ŒºË§Íπ˛§ﬂ°  ø¿Æ£≤£∞«Ø£¥∑Ó∞ πﬂ°À
+      *    Ê≥®Â∞ÑÔºàÁÇπÊª¥„Éª‰∏≠ÂøÉÈùôËÑàÔºâ„ÅÆÂèñ„ÇäËæº„ÅøÔºàÂπ≥ÊàêÔºíÔºêÂπ¥ÔºîÊúà‰ª•ÈôçÔºâ
       *****************************************************************
        220-CHUSYA2-SEC      SECTION.
       *
-      *    ≈¿≈©√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1161,12 +1161,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *     
-      *    ≈¿≈©√ÌºÕ° ∆˝Õƒª˘°À°‹≈¿≈©√ÌºÕ° ∆˝Õƒª˘°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ÁÇπÊª¥Ê≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÔºãÁÇπÊª¥Ê≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1225,12 +1225,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    √Êø¥¿≈ÃÆ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1282,12 +1282,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    √Êø¥¿≈ÃÆ√ÌºÕ°‹√Êø¥¿≈ÃÆ√ÌºÕ° ∆˝Õƒª˘°À≤√ªª§ŒºË§Íπ˛§ﬂ
+      *    ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞ÑÔºã‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞ÑÔºà‰π≥ÂπºÂÖêÔºâÂä†ÁÆó„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1346,12 +1346,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›¿∏ ™≥ÿ≈™¿Ω∫ﬁ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÁîüÁâ©Â≠¶ÁöÑË£ΩÂâ§Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1376,7 +1376,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              MOVE    ZERO      TO   FLG-SEIBUTSU-SET
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
@@ -1416,7 +1416,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIBUTSU-SET
@@ -1456,8 +1456,8 @@
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
                              IF      FLG-SEIBUTSU-SET    =    ZERO
-      *                        ºÍµªŒ¡§¨ªªƒÍ§µ§Ï§∆§§§ §§æÏπÁ§«§‚°¢
-      *                        ¿∏ ™≥ÿ≈™¿Ω∫ﬁ√ÌºÕ§À§ƒ§§§∆§œºË§Íπ˛§ﬂ§Úπ‘§¶
+      *                        ÊâãÊäÄÊñô„ÅåÁÆóÂÆö„Åï„Çå„Å¶„ÅÑ„Å™„ÅÑÂ†¥Âêà„Åß„ÇÇ„ÄÅ
+      *                        ÁîüÁâ©Â≠¶ÁöÑË£ΩÂâ§Ê≥®Â∞Ñ„Å´„Å§„ÅÑ„Å¶„ÅØÂèñ„ÇäËæº„Åø„ÇíË°å„ÅÜ
                                MOVE  1     TO   FLG-SEIBUTSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
                                MOVE  ACCT-SRYKA  TO
@@ -1502,12 +1502,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›¿∫Ã©ª˝¬≥≈¿≈©√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÁ≤æÂØÜÊåÅÁ∂öÁÇπÊª¥Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1532,7 +1532,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              MOVE    ZERO      TO   FLG-SEIMITSU-SET
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
@@ -1572,7 +1572,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-SEIMITSU-SET
@@ -1612,8 +1612,8 @@
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
                              IF      FLG-SEIMITSU-SET    =    ZERO
-      *                        ºÍµªŒ¡§¨ªªƒÍ§µ§Ï§∆§§§ §§æÏπÁ§«§‚°¢
-      *                        ¿∫Ã©ª˝¬≥≈¿≈©√ÌºÕ§À§ƒ§§§∆§œºË§Íπ˛§ﬂ§Úπ‘§¶
+      *                        ÊâãÊäÄÊñô„ÅåÁÆóÂÆö„Åï„Çå„Å¶„ÅÑ„Å™„ÅÑÂ†¥Âêà„Åß„ÇÇ„ÄÅ
+      *                        Á≤æÂØÜÊåÅÁ∂öÁÇπÊª¥Ê≥®Â∞Ñ„Å´„Å§„ÅÑ„Å¶„ÅØÂèñ„ÇäËæº„Åø„ÇíË°å„ÅÜ
                                MOVE  1     TO   FLG-SEIMITSU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
                                MOVE  ACCT-SRYKA  TO
@@ -1658,12 +1658,12 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
       *
-      *    ƒÃ¬ß≤√ªª°›À„ÃÙ√ÌºÕ§ŒºË§Íπ˛§ﬂ
+      *    ÈÄöÂâáÂä†ÁÆó‚àíÈ∫ªËñ¨Ê≥®Â∞Ñ„ÅÆÂèñ„ÇäËæº„Åø
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCSTEN2-HOSPNUM    TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -1688,7 +1688,7 @@
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ACCT-DAY(1 IDX1)    NOT =   ZERO
-      *                      ≈¿≈©√ÌºÕ
+      *                      ÁÇπÊª¥Ê≥®Â∞Ñ
                              MOVE    ZERO      TO   FLG-MAYAKU-SET
                              IF  LNK-ORCSTEN2-TENTEK-MEISAISU(IDX1)
                                               NOT =   ZERO
@@ -1728,7 +1728,7 @@
                                END-IF
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
-      *                      √Êø¥¿≈ÃÆ√ÌºÕ
+      *                      ‰∏≠ÂøÉÈùôËÑàÊ≥®Â∞Ñ
                              IF  LNK-ORCSTEN2-CHUJOU-MEISAISU(IDX1)
                                               NOT =   ZERO
                                MOVE  1     TO   FLG-MAYAKU-SET
@@ -1768,8 +1768,8 @@
                                PERFORM   300-ZAINUM-SET-SEC
                              END-IF
                              IF      FLG-MAYAKU-SET    =    ZERO
-      *                        ºÍµªŒ¡§¨ªªƒÍ§µ§Ï§∆§§§ §§æÏπÁ§«§‚°¢
-      *                        À„ÃÙ√ÌºÕ§À§ƒ§§§∆§œºË§Íπ˛§ﬂ§Úπ‘§¶
+      *                        ÊâãÊäÄÊñô„ÅåÁÆóÂÆö„Åï„Çå„Å¶„ÅÑ„Å™„ÅÑÂ†¥Âêà„Åß„ÇÇ„ÄÅ
+      *                        È∫ªËñ¨Ê≥®Â∞Ñ„Å´„Å§„ÅÑ„Å¶„ÅØÂèñ„ÇäËæº„Åø„ÇíË°å„ÅÜ
                                MOVE  1     TO   FLG-MAYAKU-SET
                                MOVE  1     TO   FLG-TENTEK-SET
                                MOVE  ACCT-SRYKA  TO
@@ -1814,7 +1814,7 @@
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈≤Ò∑◊•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇ‰ºöË®à„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryacct"    TO  MCP-TABLE
            MOVE     "key14"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1840,7 +1840,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•»•ª•√•»ΩËÕ˝° ¥µº‘•≥•·•Û•»•∆°º•÷•Î§´§ÈºË∆¿°À
+      *    „Ç≥„É°„É≥„Éà„Çª„ÉÉ„ÉàÂá¶ÁêÜÔºàÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà„ÉÜ„Éº„Éñ„É´„Åã„ÇâÂèñÂæóÔºâ
       *****************************************************************
        300-COMMENT-SET-SEC         SECTION.
       *
@@ -1909,7 +1909,7 @@
                                             TO   WRK-COMMENT-MOJI(IDX5)
                                 END-IF
                              END-IF
-      *                      ¥µº‘•≥•·•Û•»•Ø•Ì°º•∫
+      *                      ÊÇ£ËÄÖ„Ç≥„É°„É≥„Éà„ÇØ„É≠„Éº„Ç∫
                              MOVE     "tbl_ptcom"   TO  MCP-TABLE
                              MOVE     "key"         TO  MCP-PATHNAME
                              PERFORM   900-CLOSE-SEC
@@ -1921,7 +1921,7 @@
                    PERFORM   910-SRYACT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈π‘∞Ÿ•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇË°åÁÇ∫„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryact"   TO  MCP-TABLE
            MOVE     "key2"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -1931,7 +1931,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•»•ª•√•»ΩËÕ˝° ≈¿≈©√ÌºÕ§Œ ÷µ—π‡Ã‹•ª•√•»°À
+      *    „Ç≥„É°„É≥„Éà„Çª„ÉÉ„ÉàÂá¶ÁêÜÔºàÁÇπÊª¥Ê≥®Â∞Ñ„ÅÆËøîÂç¥È†ÖÁõÆ„Çª„ÉÉ„ÉàÔºâ
       *****************************************************************
        310-COMMENT-SET-SEC         SECTION.
       *
@@ -1953,7 +1953,7 @@
                                         LNK-ORCSTEN2-TENTEK-COM-SRYCD
                                             (IDX1 WRK-MEISAISU IDX5)
       *
-      *          ≈¿øÙ•ﬁ•π•ø°º∆…§ﬂπ˛§ﬂ° 0082*****,820000000)•≥•·•Û•»
+      *          ÁÇπÊï∞„Éû„Çπ„Çø„ÉºË™≠„ÅøËæº„ÅøÔºà0082*****,820000000)„Ç≥„É°„É≥„Éà
                  IF   (WRK-COMMENT-SRYCD(IDX5)(1:4) = "0082")   OR
                       (WRK-COMMENT-SRYCD(IDX5)(1:2) = "82")
                      INITIALIZE                      TNS-TENSU-REC
@@ -1976,7 +1976,7 @@
                              MOVE   SPACE    TO WRK-COMMENT-MOJI(IDX5)
                          END-IF
                      END-IF
-      *              ≈¿øÙ•ﬁ•π•ø°º•Ø•Ì°º•∫
+      *              ÁÇπÊï∞„Éû„Çπ„Çø„Éº„ÇØ„É≠„Éº„Ç∫
                      MOVE     "tbl_tensu"        TO  MCP-TABLE
                      MOVE     "key"              TO  MCP-PATHNAME
                      PERFORM   900-CLOSE-SEC
@@ -1992,7 +1992,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •≥•·•Û•»•ª•√•»ΩËÕ˝° √Êø¥¿≈ÃÆ§Œ ÷µ—π‡Ã‹•ª•√•»°À
+      *    „Ç≥„É°„É≥„Éà„Çª„ÉÉ„ÉàÂá¶ÁêÜÔºà‰∏≠ÂøÉÈùôËÑà„ÅÆËøîÂç¥È†ÖÁõÆ„Çª„ÉÉ„ÉàÔºâ
       *****************************************************************
        320-COMMENT-SET-SEC         SECTION.
       *
@@ -2014,7 +2014,7 @@
                                         LNK-ORCSTEN2-CHUJOU-COM-SRYCD
                                             (IDX1 WRK-MEISAISU IDX5)
       *
-      *          ≈¿øÙ•ﬁ•π•ø°º∆…§ﬂπ˛§ﬂ° 0082*****,820000000)•≥•·•Û•»
+      *          ÁÇπÊï∞„Éû„Çπ„Çø„ÉºË™≠„ÅøËæº„ÅøÔºà0082*****,820000000)„Ç≥„É°„É≥„Éà
                  IF   (WRK-COMMENT-SRYCD(IDX5)(1:4) = "0082")   OR
                       (WRK-COMMENT-SRYCD(IDX5)(1:2) = "82")
                      INITIALIZE                      TNS-TENSU-REC
@@ -2037,7 +2037,7 @@
                              MOVE   SPACE    TO WRK-COMMENT-MOJI(IDX5)
                          END-IF
                      END-IF
-      *              ≈¿øÙ•ﬁ•π•ø°º•Ø•Ì°º•∫
+      *              ÁÇπÊï∞„Éû„Çπ„Çø„Éº„ÇØ„É≠„Éº„Ç∫
                      MOVE     "tbl_tensu"        TO  MCP-TABLE
                      MOVE     "key"              TO  MCP-PATHNAME
                      PERFORM   900-CLOSE-SEC
@@ -2053,7 +2053,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¬–æ›∫ﬁ»÷πÊ§Œ•ª•√•»
+      *    ÂØæË±°Ââ§Áï™Âè∑„ÅÆ„Çª„ÉÉ„Éà
       *****************************************************************
        300-ZAINUM-SET-SEC         SECTION.
       *
@@ -2075,7 +2075,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ºÍµª§ﬁ§ø§œ≤√ªª§»∆±∞Ï∫ﬁ∆‚§«∆˛Œœ§µ§Ï§øÃÙ∫ﬁ°¢¥Ô∫‡§Œø∂§ÍÕÓ§»§∑
+      *    ÊâãÊäÄ„Åæ„Åü„ÅØÂä†ÁÆó„Å®Âêå‰∏ÄÂâ§ÂÜÖ„ÅßÂÖ•Âäõ„Åï„Çå„ÅüËñ¨Ââ§„ÄÅÂô®Êùê„ÅÆÊåØ„ÇäËêΩ„Å®„Åó
       *****************************************************************
        400-YKZ-ERASE-SEC         SECTION.
       *
@@ -2127,7 +2127,7 @@
                    PERFORM   910-SRYACT-READ-SEC
                END-PERFORM
            END-IF
-      *    ø«Œ≈π‘∞Ÿ•Ø•Ì°º•∫
+      *    Ë®∫ÁôÇË°åÁÇ∫„ÇØ„É≠„Éº„Ç∫
            MOVE     "tbl_sryact"   TO  MCP-TABLE
            MOVE     "key2"          TO  MCP-PATHNAME
            PERFORM   900-CLOSE-SEC
@@ -2137,7 +2137,7 @@
            MOVE      ACCT-SYUTEN1          TO  ACCT-ZAITEN
            IF        WRK-COMMENT-MEISAISU   >  5
                 MOVE     5      TO    WRK-COMMENT-MEISAISU
-      *         •≥•·•Û•»∆˛Œœπ‘§¨£µÃ¿∫Ÿ§Úƒ∂§®§øæÏπÁ§œΩËÕ˝¬–æ›≥∞§»§π§Î
+      *         „Ç≥„É°„É≥„ÉàÂÖ•ÂäõË°å„ÅåÔºïÊòéÁ¥∞„ÇíË∂Ö„Åà„ÅüÂ†¥Âêà„ÅØÂá¶ÁêÜÂØæË±°Â§ñ„Å®„Åô„Çã
                 MOVE     ZERO   TO    ACCT-ZAITEN
            END-IF
       *
@@ -2146,7 +2146,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘•ﬁ•π•ø°º∆…π˛
+      *    ÊÇ£ËÄÖ„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2179,7 +2179,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊•ﬁ•π•ø°º∏°∫˜
+      *    ÂÖ•Èô¢‰ºöË®à„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -2196,7 +2196,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊•ﬁ•π•ø°º∆…π˛
+      *    ÂÖ•Èô¢‰ºöË®à„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -2214,7 +2214,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø°º∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-SRYACCT-SELECT-SEC        SECTION.
       *
@@ -2231,7 +2231,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø°º∆…π˛
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
@@ -2260,7 +2260,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°º∏°∫˜
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-SRYACT-SELECT-SEC        SECTION.
       *
@@ -2277,7 +2277,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø°º∆…π˛
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-SRYACT-READ-SEC        SECTION.
       *
@@ -2295,7 +2295,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘•≥•·•Û•»∏°∫˜
+      *    ÊÇ£ËÄÖ„Ç≥„É°„É≥„ÉàÊ§úÁ¥¢
       *****************************************************************
        910-PTCOM-SELECT-SEC        SECTION.
       *
@@ -2312,7 +2312,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘•≥•·•Û•»∆…π˛
+      *    ÊÇ£ËÄÖ„Ç≥„É°„É≥„ÉàË™≠Ëæº
       *****************************************************************
        910-PTCOM-READ-SEC        SECTION.
       *
@@ -2331,7 +2331,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≈¿øÙ•ﬁ•π•ø°º∏°∫˜
+      *    ÁÇπÊï∞„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-TENSU-SELECT-SEC        SECTION.
       *
@@ -2348,7 +2348,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≈¿øÙ•ﬁ•π•ø°º∆…π˛
+      *    ÁÇπÊï∞„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-TENSU-READ-SEC        SECTION.
       *
@@ -2367,7 +2367,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ›∏±¡»πÁ§ª•ﬁ•π•ø°º∏°∫˜
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„Éû„Çπ„Çø„ÉºÊ§úÁ¥¢
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -2384,7 +2384,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ›∏±¡»πÁ§ª•ﬁ•π•ø°º∆…π˛
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2402,7 +2402,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •∆°º•÷•Î•Ø•Ì°º•∫ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -2414,7 +2414,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£”£≈£Ã£≈£√£‘ΩËÕ˝
+      *    Ôº§Ôº¢Ôº≥Ôº•Ôº¨Ôº•Ôº£Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -2431,7 +2431,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬£∆£≈£‘£√£»ΩËÕ˝
+      *    Ôº§Ôº¢Ôº¶Ôº•Ôº¥Ôº£Ôº®Âá¶ÁêÜ
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -2444,7 +2444,7 @@
       *
       *
       *****************************************************************
-      *    •∆°º•÷•Î•¢•Ø•ª•πΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´„Ç¢„ÇØ„Çª„ÇπÂá¶ÁêÜ
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���Уɥ쥻�ťǡ�������ʥ쥻�ťǡ���������(xml2)
+      *    ＡＰＩレセ電データ情報（レセ電データ作成）(xml2)
       *                                   COPY (CPRECEIPTDATA-MAKEV3REQ.INC)
       ******************************************************************
         01  XML-RECEIPTDATA-MAKEREQ.
@@ -29,35 +29,35 @@
             02  RECEDMAKEQ-MODE             PIC S9(9)   BINARY.
             02  RECEDMAKEQ-RECORDNAME       PIC X(128).
             02  RECEDMAKEQ-PATIENTREQ.
-      *         �ꥯ�������ֹ�
+      *         リクエスト番号
                 03  RECEDMAKEQ-REQUEST-NUMBER
                                            PIC X(2).
-      *         �����UID
+      *         カルテUID
                 03  RECEDMAKEQ-KARTE-UID   PIC X(36).
-      *         ���륫UID
+      *         オルカUID
                 03  RECEDMAKEQ-ORCA-UID    PIC X(36).
-      *         �»���
+      *         実施日
                 03  RECEDMAKEQ-PERFORM-DATE
                                            PIC X(10).
-      *         ����ǯ��
+      *         診療年月
                 03  RECEDMAKEQ-PERFORM-MONTH
                                            PIC X(7).
-      *         ����ǯ����
+      *         請求年月日
                 03  RECEDMAKEQ-AC-DATE     PIC X(10).
-      *         ������ʬ(02:�쥻��)
+      *         処理区分(02:レセ電)
                 03  RECEDMAKEQ-RECEIPT-MODE PIC X(02).
-      *         ������ʬ
+      *         入外区分
                 03  RECEDMAKEQ-INOUT       PIC X(2).
-      *         �����⡼��(Check:������ Ckeck�ʳ�:�����)
+      *         作成モード(Check:点検用 Ckeck以外:提出用)
                 03  RECEDMAKEQ-CREATE-MODE PIC X(6).
-      *         �����
+      *         提出先
                 03  RECEDMAKEQ-SUBMISSION-MODE
                                            PIC X(2).
-      *         �쥻�ťǡ��������å�(Yes:�����å����� Yes�ʳ�:�����å����ʤ�)
+      *         レセ電データチェック(Yes:チェックする Yes以外:チェックしない)
                 03  RECEDMAKEQ-CHECK-MODE  PIC X(3).
-      *         �ݸ����ֹ�(00000000:ľ�����᤹���ݸ��԰ʳ� 00000000�ʳ�:ľ�����᤹���ݸ��԰ʳ�)
+      *         保険者番号(00000000:直接請求する保険者以外 00000000以外:直接請求する保険者以外)
                 03  RECEDMAKEQ-HKNJANUM    PIC X(8).
-      *         ���ֻ���
+      *         期間指定
                 03  RECEDMAKEQ-START-MONTH PIC X(7).
                 03  RECEDMAKEQ-END-MONTH   PIC X(7).
       *

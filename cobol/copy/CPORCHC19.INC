@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ½èÊýäµ½ÐÎÏ¥Ñ¥é¥á¥¿¡Ê£Â£µ¡ËCOPY (CPORCHC19.INC)
-      *                                          (ORCHC19 ¤Ç»ÈÍÑ¡Ë
+      *    å‡¦æ–¹ç®‹å‡ºåŠ›ãƒ‘ãƒ©ãƒ¡ã‚¿ï¼ˆï¼¢ï¼•ï¼‰COPY (CPORCHC19.INC)
+      *                                          (ORCHC19 ã§ä½¿ç”¨ï¼‰
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-Â¿¡¹Ç¼  04/07/20  ÅÁÉ¼ÈÖ¹æÄÉ²Ã
-      *  01.00.02    NACL-Â¿¡¹Ç¼  05/11/10  ½èÍý¶èÊ¬ A¡ÁD ¡¢½èÊýÆâÍÆÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤šã€…ç´  04/07/20  ä¼ç¥¨ç•ªå·è¿½åŠ 
+      *  01.00.02    NACL-å¤šã€…ç´  05/11/10  å‡¦ç†åŒºåˆ† Aã€œD ã€å‡¦æ–¹å†…å®¹è¿½åŠ 
       ************************************************************
       *
        01  ORCHC19AREA.
       *
-      *    1:Á°²ó½èÊý¡¢¶õÇò¡§º£²ó½èÊý¡¢2:Æ¬½ñ¤Î¤ß¡¢3:±¡ÆâÊ¬
-      *    4:ÃæÅÓ½ªÎ»»þ¡Ê±¡³°¡Ë¡¢5:ÃæÅÓ½ªÎ»»þ¡Ê±¡Æâ¡Ë
-      *    A:½èÊýÆâÍÆÊÑ¹¹¡¢B:Á°²ó½èÊý¡Ê±¡³°¡Ë
-      *    C:Á°²ó½èÊý¡Ê±¡Æâ¡Ë¡¢D:Á°²ó½èÊý¡ÊÁªÂò¡Ë
+      *    1:å‰å›žå‡¦æ–¹ã€ç©ºç™½ï¼šä»Šå›žå‡¦æ–¹ã€2:é ­æ›¸ã®ã¿ã€3:é™¢å†…åˆ†
+      *    4:ä¸­é€”çµ‚äº†æ™‚ï¼ˆé™¢å¤–ï¼‰ã€5:ä¸­é€”çµ‚äº†æ™‚ï¼ˆé™¢å†…ï¼‰
+      *    A:å‡¦æ–¹å†…å®¹å¤‰æ›´ã€B:å‰å›žå‡¦æ–¹ï¼ˆé™¢å¤–ï¼‰
+      *    C:å‰å›žå‡¦æ–¹ï¼ˆé™¢å†…ï¼‰ã€D:å‰å›žå‡¦æ–¹ï¼ˆé¸æŠžï¼‰
            03  ORCHC19-KBN             PIC X(01).
       *
-      *    ¼õ¿ÇÎò¤ÎÏ¢ÈÖ¡Ê³ÎÄê¤·¤Ê¤¤»þ¡¢¥¼¥í¡Ë
+      *    å—è¨ºæ­´ã®é€£ç•ªï¼ˆç¢ºå®šã—ãªã„æ™‚ã€ã‚¼ãƒ­ï¼‰
            03  ORCHC19-RENNUM          PIC 9(01).
       *
-      *    ÅÁÉ¼ÈÖ¹æ
+      *    ä¼ç¥¨ç•ªå·
            03  ORCHC19-DENPNUM         PIC 9(07).
       *
-      *    ½èÊýÆâÍÆ¡ÊA:½èÊýÆâÍÆÊÑ¹¹¡¢D:Á°²ó½èÊý¡ÊÁªÂò¡Ë¤Ç»ÈÍÑ¡Ë
+      *    å‡¦æ–¹å†…å®¹ï¼ˆA:å‡¦æ–¹å†…å®¹å¤‰æ›´ã€D:å‰å›žå‡¦æ–¹ï¼ˆé¸æŠžï¼‰ã§ä½¿ç”¨ï¼‰
            03  ORCHC19-DATA-REC.
                05  ORCHC19-ZAI-MAX         PIC 9(03).
                05  ORCHC19-REC-TBL         OCCURS   100.
@@ -53,7 +53,7 @@
                        09  ORCHC19-SRYSURYO        PIC  9(05)V9(05).
                        09  ORCHC19-SRYKAISU        PIC  9(03).
                        09  ORCHC19-INPUTCOMENT     PIC  X(80).
-      *H30.4           ÆþÎÏÃÍ
+      *H30.4           å…¥åŠ›å€¤
                        09  ORCHC19-INPUTCHI-G.
                            11  ORCHC19-INPUTCHI    PIC  X(08)
                                                         OCCURS  5.

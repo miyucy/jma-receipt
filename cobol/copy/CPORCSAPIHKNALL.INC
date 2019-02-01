@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,180 +16,180 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���У����ݸ��ȹ礻�Խ��ѥ�᥿����COPY (CPORCSAPIHKNALL.INC)
+      *    ＡＰＩ全保険組合せ編集パラメタ　　COPY (CPORCSAPIHKNALL.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSAPIHKNALLAREA.
-      *����
+      *入力
            03  ORCSAPIHKN-PTID             PIC 9(10).
-      *������ʬ�ʣ����������դΤ��оݡ���ô����������դǷ����
+      *処理区分（１：処理日付のみ対象（負担割合を処理日付で決定）
            03  ORCSAPIHKN-KBN              PIC X(01).
-      *��������
+      *処理日付
            03  ORCSAPIHKN-SYSYMD           PIC X(08).
-      *��������ǯ��
+      *処理開始年月
            03  ORCSAPIHKN-START-YM         PIC X(06).
-      *������λǯ��
+      *処理終了年月
            03  ORCSAPIHKN-END-YM           PIC X(06).
-      *��ǯ�����ʽ�����ʬ�ᣱ�Τߡ�
+      *生年月日（処理区分＝１のみ）
            03  ORCSAPIHKN-BIRTHDAY         PIC X(08).
       *
-      *�����ΰ�
-      *ͭ���ݸ�����
+      *出力領域
+      *有効保険一覧
            03  ORCSAPIHKN-HKNCOMBI-AREA.
                05  ORCSAPIHKN-HKNCOMBI-TBL     OCCURS   200.
-      *            �ݸ��ȹ礻
+      *            保険組合せ
                    07  ORCSAPIHKN-THKNCOMBI        PIC  X(04).
-      *            �ݸ��ȹ礻��ô���ʳ����
+      *            保険組合せ負担割合（外来）
                    07  ORCSAPIHKN-COMB-RATEG       PIC  X(04).
-      *            �ݸ��ȹ礻��ô����������
+      *            保険組合せ負担割合（入院）
                    07  ORCSAPIHKN-COMB-RATEN       PIC  X(04).
-      *            �ݸ��ȹ礻ͭ������
+      *            保険組合せ有効期間
                    07  ORCSAPIHKN-COMB-TEKSTYMD    PIC  X(10).
                    07  ORCSAPIHKN-COMB-TEKEDYMD    PIC  X(10).
       *
                    07  ORCSAPIHKN-COMBN-TEKSTYMD   PIC  X(08).
                    07  ORCSAPIHKN-COMBN-TEKEDYMD   PIC  X(08).
       *
-      *            �ݸ�����
+      *            保険種別
                    07  ORCSAPIHKN-HKNNUM           PIC  X(03).
-      *            �ݸ�����̾��
+      *            保険種別名称
                    07  ORCSAPIHKN-HKNNUM-NAME      PIC  X(20).
-      *            �ݸ����ֹ�
+      *            保険者番号
                    07  ORCSAPIHKN-HKNJANUM         PIC  X(08).
-      *            ����
+      *            記号
                    07  ORCSAPIHKN-KIGO             PIC  X(80).
-      *            �ֹ�
+      *            番号
                    07  ORCSAPIHKN-NUM              PIC  X(80).
-      *            ��³��ʬ
+      *            継続区分
                    07  ORCSAPIHKN-CONTKBN          PIC  X(01).
-      *            �����ʬ
+      *            補助区分
                    07  ORCSAPIHKN-HOJOKBN          PIC  X(01).
-      *            �����ʬ̾��
+      *            補助区分名称
                    07  ORCSAPIHKN-HOJOKBN-NAME     PIC  X(30).
-      *            �ܿͲ�²��ʬ
+      *            本人家族区分
                    07  ORCSAPIHKN-HONKZKKBN        PIC  X(01).
-      *            ���ݸ���̾��
+      *            被保険者名称
                    07  ORCSAPIHKN-HIHKNJANAME      PIC  X(100).
-      *            Ŭ�Ѵ��֡�ɽ����
+      *            適用期間（表示）
                    07  ORCSAPIHKN-TEKSTYMD         PIC  X(10).
                    07  ORCSAPIHKN-TEKEDYMD         PIC  X(10).
-      *            Ŭ�Ѵ���
+      *            適用期間
                    07  ORCSAPIHKN-NAI-TEKSTYMD     PIC  X(08).
                    07  ORCSAPIHKN-NAI-TEKEDYMD     PIC  X(08).
-      *            ��ʼ�����
+      *            資格取得日
                    07  ORCSAPIHKN-SKKGETYMD        PIC  X(10).
                    07  ORCSAPIHKN-NAI-SKKGETYMD    PIC  X(08).
-      *            ��ǧ����
+      *            確認日付
                    07  ORCSAPIHKN-KAKUNINYMD       PIC  X(10).
                    07  ORCSAPIHKN-NAI-KAKUNINYMD   PIC  X(08).
-      *            �ݸ��ɣ�
+      *            保険ＩＤ
                    07  ORCSAPIHKN-NAI-HKNID        PIC  9(10).
-      *            ϫ�Ҷ�ʬ
+      *            労災区分
                    07  ORCSAPIHKN-RSI-HKNKBN       PIC  X(01).
-      *            ��ɽ����ʬ
+      *            非表示区分
                    07  ORCSAPIHKN-HYOJIKBN         PIC  X(01).
-      *            ������ࡦ����ɣ�
+      *            公費種類・公費ＩＤ
                    07  ORCSAPIHKN-KOH-G.
                        09  ORCSAPIHKN-KOH-OCC      OCCURS   4.
                            11  ORCSAPIHKN-KOHNUM           PIC  X(03).
                            11  ORCSAPIHKN-KOHNUM-NAME      PIC  X(20).
                            11  ORCSAPIHKN-FTNJANUM         PIC  X(08).
                            11  ORCSAPIHKN-JKYSNUM          PIC  X(20).
-      *                    Ŭ�Ѵ���
+      *                    適用期間
                            11  ORCSAPIHKN-KOH-TEKSTYMD     PIC  X(10).
                            11  ORCSAPIHKN-KOH-TEKEDYMD     PIC  X(10).
-      *                    ��������ôΨ
+      *                    入院−負担率
                            11  ORCSAPIHKN-RATE-ADMISSION   PIC X(05).
-      *                    �����ݸ����
+      *                    入院−固定額
                            11  ORCSAPIHKN-MONEY-ADMISSION  PIC X(06).
-      *                    �������ôΨ
+      *                    外来−負担率
                            11  ORCSAPIHKN-RATE-OUTPATIENT  PIC X(05).
-      *                     ����ݸ����
+      *                     外来−固定額
                            11  ORCSAPIHKN-MONEY-OUTPATIENT PIC X(06).
-      *                    ����ɣ�
+      *                    公費ＩＤ
                            11  ORCSAPIHKN-NAI-KOHID        PIC 9(10).
       *
-      *            ϫ���ݸ�����
+      *            労災保険情報
                    07  ORCSAPIHKN-RSIINF-AREA.
-      *                ϫ���ݸ�̾�Ρʵ����Ʊ�����ơ�
+      *                労災保険名称（記号と同じ内容）
                        09  ORCSAPIHKN-ACCIDENT-NAME        PIC X(50).
-      *                ���¤����̡��ֹ��Ʊ�����ơ�
+      *                傷病の部位（番号と同じ内容）
                        09  ORCSAPIHKN-DISEASE-LOCATION     PIC X(100).
-      *                ����ǯ����
+      *                傷病年月日
                        09  ORCSAPIHKN-DISEASE-DATE         PIC X(10).
-      *ϫ��
-      *                ϫƯ�ݸ��ֹ�
+      *労災
+      *                労働保険番号
                        09  ORCSAPIHKN-ACCIDENT-NUMBER      PIC X(14).
-      *                ǯ��ڽ��ֹ�
+      *                年金証書番号
                        09  ORCSAPIHKN-PENSIONCERTIFICATE   PIC X(09).
-      *                �ҳ���ʬ
+      *                災害区分
                        09  ORCSAPIHKN-ACCIDENT-CLASS       PIC X(01).
-      *                �ҳ���ʬ��̾�Ρ�
+      *                災害区分（名称）
                        09  ORCSAPIHKN-ACCIDENT-CLASS-NAME  PIC X(20).
-      *                ϫƯ�����Ľ𥳡���
+      *                労働基準監督署コード
                        09  ORCSAPIHKN-LABOR-ST-CODE        PIC X(05).
-      *                ϫƯ�����Ľ𥳡���̾��
+      *                労働基準監督署コード名称
                        09  ORCSAPIHKN-LABOR-ST-NAME        PIC X(50).
       *
-      *                ���Ѻ��̶�ʬ
+      *                新継再別区分
                        09  ORCSAPIHKN-SINKEI               PIC X(01).
                        09  ORCSAPIHKN-SINKEI-NAME          PIC X(10).
-      *                ž����ͳ
+      *                転帰事由
                        09  ORCSAPIHKN-TENKI                PIC X(01).
                        09  ORCSAPIHKN-TENKI-NAME           PIC X(10).
-      *                �ͻ������ʬ
+      *                四肢特例区分
                        09  ORCSAPIHKN-SISIKBN              PIC X(01).
                        09  ORCSAPIHKN-SISIKBN-NAME         PIC X(10).
       *
-      *                ���Ƚ�̾��
+      *                事業所名称
                        09  ORCSAPIHKN-RSI-JIGYOUNAME       PIC X(80).
-      *                �������ƻ�ܸ�̾
+      *                所在地都道府県名
                        09  ORCSAPIHKN-RSI-PREFNAME         PIC X(20).
-      *                �������ƻ�ܸ���ʬ
+      *                所在地都道府県区分
                        09  ORCSAPIHKN-RSI-PREFKBN          PIC X(01).
-      *                �������ƻ�ܸ���ʬ̾��
+      *                所在地都道府県区分名称
                        09  ORCSAPIHKN-RSI-PREFKBNNAME      PIC X(02).
-      *                ����Ϸ��Զ�̾
+      *                所在地郡市区名
                        09  ORCSAPIHKN-RSI-CITYNAME         PIC X(80).
-      *                ����Ϸ��Զ��ʬ
+      *                所在地郡市区区分
                        09  ORCSAPIHKN-RSI-CITYKBN          PIC X(01).
-      *                ����Ϸ��Զ�̾��
+      *                所在地郡市区名称
                        09  ORCSAPIHKN-RSI-CITYKBNNAME      PIC X(02).
-      *                ϫ�ҥ쥻������� ���ǯ��
+      *                労災レセ回数記載 基準年月
                        09  ORCSAPIHKN-KIJYUNYM             PIC X(07).
-      *                ϫ�ҥ쥻������� ���
+      *                労災レセ回数記載 回数
                        09  ORCSAPIHKN-RESEPUTO-COUNT       PIC X(03).
-      *������
-      *                �����������ʬ
+      *自賠責
+      *                自賠責請求区分
                        09  ORCSAPIHKN-JIBAISEIKBN          PIC X(01).
                        09  ORCSAPIHKN-JIBAISEIKBN-NAME     PIC X(20).
-      *                �������ݸ����̾
+      *                自賠責保険会社名
                        09  ORCSAPIHKN-RSI-HOKENNAME        PIC X(80).
-      *                ������ô����
+      *                自賠責担当医
                        09  ORCSAPIHKN-RSI-DRCD             PIC X(05).
-      *                ������ô����̾��
+      *                自賠責担当医名称
                        09  ORCSAPIHKN-RSI-DRCD-NAME        PIC X(100).
-      *���ե�������
-      *                �򹯴�����Ģ�ֹ�
+      *アフターケア
+      *                健康管理手帳番号
                        09  ORCSAPIHKN-RSI-KANRITCHO-NUMBER PIC X(13).
-      *                »����ʬ
+      *                損傷区分
                        09  ORCSAPIHKN-DAMAGE-CLASS         PIC X(03).
-      *                »����ʬ̾��
+      *                損傷区分名称
                        09  ORCSAPIHKN-DAMAGE-CLASS-NAME    PIC X(100).
-      *�軰�Թ԰�
-      *                ��ʪ�ٵ��ʬ
+      *第三者行為
+      *                現物支給区分
                        09  ORCSAPIHKN-DS-GENBTKBN          PIC X(01).
                        09  ORCSAPIHKN-DS-GENBTKBN-NAME     PIC X(20).
-      *                �õ������ʬ
+      *                特記事項区分
                        09  ORCSAPIHKN-DS-TOKKIKBN          PIC X(01).
                        09  ORCSAPIHKN-DS-TOKKIKBN-NAME     PIC X(20).
       *
-      *        �о��ݸ��ȹ礻���
+      *        対象保険組合せ件数
                05  ORCSAPIHKN-OT-MAX           PIC 9(04).
-      *���顼������
+      *エラーコード
            03  ORCSAPIHKN-ERRCD                    PIC 9(01).
       *
       *

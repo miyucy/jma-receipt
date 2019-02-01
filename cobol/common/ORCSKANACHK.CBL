@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSKANACHK.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : 
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : »æ≥—•¡•ß•√•ØΩËÕ˝
-      *   ÷µ—•®•È°º•≥°º•…  : 0:¿µæÔ°°1:»æ≥—∫Æ∫ﬂ°¢£≤°ß —¥π•®•È°º
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : 
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÂçäËßí„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
+      *  ËøîÂç¥„Ç®„É©„Éº„Ç≥„Éº„Éâ  : 0:Ê≠£Â∏∏„ÄÄ1:ÂçäËßíÊ∑∑Âú®„ÄÅÔºíÔºöÂ§âÊèõ„Ç®„É©„Éº
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  01.00.01    NACL-¬ø°π«º  02/08/09  ∆˛Œœ°¶Ω–ŒœŒŒ∞Ë§ÚX(1000)§ÿ
-      *  01.00.02    NACL-¬ø°π«º  04/09/30  ¡¥≥—•®•È°ºƒ…≤√
-      *  01.00.03    NACL-¬ø°π«º  05/08/10  kanaconv ª»Õ—§ÿ —ππ
-      *  04.01.00    NACL-¬ø°π«º  08/01/17  ¡¥≥—∂ı«Ú»ΩƒÍƒ…≤√
-      *  04.05.00    NACL-¬ø°π«º  09/12/11  ¡¥≥—∂ı«Ú∫ÔΩ¸ƒ…≤√
-      *  04.06.00    NACL-¬ø°π«º  10/10/01  ∆˛Œœ°¶Ω–ŒœŒŒ∞Ë§ÚX(5000)§ÿ
-      *  05.01.00    NACL-¬ø°π«º  17/09/26  ≤˛π‘•≥°º•…»ΩƒÍƒ…≤√
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  01.00.01    NACL-Â§ö„ÄÖÁ¥ç  02/08/09  ÂÖ•Âäõ„ÉªÂá∫ÂäõÈ†òÂüü„ÇíX(1000)„Å∏
+      *  01.00.02    NACL-Â§ö„ÄÖÁ¥ç  04/09/30  ÂÖ®Ëßí„Ç®„É©„ÉºËøΩÂä†
+      *  01.00.03    NACL-Â§ö„ÄÖÁ¥ç  05/08/10  kanaconv ‰ΩøÁî®„Å∏Â§âÊõ¥
+      *  04.01.00    NACL-Â§ö„ÄÖÁ¥ç  08/01/17  ÂÖ®ËßíÁ©∫ÁôΩÂà§ÂÆöËøΩÂä†
+      *  04.05.00    NACL-Â§ö„ÄÖÁ¥ç  09/12/11  ÂÖ®ËßíÁ©∫ÁôΩÂâäÈô§ËøΩÂä†
+      *  04.06.00    NACL-Â§ö„ÄÖÁ¥ç  10/10/01  ÂÖ•Âäõ„ÉªÂá∫ÂäõÈ†òÂüü„ÇíX(5000)„Å∏
+      *  05.01.00    NACL-Â§ö„ÄÖÁ¥ç  17/09/26  ÊîπË°å„Ç≥„Éº„ÉâÂà§ÂÆöËøΩÂä†
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -48,7 +48,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-ERR             PIC 9(01).
            03  FLG-KANA            PIC 9(01).
@@ -59,7 +59,7 @@
            03  FLG-ZENKAKU1        PIC 9(01).
            03  FLG-ZENKAKU2        PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -104,177 +104,177 @@
            03  WRK-IDX1                PIC 9(04).
            03  WRK-IDX2                PIC 9(04).
       *
-      *     —¥π•∆°º•÷•Î
+      *    Â§âÊèõ„ÉÜ„Éº„Éñ„É´
        01  TBL-HENKAN-AREA.
            03  FILLER              PIC X(01)   VALUE   "0".
-           03  FILLER              PIC X(02)   VALUE   "£∞".
+           03  FILLER              PIC X(02)   VALUE   "Ôºê".
            03  FILLER              PIC X(01)   VALUE   "1".
-           03  FILLER              PIC X(02)   VALUE   "£±".
+           03  FILLER              PIC X(02)   VALUE   "Ôºë".
            03  FILLER              PIC X(01)   VALUE   "2".
-           03  FILLER              PIC X(02)   VALUE   "£≤".
+           03  FILLER              PIC X(02)   VALUE   "Ôºí".
            03  FILLER              PIC X(01)   VALUE   "3".
-           03  FILLER              PIC X(02)   VALUE   "£≥".
+           03  FILLER              PIC X(02)   VALUE   "Ôºì".
            03  FILLER              PIC X(01)   VALUE   "4".
-           03  FILLER              PIC X(02)   VALUE   "£¥".
+           03  FILLER              PIC X(02)   VALUE   "Ôºî".
            03  FILLER              PIC X(01)   VALUE   "5".
-           03  FILLER              PIC X(02)   VALUE   "£µ".
+           03  FILLER              PIC X(02)   VALUE   "Ôºï".
            03  FILLER              PIC X(01)   VALUE   "6".
-           03  FILLER              PIC X(02)   VALUE   "£∂".
+           03  FILLER              PIC X(02)   VALUE   "Ôºñ".
            03  FILLER              PIC X(01)   VALUE   "7".
-           03  FILLER              PIC X(02)   VALUE   "£∑".
+           03  FILLER              PIC X(02)   VALUE   "Ôºó".
            03  FILLER              PIC X(01)   VALUE   "8".
-           03  FILLER              PIC X(02)   VALUE   "£∏".
+           03  FILLER              PIC X(02)   VALUE   "Ôºò".
            03  FILLER              PIC X(01)   VALUE   "9".
-           03  FILLER              PIC X(02)   VALUE   "£π".
-      *±—ª˙
+           03  FILLER              PIC X(02)   VALUE   "Ôºô".
+      *Ëã±Â≠ó
            03  FILLER              PIC X(01)   VALUE   "A".
-           03  FILLER              PIC X(02)   VALUE   "£¡".
+           03  FILLER              PIC X(02)   VALUE   "Ôº°".
            03  FILLER              PIC X(01)   VALUE   "B".
-           03  FILLER              PIC X(02)   VALUE   "£¬".
+           03  FILLER              PIC X(02)   VALUE   "Ôº¢".
            03  FILLER              PIC X(01)   VALUE   "C".
-           03  FILLER              PIC X(02)   VALUE   "£√".
+           03  FILLER              PIC X(02)   VALUE   "Ôº£".
            03  FILLER              PIC X(01)   VALUE   "D".
-           03  FILLER              PIC X(02)   VALUE   "£ƒ".
+           03  FILLER              PIC X(02)   VALUE   "Ôº§".
            03  FILLER              PIC X(01)   VALUE   "E".
-           03  FILLER              PIC X(02)   VALUE   "£≈".
+           03  FILLER              PIC X(02)   VALUE   "Ôº•".
            03  FILLER              PIC X(01)   VALUE   "F".
-           03  FILLER              PIC X(02)   VALUE   "£∆".
+           03  FILLER              PIC X(02)   VALUE   "Ôº¶".
            03  FILLER              PIC X(01)   VALUE   "G".
-           03  FILLER              PIC X(02)   VALUE   "£«".
+           03  FILLER              PIC X(02)   VALUE   "Ôºß".
            03  FILLER              PIC X(01)   VALUE   "H".
-           03  FILLER              PIC X(02)   VALUE   "£»".
+           03  FILLER              PIC X(02)   VALUE   "Ôº®".
            03  FILLER              PIC X(01)   VALUE   "I".
-           03  FILLER              PIC X(02)   VALUE   "£…".
+           03  FILLER              PIC X(02)   VALUE   "Ôº©".
            03  FILLER              PIC X(01)   VALUE   "J".
-           03  FILLER              PIC X(02)   VALUE   "£ ".
+           03  FILLER              PIC X(02)   VALUE   "Ôº™".
            03  FILLER              PIC X(01)   VALUE   "K".
-           03  FILLER              PIC X(02)   VALUE   "£À".
+           03  FILLER              PIC X(02)   VALUE   "Ôº´".
            03  FILLER              PIC X(01)   VALUE   "L".
-           03  FILLER              PIC X(02)   VALUE   "£Ã".
+           03  FILLER              PIC X(02)   VALUE   "Ôº¨".
            03  FILLER              PIC X(01)   VALUE   "N".
-           03  FILLER              PIC X(02)   VALUE   "£Œ".
+           03  FILLER              PIC X(02)   VALUE   "ÔºÆ".
            03  FILLER              PIC X(01)   VALUE   "M".
-           03  FILLER              PIC X(02)   VALUE   "£Õ".
+           03  FILLER              PIC X(02)   VALUE   "Ôº≠".
            03  FILLER              PIC X(01)   VALUE   "O".
-           03  FILLER              PIC X(02)   VALUE   "£œ".
+           03  FILLER              PIC X(02)   VALUE   "ÔºØ".
            03  FILLER              PIC X(01)   VALUE   "P".
-           03  FILLER              PIC X(02)   VALUE   "£–".
+           03  FILLER              PIC X(02)   VALUE   "Ôº∞".
            03  FILLER              PIC X(01)   VALUE   "Q".
-           03  FILLER              PIC X(02)   VALUE   "£—".
+           03  FILLER              PIC X(02)   VALUE   "Ôº±".
            03  FILLER              PIC X(01)   VALUE   "R".
-           03  FILLER              PIC X(02)   VALUE   "£“".
+           03  FILLER              PIC X(02)   VALUE   "Ôº≤".
            03  FILLER              PIC X(01)   VALUE   "S".
-           03  FILLER              PIC X(02)   VALUE   "£”".
+           03  FILLER              PIC X(02)   VALUE   "Ôº≥".
            03  FILLER              PIC X(01)   VALUE   "T".
-           03  FILLER              PIC X(02)   VALUE   "£‘".
+           03  FILLER              PIC X(02)   VALUE   "Ôº¥".
            03  FILLER              PIC X(01)   VALUE   "U".
-           03  FILLER              PIC X(02)   VALUE   "£’".
+           03  FILLER              PIC X(02)   VALUE   "Ôºµ".
            03  FILLER              PIC X(01)   VALUE   "V".
-           03  FILLER              PIC X(02)   VALUE   "£÷".
+           03  FILLER              PIC X(02)   VALUE   "Ôº∂".
            03  FILLER              PIC X(01)   VALUE   "W".
-           03  FILLER              PIC X(02)   VALUE   "£◊".
+           03  FILLER              PIC X(02)   VALUE   "Ôº∑".
            03  FILLER              PIC X(01)   VALUE   "X".
-           03  FILLER              PIC X(02)   VALUE   "£ÿ".
+           03  FILLER              PIC X(02)   VALUE   "Ôº∏".
            03  FILLER              PIC X(01)   VALUE   "Y".
-           03  FILLER              PIC X(02)   VALUE   "£Ÿ".
+           03  FILLER              PIC X(02)   VALUE   "Ôºπ".
            03  FILLER              PIC X(01)   VALUE   "Z".
-           03  FILLER              PIC X(02)   VALUE   "£⁄".
-      *±—ª˙
+           03  FILLER              PIC X(02)   VALUE   "Ôº∫".
+      *Ëã±Â≠ó
            03  FILLER              PIC X(01)   VALUE   "a".
-           03  FILLER              PIC X(02)   VALUE   "£·".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÅ".
            03  FILLER              PIC X(01)   VALUE   "b".
-           03  FILLER              PIC X(02)   VALUE   "£‚".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÇ".
            03  FILLER              PIC X(01)   VALUE   "c".
-           03  FILLER              PIC X(02)   VALUE   "£„".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÉ".
            03  FILLER              PIC X(01)   VALUE   "d".
-           03  FILLER              PIC X(02)   VALUE   "£‰".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÑ".
            03  FILLER              PIC X(01)   VALUE   "e".
-           03  FILLER              PIC X(02)   VALUE   "£Â".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÖ".
            03  FILLER              PIC X(01)   VALUE   "f".
-           03  FILLER              PIC X(02)   VALUE   "£Ê".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩÜ".
            03  FILLER              PIC X(01)   VALUE   "g".
-           03  FILLER              PIC X(02)   VALUE   "£Á".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩá".
            03  FILLER              PIC X(01)   VALUE   "h".
-           03  FILLER              PIC X(02)   VALUE   "£Ë".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩà".
            03  FILLER              PIC X(01)   VALUE   "i".
-           03  FILLER              PIC X(02)   VALUE   "£È".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩâ".
            03  FILLER              PIC X(01)   VALUE   "j".
-           03  FILLER              PIC X(02)   VALUE   "£Í".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩä".
            03  FILLER              PIC X(01)   VALUE   "k".
-           03  FILLER              PIC X(02)   VALUE   "£Î".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩã".
            03  FILLER              PIC X(01)   VALUE   "l".
-           03  FILLER              PIC X(02)   VALUE   "£Ï".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩå".
            03  FILLER              PIC X(01)   VALUE   "n".
-           03  FILLER              PIC X(02)   VALUE   "£Ó".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩé".
            03  FILLER              PIC X(01)   VALUE   "m".
-           03  FILLER              PIC X(02)   VALUE   "£Ì".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩç".
            03  FILLER              PIC X(01)   VALUE   "o".
-           03  FILLER              PIC X(02)   VALUE   "£Ô".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩè".
            03  FILLER              PIC X(01)   VALUE   "p".
-           03  FILLER              PIC X(02)   VALUE   "£".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩê".
            03  FILLER              PIC X(01)   VALUE   "q".
-           03  FILLER              PIC X(02)   VALUE   "£Ò".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩë".
            03  FILLER              PIC X(01)   VALUE   "r".
-           03  FILLER              PIC X(02)   VALUE   "£Ú".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩí".
            03  FILLER              PIC X(01)   VALUE   "s".
-           03  FILLER              PIC X(02)   VALUE   "£Û".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩì".
            03  FILLER              PIC X(01)   VALUE   "t".
-           03  FILLER              PIC X(02)   VALUE   "£Ù".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩî".
            03  FILLER              PIC X(01)   VALUE   "u".
-           03  FILLER              PIC X(02)   VALUE   "£ı".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩï".
            03  FILLER              PIC X(01)   VALUE   "v".
-           03  FILLER              PIC X(02)   VALUE   "£ˆ".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩñ".
            03  FILLER              PIC X(01)   VALUE   "w".
-           03  FILLER              PIC X(02)   VALUE   "£˜".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩó".
            03  FILLER              PIC X(01)   VALUE   "x".
-           03  FILLER              PIC X(02)   VALUE   "£¯".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩò".
            03  FILLER              PIC X(01)   VALUE   "y".
-           03  FILLER              PIC X(02)   VALUE   "£˘".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩô".
            03  FILLER              PIC X(01)   VALUE   "z".
-           03  FILLER              PIC X(02)   VALUE   "£˙".
+           03  FILLER              PIC X(02)   VALUE   "ÔΩö".
       *
            03  FILLER              PIC X(01)   VALUE   "-".
-           03  FILLER              PIC X(02)   VALUE   "°›".
+           03  FILLER              PIC X(02)   VALUE   "‚àí".
            03  FILLER              PIC X(01)   VALUE   "(".
-           03  FILLER              PIC X(02)   VALUE   "° ".
+           03  FILLER              PIC X(02)   VALUE   "Ôºà".
            03  FILLER              PIC X(01)   VALUE   ")".
-           03  FILLER              PIC X(02)   VALUE   "°À".
+           03  FILLER              PIC X(02)   VALUE   "Ôºâ".
            03  FILLER              PIC X(01)   VALUE   "\".
-           03  FILLER              PIC X(02)   VALUE   "°Ô".
+           03  FILLER              PIC X(02)   VALUE   "¬•".
            03  FILLER              PIC X(01)   VALUE   ".".
-           03  FILLER              PIC X(02)   VALUE   "°•".
+           03  FILLER              PIC X(02)   VALUE   "Ôºé".
            03  FILLER              PIC X(01)   VALUE   "/".
-           03  FILLER              PIC X(02)   VALUE   "°ø".
+           03  FILLER              PIC X(02)   VALUE   "Ôºè".
            03  FILLER              PIC X(01)   VALUE   "<".
-           03  FILLER              PIC X(02)   VALUE   "°„".
+           03  FILLER              PIC X(02)   VALUE   "Ôºú".
            03  FILLER              PIC X(01)   VALUE   ">".
-           03  FILLER              PIC X(02)   VALUE   "°‰".
+           03  FILLER              PIC X(02)   VALUE   "Ôºû".
            03  FILLER              PIC X(01)   VALUE   "*".
-           03  FILLER              PIC X(02)   VALUE   "°ˆ".
+           03  FILLER              PIC X(02)   VALUE   "Ôºä".
            03  FILLER              PIC X(01)   VALUE   "?".
-           03  FILLER              PIC X(02)   VALUE   "°©".
+           03  FILLER              PIC X(02)   VALUE   "Ôºü".
            03  FILLER              PIC X(01)   VALUE   "%".
-           03  FILLER              PIC X(02)   VALUE   "°Û".
+           03  FILLER              PIC X(02)   VALUE   "ÔºÖ".
            03  FILLER              PIC X(01)   VALUE   "+".
-           03  FILLER              PIC X(02)   VALUE   "°‹".
+           03  FILLER              PIC X(02)   VALUE   "Ôºã".
            03  FILLER              PIC X(01)   VALUE   "!".
-           03  FILLER              PIC X(02)   VALUE   "°™".
+           03  FILLER              PIC X(02)   VALUE   "ÔºÅ".
            03  FILLER              PIC X(01)   VALUE   "#".
-           03  FILLER              PIC X(02)   VALUE   "°Ù".
+           03  FILLER              PIC X(02)   VALUE   "ÔºÉ".
            03  FILLER              PIC X(01)   VALUE   "&".
-           03  FILLER              PIC X(02)   VALUE   "°ı".
+           03  FILLER              PIC X(02)   VALUE   "ÔºÜ".
            03  FILLER              PIC X(01)   VALUE   "=".
-           03  FILLER              PIC X(02)   VALUE   "°·".
+           03  FILLER              PIC X(02)   VALUE   "Ôºù".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(02)   VALUE   "°§".
+           03  FILLER              PIC X(02)   VALUE   "Ôºå".
            03  FILLER              PIC X(01)   VALUE   "_".
-           03  FILLER              PIC X(02)   VALUE   "°≤".
+           03  FILLER              PIC X(02)   VALUE   "Ôºø".
            03  FILLER              PIC X(01)   VALUE   "@".
-           03  FILLER              PIC X(02)   VALUE   "°˜".
+           03  FILLER              PIC X(02)   VALUE   "Ôº†".
            03  FILLER              PIC X(01)   VALUE   "[".
-           03  FILLER              PIC X(02)   VALUE   "°Œ".
+           03  FILLER              PIC X(02)   VALUE   "Ôºª".
            03  FILLER              PIC X(01)   VALUE   "]".
-           03  FILLER              PIC X(02)   VALUE   "°œ".
+           03  FILLER              PIC X(02)   VALUE   "ÔºΩ".
       *
        01  TBL-HENKAN-AREA-R           REDEFINES   TBL-HENKAN-AREA.
            03  TBL-HENKAN-OCC          OCCURS   83
@@ -284,16 +284,16 @@
        01  TBL-MAX                     PIC 9(04)   VALUE   83.
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
            COPY    "CPORCXKANACONV2.INC".
       *
-      *    ≥»ƒ• ∏ª˙¬–±˛
+      *    Êã°ÂºµÊñáÂ≠óÂØæÂøú
            COPY    "CPORCSSTRING.INC".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -303,7 +303,7 @@
            ORCSKANACHKAREA.
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -314,7 +314,7 @@
            MOVE    ZERO                TO  KANACHK-RC
            MOVE    ZERO                TO  KANACHK-RC2
            MOVE    SPACE               TO  KANACHK-OUT-INPUT
-      *    ∫«¬Á∑ÂøÙ»ΩƒÍ
+      *    ÊúÄÂ§ßÊ°ÅÊï∞Âà§ÂÆö
            MOVE    ZERO                TO  IDX-MAX
            PERFORM VARYING     IDX     FROM    5000 BY  -1
                    UNTIL       IDX     <   1
@@ -335,19 +335,19 @@
       *                    (1:KANACHK-MAX)
       *
            IF      IDX-MAX             >   ZERO
-      *        ¡¥≥—§Œ∆‚Õ∆»ΩƒÍ
+      *        ÂÖ®Ëßí„ÅÆÂÜÖÂÆπÂà§ÂÆö
                PERFORM 1000-KOUMOKU-CHK-SEC
       *
                EVALUATE    KANACHK-SYORI
                    WHEN    "1"
-      *            ¡¥≥—»ΩƒÍΩËÕ˝
+      *            ÂÖ®ËßíÂà§ÂÆöÂá¶ÁêÜ
                    PERFORM 100-ZENKAKU-CHECK-SEC
                    WHEN    "2"
-      *            ¡¥≥—√÷¥πΩËÕ˝
+      *            ÂÖ®ËßíÁΩÆÊèõÂá¶ÁêÜ
                    PERFORM 200-ZENKAKU-HENKAN-SEC
                END-EVALUATE
       *H29.9
-      *        ≤˛π‘•≥°º•…•¡•ß•√•Ø
+      *        ÊîπË°å„Ç≥„Éº„Éâ„ÉÅ„Çß„ÉÉ„ÇØ
                PERFORM 1009-KAIGYO-CHK-SEC
            END-IF
       *
@@ -357,7 +357,7 @@
            .
       *
       *****************************************************************
-      *    ¡¥≥—•¡•ß•√•ØΩËÕ˝
+      *    ÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        1000-KOUMOKU-CHK-SEC           SECTION.
       *
@@ -391,11 +391,11 @@
       *
       *H29.9
       *****************************************************************
-      *    ≤˛π‘»ΩƒÍΩËÕ˝
+      *    ÊîπË°åÂà§ÂÆöÂá¶ÁêÜ
       *****************************************************************
        1009-KAIGYO-CHK-SEC           SECTION.
       *
-      *    ≤˛π‘»ΩƒÍ
+      *    ÊîπË°åÂà§ÂÆö
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    KANACHK-OUT-INPUT   TO  ORCSSTR-STRING1
@@ -411,7 +411,7 @@
       *
       *
       *****************************************************************
-      *    ¡¥≥—»ΩƒÍΩËÕ˝
+      *    ÂÖ®ËßíÂà§ÂÆöÂá¶ÁêÜ
       *****************************************************************
        100-ZENKAKU-CHECK-SEC           SECTION.
       *
@@ -427,7 +427,7 @@
            MOVE    KANACHK-MAE-INPUT   TO  KANACONV-INDATA
            CALL    "kanaconv"          USING ORCXKANACONVAREA
            IF      KANACONV-RETURN     =   ZERO
-      *        ¡¥≥—§Œ§ﬂ
+      *        ÂÖ®Ëßí„ÅÆ„Åø
                MOVE    1                   TO  FLG-KANJI
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
@@ -440,14 +440,14 @@
                IF      KANACONV-MAXLEN     =   IDX-MAX
                    CONTINUE
                ELSE
-      *            »æ≥—∂ı«Ú§Œ√÷¥π§®§¢§Í
+      *            ÂçäËßíÁ©∫ÁôΩ„ÅÆÁΩÆÊèõ„Åà„ÅÇ„Çä
                    MOVE    8                   TO  KANACHK-RC2
                END-IF
                MOVE    KANACONV-OUTDATA    TO  KANACHK-OUT-INPUT
                MOVE    2                   TO  KANACHK-SYUBETU
                MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
            ELSE
-      *        »æ≥—§Œ§ﬂ§Œ»ΩƒÍ
+      *        ÂçäËßí„ÅÆ„Åø„ÅÆÂà§ÂÆö
                INITIALIZE                  ORCXKANACONVAREA
                MOVE    KANACHK-MAX-CNT     TO  KANACONV-LEN
                MOVE    5000                TO  KANACONV-STLEN
@@ -460,15 +460,15 @@
                    MOVE    1                   TO  KANACHK-SYUBETU
                    MOVE    KANACONV-MAXLEN     TO  KANACHK-MAX
                    MOVE    KANACONV-MAXLEN     TO  IDX-MAX
-      *            ¥÷§À∂ı«Ú§¨§¢§Î§´§Œ»ΩƒÍ
+      *            Èñì„Å´Á©∫ÁôΩ„Åå„ÅÇ„Çã„Åã„ÅÆÂà§ÂÆö
                    PERFORM 1001-KUHAKU-CHK-SEC
                ELSE
-      *            ∫Æ∫ﬂ•®•È°º
+      *            Ê∑∑Âú®„Ç®„É©„Éº
                    MOVE    1                   TO  KANACHK-RC
                END-IF
            END-IF
       *
-      *    ¡¥≥—∂ı«Ú§Œ»ΩƒÍ
+      *    ÂÖ®ËßíÁ©∫ÁôΩ„ÅÆÂà§ÂÆö
            IF     (KANACHK-SYUBETU     =   2    )  AND
                   (KANACHK-RC          =   ZERO )
                PERFORM 1003-ZENSPACE-CHK-SEC
@@ -478,7 +478,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥÷§À»æ≥—∂ı«Ú§¨§¢§Î§´§Œ»ΩƒÍΩËÕ˝
+      *    Èñì„Å´ÂçäËßíÁ©∫ÁôΩ„Åå„ÅÇ„Çã„Åã„ÅÆÂà§ÂÆöÂá¶ÁêÜ
       *****************************************************************
        1001-KUHAKU-CHK-SEC           SECTION.
       *
@@ -498,12 +498,12 @@
        1001-KUHAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡¥≥—∂ı«Ú»ΩƒÍΩËÕ˝
+      *    ÂÖ®ËßíÁ©∫ÁôΩÂà§ÂÆöÂá¶ÁêÜ
       *****************************************************************
        1003-ZENSPACE-CHK-SEC           SECTION.
       *
            IF      KANACHK-SYORIKBN    =   "1"
-      *        ∫«∏Â§Œ¡¥≥—∂ı«Ú∫ÔΩ¸
+      *        ÊúÄÂæå„ÅÆÂÖ®ËßíÁ©∫ÁôΩÂâäÈô§
                PERFORM 10031-LASTDEL-HEN-SEC
            END-IF
       *
@@ -513,7 +513,7 @@
            MOVE    ZERO                TO  WRK-IDX2
            PERFORM VARYING     IDX     FROM    1   BY  2
                    UNTIL       IDX     >   KANACHK-MAX
-               IF      KANACHK-OUT-INPUT(IDX:2)    =   "°°"
+               IF      KANACHK-OUT-INPUT(IDX:2)    =   "„ÄÄ"
                    MOVE    1               TO  FLG-ZENKAKU2
                    MOVE    IDX             TO  WRK-IDX2
                ELSE
@@ -523,14 +523,14 @@
            END-PERFORM
            IF      FLG-ZENKAKU2        =   1
                IF      FLG-ZENKAKU1        =   1
-      *            ¡¥≥—∂ı«Ú§¢§Í
+      *            ÂÖ®ËßíÁ©∫ÁôΩ„ÅÇ„Çä
                    MOVE    1               TO  KANACHK-RC3
-      *            ∫«∏Â§¨¡¥≥—∂ı«Ú
+      *            ÊúÄÂæå„ÅåÂÖ®ËßíÁ©∫ÁôΩ
                    IF      WRK-IDX1        <   WRK-IDX2
                        MOVE    3               TO  KANACHK-RC3
                    END-IF
                ELSE
-      *            ¡¥≥—∂ı«Ú§Œ§ﬂ
+      *            ÂÖ®ËßíÁ©∫ÁôΩ„ÅÆ„Åø
                    MOVE    2               TO  KANACHK-RC3
                END-IF
            END-IF
@@ -538,7 +538,7 @@
        1003-ZENSPACE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ∫«∏Â§Œ¡¥≥—∂ı«Ú∫ÔΩ¸ΩËÕ˝
+      *    ÊúÄÂæå„ÅÆÂÖ®ËßíÁ©∫ÁôΩÂâäÈô§Âá¶ÁêÜ
       *****************************************************************
        10031-LASTDEL-HEN-SEC           SECTION.
       *
@@ -547,7 +547,7 @@
            COMPUTE WRK-IDX2            =   KANACHK-MAX   -  1
            PERFORM VARYING     IDX     FROM    WRK-IDX2  BY  -2
                    UNTIL       IDX     <   1
-               IF      KANACHK-OUT-INPUT(IDX:2)    =   "°°"
+               IF      KANACHK-OUT-INPUT(IDX:2)    =   "„ÄÄ"
                    CONTINUE
                ELSE
                    COMPUTE WRK-IDX1        =   IDX     +   1
@@ -566,7 +566,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡¥≥—ΩËÕ˝
+      *    ÂÖ®ËßíÂá¶ÁêÜ
       *****************************************************************
        200-ZENKAKU-HENKAN-SEC           SECTION.
       *
@@ -588,7 +588,7 @@
                MOVE    2                   TO  KANACHK-RC
            END-IF
       *
-      *    ¡¥≥—∂ı«Ú§Œ»ΩƒÍ
+      *    ÂÖ®ËßíÁ©∫ÁôΩ„ÅÆÂà§ÂÆö
            IF     (KANACHK-SYUBETU     =   2    )  AND
                   (KANACHK-RC          =   ZERO )
                PERFORM 1003-ZENSPACE-CHK-SEC

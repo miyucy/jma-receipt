@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCT0060.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Äê´üÀÁµá
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ýÇ¼¥Ç¡¼¥¿ÆÍ¹ç
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/01/07    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å®šæœŸè«‹æ±‚
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : åŽç´ãƒ‡ãƒ¼ã‚¿çªåˆ
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/01/07    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-ÂÀÅÄ    03.12.19  ÆüÊÌ¼ýÇ¼¥Þ¥¹¥¿ÂÐ±þ
-      *  01.00.02    NACL-ÂÀÅÄ    04.03.30  ÄûÀµ¹¹¿·ÍÑ¥Ç¡¼¥¿ºîÀ®ÄÉ²Ã
-      *  03.05.00    NACL-ÂÀÅÄ    07/05/31  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤ªç”°    03.12.19  æ—¥åˆ¥åŽç´ãƒžã‚¹ã‚¿å¯¾å¿œ
+      *  01.00.02    NACL-å¤ªç”°    04.03.30  è¨‚æ­£æ›´æ–°ç”¨ãƒ‡ãƒ¼ã‚¿ä½œæˆè¿½åŠ 
+      *  03.05.00    NACL-å¤ªç”°    07/05/31  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -37,120 +37,120 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(IN)
            SELECT  TEIKI01-FILE    ASSIGN   TEIKI01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TEIKI01-KEY
                                    FILE    STATUS  IS  STS-TEIKI01.
       *
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(IN)
            SELECT  TEIKI04-FILE    ASSIGN   TEIKI04PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TEIKI04-KEY
                                    FILE    STATUS  IS  STS-TEIKI04.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ¿·µ¬ÄÉ²ÃÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- æ–°è¦è¿½åŠ ç”¨
            SELECT  TEIKI06-FILE    ASSIGN   TEIKI06PARA
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI06.
       *
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë(OT)
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT)
            SELECT  TEIKI07-FILE    ASSIGN   TEIKI07PARA
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI07.
       *
-      *    Ã±ÆÈ¹¹¿·ÍÑÆüÊÌ¼ýÇ¼¥Õ¥¡¥¤¥ë(OT)
+      *    å˜ç‹¬æ›´æ–°ç”¨æ—¥åˆ¥åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT)
            SELECT  TEIKI08-FILE    ASSIGN   TEIKI08PARA
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI08.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ÄûÀµ¹¹¿·ÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- è¨‚æ­£æ›´æ–°ç”¨
            SELECT  TEIKI09-FILE    ASSIGN   TEIKI09PARA
                    ORGANIZATION    LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-TEIKI09.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  TEIKIERR-FILE   ASSIGN  TEIKIERR
                                    FILE    STATUS  IS  STS-TEIKIERR.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(IN)
        FD  TEIKI01-FILE.
        01  TEIKI01-REC.
            COPY  "CPTEIKI01.INC".
       *
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë(IN)
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(IN)
        FD  TEIKI04-FILE.
        01  TEIKI04-REC.
            COPY  "CPTEIKI01.INC"       REPLACING   //TEIKI01-//
                                        BY          //TEIKI04-//.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ¿·µ¬ÄÉ²ÃÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- æ–°è¦è¿½åŠ ç”¨
        FD  TEIKI06-FILE.
        01  TEIKI06-REC.
            COPY  "CPTEIKI01.INC"       REPLACING   //TEIKI01-//
                                        BY          //TEIKI06-//.
       *
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë(OT)
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT)
        FD  TEIKI07-FILE.
        01  TEIKI07-REC.
            COPY    "CPSYUNOU.INC"      REPLACING   //SYU-//
                                        BY          //TEIKI07-//.
       *
-      *    Ã±ÆÈ¹¹¿·ÍÑÆüÊÌ¼ýÇ¼¥Õ¥¡¥¤¥ë(OT)
+      *    å˜ç‹¬æ›´æ–°ç”¨æ—¥åˆ¥åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT)
        FD  TEIKI08-FILE.
        01  TEIKI08-REC.
-      *    ¹¹¿·¶èÊ¬¡Ê£±¡§¹¹¿·¡ÊÄÉ²Ã¡Ë¡¿£²¡§ºï½ü¡Ë
+      *    æ›´æ–°åŒºåˆ†ï¼ˆï¼‘ï¼šæ›´æ–°ï¼ˆè¿½åŠ ï¼‰ï¼ï¼’ï¼šå‰Šé™¤ï¼‰
          02    TEIKI08-UPD-FLG         PIC 9(01).
          02    TEIKI08-SYUDAY-DAT.
            COPY    "CPSYUDAY.INC"      REPLACING   //SDAY-//
                                        BY          //TEIKI08-SDAY-//.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ÄûÀµ¹¹¿·ÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- è¨‚æ­£æ›´æ–°ç”¨
        FD  TEIKI09-FILE.
        01  TEIKI09-REC.
            COPY  "CPTEIKI01.INC"       REPLACING   //TEIKI01-//
                                        BY          //TEIKI09-//.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  TEIKIERR-FILE.
        01  TEIKIERR-REC                PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è(IN)
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ(IN)
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI01PARA//.
       *
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è (IN)
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ (IN)
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI04PARA//.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ¿·µ¬ÄÉ²ÃÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- æ–°è¦è¿½åŠ ç”¨
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI06PARA//.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ëÌ¾¾ÎÎÎ°è (OT)
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«åç§°é ˜åŸŸ (OT)
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI07PARA//.
       *
-      *    Ã±ÆÈ¹¹¿·ÍÑÆüÊÌ¼ýÇ¼¥Õ¥¡¥¤¥ë(OT)
+      *    å˜ç‹¬æ›´æ–°ç”¨æ—¥åˆ¥åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT)
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI08PARA//.
       *
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë(OT) <-- ÄûÀµ¹¹¿·ÍÑ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«(OT) <-- è¨‚æ­£æ›´æ–°ç”¨
            COPY    "CPCOMMONDAT3.INC"  REPLACING  //TMPFLPARA//
                                        BY         //TEIKI09PARA//.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ« åç§°é ˜åŸŸ 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //TEIKIERR//.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-TEIKIERR            PIC X(02).
            03  STS-TEIKI01             PIC X(02).
@@ -166,7 +166,7 @@
            03  FLG-SYSKANRI            PIC 9(01).
            03  FLG-PTNUM               PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-OUT1                PIC 9(06).
            03  CNT-OUT2                PIC 9(06).
@@ -177,7 +177,7 @@
            03  IDX2                    PIC 9(04). 
            03  IDX3                    PIC 9(04). 
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-TEIKIERR            PIC X(200).
            03  WRK-PTID                PIC 9(10).
@@ -207,7 +207,7 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    Äê´üÀÁµá°ì³ç½èÍý¥Ñ¥é¥á¡¼¥¿
+      *    å®šæœŸè«‹æ±‚ä¸€æ‹¬å‡¦ç†ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
            COPY    "CPTEIKI1PARA.INC".
       *
        01  ZOUSYUNOU-REC.
@@ -236,45 +236,45 @@
       *
        01  ERR-MSG-AREA.
            03  ERR-MSG01                   PIC X(100)    VALUE
-               "Äê´üÀÁµá´ÉÍý¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£".
+               "å®šæœŸè«‹æ±‚ç®¡ç†æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚".
            03  ERR-MSG02                   PIC X(100)    VALUE
-               "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿".
+               "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ".
            03  ERR-MSG88                   PIC X(100)    VALUE
-               "¥­¥ã¥ó¥»¥ë¤·¤Þ¤·¤¿".
+               "ã‚­ãƒ£ãƒ³ã‚»ãƒ«ã—ã¾ã—ãŸ".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK5010.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    Äê´üÀÁµá¥µ¥Ö
+      *    å®šæœŸè«‹æ±‚ã‚µãƒ–
            COPY    "CPORCSTEIKI01.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
@@ -289,7 +289,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -306,7 +306,7 @@
            EXIT.
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -339,7 +339,7 @@
       *
            PERFORM 1001-EDIT-SHELLMSG-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    TEIKI1P-HOSPNUM     TO  JOB-HOSPNUM
@@ -415,7 +415,7 @@
            OPEN    OUTPUT              TEIKI08-FILE
            OPEN    OUTPUT              TEIKI09-FILE
       *
-      *    Äê´üÀÁµá´ÉÍý¾ðÊó
+      *    å®šæœŸè«‹æ±‚ç®¡ç†æƒ…å ±
            INITIALIZE                  SYS-5010-REC
            MOVE    "5010"              TO  SYS-5010-KANRICD
            MOVE    "*"                 TO  SYS-5010-KBNCD
@@ -435,7 +435,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    ¥·¥§¥ë¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚·ã‚§ãƒ«ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        1001-EDIT-SHELLMSG-SEC          SECTION.
       *
@@ -450,16 +450,16 @@
       *
            EVALUATE    TEIKI1P-KBT
            WHEN    1
-               MOVE    "£±´ü¡§"        TO  WRK-KBTMSG
+               MOVE    "ï¼‘æœŸï¼š"        TO  WRK-KBTMSG
            WHEN    2
-               MOVE    "£²´ü¡§"        TO  WRK-KBTMSG
+               MOVE    "ï¼’æœŸï¼š"        TO  WRK-KBTMSG
            WHEN    3
-               MOVE    "£³´ü¡§"        TO  WRK-KBTMSG
+               MOVE    "ï¼“æœŸï¼š"        TO  WRK-KBTMSG
            END-EVALUATE
       *
            STRING  WRK-MONMSG          DELIMITED   BY  SPACE
                    WRK-KBTMSG          DELIMITED   BY  SIZE
-                   "¼ýÇ¼¥Ç¡¼¥¿ÆÍ¹ç"    DELIMITED   BY  SIZE
+                   "åŽç´ãƒ‡ãƒ¼ã‚¿çªåˆ"    DELIMITED   BY  SIZE
            INTO    WRK-SHELLMSG
            END-STRING
       *
@@ -467,7 +467,7 @@
        1001-EDIT-SHELLMSG-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -486,7 +486,7 @@
                    PERFORM 2001-TEIKI07-WRITE-SEC
                    PERFORM 910-TEIKI04-READ-SEC
                WHEN    TEIKI01-MAIN-KEY     =   TEIKI04-MAIN-KEY
-      *            Æ±°ì¼ýÇ¼¥Á¥§¥Ã¥¯
+      *            åŒä¸€åŽç´ãƒã‚§ãƒƒã‚¯
                    PERFORM 2001-DOUITU-SYUNOU-CHK-SEC
                    PERFORM 910-TEIKI01-READ-SEC
                    PERFORM 910-TEIKI04-READ-SEC
@@ -500,7 +500,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æ±°ì¼ýÇ¼¥Á¥§¥Ã¥¯
+      *    åŒä¸€åŽç´ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        2001-DOUITU-SYUNOU-CHK-SEC      SECTION.
       *
@@ -561,7 +561,7 @@
                    PERFORM 2001-TEIKI07-WRITE-SEC
                END-EVALUATE
            ELSE
-      *        Ã±ÆÈ¹¹¿·ÍÑÆüÊÌ¼ýÇ¼¥Õ¥¡¥¤¥ëÊÔ½¸½èÍý
+      *        å˜ç‹¬æ›´æ–°ç”¨æ—¥åˆ¥åŽç´ãƒ•ã‚¡ã‚¤ãƒ«ç·¨é›†å‡¦ç†
                PERFORM 2001-TEIKI08-HEN-SEC
            END-IF
       *
@@ -569,7 +569,7 @@
        2001-DOUITU-SYUNOU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2001-TEIKI06-WRITE-SEC          SECTION.
       *
@@ -592,7 +592,7 @@
        2001-TEIKI06-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2001-TEIKI07-WRITE-SEC          SECTION.
       *
@@ -604,7 +604,7 @@
        2001-TEIKI07-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2001-TEIKI09-WRITE-SEC          SECTION.
       *
@@ -704,7 +704,7 @@
        2001-TEIKI09-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    Ã±ÆÈ¹¹¿·ÍÑÆüÊÌ¥Õ¥¡¥¤¥ë½ÐÎÏ½èÍý
+      *    å˜ç‹¬æ›´æ–°ç”¨æ—¥åˆ¥ãƒ•ã‚¡ã‚¤ãƒ«å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2001-TEIKI08-HEN-SEC            SECTION.
       *
@@ -716,8 +716,8 @@
       *
            EVALUATE TEIKI01-SYUDAY-EXIST-FLG
                                        ALSO    TEIKI04-SYUDAY-EXIST-FLG
-      *    ¿·ÆüÊÌ¤ÈµìÆüÊÌ¤¬¤È¤â¤ËÂ¸ºß¤·¡¢ÆâÍÆ¤¬°Û¤Ê¤ë¾ì¹ç¡¢
-      *    µìÆüÊÌ¤ÎÆâÍÆ¤ò¿·ÆüÊÌ¤ÎÆâÍÆ¤ÇÃÖ¤­´¹¤¨¤ë
+      *    æ–°æ—¥åˆ¥ã¨æ—§æ—¥åˆ¥ãŒã¨ã‚‚ã«å­˜åœ¨ã—ã€å†…å®¹ãŒç•°ãªã‚‹å ´åˆã€
+      *    æ—§æ—¥åˆ¥ã®å†…å®¹ã‚’æ–°æ—¥åˆ¥ã®å†…å®¹ã§ç½®ãæ›ãˆã‚‹
            WHEN    1       ALSO    1
                IF    ( ZOUSDAY-DAY-AREA    NOT =   GENSDAY-DAY-AREA )
                    INITIALIZE              TEIKI08-REC
@@ -730,8 +730,8 @@
                    COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
                END-IF
       *
-      *    ¿·ÆüÊÌ¤ÏÂ¸ºß¤¹¤ë¤¬µìÆüÊÌ¤¬Â¸ºß¤·¤Ê¤¤¾ì¹ç¡¢
-      *    ¿·ÆüÊÌ¤òÄÉ²Ã¤¹¤ë
+      *    æ–°æ—¥åˆ¥ã¯å­˜åœ¨ã™ã‚‹ãŒæ—§æ—¥åˆ¥ãŒå­˜åœ¨ã—ãªã„å ´åˆã€
+      *    æ–°æ—¥åˆ¥ã‚’è¿½åŠ ã™ã‚‹
            WHEN    1       ALSO    ZERO
                INITIALIZE              TEIKI08-REC
                MOVE    1       TO      TEIKI08-UPD-FLG
@@ -742,8 +742,8 @@
                WRITE   TEIKI08-REC
                COMPUTE CNT-OUT3    =   CNT-OUT3    +   1
       *
-      *    ¿·ÆüÊÌ¤ÏÂ¸ºß¤»¤ºµìÆüÊÌ¤¬Â¸ºß¤¹¤ë¾ì¹ç¡¢
-      *    µìÆüÊÌ¤òºï½ü¤¹¤ë
+      *    æ–°æ—¥åˆ¥ã¯å­˜åœ¨ã›ãšæ—§æ—¥åˆ¥ãŒå­˜åœ¨ã™ã‚‹å ´åˆã€
+      *    æ—§æ—¥åˆ¥ã‚’å‰Šé™¤ã™ã‚‹
            WHEN    ZERO    ALSO    1
                INITIALIZE              TEIKI08-REC
                MOVE    2       TO      TEIKI08-UPD-FLG
@@ -757,7 +757,7 @@
        2001-TEIKI08-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -776,10 +776,10 @@
       *
            INITIALIZE                  JOBKANRI-REC
            IF    ( ERR-WARNING     =   1 )
-      *        ¥¸¥ç¥Ö´ÉÍý½ªÎ»½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†çµ‚äº†å‡¦ç†
                MOVE    "JBE"       TO  SJOBKANRI-MODE
            ELSE
-      *        ¥¸¥ç¥Ö´ÉÍý¥­¥ã¥ó¥»¥ë½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†ã‚­ãƒ£ãƒ³ã‚»ãƒ«å‡¦ç†
                MOVE    "CAN"       TO  SJOBKANRI-MODE
                MOVE    2           TO  JOB-STOPFLG
            END-IF
@@ -799,7 +799,7 @@
       *
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†
            PERFORM 990-PROGRAM-FINISH-SEC
       *
            .
@@ -807,7 +807,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -825,7 +825,7 @@
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    TEIKI1P-HOSPNUM TO  JOB-HOSPNUM
@@ -847,7 +847,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÏÂÎñÊÑ´¹½èÍý
+      *    å’Œæš¦å¤‰æ›å‡¦ç†
       *****************************************************************
        800-WAREKI-HEN-SEC              SECTION.
       *
@@ -867,7 +867,7 @@
        800-WAREKI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¼èÆÀ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å–å¾—å‡¦ç†
       *****************************************************************
        800-GET-ERRMSG-SEC              SECTION.
       *
@@ -884,14 +884,14 @@
        800-GET-ERRMSG-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        800-EDIT-ERRMSG-SEC             SECTION.
       *
            MOVE    SPACE               TO  ERR-HEN-ERRMSG
 	                                   ERR-PTNUM
       *
-      *    ´µ¼ÔÈÖ¹æ¤ò¼èÆÀ
+      *    æ‚£è€…ç•ªå·ã‚’å–å¾—
            MOVE    ERR-PTID            TO  WRK-PTID
            PERFORM 900-PTNUM-KEY-SEL-SEC
            IF    ( FLG-PTNUM           =   ZERO )
@@ -922,16 +922,16 @@
            END-DIVIDE
       *
            IF    ( WRK-AMARI   =   ZERO )
-               MOVE    "¡§"            TO  WRK-KUGIRI
+               MOVE    "ï¼š"            TO  WRK-KUGIRI
            ELSE
                MOVE    ":"             TO  WRK-KUGIRI
            END-IF
       *
            STRING  ERR-ERRMSG          DELIMITED   BY  SPACE
-                   "¡Î´µ¼ÔÈÖ¹æ"        DELIMITED   BY  SIZE
+                   "ï¼»æ‚£è€…ç•ªå·"        DELIMITED   BY  SIZE
                    WRK-KUGIRI          DELIMITED   BY  SPACE
                    ERR-PTNUM           DELIMITED   BY  SPACE
-                   "¡Ï"                DELIMITED   BY  SIZE
+                   "ï¼½"                DELIMITED   BY  SIZE
            INTO    ERR-HEN-ERRMSG
            END-STRING
       *
@@ -942,7 +942,7 @@
        800-EDIT-ERRMSG-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´üÀÁµá¼ýÇ¼¥Õ¥¡¥¤¥ëÆÉ¹þ
+      *    å®šæœŸè«‹æ±‚åŽç´ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
       *****************************************************************
        910-TEIKI01-READ-SEC            SECTION.
       *
@@ -956,7 +956,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÀÁµá¼è¾ÃÂÐ¾Ý¼ýÇ¼¥Õ¥¡¥¤¥ëÆÉ¹þ
+      *    è«‹æ±‚å–æ¶ˆå¯¾è±¡åŽç´ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼
       *****************************************************************
        910-TEIKI04-READ-SEC            SECTION.
       *
@@ -970,7 +970,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿èª­è¾¼
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC        SECTION.
       *
@@ -995,7 +995,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    æ‚£è€…ç•ªå·ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-PTNUM-KEY-SEL-SEC           SECTION.
       *
@@ -1023,7 +1023,7 @@
        900-PTNUM-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1041,7 +1041,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã¯è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1056,7 +1056,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1071,7 +1071,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -1086,7 +1086,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1112,7 +1112,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1135,7 +1135,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†
       *****************************************************************
        990-PROGRAM-FINISH-SEC          SECTION.
       *

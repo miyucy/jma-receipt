@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCXSMST1.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ޥ�����������
-      *  ����ݡ��ͥ��̾  : �ģ¹�¤�����ե������������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : マスタ更新処理
+      *  コンポーネント名  : ＤＢ構造更新ファイル作成処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/02/22    MCC-¿��Ǽ    ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/02/22    MCC-多々納    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-��ƣ     02.05.20  ���꡼�󥤥󥹥ȡ���ǥ���
-      *                                     ���ʥ����פ�ʣ��������
-      *                                     ����ȤʤäƤ��ޤ�
-      *  01.00.01    NACL-¿��Ǽ  02/09/18  �С������Ƚ���ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-伊藤     02.05.20  クリーンインストールでオリ
+      *                                     ジナルダンプが複数ある場合
+      *                                     ０件となってしまう
+      *  01.00.01    NACL-多々納  02/09/18  バージョン判定変更
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,17 +39,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ģ¹�¤�ե�����
+      *    入力：ＤＢ構造ファイル
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ������ե�����
+      *    出力：更新ファイル
            SELECT  OUT-FILE        ASSIGN
                                    ASS-OUT
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-OUT.
-      *    ���ϡ��ơ��֥�ե�����
+      *    出力：テーブルファイル
            SELECT  TBL-FILE        ASSIGN
                                    ASS-TBL
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -58,7 +58,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϥե�����
+      *    入力ファイル
        FD  IN-FILE.
        01  IN-REC.
            03  IN-DBSVERSION           PIC X(21).
@@ -68,7 +68,7 @@
            03  IN-UPFILE               PIC X(100).
            03  IN-TBLNAME              PIC X(20).
       *
-      *    �����ե�����
+      *    更新ファイル
        FD  OUT-FILE.
        01  OUT-REC.
            03  OUT-DBSVERSION          PIC X(21).
@@ -76,27 +76,27 @@
            03  OUT-SYORIFLG            PIC X(07).
            03  OUT-UPFILE              PIC X(100).
       *
-      *    ���ϡ��ơ��֥�ե�����
+      *    出力：テーブルファイル
        FD  TBL-FILE.
        01  TBL-REC.
            03  TBL-TBLNAME             PIC X(20).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-OUT                 PIC X(256).
            03  ASS-TBL                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-OUT                 PIC X(02).
            03  STS-TBL                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-DBKANRI             PIC 9(01).
@@ -104,14 +104,14 @@
            03  FLG-SYORI               PIC 9(01).
            03  FLG-INS                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
            03  CNT-TBL                 PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDX1                    PIC 9(04).
@@ -121,7 +121,7 @@
            03  IDT                     PIC 9(04).
       *
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -145,10 +145,10 @@
       *
            03  WRK-DBKANRI-VERSION     PIC X(64).
       *
-      *    ����
+      *    引数
        01  ACCT-AREA.
            03  ACCT-REC                PIC X(200).
-      *    ���ϥե�����ơ��֥�
+      *    入力ファイルテーブル
        01  WRK-IN-REC.
            03  WRK-IN-DBSVERSION           PIC X(21).
            03  WRK-IN-DBRNAME              PIC X(60).
@@ -157,24 +157,24 @@
            03  WRK-IN-UPFILE               PIC X(100).
            03  WRK-IN-TBLNAME              PIC X(20).
       *
-      *    �ơ��֥�̾
+      *    テーブル名
        01  WRK-TBL-AREA.
            03  WRK-TBL-REC                 OCCURS  100.
                05  WRK-TBL-TBLNAME             PIC X(20).
       *
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �ģ´�������
+      *    ＤＢ管理情報
        01  DBKANRI-REC.
            COPY    "CPDBKANRI.INC".
       *
       *
        PROCEDURE                       DIVISION.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -190,7 +190,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -200,14 +200,14 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  ACCT-AREA
       *
-      *    �ѥ�᥿������
+      *    パラメタ取り込み
            ACCEPT  ACCT-AREA           FROM    COMMAND-LINE
            PERFORM 1001-ACCT-HEN-SEC
       *
-      *    �ե��������
+      *    ファイル情報
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT           IN-FILE
            IF      STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -215,14 +215,14 @@
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            OPEN    OUTPUT          OUT-FILE
            IF      STS-OUT         NOT =   ZERO
                DISPLAY "*(ORCXSMST1)* OUT-FILE OPN STS["
                                        STS-OUT "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            OPEN    OUTPUT          TBL-FILE
            IF      STS-TBL         NOT =   ZERO
                DISPLAY "*(ORCXSMST1)* TBL-FILE OPN STS["
@@ -234,7 +234,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        1001-ACCT-HEN-SEC                SECTION.
       *
@@ -284,36 +284,36 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        10011-DBKANRI-SET-SEC                SECTION.
       *
            EVALUATE    IDY
-      *����������
+      *管理コード
                WHEN    1
                    MOVE    WRK-IN          TO   DBKANRI-KANRICD
-      *�С������
+      *バージョン
                WHEN    2
                    MOVE    WRK-IN          TO   DBKANRI-VERSION
-      *�ģ¹�¤�С������
+      *ＤＢ構造バージョン１
                WHEN    3
                    MOVE    WRK-IN          TO   DBKANRI-DBSVERSION1
-      *�ģ¹�¤�С������
+      *ＤＢ構造バージョン２
                WHEN    4
                    MOVE    WRK-IN          TO   DBKANRI-DBSVERSION2
-      *ü���ɣ�
+      *端末ＩＤ
                WHEN    7
                    MOVE    WRK-IN          TO   DBKANRI-TERMID
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
                WHEN    8
                    MOVE    WRK-IN          TO   DBKANRI-OPID
-      *����ǯ����
+      *作成年月日
                WHEN    9
                    MOVE    WRK-IN          TO   DBKANRI-CREYMD
-      *����ǯ����
+      *更新年月日
                WHEN    10
                    MOVE    WRK-IN          TO   DBKANRI-UPYMD
-      *��������
+      *更新時間
                WHEN    11
                    MOVE    WRK-IN          TO   DBKANRI-UPHMS
            END-EVALUATE
@@ -322,11 +322,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
@@ -334,7 +334,7 @@
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���ϡ��ե�����
+      *    出力ーファイル
            MOVE    SPACE               TO  ASS-OUT
            STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
@@ -342,7 +342,7 @@
                                        INTO    ASS-OUT
            END-STRING
       *
-      *    ���ϡ��ե�����
+      *    出力ーファイル
            MOVE    SPACE               TO  ASS-TBL
            STRING  "/var/tmp/"         DELIMITED  BY  SIZE
                    WRK-DBFILE          DELIMITED  BY  SPACE
@@ -355,7 +355,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -371,7 +371,7 @@
           END-PERFORM
       *
            MOVE    ZERO                TO  FLG-SYORI
-      *    ���꡼�󥤥󥹥ȡ���
+      *    クリーンインストール
            IF      DBKANRI-DBSVERSION1 =   "S-000000-0-00000000-0"
                MOVE    1                   TO  FLG-INS
            ELSE
@@ -382,15 +382,15 @@
            MOVE    SPACE               TO  WRK-IN-REC
            MOVE    SPACE               TO  WRK-TBL-AREA
            MOVE    ZERO                TO  IDT
-      *    �쥳���ɴ����ե������ɹ���
+      *    レコード管理ファイル読込み
            PERFORM 900-IN-READ-SEC
            PERFORM
                UNTIL    FLG-IN         =   1
-      *        ���Ϸ��
+      *        入力件数
                ADD     1               TO  CNT-IN
       *
                IF      FLG-INS         =   ZERO
-      *        ���åץ��졼�ɽ���
+      *        アップグレード処理
                    IF     (FLG-SYORI           =   1   )  OR
                           (IN-DBSVERSION       >   DBKANRI-DBSVERSION1)
                        MOVE    1               TO  FLG-SYORI
@@ -407,7 +407,7 @@
                        END-IF
                    END-IF
                ELSE
-      *        ���꡼�󥤥󥹥ȡ���
+      *        クリーンインストール
                    IF      IN-DBSVERSION(3:IDY)
                                                >   WRK-DBKANRI-VERSION
                                                        (1:IDY)
@@ -419,12 +419,12 @@
                END-IF
       *
                IF      FLG-IN              =   ZERO
-      *            �쥳���ɴ����ե������ɹ���
+      *            レコード管理ファイル読込み
                    PERFORM 900-IN-READ-SEC
                END-IF
            END-PERFORM
       *
-      *     ���åץ��졼�ɽ�����λ
+      *     アップグレード処理終了
            IF      FLG-INS             =   ZERO
                GO      TO      200-MAIN-EXT
            END-IF
@@ -433,7 +433,7 @@
                GO      TO      200-MAIN-EXT
            END-IF
       *
-      *    ���꡼�󥤥󥹥ȡ���λ����Ǹ���оݥǡ����ΥС�����󤬶���
+      *    クリーンインストールの時、最後の対象データのバージョンが空白
            IF      WRK-DBSVERSION2     =   SPACE
                MOVE    WRK-IN-REC          TO  IN-REC
                PERFORM 210-OUTFILE-SEC
@@ -444,7 +444,7 @@
            MOVE    ZERO                TO  FLG-IN
            OPEN    INPUT               IN-FILE
       *
-      *    �쥳���ɴ����ե������ɹ���
+      *    レコード管理ファイル読込み
            PERFORM 900-IN-READ-SEC
            PERFORM
                UNTIL    FLG-IN         =   1
@@ -457,12 +457,12 @@
                    IF      WRK-DBSVERSION2     <=  IN-DBSVERSION
                        PERFORM 210-OUTFILE-SEC
                    END-IF
-      *            �쥳���ɴ����ե������ɹ���
+      *            レコード管理ファイル読込み
                    PERFORM 900-IN-READ-SEC
                END-IF
            END-PERFORM
       *
-      *    �ơ��֥�ե��������
+      *    テーブルファイル出力
            PERFORM 220-TBLFILE-SEC
       *
            .
@@ -470,7 +470,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե��������  ����
+      *    更新ファイル出力  処理
       *****************************************************************
        210-OUTFILE-SEC               SECTION.
       *
@@ -489,9 +489,9 @@
            WRITE                       OUT-REC
            ADD     1                   TO  CNT-OUT
       *
-      *    �Хå����åץơ��֥�̾��¸
+      *    バックアップテーブル名保存
            IF      IN-TBLNAME      NOT =   SPACE
-      *      ���ꥸ�ʥ�С������λ������ꥸ�ʥ����פΤ�
+      *      オリジナルバージョンの時、オリジナルダンプのみ
              IF     (FLG-INS             =   1      )  AND
                     (IN-DBSVERSION2  NOT =   SPACE  )
                  CONTINUE
@@ -515,7 +515,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�ե��������  ����
+      *    テーブルファイル出力  処理
       *****************************************************************
        220-TBLFILE-SEC               SECTION.
       *
@@ -534,11 +534,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       OUT-FILE
            CLOSE                       TBL-FILE
@@ -553,7 +553,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե������ɹ��߽���
+      *    入力ファイル読込み処理
       *****************************************************************
        900-IN-READ-SEC          SECTION.
       *

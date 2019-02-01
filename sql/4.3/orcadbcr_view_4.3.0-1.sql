@@ -1,9 +1,9 @@
 --                                              --
--- •”•Â°º∫∆∫Ó¿Æ°ıø∑µ¨∫Ó¿Æ                       --
--- view_q003   æ»≤Ò£≥° ø∑µ¨°À                   --
--- view_q004   æ»≤Ò£¥° ø∑µ¨°À                   --
--- view_q001   æ»≤Ò£±                           --
--- view_q002   æ»≤Ò£≤                           --
+-- „Éì„É•„ÉºÂÜç‰ΩúÊàêÔºÜÊñ∞Ë¶è‰ΩúÊàê                       --
+-- view_q003   ÁÖß‰ºöÔºìÔºàÊñ∞Ë¶èÔºâ                   --
+-- view_q004   ÁÖß‰ºöÔºîÔºàÊñ∞Ë¶èÔºâ                   --
+-- view_q001   ÁÖß‰ºöÔºë                           --
+-- view_q002   ÁÖß‰ºöÔºí                           --
 --                                              --
 -- Create Date : 2008/06/30                     --
 --                                              --
@@ -16,7 +16,7 @@ union all
 ;
 
 COMMENT 
-        ON VIEW view_q003 IS '¥µº‘æ»≤Ò•”•Â°º3';
+        ON VIEW view_q003 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº3';
 
 create  view view_q004 as
 	select	hospnum,ptid,nyugaikbn,sryka,hkncombinum,sryymd from tbl_jyurrk
@@ -25,7 +25,7 @@ union all
 ;
 
 COMMENT 
-        ON VIEW view_q003 IS '¥µº‘æ»≤Ò•”•Â°º4';
+        ON VIEW view_q003 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº4';
 
 
 
@@ -110,7 +110,7 @@ CREATE VIEW view_q001 AS
        AND (view_q004.sryymd <= tbl_ptkohinf.tekedymd));
 
 COMMENT 
-        ON VIEW view_q001 IS '¥µº‘æ»≤Ò•”•Â°º1';
+        ON VIEW view_q001 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº1';
 
 CREATE VIEW view_q002 AS
     SELECT a.hospnum,
@@ -148,5 +148,5 @@ union all
 	select	a.hospnum,a.ptid,'1' as nyugaikbn ,b.sryka,a.sryymd,b.srycd as srycd1 ,'' as srycd2 , '' as srycd3, '' as srycd4,'' as srycd5     from tbl_nrrksrh a , tbl_nsrysrh b where a.hospnum = b.hospnum and a.ptid = b.ptid and a.zainum = b.zainum 
 ;
 COMMENT 
-        ON VIEW view_q002 IS '¥µº‘æ»≤Ò•”•Â°º2';
+        ON VIEW view_q002 IS 'ÊÇ£ËÄÖÁÖß‰ºö„Éì„É•„Éº2';
 

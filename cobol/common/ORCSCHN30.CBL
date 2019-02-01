@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCHN30.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ø«Œ≈π‘∞Ÿ
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∆˛±°ÃÙ∫ﬁæ Û∞ı∫˛Õ—•—•È•·•ø∫Ó¿Æ
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  08/09/11    MCC°›¬ø°π«º   ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : Ë®∫ÁôÇË°åÁÇ∫
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : ÂÖ•Èô¢Ëñ¨Ââ§ÊÉÖÂ†±Âç∞Âà∑Áî®„Éë„É©„É°„Çø‰ΩúÊàê
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  08/09/11    MCC‚àíÂ§ö„ÄÖÁ¥ç   Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  04.03.00    NACL-¬¿≈ƒ   08/10/31   •™•Ûƒ¢…º•–•√•¡µØ∆∞¬–±˛
-      *  04.05.00    NACL-¬ø°π«º 09/07/23   ∫ﬂ¬°¶•≥•·•Û•»¬–æ›¬–±˛
-      *  04.05.00    NACL-¬ø°π«º 09/09/XX   …Ωº®•≥•·•Û•»•≥°º•…¬–±˛
-      *  04.06.00    NACL-¬ø°π«º 11/02/22   Õ—À°•≥•·•Û•»¬–±˛
-      *  04.07.00    NACL-¬ø°π«º 12/11/02   ÃÙ∫ﬁÀË§Œ•≥•·•Û•»¬–±˛
-      *  04.08.00    NACL-¬ø°π«º 16/11/XX   Õ—À°•≥°º•…øÙŒÃƒ…≤√
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  04.03.00    NACL-Â§™Áî∞   08/10/31   „Ç™„É≥Â∏≥Á•®„Éê„ÉÉ„ÉÅËµ∑ÂãïÂØæÂøú
+      *  04.05.00    NACL-Â§ö„ÄÖÁ¥ç 09/07/23   Âú®ÂÆÖ„Éª„Ç≥„É°„É≥„ÉàÂØæË±°ÂØæÂøú
+      *  04.05.00    NACL-Â§ö„ÄÖÁ¥ç 09/09/XX   Ë°®Á§∫„Ç≥„É°„É≥„Éà„Ç≥„Éº„ÉâÂØæÂøú
+      *  04.06.00    NACL-Â§ö„ÄÖÁ¥ç 11/02/22   Áî®Ê≥ï„Ç≥„É°„É≥„ÉàÂØæÂøú
+      *  04.07.00    NACL-Â§ö„ÄÖÁ¥ç 12/11/02   Ëñ¨Ââ§ÊØé„ÅÆ„Ç≥„É°„É≥„ÉàÂØæÂøú
+      *  04.08.00    NACL-Â§ö„ÄÖÁ¥ç 16/11/XX   Áî®Ê≥ï„Ç≥„Éº„ÉâÊï∞ÈáèËøΩÂä†
       *****************************************************************
       *
       *
@@ -46,7 +46,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -63,7 +63,7 @@
       *
            03  FLG-INPUTCHI        PIC 9(01).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -87,11 +87,11 @@
            03  IDX-SST             PIC 9(04).
            03  IDXS                PIC 9(04).
       *
-      *    •∑•π•∆•‡ŒŒ∞Ë
+      *    „Ç∑„Çπ„ÉÜ„É†È†òÂüü
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
       *
            03  WRK-RENNUM          PIC 9(01).
@@ -105,18 +105,18 @@
                    07  TBL-YOURYOU         PIC 9(05)V9(05)
                                            OCCURS   5.
                    07  TBL-SRYKAISU        PIC 9(03).
-      *            Õ—À°•≥•·•Û•»
+      *            Áî®Ê≥ï„Ç≥„É°„É≥„Éà
                    07  TBL-YCOMMENT-OCC         OCCURS   20.
                        09  TBL-YCOMMENT             PIC X(09).
                        09  TBL-YINPUTCOMENT         PIC X(80).
-      *H28.10          …˛Õ—øÙ√Õ
+      *H28.10          ÊúçÁî®Êï∞ÂÄ§
                        09  TBL-YCOM-CHK             PIC X(01).
                        09  TBL-YCOM-SURYO-G.
                            11  TBL-YCOM-SURYO       PIC 9(05)V9(5)
                                                     OCCURS  5.
                05  WRK-YSRYCD              PIC X(09).
                05  WRK-YSRYCD-NAME         PIC X(80).
-      *H28.10  …˛Õ—øÙ√Õ
+      *H28.10  ÊúçÁî®Êï∞ÂÄ§
                05  WRK-YSRYCD-SURYO-G.
                    07  WRK-YSRYCD-SURYO     PIC 9(05)V9(5)
                                                    OCCURS  5.
@@ -128,11 +128,11 @@
                        09  WRK-YOHOU           PIC X(09).
                        09  WRK-YOHOU-NAME      PIC X(80).
                        09  WRK-YOHOU-KBN       PIC X(01).
-      *H28.10          …˛Õ—øÙ√Õ
+      *H28.10          ÊúçÁî®Êï∞ÂÄ§
                        09  WRK-YOHOU-SURYO-G.
                            11  WRK-YOHOU-SURYO     PIC 9(05)V9(5)
                                                    OCCURS  5.
-      *        •≥•·•Û•»
+      *        „Ç≥„É°„É≥„Éà
                05  TBL-COMMENT-G           OCCURS   20.
                    07  TBL-COMMENT             PIC X(09).
                    07  TBL-INPUTCOMENT         PIC X(80).
@@ -155,7 +155,7 @@
            03  WRK-SRYYMD          PIC X(08).
       *
            03  WRK-KAISU           PIC 9(05).
-      *    •◊•Ì•∞•È•‡Ãæ
+      *    „Éó„É≠„Ç∞„É©„É†Âêç
            03  WRK-YAKJYO-PG       PIC X(20).
       *H28.10
            03  WRK-INPUTCHI-AREA.
@@ -174,33 +174,33 @@
       *
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ƒ¢…º£–£«
+      *    Â∏≥Á•®Ôº∞Ôºß
            COPY    "CPSK1032.INC".
       *
-      *    ≈¿øÙ•ﬁ•π•ø°›
+      *    ÁÇπÊï∞„Éû„Çπ„Çø‚àí
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    øÙª˙ —¥πŒŒ∞Ë
+      *    Êï∞Â≠óÂ§âÊèõÈ†òÂüü
            COPY    "CPORCSNUM.INC".
       *
-      *    ∆˛±°ÃÙæ ÛΩ–Œœ•—•È•·•ø
+      *    ÂÖ•Èô¢Ëñ¨ÊÉÖÂ†±Âá∫Âäõ„Éë„É©„É°„Çø
            COPY    "CPORCHCN30.INC".
       *
-      *    •™•Û•È•§•Ûƒ¢…º∂¶ƒÃ•—•È•·•ø
+      *    „Ç™„É≥„É©„Ç§„É≥Â∏≥Á•®ÂÖ±ÈÄö„Éë„É©„É°„Çø
            COPY    "CPONPRTDATA.INC".
       *
-      *    •™•Û•È•§•Ûƒ¢…ºÃæ°¶Ω–Œœ¿Ë•◊•Í•Û•øÃæºË∆¿•—•È
+      *    „Ç™„É≥„É©„Ç§„É≥Â∏≥Á•®Âêç„ÉªÂá∫ÂäõÂÖà„Éó„É™„É≥„ÇøÂêçÂèñÂæó„Éë„É©
            COPY    "CPORCSPRTNM.INC".
       *
            COPY    "MCPDATA.INC".
@@ -208,14 +208,14 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
-      *    •—•È•·•ø
+      *    „Éë„É©„É°„Çø
            COPY    "CPORCSCHN30.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -224,7 +224,7 @@
            .
       *
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -236,7 +236,7 @@
       *
            EVALUATE    ORCSHCN30-KBN
                WHEN    "N"
-      *            ∆˛±°∞ı∫˛≤ËÃÃ»Øπ‘
+      *            ÂÖ•Èô¢Âç∞Âà∑ÁîªÈù¢Áô∫Ë°å
                    PERFORM 100-ORCSHCN30-SYORI-SEC
            END-EVALUATE
       *
@@ -276,7 +276,7 @@
       *    END-PERFORM 
       *TEST
       *
-      *    ∞ı∫˛ΩËÕ˝§ÿ
+      *    Âç∞Âà∑Âá¶ÁêÜ„Å∏
            IF      ORCHCN30-MAX         >   ZERO
                PERFORM 300-HCN30-PRINT-SEC
            END-IF
@@ -286,11 +286,11 @@
            .
       *
       *****************************************************************
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        300-HCN30-PRINT-SEC            SECTION.
       *
-      *    ÃÙæ ÛΩ–Œœ
+      *    Ëñ¨ÊÉÖÂ†±Âá∫Âäõ
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000009"          TO  ORCSPRTNM-KBNCD
@@ -303,20 +303,20 @@
                MOVE    ORCSPRTNM-PRTPG     TO  WRK-YAKJYO-PG
            END-IF
       *
-      *    ∏Ú…’∆¸
+      *    ‰∫§‰ªòÊó•
            MOVE    ORCSHCN30-SRYYMD    TO  SPA-SRYYMD
-      *    •…•Ø•ø°º
+      *    „Éâ„ÇØ„Çø„Éº
            MOVE    ORCSHCN30-DRCD      TO  ORCHCN30-DRCD
-      *    …¬≈Ô
+      *    ÁóÖÊ£ü
            MOVE    ORCSHCN30-BTUNAME   TO  ORCHCN30-BTUNAME
-      *    …¬ºº
+      *    ÁóÖÂÆ§
            MOVE    ORCSHCN30-ROOMNO    TO  ORCHCN30-ROOMNO
-      *API(GINBEE)¬–±˛
-      *    …¬≈Ô»÷πÊ
+      *API(GINBEE)ÂØæÂøú
+      *    ÁóÖÊ£üÁï™Âè∑
            MOVE    ORCSHCN30-BTUNUM    TO  ORCHCN30-BTUNUM
       *
            IF      WRK-YAKJYO-PG   NOT =   SPACE
-      *ver.4.7 •◊•Ï•”•Â°º§Œ∞Ÿ°¢ƒæ¿‹∞ı∫˛§ÿ —ππ
+      *ver.4.7 „Éó„É¨„Éì„É•„Éº„ÅÆÁÇ∫„ÄÅÁõ¥Êé•Âç∞Âà∑„Å∏Â§âÊõ¥
                MOVE    ORCHCN30AREA    TO  ONPRTDATA-DATA
                CALL    WRK-YAKJYO-PG       USING
                                            SPA-AREA
@@ -333,7 +333,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ∆‚Õ∆ —ππ»Øπ‘ΩËÕ˝
+      *    ÂÜÖÂÆπÂ§âÊõ¥Áô∫Ë°åÂá¶ÁêÜ
       *****************************************************************
        100-ORCSHCN30-SYORI-SEC         SECTION.
       *
@@ -361,7 +361,7 @@
                END-PERFORM
       *
                IF      IDX-S               >   ZERO
-      *            •—•È•·•ø ‘Ω∏
+      *            „Éë„É©„É°„ÇøÁ∑®ÈõÜ
                    PERFORM 1001-HCN30TBL-SET-SEC
                END-IF
            END-PERFORM
@@ -370,10 +370,10 @@
        100-ORCSHCN30-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊§Ë§Í•∆°º•÷•Î ‘Ω∏ΩËÕ˝
+      *    Ë®∫ÁôÇ‰ºöË®à„Çà„Çä„ÉÜ„Éº„Éñ„É´Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        3001-TBLSET-SEC         SECTION.
-      *    ÃÙ∫ﬁ ‘Ω∏
+      *    Ëñ¨Ââ§Á∑®ÈõÜ
            IF      ORCSHCN30-SRYCD(IDT IDXA)(1:1)   =   "6"
                ADD     1               TO  IDX-S
                IF      IDX-S           >   99
@@ -386,7 +386,7 @@
                                            TO  TBL-SURYO (IDX-S)
                MOVE    ORCSHCN30-KANSURYO(IDT IDXA)
                                            TO  TBL-KANSURYO (IDX-S)
-      *        ≥∞Õ—§Œ∆¸øÙ
+      *        Â§ñÁî®„ÅÆÊó•Êï∞
                IF      (ORCSHCN30-SRYKBN (IDT)          =   "23" )  AND
                        (ORCSHCN30-SRYKAISU(IDT IDXA)    >   1 )
                    MOVE    ORCSHCN30-SRYKAISU(IDT IDXA)
@@ -395,16 +395,16 @@
                END-IF
                MOVE    ZERO                TO  IDXD
            END-IF
-      *    Õ—À° ‘Ω∏
+      *    Áî®Ê≥ïÁ∑®ÈõÜ
            IF      ORCSHCN30-SRYCD(IDT IDXA)(1:3)   =   "001"
       *H28.10
                ADD     1                   TO  TBL-CDCNT
                MOVE    ZERO                TO  FLG-YSET
-      *        ≈¿øÙ•ﬁ•π•ø§Ú∏°∫˜§∑§∆°¢Õ—À°ª˛≈¿§Ú»ΩƒÍ§π§Î
+      *        ÁÇπÊï∞„Éû„Çπ„Çø„ÇíÊ§úÁ¥¢„Åó„Å¶„ÄÅÁî®Ê≥ïÊôÇÁÇπ„ÇíÂà§ÂÆö„Åô„Çã
                MOVE    ORCSHCN30-SRYCD(IDT IDXA)    TO  TNS-SRYCD
                PERFORM 910-TENSU-READ-SEC
                IF     (FLG-TENSU           =   ZERO   )
-      *         •≥•·•Û•»§œ¬–æ›≥∞
+      *         „Ç≥„É°„É≥„Éà„ÅØÂØæË±°Â§ñ
                AND    (TNS-KENTAICOMMENT   =   0  OR  1  )
                    IF     (TNS-SSTKIJUNCD(1)   =   ZERO )  AND
                           (TNS-SSTKIJUNCD(2)   =   ZERO )  AND
@@ -425,7 +425,7 @@
                                                                (IDXY)
                        MOVE    FLG-YSET            TO  WRK-YOHOU-KBN
                                                                (IDXY)
-      *H28.10          À‰§·π˛§ﬂøÙ√Õ —¥π
+      *H28.10          Âüã„ÇÅËæº„ÅøÊï∞ÂÄ§Â§âÊèõ
                        MOVE    ORCSHCN30-INPUTCHI-G (IDT IDXA)
                                                    TO  WRK-INPUTCHI-AREA
                        PERFORM 200221-PTCOM-INPUTCHI-SEC
@@ -435,35 +435,35 @@
                    END-IF
                END-IF
            END-IF
-      *    Õ—ŒÃ≥‰πÁ•≥°º•…
+      *    Áî®ÈáèÂâ≤Âêà„Ç≥„Éº„Éâ
            IF     (ORCSHCN30-SRYCD(IDT IDXA)(1:7)
                                            =   "0992000" ) AND
                   (IDX-S                   >   ZERO      )
                EVALUATE    ORCSHCN30-SRYCD(IDT IDXA)
-      *            ƒ´
+      *            Êúù
                    WHEN    "099200011"
                        MOVE    ORCSHCN30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 1)
-      *            √Î
+      *            Êòº
                    WHEN    "099200012"
                        MOVE    ORCSHCN30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 2)
-      *            ÃÎ
+      *            Â§ú
                    WHEN    "099200013"
                        MOVE    ORCSHCN30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 3)
-      *            ø≤
+      *            ÂØù
                    WHEN    "099200014"
                        MOVE    ORCSHCN30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 4)
-      *            µØæ≤
+      *            Ëµ∑Â∫ä
                    WHEN    "099200015"
                        MOVE    ORCSHCN30-SRYSURYO (IDT IDXA)
                                            TO  TBL-YOURYOU (IDX-S 5)
                END-EVALUATE
            END-IF
       *
-      *    •≥•·•Û•»
+      *    „Ç≥„É°„É≥„Éà
            IF     (ORCSHCN30-SRYCD(IDT IDXA)(1:1)  =   "8"   )   OR
                   (ORCSHCN30-SRYCD(IDT IDXA)(1:4)
                                                =   "0082"
@@ -475,7 +475,7 @@
       *ver.4.7
                IF     (IDX-S                   >   ZERO  )
                   AND (IDXD                    <   20    )
-      *            ÃÙ∫ﬁ§Œ≤º§Œ•≥•·•Û•»
+      *            Ëñ¨Ââ§„ÅÆ‰∏ã„ÅÆ„Ç≥„É°„É≥„Éà
                    ADD     1                       TO  IDXD
                    MOVE    ORCSHCN30-SRYCD (IDT IDXA)
                                                    TO  TBL-YCOMMENT
@@ -495,13 +495,13 @@
                END-IF
       *ver.4.7
                IF      IDX-S                   >   ZERO
-      *            ÃÙ∫ﬁ§¢§Í
+      *            Ëñ¨Ââ§„ÅÇ„Çä
                    MOVE    IDX-S               TO  TBL-IDX-S (IDXC)
                    MOVE    IDXD                TO  TBL-IDXD (IDXC)
                END-IF
       *ver.4.7
            END-IF
-      *    Õ—À°•≥•·•Û•»
+      *    Áî®Ê≥ï„Ç≥„É°„É≥„Éà
            IF     (ORCSHCN30-SRYCD(IDT IDXA)(1:3)
                                            =   "001" ) AND
                   (TNS-KENTAICOMMENT       =   2     ) AND
@@ -514,7 +514,7 @@
                MOVE    ORCSHCN30-INPUTCOMENT (IDT IDXA)
                                                TO  TBL-YINPUTCOMENT
                                                           (IDX-S IDXD)
-      *H28.10  À‰§·π˛§ﬂøÙ√Õ —¥π
+      *H28.10  Âüã„ÇÅËæº„ÅøÊï∞ÂÄ§Â§âÊèõ
                MOVE    ORCSHCN30-INPUTCHI-G (IDT IDXA)
                                                TO  WRK-INPUTCHI-AREA
                PERFORM 200221-PTCOM-INPUTCHI-SEC
@@ -528,13 +528,13 @@
       *
       *H28.11
       *****************************************************************
-      *    •≥•·•Û•»•∆°º•÷•ÎÀ‰§·π˛§ﬂøÙ√Õ —¥π ‘Ω∏ΩËÕ˝
+      *    „Ç≥„É°„É≥„Éà„ÉÜ„Éº„Éñ„É´Âüã„ÇÅËæº„ÅøÊï∞ÂÄ§Â§âÊèõÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        200221-PTCOM-INPUTCHI-SEC         SECTION.
       *
            INITIALIZE                  WRK-SSTKIJUNCD-AREA
            MOVE    1                   TO  IDXS
-      *    µØæ≤(5)§Ú¿Ë∆¨§ÿ∞‹∆∞§π§Î
+      *    Ëµ∑Â∫ä(5)„ÇíÂÖàÈ†≠„Å∏ÁßªÂãï„Åô„Çã
            PERFORM VARYING IDX-SST     FROM    1   BY  1
                    UNTIL   IDX-SST     >   5
                IF      IDX-SST             <   5
@@ -553,7 +553,7 @@
                    UNTIL   IDX-SST     >   5
               IF      WRK-SSTKIJUNCD (IDX-SST) NOT =   ZERO
                    ADD     1                   TO  IDXS
-      *            øÙ√Õ —¥π
+      *            Êï∞ÂÄ§Â§âÊèõ
                    INITIALIZE                      ORCSNUMAREA
                    MOVE    WRK-INPUTCHI (IDXS)
                                                TO  SNUM-INX
@@ -570,7 +570,7 @@
                END-IF
            END-PERFORM
       *
-      *    µØæ≤§Ú° £µ°À§ÿ
+      *    Ëµ∑Â∫ä„ÇíÔºàÔºïÔºâ„Å∏
            INITIALIZE                  WRK-INPUTCHISURYO-AREA2
            MOVE    ZERO                TO  IDXS
            PERFORM VARYING IDX-SST     FROM    1   BY  1
@@ -592,11 +592,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ÃÙæ Û•—•È•·•ø ‘Ω∏ΩËÕ˝
+      *    Ëñ¨ÊÉÖÂ†±„Éë„É©„É°„ÇøÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        1001-HCN30TBL-SET-SEC         SECTION.
       *
-      *    Õ—À°§œ∫«∏Â§ŒÕ—À°•≥°º•…§»§π§Î
+      *    Áî®Ê≥ï„ÅØÊúÄÂæå„ÅÆÁî®Ê≥ï„Ç≥„Éº„Éâ„Å®„Åô„Çã
            MOVE    ZERO                TO  IDXY2
            PERFORM VARYING     IDXY    FROM    10  BY  -1
                    UNTIL      (IDXY        <   1      )
@@ -605,7 +605,7 @@
                    MOVE    WRK-YOHOU(IDXY)     TO  WRK-YSRYCD
                    MOVE    WRK-YOHOU-NAME(IDXY)
                                                TO  WRK-YSRYCD-NAME
-      *H28.11      …˛Õ—øÙ√Õ
+      *H28.11      ÊúçÁî®Êï∞ÂÄ§
                    MOVE    WRK-YOHOU-SURYO-G (IDXY)
                                                TO  WRK-YSRYCD-SURYO-G
                    MOVE    SPACE               TO  WRK-YOHOU(IDXY)
@@ -618,7 +618,7 @@
                END-IF
            END-PERFORM
       *H25.3
-      *    …˛Õ—ª˛≈¿§¨§ §±§Ï§–Õ—À°§Œ£±∑ÔÃ‹§»§ §Î
+      *    ÊúçÁî®ÊôÇÁÇπ„Åå„Å™„Åë„Çå„Å∞Áî®Ê≥ï„ÅÆÔºë‰ª∂ÁõÆ„Å®„Å™„Çã
            IF     (WRK-YSRYCD              =   SPACE )
               AND (IDXY2                   >   ZERO  )
                MOVE    WRK-YOHOU(IDXY2)    TO  WRK-YSRYCD
@@ -631,11 +631,11 @@
            END-IF
       *
       *ver.4.7
-      *    Õ—À°•≥°º•…§¨§ §§§»§≠∫«∏Â§Œ•≥•·•Û•»§Ú§π§Ÿ§∆§À
+      *    Áî®Ê≥ï„Ç≥„Éº„Éâ„Åå„Å™„ÅÑ„Å®„ÅçÊúÄÂæå„ÅÆ„Ç≥„É°„É≥„Éà„Çí„Åô„Åπ„Å¶„Å´
            IF     (WRK-YSRYCD          =   SPACE )
               AND (IDXC                >   ZERO  )
               AND (IDXY2               =   ZERO  )
-      *        •≥•·•Û•»
+      *        „Ç≥„É°„É≥„Éà
                IF     (TBL-COMMENT (IDXC)  NOT =   SPACE)
                AND    (TBL-IDX-S   (IDXC)  NOT =   ZERO )
                    MOVE    TBL-IDX-S   (IDXC)      TO  IDX
@@ -668,7 +668,7 @@
                MOVE    WRK-YSRYCD-NAME     TO  ORCHCN30-YSRYCD-NAME(IDY)
                MOVE    WRK-KAISU           TO  ORCHCN30-KAISU (IDY)
       *H28.10
-      *        Õ—À°•≥°º•…§ŒøÙŒÃ
+      *        Áî®Ê≥ï„Ç≥„Éº„Éâ„ÅÆÊï∞Èáè
                MOVE    ZERO                TO  FLG-INPUTCHI
                PERFORM VARYING     IDXC2   FROM    1   BY  1
                        UNTIL      (IDXC2       >   10   )
@@ -687,7 +687,7 @@
                IF     (TBL-CDCNT           =   1     )
                  AND  (FLG-INPUTCHI        =   ZERO  )
                  AND  (WRK-YSRYCD      NOT =   SPACE )
-      *            Õ—À°•Ï•≥°º•…§¨£±∑Ô§Œ§ﬂ§Œª˛°¢øÙŒÃ§Ú¡¥…Ù ‘Ω∏
+      *            Áî®Ê≥ï„É¨„Ç≥„Éº„Éâ„ÅåÔºë‰ª∂„ÅÆ„Åø„ÅÆÊôÇ„ÄÅÊï∞Èáè„ÇíÂÖ®ÈÉ®Á∑®ÈõÜ
                    MOVE    WRK-YSRYCD-SURYO-G
                                            TO  ORCHCN30-INPUTSURYOU-TBL
                                                               (IDY)
@@ -707,7 +707,7 @@
                                                             (IDY IDXY2)
                    END-IF
                END-PERFORM
-      *        Õ—À°•≥•·•Û•»
+      *        Áî®Ê≥ï„Ç≥„É°„É≥„Éà
                MOVE    ZERO                TO  IDXD
                PERFORM VARYING     IDXC    FROM    1   BY  1
                        UNTIL      (IDXC        >   10   )
@@ -719,13 +719,13 @@
                    MOVE    TBL-YINPUTCOMENT (IDX IDXC)
                                                TO  ORCHCN30-COMMENT-MEI
                                                             (IDY IDXD)
-      *H28.11      øÙŒÃ ‘Ω∏∫—§ﬂ
+      *H28.11      Êï∞ÈáèÁ∑®ÈõÜÊ∏à„Åø
                    MOVE    TBL-YCOM-CHK (IDX IDXC)
                                                TO  ORCHCN30-COMHENKBN
                                                             (IDY IDXD)
                  END-IF
                END-PERFORM
-      *        •≥•·•Û•»
+      *        „Ç≥„É°„É≥„Éà
                PERFORM VARYING     IDXC    FROM    1   BY  1
                        UNTIL      (IDXC        >   10   )
                              OR   (IDXD        >=  10   )
@@ -742,16 +742,16 @@
                END-PERFORM
       *
                EVALUATE    WRK-SRYKBN
-      *            ∆‚…˛
+      *            ÂÜÖÊúç
                    WHEN    "21"
                        MOVE    "1"         TO  ORCHCN30-ZAIKBN(IDY)
-      *            ∆‹…˛
+      *            È†ìÊúç
                    WHEN    "22"
                        MOVE    "2"         TO  ORCHCN30-ZAIKBN(IDY)
-      *            ≥∞Õ—
+      *            Â§ñÁî®
                    WHEN    "23"
                        MOVE    "3"         TO  ORCHCN30-ZAIKBN(IDY)
-      *            ∫ﬂ¬
+      *            Âú®ÂÆÖ
                    WHEN    "14"
                        MOVE    "4"         TO  ORCHCN30-ZAIKBN(IDY)
                END-EVALUATE
@@ -762,7 +762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≈¿øÙ•ﬁ•π•ø°º∆…π˛
+      *    ÁÇπÊï∞„Éû„Çπ„Çø„ÉºË™≠Ëæº
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -797,7 +797,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •∑•π•∆•‡¥…Õ˝•ﬁ•π•ø∆…π˛
+      *    „Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜ„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       *
@@ -814,7 +814,7 @@
        960-KANRIMST-READ-EXT.
            EXIT.
       *****************************************************************
-      *    •∆°º•÷•Î∏°∫˜ΩËÕ˝
+      *    „ÉÜ„Éº„Éñ„É´Ê§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -827,7 +827,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -842,7 +842,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•πΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„ÇπÂá¶ÁêÜ
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

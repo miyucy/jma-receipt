@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    Ϸ�͡����̥����ɿ����ѹ��ѥ��    COPY (CPSRUCDCHGWK.INC)
+      *    老人・一般コード振替変更用ワーク    COPY (CPSRUCDCHGWK.INC)
       *
       *-------------------------------------------------*
       *01  SRYCDCHG-REC.
-      *������ʬ
+      *処理区分
            03  CHGWK-SYORIKBN            PIC X(01).
       *
            03  CHGWK-KEY.
-      *���̿��ť�����
+      *一般診療コード
                05  CHGWK-IPNSRYCD        PIC  X(09).
-      *Ϸ�Ϳ��ť�����
+      *老人診療コード
                05  CHGWK-RJNSRYCD        PIC  X(09).
-      *ü���ɣ�
+      *端末ＩＤ
            03  CHGWK-TERMID              PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  CHGWK-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  CHGWK-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  CHGWK-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  CHGWK-UPHMS               PIC  X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ½é´ü²Ã»»»»Äê¥µ¥Ö¥Ñ¥é¥á¥¿¡¡  COPY (CPORCSSYOKIKSN.INC)
+      *    åˆæœŸåŠ ç®—ç®—å®šã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€  COPY (CPORCSSYOKIKSN.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSSYOKIKSNAREA.
-      *    ÆþÎÏ¹àÌÜ
+      *    å…¥åŠ›é …ç›®
            03  SYOKIKSN-IN-AREA.
-      *        ¼«±¡»»ÄêºÑ¤ßÄÌ»»Æü¿ô
+      *        è‡ªé™¢ç®—å®šæ¸ˆã¿é€šç®—æ—¥æ•°
                05  SYOKIKSN-IN-TUSANNISSU      PIC 9(05).
-      *        ´ðËÜÅÀ¿ô¿ÇÎÅ¥³¡¼¥É
+      *        åŸºæœ¬ç‚¹æ•°è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SYOKIKSN-IN-KHNSRYCD        PIC X(09).
-      *        »»Äê³«»ÏÆü
+      *        ç®—å®šé–‹å§‹æ—¥
                05  SYOKIKSN-IN-SANTEISTYMD     PIC X(08).
-      *    ½ÐÎÏ¹àÌÜ
+      *    å‡ºåŠ›é …ç›®
            03  SYOKIKSN-OT-AREA.
                05  SYOKIKSN-OT-OCC             OCCURS  7.
-      *            ²Ã¸º»»¿ÇÎÅ¥³¡¼¥É
+      *            åŠ æ¸›ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  SYOKIKSN-OT-KGNSRYCD    PIC X(09).
-      *            Í­¸ú³«»ÏÆü
+      *            æœ‰åŠ¹é–‹å§‹æ—¥
                    07  SYOKIKSN-OT-YUKOSTYMD   PIC X(08).
-      *            Í­¸ú½ªÎ»Æü
+      *            æœ‰åŠ¹çµ‚äº†æ—¥
                    07  SYOKIKSN-OT-YUKOEDYMD   PIC X(08).
-      *        ¥ê¥¿¡¼¥ó¥³¡¼¥É
+      *        ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
                05  SYOKIKSN-OT-RC              PIC 9(01).

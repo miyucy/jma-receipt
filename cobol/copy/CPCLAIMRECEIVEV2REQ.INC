@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥È£Ã£Ì£Á£É£ÍÃæÅÓ¥Ç¡¼¥¿Åù¼èÆÀ (xml2)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼£ï¼¬ï¼¡ï¼©ï¼­ä¸­é€”ãƒ‡ãƒ¼ã‚¿ç­‰å–å¾— (xml2)
       *                                  COPY (CPCLAIMRECEIVEV02REQ.INC)
       ******************************************************************
        01  XML-CLAIM-RECEIVEV2REQ.
@@ -29,105 +29,105 @@
            02  CLREREQ-MODE              PIC S9(9)   BINARY.
            02  CLREREQ-RECORDNAME        PIC X(128).
            02  CLREREQ-RECEIVE-FRONT.
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                03  CLREREQ-CRE001-FACILITYID   PIC X(20).
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
                03  CLREREQ-PTID1               PIC X(20).
-      * ¥ª¡¼¥À¡¼È¯¹ÔÆü»þ (claim:orderTime)
+      * ã‚ªãƒ¼ãƒ€ãƒ¼ç™ºè¡Œæ—¥æ™‚ (claim:orderTime)
                03  CLREREQ-ORDER-TIME          PIC  X(19).
-      *¼Â»ÜÆü»þ (claim:performTime)
+      *å®Ÿæ–½æ—¥æ™‚ (claim:performTime)
                03  CLREREQ-PERFORM-TIME        PIC X(19).
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                03  CLREREQ-CRE001-DPERTID      PIC X(20).
       *
-      * [·ò¹¯ÊÝ¸±¥â¥¸¥å¡¼¥ë]
+      * [å¥åº·ä¿é™ºãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«]
                03  CLREREQ-HKNTBL.
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ
+      * å¥åº·ä¿é™ºç¨®åˆ¥
                    05  CLREREQ-HKN-HKNSBT          PIC X(20).
-      * ÊÝ¸±¼ïÊÌ¥³¡¼¥É (mmlHi:ClassCode)
+      * ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ (mmlHi:ClassCode)
                    05  CLREREQ-HKN-HKNSBTCODE      PIC X(2).
-      * ·ò¹¯ÊÝ¸±ÈÖ¹æ
+      * å¥åº·ä¿é™ºç•ªå·
                    05  CLREREQ-HKN-HKNJANUM        PIC  X(08).
-      * ÈïÊÝ¸±¼Ôµ­¹æ
+      * è¢«ä¿é™ºè€…è¨˜å·
                    05  CLREREQ-HKN-KIGO            PIC  X(80).
-      * ÈïÊÝ¸±¼ÔÈÖ¹æ
+      * è¢«ä¿é™ºè€…ç•ªå·
                    05  CLREREQ-HKN-NUM             PIC  X(80).
-      * <¸øÈñÉéÃ´°åÎÅ¾ðÊó>
+      * <å…¬è²»è² æ‹…åŒ»ç™‚æƒ…å ±>
                    05  CLREREQ-KOHINF       OCCURS  4.
-      * ¸øÈñÉéÃ´Ì¾¾Î
+      * å…¬è²»è² æ‹…åç§°
                        07  CLREREQ-HKNKOH-PROVIDER     PIC  X(20).
-      * ÉéÃ´¼ÔÈÖ¹æ
+      * è² æ‹…è€…ç•ªå·
                        07  CLREREQ-HKNKOH-FTNJANUM     PIC  X(08).
-      * ¼õµë¼ÔÈÖ¹æ
+      * å—çµ¦è€…ç•ªå·
                        07  CLREREQ-HKNKOH-JKYSNUM      PIC  X(20).
       *
-      * [¿ÇÃÇÍúÎò¥â¥¸¥å¡¼¥ë]
+      * [è¨ºæ–­å±¥æ­´ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«]
                03  CLREREQ-SNDRRKTBL           OCCURS  50.
-      * ¼À´µ¥³¡¼¥É (mmlRd:code)
+      * ç–¾æ‚£ã‚³ãƒ¼ãƒ‰ (mmlRd:code)
                    05  CLREREQ-SND-SPICOD1         PIC X(50).
-      * ¼À´µÌ¾
+      * ç–¾æ‚£å
                    05  CLREREQ-SND-SPINAME1        PIC X(80).
-      * <¼À´µÍ×ÁÇ>
+      * <ç–¾æ‚£è¦ç´ >
                    05  CLREREQ-SNDSPITBL           OCCURS  6.
-      * ¼À´µ¥³¡¼¥É (mmlRd:code)
+      * ç–¾æ‚£ã‚³ãƒ¼ãƒ‰ (mmlRd:code)
                        07  CLREREQ-SNDSPITBL-SPICOD2     PIC X(10).
-      * ¼À´µÌ¾
+      * ç–¾æ‚£å
                        07  CLREREQ-SNDSPITBL-SPINAME2    PIC X(20).
-      * <Ê¬Îà>
+      * <åˆ†é¡ž>
                    05  CLREREQ-SNDBNRTBL           OCCURS  4.
-      * Ê¬Îà¤Î¼ïÎà¥³¡¼¥É (mmlRd:tableId)
+      * åˆ†é¡žã®ç¨®é¡žã‚³ãƒ¼ãƒ‰ (mmlRd:tableId)
                        07  CLREREQ-SNDBNRTBL-BNRTBL1         PIC X(07).
-      * Ê¬ÎàÌ¾
+      * åˆ†é¡žå
                        07  CLREREQ-SNDBNRTBL-BNRNAME1        PIC X(30).
-      * <¤½¤ÎÂ¾¿ÇÃÇÍúÎò¾ðÊó>
-      * ¼À´µ³«»ÏÆü
+      * <ãã®ä»–è¨ºæ–­å±¥æ­´æƒ…å ±>
+      * ç–¾æ‚£é–‹å§‹æ—¥
                    05  CLREREQ-SND-SKNSTARTDATE    PIC X(10).
-      * ¼À´µ½ªÎ»Æü
+      * ç–¾æ‚£çµ‚äº†æ—¥
                    05  CLREREQ-SND-SKNENDDATE      PIC X(10).
-      * Å¾µ¢
+      * è»¢å¸°
                    05  CLREREQ-SND-TENKI           PIC X(20).
-      * Æþ³°¶èÊ¬ (mmlRd:InOutPatient)
+      * å…¥å¤–åŒºåˆ† (mmlRd:InOutPatient)
                    05  CLREREQ-SND-NYUGAIKBN       PIC X(20).
       *
       *
-      * [Í½ÌóÀÁµá(Claim)¥â¥¸¥å¡¼¥ë]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * [äºˆç´„è«‹æ±‚(Claim)ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«]
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                03  CLREREQ-UID8                PIC X(36).
-      * ¥É¥¯¥¿¡¼¥³¡¼¥É
+      * ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
                03  CLREREQ-DOCCD               PIC X(10).
-      * Æþ±¡³°Íè¶èÊ¬ (true OR false) (claim:admitFlag)
+      * å…¥é™¢å¤–æ¥åŒºåˆ† (true OR false) (claim:admitFlag)
                03  CLREREQ-NYUGAIKBN           PIC X(05).
-      *»þ´Ö³°¶èÊ¬ (claim:timeClass)
+      *æ™‚é–“å¤–åŒºåˆ† (claim:timeClass)
                03  CLREREQ-JIKANNGAIKBN        PIC X(01).
-      * »ÈÍÑÊÝ¸±£Õ£É£Ä (claim:insuranceUid)
+      * ä½¿ç”¨ä¿é™ºï¼µï¼©ï¼¤ (claim:insuranceUid)
                03  CLREREQ-HOKEN-UID           PIC X(36).
-      * <¿ÇÎÅ³ç¤ê 1>
+      * <è¨ºç™‚æ‹¬ã‚Š 1>
                03  CLREREQ-SRYTBL-G.
                  04  CLREREQ-SRYTBL             OCCURS  40.
-      * ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É (claim:classCode)
+      * è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰ (claim:classCode)
                    05  CLREREQ-SRYCD          PIC  X(03).
-      * ¿ÇÎÅ¹Ô°Ù¶èÊ¬¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claim:classCodeId) (Claim002)
+      * è¨ºç™‚è¡Œç‚ºåŒºåˆ†ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claim:classCodeId) (Claim002)
                    05  CLREREQ-SRYCDTBL       PIC  X(08).
-      * ÍÑË¡¥³¡¼¥É (claim:adminCode)
+      * ç”¨æ³•ã‚³ãƒ¼ãƒ‰ (claim:adminCode)
                    05  CLREREQ-ADMINCODE      PIC  X(09).
-      * ÍÑË¡¥³¥á¥ó¥È
+      * ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆ
                    05  CLREREQ-ADMMEMO        PIC  X(100).
-      * ²ó¿ô¤â¤·¤¯¤ÏÆü¿ô(ZÊÔ½¸)
+      * å›žæ•°ã‚‚ã—ãã¯æ—¥æ•°(Zç·¨é›†)
                    05  CLREREQ-KAISU          PIC  X(50).
-      * <ÌÀºÙ¥Æ¡¼¥Ö¥ë(¿ÇÎÅ¹àÌÜ 1)>
+      * <æ˜Žç´°ãƒ†ãƒ¼ãƒ–ãƒ«(è¨ºç™‚é …ç›® 1)>
                    05  CLREREQ-SRYTBL1       OCCURS  40.
-      * °å»öÀÁµá¥³¡¼¥É(S + ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É) (claim:code)
+      * åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰(S + è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰) (claim:code)
                        07  CLREREQ-IJICD      PIC  X(10).
-      * °å»öÀÁµá¥³¡¼¥É¤Î¥Æ¡¼¥Ö¥ëÌ¾ (claim:tableId)
+      * åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ã®ãƒ†ãƒ¼ãƒ–ãƒ«å (claim:tableId)
                        07  CLREREQ-TBLID      PIC  X(20).
-      * °å»öÀÁµáÌ¾¾Î
+      * åŒ»äº‹è«‹æ±‚åç§°
                        07  CLREREQ-ALSNAME    PIC  X(80).
-      * ¿ôÎÌ(ZÊÔ½¸)
+      * æ•°é‡(Zç·¨é›†)
                        07  CLREREQ-SURYO      PIC  X(40).
-      * ¿ôÎÌ¥³¡¼¥É (claim:numberCode)
+      * æ•°é‡ã‚³ãƒ¼ãƒ‰ (claim:numberCode)
                        07  CLREREQ-SURYOCD    PIC  X(02).
-      * ¿ÇÎÅ¹àÌÜ¥á¥â
+      * è¨ºç™‚é …ç›®ãƒ¡ãƒ¢
                        07  CLREREQ-SRYMEMO    PIC  X(100).
-      * ¿ÇÎÅ³ç¤ê¥á¥â
+      * è¨ºç™‚æ‹¬ã‚Šãƒ¡ãƒ¢
                    05  CLREREQ-MEMO           PIC  X(100).
       *

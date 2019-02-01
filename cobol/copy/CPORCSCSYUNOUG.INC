@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���У����ӽ�λ�ǡ��������Ǽ�Խ����֥ѥ�᥿�ʰ��β���
+      *    ＡＰＩ中途終了データから収納編集サブパラメタ（一体化）
       *                                         (CPORCSCSYUNOUG.INC)
       ******************************************************************
        01  ORCSCSYUNOUGAREA.
-      *    ������ʬ
+      *    処理区分
            03  ORCSCSYU-SYORIKBN       PIC X(01).
-      *    ������ʬ
+      *    処理区分
            03  ORCSCSYU-SYORIPG        PIC X(04).
-      *    ���ӥǡ������
+      *    中途データ件数
            03  ORCSCSYU-WKSRYACT-MAX   PIC 9(04).
-      *    ��Ǽ�ǡ������
+      *    収納データ件数
            03  ORCSCSYU-SYUNOU-MAX     PIC 9(04).
-      *    �ݸ��ȹ礻�����Ųʾ���
+      *    保険組合せ・診療科情報
            03  ORCSCSYU-HKNCOMBI-AREA.
-      *        �ݸ��ȹ礻�ֹ�
+      *        保険組合せ番号
                05  ORCSCSYU-HKNCOMBI-TBL     OCCURS  15.
                    07  ORCSCSYU-HKNCOMBI     PIC X(04).
                    07  ORCSCSYU-SRYKA        PIC X(02)
                                              OCCURS   10.
       *
-      *    ���顼��ʬ
+      *    エラー区分
            03  ORCSCSYU-ERRCD        PIC 9(02).
       *

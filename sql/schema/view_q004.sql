@@ -19,5 +19,5 @@ CREATE VIEW view_q004 AS
        AND (a.zainum = b.zainum));
 
 
-COMMENT ON VIEW view_q004 IS '���ԾȲ�ӥ塼4';
+COMMENT ON VIEW view_q004 IS '患者照会ビュー4';
 

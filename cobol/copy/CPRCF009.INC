@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,65 +16,65 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�     COPY (CPRCF009.INC)                *
+      *    レセプト明細書     COPY (CPRCF009.INC)                *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��    11/02/01  ���ݸ����ʤ���硢��Ƹ�ݸ�(53)
-      *                                     �ϸ���ñ�ȤΥ쥻�ץȤȤ���
-      *                                     ������kohnum �ɲ�
-      *  04.06.02    NACL-ƣ��    12/09/27  �����ݸ���ֽ�ʣ�б�
+      *  04.06.01    NACL-藤原    11/02/01  主保険がない場合、児童保護(53)
+      *                                     は公費単独のレセプトとする
+      *                                     キーにkohnum 追加
+      *  04.06.02    NACL-藤原    12/09/27  生活保護期間重複対応
       ************************************************************
       *01  RECE09-REC.
            03  RECE09-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RECE09-HOSPNUM         PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  RECE09-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  RECE09-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE09-PTID            PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                05  RECE09-RECEKA          PIC  X(02).
-      *�����ֹ�
+      *公費番号
                05  RECE09-KOHNUM          PIC  X(03).
-      *����ɣ�
+      *公費ＩＤ
                05  RECE09-KOHID           PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE09-TEKSTYMD        PIC  X(08). 
-      *���ݸ�����
+      *主保険情報
            03  RECE09-HKN.
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
                05  RECE09-HKNID           PIC  9(10).
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
                05  RECE09-HKNNUM          PIC  X(03).
-      *���ݸ���ˡ���ֹ�
+      *主保険−法別番号
                05  RECE09-HKNHBTNUM       PIC  X(02).
-      *���ݸ����ݸ����ֹ�
+      *主保険−保険者番号
                05  RECE09-HKNJANUM        PIC  X(08).
-      *���ݸ����ܿͲ�²��ʬ
+      *主保険−本人家族区分
                05  RECE09-HONKZKKBN       PIC  X(01).
-      *���ݸ��������ʬ
+      *主保険−補助区分
                05  RECE09-HOJOKBN         PIC  X(01).
-      *���ݸ��ݷ�³��ʬ
+      *主保険−継続区分
                05  RECE09-CONTKBN         PIC  X(01).
-      *���ݸ��ݵ���
+      *主保険−記号
                05  RECE09-KIGO            PIC  X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
                05  RECE09-NUM             PIC  X(80).
-      *���ݸ��ݵ��ճ��
+      *主保険−給付割合
                05  RECE09-KYURATE         PIC  9(03).
-      *���ݸ��ݾ������ֹ�
+      *主保険−証明書番号
                05  RECE09-CERTNUM         PIC  X(03).
-      *���ݸ���û������̾
+      *主保険−短縮制度名
                05 RECE09-TANSEIDONAME      PIC  X(20).
-      *������ʧ����
+      *審査支払機関
            03  RECE09-TEISYUTUSAKI        PIC  9(01).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
            03  RECE09-TEKSTYMDX           PIC  X(08). 
-      *Ŭ�ѽ�λǯ����    
+      *適用終了年月日    
            03  RECE09-TEKEDYMDX           PIC  X(08). 

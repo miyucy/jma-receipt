@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSYAKINGEN.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Ìë¶Ð»þ´ÖÄ¶²á¸º»»Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  14/02/27    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  14/02/27    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *Ê¿À®£³£°Ç¯£´·î²þÄêÂÐ±þ
-      *  00.00.00    NACL-¾®Æ¦Âô  18/03/01  µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ¤Î¿·Àß
-      *                                     ÃÏ°è°ìÈÌÆþ±¡ÎÁ¤Î¿·Àß
-      *                                     ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¤ÏÊ¿À®
-      *                                     £³£°Ç¯£³·î¤Þ¤Ç
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  00.00.00    NACL-å°è±†æ²¢  18/03/01  æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ã®æ–°è¨­
+      *                                     åœ°åŸŸä¸€èˆ¬å…¥é™¢æ–™ã®æ–°è¨­
+      *                                     ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ã¯å¹³æˆ
+      *                                     ï¼“ï¼å¹´ï¼“æœˆã¾ã§
       *****************************************************************
       *
       *
@@ -46,36 +46,36 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSK5001.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    Ìë¶Ð»þ´ÖÄ¶²á¸º»»Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥Ñ¥é¥á¥¿
+      *    å¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSYAKINGEN.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -84,12 +84,12 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
            IF  LNK-YAKINGEN-SANTEIYM       >=   "201404"
-      *        ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¤Î¶èÊ¬¼èÆÀ¡Ë
+      *        ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ã®åŒºåˆ†å–å¾—ï¼‰
                MOVE    SPACE               TO  SYS-5001-REC
                INITIALIZE                      SYS-5001-REC
                MOVE    "5001"              TO  SYS-5001-KANRICD
@@ -147,147 +147,147 @@
            .
       *
       *****************************************************************
-      *    ¥³¡¼¥ÉÃÖ¤­´¹¤¨¡ÊÌë¶ÐÄ¶²á¸º»»¡ËÊ¿À®£²£¶Ç¯£´·î¤«¤éÊ¿À®£³£°Ç¯£³·î¤Þ¤Ç
+      *    ã‚³ãƒ¼ãƒ‰ç½®ãæ›ãˆï¼ˆå¤œå‹¤è¶…éŽæ¸›ç®—ï¼‰å¹³æˆï¼’ï¼–å¹´ï¼”æœˆã‹ã‚‰å¹³æˆï¼“ï¼å¹´ï¼“æœˆã¾ã§
       *****************************************************************
        200-CDCHG-SEC                    SECTION.
       *
            EVALUATE    LNK-YAKINGEN-SRYCD
-      *        °ìÈÌÉÂÅï£·ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ä¸€èˆ¬ç—…æ£Ÿï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190117710"
                   MOVE "190131310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        °ìÈÌÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ä¸€èˆ¬ç—…æ£Ÿï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190077410"
                   MOVE "190131410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        °ìÈÌÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ä¸€èˆ¬ç—…æ£Ÿï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190077510"
                   MOVE "190165810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        °ìÈÌÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ä¸€èˆ¬ç—…æ£Ÿï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190077610"
                   MOVE "190165910" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰
                WHEN    "190132410"
                   MOVE "190166110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Á¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¡ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190132510"
                   MOVE "190166210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰
                WHEN    "190132610"
                   MOVE "190166310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Â¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¢ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190132710"
                   MOVE "190166410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰
                WHEN    "190132810"
                   MOVE "190166510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ã¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼£ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190132910"
                   MOVE "190166610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰
                WHEN    "190133010"
                   MOVE "190166710" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ä¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¤ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190133110"
                   MOVE "190166810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰
                WHEN    "190133210"
                   MOVE "190166910" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Å¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¥ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190133310"
                   MOVE "190167010" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰
                WHEN    "190133410"
                   MOVE "190167110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Æ¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¦ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190133510"
                   MOVE "190167210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰
                WHEN    "190133610"
                   MOVE "190167310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£Ç¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼§ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190133710"
                   MOVE "190167410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰
                WHEN    "190133810"
                   MOVE "190167510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£È¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼¨ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190133910"
                   MOVE "190167610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰
                WHEN    "190134010"
                   MOVE "190167710" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£²¡ÊÆþ±¡´ðËÜÎÁ£É¡Ë¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼©ï¼‰ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
                WHEN    "190134110"
                   MOVE "190167810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£·ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190117910"
                   MOVE "190134310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081710"
                   MOVE "190134410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081810"
                   MOVE "190168110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081910"
                   MOVE "190168210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£¸ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼˜å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190082010"
                   MOVE "190168310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£²£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼’ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190082110"
                   MOVE "190168410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083610"
                   MOVE "190134610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190134510"
                   MOVE "190168510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083810"
                   MOVE "190168610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£¸ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼˜å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083910"
                   MOVE "190168710" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£²£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼’ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190084010"
                   MOVE "190168810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190126310"
                   MOVE "190169210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093710"
                   MOVE "190169310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093810"
                   MOVE "190169410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093910"
                   MOVE "190169510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÆÃÄêÆþ±¡´ðËÜÎÁ¡Ê¾ã³²¼Ô»ÜÀßÅùÆþ±¡´ðËÜÎÁ¡Ë
+      *        ç‰¹å®šå…¥é™¢åŸºæœ¬æ–™ï¼ˆéšœå®³è€…æ–½è¨­ç­‰å…¥é™¢åŸºæœ¬æ–™ï¼‰
                WHEN    "190161210"
                   MOVE "190161310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189410"
                   MOVE "190198910" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189510"
                   MOVE "190199010" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189610"
                   MOVE "190199110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189710"
                   MOVE "190199210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189810"
                   MOVE "190199310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189910"
                   MOVE "190199410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190190010"
                   MOVE "190199510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190190110"
                   MOVE "190199610" TO  LNK-YAKINGEN-CHGSRYCD
                WHEN    OTHER
@@ -300,111 +300,111 @@
            .
       *
       *****************************************************************
-      *    ¥³¡¼¥ÉÃÖ¤­´¹¤¨¡ÊÌë¶ÐÄ¶²á¸º»»¡Ë Ê¿À®£³£°Ç¯£´·î¤«¤é
+      *    ã‚³ãƒ¼ãƒ‰ç½®ãæ›ãˆï¼ˆå¤œå‹¤è¶…éŽæ¸›ç®—ï¼‰ å¹³æˆï¼“ï¼å¹´ï¼”æœˆã‹ã‚‰
       *****************************************************************
        201-CDCHG-SEC                    SECTION.
       *
            EVALUATE    LNK-YAKINGEN-SRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£±
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼‘
                WHEN    "190117710"
                   MOVE "190131310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£²
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼’
                WHEN    "190199710"
                   MOVE "190200310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£³
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼“
                WHEN    "190199810"
                   MOVE "190200410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£´
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼”
                WHEN    "190199910"
                   MOVE "190200510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£µ
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼•
                WHEN    "190200010"
                   MOVE "190200610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£¶
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼–
                WHEN    "190200110"
                   MOVE "190200710" TO  LNK-YAKINGEN-CHGSRYCD
-      *        µÞÀ­´ü°ìÈÌÆþ±¡ÎÁ£·
+      *        æ€¥æ€§æœŸä¸€èˆ¬å…¥é™¢æ–™ï¼—
                WHEN    "190077410"
                   MOVE "190131410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÃÏ°è°ìÈÌÆþ±¡ÎÁ£±
+      *        åœ°åŸŸä¸€èˆ¬å…¥é™¢æ–™ï¼‘
                WHEN    "190200210"
                   MOVE "190200810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÃÏ°è°ìÈÌÆþ±¡ÎÁ£²
+      *        åœ°åŸŸä¸€èˆ¬å…¥é™¢æ–™ï¼’
                WHEN    "190077510"
                   MOVE "190165810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÃÏ°è°ìÈÌÆþ±¡ÎÁ£³
+      *        åœ°åŸŸä¸€èˆ¬å…¥é™¢æ–™ï¼“
                WHEN    "190077610"
                   MOVE "190165910" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£·ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190117910"
                   MOVE "190134310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081710"
                   MOVE "190134410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081810"
                   MOVE "190168110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190081910"
                   MOVE "190168210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£±£¸ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼‘ï¼˜å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190082010"
                   MOVE "190168310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ·ë³ËÉÂÅï£²£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        çµæ ¸ç—…æ£Ÿï¼’ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190082110"
                   MOVE "190168410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083610"
                   MOVE "190134610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190134510"
                   MOVE "190168510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083810"
                   MOVE "190168610" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£±£¸ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼‘ï¼˜å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190083910"
                   MOVE "190168710" TO  LNK-YAKINGEN-CHGSRYCD
-      *        Àº¿ÀÉÂÅï£²£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        ç²¾ç¥žç—…æ£Ÿï¼’ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190084010"
                   MOVE "190168810" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190126310"
                   MOVE "190169210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093710"
                   MOVE "190169310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093810"
                   MOVE "190169410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™
                WHEN    "190093910"
                   MOVE "190169510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ÆÃÄêÆþ±¡´ðËÜÎÁ¡Ê¾ã³²¼Ô»ÜÀßÅùÆþ±¡´ðËÜÎÁ¡Ë
+      *        ç‰¹å®šå…¥é™¢åŸºæœ¬æ–™ï¼ˆéšœå®³è€…æ–½è¨­ç­‰å…¥é™¢åŸºæœ¬æ–™ï¼‰
                WHEN    "190161210"
                   MOVE "190161310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189410"
                   MOVE "190198910" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£·ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼—å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189510"
                   MOVE "190199010" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189610"
                   MOVE "190199110" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£°ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189710"
                   MOVE "190199210" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190189810"
                   MOVE "190199310" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£³ÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼“å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190189910"
                   MOVE "190199410" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£²¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼’ï¼‰
                WHEN    "190190010"
                   MOVE "190199510" TO  LNK-YAKINGEN-CHGSRYCD
-      *        ¾ã³²¼Ô»ÜÀßÅù£±£µÂÐ£±Æþ±¡´ðËÜÎÁ¡Ê°åÎÅ¶èÊ¬£±¡Ë
+      *        éšœå®³è€…æ–½è¨­ç­‰ï¼‘ï¼•å¯¾ï¼‘å…¥é™¢åŸºæœ¬æ–™ï¼ˆåŒ»ç™‚åŒºåˆ†ï¼‘ï¼‰
                WHEN    "190190110"
                   MOVE "190199610" TO  LNK-YAKINGEN-CHGSRYCD
                WHEN    OTHER
@@ -417,7 +417,7 @@
            .
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -430,7 +430,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -444,7 +444,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

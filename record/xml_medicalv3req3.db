@@ -11,26 +11,26 @@ xml_medicalv3req3 {
     		Perform_Date		varchar(10);
 		Perform_Time		varchar(8);
 		Orca_Uid		varchar(36);
-#--- ½èÍı¶èÊ¬
+#--- å‡¦ç†åŒºåˆ†
 		Patient_Mode		varchar(06);
 		Medical_Mode		varchar(01);
 		Delete_Number_Info    {
 			Delete_Number	varchar(02);
 				} [30];
-#--- ÅĞÏ¿½èÍı¶èÊ¬
+#--- ç™»éŒ²å‡¦ç†åŒºåˆ†
 		Request_Mode		varchar(06);
-#--- Æş¶âÊıË¡
+#--- å…¥é‡‘æ–¹æ³•
 		Ic_Code			varchar(2);
-#--- Æş¶â¼è¤ê°·¤¤¶èÊ¬
+#--- å…¥é‡‘å–ã‚Šæ‰±ã„åŒºåˆ†
 		Ic_Request_Code		varchar(1);
-#--- °ì³çÆşÊÖ¶â¶èÊ¬
+#--- ä¸€æ‹¬å…¥è¿”é‡‘åŒºåˆ†
 		Ic_All_Code		varchar(1);
-#--- ¼ıÇ¼ÆâÍÆ
+#--- åç´å†…å®¹
 		Cd_Information    {
 #-!!!!!
-#-----  Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#-----  è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›æƒ…å ±
 		  Cd_Change_Information   {
-#-----              Ê£¿ô²Ê¡¦Êİ¸±ÁÈ¹ç¤»¾ğÊó
+#-----              è¤‡æ•°ç§‘ãƒ»ä¿é™ºçµ„åˆã›æƒ…å ±
 		    Insurance_Combination_Number	varchar(04);
 		    Department_Code	varchar(02);
 		    Cd_Ic_Money		varchar(10);
@@ -38,19 +38,19 @@ xml_medicalv3req3 {
 	            Cd_Ad_Money2	varchar(10);
 	            } [15];
 #-!!!!!
-#--             Ã±ÆÈ¤ÎÄ´À°¶â
+#--             å˜ç‹¬ã®èª¿æ•´é‡‘
 	        Ad_Money1		varchar(10);
 	        Ad_Money2		varchar(10);
 #-!!!!!
 		Ic_Money		varchar(10);
 		Re_Money		varchar(10);
      	        };
-#--- È¯¹Ô¶èÊ¬
+#--- ç™ºè¡ŒåŒºåˆ†
 		Print_Issue_Information    {
-#---            ÀÁµá½ñÌÀºÙ½ñÈ¯¹Ô¶èÊ¬
+#---            è«‹æ±‚æ›¸æ˜ç´°æ›¸ç™ºè¡ŒåŒºåˆ†
 			Print_Issue_Class	varchar(1);
 		};
-#--- °õºş¶èÊ¬
+#--- å°åˆ·åŒºåˆ†
 		Print_Information    {
 		Print_Prescription_Class	varchar(1);
 		Print_Invoice_Receipt_Class	varchar(1);

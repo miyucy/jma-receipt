@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Äê´üÀÁµá´ÉÍý                       (CPTEIKIKANRI.INC) *
+      *    å®šæœŸè«‹æ±‚ç®¡ç†                       (CPTEIKIKANRI.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TEIKIKANRI-REC.
            03  TEIKIKANRI-HOSPNUM          PIC 9(2).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
            03  TEIKIKANRI-BTUNUM           PIC  X(02).
-      *½èÍý¶èÊ¬¡Ê£±¡§°ì³ç¡¢£²¡§¸ÄÊÌ¡Ë
+      *å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šä¸€æ‹¬ã€ï¼’ï¼šå€‹åˆ¥ï¼‰
            03  TEIKIKANRI-SYOKBN           PIC  X(01).
-      *ºîÀ®Æü
+      *ä½œæˆæ—¥
            03  TEIKIKANRI-CREYMD           PIC  X(08).
-      *ºîÀ®»þ´Ö
+      *ä½œæˆæ™‚é–“
            03  TEIKIKANRI-CREHMS           PIC  X(06).
-      *¿ÇÎÅÇ¯·î¡Ê°ì³ç¡§¿ÇÎÅÇ¯·î¡¢¸ÄÊÌ¡§¶õÇò¡Ë
+      *è¨ºç™‚å¹´æœˆï¼ˆä¸€æ‹¬ï¼šè¨ºç™‚å¹´æœˆã€å€‹åˆ¥ï¼šç©ºç™½ï¼‰
            03  TEIKIKANRI-SRYYM            PIC  X(06).
-      *¥Ú¡¼¥¸
+      *ãƒšãƒ¼ã‚¸
            03  TEIKIKANRI-PAGE             PIC  9(05).
-      *¥Ú¡¼¥¸
+      *ãƒšãƒ¼ã‚¸
            03  TEIKIKANRI-KENSU            PIC  9(05).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  TEIKIKANRI-TERMID           PIC  X(16).

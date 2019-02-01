@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,297 +16,297 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    √±∞Ã•≥°º•…•∆°º•÷•Î   COPY (CMTANICD.INC)     *
+      *    Âçò‰Ωç„Ç≥„Éº„Éâ„ÉÜ„Éº„Éñ„É´   COPY (CMTANICD.INC)     *
       *-------------------------------------------------*
       *****************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      * 01.00.01     MCC-¬ø°π«º   02/03/19  124 ∂›ºÔƒ…≤√(H14.4≤˛¿µ)
-      * 01.00.02     NACL-¬ø°π«º  02/12/13  060 •∑°º•»ƒ…≤√(H14.12≤˛¿µ)
-      * 01.00.03     NACL-¬ø°π«º  04/12/22  000 √±∞Ã§ §∑ƒ…≤√
-      * 01.00.04     NACL-¬ø°π«º  06/03/15  125 §´§È 128ƒ…≤√(H18.4≤˛¿µ°À
-      * 04.08.00     NACL-¬ø°π«º  16/08/30  061 •´•ª•√•»ƒ…≤√
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      * 01.00.01     MCC-Â§ö„ÄÖÁ¥ç   02/03/19  124 ËèåÁ®ÆËøΩÂä†(H14.4ÊîπÊ≠£)
+      * 01.00.02     NACL-Â§ö„ÄÖÁ¥ç  02/12/13  060 „Ç∑„Éº„ÉàËøΩÂä†(H14.12ÊîπÊ≠£)
+      * 01.00.03     NACL-Â§ö„ÄÖÁ¥ç  04/12/22  000 Âçò‰Ωç„Å™„ÅóËøΩÂä†
+      * 01.00.04     NACL-Â§ö„ÄÖÁ¥ç  06/03/15  125 „Åã„Çâ 128ËøΩÂä†(H18.4ÊîπÊ≠£Ôºâ
+      * 04.08.00     NACL-Â§ö„ÄÖÁ¥ç  16/08/30  061 „Ç´„Çª„ÉÉ„ÉàËøΩÂä†
       *****************************************************************
        01  MTANI-DATA-REC.
            03  FILLER          PIC X(03)  VALUE   "000".
            03  FILLER          PIC X(24)  VALUE   SPACE.
       *
            03  FILLER          PIC X(03)  VALUE   "001".
-           03  FILLER          PIC X(24)  VALUE   " ¨".
+           03  FILLER          PIC X(24)  VALUE   "ÂàÜ".
       *
            03  FILLER          PIC X(03)  VALUE   "002".
-           03  FILLER          PIC X(24)  VALUE   "≤Û".
+           03  FILLER          PIC X(24)  VALUE   "Âõû".
       *
            03  FILLER          PIC X(03)  VALUE   "003".
-           03  FILLER          PIC X(24)  VALUE   "ºÔ".
+           03  FILLER          PIC X(24)  VALUE   "Á®Æ".
       *
            03  FILLER          PIC X(03)  VALUE   "004".
-           03  FILLER          PIC X(24)  VALUE   "»¢".
+           03  FILLER          PIC X(24)  VALUE   "ÁÆ±".
       *
            03  FILLER          PIC X(03)  VALUE   "005".
-           03  FILLER          PIC X(24)  VALUE   "¥¨".
+           03  FILLER          PIC X(24)  VALUE   "Â∑ª".
       *
            03  FILLER          PIC X(03)  VALUE   "006".
-           03  FILLER          PIC X(24)  VALUE   "ÀÁ".
+           03  FILLER          PIC X(24)  VALUE   "Êûö".
       *
            03  FILLER          PIC X(03)  VALUE   "007".
-           03  FILLER          PIC X(24)  VALUE   "À‹".
+           03  FILLER          PIC X(24)  VALUE   "Êú¨".
       *
            03  FILLER          PIC X(03)  VALUE   "008".
-           03  FILLER          PIC X(24)  VALUE   "¡»".
+           03  FILLER          PIC X(24)  VALUE   "ÁµÑ".
       *
            03  FILLER          PIC X(03)  VALUE   "009".
-           03  FILLER          PIC X(24)  VALUE   "•ª•√•»".
+           03  FILLER          PIC X(24)  VALUE   "„Çª„ÉÉ„Éà".
       *
            03  FILLER          PIC X(03)  VALUE   "010".
-           03  FILLER          PIC X(24)  VALUE   "∏ƒ".
+           03  FILLER          PIC X(24)  VALUE   "ÂÄã".
       *
            03  FILLER          PIC X(03)  VALUE   "011".
-           03  FILLER          PIC X(24)  VALUE   "Œˆ".
+           03  FILLER          PIC X(24)  VALUE   "Ë£Ç".
       *
            03  FILLER          PIC X(03)  VALUE   "012".
-           03  FILLER          PIC X(24)  VALUE   " ˝∏˛".
+           03  FILLER          PIC X(24)  VALUE   "ÊñπÂêë".
       *
            03  FILLER          PIC X(03)  VALUE   "013".
-           03  FILLER          PIC X(24)  VALUE   "•»•Ì°º•¡".
+           03  FILLER          PIC X(24)  VALUE   "„Éà„É≠„Éº„ÉÅ".
       *
            03  FILLER          PIC X(03)  VALUE   "014".
-           03  FILLER          PIC X(24)  VALUE   "•¢•Û•◊•Î".
+           03  FILLER          PIC X(24)  VALUE   "„Ç¢„É≥„Éó„É´".
       *
            03  FILLER          PIC X(03)  VALUE   "015".
-           03  FILLER          PIC X(24)  VALUE   "•´•◊•ª•Î".
+           03  FILLER          PIC X(24)  VALUE   "„Ç´„Éó„Çª„É´".
       *
            03  FILLER          PIC X(03)  VALUE   "016".
-           03  FILLER          PIC X(24)  VALUE   "æ˚".
+           03  FILLER          PIC X(24)  VALUE   "Èå†".
       *
            03  FILLER          PIC X(03)  VALUE   "017".
-           03  FILLER          PIC X(24)  VALUE   "¥›".
+           03  FILLER          PIC X(24)  VALUE   "‰∏∏".
       *
            03  FILLER          PIC X(03)  VALUE   "018".
-           03  FILLER          PIC X(24)  VALUE   " Ò".
+           03  FILLER          PIC X(24)  VALUE   "ÂåÖ".
       *
            03  FILLER          PIC X(03)  VALUE   "019".
-           03  FILLER          PIC X(24)  VALUE   "…”".
+           03  FILLER          PIC X(24)  VALUE   "Áì∂".
       *
            03  FILLER          PIC X(03)  VALUE   "020".
-           03  FILLER          PIC X(24)  VALUE   "¬ﬁ".
+           03  FILLER          PIC X(24)  VALUE   "Ë¢ã".
       *
            03  FILLER          PIC X(03)  VALUE   "021".
-           03  FILLER          PIC X(24)  VALUE   "…”° ¬ﬁ°À".
+           03  FILLER          PIC X(24)  VALUE   "Áì∂ÔºàË¢ãÔºâ".
       *
            03  FILLER          PIC X(03)  VALUE   "022".
-           03  FILLER          PIC X(24)  VALUE   "¥…".
+           03  FILLER          PIC X(24)  VALUE   "ÁÆ°".
       *
            03  FILLER          PIC X(03)  VALUE   "023".
-           03  FILLER          PIC X(24)  VALUE   "•∑•Í•Û•∏".
+           03  FILLER          PIC X(24)  VALUE   "„Ç∑„É™„É≥„Ç∏".
       *
            03  FILLER          PIC X(03)  VALUE   "024".
-           03  FILLER          PIC X(24)  VALUE   "≤Û ¨".
+           03  FILLER          PIC X(24)  VALUE   "ÂõûÂàÜ".
       *
            03  FILLER          PIC X(03)  VALUE   "025".
-           03  FILLER          PIC X(24)  VALUE   "•∆•π•» ¨".
+           03  FILLER          PIC X(24)  VALUE   "„ÉÜ„Çπ„ÉàÂàÜ".
       *
            03  FILLER          PIC X(03)  VALUE   "026".
-           03  FILLER          PIC X(24)  VALUE   "•¨•È•π≈˚".
+           03  FILLER          PIC X(24)  VALUE   "„Ç¨„É©„ÇπÁ≠í".
       *
            03  FILLER          PIC X(03)  VALUE   "027".
-           03  FILLER          PIC X(24)  VALUE   "€Âæ˚".
+           03  FILLER          PIC X(24)  VALUE   "Ê°øÈå†".
       *
            03  FILLER          PIC X(03)  VALUE   "028".
-           03  FILLER          PIC X(24)  VALUE   "√±∞Ã".
+           03  FILLER          PIC X(24)  VALUE   "Âçò‰Ωç".
       *
            03  FILLER          PIC X(03)  VALUE   "029".
-           03  FILLER          PIC X(24)  VALUE   "À¸√±∞Ã".
+           03  FILLER          PIC X(24)  VALUE   "‰∏áÂçò‰Ωç".
       *
            03  FILLER          PIC X(03)  VALUE   "030".
-           03  FILLER          PIC X(24)  VALUE   "•’•£°º•»".
+           03  FILLER          PIC X(24)  VALUE   "„Éï„Ç£„Éº„Éà".
       *
            03  FILLER          PIC X(03)  VALUE   "031".
-           03  FILLER          PIC X(24)  VALUE   "≈©".
+           03  FILLER          PIC X(24)  VALUE   "Êª¥".
       *
            03  FILLER          PIC X(03)  VALUE   "032".
-           03  FILLER          PIC X(24)  VALUE   "£Ì£Á".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩçÔΩá".
       *
            03  FILLER          PIC X(03)  VALUE   "033".
-           03  FILLER          PIC X(24)  VALUE   "£Á".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩá".
       *
            03  FILLER          PIC X(03)  VALUE   "034".
-           03  FILLER          PIC X(24)  VALUE   "£À£Á".
+           03  FILLER          PIC X(24)  VALUE   "Ôº´ÔΩá".
       *
            03  FILLER          PIC X(03)  VALUE   "035".
-           03  FILLER          PIC X(24)  VALUE   "£„£„".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩÉÔΩÉ".
       *
            03  FILLER          PIC X(03)  VALUE   "036".
-           03  FILLER          PIC X(24)  VALUE   "£Ì£Ã".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩçÔº¨".
       *
            03  FILLER          PIC X(03)  VALUE   "037".
-           03  FILLER          PIC X(24)  VALUE   "£Ã".
+           03  FILLER          PIC X(24)  VALUE   "Ôº¨".
       *
            03  FILLER          PIC X(03)  VALUE   "038".
-           03  FILLER          PIC X(24)  VALUE   "£Ì£Ã£÷".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩçÔº¨Ôº∂".
       *
            03  FILLER          PIC X(03)  VALUE   "039".
-           03  FILLER          PIC X(24)  VALUE   "•–•§•¢•Î".
+           03  FILLER          PIC X(24)  VALUE   "„Éê„Ç§„Ç¢„É´".
       *
            03  FILLER          PIC X(03)  VALUE   "040".
-           03  FILLER          PIC X(24)  VALUE   "£„£Ì".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩÉÔΩç".
       *
            03  FILLER          PIC X(03)  VALUE   "041".
-           03  FILLER          PIC X(24)  VALUE   "£„£Ì£≤".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩÉÔΩçÔºí".
       *
            03  FILLER          PIC X(03)  VALUE   "042".
-           03  FILLER          PIC X(24)  VALUE   "£Ì".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩç".
       *
            03  FILLER          PIC X(03)  VALUE   "043".
-           03  FILLER          PIC X(24)  VALUE   "¶Ã£√£È".
+           03  FILLER          PIC X(24)  VALUE   "ŒºÔº£ÔΩâ".
       *
            03  FILLER          PIC X(03)  VALUE   "044".
-           03  FILLER          PIC X(24)  VALUE   "£Ì£√£È".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩçÔº£ÔΩâ".
       *
            03  FILLER          PIC X(03)  VALUE   "045".
-           03  FILLER          PIC X(24)  VALUE   "¶Ã£Á".
+           03  FILLER          PIC X(24)  VALUE   "ŒºÔΩá".
       *
            03  FILLER          PIC X(03)  VALUE   "046".
-           03  FILLER          PIC X(24)  VALUE   "¥…° …”°À".
+           03  FILLER          PIC X(24)  VALUE   "ÁÆ°ÔºàÁì∂Ôºâ".
       *
            03  FILLER          PIC X(03)  VALUE   "047".
-           03  FILLER          PIC X(24)  VALUE   "≈˚".
+           03  FILLER          PIC X(24)  VALUE   "Á≠í".
       *
            03  FILLER          PIC X(03)  VALUE   "048".
-           03  FILLER          PIC X(24)  VALUE   "£«£¬£Ò".
+           03  FILLER          PIC X(24)  VALUE   "ÔºßÔº¢ÔΩë".
       *
            03  FILLER          PIC X(03)  VALUE   "049".
-           03  FILLER          PIC X(24)  VALUE   "£Õ£¬£Ò".
+           03  FILLER          PIC X(24)  VALUE   "Ôº≠Ôº¢ÔΩë".
       *
            03  FILLER          PIC X(03)  VALUE   "050".
-           03  FILLER          PIC X(24)  VALUE   "£À£¬£Ò".
+           03  FILLER          PIC X(24)  VALUE   "Ôº´Ôº¢ÔΩë".
       *
            03  FILLER          PIC X(03)  VALUE   "051".
-           03  FILLER          PIC X(24)  VALUE   "•≠•√•»".
+           03  FILLER          PIC X(24)  VALUE   "„Ç≠„ÉÉ„Éà".
       *
            03  FILLER          PIC X(03)  VALUE   "052".
-           03  FILLER          PIC X(24)  VALUE   "πÒ∫›√±∞Ã".
+           03  FILLER          PIC X(24)  VALUE   "ÂõΩÈöõÂçò‰Ωç".
       *
            03  FILLER          PIC X(03)  VALUE   "053".
-           03  FILLER          PIC X(24)  VALUE   "¥µº‘≈ˆ§Í".
+           03  FILLER          PIC X(24)  VALUE   "ÊÇ£ËÄÖÂΩì„Çä".
       *
            03  FILLER          PIC X(03)  VALUE   "054".
-           03  FILLER          PIC X(24)  VALUE   "µ§∞µ".
+           03  FILLER          PIC X(24)  VALUE   "Ê∞óÂúß".
       *
            03  FILLER          PIC X(03)  VALUE   "055".
-           03  FILLER          PIC X(24)  VALUE   "¥Ã".
+           03  FILLER          PIC X(24)  VALUE   "Áº∂".
       *
            03  FILLER          PIC X(03)  VALUE   "056".
-           03  FILLER          PIC X(24)  VALUE   "ºÍΩ—≈ˆ§Í".
+           03  FILLER          PIC X(24)  VALUE   "ÊâãË°ìÂΩì„Çä".
       *
            03  FILLER          PIC X(03)  VALUE   "057".
-           03  FILLER          PIC X(24)  VALUE   "Õ∆¥Ô".
+           03  FILLER          PIC X(24)  VALUE   "ÂÆπÂô®".
       *
            03  FILLER          PIC X(03)  VALUE   "058".
-           03  FILLER          PIC X(24)  VALUE   "£Ì£Ã° £Á°À".
+           03  FILLER          PIC X(24)  VALUE   "ÔΩçÔº¨ÔºàÔΩáÔºâ".
       *
            03  FILLER          PIC X(03)  VALUE   "059".
-           03  FILLER          PIC X(24)  VALUE   "•÷•Í•π•ø°º".
+           03  FILLER          PIC X(24)  VALUE   "„Éñ„É™„Çπ„Çø„Éº".
       *
            03  FILLER          PIC X(03)  VALUE   "060".
-           03  FILLER          PIC X(24)  VALUE   "•∑°º•»".
+           03  FILLER          PIC X(24)  VALUE   "„Ç∑„Éº„Éà".
       *H28.8
            03  FILLER          PIC X(03)  VALUE   "061".
-           03  FILLER          PIC X(24)  VALUE   "•´•ª•√•»".
+           03  FILLER          PIC X(24)  VALUE   "„Ç´„Çª„ÉÉ„Éà".
       *
       *
            03  FILLER          PIC X(03)  VALUE   "101".
-           03  FILLER          PIC X(24)  VALUE   " ¨≤Ë".
+           03  FILLER          PIC X(24)  VALUE   "ÂàÜÁîª".
       *
            03  FILLER          PIC X(03)  VALUE   "102".
-           03  FILLER          PIC X(24)  VALUE   "¿˜øß".
+           03  FILLER          PIC X(24)  VALUE   "ÊüìËâ≤".
       *
            03  FILLER          PIC X(03)  VALUE   "103".
-           03  FILLER          PIC X(24)  VALUE   "ºÔŒ‡".
+           03  FILLER          PIC X(24)  VALUE   "Á®ÆÈ°û".
       *
            03  FILLER          PIC X(03)  VALUE   "104".
-           03  FILLER          PIC X(24)  VALUE   "≥Ù".
+           03  FILLER          PIC X(24)  VALUE   "Ê†™".
       *
            03  FILLER          PIC X(03)  VALUE   "105".
-           03  FILLER          PIC X(24)  VALUE   "∂›≥Ù".
+           03  FILLER          PIC X(24)  VALUE   "ËèåÊ†™".
       *
            03  FILLER          PIC X(03)  VALUE   "106".
-           03  FILLER          PIC X(24)  VALUE   "æ»ºÕ".
+           03  FILLER          PIC X(24)  VALUE   "ÁÖßÂ∞Ñ".
       *
            03  FILLER          PIC X(03)  VALUE   "107".
-           03  FILLER          PIC X(24)  VALUE   "¬°¥Ô".
+           03  FILLER          PIC X(24)  VALUE   "ËáìÂô®".
       *
            03  FILLER          PIC X(03)  VALUE   "108".
-           03  FILLER          PIC X(24)  VALUE   "∑Ô".
+           03  FILLER          PIC X(24)  VALUE   "‰ª∂".
       *
            03  FILLER          PIC X(03)  VALUE   "109".
-           03  FILLER          PIC X(24)  VALUE   "…Ù∞Ã".
+           03  FILLER          PIC X(24)  VALUE   "ÈÉ®‰Ωç".
       *
            03  FILLER          PIC X(03)  VALUE   "110".
-           03  FILLER          PIC X(24)  VALUE   "ªË".
+           03  FILLER          PIC X(24)  VALUE   "ËÇ¢".
       *
            03  FILLER          PIC X(03)  VALUE   "111".
-           03  FILLER          PIC X(24)  VALUE   "∂…ΩÍ".
+           03  FILLER          PIC X(24)  VALUE   "Â±ÄÊâÄ".
       *
            03  FILLER          PIC X(03)  VALUE   "112".
-           03  FILLER          PIC X(24)  VALUE   "ºÔÃ‹".
+           03  FILLER          PIC X(24)  VALUE   "Á®ÆÁõÆ".
       *
            03  FILLER          PIC X(03)  VALUE   "113".
-           03  FILLER          PIC X(24)  VALUE   "•π•≠•„•Û".
+           03  FILLER          PIC X(24)  VALUE   "„Çπ„Ç≠„É£„É≥".
       *
            03  FILLER          PIC X(03)  VALUE   "114".
-           03  FILLER          PIC X(24)  VALUE   "•≥•ﬁ".
+           03  FILLER          PIC X(24)  VALUE   "„Ç≥„Éû".
       *
            03  FILLER          PIC X(03)  VALUE   "115".
-           03  FILLER          PIC X(24)  VALUE   "ΩËÕ˝".
+           03  FILLER          PIC X(24)  VALUE   "Âá¶ÁêÜ".
       *
            03  FILLER          PIC X(03)  VALUE   "116".
-           03  FILLER          PIC X(24)  VALUE   "ªÿ".
+           03  FILLER          PIC X(24)  VALUE   "Êåá".
       *
            03  FILLER          PIC X(03)  VALUE   "117".
-           03  FILLER          PIC X(24)  VALUE   "ªı".
+           03  FILLER          PIC X(24)  VALUE   "Ê≠Ø".
       *
            03  FILLER          PIC X(03)  VALUE   "118".
-           03  FILLER          PIC X(24)  VALUE   "ÃÃ".
+           03  FILLER          PIC X(24)  VALUE   "Èù¢".
       *
            03  FILLER          PIC X(03)  VALUE   "119".
-           03  FILLER          PIC X(24)  VALUE   "¬¶".
+           03  FILLER          PIC X(24)  VALUE   "ÂÅ¥".
       *
            03  FILLER          PIC X(03)  VALUE   "120".
-           03  FILLER          PIC X(24)  VALUE   "∏ƒΩÍ".
+           03  FILLER          PIC X(24)  VALUE   "ÂÄãÊâÄ".
       *
            03  FILLER          PIC X(03)  VALUE   "121".
-           03  FILLER          PIC X(24)  VALUE   "∆¸".
+           03  FILLER          PIC X(24)  VALUE   "Êó•".
       *
            03  FILLER          PIC X(03)  VALUE   "122".
-           03  FILLER          PIC X(24)  VALUE   "ƒ«¥÷".
+           03  FILLER          PIC X(24)  VALUE   "Ê§éÈñì".
       *
            03  FILLER          PIC X(03)  VALUE   "123".
-           03  FILLER          PIC X(24)  VALUE   "∂⁄".
+           03  FILLER          PIC X(24)  VALUE   "Á≠ã".
       *
            03  FILLER          PIC X(03)  VALUE   "124".
-           03  FILLER          PIC X(24)  VALUE   "∂›ºÔ".
+           03  FILLER          PIC X(24)  VALUE   "ËèåÁ®Æ".
       *
            03  FILLER          PIC X(03)  VALUE   "125".
-           03  FILLER          PIC X(24)  VALUE   "π‡Ã‹".
+           03  FILLER          PIC X(24)  VALUE   "È†ÖÁõÆ".
       *
            03  FILLER          PIC X(03)  VALUE   "126".
-           03  FILLER          PIC X(24)  VALUE   "≤’ΩÍ".
+           03  FILLER          PIC X(24)  VALUE   "ÁÆáÊâÄ".
       *
            03  FILLER          PIC X(03)  VALUE   "127".
-           03  FILLER          PIC X(24)  VALUE   "ƒ«µ›".
+           03  FILLER          PIC X(24)  VALUE   "Ê§éÂºì".
       *
            03  FILLER          PIC X(03)  VALUE   "128".
-           03  FILLER          PIC X(24)  VALUE   "ø©".
+           03  FILLER          PIC X(24)  VALUE   "È£ü".
       *H30.4
            03  FILLER          PIC X(03)  VALUE   "131".
-           03  FILLER          PIC X(24)  VALUE   "∑Ó".
+           03  FILLER          PIC X(24)  VALUE   "Êúà".
       *
            03  FILLER          PIC X(03)  VALUE   "140".
-           03  FILLER          PIC X(24)  VALUE   "ø¿∑–".
+           03  FILLER          PIC X(24)  VALUE   "Á•ûÁµå".
       *H24.4
            03  FILLER          PIC X(03)  VALUE   "158".
-           03  FILLER          PIC X(24)  VALUE   "ƒ«¬Œ".
+           03  FILLER          PIC X(24)  VALUE   "Ê§é‰Ωì".
       *
       *
        01  MTANI-DATA-REC-R         REDEFINES   MTANI-DATA-REC.

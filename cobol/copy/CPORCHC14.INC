@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,21 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    Í½Ìó°ìÍ÷¡¦Ì¤±¡°ìÍ÷½ÐÎÏ¥Ñ¥é¥á¥¿      COPY (CPORCHC14.INC)
+      *    äºˆç´„ä¸€è¦§ãƒ»æœªé™¢ä¸€è¦§å‡ºåŠ›ãƒ‘ãƒ©ãƒ¡ã‚¿      COPY (CPORCHC14.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCHC14AREA.
-      *    ¡Ê£±¡§Í½Ìó°ìÍ÷¡¢£²¡§Ì¤±¡°ìÍ÷¡Ë
+      *    ï¼ˆï¼‘ï¼šäºˆç´„ä¸€è¦§ã€ï¼’ï¼šæœªé™¢ä¸€è¦§ï¼‰
            03  ORCHC14-KBN             PIC X(01).
-      *    Í½ÌóÆü
+      *    äºˆç´„æ—¥
            03  ORCHC14-YYKYMD          PIC X(08).
-      *    ¿ÇÎÅÆâÍÆ¶èÊ¬
+      *    è¨ºç™‚å†…å®¹åŒºåˆ†
            03  ORCHC14-SRYNAIYO        PIC X(02).
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  ORCHC14-DRCD-G.
                05  ORCHC14-DRCDKEY         PIC X(01).
                05  ORCHC14-DRCD            PIC X(04).

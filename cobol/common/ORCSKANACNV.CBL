@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSKANACNV.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ���������Ѵ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : カタカナ変換
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-����     02/05/29
-      *  04.08.01    NACL-����    15/12/21  �Ҥ餬���Ѵ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-太田     02/05/29
+      *  04.08.01    NACL-森脇    15/12/21  ひらがな変換対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,24 +40,24 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-INPUTERR        PIC 9(01).
            03  FLG-EXIT            PIC 9(01).
-      *    1:�Ҥ餬�ʡ�2:�������ʡ�3:����
+      *    1:ひらがな／2:カタカナ／3:不明
            03  FLG-TYPE            PIC 9(01).
-      *    0:1,2����ʸ��("��"��)/1:�Ҥ餬�ʡ�2:�������ʡ�9:����
-      *    (�����:0/�����ˤϤҤ餬�ʡ��������ʤκ��ߤ�ޤ�)
+      *    0:1,2共通文字("ー"等)/1:ひらがな／2:カタカナ／9:不明
+      *    (初期値:0/不明にはひらがな・カタカナの混在も含む)
            03  FLG-BFTYPE          PIC 9(01).
            03  FLG-HANKAKUCHK      PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX1                PIC 9(05).
            03  IDX2                PIC 9(05).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-MOTO-STR-AREA.
                05  WRK-MOTO-STR    PIC X(02)
@@ -70,44 +70,44 @@
       *
        01  CONST-AREA.
            03  CONST-KANA-AREA.
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "�����ĤƤ�".
-               05  FILLER          PIC X(10)   VALUE "�ʤˤ̤ͤ�".
-               05  FILLER          PIC X(10)   VALUE "�ϤҤդؤ�".
-               05  FILLER          PIC X(10)   VALUE "�ޤߤ���".
-               05  FILLER          PIC X(06)   VALUE "����".
-               05  FILLER          PIC X(10)   VALUE "������".
-               05  FILLER          PIC X(10)   VALUE "������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "�����ŤǤ�".
-               05  FILLER          PIC X(10)   VALUE "�ФӤ֤٤�".
-               05  FILLER          PIC X(10)   VALUE "�ѤԤפڤ�".
-               05  FILLER          PIC X(08)   VALUE "�ä���".
-               05  FILLER          PIC X(10)   VALUE "����������".
+               05  FILLER          PIC X(10)   VALUE "あいうえお".
+               05  FILLER          PIC X(10)   VALUE "かきくけこ".
+               05  FILLER          PIC X(10)   VALUE "さしすせそ".
+               05  FILLER          PIC X(10)   VALUE "たちつてと".
+               05  FILLER          PIC X(10)   VALUE "なにぬねの".
+               05  FILLER          PIC X(10)   VALUE "はひふへほ".
+               05  FILLER          PIC X(10)   VALUE "まみむめも".
+               05  FILLER          PIC X(06)   VALUE "やゆよ".
+               05  FILLER          PIC X(10)   VALUE "らりるれろ".
+               05  FILLER          PIC X(10)   VALUE "わゐゑをん".
+               05  FILLER          PIC X(10)   VALUE "がぎぐげご".
+               05  FILLER          PIC X(10)   VALUE "ざじずぜぞ".
+               05  FILLER          PIC X(10)   VALUE "だちづでど".
+               05  FILLER          PIC X(10)   VALUE "ばびぶべぼ".
+               05  FILLER          PIC X(10)   VALUE "ぱぴぷぺぽ".
+               05  FILLER          PIC X(08)   VALUE "っゃゅょ".
+               05  FILLER          PIC X(10)   VALUE "ぁぃぅぇぉ".
                05  FILLER          PIC X(36)   VALUE LOW-VALUE.
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "�����ĥƥ�".
-               05  FILLER          PIC X(10)   VALUE "�ʥ˥̥ͥ�".
-               05  FILLER          PIC X(10)   VALUE "�ϥҥեإ�".
-               05  FILLER          PIC X(10)   VALUE "�ޥߥ���".
-               05  FILLER          PIC X(06)   VALUE "����".
-               05  FILLER          PIC X(10)   VALUE "������".
-               05  FILLER          PIC X(10)   VALUE "������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(10)   VALUE "���¥ťǥ�".
-               05  FILLER          PIC X(10)   VALUE "�Хӥ֥٥�".
-               05  FILLER          PIC X(10)   VALUE "�ѥԥץڥ�".
-               05  FILLER          PIC X(08)   VALUE "�å���".
-               05  FILLER          PIC X(10)   VALUE "����������".
-               05  FILLER          PIC X(02)   VALUE "��".
+               05  FILLER          PIC X(10)   VALUE "アイウエオ".
+               05  FILLER          PIC X(10)   VALUE "カキクケコ".
+               05  FILLER          PIC X(10)   VALUE "サシスセソ".
+               05  FILLER          PIC X(10)   VALUE "タチツテト".
+               05  FILLER          PIC X(10)   VALUE "ナニヌネノ".
+               05  FILLER          PIC X(10)   VALUE "ハヒフヘホ".
+               05  FILLER          PIC X(10)   VALUE "マミムメモ".
+               05  FILLER          PIC X(06)   VALUE "ヤユヨ".
+               05  FILLER          PIC X(10)   VALUE "ラリルレロ".
+               05  FILLER          PIC X(10)   VALUE "ワヰヱヲン".
+               05  FILLER          PIC X(10)   VALUE "ガギグゲゴ".
+               05  FILLER          PIC X(10)   VALUE "ザジズゼゾ".
+               05  FILLER          PIC X(10)   VALUE "ダヂヅデド".
+               05  FILLER          PIC X(10)   VALUE "バビブベボ".
+               05  FILLER          PIC X(10)   VALUE "パピプペポ".
+               05  FILLER          PIC X(08)   VALUE "ッャュョ".
+               05  FILLER          PIC X(10)   VALUE "ァィゥェォ".
+               05  FILLER          PIC X(02)   VALUE "ヴ".
                05  FILLER          PIC X(34)   VALUE LOW-VALUE.
-               05  FILLER          PIC X(08)   VALUE "��������".
+               05  FILLER          PIC X(08)   VALUE "゛゜ー　".
       *
            03  CONST-KANA-R     REDEFINES   CONST-KANA-AREA.
                05  CONST-KANA      PIC X(02)   OCCURS 204
@@ -123,14 +123,14 @@
            03  CONST-HKKYOTU-ED    PIC 9(05)   VALUE 204.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -141,7 +141,7 @@
       *
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -176,13 +176,13 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        100-INPUT-CHK-SEC           SECTION.
       *
            MOVE    ZERO            TO  FLG-INPUTERR
       *
-      *    �������Ѥ����Ϥ���Ƥ��뤳��
+      *    全て全角で入力されていること
            MOVE    KANACNV-IN-STR  TO  WRK-KANACHK-MAE-INPUT
            PERFORM 800-ENRTRY-CHK-SEC
            IF ( FLG-HANKAKUCHK     NOT =   ZERO )
@@ -193,7 +193,7 @@
        100-INPUT-CHK-EXT.
           EXIT.
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        100-EDIT-SEC                SECTION.
       *
@@ -227,14 +227,14 @@
            EXIT.
       *----(04.08.01)--UPD-START---
       *****************************************************************
-      *    ���ʥ����å�����
+      *    かなチェック処理
       *****************************************************************
        101-KANA-CHK                SECTION.
       *
            MOVE    ZERO                TO      FLG-EXIT
       *
            EVALUATE    IDX2
-      *    �Ҥ餬�ʤ��ɤ���Ƚ��
+      *    ひらがなかどうか判断
            WHEN    CONST-HIRAGANA-ST   THRU    CONST-HIRAGANA-ED
                IF  ( FLG-BFTYPE        =       0 OR 1 OR 3)
                    MOVE    1           TO      FLG-BFTYPE
@@ -249,7 +249,7 @@
                    MOVE    9           TO      FLG-BFTYPE
                    MOVE    1           TO      FLG-EXIT
                END-IF
-      *    �������ʤ��ɤ���Ƚ��
+      *    カタカナかどうか判断
            WHEN    CONST-KATAKANA-ST   THRU    CONST-KATAKANA-ED
                IF  ( FLG-BFTYPE        =       0 OR 2 OR 3)
                    MOVE    2           TO      FLG-BFTYPE
@@ -264,7 +264,7 @@
                    MOVE    9           TO      FLG-BFTYPE
                    MOVE    1           TO      FLG-EXIT
                END-IF
-      *    "��","��"�����ɤ���Ƚ��
+      *    "ー","゛"等かどうか判断
            WHEN    CONST-HKKYOTU-ST    THRU    CONST-HKKYOTU-ED
                MOVE    CONST-KANA (IDX2)
                                        TO      WRK-ATO-STR (IDX1)
@@ -278,7 +278,7 @@
            EXIT.
       *----(04.08.01)--UPD-END-----
       *****************************************************************
-      *    ����Ⱦ�Ѻ��ߥ����å�
+      *    全角半角混在チェック
       *****************************************************************
        800-ENRTRY-CHK-SEC              SECTION.
       *
@@ -299,7 +299,7 @@
                GO  TO  800-ENRTRY-CHK-EXT
            END-IF
       *
-      *    ���ѤǤʤ����ϥ��顼�Ȥ��롣
+      *    全角でない場合はエラーとする。
            IF      ( KANACHK-SYUBETU   NOT =   2 )
                MOVE    1           TO  FLG-HANKAKUCHK
            END-IF

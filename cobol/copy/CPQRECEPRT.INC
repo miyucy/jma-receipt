@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,45 +16,45 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥ì¥»¥×¥ÈÌÀºÙ½ñ     COPY (CPQRECEPRT.INC)              *
+      *    ãƒ¬ã‚»ãƒ—ãƒˆæ˜Žç´°æ›¸     COPY (CPQRECEPRT.INC)              *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.05.01    NACL-Æ£¸¶    09/06/18  ¼ÒÊÝ¥ì¥»¥×¥ÈÊ×ÄÖ½çÂÐ±þ
-      *                                     ¿³ºº»ÙÊ§µ¡´Ø¡¢ºßÁí¿Ç¥Õ¥é¥°¤ÎÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.05.01    NACL-è—¤åŽŸ    09/06/18  ç¤¾ä¿ãƒ¬ã‚»ãƒ—ãƒˆéç¶´é †å¯¾å¿œ
+      *                                     å¯©æŸ»æ”¯æ‰•æ©Ÿé–¢ã€åœ¨ç·è¨ºãƒ•ãƒ©ã‚°ã®è¿½åŠ 
       *
-      *  04.07.01    NACL-Æ£¸¶    12/02/13  ·òÊÝÁÈ¹ç°å¤Ø¤ÎÄ¾ÀÜÀÁµá¤È¿³ºº
-      *                                     »ÙÊ§µ¡´ØÀÁµáÂÐ±þ
+      *  04.07.01    NACL-è—¤åŽŸ    12/02/13  å¥ä¿çµ„åˆåŒ»ã¸ã®ç›´æŽ¥è«‹æ±‚ã¨å¯©æŸ»
+      *                                     æ”¯æ‰•æ©Ÿé–¢è«‹æ±‚å¯¾å¿œ
       *************************************************************
       *01  QUERY-RECE08-REC.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  QUERY-RECE08-HOSPNUM        PIC 9(2).
-      *Ä¢É¼£É£Ä
+      *å¸³ç¥¨ï¼©ï¼¤
            03  QUERY-RECE08-PRTID          PIC X(04).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
            03  QUERY-RECE08-RECEYM         PIC X(06).
-      *ºîÀ®Æü
+      *ä½œæˆæ—¥
            03  QUERY-RECE08-CREYMD         PIC X(08).
-      *ºîÀ®»þ´Ö
+      *ä½œæˆæ™‚é–“
            03  QUERY-RECE08-CREHMS         PIC X(06).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  QUERY-RECE08-NYUGAIKBN      PIC X(01).
-      *¿³ºº»ÙÊ§µ¡´Ø
+      *å¯©æŸ»æ”¯æ‰•æ©Ÿé–¢
            03  QUERY-RECE08-TEISYUTUSAKI   PIC X(01).
-      *ºßÁí¿Ç¡¦ºß°åÁí
+      *åœ¨ç·è¨ºãƒ»åœ¨åŒ»ç·
            03  QUERY-RECE08-ZAITAKU        PIC X(01).
-      *°å»Õ¥³¡¼¥É
+      *åŒ»å¸«ã‚³ãƒ¼ãƒ‰
            03  QUERY-RECE08-DRCD           PIC X(05).
-      *°å»ÕÊÌ¿ÇÎÅ²Ê
+      *åŒ»å¸«åˆ¥è¨ºç™‚ç§‘
            03  QUERY-RECE08-DRCD-SRYKA     PIC X(02).
-      *ÉÂÅï
+      *ç—…æ£Ÿ
            03  QUERY-RECE08-SORT-1         PIC X(10).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
            03  QUERY-RECE08-SRYKA          PIC X(02).
-      *¸¡º÷ÍÑÊÝ¸±¼ÔÈÖ¹æ        
+      *æ¤œç´¢ç”¨ä¿é™ºè€…ç•ªå·        
            03  QUERY-RECE08-HKNJANUM-S     PIC X(08).
-      *·ï¿ô
+      *ä»¶æ•°
            03  QUERY-RECE08-KENSU          PIC 9(06).
-      *¥Ú¡¼¥¸
+      *ãƒšãƒ¼ã‚¸
            03  QUERY-RECE08-PAGE           PIC 9(06).  

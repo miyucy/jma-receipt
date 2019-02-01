@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI052R1V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ��̾�ޥ����ֵ�  (xml2)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/06/XX    NACL��ƣ������������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 病名マスタ返却  (xml2)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/06/XX    NACL−藤原　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.00.01    NACL-ƣ��    18/10/15  �ͣϣΣ£̣ϣ¥��顼�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,24 +39,24 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ�
+      *    エラーファイル 名称領域
            COPY    "CPERRFL.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
       *
            03  FLG-SYORI               PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -68,7 +68,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -79,7 +79,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(03).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(03).
@@ -98,67 +98,67 @@
            03  WRK-BASE-YMD            PIC X(08).
       *
        01  WRK-CONS-AREA.
-      *    �����ƥ�����ģ¡ʣ��������ˤΥ�����  
+      *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "052".
-      *    ����ִ����ģ¤���
+      *    ジョブ管理ＤＢの値
            03  WRK-CONS-JOB-SHELLID    PIC X(08)   VALUE   "MONTHLY".
            03  WRK-CONS-JOB-JOBID      PIC 9(07)   VALUE   1.
       *
-      *    ���������ģ¤���  
+      *    印刷管理ＤＢの値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                        PIC X(08)   VALUE   "MONTHLY".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                        PIC X(14)   VALUE   SPACE.
       *
-      *    ���顼�ե�����ɣ�
+      *    エラーファイルＩＤ
            03  WRK-CONS-FILE-ID        PIC X(08)   VALUE   "OR052ERR".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPDISEASEMASTERLSTV3REQ.INC".
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPDISEASEMASTERLSTV3RES.INC".
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *    ����ǥ��쥯�ȥ��������
+      *    一時ディレクトリ作成作成
            COPY    "CPORCSTEMPDIR.INC".
       *
            COPY    "MONBLOB".
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
-      *    �ʿ��������
+      *    （職員情報）
            COPY    "CPSK1010.INC".
-      *    �ʰ��ŵ��ؾ����
+      *    （医療機関情報）
       *    COPY    "CPSK1001.INC".
       *
            COPY    "CPSK3003.INC".
@@ -169,12 +169,12 @@
       *
            COPY    "ORCA-BLOB".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -192,7 +192,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -205,18 +205,18 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "E99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -228,13 +228,13 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-LSTRES
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -243,7 +243,7 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
@@ -252,7 +252,7 @@
            MOVE    WRK-HEN-TIME        TO
                                        LSTRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -261,7 +261,7 @@
                MOVE   "E99"            TO  WRK-ERRCD
                GO  TO 100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -279,11 +279,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -302,7 +302,7 @@
                MOVE    "E91"               TO  WRK-ERRCD
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -312,10 +312,10 @@
       *
            EVALUATE   LSTREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        �����»�
+      *        処理実施
                PERFORM 2002-SYORI-01-SEC
            WHEN    "02"
-      *        ��̾����ֵ�
+      *        結果情報返却
                PERFORM 2003-SYORI-02-SEC
            END-EVALUATE
            .
@@ -323,7 +323,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -358,11 +358,11 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
@@ -371,16 +371,16 @@
                MOVE    ZERO                TO  LSTRES-API-RESULT
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "�����»ܽ�λ"
+                       MOVE    "処理実施終了"
                                            TO  LSTRES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "������ǧ��λ"
+                       MOVE    "処理確認終了"
                                            TO  LSTRES-API-RESULT-MSG
                END-EVALUATE
            ELSE
                MOVE    "01"                TO  LSTRES-RESPONSE-NUMBER
                IF      WRK-ERRMSG          =   SPACE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                MOVE    WRK-ERRCD           TO  LSTRES-API-RESULT
@@ -403,7 +403,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        3001-LSTRES-SEC        SECTION.
       *
@@ -434,7 +434,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -444,20 +444,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ƥ����å�
+      *    情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
       *
-      *    �����UID
+      *    カルテUID
            IF     LSTREQ-KARTE-UID     =   SPACE
                MOVE    "E04"               TO  WRK-ERRCD
                GO  TO  2001-INPUT-CHK-EXT
            END-IF
       *
-      *    ���륫UID
+      *    オルカUID
            IF     LSTREQ-REQUEST-NUMBER
                                        =   "01"
                CONTINUE
@@ -468,7 +468,7 @@
                END-IF
            END-IF
       *
-      *    �����������å�
+      *    診療日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
@@ -478,11 +478,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ����Ѵ��Խ�����
+      *    入力項目変換編集処理
       *****************************************************************
        20010-INPUT-HEN-SEC             SECTION.
       *
-      *    �����
+      *    基準日
            MOVE   LSTREQ-BASE-DATE     TO  LSTRES-BASE-DATE
       *
            MOVE   LSTREQ-BASE-DATE     TO  WRK-HEN-DATE
@@ -498,11 +498,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������å�
+      *    基準日チェック
       *****************************************************************
        20011-PERFORM-CHK-SEC           SECTION.
       *
-      *    ���ե����å�����
+      *    日付チェックサブ
            IF      WRK-BASE-YMD        =   SPACE
                CONTINUE
            ELSE
@@ -524,21 +524,21 @@
            EXIT.
       *
       *****************************************************************
-      *    �����»ܽ���
+      *    処理実施処理
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            PERFORM 800-JOBKANRI-CHK-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            PERFORM 20021-UID-GET-SEC
            MOVE    C-UID           TO  LSTREQ-ORCA-UID
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"           TO  ORCSCOMMON-PG
@@ -552,10 +552,10 @@
       **     CALL    "ORCSTEMPDIR"       USING
       **                                 STEMPDIR-AREA
       *
-      *    ����ǥ��쥯�ȥ�Υ롼�ȥǥ��쥯�ȥ����
+      *    一時ディレクトリのルートディレクトリ取得
            ACCEPT  WRK-TEMPDIR-ROOT
                                FROM    ENVIRONMENT "MCP_TEMPDIR_ROOT"
-      *    ����ǥ��쥯�ȥ�̾�Ȥ�Ω��
+      *    一時ディレクトリ名組み立て
            STRING  WRK-TEMPDIR-ROOT    DELIMITED   BY  SPACE
                    "/"                 DELIMITED   BY  SIZE
                    SPA-TERMID          DELIMITED   BY  SPACE
@@ -563,21 +563,21 @@
                                        INTO        MCP-TEMPDIR
            END-STRING
       *
-      *    �Ķ��ѿ���MCP_TEMPDIR�Ϥ�������MCP-TEMPDIR���ͤ������
+      *    環境変数［MCP_TEMPDIR］を生成（MCP-TEMPDIRの値を設定）
            SET ENVIRONMENT "MCP_TEMPDIR"
                                    TO  MCP-TEMPDIR
-      *    �Ķ��ѿ���ORCA_UID�Ϥ�������SPA-TERMID�ͤ������
+      *    環境変数［ORCA_UID］を生成（SPA-TERMID値を設定）
            SET ENVIRONMENT "ORCA_UID"
                                    TO  SPA-TERMID
       *
-      *    ����ǥ��쥯�ȥ����
+      *    一時ディレクトリ作成
            CALL    "CBL_CREATE_DIR"    USING   MCP-TEMPDIR
            IF    ( RETURN-CODE     NOT =   ZERO )
                MOVE    "E80"               TO  WRK-ERRCD
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
-      *    �ģ���ᡲ�ɣ����
+      *    Ｄａｔａ＿Ｉｄ取得
            MOVE    "MONBLOBNEW"        TO  MCP-FUNC
            MOVE    "key"               TO  MCP-PATHNAME
            MOVE    "monblob"           TO  MCP-TABLE
@@ -590,12 +590,12 @@
            END-IF
            MOVE    MONBLOB-ID          TO  WRK-MONBLOB-ID
       *
-      *    �ޥ������ռ���
+      *    マシン日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �ʣϣ£ɣĺ������
+      *    ＪＯＢＩＤ削除処理
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -621,7 +621,7 @@
                END-IF
            END-IF
       *
-      *    ����ִ�������
+      *    ジョブ管理処理
            MOVE    "ALL"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -653,7 +653,7 @@
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
-      *    �ʣϣ£ɣĹ�������
+      *    ＪＯＢＩＤ更新処理
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -679,13 +679,13 @@
                GO  TO  2002-SYORI-01-EXT
            END-IF
       *
-      *    ���顼�ե�����̾
+      *    エラーファイル名
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
            MOVE    WRK-CONS-FILE-ID
                                        TO  ERRFLPARA-FILE-ID
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
       *
-      *    ����������ץ�
+      *    処理スクリプト
            MOVE    SPACE               TO  WRK-CONS-PRTKANRI-TBL-GROUP
            STRING  SMCNDATE-YMD    DELIMITED  BY  SIZE
                    SMCNDATE-HMS    DELIMITED  BY  SIZE
@@ -754,11 +754,11 @@
            EXIT.
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        20021-UID-GET-SEC           SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -769,11 +769,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾����ֵѽ���
+      *    結果情報返却処理
       *****************************************************************
        2003-SYORI-02-SEC           SECTION.
       *
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
            MOVE    "CH2"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-CONS-JOB-JOBID
@@ -793,9 +793,9 @@
       *
                IF      JOB-ENDYMD      =   SPACE
                    MOVE    "E70"           TO  WRK-ERRCD
-                   STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                   STRING  "処理中です【"  DELIMITED  BY  SIZE
                            JOB-SHELLMSG    DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-ERRMSG
                    END-STRING
                ELSE
@@ -805,16 +805,16 @@
                    ELSE
                        IF    ( JOB-ERRCD   =   SPACE                )
                        OR    ( JOB-YOBI    =
-                               "�����оݤΥǡ���������ޤ���Ǥ���" )
+                               "処理対象のデータがありませんでした" )
                            MOVE    JOB-UPDCNT      TO  WRK-UPDCNT
                            MOVE    WRK-UPDCNT-X    TO
                                                    LSTRES-OUTPUT-COUNT
                        ELSE
                            MOVE    "E30"           TO  WRK-ERRCD
                            STRING  JOB-YOBI        DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE
+                                   "【"            DELIMITED  BY  SIZE
                                   JOB-SHELLMSG     DELIMITED  BY  SPACE
-                                  "��"             DELIMITED  BY  SIZE
+                                  "】"             DELIMITED  BY  SIZE
                                                    INTO  WRK-ERRMSG
                            END-STRING
                        END-IF
@@ -828,11 +828,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        800-JOBKANRI-CHK-SEC       SECTION.
       *
-      *    ����ִ��������å�
+      *    ジョブ管理チェック
            MOVE    SPACE               TO  SYS-3003-REC
            INITIALIZE                      SYS-3003-REC
            MOVE    SPA-HOSPNUM         TO  SYS-3003-HOSPNUM
@@ -846,7 +846,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL ( IDX >       SYS-3003-JOBID )
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CH2"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
@@ -859,9 +859,9 @@
                        IF      JOB-ENDYMD      =   SPACE
                            MOVE    "E70"           TO  WRK-ERRCD
                            MOVE    SPACE           TO  WRK-ERRMSG
-                           STRING  "������Ǥ���"  DELIMITED  BY  SIZE
+                           STRING  "処理中です【"  DELIMITED  BY  SIZE
                                    JOB-SHELLMSG    DELIMITED  BY  SPACE
-                                   "��"            DELIMITED  BY  SIZE
+                                   "】"            DELIMITED  BY  SIZE
                                                    INTO  WRK-ERRMSG
                            END-STRING
                            GO  TO  800-JOBKANRI-CHK-EXT
@@ -874,7 +874,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -889,7 +889,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -918,7 +918,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -939,7 +939,7 @@
        802-DAYHEN02-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
@@ -952,81 +952,81 @@
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "E04"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "E05"
-               MOVE    "���륫�գɣĤ�̤����Ǥ���"
+               MOVE    "オルカＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "E11"
-               MOVE    "������������ǤϤ���ޤ���"
+               MOVE    "基準日が暦日ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E20"
-               MOVE    "����ִ���������Ǥ��ޤ���Ǥ�����"
+               MOVE    "ジョブ管理が削除できませんでした。"
                                                TO  WRK-ERRMSG
            WHEN    "E21"
-               MOVE    "����ִ����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "ジョブ管理が更新できませんでした。"
                                                TO  WRK-ERRMSG
            WHEN    "E22"
-               MOVE    "�����ƥ����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "システム管理が削除できませんでした。"
                                                TO  WRK-ERRMSG
            WHEN    "E23"
-               MOVE    "�����ƥ�����������Ǥ��ޤ���Ǥ�����"
+               MOVE    "システム管理が更新できませんでした。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "E40"
-               MOVE    "�оݤΥ���ִ���������ޤ���"
+               MOVE    "対象のジョブ管理がありません。"
                                                TO  WRK-ERRMSG
            WHEN    "E41"
-               MOVE    "�оݤν����Ϥ���ޤ���"
+               MOVE    "対象の処理はありません。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "E80"
-               MOVE    "����ǥ��쥯�ȥ꤬�����Ǥ��ޤ���"
+               MOVE    "一時ディレクトリが取得できません。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "E88"
-               MOVE    "�ģ���ᡲ�ɣ䤬�����Ǥ��ޤ���"
+               MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
                                                TO  WRK-ERRMSG 
-      *���̥��顼
+      *共通エラー
            WHEN    "E89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません。"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません。"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "E90"
-                   MOVE    "¾ü���ǻ�����Ǥ���"
+                   MOVE    "他端末で使用中です。"
                                                TO  WRK-ERRMSG
            WHEN    "E91"
-                   MOVE    "�ꥯ�������ֹ椬�����Ǥ���"
+                   MOVE    "リクエスト番号が不正です。"
                                                TO  WRK-ERRMSG
            WHEN    "E97"
-                   MOVE   "�������Ƥ˸��꤬����ޤ���"
+                   MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "E98"
-                   MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+                   MOVE   "送信内容の読込ができませんでした。"
                                                TO  WRK-ERRMSG
            WHEN    "E99"
-                   MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+                   MOVE    "ユーザＩＤが未登録です。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1034,7 +1034,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1048,7 +1048,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1077,7 +1077,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1091,7 +1091,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1105,7 +1105,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ***************************************************************
-      *      ¸þÀº¿ÀÌôÀ®Ê¬¥³¡¼¥É¥Æ¡¼¥Ö¥ë   COPY (CPPSYCHOTROPIC.INC) *
+      *      å‘ç²¾ç¥žè–¬æˆåˆ†ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«   COPY (CPPSYCHOTROPIC.INC) *
       ***************************************************************
       ***************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ***************************************************************
       *01  PSYCHOTROPIC-REC.
            03  PSYCHOTROPIC-KEY.
-      *        ¥³¡¼¥É
+      *        ã‚³ãƒ¼ãƒ‰
                05  PSYCHOTROPIC-CODE             PIC  X(07).
-      *        Í­¸ú³«»ÏÆü
+      *        æœ‰åŠ¹é–‹å§‹æ—¥
                05  PSYCHOTROPIC-YUKOSTYMD        PIC  X(08).
-      *        Í­¸ú½ªÎ»Æü
+      *        æœ‰åŠ¹çµ‚äº†æ—¥
                05  PSYCHOTROPIC-YUKOEDYMD        PIC  X(08).
-      *    ¸þÀº¿ÀÌô¶èÊ¬
+      *    å‘ç²¾ç¥žè–¬åŒºåˆ†
            03  PSYCHOTROPIC-CLASS                PIC  X(01).
-      *    ¥°¥ë¡¼¥×¥³¡¼¥É
+      *    ã‚°ãƒ«ãƒ¼ãƒ—ã‚³ãƒ¼ãƒ‰
            03  PSYCHOTROPIC-GROUPCODE            PIC  X(07).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  PSYCHOTROPIC-UPYMD                PIC  X(08).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  PSYCHOTROPIC-UP-KEY.
                05  PSYCHOTROPIC-UPCODE              PIC  X(07).
                05  PSYCHOTROPIC-UPYUKOSTYMD         PIC  X(08).

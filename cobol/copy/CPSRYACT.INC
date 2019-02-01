@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,62 +16,62 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿     COPY (CPSRYACT.INC)       *
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿     COPY (CPSRYACT.INC)       *
       *-------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/02  ´¹»»ÆþÎÏ¿ôÎÌÄÉ²Ã
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.05.00    NACL-å¤šã€…ç´  09/10/02  æ›ç®—å…¥åŠ›æ•°é‡è¿½åŠ 
       ************************************************************
       *01  SRYACT-REC.
            03  SRY-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  SRY-HOSPNUM          PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  SRY-NYUGAIKBN       PIC  X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  SRY-PTID            PIC  9(10).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  SRY-SRYKA           PIC  X(02).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  SRY-SRYYM           PIC  X(06).
-      *ºÞÈÖ¹æ
+      *å‰¤ç•ªå·
                05  SRY-ZAINUM          PIC  9(08).
-      *Ï¢ÈÖ¹æ
+      *é€£ç•ªå·
                05  SRY-RENNUM          PIC  9(02).
-      *¿ÇÎÅ¼ïÊÌ¶èÊ¬
+      *è¨ºç™‚ç¨®åˆ¥åŒºåˆ†
            03  SRY-SRYSYUKBN           PIC  X(03).
-      *¿ÇÎÅ¶èÊ¬
+      *è¨ºç™‚åŒºåˆ†
            03  SRY-SRYKBN              PIC  X(02).
-      *¼«Èñ¶â³Û
+      *è‡ªè²»é‡‘é¡
            03  SRY-JIHIMONEYTOTAL      PIC  9(07).
-      *¿ÇÎÅ¹Ô°Ù¥Æ¡¼¥Ö¥ë
+      *è¨ºç™‚è¡Œç‚ºãƒ†ãƒ¼ãƒ–ãƒ«
            03  SRY-SRYACT-TBL          OCCURS   5.
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  SRY-SRYCD           PIC  X(09).
-      *¿ôÎÌ
+      *æ•°é‡
                05  SRY-SRYSURYO        PIC  9(05)V9(05).
-      *²ó¿ô
+      *å›žæ•°
                05  SRY-SRYKAISU        PIC  9(03).
-      *ÌÀºÙÀÁµá¶èÊ¬
-      *        1:¾¦ÉÊÌ¾ºàÎÁ¤ÎÆÃÄê´ïºà¡¢2:´Ø·¸¥³¥á¥ó¥È»Ø¼¨¡¢3:ÆâÉþ¼ïÎà¿ô»Ø¼¨
+      *æ˜Žç´°è«‹æ±‚åŒºåˆ†
+      *        1:å•†å“åææ–™ã®ç‰¹å®šå™¨æã€2:é–¢ä¿‚ã‚³ãƒ¡ãƒ³ãƒˆæŒ‡ç¤ºã€3:å†…æœç¨®é¡žæ•°æŒ‡ç¤º
                05  SRY-MEISKYFLG       PIC  X(01).
-      *¼«Æ°»»Äê¶èÊ¬
+      *è‡ªå‹•ç®—å®šåŒºåˆ†
                05  SRY-AUTOKBN         PIC  X(01).
-      *Ì¾¾ÎÆþÎÏÈÖ¹æ
+      *åç§°å…¥åŠ›ç•ªå·
                05  SRY-INPUTNUM        PIC  9(03).
-      *¼«Èñ¶â³Û
+      *è‡ªè²»é‡‘é¡
                05  SRY-JIHIMONEY       PIC  9(07).
-      *´¹»»¿ôÎÌÆþÎÏ
+      *æ›ç®—æ•°é‡å…¥åŠ›
                05  SRY-KANSURYO        PIC  9(05)V9(05).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  SRY-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  SRY-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  SRY-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SRY-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SRY-UPHMS               PIC  X(06).
       *

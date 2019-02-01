@@ -1,10 +1,10 @@
 --                                   --
--- ÅÀ¿ô¥Ş¥¹¥¿¤ÎÀßÄê                  --
+-- ç‚¹æ•°ãƒã‚¹ã‚¿ã®è¨­å®š                  --
 --                                   --
 -- Create Date : 2006/07/03          --
 --                                   --
 
--- ¼ÂÆü¿ô¸º»»¥³¡¼¥ÉºîÀ®              --
+-- å®Ÿæ—¥æ•°æ¸›ç®—ã‚³ãƒ¼ãƒ‰ä½œæˆ              --
 -- 099409903                         --
 
 insert into tbl_tensu (srycd,yukostymd,yukoedymd,srykbn,srysyukbn,yukoketa,name,kanayukoketa,kananame,tensikibetu,ten,tanicd,datakbn,hkntekkbn,nyugaitekkbn,
@@ -12,7 +12,7 @@ chuksncd,chuksntsuban,kgnage,jgnage,ageksnkgn1,ageksnjgn1,ageksnsrycd1,ageksnkgn
 ageksnjgn3,ageksnsrycd3,ageksnkgn4,ageksnjgn4,ageksnsrycd4,cdkbn_kbn,kokuchi_kbn,idokanren,yakkakjncd,syomeikanren,
 chgymd,haisiymd,keikasochiymd,creymd,upymd,uphms)
 values
-('099409903','00000000','99999999','99','990',5,'¼ÂÆü¿ô¸º»»',10,'¥¸¥Ä¥Ë¥Ã¥¹¥¦¥²¥ó¥µ¥ó',0,0,'000',1,0,0,
+('099409903','00000000','99999999','99','990',5,'å®Ÿæ—¥æ•°æ¸›ç®—',10,'ã‚¸ãƒ„ãƒ‹ãƒƒã‚¹ã‚¦ã‚²ãƒ³ã‚µãƒ³',0,0,'000',1,0,0,
  '0000','0','00','00','00','00','         ','00','00','         ','00','00',
  '         ','00','00','         ',' ',' ','         ',
  '            ','         ','        ','        ','        ','20060701',

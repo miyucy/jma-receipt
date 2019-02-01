@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ��ô��ʬ�����ɼ�������������COPY (CPORCSGETFTNKBN.INC)
+      *    負担区分コード取得　　　　　COPY (CPORCSGETFTNKBN.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSGETFTNKBNAREA.
       *
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
            03  ORCSGETFK-HOSPNUM       PIC 9(02).
-      *���ԣɣ�
+      *患者ＩＤ
            03  ORCSGETFK-PTID          PIC 9(10).
-      *����ǯ��
+      *診療年月
            03  ORCSGETFK-SRYYM         PIC X(06).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
            03  ORCSGETFK-HKNCOMBINUM   PIC 9(04).
-      *��ô��ʬ������
+      *負担区分コード
            03  ORCSGETFK-FTNKBN        PIC X(01).
-      *�ݸ����ֹ�
+      *保険者番号
            03  ORCSGETFK-HKNJANUM      PIC X(08).
-      *��ô���ֹ�
+      *負担者番号
            03  ORCSGETFK-FTNJANUM-G.
                05  ORCSGETFK-FTNJANUM  PIC X(08)
                                        OCCURS  4.

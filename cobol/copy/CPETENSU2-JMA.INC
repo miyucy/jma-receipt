@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      �Ż�����ɽ����硦�����ơ��֥�ʣϣңã��ץ��������ȡ�
+      *      電子点数表　包括・被包括テーブル（ＯＲＣＡプロジェクト）
       *                                     COPY (CPETENSU2-JMA.INC) *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.08.00     NACL-��ƣ    16/03/13  �������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-伊藤    16/03/13  特例条件追加
       ************************************************************
       *01  ETENSU2-JMA-REC.
-      *���롼���ֹ�
+      *グループ番号
            03  ETNSJMA-H-GROUP             PIC  X(07).
-      *���Ź԰٥�����
+      *診療行為コード
            03  ETNSJMA-SRYCD               PIC  X(09).
-      *ͭ��������
+      *有効開始日
            03  ETNSJMA-YUKOSTYMD           PIC  X(08).
-      *ͭ����λ��
+      *有効終了日
            03  ETNSJMA-YUKOEDYMD           PIC  X(08).
-      *����ǯ����
+      *作成年月日
            03  ETNSJMA-CHGYMD              PIC  X(08).
-      *������
+      *特例条件
            03  ETNSJMA-TOKUREI             PIC  9(01).
-      *�����ޥ��� ������
+      *点数マスタ 検索用
            03  ETNSJMA-TK-KEY.
                05  ETNSJMA-TK-HOSPNUM           PIC  9(02).
                05  ETNSJMA-TK-SRYKBN            PIC  X(02).

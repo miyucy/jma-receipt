@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       *************************************************************
-      *    �ãӣ��ѣģ����極�֥ѥ�᥿    CPORCSCSVINFO.INC      *
+      *    ＣＳＶ用ＤＢ制御サブパラメタ    CPORCSCSVINFO.INC      *
       *************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSCSVINFOAREA.
-      *    ������ʬ                              
+      *    処理区分                              
            03  SCSVINFO-MODE           PIC X(03).
-      *    ����������     
+      *    復帰コード     
            03  SCSVINFO-RETURN         PIC S9(03).
-      *    �ˣţ�
+      *    ＫＥＹ
            03  SCSVINFO-TBL-KEY        PIC X(08).
-      *    ������ɣ�
+      *    シェルＩＤ
            03  SCSVINFO-SHELLID        PIC X(20).
-      *    ������Ϣ��
+      *    処理内連番
            03  SCSVINFO-SHORI-RENNUM   PIC 9(03).
-      *    Ϣ��
+      *    連番
            03  SCSVINFO-RENNUM         PIC 9(03).
-      *    �ǡ���Ϣ��
+      *    データ連番
            03  SCSVINFO-SEQ-NO         PIC 9(06).
-      *    ������ʬ
+      *    入外区分
            03  SCSVINFO-NYUGAIKBN      PIC X(01).
-      *    ����ǯ��
+      *    診療年月
            03  SCSVINFO-SRYYM          PIC X(06).
-      *    ����ǯ����
+      *    請求年月日
            03  SCSVINFO-SKYYMD         PIC X(08).
-      *    ������ʧ����
+      *    審査支払機関
            03  SCSVINFO-TEISYUTUSAKI   PIC X(01).
-      *    �Уԣɣ�
+      *    ＰＴＩＤ
            03  SCSVINFO-PTID           PIC 9(10).
-      *    �ãӣ֥ǡ���
+      *    ＣＳＶデータ
            03  SCSVINFO-CSVDATA        PIC X(2000).

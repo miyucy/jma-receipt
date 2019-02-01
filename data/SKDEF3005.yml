@@ -1,41 +1,41 @@
 kanri_cd    : "3005"
-name        : "Äù¤á»ş¹ï´ÉÍı"
+name        : "ç· ã‚æ™‚åˆ»ç®¡ç†"
 class_cd    : "*"
 item_max    : 6
 item_list   :
 - item_no   : 1
   item      : "PROCKBN"
-  item_jp   : "½èÍı¶èÊ¬"
+  item_jp   : "å‡¦ç†åŒºåˆ†"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "STSRYYMD"
-  item_jp   : "¿ÇÎÅÆü¼«"
+  item_jp   : "è¨ºç™‚æ—¥è‡ª"
   type      : "X"
   start     : 2
   length    : 8
 - item_no   : 3
   item      : "STTIME"
-  item_jp   : "»ş¹ï¼«"
+  item_jp   : "æ™‚åˆ»è‡ª"
   type      : "X"
   start     : 10
   length    : 4
 - item_no   : 4
   item      : "EDSRYYMD"
-  item_jp   : "¿ÇÎÅÆü»ê"
+  item_jp   : "è¨ºç™‚æ—¥è‡³"
   type      : "X"
   start     : 14
   length    : 8
 - item_no   : 5
   item      : "EDTIME"
-  item_jp   : "»ş¹ï»ê"
+  item_jp   : "æ™‚åˆ»è‡³"
   type      : "X"
   start     : 22
   length    : 4
 - item_no   : 6
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 26
   length    : 475

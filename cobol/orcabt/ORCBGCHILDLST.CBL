@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBGCHILDLST.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : �л�������������å��ꥹ��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/09/9     NACL-ƣ��     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 出産育児一時金チェックリスト
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/09/9     NACL-藤原     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.00    NACL-����    10/01/29  ��ĥ�����б�
-      *  04.05.01    NACL-ƣ��    10/07/07  �����������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-太田    10/01/29  拡張漢字対応
+      *  04.05.01    NACL-藤原    10/07/07  ２５日請求対応
       *
-      *  04.06.01    NACL-ƣ��    13/06/05  �࿦���ݤ��ݸ����ֹ�򵭺ܤ���
+      *  04.06.01    NACL-藤原    13/06/05  退職国保の保険者番号を記載する
       *
-      *  04.07.01    NACL-ƣ��    12/01/24  monpe-0.6.20�б�
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -40,14 +40,14 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  BUNBENERR-FILE  ASSIGN  BUNBENERR
                                    FILE    STATUS  IS  STS-BUNBENERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  BUNBENERR-FILE.
        01  BUNBENERR-REC           PIC X(200).
       *
@@ -58,11 +58,11 @@
       *
            COPY    "HCMSL55.INC".
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-BUNBENERR       PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
@@ -87,13 +87,13 @@
                05  KEY-O-HKNJANUM  PIC X(08).
                05  KEY-O-BUNBENKBN PIC X(01).
       *
-      *    �����ΰ�
+      *    集計領域
        01  SUM-AREA.
            03  SUM-OCC             OCCURS  3.
                05  SUM-CNT         PIC 9(03).
                05  SUM-MONEY       PIC 9(08).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(05).
            03  CNT-LINE            PIC 9(05).
@@ -103,7 +103,7 @@
        01  INDEX-AREA.
            03  IDX                 PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -112,7 +112,7 @@
            03  WRK-PARA-SKYYM      PIC X(06).
            03  WRK-PARA-SKYKBN     PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-BUNBENERR       PIC X(200).
       *
@@ -138,16 +138,16 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    ��������
+      *    印刷内容
        01  HEAD-01.
            03  FILLER                  PIC X(20)   VALUE   SPACE.
            03  H01-SRYYM               PIC X(16).
            03  H01-SRYYM-TITLE         PIC X(08).
            03  FILLER                  PIC X(28)   VALUE
-               "�л�������������å��ꥹ��".
+               "出産育児一時金チェックリスト".
            03  H01-TEISYUTUSAKI        PIC X(10).
            03  H01-SKYKBN              PIC X(16).
-           03  FILLER                  PIC X(08)   VALUE   "��������".
+           03  FILLER                  PIC X(08)   VALUE   "作成日：".
            03  H01-SYSYMD              PIC X(09).
            03  FILLER                  PIC X(04)   VALUE   "  P.".
            03  H01-PAGE                PIC ZZ9.
@@ -155,22 +155,22 @@
        01  HEAD-02.
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(12)   VALUE
-               "�ݸ����ֹ桡".
+               "保険者番号　".
            03  FILLER                  PIC X(10)   VALUE
-               "ʬ�ڶ�ʬ��".
+               "分娩区分　".
            03  FILLER                  PIC X(22)   VALUE
-               "�����ֹ桡������������".
+               "患者番号　　　　　　　".
            03  FILLER                  PIC X(02)   VALUE   SPACE.
            03  FILLER                  PIC X(36)   VALUE
-               "��̾".
+               "氏名".
            03  FILLER                  PIC X(12)   VALUE
-               "�л�ǯ����".
+               "出産年月日".
            03  FILLER                  PIC X(01)   VALUE   SPACE.
            03  FILLER                  PIC X(08)   VALUE
-               "��������". 
+               "請求日　". 
            03  FILLER                  PIC X(09)   VALUE   SPACE.
            03  FILLER                  PIC X(10)   VALUE
-               "���������".
+               "代理受取額".
       *
        01  BODY-01.
            03  B01-FIL1                PIC X(2).
@@ -188,74 +188,74 @@
        01  BODY-02.
            03  FILLER                  PIC X(28)   VALUE   SPACE.
            03  B02-TITLE               PIC X(20).
-           03  FILLER                  PIC X(06)   VALUE   "�����".
+           03  FILLER                  PIC X(06)   VALUE   "件数：".
            03  B02-KENSU               PIC X(03).
            03  FILLER                  PIC X(18)   VALUE
-               "����������۹�ס�".
+               "　代理受取額合計：".
            03  B02-GOKEI               PIC X(10).
       *
        01  WRK-CONST-AREA.
             03  WRK-CONS-LINE-MAX       PIC 9(02)   VALUE   55.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ʬ�ڴ���
+      *    分娩管理
        01  BUNBEN-REC.
            COPY    "CPBUNBEN.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    ����
+      *    印刷
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK2.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -269,7 +269,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -285,7 +285,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -338,12 +338,12 @@
       *
            MOVE    ZERO            TO  LNK-PRTKANRI-SHORI-RENNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBGCHILDLST.CBL"
                                    TO  JOB-PGID
-           MOVE    "�л�������������å��ꥹ��"
+           MOVE    "出産育児一時金チェックリスト"
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -354,21 +354,21 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                    TO  BUNBENERR
       *
-      *    ����ǯ���Խ�
+      *    請求年月編集
            IF      WRK-PARA-SKYYM  =   "000000"
-               MOVE    "����ǯ������ʤ�"
+               MOVE    "請求年月設定なし"
                                        TO  H01-SRYYM
-               MOVE    "������"        TO  H01-SRYYM-TITLE
+               MOVE    "　　　"        TO  H01-SRYYM-TITLE
            ELSE     
                MOVE    WRK-PARA-SKYYM  TO  WRK-SYMD (1:6)
                MOVE    "01"            TO  WRK-SYMD (7:2)
                PERFORM 31012-SEIWA-HEN-SEC
                MOVE    LNK-DAY2-EDTYMD3(1:16)
                                        TO  H01-SRYYM
-               MOVE    "����ʬ"        TO  H01-SRYYM-TITLE
+               MOVE    "請求分"        TO  H01-SRYYM-TITLE
            END-IF
       *
-      *    ����������
+      *    作成日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -380,12 +380,12 @@
            IF      WRK-PARA-SKYKBN =   "0" OR  "1" OR  "2" OR  "3"
                CONTINUE
            ELSE
-               MOVE    "�����ʬ�����꤬���äƤ��ޤ�" 
+               MOVE    "請求区分の設定が誤っています" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
            MOVE    "%"             TO  WRK-TEISYUTUSAKI
            PERFORM 900-BUNBEN-READ-SEC
       *
@@ -394,7 +394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -405,31 +405,31 @@
       *
            EVALUATE    KEY-N-TEISYUTUSAKI
                WHEN    SPACE
-                   MOVE    "��������"          TO  H01-TEISYUTUSAKI
+                   MOVE    "　　　　"          TO  H01-TEISYUTUSAKI
                WHEN    "1"
-                   MOVE    "�ʼ��ݡ�"          TO  H01-TEISYUTUSAKI
+                   MOVE    "（社保）"          TO  H01-TEISYUTUSAKI
                WHEN    "2"
-                   MOVE    "�ʹ��ݡ�"          TO  H01-TEISYUTUSAKI
+                   MOVE    "（国保）"          TO  H01-TEISYUTUSAKI
            END-EVALUATE
       *
-      *    ��ʧ�������Խ�����
+      *    支払機関別編集処理
            PERFORM          UNTIL   FLG-END        =   1
                             OR      KEY-N-TEISYUTUSAKI
                                                NOT =
                                                      KEY-O-TEISYUTUSAKI
-      *        �����ʬ���Խ�����
+      *        請求区分別編集処理
                MOVE    KEY-NEW         TO  KEY-OLD
                INITIALIZE                  SUM-OCC (2)
       *
                EVALUATE    KEY-N-SKYKBN
                    WHEN    SPACE
-                       MOVE    "��������������"    TO  H01-SKYKBN
+                       MOVE    "　　　　　　　"    TO  H01-SKYKBN
                    WHEN    "0"
-                       MOVE    "�����ᤷ�ʤ���"    TO  H01-SKYKBN
+                       MOVE    "【請求しない】"    TO  H01-SKYKBN
                    WHEN    "1"
-                       MOVE    "��̤����ۡ���"    TO  H01-SKYKBN
+                       MOVE    "【未請求】　　"    TO  H01-SKYKBN
                    WHEN    "2"
-                       MOVE    "������ѡۡ���"    TO  H01-SKYKBN
+                       MOVE    "【請求済】　　"    TO  H01-SKYKBN
                END-EVALUATE
                PERFORM 2001-HEAD-PRINT-SEC
                PERFORM             UNTIL   FLG-END        =   1
@@ -439,26 +439,26 @@
                                    OR      KEY-N-SKYKBN
                                                       NOT =
                                                    KEY-O-SKYKBN
-      *            ʬ�ڶ�ʬ���ݸ������Խ�����
+      *            分娩区分・保険者別編集処理
                    INITIALIZE                  SUM-OCC (1)
                    MOVE    KEY-NEW         TO  KEY-OLD
                    PERFORM          UNTIL   FLG-END        =  1
                                     OR      KEY-NEW    NOT = KEY-OLD
-      *                �����Խ�����
+      *                明細編集処理
                        PERFORM 2002-BODY-PRINT-SEC
                    END-PERFORM
       *
-      *            ʬ�ڶ�ʬ���ݸ����̹���Խ�����
+      *            分娩区分・保険者別合計編集処理
                    MOVE    1                TO  IDX
                    PERFORM 2003-TERM-PRINT-SEC
                END-PERFORM
       *
-      *        �����ʬ�̹���Խ�����
+      *        請求区分別合計編集処理
                MOVE    2                TO  IDX
                PERFORM 2003-TERM-PRINT-SEC
            END-PERFORM
       *
-      *    ��ʧ�����̹���Խ�����
+      *    支払機関別合計編集処理
            MOVE    3                TO  IDX
            PERFORM 2003-TERM-PRINT-SEC
            .
@@ -466,7 +466,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ф��Խ�����
+      *    見出し編集処理
       *****************************************************************
        2001-HEAD-PRINT-SEC                SECTION.
       *
@@ -484,32 +484,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    一覧作成処理
       *****************************************************************
        2002-BODY-PRINT-SEC          SECTION.
       *
            MOVE    SPACE               TO  BODY-01
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    BUNBEN-HKNJANUM     TO  B01-HKNJANUM
-      *    ʬ�ڶ�ʬ
+      *    分娩区分
            EVALUATE    BUNBEN-BUNBENKBN
                WHEN    "1"
-                   MOVE    "�����"      TO  B01-BUNBENKBN
+                   MOVE    "　正常　"      TO  B01-BUNBENKBN
                WHEN    "2"
-                   MOVE    "���۾"      TO  B01-BUNBENKBN
+                   MOVE    "　異常　"      TO  B01-BUNBENKBN
            END-EVALUATE
       *
            PERFORM          UNTIL   FLG-END        =   1
                             OR      KEY-NEW    NOT =   KEY-OLD
       *
                IF      CNT-LINE             >=  WRK-CONS-LINE-MAX
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 2004-PRINT-OUT-SEC
-      *            ���Ф��Խ�����
+      *            見出し編集処理
                    PERFORM 2001-HEAD-PRINT-SEC
                END-IF
       *
-      *        �����ֹ�
+      *        患者番号
                INITIALIZE                      ORCSPTIDAREA
                MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
                MOVE    BUNBEN-PTID         TO  SPTID-PTID
@@ -522,7 +522,7 @@
       *****    MOVE    PTINF-REC           TO  MCPDATA-REC
       *****    PERFORM 900-PTINF-READ-SEC
                MOVE    BUNBEN-NAME         TO  B01-NAME
-               INSPECT B01-NAME            REPLACING  ALL "  "  BY  "��"
+               INSPECT B01-NAME            REPLACING  ALL "  "  BY  "　"
                IF    ( SPA-ENCODING    =   2 )
                    INITIALIZE              ORCSKANACHK2AREA
                    MOVE    "1"         TO  KANACHK2-SYORI
@@ -539,9 +539,9 @@
       *
            EVALUATE    BUNBEN-TEISYUTUBIKBN
                WHEN    "1"
-                   MOVE    "��������"      TO  B01-TEISYUTUBIKBN
+                   MOVE    "１０日　"      TO  B01-TEISYUTUBIKBN
                WHEN    "2"
-                   MOVE    "��������"      TO  B01-TEISYUTUBIKBN
+                   MOVE    "２５日　"      TO  B01-TEISYUTUBIKBN
            END-EVALUATE
       *
                MOVE    BUNBEN-MONEY (12)   TO  WRK-ZZZZZZZ9
@@ -551,11 +551,11 @@
                MOVE    BODY-01         TO  HCMSL55-MOJI (CNT-LINE)
       *
                MOVE    SPACE           TO  BODY-01
-               MOVE    "��������"      TO  B01-BUNBENKBN
+               MOVE    "　　　　"      TO  B01-BUNBENKBN
       *
                ADD     1               TO  CNT-OUT
       *
-      *        ��׽��׽���
+      *        合計集計処理
                ADD     1               TO  SUM-CNT (1)
                                            SUM-CNT (2)
                                            SUM-CNT (3)
@@ -564,7 +564,7 @@
                                            SUM-MONEY (2)
                                            SUM-MONEY (3) 
       *
-      *        ʬ�ڴ����ɹ�   
+      *        分娩管理読込   
                PERFORM 900-BUNBEN-READ-N-SEC
            END-PERFORM
            .
@@ -572,11 +572,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Խ�����
+      *    合計編集処理
       *****************************************************************
        2003-TERM-PRINT-SEC                SECTION.
       *
-      *    ����ǯ�����ʤ��ΤȤ�����װʳ����Խ����ʤ� 
+      *    請求年月指定なしのとき総合計以外は編集しない 
            IF    ( IDX                <   3        )
            AND   ( WRK-PARA-SKYYM     =   "000000" ) 
                GO  TO  2003-TERM-PRINT-EXT
@@ -584,19 +584,19 @@
       *    
            EVALUATE    IDX
                WHEN    1
-                   MOVE    "��������������������"
+                   MOVE    "　　　　　　　　　　"
                                            TO  B02-TITLE
                    ADD     1               TO  CNT-LINE
                WHEN    2
-                   MOVE    "�������ʬ�̹�סۡ�"
+                   MOVE    "【請求区分別合計】　"
                                            TO  B02-TITLE
                WHEN    3
                    IF      WRK-PARA-SKYYM      =   "000000" 
-                       MOVE    "�ڹ硡�������סۡ���"
+                       MOVE    "【合　　　　計】　　"
                                                    TO  B02-TITLE
                        ADD     1                   TO  CNT-LINE
                    ELSE
-                       MOVE    "��������̹�סۡ���"
+                       MOVE    "【提出先別合計】　　"
                                                    TO  B02-TITLE
                    END-IF
            END-EVALUATE
@@ -607,9 +607,9 @@
            MOVE    WRK-ZZZZZZZ9    TO  B02-GOKEI
       *
            IF      CNT-LINE            >=  WRK-CONS-LINE-MAX
-      *        Ģɼ��������
+      *        帳票印刷処理
                PERFORM 2004-PRINT-OUT-SEC
-      *        ���Ф��Խ�����
+      *        見出し編集処理
                PERFORM 2001-HEAD-PRINT-SEC
            END-IF
       *
@@ -618,18 +618,18 @@
       *
            EVALUATE    IDX
                WHEN    1
-      *            �ݸ����ֹ桦ʬ�ڶ�ʬ�̹�פθ�ˣ��Զ�����
+      *            保険者番号・分娩区分別合計の後に１行空ける
                    IF      KEY-N-SKYKBN     =   KEY-O-SKYKBN
                        ADD     1                TO  CNT-LINE
                    END-IF
                WHEN    2
                    IF      KEY-N-TEISYUTUSAKI
                                             =   KEY-O-TEISYUTUSAKI
-      *                Ģɼ��������
+      *                帳票印刷処理
                        PERFORM 2004-PRINT-OUT-SEC
                    END-IF
                WHEN    3
-      *            Ģɼ��������
+      *            帳票印刷処理
                    PERFORM 2004-PRINT-OUT-SEC
            END-EVALUATE
            .
@@ -638,7 +638,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        2004-PRINT-OUT-SEC                SECTION.
       *
@@ -662,15 +662,15 @@
            EVALUATE    KEY-O-TEISYUTUSAKI
                WHEN    SPACE
                    MOVE
-                       "������ǯ��ʤ��˽л�������������å��ꥹ��"
+                       "（請求年月なし）出産育児一時金チェックリスト"
                                            TO  SPRT-TITLE
                WHEN    "1"
                    MOVE
-                       "�ʼ��ݡ˽л�������������å��ꥹ��"
+                       "（社保）出産育児一時金チェックリスト"
                                            TO  SPRT-TITLE
                WHEN    "2"
                    MOVE
-                       "�ʹ��ݡ˽л�������������å��ꥹ��"
+                       "（国保）出産育児一時金チェックリスト"
                                            TO  SPRT-TITLE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -684,7 +684,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                           TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -693,7 +693,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -707,7 +707,7 @@
                WRITE   BUNBENERR-REC
                CLOSE   BUNBENERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-BUNBENERR     TO  JOB-YOBI
@@ -730,7 +730,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -744,12 +744,12 @@
            DISPLAY "*** ORCBGCHILDLST END ***"
       *
            IF      CNT-IN          =   ZERO
-               MOVE    "�оݴ��Ԥ�����ޤ���Ǥ���"
+               MOVE    "対象患者がありませんでした"
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
@@ -762,7 +762,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC        SECTION.
       *
@@ -777,7 +777,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
       *****************************************************************
        900-BUNBEN-READ-SEC             SECTION.
       * 
@@ -801,7 +801,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
       *****************************************************************
        900-BUNBEN-READ-N-SEC           SECTION.
       *
@@ -874,7 +874,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ɹ�
+      *    患者読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -906,7 +906,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -923,7 +923,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -934,7 +934,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -946,7 +946,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -958,7 +958,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -971,7 +971,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -989,7 +989,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

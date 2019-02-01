@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC90.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ºÞ¤´¤È¤Î»»Äê¥µ¥Ö¤è¤ê¡¢ÊÔ½¸¡¦·×»»½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  00/12/01    MCC¡ÝÂ¿¡¹Ç¼   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è¨ºç™‚è¡Œç‚ºå…¥åŠ›
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å‰¤ã”ã¨ã®ç®—å®šã‚µãƒ–ã‚ˆã‚Šã€ç·¨é›†ãƒ»è¨ˆç®—å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  00/12/01    MCCâˆ’å¤šã€…ç´   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Â¿¡¹Ç¼   01.05.25  ÅêÌôÅÀ¿ô·×»»¤ÎÃæ´Ö·å¿ô¤ÎÊÑ¹¹
-      *  01.00.02    NACL-Â¿¡¹Ç¼  04.11.18  ¥Õ¥£¥ë¥àÎÁ·×»»ÊÑ¹¹
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-å¤šã€…ç´   01.05.25  æŠ•è–¬ç‚¹æ•°è¨ˆç®—ã®ä¸­é–“æ¡æ•°ã®å¤‰æ›´
+      *  01.00.02    NACL-å¤šã€…ç´  04.11.18  ãƒ•ã‚£ãƒ«ãƒ æ–™è¨ˆç®—å¤‰æ›´
       *****************************************************************
       *
       *
@@ -43,12 +43,12 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SP              PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDM                 PIC 9(04).
@@ -56,7 +56,7 @@
            03  IDS1                PIC 9(04).
            03  IDS2                PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -92,7 +92,7 @@
            03  WRK-TENSUKEIS       PIC 9(08)V9(6).
            03  WRK-FIRTEN          PIC 9(08).
       *
-      *    Ãí¼Í±Õ·×»»ÍÑ
+      *    æ³¨å°„æ¶²è¨ˆç®—ç”¨
            03  WRK-SURYO-CHU9      PIC 9(05).
            03  WRK-SURYO-CHU       PIC 9(05)V9(05).
       *
@@ -100,17 +100,17 @@
       *
            03  WRK-MAISU           PIC 9(05).
       *
-      *¿ÇÎÅ¹Ô°Ù½èÍýºÇÂç¹Ô
+      *è¨ºç™‚è¡Œç‚ºå‡¦ç†æœ€å¤§è¡Œ
        01  MAX-LINE                PIC 9(03)   VALUE   400.
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
-      *    ¿ÇÎÅ¹Ô°Ù»»ÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    è¨ºç™‚è¡Œç‚ºç®—å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSC90.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
        01  LNK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //LNK-//.
@@ -121,7 +121,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -136,10 +136,10 @@
            MOVE    LNK-SC90-IDX        TO  IDX
       *
            EVALUATE    LNK-SC90-KBN
-      *        ÌÀºÙÊÔ½¸
+      *        æ˜Žç´°ç·¨é›†
                WHEN    "1"
                    PERFORM 100-MEISAI-SET-SEC
-      *        ÅÀ¿ô·×»»
+      *        ç‚¹æ•°è¨ˆç®—
                WHEN    "2"
                    PERFORM 200-TENSUKEI-SEC
            END-EVALUATE
@@ -150,7 +150,7 @@
            .
       *
       *****************************************************************
-      *    ÌÀºÙÊÔ½¸½èÍý
+      *    æ˜Žç´°ç·¨é›†å‡¦ç†
       *****************************************************************
        100-MEISAI-SET-SEC              SECTION.
       *
@@ -162,29 +162,29 @@
       *
       **** EVALUATE    LNK-COM-INPUTCD(1:1)
            EVALUATE    WRK-MOJI
-      *        ¼êµ»ÎÁ
+      *        æ‰‹æŠ€æ–™
                WHEN    "1"
                    PERFORM 1001-SYUGI-SET-SEC
-      *        ÌôºÞ
+      *        è–¬å‰¤
                WHEN    "6"
                    EVALUATE    LNK-COM-YKZKBN(IDX)
                        WHEN    "6"
-      *                    ³°ÍÑÌô
+      *                    å¤–ç”¨è–¬
                            PERFORM 1003-GAIYAKU-SET-SEC
                        WHEN    "4"
-      *                    Ãí¼ÍÌô
+      *                    æ³¨å°„è–¬
                            PERFORM 1006-CHUUSYA-SET-SEC
                        WHEN    OTHER
-      *                    ÆâÉþÌô
+      *                    å†…æœè–¬
                            PERFORM 1002-YAKUZAI-SET-SEC
                    END-EVALUATE
-      *        ´ïºà
+      *        å™¨æ
                WHEN    "7"
                    IF      LNK-COM-DATAKBN (IDX)    =   "3"
-      *                ¥Õ¥£¥ë¥à¤ÎÊÔ½¸
+      *                ãƒ•ã‚£ãƒ«ãƒ ã®ç·¨é›†
                        PERFORM 1005-FIRUMU-SET-SEC
                    ELSE
-      *                ¥Õ¥£¥ë¥à°Ê³°¤ÎÊÔ½¸
+      *                ãƒ•ã‚£ãƒ«ãƒ ä»¥å¤–ã®ç·¨é›†
                        PERFORM 1004-KIZAI-SET-SEC
                    END-IF 
            END-EVALUATE
@@ -193,11 +193,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼êµ»ÎÁÊÔ½¸½èÍý
+      *    æ‰‹æŠ€æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        1001-SYUGI-SET-SEC           SECTION.
       *
-      *****¿ôÎÌ
+      *****æ•°é‡
       *    IF      LNK-COM-SURYO       >   1
       *        MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *        PERFORM 10011-SURYO-HEN-SEC
@@ -205,73 +205,73 @@
       *    ELSE
       *        MOVE    SPACE               TO  LNK-GMN-SURYO
       *****END-IF
-      *    ÅÀ¿ô
-      *        ¡ó²Ã»»¡¦¸º»»¤Ï½¸·×¤·¤Ê¤¤
+      *    ç‚¹æ•°
+      *        ï¼…åŠ ç®—ãƒ»æ¸›ç®—ã¯é›†è¨ˆã—ãªã„
            IF      LNK-COM-TENSIKIBETU (IDX)   =   5
                                                OR  6
                CONTINUE
            ELSE
-      *        ÄÌÂ§²Ã»»ÂÐ¾Ý³°¶èÊ¬È½Äê
+      *        é€šå‰‡åŠ ç®—å¯¾è±¡å¤–åŒºåˆ†åˆ¤å®š
                IF      LNK-COM-TUSOKUGAIKBN (IDX)  =   "1"
                    ADD     LNK-COM-KISOTEN (IDX)  TO  LNK-SC90-TENGAKEI
                ELSE
                    ADD     LNK-COM-KISOTEN(IDX)   TO  LNK-SC90-TENSUKEI
                END-IF
            END-IF
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU  (IDX)
            .
        1001-SYUGI-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ÆâÉþ¡¦ÆÜÉþÊÔ½¸½èÍý
+      *    å†…æœãƒ»é “æœç·¨é›†å‡¦ç†
       *****************************************************************
        1002-YAKUZAI-SET-SEC           SECTION.
       *
-      *    ¿ôÎÌ
+      *    æ•°é‡
       *    MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *    PERFORM 10011-SURYO-HEN-SEC
       *    MOVE    WRK-SURYO-X         TO  LNK-GMN-SURYO
-      *    ÅÀ¿ô
+      *    ç‚¹æ•°
            COMPUTE WRK-SYOKEIS2        =  (LNK-COM-KISOTEN (IDX)
                                        *   LNK-COM-SURYO   (IDX)  )
            ADD     WRK-SYOKEIS2        TO  LNK-SC90-ZAIKEI
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
            .
        1002-YAKUZAI-SET1-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ãí¼ÍÌôÊÔ½¸½èÍý
+      *    æ³¨å°„è–¬ç·¨é›†å‡¦ç†
       *****************************************************************
        1006-CHUUSYA-SET-SEC           SECTION.
       *
-      *    ¿ôÎÌ
+      *    æ•°é‡
       *    MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *    PERFORM 10011-SURYO-HEN-SEC
       *    MOVE    WRK-SURYO-X         TO  LNK-GMN-SURYO
       *
            MOVE    ZERO                TO  LNK-SC90-HAIKI
       *
-      *    Ãí¼Í¤Ç¡¢¥¢¥ó¥×¥ë¤Î»þ¡¢Ã±°Ì°Ê²¼·×»»
+      *    æ³¨å°„ã§ã€ã‚¢ãƒ³ãƒ—ãƒ«ã®æ™‚ã€å˜ä½ä»¥ä¸‹è¨ˆç®—
       *    IF    ((LNK-COM-SRYKBN (IDX)    =   "31" OR "32" OR
       *                                                "33"
-      *D          ½èÃÖÄÉ²Ã
+      *D          å‡¦ç½®è¿½åŠ 
       *D                                   OR  "40" 
       *                                                   ) AND
       *          ((LNK-COM-TANICD (IDX)    =   "014" OR "022" OR "046")
       *        OR  ((IDX                     <   MAX-LINE  )  AND
       *             (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))) )
-      *        ½èÃÖ¤Î»þ¡¢¼¡¤¬»ÄÎÌÇÑ´þ
+      *        å‡¦ç½®ã®æ™‚ã€æ¬¡ãŒæ®‹é‡å»ƒæ£„
       *       OR  ((LNK-COM-SRYKBN (IDX)    =   "40" )  AND
       *            (IDX                     <   MAX-LINE  )  AND
       ************ (LNK-COM-INPUTCD(IDX + 1)  =   "099309901"))
       *    IF     (LNK-COM-TANICD (IDX)    =   "014"
       *                                    OR  "022"
       ***                                  OR  "046"  )  AND
-      *    »ÄÎÌÇÑ´þ¤Î¤¢¤ë¤¹¤Ù¤Æ¤ÎÃí¼ÍÌô¤òÂÐ¾Ý¤È¤¹¤ë
+      *    æ®‹é‡å»ƒæ£„ã®ã‚ã‚‹ã™ã¹ã¦ã®æ³¨å°„è–¬ã‚’å¯¾è±¡ã¨ã™ã‚‹
            IF     (IDX                     <   MAX-LINE )  AND
                   (LNK-COM-INPUTCD(IDX + 1)  =   "099309901")
                IF      LNK-COM-SURYO(IDX)(6:5) >   ZERO
@@ -281,74 +281,74 @@
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
                END-IF
-      *        ÅÀ¿ô
+      *        ç‚¹æ•°
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                            *   WRK-SURYO-CHU
            ELSE
-      *        ÅÀ¿ô
+      *        ç‚¹æ•°
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)
                                            *   LNK-COM-SURYO  (IDX)
            END-IF
       *
            ADD     WRK-SYOKEIS2        TO  LNK-SC90-ZAIKEI
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
            .
        1006-CHUUSYA-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ³°ÍÑÊÔ½¸½èÍý
+      *    å¤–ç”¨ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-GAIYAKU-SET-SEC            SECTION.
       *
-      *    ²ó¿ô¤Ï£±²ó¤È¤¹¤ë¡Ê¿ôÎÌ¡ö²ó¿ô¤ò¿ôÎÌ¤È¤¹¤ë¡Ë(ORCSC20¤ÇÈ½Äê¡Ë
+      *    å›žæ•°ã¯ï¼‘å›žã¨ã™ã‚‹ï¼ˆæ•°é‡ï¼Šå›žæ•°ã‚’æ•°é‡ã¨ã™ã‚‹ï¼‰(ORCSC20ã§åˆ¤å®šï¼‰
       *    COMPUTE LNK-COM-SURYO (IDX) =   LNK-COM-SURYO (IDX)
       *                                *   LNK-SC90-KAISU 
-      *    ¿ôÎÌ
+      *    æ•°é‡
       *    MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *    PERFORM 10011-SURYO-HEN-SEC
       *    MOVE    WRK-SURYO-X         TO  LNK-GMN-SURYO
-      *    ÅÀ¿ô
+      *    ç‚¹æ•°
            COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                        *   LNK-COM-SURYO   (IDX)
            ADD     WRK-SYOKEIS2        TO  LNK-SC90-GAIKEI
-      *    ²ó¿ô
+      *    å›žæ•°
       *****MOVE    1                   TO  LNK-COM-KAISU  (IDX)
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU  (IDX)
            .
        1003-GAIYAKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ´ïºàÊÔ½¸½èÍý
+      *    å™¨æç·¨é›†å‡¦ç†
       *****************************************************************
        1004-KIZAI-SET-SEC            SECTION.
       *
-      *    ¿ôÎÌ
+      *    æ•°é‡
       *    MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *    PERFORM 10011-SURYO-HEN-SEC
       *    MOVE    WRK-SURYO-X         TO  LNK-GMN-SURYO
-      *    ÅÀ¿ô
-      *        ÆÃÄê´ïºà¼ïÊÌ£±È½Äê
+      *    ç‚¹æ•°
+      *        ç‰¹å®šå™¨æç¨®åˆ¥ï¼‘åˆ¤å®š
            IF      LNK-COM-TENSIKIBETU (IDX)   =   5
                                                OR  6
       *
-      *        ²ó¿ô
+      *        å›žæ•°
                MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
       *
                GO     TO  1004-KIZAI-SET-EXT
            END-IF
       *
            IF      LNK-COM-TOKUKIZAISBT1 (IDX) =   ZERO
-      *        (¹ØÆþ²Á³Ê¡ö¿ôÎÌ)
+      *        (è³¼å…¥ä¾¡æ ¼ï¼Šæ•°é‡)
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                            *   LNK-COM-SURYO   (IDX)
       *
                ADD     WRK-SYOKEIS2        TO  LNK-SC90-KIZKEI
            ELSE
-      *        ÃâÁÇ
+      *        çª’ç´ 
                IF      LNK-COM-SANSOKBN (IDX)  =   ZERO
-      *            (¹ØÆþ²Á³Ê¡ö¿ôÎÌ)¡¡»Í¼Î¸ÞÆþ
+      *            (è³¼å…¥ä¾¡æ ¼ï¼Šæ•°é‡)ã€€å››æ¨äº”å…¥
                    COMPUTE WRK-SYOKEIS2        =  (LNK-COM-KISOTEN(IDX)
                                                *   LNK-COM-SURYO  (IDX))
                                                +   0.5
@@ -357,7 +357,7 @@
                END-IF
            END-IF
       *
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
       *
            .
@@ -365,43 +365,43 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ïºà¡Ê¥Õ¥£¥ë¥à¡ËÊÔ½¸½èÍý
+      *    å™¨æï¼ˆãƒ•ã‚£ãƒ«ãƒ ï¼‰ç·¨é›†å‡¦ç†
       *****************************************************************
        1005-FIRUMU-SET-SEC           SECTION.
       *
-      *    ¿ôÎÌ
+      *    æ•°é‡
       *    MOVE    LNK-COM-SURYO       TO  WRK-SURYO
       *    PERFORM 10011-SURYO-HEN-SEC
       *    MOVE    WRK-SURYO-X         TO  LNK-GMN-SURYO
-      *    Ëç¿ô²Ã»»
+      *    æžšæ•°åŠ ç®—
       *****ADD     LNK-COM-SURYO       TO  LNK-SC90-MAISU
       *
-      *    Ê¬²è¿ô
+      *    åˆ†ç”»æ•°
            IF      LNK-COM-BUNGSU (IDX)    =   ZERO
                MOVE    1                   TO  LNK-COM-BUNGSU (IDX)
            END-IF
            ADD     LNK-COM-BUNGSU (IDX)    TO  LNK-SC90-BUNGSU
       *---(01.00.03) ---  
-      *    Ëç¿ô²Ã»»
+      *    æžšæ•°åŠ ç®—
            COMPUTE WRK-MAISU           =   LNK-COM-SURYO  (IDX)
                                        *   LNK-COM-BUNGSU (IDX)
            ADD     WRK-MAISU           TO  LNK-SC90-MAISU
       *---(01.00.03)
-      *    ÅÀ¿ô
-      *    (¹ØÆþ²Á³Ê¡ö¿ôÎÌ)
+      *    ç‚¹æ•°
+      *    (è³¼å…¥ä¾¡æ ¼ï¼Šæ•°é‡)
            COMPUTE WRK-SYOKEIS         =   LNK-COM-KISOTEN (IDX)
                                        *   LNK-COM-SURYO   (IDX)
            MOVE    WRK-SYOKEIS         TO  WRK-SYOKEI
       *
-      *    ²èÁü¿ÇÃÇ°Ê³°¤Î·×»»
+      *    ç”»åƒè¨ºæ–­ä»¥å¤–ã®è¨ˆç®—
            IF      LNK-COM-SRYKBN (IDX)    =   "70"
-      *        ¥Õ¥£¥ë¥àÅÀ¿ô²Ã»»
+      *        ãƒ•ã‚£ãƒ«ãƒ ç‚¹æ•°åŠ ç®—
                MOVE    WRK-SYOKEI          TO  LNK-SC90-FIRTEN
            ELSE
                PERFORM 10051-FIRUMU-ETC-SEC
            END-IF
       *
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    LNK-SC90-KAISU      TO  LNK-COM-KAISU (IDX)
       *
            .
@@ -409,12 +409,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÁü¿ÇÃÇ°Ê³°¤Î·×»»½èÍý
+      *    ç”»åƒè¨ºæ–­ä»¥å¤–ã®è¨ˆç®—å‡¦ç†
       *****************************************************************
        10051-FIRUMU-ETC-SEC           SECTION.
-      *    ¾å¸ÂÅÀ¿ôÈ½Äê
+      *    ä¸Šé™ç‚¹æ•°åˆ¤å®š
            IF      LNK-COM-JGNTEN (IDX) =   ZERO
-      *        ¥Õ¥£¥ë¥àÅÀ¿ô²Ã»»
+      *        ãƒ•ã‚£ãƒ«ãƒ ç‚¹æ•°åŠ ç®—
                ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
            ELSE
                COMPUTE WRK-TENSUKEIS       =   WRK-SYOKEI
@@ -423,7 +423,7 @@
                MOVE    WRK-TENSUKEIS       TO  WRK-FIRTEN
                IF      WRK-FIRTEN          >   LNK-COM-JGNTEN (IDX)
                    MOVE    LNK-COM-JGNTEN(IDX) TO  WRK-FIRTEN
-      *            ´ïºàÅÀ¿ô¤Ë¾å¸ÂÅÀ¿ô¤ò½¸·×
+      *            å™¨æç‚¹æ•°ã«ä¸Šé™ç‚¹æ•°ã‚’é›†è¨ˆ
                    ADD     WRK-FIRTEN          TO  LNK-SC90-KIZTEN
                ELSE
                    ADD     WRK-SYOKEI          TO  LNK-SC90-FIRTEN
@@ -435,34 +435,34 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ô·×»»½èÍý
+      *    æ•°è¨ˆç®—å‡¦ç†
       *****************************************************************
        200-TENSUKEI-SEC           SECTION.
-      *    ÌôºÞÅÀ¿ô·×»»½èÍý
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *    IF      LNK-SC90-ZAIKEI     =   ZERO
       *        MOVE      ZERO              TO  LNK-SC90-ZAITEN
       *    ELSE
       *        PERFORM 2001-ZAITENU-SET-SEC
       *    END-IF
       *
-      *    ³°ÍÑÌôÅÀ¿ô·×»»½èÍý
+      *    å¤–ç”¨è–¬ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *    IF      LNK-SC90-GAIKEI     =   ZERO
       *        MOVE      ZERO              TO  LNK-SC90-GAITEN
       *    ELSE
       *        PERFORM 2002-GAITENU-SET-SEC
       *    END-IF
       *
-      *    ÌôºÞÅÀ¿ô·×»»¡ÊºÞÆâ¤Ç¤Þ¤È¤á¤Æ·×»»¡Ë
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—ï¼ˆå‰¤å†…ã§ã¾ã¨ã‚ã¦è¨ˆç®—ï¼‰
            PERFORM 2001-KEIZAITENU-SET-SEC
       *
-      *    ´ïºàÅÀ¿ô·×»»½èÍý
+      *    å™¨æç‚¹æ•°è¨ˆç®—å‡¦ç†
       *    IF      LNK-SC90-KIZKEI     =   ZERO
       *        MOVE      ZERO              TO  LNK-SC90-KIZTEN
       *    ELSE
                PERFORM 2003-KIZTEN-SET-SEC
       *****END-IF
       *
-      *    ´ïºà¡ÊÃâÁÇ¡ËÅÀ¿ô·×»»½èÍý
+      *    å™¨æï¼ˆçª’ç´ ï¼‰ç‚¹æ•°è¨ˆç®—å‡¦ç†
            IF      LNK-SC90-CHIKEI     =   ZERO
                MOVE      ZERO              TO  LNK-SC90-CHITEN
            ELSE
@@ -476,7 +476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞÅÀ¿ô·×»»½èÍý
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *****************************************************************
        2001-KEIZAITENU-SET-SEC           SECTION.
       *
@@ -485,8 +485,8 @@
                                        +   LNK-SC90-GAIKEI
       *
       * =============================================================
-      *---// £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀ°Ê²¼ ¢Í £±ÅÀ ¡ÊÌôºÞ°Ê³°¤Î»þ¡¢¥¼¥í¡Ë  //
-      *-- // £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀÄ¶²á ¢Í ¡Ê£±ÆüÊ¬¤ÎÅÀ¿ô¡Ý15¡Ë/ 10 
+      *---// ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹ä»¥ä¸‹ â‡’ ï¼‘ç‚¹ ï¼ˆè–¬å‰¤ä»¥å¤–ã®æ™‚ã€ã‚¼ãƒ­ï¼‰  //
+      *-- // ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹è¶…éŽ â‡’ ï¼ˆï¼‘æ—¥åˆ†ã®ç‚¹æ•°âˆ’15ï¼‰/ 10 
       *==============================================================
       *
            IF      WRK-SYOKEIS2        <=  15
@@ -513,7 +513,7 @@
       *
       *
       *****************************************************************
-      *    ÌôºÞÅÀ¿ô·×»»½èÍý
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *****************************************************************
        2001-ZAITENU-SET-SEC           SECTION.
       *
@@ -521,8 +521,8 @@
            MOVE    ZERO                TO  WRK-SYOKEIS3
       *
       * =============================================================
-      *---// £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀ°Ê²¼ ¢Í £±ÅÀ ¡ÊÌôºÞ°Ê³°¤Î»þ¡¢¥¼¥í¡Ë  //
-      *-- // £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀÄ¶²á ¢Í ¡Ê£±ÆüÊ¬¤ÎÅÀ¿ô¡Ý15¡Ë/ 10 
+      *---// ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹ä»¥ä¸‹ â‡’ ï¼‘ç‚¹ ï¼ˆè–¬å‰¤ä»¥å¤–ã®æ™‚ã€ã‚¼ãƒ­ï¼‰  //
+      *-- // ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹è¶…éŽ â‡’ ï¼ˆï¼‘æ—¥åˆ†ã®ç‚¹æ•°âˆ’15ï¼‰/ 10 
       *==============================================================
       *
            IF      LNK-SC90-ZAIKEI         <=  15
@@ -553,13 +553,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ÌôºÞÅÀ¿ô·×»»½èÍý¡Ê³°ÍÑÌô¡Ë
+      *    è–¬å‰¤ç‚¹æ•°è¨ˆç®—å‡¦ç†ï¼ˆå¤–ç”¨è–¬ï¼‰
       *****************************************************************
        2002-GAITENU-SET-SEC           SECTION.
       *
       * =============================================================
-      *---// £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀ°Ê²¼ ¢Í £±ÅÀ¡ÊÌôºÞ°Ê³°¤Î»þ¥¼¥í¡Ë     //
-      *-- // £±ÆüÊ¬¤ÎÅÀ¿ô¡¡15ÅÀÄ¶²á ¢Í ¡Ê£±ÆüÊ¬¤ÎÅÀ¿ô¡Ý15¡Ë/ 10 + 1 //
+      *---// ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹ä»¥ä¸‹ â‡’ ï¼‘ç‚¹ï¼ˆè–¬å‰¤ä»¥å¤–ã®æ™‚ã‚¼ãƒ­ï¼‰     //
+      *-- // ï¼‘æ—¥åˆ†ã®ç‚¹æ•°ã€€15ç‚¹è¶…éŽ â‡’ ï¼ˆï¼‘æ—¥åˆ†ã®ç‚¹æ•°âˆ’15ï¼‰/ 10 + 1 //
       *=============================================================
            IF      LNK-SC90-GAIKEI         <=  15
                IF    ( LNK-COM-SRYKBN (IDX)    =   "21"  OR
@@ -590,32 +590,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ïºàÅÀ¿ô·×»»½èÍý¡Ê¥Õ¥£¥ë¥à¡¢»ÀÁÇ¡¢ÃâÁÇ°Ê³°¡Ë
+      *    å™¨æç‚¹æ•°è¨ˆç®—å‡¦ç†ï¼ˆãƒ•ã‚£ãƒ«ãƒ ã€é…¸ç´ ã€çª’ç´ ä»¥å¤–ï¼‰
       *****************************************************************
        2003-KIZTEN-SET-SEC             SECTION.
       *
-      *?   ²èÁü¿ÇÃÇ°Ê³°¤Î¥Õ¥£¥ë¥à·×»»
+      *?   ç”»åƒè¨ºæ–­ä»¥å¤–ã®ãƒ•ã‚£ãƒ«ãƒ è¨ˆç®—
       *    IF      LNK-COM-SRYKBN (01) =   "70"
       *        MOVE    LNK-SC90-KIZKEI     TO  WRK-SYOKEIS3
       *    ELSE
       *        COMPUTE WRK-SYOKEIS3    =   LNK-SC90-KIZKEI
       *                                +   LNK-SC90-FIRTEN
       *?   END-IF
-      *    ²èÁü¿ÇÃÇ°Ê³°¤Î¥Õ¥£¥ë¥à·×»»
+      *    ç”»åƒè¨ºæ–­ä»¥å¤–ã®ãƒ•ã‚£ãƒ«ãƒ è¨ˆç®—
            IF      LNK-COM-SRYKBN (01) NOT =   "70"
                MOVE    LNK-SC90-FIRTEN     TO  WRK-SYOKEIS3
                IF      WRK-SYOKEIS3        >   ZERO
-      *        ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
+      *        é‡‘é¡è¨ˆÃ·ï¼‘ï¼ã€€å››æ¨äº”å…¥
                    COMPUTE WRK-SYOKEIS2        =  (WRK-SYOKEIS3
                                                /   10  )
                                                +   0.5
                    ADD     WRK-SYOKEIS2        TO  LNK-SC90-KIZTEN
                END-IF
            END-IF
-      *    ´ïºà
+      *    å™¨æ
            MOVE    LNK-SC90-KIZKEI     TO  WRK-SYOKEIS3
            IF      WRK-SYOKEIS3        >   ZERO
-      *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
+      *    é‡‘é¡è¨ˆÃ·ï¼‘ï¼ã€€å››æ¨äº”å…¥
                COMPUTE WRK-SYOKEIS2        =  (WRK-SYOKEIS3
                                            /   10  )
                                            +   0.5
@@ -628,11 +628,11 @@
       *
       *
       *****************************************************************
-      *    ´ïºàÅÀ¿ô·×»»½èÍý¡ÊÃâÁÇ¡Ë
+      *    å™¨æç‚¹æ•°è¨ˆç®—å‡¦ç†ï¼ˆçª’ç´ ï¼‰
       *****************************************************************
        2004-CHITEN-SET-SEC             SECTION.
       *
-      *    ¶â³Û·×¡à£±£°¡¡»Í¼Î¸ÞÆþ
+      *    é‡‘é¡è¨ˆÃ·ï¼‘ï¼ã€€å››æ¨äº”å…¥
            COMPUTE WRK-SYOKEIS2        =  (LNK-SC90-CHIKEI
                                        /   10  )
                                        +   0.5
@@ -643,7 +643,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ôÎÌÉ½¼¨ÍÑÊÔ½¸½èÍý
+      *    æ•°é‡è¡¨ç¤ºç”¨ç·¨é›†å‡¦ç†
       *****************************************************************
       *10011-SURYO-HEN-SEC                  SECTION.
       *

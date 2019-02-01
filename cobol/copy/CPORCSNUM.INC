@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ôÃÍÊÑ´¹¥µ¥Ö¥Ñ¥é¥á¥¿                         *
+      *    æ•°å€¤å¤‰æ›ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿                         *
       *                         COPY  (CPORCSNUM.INC)    *
       *
-      *     Éüµ¢¥³¡¼¥É   : ZERO ¡ÊÀµ¾ï½ªÎ»¡Ë
-      *                    1     (ÆþÎÏÃÍ¥¨¥é¡¼¡Ë
-      *                    3     (¿ôÃÍ£±£³·å°Ê¾åÅù¤Î¥¨¥é¡¼¡Ë
+      *     å¾©å¸°ã‚³ãƒ¼ãƒ‰   : ZERO ï¼ˆæ­£å¸¸çµ‚äº†ï¼‰
+      *                    1     (å…¥åŠ›å€¤ã‚¨ãƒ©ãƒ¼ï¼‰
+      *                    3     (æ•°å€¤ï¼‘ï¼“æ¡ä»¥ä¸Šç­‰ã®ã‚¨ãƒ©ãƒ¼ï¼‰
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSNUMAREA.
-      *ÆþÎÏÃÍ
+      *å…¥åŠ›å€¤
            03  SNUM-INX              PIC X(26).
-      *¿ô»ú½ÐÎÏÃÍ
+      *æ•°å­—å‡ºåŠ›å€¤
            03  SNUM-OUTNUM           PIC S9(12)V9(06).
-      *½ÐÎÏÃÍ
+      *å‡ºåŠ›å€¤
            03  SNUM-OUTEDT           PIC X(15).
-      *·å¿ô
+      *æ¡æ•°
            03  SNUM-KETSUU           PIC 9(02).
-      *À°¿ôÉô·å¿ô
+      *æ•´æ•°éƒ¨æ¡æ•°
            03  SNUM-SEISUU           PIC 9(02).
-      *¾®¿ôÉô·å¿ô
+      *å°æ•°éƒ¨æ¡æ•°
            03  SNUM-SYOSUU           PIC 9(02).
-      *¡ÝÃÍ
+      *âˆ’å€¤
            03  SNUM-MINKBN           PIC X(01).
-      *¾®¿ôÉôÍ­Ìµ
+      *å°æ•°éƒ¨æœ‰ç„¡
            03  SNUM-SYOKBN           PIC X(01). 
       *
-      *Éüµ¢¥³¡¼¥É
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  SNUM-RC               PIC S9(9)   BINARY.
       *

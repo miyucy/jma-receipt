@@ -12,10 +12,10 @@ exit
 #include	<string.h>
 #include	<uuid/uuid.h>
 
-/* Áë¸ı´Ø¿ô */
+/* çª“å£é–¢æ•° */
 extern void orcuidset(int hWnd, char *arg) ;
 
-/* Áë¸ı´Ø¿ô¤Ç»ÈÍÑ¤¹¤ë·Á¤Î¹½Â¤ÂÎ·Á¼°  */
+/* çª“å£é–¢æ•°ã§ä½¿ç”¨ã™ã‚‹å½¢ã®æ§‹é€ ä½“å½¢å¼  */
 struct str_chardata_contact
 {
 	char	retcd[2] ;

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¶ÈÌ³ÁªÂò ¶¦ÄÌ£Ó£Ð£Á     (SPA-WORK ¤ÎÆâÍÆ  ºÇÂçRL=1555)
+      *    æ¥­å‹™é¸æŠž å…±é€šï¼³ï¼°ï¼¡     (SPA-WORK ã®å†…å®¹  æœ€å¤§RL=1555)
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  SPA-M00KYOUTU.
            03  SPA-MID1-AREA.
-      *·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                05  SPA-MIDCD               PIC  X(04).
-      *·Ù¹ð²èÌÌ¤è¤ê
+      *è­¦å‘Šç”»é¢ã‚ˆã‚Š
                05  SPA-MID1-AREA.
                    07  SPA-MID1-FLG        PIC  X(02).
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý ¿¦°÷¾ðÊó 
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç† è·å“¡æƒ…å ± 
            03  SPA-SYS-1010-REC            PIC X(500).
       *
-      *ÆüÉÕÊÑ¹¹²èÌÌ
-      *    ÇØ·Ê¿§ÊÝÂ¸
+      *æ—¥ä»˜å¤‰æ›´ç”»é¢
+      *    èƒŒæ™¯è‰²ä¿å­˜
            03  SPA-M00-BGCOLORS        PIC X(20).
       *
            03  SPA-M95GMN-AREA.
@@ -57,6 +57,6 @@
                05  SPA-M95-SYORI       PIC 9(01).
                05  SPA-M95-INIT        PIC 9(01).
                05  SPA-M95-INIT-P3     PIC 9(01).
-      *        ÇØ·Ê¿§ÊÝÂ¸
+      *        èƒŒæ™¯è‰²ä¿å­˜
                05  SPA-M95-BGCOLORS        PIC X(20).
       *

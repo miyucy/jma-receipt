@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    APIV3¥Ñ¥é¥á¥¿¡¡  COPY  (CPAPIPARA.INC)               *
+      *    APIV3ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€  COPY  (CPAPIPARA.INC)               *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  APIPARA-REC.
            03  APIPARA-KEY.
                05  APIPARA-HOSPNUM           PIC 9(2).
-      *¶ÈÌ³£É£Ä
+      *æ¥­å‹™ï¼©ï¼¤
                05  APIPARA-GYOUMUID          PIC X(08).
-      *Ã¼Ëö£É£Ä¡ÊORCA-UID)
+      *ç«¯æœ«ï¼©ï¼¤ï¼ˆORCA-UID)
                05  APIPARA-TERMID            PIC X(64).
-      *¥Õ¥¡¥¤¥ëÌ¾
+      *ãƒ•ã‚¡ã‚¤ãƒ«å
                05  APIPARA-FILEMEI           PIC X(20).
-      *»ÞÈÖ
+      *æžç•ª
                05  APIPARA-EDANUM            PIC 9(03).
-      *¥«¥ë¥ÆUID
+      *ã‚«ãƒ«ãƒ†UID
            03  APIPARA-KARTE-UID             PIC X(36).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  APIPARA-PTNUM                 PIC X(20).
-      *¥Ç¡¼¥¿ÎÎ°è
+      *ãƒ‡ãƒ¼ã‚¿é ˜åŸŸ
            03  APIPARA-DATA-REC              PIC X(5000).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  APIPARA-UPYMD                 PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  APIPARA-UPHMS                 PIC X(06).

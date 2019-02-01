@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,79 +16,79 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������(�쥻�ץȵ��ܳ��������) COPY (CPSKYETC.INC)  *
+      *    請求管理(レセプト記載外公費情報) COPY (CPSKYETC.INC)  *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.03    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-ƣ��    13/09/20  �軰�Թ԰��б�
+      *  04.07.01    NACL-藤原    13/09/20  第三者行為対応
       *
-      *  04.08.01    NACL-ƣ��    17/04/10  ����ñ�̤Ǥ�������������
-      *                                     ��ϫ�ҽ�����Ϸ��ݽ����б�
-      *                                     �ݸ���ʬ�����ѹ��ܤ��ɲ�
+      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
+      *                                     保険区分検索用項目の追加
       ************************************************************
        01  SKYETC-REC.
-      *�ˣţ�
+      *ＫＥＹ
            03  SKYETC-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SKYETC-HOSPNUM          PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  SKYETC-SRYYM            PIC  9(06).
-      *������ʬ
+      *入外区分
                05  SKYETC-NYUGAIKBN        PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SKYETC-PTID             PIC  9(10).
-      *�쥻�ץȲʡʶ���λ������򥻥åȡ�
+      *レセプト科（空白の時ゼロをセット）
                05  SKYETC-RECEKA           PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                05  SKYETC-TEISYUTUSAKI     PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  SKYETC-RECESYUBETU      PIC  X(04).
-      *�ݸ����ֹ�
+      *保険者番号
                05  SKYETC-HKNJANUM         PIC  X(08).
-      *�����ʬ�������ݸ��ΤȤ��Τߡ�
+      *補助区分（船員保険のときのみ）
                05  SKYETC-HOJOKBN-KEY      PIC  X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                05  SKYETC-KOHID-KEY        PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  SKYETC-TEKSTYMD         PIC  X(08).
-      *ʬ���ʬ
+      *分割区分
                05  SKYETC-RECEIPT-KBN      PIC X(10).
-      *�쥻�ץȵ��ܳ��������
+      *レセプト記載外公費情報
            03  SKYETC-ETC-KOH-G.
-      *���ܳ�������ݸ��ֹ�
+      *記載外公費−保険番号
                05  SKYETC-ETC-KOHINF.
                    07  SKYETC-ETC-KOHNUM   PIC  X(03)   OCCURS  4.
-      *���ܳ�����ݼ�����
+      *記載外公費−実日数
                05  SKYETC-ETC-JNISSUINF.
                    07  SKYETC-ETC-JNISSU   PIC  9(02)   OCCURS  4.
-      *���ܳ�����ݹ������
+      *記載外公費−合計点数
                05  SKYETC-ETC-TOTALTENINF.
                    07  SKYETC-ETC-TOTALTEN PIC S9(08)   OCCURS  4.
-      *���ܳ��������ô���
+      *記載外公費−負担金額
                05  SKYETC-ETC-FTNMONEYINF               OCCURS  4.
                    07  SKYETC-ETC-FTNMONEY     PIC S9(09).
                    07  SKYETC-ETC-FTNMONEY-FTN PIC S9(09).
                    07  SKYETC-ETC-FTNMONEY-KOJ PIC S9(09).
-      *���ܳ���������ް�����ô�����
+      *記載外公費−薬剤一部負担金情報
                05  SKYETC-ETC-YKZFTNINF.
                    07  SKYETC-ETC-YKZFTN   PIC  9(05)   OCCURS  4.
-      *���ܳ�����ݿ������������
+      *記載外公費−食事療養費情報
                05  SKYETC-ETC-SHOKUJIINF       OCCURS  4.
-      *��������
+      *食事日数
                    07  SKYETC-ETC-SHOKUJINISSU PIC  9(02).
-      *����������
+      *食事療養費
                    07  SKYETC-ETC-SHOKUJIRYOYOHI
                                                PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                    07  SKYETC-ETC-SHOKUJIFTN   PIC  9(09).
-      *������ʧ���ظ����ѹ���
+      *審査支払機関検索用項目
            03  SKYETC-XXTEISYUTUSAKI      PIC 9(01).
-      *�ݸ��ֹ渡���ѹ���
+      *保険番号検索用項目
            03  SKYETC-XXHKNNUM            PIC X(03).
-      *�ݸ���ʬ�����ѹ���
+      *保険区分検索用項目
            03  SKYETC-XXHKNKBN-RSI        PIC X(01).

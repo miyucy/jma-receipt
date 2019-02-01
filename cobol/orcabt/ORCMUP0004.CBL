@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,23 +18,23 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0004.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : £Ä£ÂºîÀ®½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÅÀ¿ô¥Þ¥¹¥¿¹¹¿·½èÍý
-      *                    : ¡Ê¥æ¡¼¥¶¤Î´ïºàÅÀ¿ôÊÑ¹¹¤ËÂÐ±þ¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  08/02/28    NACL-Â¿¡¹Ç¼   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ï¼¤ï¼¢ä½œæˆå‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ç‚¹æ•°ãƒžã‚¹ã‚¿æ›´æ–°å‡¦ç†
+      *                    : ï¼ˆãƒ¦ãƒ¼ã‚¶ã®å™¨æç‚¹æ•°å¤‰æ›´ã«å¯¾å¿œï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  08/02/28    NACL-å¤šã€…ç´   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 04.03.00     NACL-ÂÀÅÄ    08/05/28  ¥¨¥é¡¼½èÍý¶¯²½ÂÐ±þ
-      * 04.06.00     NACL-°ËÆ£    10/12/02  ÅÀ¿ô¥Þ¥¹¥¿¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹
-      *                                     ÂÐ±þ
-      * 04.07.00     NACL-°ËÆ£    14/03/06  ÅÀ¿ô¥Þ¥¹¥¿¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹
-      *                                     ÂÐ±þ
-      * 04.08.00     NACL-°ËÆ£    16/03/01  ÅÀ¿ô¥Þ¥¹¥¿¥ì¥¤¥¢¥¦¥ÈÊÑ¹¹
-      *                                     ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 04.03.00     NACL-å¤ªç”°    08/05/28  ã‚¨ãƒ©ãƒ¼å‡¦ç†å¼·åŒ–å¯¾å¿œ
+      * 04.06.00     NACL-ä¼Šè—¤    10/12/02  ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆå¤‰æ›´
+      *                                     å¯¾å¿œ
+      * 04.07.00     NACL-ä¼Šè—¤    14/03/06  ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆå¤‰æ›´
+      *                                     å¯¾å¿œ
+      * 04.08.00     NACL-ä¼Šè—¤    16/03/01  ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆå¤‰æ›´
+      *                                     å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,17 +42,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÆþÎÏ¡§ÅÀ¿ô¥Þ¥¹¥¿¹¹¿·¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ï¼šç‚¹æ•°ãƒžã‚¹ã‚¿æ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -61,19 +61,19 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ÆþÎÏ¡§ÅÀ¿ô¥Þ¥¹¥¿¹¹¿·¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ï¼šç‚¹æ•°ãƒžã‚¹ã‚¿æ›´æ–°ãƒ•ã‚¡ã‚¤ãƒ«
        FD  IN-FILE.
       *---(01.00.01) LINE UPD START -------------------------------------
       *    COPY    "CPTENSUWK.INC".
        01  IN-REC                      PIC X(10000).
       *---(01.00.01) LINE UPD END   -------------------------------------
       *
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  ERR-FILE.
            COPY    "CPTENSUWK.INC"       REPLACING
                                        //TNSWK-// BY //ERR-TNSWK-//.
       *
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
        FD  PLF-FILE.
        01  PLF-REC                 PIC X(1000).
       *
@@ -81,20 +81,20 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-IN                  PIC 9(01).
@@ -104,7 +104,7 @@ grpsys     COPY    "COMMON-SPA".
            03  FLG-TENSU               PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-IN                  PIC 9(06).
@@ -114,7 +114,7 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-ERR                 PIC 9(06).
            03  CNT-PLF                 PIC 9(06).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -124,7 +124,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-YY                  PIC 9(02).
            03  SYS-MM                  PIC 9(02).
            03  SYS-DD                  PIC 9(02).
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -134,7 +134,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-SYY2            PIC 9(02).
                05  WRK-SMM2            PIC 9(02).
                05  WRK-SDD2            PIC 9(02).
-      *¡¡¡¡¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ã€€ã€€ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
            03  WRK-TNSUP-KEY.
                05  WRK-TNSUP-HOSPNUM       PIC  9(02).
                05  WRK-TNSUP-SRYCD         PIC  X(09).
@@ -142,7 +142,7 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-TNSUP-YUKOEDYMD     PIC  X(08).
       *
            03  WRK-ERRCD               PIC 9(01). 
-      *    ÅÀ¿ôÊÝÂ¸
+      *    ç‚¹æ•°ä¿å­˜
            03  WRK-HZN-TEN             PIC  9(09)V99.
            03  WRK-HZN-OLDTEN          PIC  9(09)V99.
       *
@@ -153,11 +153,11 @@ grpsys     COPY    "COMMON-SPA".
                05  WRK-9-3                 PIC 9(03). 
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ëÎÎ°è
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "¡ÚPGID:ORCMUP0004.CBL¡Û".
+                                       "ã€PGID:ORCMUP0004.CBLã€‘".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -180,26 +180,26 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-NAME                PIC X(100).
       *
       *---(01.00.01) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V01.
            03  TNSWK-V01-AREA-01       PIC X(962).
            03  TNSWK-V01-AREA-02       PIC X(136).
            03  TNSWK-V01-AREA-03       PIC X(192).
       *---(01.00.01) LINE ADD START -------------------------------------
       *---(01.00.02) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V02.
            03  TNSWK-V02-AREA-01       PIC X(969).
            03  TNSWK-V02-AREA-02       PIC X(300).
       *---(01.00.02) LINE ADD START -------------------------------------
       *---(01.00.03) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V03.
            03  TNSWK-V03-AREA-01       PIC X(1080).
            03  TNSWK-V03-AREA-02       PIC X(239).
       *---(01.00.03) LINE ADD START -------------------------------------
       *---(04.06.00) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V04.
            03  TNSWK-V04-AREA-01       PIC X(963).
            03  TNSWK-V04-AREA-02       PIC X(03).
@@ -209,12 +209,12 @@ grpsys     COPY    "COMMON-SPA".
            03  TNSWK-V04-AREA-05       PIC X(304).
       *---(04.06.00) LINE ADD START -------------------------------------
       *---(04.06.00) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V05.
            03  TNSWK-V05-AREA-01       PIC X(1094).
            03  TNSWK-V05-AREA-02       PIC X(206).
       *---(04.06.00) LINE ADD START -------------------------------------
-      *    µì¥Þ¥¹¥¿¥Ç¡¼¥¿ÂàÈòÎÎ°è
+      *    æ—§ãƒžã‚¹ã‚¿ãƒ‡ãƒ¼ã‚¿é€€é¿é ˜åŸŸ
        01  TNSWK-TENSU-REC-V06.
            03  TNSWK-V06-AREA-01       PIC X(1098).
            03  TNSWK-V06-AREA-02       PIC X(187).
@@ -223,51 +223,51 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
            COPY    "ENUM-VALUE".
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
       *---(01.00.01) LINE ADD START -------------------------------------
            COPY    "CPTENSUWK.INC".
       *---(01.00.01) LINE ADD START -------------------------------------
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
            COPY    "CPTENSU.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡ÝÊÝÂ¸
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’ä¿å­˜
            COPY    "CPTENSU.INC"       REPLACING
                                        //TNS-// BY //WRK-TNS-//
                                        //TNSUP-// BY //WK-TNSUP-//
                                        //TNSXX-// BY //WK-TNSXX-//.
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¥³¡¼¥É
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ ã‚³ãƒ¼ãƒ‰
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¥³¡¼¥É¥ï¡¼¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ ã‚³ãƒ¼ãƒ‰ãƒ¯ãƒ¼ã‚¯
         01 WRK-TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC"    REPLACING
                                        //TNSP// BY //WRK-TNSP//.
-      *    ¥¸¥ç¥Ö´ÉÍý¾ðÊó
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†æƒ…å ±
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -278,7 +278,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -296,7 +296,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -314,10 +314,10 @@ grpsys     COPY    "COMMON-SPA".
       *        DISPLAY "DBOPEN ERR"
       *    END-IF.
       *
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ÆþÎÏ¡¡½é´ü½èÍý
+      *    å…¥åŠ›ã€€åˆæœŸå‡¦ç†
            OPEN    INPUT           IN-FILE
            IF  STS-IN          NOT =   ZERO
                MOVE    1           TO  FLG-IN
@@ -325,10 +325,10 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÑ¹¹¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿å¤‰æ›´ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿å‡¦ç†
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -338,7 +338,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¼èÆÀ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±å–å¾—
       *****************************************************************
        101-ASSIN-GET-SEC                SECTION.
       *
@@ -351,7 +351,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -362,7 +362,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -373,7 +373,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    ¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    ãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -393,25 +393,25 @@ grpsys     COPY    "COMMON-SPA".
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            MOVE    ZERO            TO  WRK-ERRCD
       *
            EVALUATE    TNSWK-SYORIKBN
-      *        ÄÉ²Ã
+      *        è¿½åŠ 
                WHEN    "I"
                    PERFORM 2010-INSERT-SYORI-SEC
-      *        ¹¹¿·
+      *        æ›´æ–°
                WHEN    "U"
                    PERFORM 2020-UPDATE-SYORI-SEC
-      *        ºï½ü
+      *        å‰Šé™¤
                WHEN    "D"
                    PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÑ¹¹¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿å¤‰æ›´ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿å‡¦ç†
            PERFORM 900-IN-KENSAKU-SEC
       *
            .
@@ -419,7 +419,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ÄÉ²Ã  ½èÍý
+      *    è¿½åŠ   å‡¦ç†
       *****************************************************************
        2010-INSERT-SYORI-SEC               SECTION.
       *
@@ -440,12 +440,12 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    Ã±½ãÄÉ²Ã
+      *    å˜ç´”è¿½åŠ 
            IF      TNSWK-YUKOEDYMD2    =   SPACE
-      *        ÄÉ²Ã¥¨¥é¡¼¡©
+      *        è¿½åŠ ã‚¨ãƒ©ãƒ¼ï¼Ÿ
                IF      FLG-TENSU           =   ZERO
                    PERFORM UNTIL    FLG-TENSU      =   1
-      *                ºÇ¸å¤Î¥Ç¡¼¥¿¤òÂÐ¾Ý¤È¤¹¤ë
+      *                æœ€å¾Œã®ãƒ‡ãƒ¼ã‚¿ã‚’å¯¾è±¡ã¨ã™ã‚‹
                        MOVE  TNS-TENSU-REC TO  WRK-TNS-TENSU-REC
       *
                        MOVE  "tbl_tensu"   TO  MCP-TABLE
@@ -469,11 +469,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    PERFORM 990-DBCLOSE-SEC
                END-IF
       *
-      *        £Ä£ÂÄÉ²Ã
+      *        ï¼¤ï¼¢è¿½åŠ 
                PERFORM 20101-TENSU-INS-SEC
            ELSE
       *
-      *    ÄÉ²Ã¹¹¿·
+      *    è¿½åŠ æ›´æ–°
                MOVE    ZERO                TO  FLG-SYORI
       ****         INITIALIZE                      WRK-TNS-TENSU-REC
                PERFORM UNTIL   (FLG-TENSU      =   1  )  OR
@@ -481,16 +481,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                    IF     (TNS-YUKOSTYMD   <=  TNSWK-YUKOEDYMD2 ) AND
                           (TNS-YUKOEDYMD   >=  TNSWK-YUKOEDYMD2 )
                        MOVE    TNS-TENSU-REC       TO  WRK-TNS-TENSU-REC
-      *                ¹¹¿·
+      *                æ›´æ–°
                        MOVE    TNS-KEY             TO  TNSUP-KEY
                        MOVE    TNSWK-YUKOEDYMD2    TO  TNS-YUKOEDYMD
                        PERFORM 20102-TENSU-UPD-SEC
       *
                        MOVE    1                   TO  FLG-SYORI
-      *                £Ä£ÂÄÉ²Ã
+      *                ï¼¤ï¼¢è¿½åŠ 
                        PERFORM 20101-TENSU-INS-SEC
                        IF      WRK-ERRCD           =   ZERO
-      *                ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊóÄÉ²Ã
+      *                ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±è¿½åŠ 
                            IF      WRK-TNSP-KEY    NOT =   SPACE
                                PERFORM 20104-TENSUPLUS-INS-SEC
                            END-IF
@@ -508,7 +508,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
                IF      FLG-SYORI           =   ZERO
       *
-      *            £Ä£ÂÄÉ²Ã
+      *            ï¼¤ï¼¢è¿½åŠ 
                    PERFORM 20101-TENSU-INS-SEC
                END-IF
            END-IF
@@ -517,11 +517,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£ÂÄÉ²Ã  ½èÍý
+      *    ï¼¤ï¼¢è¿½åŠ   å‡¦ç†
       *****************************************************************
        20101-TENSU-INS-SEC           SECTION.
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¤Î³ÎÇ§
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ã®ç¢ºèª
            INITIALIZE                  TNS-TENSU-REC
       *****MOVE    TNSWK-KEY           TO  TNS-KEY
 grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -554,7 +554,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                GO      TO      20101-TENSU-INS-EXT
            END-IF
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÄÉ²Ã
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿è¿½åŠ 
            INITIALIZE                  TNS-TENSU-REC
 grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-SRYCD         TO  TNS-SRYCD
@@ -562,7 +562,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
            MOVE    TNSWK-TENSU-REC(35:)
                                        TO  TNS-TENSU-REC(28:)
-      *    ÆÃÄê´ïºà¤Ç¶â³Û¤ÎÊÑ¹¹¤µ¤ì¤Æ¤¤¤ë»þ¡¢ÅÀ¿ô¼±ÊÌ¡á£²¤Î»þ
+      *    ç‰¹å®šå™¨æã§é‡‘é¡ã®å¤‰æ›´ã•ã‚Œã¦ã„ã‚‹æ™‚ã€ç‚¹æ•°è­˜åˆ¥ï¼ï¼’ã®æ™‚
            IF     (FLG-SYORI           =   1    )
             AND   (TNS-SRYCD(1:1)      =   "7"  )
       ***** AND  ((TNS-TENSIKIBETU     =   2    ) OR
@@ -591,7 +591,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¹¹¿·  ½èÍý
+      *    ï¼¤ï¼¢æ›´æ–°  å‡¦ç†
       *****************************************************************
        20102-TENSU-UPD-SEC           SECTION.
       *
@@ -608,14 +608,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 2040-ERR-SYORI-SEC
            END-IF
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó¹¹¿·
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±æ›´æ–°
            PERFORM 20103-TENSUPLUS-SYORI-SEC
            .
        20102-TENSU-UPD-EXT.
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¹¹¿·  ½èÍý
+      *    ï¼¤ï¼¢æ›´æ–°  å‡¦ç†
       *****************************************************************
        20103-TENSUPLUS-SYORI-SEC       SECTION.
       *
@@ -669,7 +669,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊóÄÉ²Ã½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±è¿½åŠ å‡¦ç†
       *****************************************************************
        20104-TENSUPLUS-INS-SEC           SECTION.
       *
@@ -721,7 +721,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Âºï½ü  ½èÍý
+      *    ï¼¤ï¼¢å‰Šé™¤  å‡¦ç†
       *****************************************************************
        20105-TENSU-DEL-SEC           SECTION.
       *
@@ -740,7 +740,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¹¹¿·  ½èÍý
+      *    æ›´æ–°  å‡¦ç†
       *****************************************************************
        2020-UPDATE-SYORI-SEC           SECTION.
       *
@@ -768,7 +768,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                            (FLG-SYORI      =   1  )
                IF     (TNS-YUKOSTYMD   <=  TNSWK-YUKOSTYMD ) AND
                       (TNS-YUKOEDYMD   >=  TNSWK-YUKOSTYMD )
-      *            ÆÃÄê´ïºà¤ÇÅÀ¿ô¼±ÊÌ¡á£²¤Î»þ¡¢ÅÀ¿ô¤òÊÑ¹¹¤·¤Ê¤¤
+      *            ç‰¹å®šå™¨æã§ç‚¹æ•°è­˜åˆ¥ï¼ï¼’ã®æ™‚ã€ç‚¹æ•°ã‚’å¤‰æ›´ã—ãªã„
                    IF     (TNSWK-SRYCD(1:1)    =   "7"  )  AND
                          ((TNSWK-TENSIKIBETU   =   2    )  OR
                           (TNSWK-OLDTEN    NOT =   TNS-TEN ))
@@ -779,7 +779,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                        MOVE    TNSWK-OLDTEN    TO  WRK-HZN-OLDTEN
                    END-IF
       *
-      *            ¹¹¿·
+      *            æ›´æ–°
                    MOVE    TNS-KEY             TO  WRK-TNSUP-KEY
       *************MOVE    TNSWK-KEY           TO  TNS-KEY
 grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
@@ -788,7 +788,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
                    MOVE    TNSWK-YUKOEDYMD     TO  TNS-YUKOEDYMD
                    MOVE    TNSWK-TENSU-REC(35:)
                                                TO  TNS-TENSU-REC(28:)
-      *            ÅÀ¿ô¤ÎÆþ¤ìÂØ¤¨
+      *            ç‚¹æ•°ã®å…¥ã‚Œæ›¿ãˆ
                    MOVE    WRK-HZN-TEN         TO  TNS-TEN
                    MOVE    WRK-HZN-OLDTEN      TO  TNS-OLDTEN
       *
@@ -807,7 +807,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ¹¹¿·¥¨¥é¡¼
+      *    æ›´æ–°ã‚¨ãƒ©ãƒ¼
            IF      FLG-SYORI           =   ZERO
                MOVE    3               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -817,7 +817,7 @@ grpsys             MOVE    SPA-HOSPNUM         TO  TNS-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ºï½ü  ½èÍý
+      *    å‰Šé™¤  å‡¦ç†
       *****************************************************************
        2030-DELETE-SYORI-SEC           SECTION.
       *
@@ -845,7 +845,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                  AND  (TNS-SRYCD        =  TNSWK-SRYCD)
                  AND  (TNS-YUKOSTYMD    =  TNSWK-YUKOSTYMD)
                  AND  (TNS-YUKOEDYMD    =  TNSWK-YUKOEDYMD)
-      *            ºï½ü
+      *            å‰Šé™¤
                    PERFORM 20105-TENSU-DEL-SEC
                    ADD     1                   TO  CNT-DEL
                    MOVE    1                   TO  FLG-SYORI
@@ -859,7 +859,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key4"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ºï½ü¥¨¥é¡¼
+      *    å‰Šé™¤ã‚¨ãƒ©ãƒ¼
            IF      FLG-SYORI           =   ZERO
                MOVE    9               TO  WRK-ERRCD
                PERFORM 2040-ERR-SYORI-SEC
@@ -869,16 +869,16 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡¦ç†
       *****************************************************************
        2040-ERR-SYORI-SEC            SECTION.
       *
-      *    ¥¨¥é¡¼½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›
            MOVE    TNSWK-TENSU-REC    TO  ERR-TNSWK-TENSU-REC
            WRITE                          ERR-TNSWK-TENSU-REC
            ADD     1                  TO  CNT-ERR
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
            PERFORM 20401-PLF-OUT-SEC
       *
            .
@@ -886,7 +886,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›å‡¦ç†
       *****************************************************************
        20401-PLF-OUT-SEC            SECTION.
       *
@@ -897,27 +897,27 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            MOVE    TNSWK-NAME         TO  WRK-NAME
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE    "ÄÉ²Ã¥¨¥é¡¼"       TO  WRK-MSG-01
+                   MOVE    "è¿½åŠ ã‚¨ãƒ©ãƒ¼"       TO  WRK-MSG-01
                WHEN    2
-                   MOVE    "¹¹¿·¥¨¥é¡¼"       TO  WRK-MSG-01
+                   MOVE    "æ›´æ–°ã‚¨ãƒ©ãƒ¼"       TO  WRK-MSG-01
                WHEN   3
-                   MOVE    "¹¹¿·ÂÐ¾Ý¤Ê¤·"   TO  WRK-MSG-01
+                   MOVE    "æ›´æ–°å¯¾è±¡ãªã—"   TO  WRK-MSG-01
                WHEN   4
-                   MOVE    "ÅÀ¿ôÉÕ²Ã¹¹¿·¥¨¥é¡¼"
+                   MOVE    "ç‚¹æ•°ä»˜åŠ æ›´æ–°ã‚¨ãƒ©ãƒ¼"
                                               TO  WRK-MSG-01
                WHEN   5
-                   MOVE    "ÅÀ¿ôÅÐÏ¿ºÑ¤ß"
+                   MOVE    "ç‚¹æ•°ç™»éŒ²æ¸ˆã¿"
                                               TO  WRK-MSG-01
                WHEN   6
-                   MOVE    "ÅÀ¿ôÉÕ²ÃÅÐÏ¿ºÑ¤ß"
+                   MOVE    "ç‚¹æ•°ä»˜åŠ ç™»éŒ²æ¸ˆã¿"
                                               TO  WRK-MSG-01
                WHEN   7
-                   MOVE    "ÅÀ¿ôÉÕ²ÃÄÉ²Ã¥¨¥é¡¼"
+                   MOVE    "ç‚¹æ•°ä»˜åŠ è¿½åŠ ã‚¨ãƒ©ãƒ¼"
                                               TO  WRK-MSG-01
                WHEN   8
-                   MOVE    "ºï½ü¥¨¥é¡¼"       TO  WRK-MSG-01
+                   MOVE    "å‰Šé™¤ã‚¨ãƒ©ãƒ¼"       TO  WRK-MSG-01
                WHEN   9
-                   MOVE    "ºï½üÂÐ¾Ý¤Ê¤·"   TO  WRK-MSG-01
+                   MOVE    "å‰Šé™¤å¯¾è±¡ãªã—"   TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA       TO  PLF-REC
@@ -930,7 +930,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
       *****************************************************************
        2700-OUTLST-INIT-SEC            SECTION.
       *
@@ -940,7 +940,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ¥¨¥é¡¼¥ì¥³¡¼¥É½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡¥ª¡¼¥×¥ó
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¬ã‚³ãƒ¼ãƒ‰å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€ã‚ªãƒ¼ãƒ—ãƒ³
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0004)* PLFFILE OPN STS[" STS-PLF "]"
@@ -960,14 +960,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½ªÎ»½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€çµ‚äº†å‡¦ç†
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -1002,7 +1002,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÑ¹¹¥Õ¥¡¥¤¥ëÆÉ¹þ¤ß½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿å¤‰æ›´ãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -1026,7 +1026,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(01.00.01) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÊÑ¹¹¥Ç¡¼¥¿ÀßÄê½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿å¤‰æ›´ãƒ‡ãƒ¼ã‚¿è¨­å®šå‡¦ç†
       *****************************************************************
        900-IN-DATA-SET-SEC         SECTION.
       *
@@ -1059,7 +1059,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V01-SET          SECTION.
       *
@@ -1081,7 +1081,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *---(01.00.01) LINE ADD END   -------------------------------------
       *---(01.00.02) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V02-SET          SECTION.
       *
@@ -1099,7 +1099,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *---(01.00.01) LINE ADD END   -------------------------------------
       *---(01.00.03) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V03-SET          SECTION.
       *
@@ -1119,7 +1119,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *---(01.00.03) LINE ADD END   -------------------------------------
       *---(04.06.00) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V04-SET          SECTION.
       *
@@ -1143,7 +1143,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *---(04.06.00) LINE ADD END   -------------------------------------
       *---(04.07.00) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V05-SET          SECTION.
       *
@@ -1164,7 +1164,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *---(04.07.00) LINE ADD END   -------------------------------------
       *---(04.08.00) LINE ADD START -------------------------------------
       *****************************************************************
-      *    ÊÑ¹¹¸å¥ì¥¤¥¢¥¦¥È°ÜÁ÷½èÍý
+      *    å¤‰æ›´å¾Œãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆç§»é€å‡¦ç†
       *****************************************************************
        900-TNSWK-V06-SET          SECTION.
       *
@@ -1187,7 +1187,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *---(04.08.00) LINE ADD END   -------------------------------------
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1207,7 +1207,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊóÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±èª­è¾¼
       *****************************************************************
        980-TENSUPLUS-READ-SEC          SECTION.
       *
@@ -1226,7 +1226,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥º½èÍý
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC               SECTION.
       *
@@ -1238,7 +1238,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1256,7 +1256,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1274,7 +1274,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

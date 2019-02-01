@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,42 +18,42 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0940.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥ÈÆþ±¡¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ·î¼¡¶ÈÌ³¡¡Ï«ºÒ¼«ÇåÀÕÌÀºÙ½ñ¥Õ¥¡¥¤¥ëºîÀ®
-      *                      Å¦Í×ÍóÊÂ¤ÓÂØ¤¨¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/06/01    NACL¡ÝÌçÏÆ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ¬ã‚»ãƒ—ãƒˆå…¥é™¢ï¼ˆåŠ´ç½ãƒ»è‡ªè³ è²¬ï¼‰
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æœˆæ¬¡æ¥­å‹™ã€€åŠ´ç½è‡ªè³ è²¬æ˜Žç´°æ›¸ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆ
+      *                      æ‘˜è¦æ¬„ä¸¦ã³æ›¿ãˆï¼ˆåŠ´ç½ãƒ»è‡ªè³ è²¬ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/06/01    NACLâˆ’é–€è„‡    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  Ãæ»ß½èÍýÄÉ²Ã
-      *  01.00.01    NACL-Æ£¸¶    04/10/13  Ãæ»ß½èÍý¤ÎÄÉ²Ã
-      *  01.00.02    NACL-ÌçÏÆ    05/05/26  ¼ê½Ñ¡¦Ëã¿ì¤Îµ­ºÜ½çÊÑ¹¹ÂÐ±þ
-      *  01.00.03    NACL-ÌçÏÆ    05/08/31  ºÞÈÖ¹æÊÔ½¸½¤Àµ
-      *  01.00.04    NACL-ÌçÏÆ    05.09.06  ¼«ÇåÀÕ½¾ÍèÍÍ¼°ÂÐ±þ
-      *  01.00.05    NACL-ÌçÏÆ    05/11/01  ¡Ê¸¡Áª¡ËÅù¥³¥á¥ó¥ÈÂÐ±þ
-      *  03.01.01    NACL-ÌçÏÆ    06/07/14  ¿ÇÎÅ¶èÊ¬ÃÖ¤­´¹¤¨¥Õ¥é¥°¤ÎÊÔ½¸
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  ä¸­æ­¢å‡¦ç†è¿½åŠ 
+      *  01.00.01    NACL-è—¤åŽŸ    04/10/13  ä¸­æ­¢å‡¦ç†ã®è¿½åŠ 
+      *  01.00.02    NACL-é–€è„‡    05/05/26  æ‰‹è¡“ãƒ»éº»é…”ã®è¨˜è¼‰é †å¤‰æ›´å¯¾å¿œ
+      *  01.00.03    NACL-é–€è„‡    05/08/31  å‰¤ç•ªå·ç·¨é›†ä¿®æ­£
+      *  01.00.04    NACL-é–€è„‡    05.09.06  è‡ªè³ è²¬å¾“æ¥æ§˜å¼å¯¾å¿œ
+      *  01.00.05    NACL-é–€è„‡    05/11/01  ï¼ˆæ¤œé¸ï¼‰ç­‰ã‚³ãƒ¡ãƒ³ãƒˆå¯¾å¿œ
+      *  03.01.01    NACL-é–€è„‡    06/07/14  è¨ºç™‚åŒºåˆ†ç½®ãæ›ãˆãƒ•ãƒ©ã‚°ã®ç·¨é›†
       *
-      *  03.05.01    NACL-ÌçÏÆ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  03.05.02    NACL-Æ£¸¶    07/06/01  realtime preview ½èÍýÄÉ²Ã
-      *  04.02.01    NACL-ÌçÏÆ    08/03/24  Ê¿À®£²£°Ç¯£´·î²þÀµÂÐ±þ
-      *                                     ¡Ê¿ÇÎÅ¶èÊ¬£¶£´¡§ÉÂÍý¿ÇÃÇÂÐ±þ¡Ë
+      *  03.05.01    NACL-é–€è„‡    07/06/01  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  03.05.02    NACL-è—¤åŽŸ    07/06/01  realtime preview å‡¦ç†è¿½åŠ 
+      *  04.02.01    NACL-é–€è„‡    08/03/24  å¹³æˆï¼’ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *                                     ï¼ˆè¨ºç™‚åŒºåˆ†ï¼–ï¼”ï¼šç—…ç†è¨ºæ–­å¯¾å¿œï¼‰
       *
-      *  04.03.01    NACL-ÌçÏÆ    08/07/09  ÅêÌô¤Îµ­ºÜ½çÊÑ¹¹¡ÊÆüÉÕ½ç¡Ë
-      *  04.04.01    NACL-ÌçÏÆ    10/03/29  ²þÀµÂÐ±þ
-      *                                     ¡Ê²èÁü¿ÇÃÇ£²²óÌÜ°Ê¹ß¸º»»ÊÔ½¸¡Ë
+      *  04.03.01    NACL-é–€è„‡    08/07/09  æŠ•è–¬ã®è¨˜è¼‰é †å¤‰æ›´ï¼ˆæ—¥ä»˜é †ï¼‰
+      *  04.04.01    NACL-é–€è„‡    10/03/29  æ”¹æ­£å¯¾å¿œ
+      *                                     ï¼ˆç”»åƒè¨ºæ–­ï¼’å›žç›®ä»¥é™æ¸›ç®—ç·¨é›†ï¼‰
       *
-      *  04.05.01    NACL-ÌçÏÆ    09/06/10  Å¦Í×Íó²¼Éô¤Ø¤Î¥³¥á¥ó¥Èµ­ºÜÂÐ±þ
-      *  04.05.02    NACL-ÌçÏÆ    10/01/25  ¼£¸³ÂÐ±þ
+      *  04.05.01    NACL-é–€è„‡    09/06/10  æ‘˜è¦æ¬„ä¸‹éƒ¨ã¸ã®ã‚³ãƒ¡ãƒ³ãƒˆè¨˜è¼‰å¯¾å¿œ
+      *  04.05.02    NACL-é–€è„‡    10/01/25  æ²»é¨“å¯¾å¿œ
       *
-      *  04.07.01    NACL-ÌçÏÆ    13/12/03  ¼«ÇåÀÕ¡ÊÏ«ºÒ½àµò¡Ë¤Î¥ì¥»¥×¥ÈÍÍ¼°
-      *                                     ÄÉ²ÃÂÐ±þ
+      *  04.07.01    NACL-é–€è„‡    13/12/03  è‡ªè³ è²¬ï¼ˆåŠ´ç½æº–æ‹ ï¼‰ã®ãƒ¬ã‚»ãƒ—ãƒˆæ§˜å¼
+      *                                     è¿½åŠ å¯¾å¿œ
       *
-      *  04.08.01    NACL-ÌçÏÆ    13/01/25  Êñ³ç¿ÇÎÅÊ¬¤ÎÅÀ¸¡ÍÑ¥ì¥»¥×¥Èµ­ºÜÂÐ±þ
-      *  04.08.02    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    16/08/23  »ý»²ÌôÂÐ±þ
+      *  04.08.01    NACL-é–€è„‡    13/01/25  åŒ…æ‹¬è¨ºç™‚åˆ†ã®ç‚¹æ¤œç”¨ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰å¯¾å¿œ
+      *  04.08.02    NACL-è—¤åŽŸ    14/07/07  ä¸€æ™‚ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå¯¾å¿œ
+      *  04.08.03    NACL-é–€è„‡    16/08/23  æŒå‚è–¬å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -75,7 +75,7 @@
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    RECORD  KEY     IS  RECE87X-KEY
                                    FILE    STATUS  IS  STS-RECE87.
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -94,7 +94,7 @@
        01  RECE87X-REC. 
            COPY    "CPRCF087.INC"  REPLACING   //RECE87//
                                    BY          //RECE87X//.
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -106,11 +106,11 @@
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE87//.
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë Ì¾¾ÎÎÎ°è 
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ« åç§°é ˜åŸŸ 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-RECE86                              PIC X(02).
            03  STS-RECE87                              PIC X(02).
@@ -119,13 +119,13 @@
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
            03  CNT-IN-CANCEL                           PIC 9(06).
            03  CNT-OUT                                 PIC 9(06).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM                      PIC  X(06).
@@ -140,27 +140,27 @@
            03  WRK-RECEERR             PIC X(200). 
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *     
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -177,7 +177,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -194,7 +194,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -240,15 +240,15 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE87PARA-HOSPNUM
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 100-DBOPEN-SEC
       *
-      *        ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *        ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    "ORCR0940"      TO  JOB-PGID
-               MOVE    "Å¦Í×ÍóÊÂ¤ÓÂØ¤¨¡ÊÏ«ºÒ¡¦¼«ÇåÀÕ¡Ë"
+               MOVE    "æ‘˜è¦æ¬„ä¸¦ã³æ›¿ãˆï¼ˆåŠ´ç½ãƒ»è‡ªè³ è²¬ï¼‰"
                                            TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        ½èÍýÃæ»ßÀßÄê½èÍý
+      *        å‡¦ç†ä¸­æ­¢è¨­å®šå‡¦ç†
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF 
       *
@@ -267,7 +267,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -275,7 +275,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
            PERFORM     900-RECE86-READ-SEC
       *
-      *    ½èÍýÃæ»ßÀßÄê½èÍý
+      *    å‡¦ç†ä¸­æ­¢è¨­å®šå‡¦ç†
            IF      CNT-IN-CANCEL       =   50
                MOVE    ZERO                TO  CNT-IN-CANCEL
                PERFORM 500-CANCEL-HENSYU-SEC
@@ -285,7 +285,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
       *****************************************************************
        210-HENSYU-SEC                   SECTION.
       *
@@ -384,7 +384,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Ç¡¼¥¿¹¹¿·½èÍý¡Ê£Æ£°£°£¶£±¡Ë
+      *    ãƒ‡ãƒ¼ã‚¿æ›´æ–°å‡¦ç†ï¼ˆï¼¦ï¼ï¼ï¼–ï¼‘ï¼‰
       *****************************************************************
        2101-RECE87-WRITE-SEC                SECTION.
       *
@@ -397,7 +397,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -412,7 +412,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ¥¸¥ç¥Ö´ÉÍý½ªÎ»½èÍý
+      *            ã‚¸ãƒ§ãƒ–ç®¡ç†çµ‚äº†å‡¦ç†
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -428,7 +428,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½èÍýÃæ»ß½èÍý
+      *    å‡¦ç†ä¸­æ­¢å‡¦ç†
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -441,7 +441,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "½èÍý¤¬Ãæ»ß¤µ¤ì¤Þ¤·¤¿"
+                   MOVE    "å‡¦ç†ãŒä¸­æ­¢ã•ã‚Œã¾ã—ãŸ"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -454,7 +454,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ¥¸¥ç¥Ö´ÉÍý½ªÎ»½èÍý
+      *                ã‚¸ãƒ§ãƒ–ç®¡ç†çµ‚äº†å‡¦ç†
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -471,7 +471,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -479,7 +479,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
                    RECE87-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *        ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -495,7 +495,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ãæ´Ö¥Õ¥¡¥¤¥ë£Ò£Å£Á£Ä½èÍý
+      *    ä¸­é–“ãƒ•ã‚¡ã‚¤ãƒ«ï¼²ï¼¥ï¼¡ï¼¤å‡¦ç†
       *****************************************************************
        900-RECE86-READ-SEC            SECTION.
       *
@@ -514,7 +514,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ½èÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡å‡¦ç†
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -531,7 +531,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -544,7 +544,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -562,7 +562,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSMEIHEN.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ɽ��̾���Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/01/23    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 表示名称編集処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/01/23    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-¿��Ǽ  07/04/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-多々納  07/04/XX  グループ診療対応
       *****************************************************************
       *
       *
@@ -42,20 +42,20 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
       *
            03  FLG-SP              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDM                 PIC 9(04).
            03  IDM2                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
@@ -70,31 +70,31 @@
            03  WRK-SURYO-H         PIC X(18).
       *
            03  WRK-KANJI           PIC X(100).
-      *    ��縡����
+      *    包括検査数
            03  WRK-SURYO-2X            PIC X(02).
            03  WRK-SURYO-2             PIC Z9.
       *
            03  WRK-HOSPNUM             PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
@@ -103,13 +103,13 @@
       *
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ɽ��̾���Խ��ѥ�᥿�ΰ�
+      *    表示名称編集パラメタ領域
            COPY    "CPORCSMEIHEN.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -118,7 +118,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -139,10 +139,10 @@
       *
            IF      ORCSMEIHEN-TNS-NAME  NOT =   SPACE
                EVALUATE    ORCSMEIHEN-KBN
-      *        ���̳��
+      *        用量割合
                WHEN    "1"
                    PERFORM 100-YOURYOU-HEN-SEC
-      *        ��縡����
+      *        包括検査数
                WHEN    "2"
                    PERFORM 200-HOUKATU-HEN-SEC
                END-EVALUATE
@@ -155,7 +155,7 @@
            .
       *
       *****************************************************************
-      *    �����ޥ�����̾���Խ�����
+      *    点数マスター名称編集処理
       *****************************************************************
        100-TNS-NAME-HEN-SEC         SECTION.
       *
@@ -192,7 +192,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ��������̾��
+      *    検査正式名称
            IF      SPA-FORMALFLG       =   "1"
                IF     (TNS-SRYCD(1:1)      =   "1") AND
                       (TNS-SRYKBN          =   "60")  AND
@@ -207,7 +207,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̳�����
+      *    用量割合処理
       *****************************************************************
        100-YOURYOU-HEN-SEC               SECTION.
       *
@@ -237,7 +237,7 @@
                    MOVE    11                  TO  IDM
                END-IF
            END-PERFORM
-      *    �����Ѵ�
+      *    全角変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-SURYO-H         TO  KANACHK-MAE-INPUT
@@ -260,11 +260,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��縡��������
+      *    包括検査数処理
       *****************************************************************
        200-HOUKATU-HEN-SEC               SECTION.
       *
-      *    ���ܿ��ϣ���Ȥ���
+      *    項目数は２桁とする
            MOVE    ORCSMEIHEN-SURYO    TO  WRK-SURYO-2
            MOVE    SPACE               TO  WRK-SURYO-2X
            MOVE    ZERO                TO  IDM2
@@ -291,12 +291,12 @@
            MOVE    SPACE               TO  ORCSMEIHEN-MEISYO
            MOVE    SPACE               TO  ORCSMEIHEN-MEISYO2
            STRING  ORCSMEIHEN-TNS-NAME DELIMITED  BY  SPACE
-                   "�������ܿ���"      DELIMITED  BY  SIZE
+                   "　　項目数："      DELIMITED  BY  SIZE
                    WRK-KANJI           DELIMITED  BY  SIZE
                                        INTO    ORCSMEIHEN-MEISYO
            END-STRING
-      *    ���ܿ��Τ�
-           STRING  "�������ܿ���"      DELIMITED  BY  SIZE
+      *    項目数のみ
+           STRING  "　　項目数："      DELIMITED  BY  SIZE
                    WRK-KANJI           DELIMITED  BY  SPACE
                                        INTO    ORCSMEIHEN-MEISYO2
            END-STRING
@@ -304,7 +304,7 @@
        200-HOUKATU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -317,7 +317,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -332,7 +332,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

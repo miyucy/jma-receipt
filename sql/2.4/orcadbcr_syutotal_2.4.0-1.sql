@@ -1,12 +1,12 @@
 --                                    --
--- ��Ǽ��ץơ��֥�κ���             --
+-- 収納合計テーブルの作成             --
 --                                    --
 --                                    --
 -- Create Date : 2004/07/05           --
 --                                    --
 
 
--- TBL_SYUTOTAL ����               --
+-- TBL_SYUTOTAL 作成               --
 
 create table TBL_SYUTOTAL (
 HOSPID				char(24)	not null,

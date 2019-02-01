@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- £Ğ£Ç´ÉÍı¾ğÊó                   --
+-- ï¼°ï¼§ç®¡ç†æƒ…å ±                   --
 --                                --
 -- Table Name  : TBL_PGKANRI      --
 -- Create Date : 2004/01/28       --

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,21 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������Ź԰ٹ����ѥ�᥿����COPY (CPORCSCNYUIN.INC)
-      *                           ���ѥץ������ (ORCGK08,ORCSNYUACCT)
+      *    入院診療行為更新パラメタ　　COPY (CPORCSCNYUIN.INC)
+      *                           使用プログラム (ORCGK08,ORCSNYUACCT)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSCNYUINAREA.
       *
-      *��ʬ�ʣ������Ź԰ٺ������������Ź԰ٺ�����ౡ�ˡ�
+      *区分（１：診療行為作成、２：診療行為削除（退院））
            03  ORCSCNYUIN-KBN                        PIC  X(01).
-      *�о����ա��ౡ����
+      *対象日付（退院日）
            03  ORCSCNYUIN-YMD                        PIC  X(08).
-      *�ౡ��
+      *退院日
            03  ORCSCNYUIN-TAIINYMD                   PIC  X(08).
-      *Ʊ����������ʬ
+      *同日再入院区分
            03  ORCSCNYUIN-DOUJITSUKBN                PIC  X(01).
       *

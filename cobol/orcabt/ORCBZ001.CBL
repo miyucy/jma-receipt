@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBZ001.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ģɼ
-      *  ����ݡ��ͥ��̾  : ���������ֹ����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/06/19    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 随時帳票
+      *  コンポーネント名  : 空き患者番号一覧
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/06/19    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  03.08.22  �����ֹ�����å��ɲ�
-      * 03.05.00     NACL-¿��Ǽ  07/05/24  ���롼�׿����б�
-      * 04.08.00     NACL-¿��Ǽ  14/07/17  ����ե������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  03.08.22  患者番号チェック追加
+      * 03.05.00     NACL-多々納  07/05/24  グループ診療対応
+      * 04.08.00     NACL-多々納  14/07/17  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -37,20 +37,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
       *    COPY    "CPCOMMONDAT2.INC"
       *                            REPLACING  //RECE01PARA//
       *                            BY         //RECEERR//.
@@ -58,15 +58,15 @@
       *
            COPY    "HCMZ001.INC".
       *
-      *    ����ե������б�
+      *    一時ファイル対応
            COPY    "CPRECEERR.INC".
       *
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -75,24 +75,24 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-ERR2                PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE                PIC 9(03).
            03  CNT-PAGE                PIC 9(05).
            03  CNT-BZ001               PIC 9(05).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(03).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -102,7 +102,7 @@
            03  WRK-PARA-PTNUM          PIC X(20).
            03  WRK-PARA-PTNUM-END      PIC X(20).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -123,54 +123,54 @@
            03  WRK-IN                  PIC X(01).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1009.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
       *01  PRTKANRI-REC.
       *    COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       *01  PRTDATA-REC.
       *    COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���������ֹ極��
+      *    空き患者番号サブ
            COPY    "CPORCBZ001S.INC".
       *
-      *    �����Ѵ�
+      *    全角変換
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
       **   COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -179,7 +179,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -193,7 +193,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -206,7 +206,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -242,10 +242,10 @@
                                        WRK-PARA-PTNUM-END
            END-UNSTRING
       *
-      *    �ӣУ����å�
+      *    ＳＰＡセット
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
@@ -253,13 +253,13 @@
            MOVE    SGETTEMP-FULLNAME   TO  RECEERR
       *
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBZ001"          TO  JOB-PGID
-           MOVE    "���������ֹ����"  TO  JOB-SHELLMSG
+           MOVE    "空き患者番号一覧"  TO  JOB-SHELLMSG
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -271,10 +271,10 @@
       *                            TO  RECEERR-TERMID
       *DDD MOVE    SPA-HOSPNUM     TO  RECEERR-HOSPNUM
       *
-      *    ����ͥ��å�
+      *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
       *
-      *    �����ֹ湽������
+      *    患者番号構成管理
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"          TO  SYS-1009-KANRICD
            MOVE    "*"             TO  SYS-1009-KBNCD
@@ -287,24 +287,24 @@
                MOVE    MCPDATA-REC     TO  SYS-1009-REC
            END-IF
       *
-      *    �����ֹ湽�����å�
+      *    患者番号構成セット
            PERFORM 120-KOUSEI-SET-SEC
       *
            IF      FLG-KOUSEI  =   1
-               MOVE    "�����ֹ�ι���������������ޤ���"
+               MOVE    "患者番号の構成が正しくありません"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO      TO             100-INIT-EXT
            END-IF
       *
            IF      FLG-ERR             =   1
-               MOVE    "���ϴ����ֹ�η�����㤤�ޤ���"
+               MOVE    "開始患者番号の桁数が違います。"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO      TO             100-INIT-EXT
            END-IF
            IF      FLG-ERR2            =   1
-               MOVE    "��λ�����ֹ�η�����㤤�ޤ���"
+               MOVE    "終了患者番号の桁数が違います。"
                                       TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO      TO             100-INIT-EXT
@@ -315,11 +315,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ͥ��å�
+      *    初期値セット
       *****************************************************************
        110-SYOKI-SET-SEC           SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
            INITIALIZE                  STS-AREA-DAY
@@ -334,7 +334,7 @@
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            END-IF
       *
-      *    ȯ����
+      *    発行日
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY2-AREA
            MOVE    "21"            TO  LNK-DAY2-IRAI
@@ -349,7 +349,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ湽�����å�
+      *    患者番号構成セット
       *****************************************************************
        120-KOUSEI-SET-SEC          SECTION.
       *
@@ -358,26 +358,26 @@
            MOVE    ZERO            TO  WRK-KETA
       *
            EVALUATE    SYS-1009-PTNUMKSIKBN
-      *    ��ͳ����
+      *    自由構成
            WHEN    "1"
                EVALUATE    SYS-1009-JIYKSIKBN
                WHEN    "2"
-      *            ���Խ�
+      *            桁編集
                    MOVE    SYS-1009-JIYKSIKETA     TO  WRK-KETA
                    PERFORM 130-KETA-HEN-SEC
       *
-                   STRING  "�����ֹ桧��ͳ��������������"
+                   STRING  "患者番号：自由構成　数字型（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "���"          DELIMITED   BY  SIZE
+                           "桁）"          DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    OTHER
                    MOVE    1               TO  FLG-KOUSEI
                END-EVALUATE
-      *    ɸ�๽��
+      *    標準構成
            WHEN    "2"
-      *        ���Խ�
+      *        桁編集
                MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                PERFORM 130-KETA-HEN-SEC
       *
@@ -385,96 +385,96 @@
                    ALSO    SYS-1009-HJNKSINENKBN
                    ALSO    SYS-1009-HJNKSIRENNUMKBN
                WHEN    "1"     ALSO    "1"     ALSO    "1"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣳷�ˡ�Ϣ�ֹ��"
+                           "年（和暦３桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡܸ����ֹ�ʣ���ˡ���ǯ��Ϣ�ֹ�����"
+                           "桁）＋検証番号（１桁）　※年で連番号初期化"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "1"     ALSO    "1"     ALSO    "2"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣳷�ˡ�Ϣ�ֹ��"
+                           "年（和暦３桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡܸ����ֹ�ʣ����" 
+                           "桁）＋検証番号（１桁）" 
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "1"     ALSO    "2"     ALSO    "1"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣴷�ˡ�Ϣ�ֹ��"
+                           "年（西暦４桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡܸ����ֹ�ʣ���ˡ���ǯ��Ϣ�ֹ�����"
+                           "桁）＋検証番号（１桁）　※年で連番号初期化"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "1"     ALSO    "2"     ALSO    "2"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣴷�ˡ�Ϣ�ֹ��"
+                           "年（西暦４桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡܸ����ֹ�ʣ����" 
+                           "桁）＋検証番号（１桁）" 
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "2"     ALSO    "1"     ALSO    "1"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣳷�ˡ�Ϣ�ֹ��"
+                           "年（和暦３桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡ���ǯ��Ϣ�ֹ�����"
+                           "桁）　※年で連番号初期化"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "2"     ALSO    "1"     ALSO    "2"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣳷�ˡ�Ϣ�ֹ��"
+                           "年（和暦３桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "���"          DELIMITED   BY  SIZE
+                           "桁）"          DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "2"     ALSO    "2"     ALSO    "1"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣴷�ˡ�Ϣ�ֹ��"
+                           "年（西暦４桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡ���ǯ��Ϣ�ֹ�����"
+                           "桁）　※年で連番号初期化"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "2"     ALSO    "2"     ALSO    "2"
-                   STRING  "�����ֹ桧ɸ�๽����"
+                   STRING  "患者番号：標準構成　"
                                            DELIMITED   BY  SIZE
-                           "ǯ�����񣴷�ˡ�Ϣ�ֹ��"
+                           "年（西暦４桁）＋連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "���"          DELIMITED   BY  SIZE
+                           "桁）"          DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "3"     ALSO    ANY     ALSO    ANY
-                   STRING  "�����ֹ桧ɸ�๽����Ϣ�ֹ��"
+                   STRING  "患者番号：標準構成　連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "��ˡܸ����ֹ�ʣ����"
+                           "桁）＋検証番号（１桁）"
                                            DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    "4"     ALSO    ANY     ALSO    ANY
-                   STRING  "�����ֹ桧ɸ�๽����Ϣ�ֹ��"
+                   STRING  "患者番号：標準構成　連番号（"
                                            DELIMITED   BY  SIZE
                            WRK-KETAHEN     DELIMITED   BY  SPACE
-                           "���"          DELIMITED   BY  SIZE
+                           "桁）"          DELIMITED   BY  SIZE
                                    INTO    WRK-KOUSEI
                    END-STRING
                WHEN    OTHER
@@ -484,7 +484,7 @@
                MOVE    1           TO  FLG-KOUSEI
            END-EVALUATE
       *
-      *    ��������å�
+      *    桁数チェック
            MOVE    ZERO                TO  WRK-KETA
            MOVE    ZERO                TO  WRK-KETA2
            MOVE    ZERO                TO  FLG-ERR
@@ -493,16 +493,16 @@
                WHEN    "1"
                    EVALUATE    SYS-1009-JIYKSIKBN
                        WHEN    "2"
-      *                ���Խ�
+      *                桁編集
                            MOVE    SYS-1009-JIYKSIKETA     TO  WRK-KETA
                    END-EVALUATE
                WHEN    "2"
                    MOVE    SYS-1009-HJNKSIRENNUMKETA   TO  WRK-KETA
                    IF      SYS-1009-HJNKSINENKBN   =   "1"
-      *                ����
+      *                和暦
                        MOVE    3                  TO  WRK-KETA2
                    ELSE
-      *                ����
+      *                西暦
                        MOVE    4                  TO  WRK-KETA2
                    END-IF
                    EVALUATE    SYS-1009-HJNKSIKBN
@@ -522,7 +522,7 @@
            END-EVALUATE
            IF      WRK-KETA            >   ZERO
                COMPUTE WRK-KETA2       =   WRK-KETA    +  1
-      *        ���ϴ����ֹ�����å�
+      *        開始患者番号チェック
                IF      WRK-PARA-PTNUM  NOT =   SPACE
                    IF     (WRK-PARA-PTNUM(1:WRK-KETA)  NUMERIC )  AND
                           (WRK-PARA-PTNUM(WRK-KETA2:)  =   SPACE)
@@ -531,7 +531,7 @@
                        MOVE    1               TO  FLG-ERR
                    END-IF
                END-IF
-      *        ��λ�����ֹ�����å�
+      *        終了患者番号チェック
                IF      WRK-PARA-PTNUM-END  NOT =   SPACE
                    IF     (WRK-PARA-PTNUM-END(1:WRK-KETA)
                                                        NUMERIC )  AND
@@ -552,7 +552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Խ�
+      *    桁編集
       *****************************************************************
        130-KETA-HEN-SEC            SECTION.
       *
@@ -580,7 +580,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -606,13 +606,13 @@
                    OR    ( ORCBZ001S-ENDFLG    =   1 )
       *
            DISPLAY "ORCBZ001S START"
-      *        ���������ֹ�����å�
+      *        空き患者番号チェック
                CALL    "ORCBZ001S"         USING
                                            SPA-AREA
                                            ORCBZ001SAREA
                                            SYS-1009-REC
                IF          ORCBZ001S-MAX-CNT   >   ZERO
-      *            �����Խ�����
+      *            明細編集処理
                    PERFORM 210-BODY-EDIT-SEC
                END-IF
            END-PERFORM
@@ -620,9 +620,9 @@
            DISPLAY "CNT-LINE:"  CNT-LINE
       *
            IF          CNT-LINE    >   ZERO
-      *        �إå�����
+      *        ヘッダ処理
                PERFORM 210-HEAD-EDIT-SEC
-      *        ��������
+      *        印刷処理
                PERFORM 400-PRINT-OUT-SEC
            END-IF
       *
@@ -631,7 +631,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        210-HEAD-EDIT-SEC           SECTION.
       *
@@ -648,7 +648,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<������>����
+      *    帳票編集<明細部>処理
       *****************************************************************
        210-BODY-EDIT-SEC           SECTION.
       *
@@ -658,9 +658,9 @@
                COMPUTE CNT-BZ001       =   CNT-BZ001   +   1
       *
                IF          CNT-LINE    >   120
-      *            �إå�����
+      *            ヘッダ処理
                    PERFORM 210-HEAD-EDIT-SEC
-      *            ��������
+      *            印刷処理
                    PERFORM 400-PRINT-OUT-SEC
                    INITIALIZE                  HCMZ001
                    MOVE    1               TO  CNT-LINE
@@ -676,7 +676,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        400-PRINT-OUT-SEC           SECTION.
       *
@@ -696,7 +696,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMZ001.red"       TO  SPRT-PRTID
-           MOVE    "���������ֹ����ɽ"
+           MOVE    "空き患者番号一覧表"
                                        TO  SPRT-TITLE
            MOVE    HCMZ001             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -716,12 +716,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-BZ001           =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -729,7 +729,7 @@
            DISPLAY "*** ORCBZ001 IN " CNT-BZ001 " ***"
            DISPLAY "*** ORCBZ001 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -749,7 +749,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -763,7 +763,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -785,7 +785,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        800-SYSKANRI-READ-SEC       SECTION.
       *
@@ -826,7 +826,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -850,7 +850,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

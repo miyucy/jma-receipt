@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,28 +15,28 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �쥻�ץȼ����ֵѥѥ�᥿      COPY (CPORCSSYUBETUGET.INC)
-      *                                  ���ѥץ������ (ORCSSYUBETUGET)
-      *    �������
-      *        ������ʬ
-      *        ����ǯ��
-      *        �ݸ��ֹ�
-      *        ���ݶ�ʬ
-      *        ���ݶ�ʬ
-      *        Ϸ�Ͷ�ʬ
-      *        �����
-      *        �ܿͲ�²��ʬ
-      *    �ֵѹ���
-      *        �쥻�ץȼ���
-      *        �쥻�ץȼ��̡������������
-      *        �쥻�ץȼ��̡ʻ�쥻�ץȡ�
+      *    レセプト種別返却パラメタ      COPY (CPORCSSYUBETUGET.INC)
+      *                                  使用プログラム (ORCSSYUBETUGET)
+      *    設定項目
+      *        入外区分
+      *        診療年月
+      *        保険番号
+      *        国保区分
+      *        社保区分
+      *        老人区分
+      *        公費数
+      *        本人家族区分
+      *    返却項目
+      *        レセプト種別
+      *        レセプト種別（特別療養費）
+      *        レセプト種別（紙レセプト）
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *                                     �쥻�ץȼ��̡ʻ�쥻�ץȡˤ��ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     レセプト種別（紙レセプト）の追加
       *
-      *  04.07.01    NACL-ƣ��    14/03/30  ʿ������ǯ��������б�
+      *  04.07.01    NACL-藤原    14/03/30  平成２６年４月改正対応
       ************************************************************
       *
        01  ORCSSYUBETUGETAREA.
@@ -79,11 +79,11 @@
                05  LNK-SYUBETUGET-RJNPAYKBN    PIC X(02).
       *
            03  LNK-SYUBETUGET-OT.
-      *        �쥻�ץȼ��̡ʥ쥻�š�
+      *        レセプト種別（レセ電）
                05  LNK-SYUBETUGET-RECESYUBETU  PIC 9(04).
-      *        �쥻�ץȼ��̡������������
+      *        レセプト種別（特別療養費）
                05  LNK-SYUBETUGET-RECESYUBETU-X
                                                PIC 9(04).
-      *        �쥻�ץȼ��̡ʻ�쥻�ץȡ�
+      *        レセプト種別（紙レセプト）
                05  LNK-SYUBETUGET-RECESYUBETU-Y
                                                PIC 9(04).

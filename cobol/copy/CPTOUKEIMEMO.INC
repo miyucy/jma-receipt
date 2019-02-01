@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  Åý·×¥á¥â                 (CPTOUKEIMEMO.INC) 
+      *  çµ±è¨ˆãƒ¡ãƒ¢                 (CPTOUKEIMEMO.INC) 
       *****************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TOUKEIMEMO-REC.
       *
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  TKIMEMO-KEY.
                05  TKIMEMO-HOSPNUM           PIC 9(2).
-      *¥×¥í¥°¥é¥à£É£Ä
+      *ãƒ—ãƒ­ã‚°ãƒ©ãƒ ï¼©ï¼¤
                05  TKIMEMO-PGID            PIC  X(20).
-      *´ÉÍý¥³¡¼¥É
+      *ç®¡ç†ã‚³ãƒ¼ãƒ‰
                05  TKIMEMO-KANRICD         PIC  X(04).
-      *¶èÊ¬¥³¡¼¥É
+      *åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  TKIMEMO-KBNCD           PIC  X(08).
-      *Í­¸ú´ü´Ö³«»ÏÆü
+      *æœ‰åŠ¹æœŸé–“é–‹å§‹æ—¥
                05  TKIMEMO-STYUKYMD        PIC  X(08).
-      *Í­¸ú´ü´Ö½ªÎ»Æü
+      *æœ‰åŠ¹æœŸé–“çµ‚äº†æ—¥
                05  TKIMEMO-EDYUKYMD        PIC  X(08).
-      *ÆþÎÏ¥Ñ¥é¥á¡¼¥¿¡Ê£±¡Á£¸¡Ë
+      *å…¥åŠ›ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ï¼ˆï¼‘ã€œï¼˜ï¼‰
            03  TKIMEMO-PARA-G.
                05  TKIMEMO-PARA-ITEM.
                    07  TKIMEMO-PARA01          PIC  X(20).
@@ -51,24 +51,24 @@
                05  TKIMEMO-PARA-R      REDEFINES    TKIMEMO-PARA-ITEM.
                    07  TKIMEMO-PARA            PIC  X(20)
                                                OCCURS  8.
-      *¥á¥â
+      *ãƒ¡ãƒ¢
            03  TKIMEMO-MEMO                PIC  X(6000).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  TKIMEMO-TERMID              PIC  X(32).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  TKIMEMO-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  TKIMEMO-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  TKIMEMO-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  TKIMEMO-UPHMS               PIC  X(06).
-      *¥Ñ¥é¥á¥¿ÊÝÂ¸¶èÊ¬
+      *ãƒ‘ãƒ©ãƒ¡ã‚¿ä¿å­˜åŒºåˆ†
            03  TKIMEMO-SAVEPARA            PIC  X(01).
-      *¥Ñ¥é¥á¥¿£¹
+      *ãƒ‘ãƒ©ãƒ¡ã‚¿ï¼™
            03  TKIMEMO-PARA09              PIC  X(20).
-      *¥Ñ¥é¥á¥¿£±£°
+      *ãƒ‘ãƒ©ãƒ¡ã‚¿ï¼‘ï¼
            03  TKIMEMO-PARA10              PIC  X(20).
-      *¥æ¡¼¥¶¡¼¥á¥â
+      *ãƒ¦ãƒ¼ã‚¶ãƒ¼ãƒ¡ãƒ¢
            03  TKIMEMO-USERMEMO            PIC  X(5000).
 

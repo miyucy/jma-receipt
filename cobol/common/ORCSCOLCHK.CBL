@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSCOLCHK.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : 
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÄêÅÀÄ´ºº¸¦µæ»ö¶È½èÍý¥Á¥§¥Ã¥¯½èÍý
-      *  ÊÖµÑ¥¨¥é¡¼¥³¡¼¥É  : 00:Àµ¾ï  10:¥Ç¡¼¥¿ºîÀ®¤Ê¤·
-      *                      20:¥Ç¡¼¥¿ºîÀ®½èÍýÃæ  30:¥Õ¥¡¥¤¥ëÂ¸ºß
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  07.07.31    °ËÆ£          ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : 
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å®šç‚¹èª¿æŸ»ç ”ç©¶äº‹æ¥­å‡¦ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
+      *  è¿”å´ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰  : 00:æ­£å¸¸  10:ãƒ‡ãƒ¼ã‚¿ä½œæˆãªã—
+      *                      20:ãƒ‡ãƒ¼ã‚¿ä½œæˆå‡¦ç†ä¸­  30:ãƒ•ã‚¡ã‚¤ãƒ«å­˜åœ¨
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  07.07.31    ä¼Šè—¤          æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…        æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -36,7 +36,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÄêÅÀÄ´ºº¼ý½¸¥Ç¡¼¥¿
+      *    å®šç‚¹èª¿æŸ»åŽé›†ãƒ‡ãƒ¼ã‚¿
            SELECT  COLLECT-FILE    ASSIGN  COLLECT
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-COLLECT.
@@ -44,13 +44,13 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ÄêÅÀÄ´ºº¼ý½¸¥Ç¡¼¥¿
+      *    å®šç‚¹èª¿æŸ»åŽé›†ãƒ‡ãƒ¼ã‚¿
        FD  COLLECT-FILE.
        01  COLLECT-REC             PIC X(3000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ÄêÅÀÄ´ºº¼ý½¸¥Ç¡¼¥¿
+      *    å®šç‚¹èª¿æŸ»åŽé›†ãƒ‡ãƒ¼ã‚¿
        01  COLLECT.
            03  FILLER              PIC X(08)  VALUE "/var/lib".
            03  FILLER              PIC X(12)  VALUE "/jma-receipt".
@@ -61,35 +61,35 @@
            03  COLLECT-GN          PIC X(01).
            03  FILLER              PIC X(04)  VALUE ".csv".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-COLLECT         PIC X(02).
       *
-      *    ¥ï¡¼¥¯ÎÎ°è
+      *    ãƒ¯ãƒ¼ã‚¯é ˜åŸŸ
        01  WRK-AREA.
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ¡Ê¥Ç¡¼¥¿¼ý½¸¡Ë
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢ã®ã‚­ãƒ¼å€¤ï¼ˆãƒ‡ãƒ¼ã‚¿åŽé›†ï¼‰
            03  WRK-CONS-JOB-SHELLID-COLLECT
                                    PIC X(08)   VALUE   "COLLECT".
            03  WRK-CONS-JOB-JOBID-COLLECT
                                    PIC 9(07)   VALUE   1.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "CPORCSCOLCHK.INC".
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
@@ -98,13 +98,13 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
            MOVE    ZERO                TO  COLCHK-RC
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯¡Ê¥Ç¡¼¥¿¼ý½¸¡Ë
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯ï¼ˆãƒ‡ãƒ¼ã‚¿åŽé›†ï¼‰
            IF      SPA-DATACREATEFLG   NOT =   1
                MOVE    10                  TO  COLCHK-RC
            END-IF
@@ -123,7 +123,7 @@
            .
       *
       *****************************************************************
-      *    ¼ý½¸¥Ç¡¼¥¿ºîÀ®½èÍý¥Á¥§¥Ã¥¯½èÍý
+      *    åŽé›†ãƒ‡ãƒ¼ã‚¿ä½œæˆå‡¦ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        100-JOBEXEC-CHK-SEC         SECTION.
       *
@@ -148,7 +148,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ý½¸¥Ç¡¼¥¿¥Õ¥¡¥¤¥ëÍ­Ìµ¥Á¥§¥Ã¥¯½èÍý
+      *    åŽé›†ãƒ‡ãƒ¼ã‚¿ãƒ•ã‚¡ã‚¤ãƒ«æœ‰ç„¡ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        200-FILEEXIST-CHK-SEC       SECTION.
       *

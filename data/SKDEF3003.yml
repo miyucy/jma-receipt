@@ -1,60 +1,60 @@
 kanri_cd    : "3003"
-name        : "¸©Ã±ÆÈ»ö¶È¾ğÊó¥³¡¼¥É"
+name        : "çœŒå˜ç‹¬äº‹æ¥­æƒ…å ±ã‚³ãƒ¼ãƒ‰"
 class_cd    : "*"
 item_max    : 9
 item_list   :
 - item_no   : 1
   item      : "TBL-KEY"
-  item_jp   : "£Ë£Å£Ù"
+  item_jp   : "ï¼«ï¼¥ï¼¹"
   type      : "X"
   start     : 1
   length    : 8
 - item_no   : 2
   item      : "JOBID"
-  item_jp   : "£Ê£Ï£Â£É£Ä"
+  item_jp   : "ï¼ªï¼¯ï¼¢ï¼©ï¼¤"
   type      : "9"
   start     : 9
   length    : 7
   precision : 0
 - item_no   : 3
   item      : "TBL-GROUP"
-  item_jp   : "¥°¥ë¡¼¥×"
+  item_jp   : "ã‚°ãƒ«ãƒ¼ãƒ—"
   type      : "X"
   start     : 16
   length    : 14
 - item_no   : 4
   item      : "PRTKBN1"
-  item_jp   : "É¸½à¼ÒÊİÁí³çÉ½°õºş»Ø¼¨"
+  item_jp   : "æ¨™æº–ç¤¾ä¿ç·æ‹¬è¡¨å°åˆ·æŒ‡ç¤º"
   type      : "X"
   start     : 30
   length    : 1
 - item_no   : 5
   item      : "PRTKBN2"
-  item_jp   : "É¸½à¹ñÊİÁí³çÉ½°õºş»Ø¼¨"
+  item_jp   : "æ¨™æº–å›½ä¿ç·æ‹¬è¡¨å°åˆ·æŒ‡ç¤º"
   type      : "X"
   start     : 31
   length    : 1
 - item_no   : 6
   item      : "PRTKBN3"
-  item_jp   : "É¸½à¹ñÊİ¥ì¥»ÅÅÁí³çÉ½°õºş»Ø¼¨"
+  item_jp   : "æ¨™æº–å›½ä¿ãƒ¬ã‚»é›»ç·æ‹¬è¡¨å°åˆ·æŒ‡ç¤º"
   type      : "X"
   start     : 32
   length    : 1
 - item_no   : 7
   item      : "PRTKBN4"
-  item_jp   : "É¸½à¹­°èÏ¢¹çÁí³çÉ½°õºş»Ø¼¨"
+  item_jp   : "æ¨™æº–åºƒåŸŸé€£åˆç·æ‹¬è¡¨å°åˆ·æŒ‡ç¤º"
   type      : "X"
   start     : 33
   length    : 1
 - item_no   : 8
   item      : "PRTKBN5"
-  item_jp   : "É¸½à¹­°èÏ¢¹ç¥ì¥»ÅÅÁí³çÉ½°õºş»Ø¼¨"
+  item_jp   : "æ¨™æº–åºƒåŸŸé€£åˆãƒ¬ã‚»é›»ç·æ‹¬è¡¨å°åˆ·æŒ‡ç¤º"
   type      : "X"
   start     : 34
   length    : 1
 - item_no   : 9
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 35
   length    : 466

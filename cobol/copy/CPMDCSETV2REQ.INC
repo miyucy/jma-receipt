@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¡¡¥»¥Ã¥È¹¹¿·¾ðÊó (xml2)  COPY (CPMDCSETV2REQ.INC)
+      *    ï¼¡ï¼°ï¼©ã€€ã‚»ãƒƒãƒˆæ›´æ–°æƒ…å ± (xml2)  COPY (CPMDCSETV2REQ.INC)
       ******************************************************************
         01  XML-MEDICALSETREQ.
             02  MDCREQ-CONTEXT          PIC S9(9)   BINARY.
@@ -28,45 +28,45 @@
             02  MDCREQ-MODE             PIC S9(9)   BINARY.
             02  MDCREQ-RECORDNAME       PIC X(128).
             02  MDCREQ-MEDICALREQ.
-      *        ¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ
+      *        ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·
                03  MDCREQ-REQUEST-NUMBER   PIC X(2).
-      *        ´ð½àÆü
+      *        åŸºæº–æ—¥
                03  MDCREQ-BASE-DATE        PIC X(10).
-      *        ¥»¥Ã¥È¥³¡¼¥É
+      *        ã‚»ãƒƒãƒˆã‚³ãƒ¼ãƒ‰
                03  MDCREQ-SETCD            PIC X(06).
-      *        ¥»¥Ã¥ÈÌ¾¾Î
+      *        ã‚»ãƒƒãƒˆåç§°
                03  MDCREQ-SETCD-NAME       PIC X(80).
-      *        Í­¸ú³«»ÏÇ¯·îÆü
+      *        æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                03  MDCREQ-START-DATE       PIC X(10).
-      *        Í­¸ú½ªÎ»Ç¯·îÆü
+      *        æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                03  MDCREQ-END-DATE         PIC X(10).
-      *        Æþ³°¶èÊ¬¡Ê£É¡§Æþ±¡¡Ë
+      *        å…¥å¤–åŒºåˆ†ï¼ˆï¼©ï¼šå…¥é™¢ï¼‰
                03  MDCREQ-OUTPATIENT-CLASS PIC X(01).
-      *        ¿ÇÎÅ¾ðÊó
+      *        è¨ºç™‚æƒ…å ±
                03  MDCREQ-MDC-INFO-G.
                   05  MDCREQ-MDC-INFO          OCCURS   40.
-      *             ¿ÇÎÅ¼ïÊÌ¶èÊ¬
+      *             è¨ºç™‚ç¨®åˆ¥åŒºåˆ†
                     09  MDCREQ-MDC-CLASS             PIC X(3).
-      *             ¿ÇÎÅ¼ïÊÌÌ¾¾Î
+      *             è¨ºç™‚ç¨®åˆ¥åç§°
                     09  MDCREQ-MDC-CLASS-NAME        PIC X(40).
-      *             ²ó¿ô
+      *             å›žæ•°
                     09  MDCREQ-MDC-CLASS-NUMBER      PIC X(03).
       *
                     09  MDCREQ-PRESCRIPTION-INFO    OCCURS   40.
-      *                 ¿ÇÎÅ¥³¡¼¥É
+      *                 è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                         11  MDCREQ-PRSCRPT-CODE          PIC X(9).
-      *                 ¿ÇÎÅÌ¾¾Î
+      *                 è¨ºç™‚åç§°
                         11  MDCREQ-PRSCRPT-NAME          PIC X(80).
-      *                 ¿ôÎÌ
+      *                 æ•°é‡
                         11  MDCREQ-PRSCRPT-NUMBER        PIC X(11).
-      *                 ¼«Èñ¶â³Û
+      *                 è‡ªè²»é‡‘é¡
                         11  MDCREQ-PRSCRPT-MONEY         PIC X(07).
-      *                 ¥³¥á¥ó¥ÈËä¤á¹þ¤ßÃÍ
+      *                 ã‚³ãƒ¡ãƒ³ãƒˆåŸ‹ã‚è¾¼ã¿å€¤
                         11  MDCREQ-PRSCRPT-ATAI-G.
                             13  MDCREQ-PRSCRPT-ATAI      PIC X(08)
                                                          OCCURS   5.
-      *                 ·ÑÂ³¥³¥á¥ó¥È»Ø¼¨¶èÊ¬
+      *                 ç¶™ç¶šã‚³ãƒ¡ãƒ³ãƒˆæŒ‡ç¤ºåŒºåˆ†
                         11  MDCREQ-PRSCRPT-CONTKBN       PIC X(01).
-      *                 ÆâÉþ¼ïÎà¿ô»Ø¼¨¶èÊ¬
+      *                 å†…æœç¨®é¡žæ•°æŒ‡ç¤ºåŒºåˆ†
                         11  MDCREQ-PRSCRPT-NAIFKBN       PIC X(01).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,35 +16,35 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡¥ì¥»¥×¥Èµ­ºÜÎ¬¾Î         COPY (CPNYUINRYAKUSHO.INC) *
+      *    å…¥é™¢ãƒ¬ã‚»ãƒ—ãƒˆè¨˜è¼‰ç•¥ç§°         COPY (CPNYUINRYAKUSHO.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  NYURYAKUSHO-REC.
            03  NYURYAKUSHO-KEY.
-      *´ðËÜÅÀ¿ô¿ÇÎÅ¥³¡¼¥É
+      *åŸºæœ¬ç‚¹æ•°è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  NYURYAKUSHO-SRYCD   PIC  X(09).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
                05  NYURYAKUSHO-YUKOSTYMD    PIC  X(08).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
                05  NYURYAKUSHO-YUKOEDYMD    PIC  X(08).
-      *Î¬¾Î
+      *ç•¥ç§°
            03  NYURYAKUSHO-RYAKUSHO     PIC  X(20).
-      *Ì¾¾Î
+      *åç§°
            03  NYURYAKUSHO-NAME         PIC  X(200).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  NYURYAKUSHO-TERMID       PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  NYURYAKUSHO-OPID         PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  NYURYAKUSHO-CREYMD       PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  NYURYAKUSHO-UPYMD        PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  NYURYAKUSHO-UPHMS        PIC  X(06).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  NYURYAKUSHO-UP-KEY.
                05  NYURYAKUSHO-UPSRYCD     PIC  X(09).
                05  NYURYAKUSHO-UPYUKOSTYMD PIC  X(08).

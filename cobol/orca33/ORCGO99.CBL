@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGO99.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥ì¥»¥×¥È
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½èÍý·ë²Ì
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/10/23    NACL¡ÝÆ£¸¶¡¡   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ¬ã‚»ãƒ—ãƒˆ
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å‡¦ç†çµæžœ
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/10/23    NACLâˆ’è—¤åŽŸã€€   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-ÂÀÅÄ    03.07.10  °õºþ»Ø¼¨²èÌÌ¤«¤é¤ÎÁ«°Ü¤ò¹ÍÎ¸
-      *  03.05.00    NACL-ÂÀÅÄ    07/05/30  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤ªç”°    03.07.10  å°åˆ·æŒ‡ç¤ºç”»é¢ã‹ã‚‰ã®é·ç§»ã‚’è€ƒæ…®
+      *  03.05.00    NACL-å¤ªç”°    07/05/30  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -49,13 +49,13 @@
       *   
            COPY    "ENUM-VALUE".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥ì¥»¥×¥ÈºîÀ®»Ø¼¨¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆæŒ‡ç¤ºå…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "O01COMMON-SPA".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE07          PIC 9(01).
@@ -64,13 +64,13 @@
            03  FLG-BTPARA          PIC 9(01).
            03  FLG-TEIKIPRT      PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-UPDCNT          PIC 9(06).
            03  CNT-BTPARA          PIC 9(06).
            03  CNT-STOP            PIC 9(06).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -96,7 +96,7 @@
                05  WRK-SS          PIC X(02).
       *
        01  CONST-AREA.
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢ã®ã‚­ãƒ¼å€¤
            03  CONST-SHELLID       PIC X(08)   VALUE   "TEIKI1".
            03  CONST-SHELLID2      PIC X(08)   VALUE   "TEIKI2".
            03  CONST-JOBID2        PIC 9(07)   VALUE   1.
@@ -105,11 +105,11 @@
            03  CONST-3003-KBNCD    PIC X(08)   VALUE   "033".
            03  CONST-KBT-VAL.
                05                  PIC 9(01)   VALUE   1.
-               05                  PIC X(04)   VALUE   "£±´ü".
+               05                  PIC X(04)   VALUE   "ï¼‘æœŸ".
                05                  PIC 9(01)   VALUE   2.
-               05                  PIC X(04)   VALUE   "£²´ü".
+               05                  PIC X(04)   VALUE   "ï¼’æœŸ".
                05                  PIC 9(01)   VALUE   3.
-               05                  PIC X(04)   VALUE   "£³´ü".
+               05                  PIC X(04)   VALUE   "ï¼“æœŸ".
            03  CONST-KBT-R         REDEFINES   CONST-KBT-VAL.
                05  CONST-KBT-OCC OCCURS   3.
                    07  CONST-KBTL      PIC 9(01).
@@ -118,36 +118,36 @@
            COPY    "CPTEIKI1BTPARA.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK3003.INC".
       *
-      *    Äê´ü°õºþ¥Þ¥¹¥¿
+      *    å®šæœŸå°åˆ·ãƒžã‚¹ã‚¿
        01  TEIKIPRT-REC.
            COPY    "CPTEIKIPRT.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ¥Ñ¥é¥á¥¿
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -174,7 +174,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -189,7 +189,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE
@@ -201,7 +201,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       * 
@@ -217,21 +217,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
       *???
            DISPLAY "MCP-WIDGET=" MCP-WIDGET "##"
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ½èÍý¾õÂÖ
+      *    å‡¦ç†çŠ¶æ…‹
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-      *    °õºþ²èÌÌ¤Ø
+      *    å°åˆ·ç”»é¢ã¸
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
@@ -240,7 +240,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -261,7 +261,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý
+      *    å‡¦ç†ç¢ºèªå‡¦ç†
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -277,9 +277,9 @@
            END-EVALUATE
       *
            IF    ( SPA-MOTOPG      =   "O03" )
-               MOVE    "F12:¥×¥ì¥Ó¥å¡¼"    TO  O99-B12-LABEL
+               MOVE    "F12:ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"    TO  O99-B12-LABEL
            ELSE
-               MOVE    "F12:°õ¡¡ºþ"        TO  O99-B12-LABEL
+               MOVE    "F12:å°ã€€åˆ·"        TO  O99-B12-LABEL
            END-IF
       *
            IF    ( FLG-END             =   ZERO )
@@ -294,7 +294,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý
+      *    å‡¦ç†ç¢ºèªå‡¦ç†
       *****************************************************************
        4901-SIN-KAKUNIN-SEC            SECTION.
       *
@@ -304,7 +304,7 @@
            MOVE    SPACE               TO  WRK-SHELLID
       *
            MOVE    ZERO                TO  CNT-UPDCNT
-      *    ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
            MOVE    "CHK"               TO  SJOBKANRI-MODE
       *
            INITIALIZE                      JOBKANRI-REC
@@ -354,16 +354,16 @@
                COMPUTE O99-PROGRESSBAR-VALUE  =
                        JOB-STEPCNT  /  1 *   100
                IF      JOB-ENDYMD      =   SPACE
-                   MOVE    "½èÍýÃæ¤Ç¤¹"    TO  O99-MSG
+                   MOVE    "å‡¦ç†ä¸­ã§ã™"    TO  O99-MSG
                ELSE
                    IF      JOB-ERRCD       =   SPACE
                        CONTINUE
                    ELSE
                        MOVE   SPACE        TO  O99-MSG
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "¡Ú"        DELIMITED  BY  SIZE
+                               "ã€"        DELIMITED  BY  SIZE
                               JOB-SHELLMSG DELIMITED  BY  SPACE
-                              "¡Û"         DELIMITED  BY  SIZE      
+                              "ã€‘"         DELIMITED  BY  SIZE      
                                            INTO  O99-MSG
                        END-STRING
                    END-IF                          
@@ -382,14 +382,14 @@
        4901-SIN-KAKUNIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        4901-EDIT-PRV-MSG-SEC           SECTION.
       *
            MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
            IF    ( O99-MSG              =   SPACE )
                IF      O99-COUNT            >  ZERO    
-                   MOVE    "½èÍý¤ÏÀµ¾ï¤Ë½ªÎ»¤·¤Þ¤·¤¿"
+                   MOVE    "å‡¦ç†ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ"
                                         TO  O99-MSG
                    MOVE   100           TO  O99-PROGRESSBAR-VALUE
                    MOVE    "B01"        TO  MCP-WIDGET
@@ -402,7 +402,7 @@
                    END-IF
                ELSE
                    MOVE    "B01"        TO  MCP-WIDGET
-                   MOVE    "³ºÅö¤¹¤ë½èÍý¤Ï¤¢¤ê¤Þ¤»¤ó"
+                   MOVE    "è©²å½“ã™ã‚‹å‡¦ç†ã¯ã‚ã‚Šã¾ã›ã‚“"
                                         TO  O99-MSG
                END-IF
            ELSE
@@ -413,14 +413,14 @@
        4901-EDIT-SIN-MSG-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        4901-EDIT-SIN-MSG-SEC           SECTION.
       *
            MOVE    WIDGET-INSENSITIVE   TO  O99-B12-STATE
            IF      O99-MSG              =   SPACE
                IF      O99-COUNT            >  ZERO    
-                   MOVE    "½èÍý¤ÏÀµ¾ï¤Ë½ªÎ»¤·¤Þ¤·¤¿"
+                   MOVE    "å‡¦ç†ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ"
                                                TO  O99-MSG
                    MOVE   100                  TO
                                                O99-PROGRESSBAR-VALUE
@@ -433,7 +433,7 @@
                    END-IF
                ELSE
                    MOVE    "B01"                TO  MCP-WIDGET
-                   MOVE    "³ºÅö¤¹¤ë½èÍý¤Ï¤¢¤ê¤Þ¤»¤ó"
+                   MOVE    "è©²å½“ã™ã‚‹å‡¦ç†ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                 TO  O99-MSG
                END-IF                                 
            ELSE                                        
@@ -444,7 +444,7 @@
        4901-EDIT-SIN-MSG-EXT.
            EXIT.
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý¡ÊÊ£¿ô¥¸¥ç¥Ö¥Á¥§¥Ã¥¯¡Ë
+      *    å‡¦ç†ç¢ºèªå‡¦ç†ï¼ˆè¤‡æ•°ã‚¸ãƒ§ãƒ–ãƒã‚§ãƒƒã‚¯ï¼‰
       *****************************************************************
        4901-MUL-KAKUNIN-SEC            SECTION.
       *
@@ -485,7 +485,7 @@
       *
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
-      *            ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
+      *            ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    MOVE    IDX4            TO  JOB-JOBID
                    MOVE    CONST-SHELLID   TO  JOB-SHELLID
@@ -524,7 +524,7 @@
                        END-IF
       *
                        IF    ( JOB-ENDYMD      =   SPACE )
-                           MOVE    "½èÍýÃæ¤Ç¤¹"    TO  O99-MSG
+                           MOVE    "å‡¦ç†ä¸­ã§ã™"    TO  O99-MSG
                            MOVE    1           TO  FLG-RUN
                        ELSE
       *
@@ -543,10 +543,10 @@
                                    MOVE   SPACE        TO  O99-MSG
                                    STRING  JOB-YOBI
                                                    DELIMITED  BY  SPACE
-                                           "¡Ú"    DELIMITED  BY  SIZE
+                                           "ã€"    DELIMITED  BY  SIZE
                                           JOB-SHELLMSG
                                                    DELIMITED  BY  SPACE
-                                          "¡Û"     DELIMITED  BY  SIZE
+                                          "ã€‘"     DELIMITED  BY  SIZE
                                    INTO  O99-MSG
                                    END-STRING
                                END-IF
@@ -558,7 +558,7 @@
                END-PERFORM
            END-IF
       *
-      *    Ê£¿ôµ¯Æ°ÂÐ±þÁ°¸å¤ÇÊÔ½¸¤¹¤ë¥á¥Ã¥»¡¼¥¸¤òÊÑ¤¨¤ë
+      *    è¤‡æ•°èµ·å‹•å¯¾å¿œå‰å¾Œã§ç·¨é›†ã™ã‚‹ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’å¤‰ãˆã‚‹
            IF    ( CNT-BTPARA      =   ZERO )
                PERFORM 4901-SIN-KAKUNIN-SEC
            ELSE
@@ -569,7 +569,7 @@
        4901-MUL-KAKUNIN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        4901-EDIT-MUL-MSG-SEC           SECTION.
       *
@@ -580,7 +580,7 @@
                    IF    ( CNT-STOP         =   ZERO )
                        IF    ( CNT-UPDCNT   >   ZERO )
                            MOVE    "B12"           TO  MCP-WIDGET
-                           MOVE    "½èÍý¤ÏÀµ¾ï¤Ë½ªÎ»¤·¤Þ¤·¤¿"
+                           MOVE    "å‡¦ç†ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ"
                                                    TO  O99-MSG
                            PERFORM 900-TEIKIPRT-ALL-SEL-SEC
                            IF    ( FLG-TEIKIPRT    =   ZERO )
@@ -590,7 +590,7 @@
                                END-IF
                            END-IF
                        ELSE
-                           MOVE    "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤Ï¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+                           MOVE    "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ã¯ã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
                                                    TO  O99-MSG
                        END-IF
                    ELSE
@@ -613,13 +613,13 @@
                                MOVE    SPACE       TO  O99-MSG
                                STRING  CONST-KBTMSGL (IDX1)
                                                    DELIMITED BY  SIZE
-                                       "¤Î½èÍý¤¬°Û¾ï½ªÎ»¤·¤Æ¤¤¤Þ¤¹¡£"
+                                       "ã®å‡¦ç†ãŒç•°å¸¸çµ‚äº†ã—ã¦ã„ã¾ã™ã€‚"
                                                    DELIMITED BY  SIZE
-                                       "ÀÁµá¥Ç¡¼¥¿¤Ï"
+                                       "è«‹æ±‚ãƒ‡ãƒ¼ã‚¿ã¯"
                                                    DELIMITED BY  SIZE
                                        CONST-KBTMSGL (IDX2)
                                                    DELIMITED BY  SIZE
-                                       "¤Þ¤ÇºîÀ®¤µ¤ì¤Æ¤¤¤Þ¤¹"
+                                       "ã¾ã§ä½œæˆã•ã‚Œã¦ã„ã¾ã™"
                                                    DELIMITED BY  SIZE
                                INTO    O99-MSG
                                END-STRING
@@ -636,7 +636,7 @@
                END-IF
            ELSE
                MOVE    "B01"                TO  MCP-WIDGET
-               MOVE    "³ºÅö¤¹¤ë½èÍý¤Ï¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "è©²å½“ã™ã‚‹å‡¦ç†ã¯ã‚ã‚Šã¾ã›ã‚“"
                                             TO  O99-MSG
            END-IF
       *
@@ -644,7 +644,7 @@
        4901-EDIT-MUL-MSG-EXT.
            EXIT.
       *****************************************************************
-      *    ¹¹¿·½èÍý
+      *    æ›´æ–°å‡¦ç†
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.
       *
@@ -665,7 +665,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿¡¼¸¡º÷¡ÊKEY10¡Ë
+      *    ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢ï¼ˆKEY10ï¼‰
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -691,7 +691,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ð¥Ã¥Á¥Ñ¥é¥á¥¿¸¡º÷¡ÊKEY5¡Ë
+      *    ãƒãƒƒãƒãƒ‘ãƒ©ãƒ¡ã‚¿æ¤œç´¢ï¼ˆKEY5ï¼‰
       *****************************************************************
        900-BTPARA-KEY5-SEL-SEC         SECTION.
       *
@@ -719,7 +719,7 @@
        900-BTPARA-KEY5-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Äê´ü°õºþ¸¡º÷½èÍý¡ÊALL¡Ë
+      *    å®šæœŸå°åˆ·æ¤œç´¢å‡¦ç†ï¼ˆALLï¼‰
       *****************************************************************
        900-TEIKIPRT-ALL-SEL-SEC      SECTION.
       *
@@ -746,7 +746,7 @@
        900-TEIKIPRT-ALL-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC          SECTION.
       *
@@ -763,7 +763,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -777,7 +777,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -791,7 +791,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

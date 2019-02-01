@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    •◊•Ï•”•Â°º∞ı∫˛Õ—•«°º•ø     COPY (CPPREVIEW.INC)       *
+      *    „Éó„É¨„Éì„É•„ÉºÂç∞Âà∑Áî®„Éá„Éº„Çø     COPY (CPPREVIEW.INC)       *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
         01  PRVKANRI-REC.
             02  PRVKANRI-HOSPNUM   PIC 9(2).
@@ -52,6 +52,6 @@
             02  PRVKANRI-CREYMD PIC X(8).
             02  PRVKANRI-UPYMD  PIC X(8).
             02  PRVKANRI-UPHMS  PIC X(6).
-      *∏°∫˜Õ—π‡Ã‹
+      *Ê§úÁ¥¢Áî®È†ÖÁõÆ
             02  PRVKANRIXX-STPAGE       PIC 9(05).
             02  PRVKANRIXX-EDPAGE       PIC 9(05).    

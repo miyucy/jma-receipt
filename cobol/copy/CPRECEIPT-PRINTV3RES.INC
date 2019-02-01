@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       ******************************************************************
-      *    £¡£–£…•Ï•ª•◊•»æ Û° •Ï•ª•◊•»∞ı∫˛°À(xml2)
+      *    Ôº°Ôº∞Ôº©„É¨„Çª„Éó„ÉàÊÉÖÂ†±Ôºà„É¨„Çª„Éó„ÉàÂç∞Âà∑Ôºâ(xml2)
       *                                   COPY (CPRECEIPT-PRINTV3RES.INC)
       ******************************************************************
        01  XML-RECEIPT-PRINTRES.
@@ -29,25 +29,25 @@
            02  RECEPRINTS-MODE              PIC S9(9)   BINARY.
            02  RECEPRINTS-RECORDNAME        PIC X(128).
            02  RECEPRINTS-RECEIPT-PRINT-RES.
-      *        •Í•Ø•®•π•»»÷πÊ
+      *        „É™„ÇØ„Ç®„Çπ„ÉàÁï™Âè∑
                03  RECEPRINTS-REQUEST-NUMBER    PIC X(2).
       *
                03  RECEPRINTS-RESPONS-NUMBER    PIC X(2).
-      *        •´•Î•∆UID
+      *        „Ç´„É´„ÉÜUID
                03  RECEPRINTS-KARTE-UID         PIC X(36).
-      *        •™•Î•´UID
+      *        „Ç™„É´„Ç´UID
                03  RECEPRINTS-ORCA-UID          PIC X(36).
-      *        º¬ª‹∆¸
+      *        ÂÆüÊñΩÊó•
                03  RECEPRINTS-INFORMATION-DATE  PIC X(10).
-      *        º¬ª‹ª˛¥÷
+      *        ÂÆüÊñΩÊôÇÈñì
                03  RECEPRINTS-INFORMATION-TIME  PIC X(8).
-      *         ÷µ—•≥°º•…
+      *        ËøîÂç¥„Ç≥„Éº„Éâ
                03  RECEPRINTS-API-RESULT        PIC X(3).
-      *         ÷µ—•·•√•ª°º•∏
+      *        ËøîÂç¥„É°„ÉÉ„Çª„Éº„Ç∏
                03  RECEPRINTS-API-RESULT-MSG    PIC X(100).
-      *        •Ô°º•À•Û•∞•≥°º•…
+      *        „ÉØ„Éº„Éã„É≥„Ç∞„Ç≥„Éº„Éâ
                03  RECEPRINTS-API-WARNING       PIC X(3).
-      *        •Ô°º•À•Û•∞•·•√•ª°º•∏
+      *        „ÉØ„Éº„Éã„É≥„Ç∞„É°„ÉÉ„Çª„Éº„Ç∏
                03  RECEPRINTS-API-WARNING-MSG   PIC X(100).
       *
                03  RECEPRINTS-RESKEY            PIC X(100).
@@ -60,37 +60,37 @@
       *
                03  RECEPRINTS-ALL-NUMBER-OF-SHEETS
                                                 PIC X(5).
-      *        •®•È°ºÃ¿∫Ÿ∞ÏÕ˜
+      *        „Ç®„É©„ÉºÊòéÁ¥∞‰∏ÄË¶ß
                03  RECEPRINTS-ERR-INFORMATION.
                    05  RECEPRINTS-SUBMISSION OCCURS  19.
-      *                œ¢»÷
+      *                ÈÄ£Áï™
                        07  RECEPRINTS-SUBMISSION-POSITION
                                                PIC X(5).
-      *                •®•È°º
+      *                „Ç®„É©„Éº
                        07  RECEPRINTS-ERROR-CODE
                                                PIC X(3).
       *
                        07  RECEPRINTS-DETAIL-INFORMATION OCCURS  36.
-      *                    œ¢»÷
+      *                    ÈÄ£Áï™
                            09  RECEPRINTS-DETAIL-POSITION
                                                    PIC X(5).
-      *                    ∞ı∫˛ªÿº®(Yes :∞ı∫˛ §Ω§Ï∞ ≥∞ :∞ı∫˛§∑§ §§)
+      *                    Âç∞Âà∑ÊåáÁ§∫(Yes :Âç∞Âà∑ „Åù„Çå‰ª•Â§ñ :Âç∞Âà∑„Åó„Å™„ÅÑ)
                            09  RECEPRINTS-PRINT-INSTRUCT
                                                    PIC X(5).
-      *                    ƒÛΩ–¿Ë
+      *                    ÊèêÂá∫ÂÖà
                            09  RECEPRINTS-SUBMISSION-IDENT
                                                    PIC X(2).
-      *                    ºÔ Ã≈˘•≥°º•…
+      *                    Á®ÆÂà•Á≠â„Ç≥„Éº„Éâ
                            09  RECEPRINTS-SUBMISSION-CODE
                                                    PIC X(10).
-      *                    ºÔ Ã
+      *                    Á®ÆÂà•
                            09  RECEPRINTS-SUBMISSION-TYPE
                                                    PIC X(100).
-      *                    ∑ÔøÙ
+      *                    ‰ª∂Êï∞
                            09  RECEPRINTS-COUNT    PIC X(5).
-      *                    ÀÁøÙ
+      *                    ÊûöÊï∞
                            09  RECEPRINTS-NUMBER-OF-SHEETS
                                                    PIC X(5).
-      *                    •®•È°º
+      *                    „Ç®„É©„Éº
                            09  RECEPRINTS-DETAIL-ERROR-CODE
                                                    PIC X(3).

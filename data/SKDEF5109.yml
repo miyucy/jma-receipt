@@ -1,17 +1,17 @@
 kanri_cd    : "5109"
-name        : "拉侍泼年"
+name        : "鎬у垾鐗瑰畾"
 class_cd    : "*"
 item_max    : 2
 item_list   :
 - item_no   : 1
   item      : "BRM-SEX-NM"
-  item_jp   : "拉侍泼年叹疚"
+  item_jp   : "鎬у垾鐗瑰畾鍚嶇О"
   type      : "X"
   start     : 1
   length    : 10
 - item_no   : 2
   item      : "YOBI"
-  item_jp   : "徒洒"
+  item_jp   : "浜堝倷"
   type      : "X"
   start     : 11
   length    : 490

@@ -8,10 +8,10 @@
 #include	<stdlib.h>
 #include	<string.h>
 
-/* Áë¸ı´Ø¿ô */
+/* çª“å£é–¢æ•° */
 extern void orcfileio(int hWnd, char *arg) ;
 
-/* Áë¸ı´Ø¿ô¤Ç»ÈÍÑ¤¹¤ë·Á¤Î¹½Â¤ÂÎ·Á¼°  */
+/* çª“å£é–¢æ•°ã§ä½¿ç”¨ã™ã‚‹å½¢ã®æ§‹é€ ä½“å½¢å¼  */
 struct str_chardata_contact
 {
 	char	flg[1];

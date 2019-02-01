@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGSERRMSG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��Ǽ
-      *  ����ݡ��ͥ��̾  : ��Ǽ���֡ʥ��顼��å������ֵѡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/10/04    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 収納
+      *  コンポーネント名  : 収納サブ（エラーメッセージ返却）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/10/04    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
@@ -40,20 +40,20 @@
        WORKING-STORAGE             SECTION.
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
            COPY    "COMMON-SPA".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
        PROCEDURE                   DIVISION    USING
            SPA-AREA
            ORCSLOCKAREA.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -61,386 +61,386 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               MOVE    "���Ϥ˸��꤬����ޤ���"
+               MOVE    "入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0002"
-               MOVE    "�����ä���ǽ������ǤϤ���ޤ���"
+               MOVE    "入金取消が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0003"
-               MOVE    "�����ä���ǽ������ǤϤ���ޤ���"
+               MOVE    "請求取消が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0004"
-               MOVE    "�ֶ⤬��ǽ������ǤϤ���ޤ���"
+               MOVE    "返金が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0006"
-               MOVE    "���⤬��ǽ������ǤϤ���ޤ���"
+               MOVE    "入金が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0007"
-               MOVE    "�������ϤǤ��ޤ���"
+               MOVE    "履歴修正はできません。"
                                        TO  SPA-ERRMSG
            WHEN    "0008"
-               MOVE    "�ʥǥӥåȤǤ�����ϤǤ��ޤ���"
+               MOVE    "Ｊデビットでの入金はできません。"
                                        TO  SPA-ERRMSG
            WHEN    "0009" 
-               MOVE    "���ŷ�������������Ϥ���ޤ���"
+               MOVE    "診療月以前の請求情報はありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0010"
-               MOVE    "�����úѤߤΰ١���ȯ�ԤϤǤ��ޤ���"
+               MOVE    "請求取消済みの為、再発行はできません。"
                                        TO  SPA-ERRMSG
            WHEN    "0011"
-               MOVE    "������������Ϥ���ޤ���"
+               MOVE    "前月の請求情報はありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0012"
-               MOVE    "������������Ϥ���ޤ���"
+               MOVE    "次月の請求情報はありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0020"
-               MOVE    "�оݤο���ǯ����������Ϥ���ޤ���"
+               MOVE    "対象の診療年月に請求情報はありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0030"
-               MOVE    "���Ųʤ����Ϥ˸��꤬����ޤ���"
+               MOVE    "診療科の入力に誤りがあります。"
                                                TO  SPA-ERRMSG
            WHEN    "0031"
-               MOVE    "�����δ��Ԥ�¸�ߤ��ޤ���"
+               MOVE    "該当の患者が存在しません。"
                                                TO  SPA-ERRMSG
            WHEN    "0033"
-               MOVE    "����ǯ������Ϥ˸��꤬����ޤ���"
+               MOVE    "診療年月の入力に誤りがあります。"
                                                TO  SPA-ERRMSG
            WHEN    "0034"
-               MOVE    "������ʬ�����Ϥ˸��꤬����ޤ���"
+               MOVE    "入外区分の入力に誤りがあります。"
                                                TO  SPA-ERRMSG
            WHEN    "0050"
-               MOVE "�����ֹ桦����ǯ�̤���ϤǤ���" 
+               MOVE "患者番号・診療年月が未入力です。" 
                                                TO  SPA-ERRMSG
       *
            WHEN    "0060"
-               MOVE "�������볰�����᤬���Ĥ���ޤ���" 
+               MOVE "該当する外来請求が見つかりません。" 
                                                TO  SPA-ERRMSG
            WHEN    "0061"
-               MOVE "�����úѤߤΰ١��Ʒ׻��ϤǤ��ޤ���"
+               MOVE "請求取消済みの為、再計算はできません。"
                                                TO  SPA-ERRMSG
            WHEN    "0062"
                MOVE    SPACE                   TO  SPA-ERRMSG
-               STRING  "�Ʒ׻��Ǥ��ޤ���"    DELIMITED BY SIZE
-                       "���Ź԰ٶ�̳��������ԤäƤ���������"
+               STRING  "再計算できません。"    DELIMITED BY SIZE
+                       "診療行為業務で訂正を行ってください。"
                                                DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
            WHEN    "0063"
-               MOVE "�������򤬸��Ĥ���ޤ���"
+               MOVE "受診履歴が見つかりません。"
                                                TO  SPA-ERRMSG
            WHEN    "0064"
-               STRING  "���Ʒ׻��Ǥ��ޤ���"
+               STRING  "一括再計算できません。"
                                                DELIMITED BY SIZE
-                       "���Ź԰ٶ�̳��������ԤäƤ���������"
+                       "診療行為業務で訂正を行ってください。"
                                                DELIMITED BY SIZE
                INTO    SPA-ERRMSG
                END-STRING
            WHEN    "0065"
-               MOVE    "�����ֹ�����Ϥ��Ƥ���������"
+               MOVE    "選択番号を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "0071"
-               MOVE "�����ֹ椬̤���ϤǤ���" 
+               MOVE "患者番号が未入力です。" 
                                                TO  SPA-ERRMSG
            WHEN    "0072"
-               MOVE "�����ֹ�����Ϥ˸��꤬����ޤ���" 
+               MOVE "患者番号の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0073"
-               MOVE "����������Ϥ˸��꤬����ޤ���" 
+               MOVE "基準日の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0074"
-               MOVE "�������δ��ֻ��곫���������Ϥ˸��꤬����ޤ���" 
+               MOVE "診療日の期間指定開始日の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0075"
-               MOVE "�������δ��ֻ��꽪λ�������Ϥ˸��꤬����ޤ���" 
+               MOVE "診療日の期間指定終了日の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0076"
-               MOVE "�ֵ����ƻؼ������Ϥ˸��꤬����ޤ���" 
+               MOVE "返却内容指示の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0077"
-               MOVE "�¤��ؤ����ܤ����Ϥ˸��꤬����ޤ���" 
+               MOVE "並べ替え項目の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0078"
-               MOVE "�¤ӽ�����Ϥ˸��꤬����ޤ���" 
+               MOVE "並び順の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0079"
-               MOVE    "���Ϸ�������Ϥ˸��꤬����ޤ���"
+               MOVE    "開始件数の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0080"
-               MOVE    "��λ��������Ϥ˸��꤬����ޤ���"
+               MOVE    "終了件数の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0081"
-               MOVE    "���Ϸ����������̤��������Ķ���Ƥ��ޤ���"
+               MOVE    "開始件数が検索結果の総件数を超えています。"
                                        TO  SPA-ERRMSG
            WHEN    "0082"
-               MOVE    "���Ϸ���佪λ����ȤʤäƤ��ޤ���"
+               MOVE    "開始件数＞終了件数となっています。"
                                        TO  SPA-ERRMSG
            WHEN    "0083"
-               MOVE "���ŷ�δ��ֻ��곫�Ϸ�����Ϥ˸��꤬����ޤ���" 
+               MOVE "診療月の期間指定開始月の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0084"
-               MOVE "���ŷ�δ��ֻ��꽪λ������Ϥ˸��꤬����ޤ���" 
+               MOVE "診療月の期間指定終了月の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0085"
-               MOVE "�������¸�ߤ��ޤ���" 
+               MOVE "請求情報が存在しません。" 
                                                TO  SPA-ERRMSG
            WHEN    "0086"
-               MOVE    "������ʬ�����Ϥ��Ƥ���������"
+               MOVE    "入外区分を入力してください。"
                                                TO  SPA-ERRMSG
            WHEN    "0100"
-               MOVE "��ɼ�ֹ�����Ϥ��Ƥ���������" 
+               MOVE "伝票番号を入力してください。" 
                                                TO  SPA-ERRMSG
            WHEN    "0101"
-               MOVE "��ɼ�ֹ�����Ϥ˸��꤬����ޤ���" 
+               MOVE "伝票番号の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0102"
-               MOVE "���ֶ��ʬ�����Ϥ��Ƥ���������" 
+               MOVE "入返金区分を入力してください。" 
                                                TO  SPA-ERRMSG
            WHEN    "0103"
-               MOVE "���ֶ��ʬ�����Ϥ˸��꤬����ޤ���" 
+               MOVE "入返金区分の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0104"
-               MOVE "��������ĥե饰�����Ϥ˸��꤬����ޤ���" 
+               MOVE "過入金許可フラグの入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0105"
-               MOVE "������������Ϥ˸��꤬����ޤ���" 
+               MOVE "処理時刻の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0106"
-               MOVE    "�ֶ�ۤ����Ϥ��Ƥ���������"
+               MOVE    "返金額を入力してください。"
                                                TO  SPA-ERRMSG
            WHEN    "0107"
-               MOVE "������ˤʤ�ޤ�������Ǥ��ޤ���" 
+               MOVE "過入金になります。入金できません。" 
                                                TO  SPA-ERRMSG
            WHEN    "0108"
-               MOVE "������Τʤ�������Ф����ֶ�ϤǤ��ޤ���"
+               MOVE "過入金のない請求に対して返金はできません。"
                                                TO  SPA-ERRMSG
            WHEN    "0109"
-               MOVE "�ֶ�ۤ����Ϥ˸��꤬����ޤ���"
+               MOVE "返金額の入力に誤りがあります。"
                                                TO  SPA-ERRMSG
            WHEN    "0110"
-               MOVE "�������Ķ�����ֶ�ϤǤ��ޤ���"
+               MOVE "過入金を超える返金はできません。"
                                                TO  SPA-ERRMSG
            WHEN    "0111"
-               MOVE "Ʊ����������ʣ�����ϤϤǤ��ޤ���"
+               MOVE "同じ請求情報の複数入力はできません。"
                                                TO  SPA-ERRMSG
            WHEN    "0112"
-               MOVE "���ֶ��������Ϥ˸��꤬����ޤ���" 
+               MOVE "入返金情報の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0113"
-               MOVE "�������δ��ֻ��곫���������Ϥ��Ƥ���������" 
+               MOVE "診療日の期間指定開始日を入力してください。" 
                                                TO  SPA-ERRMSG
            WHEN    "0114"
-               MOVE "���ŷ�δ��ֻ��곫�Ϸ�����Ϥ��Ƥ���������" 
+               MOVE "診療月の期間指定開始月を入力してください。" 
                                                TO  SPA-ERRMSG
            WHEN    "0115"
-               MOVE    "�����ֹ�����Ϥ��Ƥ���������"
+               MOVE    "明細番号を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "0116"
-               MOVE    "���پ���¸�ߤ��ޤ���"
+               MOVE    "明細情報が存在しません。"
                                        TO  SPA-ERRMSG
            WHEN    "0117"
-               MOVE    "���ٿ�����¤�ã���Ƥ��뤿������Ǥ��ޤ���"
+               MOVE    "明細数が上限に達しているため処理できません。"
                                        TO  SPA-ERRMSG
            WHEN    "0118"
-               MOVE    "����ʬ�������äϤǤ��ޤ���"
+               MOVE    "外来分の請求取消はできません。"
                                        TO  SPA-ERRMSG
            WHEN    "0119"
-               MOVE    "���������úѤߤǤ���"
+               MOVE    "既に請求取消済みです。"
                                        TO  SPA-ERRMSG
            WHEN    "0120"
-               MOVE    "����ǯ������Ϥ��Ƥ���������"
+               MOVE    "診療年月を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "0121"
-               MOVE    "�������μ��������ʬ�����Ϥ˸��꤬����ޤ���"
+               MOVE    "請求書兼領収書印刷区分の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0122"
-               MOVE    "���������ٽ������ʬ�����Ϥ˸��꤬����ޤ���"
+               MOVE    "診療費明細書印刷区分の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0123"
-               MOVE    "Ģɼ�ΰ����ؼ�������ޤ���"
+               MOVE    "帳票の印刷指示がありません。"
                                        TO  SPA-ERRMSG
            WHEN    "0125"
-               MOVE "���ֻ��곫���������Ϥ˸��꤬����ޤ���" 
+               MOVE "期間指定開始日の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0126"
-               MOVE "���ֻ��꽪λ�������Ϥ˸��꤬����ޤ���" 
+               MOVE "期間指定終了日の入力に誤りがあります。" 
                                                TO  SPA-ERRMSG
            WHEN    "0127"
-               MOVE "���ֻ��곫��������ֻ��꽪λ���ȤʤäƤ��ޤ���" 
+               MOVE "期間指定開始日＞期間指定終了日となっています。" 
                                                TO  SPA-ERRMSG
            WHEN    "0128"
-               MOVE "�����оݤ��������¸�ߤ��ޤ���"
+               MOVE "印刷対象の請求情報が存在しません。"
                                                TO  SPA-ERRMSG
            WHEN    "0129"
-               MOVE "�����������μ���ȯ����ˡ�����Ϥ˸��꤬����ޤ���"
+               MOVE "外来請求書兼領収書発行方法の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0130"
-               MOVE    "����ǯ������Ϥ��Ƥ���������"
+               MOVE    "診療年月を入力してください。"
                                                TO  SPA-ERRMSG
            WHEN    "0203"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "�Żҥ���ƣգɣĤ�̤���ϤǤ���"
+               STRING  "電子カルテＵＩＤが未入力です。"
                                                        DELIMITED BY SIZE
-                       "�����³������ľ���Ƥ���������"
+                       "初回接続からやり直してください。"
                                                        DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0205"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "���륫�գɣĤ�̤���ϤǤ���"    DELIMITED BY SIZE
-                       "�����³������ľ���Ƥ���������"
+               STRING  "オルカＵＩＤが未入力です。"    DELIMITED BY SIZE
+                       "初回接続からやり直してください。"
                                                        DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0206"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING "��³���֤μ����˼��Ԥ��ޤ�����" DELIMITED BY SIZE
-                      "�����³����ԤäƤ���������"   DELIMITED BY SIZE
+               STRING "接続状態の取得に失敗しました。" DELIMITED BY SIZE
+                      "初回接続から行ってください。"   DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0207"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING "��³���֤μ����˼��Ԥ��ޤ�����" DELIMITED BY SIZE
+               STRING "接続状態の取得に失敗しました。" DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0208"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "�Żҥ���ƣգɣĤ�̤���ϤǤ���"
+               STRING  "電子カルテＵＩＤが未入力です。"
                                                        DELIMITED BY SIZE
-                       "�����³������ľ���Ƥ���������"
+                       "初回接続からやり直してください。"
                                                        DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0209"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING  "�����³���ȴ����ֹ椬�ۤʤ�ޤ���"
+               STRING  "初回接続時と患者番号が異なります。"
                                                        DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
            WHEN    "0210"
-               MOVE    "�����³����λ���Ƥ��ޤ���"
+               MOVE    "初回接続が完了していません。"
                                        TO  SPA-ERRMSG
            WHEN    "1001"
-               MOVE    "����������������¸�ߤ��ޤ���Ǥ�����"
+               MOVE    "該当する請求情報は存在しませんでした。"
                                        TO  SPA-ERRMSG
            WHEN    "1038"
-               MOVE  "¾��ü�����Ʊ������ƣգɣĤǤ���³������ޤ���"
+               MOVE  "他の端末より同じカルテＵＩＤでの接続があります。"
                                        TO  SPA-ERRMSG
            WHEN    "3004"
-               MOVE    "������ˡ�����򤷤Ʋ�������"
+               MOVE    "入金方法を選択して下さい。"
                                        TO  SPA-ERRMSG
            WHEN    "3005"
-               MOVE    "�����ֹ�����Ϥ˸��꤬����ޤ���"
+               MOVE    "明細番号の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3006"
-               MOVE    "���٤����򤷤Ƥ���������"
+               MOVE    "明細を選択してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3007"
-               MOVE    "����ۤ����Ϥ��Ƥ���������"
+               MOVE    "入金額を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3008"
-               MOVE    "�����׳ۤ����ߤ򲼲��ޤ���"
+               MOVE    "入金合計額が０円を下回ります。"
                                        TO  SPA-ERRMSG
            WHEN    "3009"
-               MOVE    "����Τ������٤����򤷤Ƥ���������"
+               MOVE    "入金のある明細を選択してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3010"
-               MOVE    "�����������Ϥ˸��꤬����ޤ���"
+               MOVE    "処理日の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3011"
-               MOVE    "������ˡ�����Ϥ˸��꤬����ޤ���"
+               MOVE    "入金方法の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3012"
-               MOVE    "�����������Ϥ��Ƥ���������"
+               MOVE    "処理日を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3013"
-               MOVE    "�ޥ��ʥ�������ۤ����Ϥ��Ƥ���������"
+               MOVE    "マイナスの入金額を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3014"
-               MOVE    "����ۤ����ߤ򲼲��ޤ���"
+               MOVE    "入金額が０円を下回ります。"
                                        TO  SPA-ERRMSG
            WHEN    "3016"
-               MOVE    "�����ۤ����ߤ򲼲��ޤ���"
+               MOVE    "請求金額が０円を下回ります。"
                                        TO  SPA-ERRMSG
            WHEN    "3017"
-               MOVE    "Ĵ���⣱�����Ϥ˸��꤬����ޤ���"
+               MOVE    "調整金１の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3018"
-               MOVE    "Ĵ���⣲�����Ϥ˸��꤬����ޤ���"
+               MOVE    "調整金２の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3019"
-               MOVE    "����ۤ����Ϥ˸��꤬����ޤ���"
+               MOVE    "入金額の入力に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "3020"
-               MOVE    "Ĵ��������Ϥ���ǽ������ǤϤ���ޤ���"
+               MOVE    "調整金の入力が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "3021"
-               MOVE    "Ĵ��������Ϥ���ǽ������ǤϤ���ޤ���"
+               MOVE    "調整金の入力が可能な請求ではありません。"
                                        TO  SPA-ERRMSG
            WHEN    "3022"
-               MOVE    "�ޥ��ʥ�������ۤ����Ϥ��Ƥ���������"
+               MOVE    "マイナスの入金額を入力してください。"
                                        TO  SPA-ERRMSG
            WHEN    "3023"
-               MOVE    "���������ۤ���¤�Ķ���ޤ���"
+               MOVE    "今回請求金額が上限を超えます。"
                                        TO  SPA-ERRMSG
            WHEN    "3024"
-               MOVE    "�����ۤ���¤�Ķ���ޤ���"
+               MOVE    "請求金額が上限を超えます。"
                                        TO  SPA-ERRMSG
            WHEN    "3025"
-               MOVE    "����ۤ���¤�Ķ���ޤ���"
+               MOVE    "入金額が上限を超えます。"
                                        TO  SPA-ERRMSG
            WHEN    "1001"  THRU    "1007"
            WHEN    "4000"  THRU    "4011"
            WHEN    "4900"  THRU    "4911"
-               MOVE    "���������˼��Ԥ��ޤ�����"
+               MOVE    "更新処理に失敗しました。"
                                                TO  SPA-ERRMSG
            WHEN    "8900"
-               MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+               MOVE    "システム項目が設定できません。"
                                        TO  SPA-ERRMSG
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "8901"
-               MOVE    "�������󤬼����Ǥ��ޤ���"
+               MOVE    "職員情報が取得できません。"
                                        TO  SPA-ERRMSG
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "8902"
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+               MOVE    "医療機関情報が取得できません。"
                                        TO  SPA-ERRMSG
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "8903"
-               MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+               MOVE    "システム日付が取得できません。"
                                        TO  SPA-ERRMSG
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "8905"
-               MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+               MOVE    "患者番号構成情報が取得できません。"
                                        TO  SPA-ERRMSG
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "8915"
                MOVE    SPACE           TO  SPA-ERRMSG
-               STRING "���롼�װ��ŵ��ؤ�������Ǥ���" DELIMITED BY SIZE
-                      "������λ���Ʋ�������"         DELIMITED BY SIZE
+               STRING "グループ医療機関が不整合です。" DELIMITED BY SIZE
+                      "処理を終了して下さい。"         DELIMITED BY SIZE
                INTO  SPA-ERRMSG
                END-STRING
                MOVE    "0089"          TO  SPA-ERRCD
            WHEN    "0091"
-               MOVE    "�ꥯ�������ֹ�˸��꤬����ޤ���"
+               MOVE    "リクエスト番号に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0092"
-               MOVE    "�ꥯ�����ȼ��̤˸��꤬����ޤ���"
+               MOVE    "リクエスト種別に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0097"
-               MOVE    "�������Ƥ˸��꤬����ޤ���"
+               MOVE    "送信内容に誤りがあります。"
                                        TO  SPA-ERRMSG
            WHEN    "0098"
-               MOVE    "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ�����"
+               MOVE    "送信内容の読込ができませんでした。"
                                        TO  SPA-ERRMSG
            WHEN    "0099"
-               MOVE    "�桼���ɣĤ�̤��Ͽ�Ǥ���"
+               MOVE    "ユーザＩＤが未登録です。"
                                        TO  SPA-ERRMSG
            WHEN    "9999"
-               MOVE    "¾ü���ǻ�����Ǥ���"
+               MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
                MOVE    SLOCK-MSG               TO  SPA-ERRMSG(21:)
            WHEN    "0000"
-               MOVE    "���ｪλ"
+               MOVE    "正常終了"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *

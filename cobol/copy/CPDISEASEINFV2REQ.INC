@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥꥯ�����ȴ�����̾����(xml2)
+      *    ＡＰＩリクエスト患者病名情報(xml2)
       *                                  COPY (CPDISEASEINFV2REQ.INC)
       ******************************************************************
         01  XML-DISEASE-INFREQ.
@@ -25,9 +25,9 @@
             02  DISEREQ-MODE               PIC S9(9)   BINARY.
             02  DISEREQ-RECORDNAME         PIC X(128).
             02  DISEREQ-DISEASE-INFREQ.
-      *       �����ֹ�
+      *       患者番号
               03  DISEREQ-PATIENTID    PIC X(20).
-      *       ���ǯ��
+      *       基準年月
               03  DISEREQ-BASE-DATE    PIC X(10).
-      *       ��������
+      *       出力設定
               03  DISEREQ-SELECT-MODE  PIC X(3).

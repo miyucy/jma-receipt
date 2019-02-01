@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,37 +18,37 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGXC01.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∞ı∫˛•◊•Ï•”•Â°º
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ∞ı∫˛•◊•Ï•”•Â°ºªÿƒÍ° £ÿ£√£∞£±°À
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  03/07/20    NACL°›∆£∏∂    ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : Âç∞Âà∑„Éó„É¨„Éì„É•„Éº
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Âç∞Âà∑„Éó„É¨„Éì„É•„ÉºÊåáÂÆöÔºàÔº∏Ôº£ÔºêÔºëÔºâ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  03/07/20    NACL‚àíËó§Âéü    Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  03/09/01    NACL°›∆£∏∂            •·•‚ÕÛ§Œ¡¥≥—•¡•ß•√•Øƒ…≤√
-      *  03/10/27    NACL°›∆£∏∂            ¡∞ «ƒ…≤√
-      *  04/02/13    NACL°›¬¿≈ƒ            •≥•È•‡•Í•π•»∞Ã√÷Ω§¿µ
-      *  02/05/00    NACL°›√›≈ƒ            •«°º•ø≥ «º ˝À° —ππ
-      *  02/06/00    NACL°›√›≈ƒ            •Í•¢•Î•ø•§•‡•◊•Ï•”•Â°º¬–±˛
-      *  02/06/01    NACL°›√›≈ƒ            ∫«¬Áπ‘§ŒΩ§¿µ
-      *  02/06/02    NACL°›√›≈ƒ            •ø•§•ﬁ°º§Œƒ‰ªﬂΩËÕ˝
-      *  07/06/02    NACL°›√›≈ƒ            •ø•§•ﬁ°º§Œƒ‰ªﬂΩËÕ˝
-      *  03.05.01    NACL°›√›≈ƒ    07/05/09  •∞•Î°º•◊ø«Œ≈¬–±˛§™§Ë§”•™•Û•È•§•Û
-      *                                      ƒ¢…º¬–±˛
-      *  03.05.02    NACL°›√›≈ƒ    07/06/22  œ´∫“º´«Â¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  03/09/01    NACL‚àíËó§Âéü            „É°„É¢Ê¨Ñ„ÅÆÂÖ®Ëßí„ÉÅ„Çß„ÉÉ„ÇØËøΩÂä†
+      *  03/10/27    NACL‚àíËó§Âéü            ÂâçÈ†ÅËøΩÂä†
+      *  04/02/13    NACL‚àíÂ§™Áî∞            „Ç≥„É©„É†„É™„Çπ„Éà‰ΩçÁΩÆ‰øÆÊ≠£
+      *  02/05/00    NACL‚àíÁ´πÁî∞            „Éá„Éº„ÇøÊ†ºÁ¥çÊñπÊ≥ïÂ§âÊõ¥
+      *  02/06/00    NACL‚àíÁ´πÁî∞            „É™„Ç¢„É´„Çø„Ç§„É†„Éó„É¨„Éì„É•„ÉºÂØæÂøú
+      *  02/06/01    NACL‚àíÁ´πÁî∞            ÊúÄÂ§ßË°å„ÅÆ‰øÆÊ≠£
+      *  02/06/02    NACL‚àíÁ´πÁî∞            „Çø„Ç§„Éû„Éº„ÅÆÂÅúÊ≠¢Âá¶ÁêÜ
+      *  07/06/02    NACL‚àíÁ´πÁî∞            „Çø„Ç§„Éû„Éº„ÅÆÂÅúÊ≠¢Âá¶ÁêÜ
+      *  03.05.01    NACL‚àíÁ´πÁî∞    07/05/09  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú„Åä„Çà„Å≥„Ç™„É≥„É©„Ç§„É≥
+      *                                      Â∏≥Á•®ÂØæÂøú
+      *  03.05.02    NACL‚àíÁ´πÁî∞    07/06/22  Âä¥ÁÅΩËá™Ë≥†ÂØæÂøú
       *
-      *  04.06.01    NACL-∆£∏∂     10/10/12  ¿ﬂƒÍ§À§Ë§ÎΩÈ¥¸…Ωº®§Œ —ππ
+      *  04.06.01    NACL-Ëó§Âéü     10/10/12  Ë®≠ÂÆö„Å´„Çà„ÇãÂàùÊúüË°®Á§∫„ÅÆÂ§âÊõ¥
       *
-      *  04.07.01    NACL-¬¿≈ƒ     11/11/08  •≥•È•‡•Í•π•»¡™¬Úπ‘…Ωº®¿©∏Ê —ππ
-      *  04.07.02    NACL-∆£∏∂     12/03/30  •ø•§•»•Î…Ωº®§ŒΩ§¿µ
-      *  04.07.03    NACL-∆£∏∂    15/07/17  œ´∫“ø«Œ≈»Ò¿¡µ·ΩÒµ⁄§”•¢•’•ø°º
-      *                                     •±•¢∞—¬˜»Ò¿¡µ·ΩÒ§Œ£œ£√£“ÕÕº∞
-      *                                     ° œ»§ §∑°À¬–±˛
+      *  04.07.01    NACL-Â§™Áî∞     11/11/08  „Ç≥„É©„É†„É™„Çπ„ÉàÈÅ∏ÊäûË°åË°®Á§∫Âà∂Âæ°Â§âÊõ¥
+      *  04.07.02    NACL-Ëó§Âéü     12/03/30  „Çø„Ç§„Éà„É´Ë°®Á§∫„ÅÆ‰øÆÊ≠£
+      *  04.07.03    NACL-Ëó§Âéü    15/07/17  Âä¥ÁÅΩË®∫ÁôÇË≤ªË´ãÊ±ÇÊõ∏Âèä„Å≥„Ç¢„Éï„Çø„Éº
+      *                                     „Ç±„Ç¢ÂßîË®óË≤ªË´ãÊ±ÇÊõ∏„ÅÆÔºØÔº£Ôº≤ÊßòÂºè
+      *                                     ÔºàÊû†„Å™„ÅóÔºâÂØæÂøú
       *
-      *  04.08.01    NACL-∆£∏∂    14/07/07  ∞Ïª˛•«•£•Ï•Ø•»•Í¬–±˛
-      *  05.00.00    NACL-¬¿≈ƒ     17/11/29  •Ø•È•§•¢•Û•»∞ı∫˛¬–±˛
+      *  04.08.01    NACL-Ëó§Âéü    14/07/07  ‰∏ÄÊôÇ„Éá„Ç£„É¨„ÇØ„Éà„É™ÂØæÂøú
+      *  05.00.00    NACL-Â§™Áî∞     17/11/29  „ÇØ„É©„Ç§„Ç¢„É≥„ÉàÂç∞Âà∑ÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -68,16 +68,16 @@
            03 WRK-SRYYM         PIC X(10).
            03 WRK-PRTID         PIC X(20).
       *
-      *     •Ï•ª•◊•»Ã¿∫Ÿ•’•°•§•Î •∑•ß•ÎŒŒ∞Ë 
+      *     „É¨„Çª„Éó„ÉàÊòéÁ¥∞„Éï„Ç°„Ç§„É´ „Ç∑„Çß„É´È†òÂüü 
            COPY    "CPCOMMONSHELL1.INC".
       *
-      *    •®•È°º•’•°•§•Î ÃææŒŒŒ∞Ë 
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´ ÂêçÁß∞È†òÂüü 
            COPY    "CPERRFL.INC".
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
            COPY    "COMMON-SPA".
       *
-      *    ∫∆∞ı∫˛ΩËÕ˝∂¶ƒÃ•—•È•·•ø
+      *    ÂÜçÂç∞Âà∑Âá¶ÁêÜÂÖ±ÈÄö„Éë„É©„É°„Çø
            COPY    "XC01COMMON-SPA".
       *
        01  SPA-XC01.
@@ -154,13 +154,13 @@
       *
            COPY    "CMJOBNAME.INC".
       *
-      *    •’•°•§•Î•«•§•Ï•Ø•»•Í∞Ã√÷ªÿƒÍ•µ•÷
+      *    „Éï„Ç°„Ç§„É´„Éá„Ç§„É¨„ÇØ„Éà„É™‰ΩçÁΩÆÊåáÂÆö„Çµ„Éñ
            COPY  "CPMKPASS.INC".
       *
        01  PS-FILE-ID              PIC X(200).
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-PREVIEW         PIC 9(01).
            03  FLG-PRVKANRI        PIC 9(01).
@@ -170,7 +170,7 @@
            03  FLG-GMN-INIT        PIC 9(01).
            03  FLG-RECEPRT         PIC 9(01).
       *
-      *    •∑•π•∆•‡ŒŒ∞Ë
+      *    „Ç∑„Çπ„ÉÜ„É†È†òÂüü
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
@@ -182,14 +182,14 @@
                05  WRK-SYSDD       PIC 9(02).
            03  SYS-TIME            PIC X(06).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-PRVKANRI-TBL-GROUP
                                    PIC X(14).
@@ -260,12 +260,12 @@
       *              
       *
        01  WRK-CONS-AREA.
-      *    ∞ı∫˛¥…Õ˝£ƒ£¬§Œ•≠°º√Õ  
+      *    Âç∞Âà∑ÁÆ°ÁêÜÔº§Ôº¢„ÅÆ„Ç≠„ÉºÂÄ§  
            03  WRK-CONS-PREVIEW-TBL-KEY
                                    PIC X(08)   VALUE   "PREPRINT".
            03  WRK-CONS-PREVIEW-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬§Œ•≠°º√Õ  
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢„ÅÆ„Ç≠„ÉºÂÄ§  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "PREPRINT".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
@@ -273,10 +273,10 @@
       *
            03  WRK-CONS-LINE-MAX   PIC 9(03)   VALUE   100.
       *     
-      *    •◊•Ï•”•Â°ºÕ—æ Û
+      *    „Éó„É¨„Éì„É•„ÉºÁî®ÊÉÖÂ†±
            COPY    "CPXC01LNK.INC".
       *
-      *   •’•°•§•ÎºË∆¿¥ÿøÙ
+      *   „Éï„Ç°„Ç§„É´ÂèñÂæóÈñ¢Êï∞
        01 ORCFILEGET-AREA.
            03  ORCF-FILE-MODE   PIC X(1).
            03  ORCF-FILE-NAME   PIC X(200).
@@ -284,7 +284,7 @@
            03  ORCF-RET         PIC X(2).
        01  ST                PIC 9(2).
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
       *01  PREVIEW-REC.
@@ -296,7 +296,7 @@
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".          
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -306,35 +306,35 @@
            COPY    "CPPRTKANRI.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    »æ≥—•¡•ß•√•Ø•µ•÷
+      *    ÂçäËßí„ÉÅ„Çß„ÉÉ„ÇØ„Çµ„Éñ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *   ∆¸…’ —¥π•µ•÷
+      *   Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSGDAY.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
       *
-      *   •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *   „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *   ¥µº‘»÷πÊ —¥π•µ•÷
+      *   ÊÇ£ËÄÖÁï™Âè∑Â§âÊèõ„Çµ„Éñ
            COPY    "CPORCSPTID.INC".
       *
-      *    •’•°•§•Î¬∏∫ﬂ•¡•ß•√•Ø
+      *    „Éï„Ç°„Ç§„É´Â≠òÂú®„ÉÅ„Çß„ÉÉ„ÇØ
            COPY    "CPORCSACCESS.INC".
       *
-      *    •’•°•§•Î∫ÔΩ¸•—•È•·•ø
+      *    „Éï„Ç°„Ç§„É´ÂâäÈô§„Éë„É©„É°„Çø
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -357,7 +357,7 @@
            SCRAREA.
       *     
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -374,15 +374,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ≤ËÃÃ¡´∞‹
+      *    ÁîªÈù¢ÈÅ∑Áßª
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ∆˛Œœ
+      *    ÂÖ•Âäõ
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ≤ËÃÃ¡´∞‹§¨§ §§ª˛°¢≤ËÃÃ…Ωº®§ÿ
+      *    ÁîªÈù¢ÈÅ∑Áßª„Åå„Å™„ÅÑÊôÇ„ÄÅÁîªÈù¢Ë°®Á§∫„Å∏
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -395,24 +395,24 @@
            EXIT    PROGRAM.
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                   SECTION.
       *
            INITIALIZE                  FLG-AREA
            INITIALIZE                  WRK-AREA
       *
-      *    •®•È°º≤ËÃÃ§Ë§Í
+      *    „Ç®„É©„ÉºÁîªÈù¢„Çà„Çä
            IF      SPA-MOTOPG          =   "XCERR"  OR  "XC02"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ΩÈ¥¸≤ËÃÃ•ª•√•»
+      *        ÂàùÊúüÁîªÈù¢„Çª„ÉÉ„Éà
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        ≤ËÃÃ ‘Ω∏
+      *        ÁîªÈù¢Á∑®ÈõÜ
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -436,11 +436,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ΩÈ¥¸≤ËÃÃΩËÕ˝
+      *    ÂàùÊúüÁîªÈù¢Âá¶ÁêÜ
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¬æ§Œ£Ã£ƒ§Ë§Í
+      *    ‰ªñ„ÅÆÔº¨Ôº§„Çà„Çä
            IF      LINKAREA        NOT =   SPACE
                INITIALIZE              SPA-XC01-AREA
                                        SPA-XC01KYOUTU
@@ -453,7 +453,7 @@
            END-IF
       *
            EVALUATE    SPA-MOTOPG
-      *    ∫Ó…ΩΩËÕ˝
+      *    ‰ΩúË°®Âá¶ÁêÜ
                WHEN    "XC99" 
                    GO      TO      300-SCREEN-EXT
            END-EVALUATE
@@ -467,7 +467,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •π•—ΩÈ¥¸ ‘Ω∏ΩËÕ˝
+      *    „Çπ„ÉëÂàùÊúüÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -479,21 +479,21 @@
       *
            EVALUATE    SPA-PRTKANRI-TBL-KEY
                WHEN    "SOKATU"
-                   MOVE    "ø«Œ≈«Ø∑Ó"     TO  SPA-GMN-TITLE1
-                   MOVE    "¿¡µ·«Ø∑Ó∆¸"   TO  SPA-GMN-TITLE2
+                   MOVE    "Ë®∫ÁôÇÂπ¥Êúà"     TO  SPA-GMN-TITLE1
+                   MOVE    "Ë´ãÊ±ÇÂπ¥ÊúàÊó•"   TO  SPA-GMN-TITLE2
                WHEN    "RECEPT2"
-                   MOVE    "ø«Œ≈«Ø∑Ó"     TO  SPA-GMN-TITLE1
-                   MOVE    "¿¡µ·«Ø∑Ó∆¸"   TO  SPA-GMN-TITLE2
+                   MOVE    "Ë®∫ÁôÇÂπ¥Êúà"     TO  SPA-GMN-TITLE1
+                   MOVE    "Ë´ãÊ±ÇÂπ¥ÊúàÊó•"   TO  SPA-GMN-TITLE2
                WHEN    "DAILY"
                WHEN    "MONTHLY"
                    MOVE    SPACE          TO  SPA-GMN-TITLE1
-                   MOVE    "∫Ó¿Æ«Ø∑Ó∆¸"   TO  SPA-GMN-TITLE2
+                   MOVE    "‰ΩúÊàêÂπ¥ÊúàÊó•"   TO  SPA-GMN-TITLE2
                WHEN    OTHER
-                   MOVE    "«Ø∑Ó"         TO  SPA-GMN-TITLE1
-                   MOVE    "«Ø∑Ó∆¸"       TO  SPA-GMN-TITLE2
+                   MOVE    "Âπ¥Êúà"         TO  SPA-GMN-TITLE1
+                   MOVE    "Âπ¥ÊúàÊó•"       TO  SPA-GMN-TITLE2
            END-EVALUATE
       *
-      *    •◊•Ï•”•Â°ºDB∏°∫˜ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÊ§úÁ¥¢Âá¶ÁêÜ
            MOVE    1                      TO  SPA-GMN-PAGE
            PERFORM 2011-PRVKANRI-HEN-SEC
            MOVE    1                      TO  SPA-GMN-CUR
@@ -509,7 +509,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ¡´∞‹ΩËÕ˝
+      *    ÁîªÈù¢ÈÅ∑ÁßªÂá¶ÁêÜ
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
@@ -519,11 +519,11 @@
            END-EVALUATE
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *     Ω™Œª
+      *     ÁµÇ‰∫Ü
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"         TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *     æı¬÷
+      *     Áä∂ÊÖã
                WHEN    "CLICKED"       ALSO    "B02"
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                  IF     SPA-PRTKANRI-TBL-KEY        =  "RECEPTX"
@@ -539,7 +539,7 @@
                         MOVE    ZERO            TO  SPA-GMN-MAX
                  END-IF
                    PERFORM 2011-PRVKANRI-HEN-SEC
-      *     …Ωº®¿⁄¬ÿ
+      *     Ë°®Á§∫ÂàáÊõø
                WHEN    "CLICKED"       ALSO    "B03"
                    EVALUATE    SPA-XC01-HYOUJI
                        WHEN    0
@@ -556,23 +556,23 @@
                    MOVE    "XC02"              TO  SPA-MOTOPG
                    PERFORM 900-PUT-WINDOW
                    MOVE    1                   TO  FLG-END
-      *     ƒ˚¿µ
+      *     Ë®ÇÊ≠£
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-MAKE-UPD-SEC
       *
-      *     ¡∞π‘
+      *     ÂâçË°å
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 480-BEFORELINE-SEC
-      *     ¡∞ «
+      *     ÂâçÈ†Å
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 440-MAEGMN-SEC
-      *     º° «
+      *     Ê¨°È†Å
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 440-ATOGMN-SEC
-      *     º°π‘
+      *     Ê¨°Ë°å
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 470-NEXTLINE-SEC
-      *     ∞ı∫˛
+      *     Âç∞Âà∑
                WHEN    "CLICKED"       ALSO    "B12"
       *            PERFORM 450-PRINT-GID-SEC
                    PERFORM 450-PRINT-SEC
@@ -583,7 +583,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ≤Òœ√°°ΩËÕ˝
+      *    ‰ºöË©±„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -596,10 +596,10 @@
       *
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 201-SELNUM-SEC
-      *        •·•‚∆˛Œœ
+      *        „É°„É¢ÂÖ•Âäõ
                WHEN    "ACTIVATE"      ALSO    "MEMO"
                    PERFORM 202-MEMO-SEC
-      *        π‘¡™¬Ú
+      *        Ë°åÈÅ∏Êäû
                WHEN    ANY             ALSO    "CLIST"
                    PERFORM 203-SELECT-SEC
            END-EVALUATE
@@ -608,7 +608,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡™¬Ú»÷πÊ∆˛ŒœΩËÕ˝
+      *    ÈÅ∏ÊäûÁï™Âè∑ÂÖ•ÂäõÂá¶ÁêÜ
       *****************************************************************
        201-SELNUM-SEC                 SECTION.
       *
@@ -637,7 +637,7 @@
            EXIT.
       *
       *****************************************************************
-      *    •·•‚∆˛ŒœΩËÕ˝
+      *    „É°„É¢ÂÖ•ÂäõÂá¶ÁêÜ
       *****************************************************************
        202-MEMO-SEC                   SECTION.
       *
@@ -647,7 +647,7 @@
       *
            MOVE    XC01-MEMO           TO  SPA-GMN-MEMO
       *
-      *    »æ≥—•¡•ß•√•Ø
+      *    ÂçäËßí„ÉÅ„Çß„ÉÉ„ÇØ
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-MEMO        TO  KANACHK-MAE-INPUT
@@ -692,7 +692,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¥µº‘∏°∫˜ΩËÕ˝
+      *    ÊÇ£ËÄÖÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        2011-SELECT-HENSYU-SEC        SECTION.
       *
@@ -747,12 +747,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            .
       *
       *****************************************************************
-      *    π‘¡™¬ÚΩËÕ˝
+      *    Ë°åÈÅ∏ÊäûÂá¶ÁêÜ
       *****************************************************************
        203-SELECT-SEC               SECTION.
       *          
            MOVE    99                  TO  SPA-GMN-CUR         
-      *    π‘¡™¬Ú
+      *    Ë°åÈÅ∏Êäû
            MOVE    ZERO                TO  WRK-SELNUM
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -785,7 +785,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *
       *****************************************************************
-      *    ƒ˚¿µΩËÕ˝
+      *    Ë®ÇÊ≠£Âá¶ÁêÜ
       *****************************************************************
        440-MAKE-UPD-SEC            SECTION.
       *
@@ -807,7 +807,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            IF      XC01-SELECT (SPA-NAI-SELNUM)   =   "T"
-              IF   SPA-GMN-TUPDFLG (SPA-NAI-SELNUM)   =   "°˚"
+              IF   SPA-GMN-TUPDFLG (SPA-NAI-SELNUM)   =   "‚óã"
                    MOVE SPACE          TO
                                        SPA-GMN-TUPDFLG(SPA-NAI-SELNUM)
                    MOVE SPACE          TO
@@ -819,7 +819,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-GMN-MEMO
                    MOVE    1           TO  SPA-GMN-CUR
               ELSE
-                   MOVE "°˚"           TO
+                   MOVE "‚óã"           TO
                                        SPA-GMN-TUPDFLG(SPA-NAI-SELNUM)
                    MOVE "1"            TO
                                        SPA-NAI-UPDFLG(SPA-NAI-SELNUM)
@@ -856,13 +856,13 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        2014-PRV-HENSYU-SEC         SECTION.
            IF      SPA-NAI-MAKEOK-FLG (IDX)    =   ZERO
                PERFORM   20121-PREVIEW-EXIST-SEC
              IF    FLG-PREVIEW           =   1  
-      *             ∫∆∞ı∫˛∞ ≥∞§´§È§Œ¡´∞‹
+      *             ÂÜçÂç∞Âà∑‰ª•Â§ñ„Åã„Çâ„ÅÆÈÅ∑Áßª
                    PERFORM   20122-PSFILE-EXIST-SEC
              END-IF
            END-IF
@@ -871,7 +871,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        460-FILE-HENSYU-SEC         SECTION.
       *     
@@ -885,11 +885,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        460-FILE-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    •Í•¢•Î•ø•§•‡•◊•Ï•”•Â°ºª˛§œ°¢√Ê¥÷•’•°•§•Î∫ÔΩ¸
+      *    „É™„Ç¢„É´„Çø„Ç§„É†„Éó„É¨„Éì„É•„ÉºÊôÇ„ÅØ„ÄÅ‰∏≠Èñì„Éï„Ç°„Ç§„É´ÂâäÈô§
            IF      SPA-PRTKANRI-TBL-KEY    =  "RECEPTX" OR "ONLINE"
                PERFORM 2101-FILE-DEL-SEC         
            END-IF    
@@ -899,11 +899,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •’•°•§•Î∫ÔΩ¸°°ΩËÕ˝
+      *    „Éï„Ç°„Ç§„É´ÂâäÈô§„ÄÄÂá¶ÁêÜ
       *****************************************************************
        2101-FILE-DEL-SEC               SECTION.
       *
-      *    ps•’•°•§•Î•Ø•Í•¢
+      *    ps„Éï„Ç°„Ç§„É´„ÇØ„É™„Ç¢
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-GMN-MAX
                IF    SPA-NAI-FILENAME (IDX)
@@ -1019,7 +1019,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ã·§Î°°ΩËÕ˝
+      *    Êàª„Çã„ÄÄÂá¶ÁêÜ
       *****************************************************************
        210-BACK-SYORI-SEC              SECTION.
       *
@@ -1043,11 +1043,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¡∞π‘°°ΩËÕ˝
+      *    ÂâçË°å„ÄÄÂá¶ÁêÜ
       *****************************************************************
        480-BEFORELINE-SEC                SECTION.
       *
-      *    π‘¡™¬Ú
+      *    Ë°åÈÅ∏Êäû
            IF     (SPA-NAI-SELNUM      =   1)
                IF    ( SPA-GMN-PAGE    =   1 )
                    GO                  TO  480-BEFORELINE-EXT
@@ -1071,7 +1071,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    COMPUTE SPA-NAI-SELNUM  =  SPA-NAI-SELNUM  -  1
                    MOVE  "T"           TO  XC01-SELECT (SPA-NAI-SELNUM)
            END-IF
-      *    ∏°∫˜ΩËÕ˝
+      *    Ê§úÁ¥¢Âá¶ÁêÜ
            PERFORM 203-SELECT-SEC
       *
            .
@@ -1079,11 +1079,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    º°π‘°°ΩËÕ˝
+      *    Ê¨°Ë°å„ÄÄÂá¶ÁêÜ
       *****************************************************************
        470-NEXTLINE-SEC                SECTION.
       *
-      *    π‘¡™¬Ú
+      *    Ë°åÈÅ∏Êäû
            IF     (SPA-GMN-MAX         <=  SPA-NAI-SELNUM) 
                IF    ( SPA-GMN-NEXT     =   ZERO )
                    GO                  TO  470-NEXTLINE-EXT
@@ -1100,7 +1100,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    COMPUTE SPA-NAI-SELNUM  =  SPA-NAI-SELNUM  +  1
                    MOVE  "T"           TO  XC01-SELECT (SPA-NAI-SELNUM)
            END-IF
-      *    ∏°∫˜ΩËÕ˝
+      *    Ê§úÁ¥¢Âá¶ÁêÜ
            PERFORM 203-SELECT-SEC
       *
            .
@@ -1108,7 +1108,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¡∞ «ΩËÕ˝
+      *    ÂâçÈ†ÅÂá¶ÁêÜ
       *****************************************************************
        440-MAEGMN-SEC             SECTION.
       *
@@ -1126,7 +1126,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX
-      *    ∏°∫˜ΩËÕ˝
+      *    Ê§úÁ¥¢Âá¶ÁêÜ
            PERFORM 2011-PRVKANRI-HEN-SEC
       *
            .
@@ -1134,7 +1134,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    º° «ΩËÕ˝
+      *    Ê¨°È†ÅÂá¶ÁêÜ
       *****************************************************************
        440-ATOGMN-SEC             SECTION.
       *
@@ -1152,14 +1152,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        SPA-NAI-TBL
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX
-      *    ∏°∫˜ΩËÕ˝
+      *    Ê§úÁ¥¢Âá¶ÁêÜ
            PERFORM 2011-PRVKANRI-HEN-SEC
       *
            .
        440-ATOGMN-EXT.
            EXIT.
       *****************************************************************
-      *    ∫Ó…ΩΩËÕ˝
+      *    ‰ΩúË°®Âá¶ÁêÜ
       *****************************************************************
        450-PRINT-GID-SEC                SECTION.
       *
@@ -1184,12 +1184,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                GO  TO  450-PRINT-GID-EXT               
            END-IF
       *         
-      *    •◊•Ï•”•Â°º£ƒ£¬§Œ•¡•ß•√•Ø
+      *    „Éó„É¨„Éì„É•„ÉºÔº§Ôº¢„ÅÆ„ÉÅ„Çß„ÉÉ„ÇØ
            INITIALIZE                      PREVIEW-REC
            MOVE    SPA-PRTKANRI-TBL-KEY
                                        TO  PREVIEW-TBL-KEY
                MOVE    1                   TO  FLG-PREVIEW
-      *    ªÿƒÍ§Œ•∞•Î°º•◊§¨¬∏∫ﬂ§∑§ §§§»§≠
+      *    ÊåáÂÆö„ÅÆ„Ç∞„É´„Éº„Éó„ÅåÂ≠òÂú®„Åó„Å™„ÅÑ„Å®„Åç
            IF      FLG-PREVIEW        =   1
                MOVE    "0005"              TO  SPA-ERRCD
                GO  TO  450-PRINT-GID-EXT   
@@ -1197,10 +1197,10 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                MOVE    PREVIEW-TBL-KEY    TO  SPA-WRK-TBL-KEY    
            END-IF
       *     
-      *    •¨•§•…•·•√•ª°º•∏•ª•√•»
+      *    „Ç¨„Ç§„Éâ„É°„ÉÉ„Çª„Éº„Ç∏„Çª„ÉÉ„Éà
            MOVE    "1001"                 TO  SPA-XCIDCD
       *
-      *    Ã§ΩËÕ˝§Œƒ¢…º§¨§¢§Î§»§≠
+      *    Êú™Âá¶ÁêÜ„ÅÆÂ∏≥Á•®„Åå„ÅÇ„Çã„Å®„Åç
            PERFORM                     UNTIL   FLG-PREVIEW    =   1
                PERFORM 900-PREVIEW-FET2-SEC
            END-PERFORM                   
@@ -1210,7 +1210,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ∞ı∫˛ ‘Ω∏ΩËÕ˝
+      *    Âç∞Âà∑Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        450-PRINT-SEC                   SECTION.
       * 
@@ -1228,7 +1228,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                            WRK-PREVIEW-RENNUM
            MOVE    SPACE               TO  WRK-CONS-PREVIEW-TBL-GROUP                                
       *
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
       *
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
            MOVE    "PVERRORR"          TO  ERRFLPARA-FILE-ID
@@ -1304,14 +1304,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                        MCPDATA-REC
                                        SPA-AREA
       *
-      *    æ Û≥Œ«ß≤ËÃÃ§Ú…Ωº®                                                   
+      *    ÊÉÖÂ†±Á¢∫Ë™çÁîªÈù¢„ÇíË°®Á§∫                                                   
            .
        450-PRINT-EXT.
            EXIT.
       *
       *
       *****************************************************************
-      *    ∞ı∫˛ ‘Ω∏ΩËÕ˝
+      *    Âç∞Âà∑Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        4501-PRINT-SEC                  SECTION.
       * 
@@ -1321,7 +1321,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    SYS-DD              TO  WRK-SYSDD
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
            MOVE    SPA-HOSPNUM         TO  ERRFLPARA-HOSPNUM
            MOVE    "PVERRORR"          TO  ERRFLPARA-FILE-ID
            MOVE    SPA-TERMID          TO  ERRFLPARA-TERMID
@@ -1391,7 +1391,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°ºDB∏°∫˜ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        2011-PREVIEW-HEN-SEC        SECTION.
       *
@@ -1400,7 +1400,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  SPA-GMN-MAX
            MOVE    ZERO                TO  IDX
       *
-      *    ∏°∫˜
+      *    Ê§úÁ¥¢
            INITIALIZE                  PREVIEW-REC
            MOVE    SPA-PRTKANRI-TBL-KEY
                                        TO  PREVIEW-TBL-KEY
@@ -1440,11 +1440,11 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°ºDB∏°∫˜ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        2011-PRVKANRI-HEN-SEC        SECTION.
       *
-      *    ∏°∫˜
+      *    Ê§úÁ¥¢
            INITIALIZE                  PRVKANRI-REC
            MOVE    SPA-PRTKANRI-TBL-KEY
                                        TO  PRVKANRI-TBL-KEY
@@ -1537,14 +1537,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°ºDB ‘Ω∏ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2012-PRVKANRI-HENSYU-SEC        SECTION.
       *
            MOVE    1                   TO  FLG-GMN-INIT
       *
       *     SPA-NAI-MAKEOK-FLG (IDX)
-      *    ¥˚§À£”£–£¡§À¬∏∫ﬂ§π§Î§´•¡•ß•√•Ø
+      *    Êó¢„Å´Ôº≥Ôº∞Ôº°„Å´Â≠òÂú®„Åô„Çã„Åã„ÉÅ„Çß„ÉÉ„ÇØ
            MOVE    ZERO                TO  FLG-CHK
            PERFORM VARYING IDZ FROM    1   BY  1
                    UNTIL   IDZ >       SPA-GMN-MAX
@@ -1566,7 +1566,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-PERFORM
       *
-      *    £”£–£¡§Àƒ…≤√
+      *    Ôº≥Ôº∞Ôº°„Å´ËøΩÂä†
            IF      FLG-CHK             =   ZERO
                COMPUTE IDX     =   SPA-GMN-MAX     +   1
                IF      IDX                 <=  WRK-CONS-LINE-MAX
@@ -1605,7 +1605,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    PRVKANRI-PTID       TO  SPA-NAI-PTID  (IDX)
                    MOVE    PRVKANRI-MOD-FLG    TO  SPA-NAI-UPDFLG (IDX)
                    IF      SPA-NAI-UPDFLG (IDX) =  "1"
-                     MOVE  "°˚"                TO  SPA-GMN-TUPDFLG (IDX)
+                     MOVE  "‚óã"                TO  SPA-GMN-TUPDFLG (IDX)
                    END-IF
                    MOVE    PRVKANRI-PRTID      TO
                                            SPA-GMN-TPRTID (IDX)
@@ -1660,12 +1660,12 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF
            END-IF
       *
-      *    Ã§ΩËÕ˝§Œ§»§≠•◊•Ï•”•Â°º£ƒ£¬§Ë§Í ‘Ω∏
+      *    Êú™Âá¶ÁêÜ„ÅÆ„Å®„Åç„Éó„É¨„Éì„É•„ÉºÔº§Ôº¢„Çà„ÇäÁ∑®ÈõÜ
            IF      IDX                 <=  WRK-CONS-LINE-MAX
              IF      SPA-NAI-MAKEOK-FLG (IDX)    =   ZERO
                PERFORM   20121-PREVIEW-EXIST-SEC
                IF    FLG-PREVIEW           =   1  
-      *    ∫∆∞ı∫˛∞ ≥∞§´§È§Œ¡´∞‹
+      *    ÂÜçÂç∞Âà∑‰ª•Â§ñ„Åã„Çâ„ÅÆÈÅ∑Áßª
                    PERFORM   20122-PSFILE-EXIST-SEC
                END-IF
              END-IF
@@ -1676,7 +1676,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°ºps•’•°•§•Î ‘Ω∏ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„Éºps„Éï„Ç°„Ç§„É´Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        20122-PSFILE-EXIST-SEC      SECTION.
       *
@@ -1726,7 +1726,7 @@ grpsys*                                      SPA-AREA
            EXIT.
       *           
       *****************************************************************
-      *    •◊•Ï•”•Â°ºDB ‘Ω∏ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        20121-PREVIEW-EXIST-SEC      SECTION.
       *           
@@ -1774,7 +1774,7 @@ grpsys*              CALL    "ORCDBMAIN"       USING
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°ºDB ‘Ω∏ΩËÕ˝
+      *    „Éó„É¨„Éì„É•„ÉºDBÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2013-PREVIEW-CHECK-SEC        SECTION.
       *
@@ -1816,7 +1816,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
                                                TO  SPA-GMN-ERRMSG
                    END-IF
             ELSE
-                 MOVE    "ƒ¢…º•«°º•ø∫Ó¿Æ√Ê§«§π°£"
+                 MOVE    "Â∏≥Á•®„Éá„Éº„Çø‰ΩúÊàê‰∏≠„Åß„Åô„ÄÇ"
                                                TO  SPA-GMN-ERRMSG
             END-IF
       *
@@ -1825,7 +1825,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    œ¬ŒÒ¿æŒÒ —¥π ‘Ω∏ΩËÕ˝
+      *    ÂíåÊö¶Ë•øÊö¶Â§âÊèõÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -1850,7 +1850,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    º´≤ËÃÃ ‘Ω∏ΩËÕ˝
+      *    Ëá™ÁîªÈù¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1878,7 +1878,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ∆‚Õ∆ ‘Ω∏ΩËÕ˝
+      *    ÁîªÈù¢ÂÜÖÂÆπÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -2016,7 +2016,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ≤ËÃÃ•´°º•Ω•Î•ª•√•»ΩËÕ˝
+      *    ÁîªÈù¢„Ç´„Éº„ÇΩ„É´„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -2039,45 +2039,45 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •®•È°º•·•√•ª°º•∏…Ωº®Õ˝
+      *    „Ç®„É©„Éº„É°„ÉÉ„Çª„Éº„Ç∏Ë°®Á§∫ÁêÜ
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "≥∫≈ˆ§Œ¡™¬Ú»÷πÊ§œ§¢§Í§ﬁ§ª§Û" 
+                   MOVE    "Ë©≤ÂΩì„ÅÆÈÅ∏ÊäûÁï™Âè∑„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì" 
                                                TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    " «§Œ∆˛Œœ§¨∞„§§§ﬁ§π" 
+                   MOVE    "È†Å„ÅÆÂÖ•Âäõ„ÅåÈÅï„ÅÑ„Åæ„Åô" 
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "Ã§∆˛Œœ§Œπ‡Ã‹§¨§¢§Í§ﬁ§π" 
+                   MOVE    "Êú™ÂÖ•Âäõ„ÅÆÈ†ÖÁõÆ„Åå„ÅÇ„Çä„Åæ„Åô" 
                                                TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    " «§Œ∆˛Œœ§¨∞„§§§ﬁ§π" 
+                   MOVE    "È†Å„ÅÆÂÖ•Âäõ„ÅåÈÅï„ÅÑ„Åæ„Åô" 
                                                TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "≥∫≈ˆ§Œƒ¢…º§œ§¢§Í§ﬁ§ª§Û" 
+                   MOVE    "Ë©≤ÂΩì„ÅÆÂ∏≥Á•®„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì" 
                                                TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "≥∫≈ˆ§Œƒ¢…º§œ§¢§Í§ﬁ§ª§Û" 
+                   MOVE    "Ë©≤ÂΩì„ÅÆÂ∏≥Á•®„ÅØ„ÅÇ„Çä„Åæ„Åõ„Çì" 
                                                TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "¡¥≥—∆˛Œœ§∑§∆≤º§µ§§"
+                   MOVE    "ÂÖ®ËßíÂÖ•Âäõ„Åó„Å¶‰∏ã„Åï„ÅÑ"
                                                TO  SPA-ERRMSG
                WHEN    "1001"
-                   MOVE    "ƒ¢…º¥…Õ˝£ƒ£¬§¨∫ÔΩ¸§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   MOVE    "Â∏≥Á•®ÁÆ°ÁêÜÔº§Ôº¢„ÅåÂâäÈô§„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "ƒ¢…º£ƒ£¬§¨∫ÔΩ¸§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   MOVE    "Â∏≥Á•®Ôº§Ôº¢„ÅåÂâäÈô§„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  SPA-ERRMSG
                WHEN    "1004"
-                   MOVE    "•∏•Á•÷¥…Õ˝£ƒ£¬§¨∫ÔΩ¸§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   MOVE    "„Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢„ÅåÂâäÈô§„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  SPA-ERRMSG
                WHEN    "1005"
                    MOVE
-                   "•∑•π•∆•‡¥…Õ˝£ƒ£¬° £≥£∞£∞£≥°À§¨∫ÔΩ¸§«§≠§ﬁ§ª§Û§«§∑§ø"
+                   "„Ç∑„Çπ„ÉÜ„É†ÁÆ°ÁêÜÔº§Ôº¢ÔºàÔºìÔºêÔºêÔºìÔºâ„ÅåÂâäÈô§„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                                TO  SPA-ERRMSG
                WHEN    "7777"
                    MOVE    WRK-RECEERR         TO  SPA-ERRMSG
@@ -2111,7 +2111,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ∞ı∫˛¥…Õ˝£ƒ£¬∆…§ﬂπ˛§ﬂ° £Î£Â£˘£≤°À
+      *     Âç∞Âà∑ÁÆ°ÁêÜÔº§Ôº¢Ë™≠„ÅøËæº„ÅøÔºàÔΩãÔΩÖÔΩôÔºíÔºâ
       *****************************************************************
        900-PREVIEW-FET2-SEC            SECTION.
       *
@@ -2122,7 +2122,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ∞ı∫˛¥…Õ˝£ƒ£¬∆…§ﬂπ˛§ﬂ
+      *     Âç∞Âà∑ÁÆ°ÁêÜÔº§Ôº¢Ë™≠„ÅøËæº„Åø
       *****************************************************************
        900-PREVIEW-FET-SEC            SECTION.
       *
@@ -2133,7 +2133,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     •◊•Ï•”•Â°º¥…Õ˝£ƒ£¬ππø∑
+      *     „Éó„É¨„Éì„É•„ÉºÁÆ°ÁêÜÔº§Ôº¢Êõ¥Êñ∞
       *****************************************************************
        4401-PRVKANRI-UPD-SEC            SECTION.
       *
@@ -2156,7 +2156,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     •◊•Ï•”•Â°º¥…Õ˝£ƒ£¬∆…§ﬂπ˛§ﬂ
+      *     „Éó„É¨„Éì„É•„ÉºÁÆ°ÁêÜÔº§Ôº¢Ë™≠„ÅøËæº„Åø
       *****************************************************************
        900-PRVKANRI-FET-SEC            SECTION.
       *
@@ -2179,7 +2179,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    •◊•Ï•”•Â°º¥…Õ˝•ﬁ•π•ø°º∆…π˛° •≠°º°À
+      *    „Éó„É¨„Éì„É•„ÉºÁÆ°ÁêÜ„Éû„Çπ„Çø„ÉºË™≠ËæºÔºà„Ç≠„ÉºÔºâ
       *****************************************************************
        900-PRVKANRI-INV-SEC         SECTION.
       *
@@ -2220,7 +2220,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    receprt∆…π˛° •≠°º°À
+      *    receprtË™≠ËæºÔºà„Ç≠„ÉºÔºâ
       *****************************************************************
        900-RECEPRT-INV-SEC         SECTION.
       *
@@ -2261,7 +2261,7 @@ grpsys*     MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    £–£’£‘°°ΩËÕ˝
+      *    Ôº∞ÔºµÔº¥„ÄÄÂá¶ÁêÜ
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

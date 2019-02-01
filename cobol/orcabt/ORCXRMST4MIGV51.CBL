@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCXRMST4MIGV51.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ޥ�����������
-      *  ����ݡ��ͥ��̾  : �����ץ������¹Խ���
-      *                    : �饤���󥹥ޥ��� 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/07/07    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : マスタ更新処理
+      *  コンポーネント名  : 更新プログラム実行処理
+      *                    : ライセンスマスタ 
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/07/07    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.03.00     NACL-����    08/05/22  �۾�����϶���
-      * 05.01.00     NACL-��ƣ    18/11/27  V510�ޥ�����ʬΥ�б�������
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.03.00     NACL-太田    08/05/22  異常処理系強化
+      * 05.01.00     NACL-伊藤    18/11/27  V510マスター分離対応特別版
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -37,21 +37,21 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ѥ�᡼���ե�����
+      *    入力：パラメータファイル
            SELECT  IN-FILE         ASSIGN  PGEXIST01
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  MSTERR-FILE     ASSIGN  RECEERR
                                    FILE    STATUS IS  STS-MSTERR.
       *
-      *    �Уңƥե�����ʥޥ����ǡ����̡�
+      *    ＰＲＦファイル（マスタデータ別）
            SELECT  MSTPRF-FILE     ASSIGN  MSTPRFFILE
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS IS  STS-MSTPRFFILE.
       *
-      *    �Уңƥե�����
+      *    ＰＲＦファイル
            SELECT  PRF-FILE        ASSIGN  PARA-PRFFILE
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS IS  STS-PRFFILE.
@@ -60,12 +60,12 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϥե�����
+      *    入力ファイル
        FD  IN-FILE.
        01  IN-REC.
            03  IN-FIL              PIC X(01).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  MSTERR-FILE.
        01  MSTERR-REC              PIC X(200).
       *
@@ -88,14 +88,14 @@ grpsys     COPY    "COMMON-SPA".
            03  PGEXIST01               PIC X(256).
            03  MSTPRFFILE              PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-MSTERR              PIC X(02).
            03  STS-PRFFILE             PIC X(02).
            03  STS-MSTPRFFILE          PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-MSTKANRI            PIC 9(01).
@@ -108,12 +108,12 @@ grpsys     COPY    "COMMON-SPA".
            03  CNT-LINE                PIC 9(06).
            03  CNT-MSTPRF              PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-UPFILE              PIC X(100).
            03  WRK-UPFILE2             PIC X(100).
@@ -157,57 +157,57 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-MNTSHELLID    PIC X(08)  VALUE    "MSTMNT".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �ޥ�����������
+      *    マスタ管理情報
        01  MSTKANRI-REC.
            COPY    "CPMSTKANRI.INC".
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSK1031.INC".
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "CPMUPLINK.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
            COPY    "CPHOMEDIR.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ե�����¸�ߥ����å�����
+      *    ファイル存在チェックサブ
            COPY    "CPORCSACCESS.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
            COPY    "ENUM-VALUE".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -218,7 +218,7 @@ grpsys     COPY    "COMMON-SPA".
            PARA-REC.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -234,7 +234,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -292,7 +292,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            IF    ( FLG-END         =   ZERO )
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    PARA-HOSPNUM    TO  JOB-HOSPNUM
@@ -301,12 +301,12 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    "ORCXRMST4MIGV51"
                                        TO  JOB-PGID
                MOVE    PARA-COUNT      TO  WRK-ZZZZZ9
-               STRING  "�ޥ��������� " DELIMITED   BY  SIZE
-                       "��"            DELIMITED   BY  SIZE
+               STRING  "マスタ更新中 " DELIMITED   BY  SIZE
+                       "【"            DELIMITED   BY  SIZE
                        WRK-MSTNAME     DELIMITED   SPACE
                        WRK-ZZZZZ9      DELIMITED   SIZE
-                       "��"            DELIMITED   SIZE
-                       "��"            DELIMITED   BY  SIZE
+                       "件"            DELIMITED   SIZE
+                       "】"            DELIMITED   BY  SIZE
                        PARA-MSTCNTMSG  DELIMITED   BY  SPACE
                INTO    JOB-SHELLMSG
                END-STRING
@@ -347,11 +347,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    �����ץ������¸�ߥ����å�
+      *    更新プログラム存在チェック
            PERFORM 2001-PGEXIST-CHECK
       *
            IF    ( FLG-END             =   ZERO )
@@ -367,7 +367,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    �����ץ������¹Խ���
+      *    更新プログラム実行処理
       *****************************************************************
        2001-EXEC-UPPG-SEC              SECTION.
       *
@@ -380,14 +380,14 @@ grpsys     COPY    "COMMON-SPA".
            MOVE    SMCNDATE-HMS        TO  LNK-MNTHMS
            MOVE    PARA-COUNT          TO  LNK-COUNT
       *
-      *    �����ץ������¹�
+      *    更新プログラム実行
            CALL    WRK-UPPG            USING
                                        LNK-AREA
       *
            PERFORM 20011-EDIT-PRF-SEC
       *
            IF    ( LNK-RC          NOT =   ZERO )
-               MOVE    "�饤���󥹥ޥ����ι������۾ｪλ���ޤ�����"
+               MOVE    "ライセンスマスタの更新が異常終了しました。"
                                        TO  WRK-MSTERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -396,7 +396,7 @@ grpsys     COPY    "COMMON-SPA".
        2001-EXEC-UPPG-EXT.
            EXIT.
       *****************************************************************
-      *    PRF�ե������Խ�����
+      *    PRFファイル編集処理
       *****************************************************************
        20011-EDIT-PRF-SEC              SECTION.
       *
@@ -428,14 +428,14 @@ grpsys     COPY    "COMMON-SPA".
        20011-EDIT-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    PRF�ե�����HEAD�Խ�����
+      *    PRFファイルHEAD編集処理
       *****************************************************************
        200111-EDIT-PRF-HEAD-SEC        SECTION.
       *
            INITIALIZE          PRF-HEAD-AREA
-           STRING  "��"            DELIMITED   BY  SIZE 
+           STRING  "【"            DELIMITED   BY  SIZE 
                    WRK-MSTNAME     DELIMITED   SPACE
-                   "��"            DELIMITED   BY  SIZE
+                   "】"            DELIMITED   BY  SIZE
            INTO    PRF-HNAME
            END-STRING
       *
@@ -453,13 +453,13 @@ grpsys     COPY    "COMMON-SPA".
        200111-EDIT-PRF-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ�����������
+      *    マスタ更新処理
       *****************************************************************
        2001-UPDATE-MSTKANRI-SEC        SECTION.
       *
            PERFORM 900-MSTKANRI-KEY-SEL-SEC
       *
-      *    �ޥ��������ޥ�������
+      *    マスタ管理マスタ更新
            IF      FLG-MSTKANRI        =   ZERO
                MOVE    PARA-DBRVERVION TO  MSTKANRI-DBRVERSION1
                MOVE    SMCNDATE-YMD    TO  MSTKANRI-UPYMD
@@ -471,13 +471,13 @@ grpsys     COPY    "COMMON-SPA".
 grpsys         PERFORM 910-DBUPDATE-SEC
                IF    ( MCP-RC          NOT =   ZERO )
                    DISPLAY "*(ORCXRMST4MIGV51)* DBUPDATE ERR:" MCP-RC
-                   MOVE    "�ޥ����������ι����˼��Ԥ��ޤ���"
+                   MOVE    "マスター管理の更新に失敗しました"
                                        TO  WRK-MSTERR
                    PERFORM 500-ERR-HENSYU-SEC
                END-IF
            ELSE
                PERFORM 920-DBABORT-SEC
-               MOVE    "�����оݤΥޥ����ǡ�����¸�ߤ��ޤ���"
+               MOVE    "更新対象のマスタデータが存在しません"
                                        TO  WRK-MSTERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -486,7 +486,7 @@ grpsys         PERFORM 910-DBUPDATE-SEC
        2001-UPDATE-MSTKANRI-EXT.
            EXIT.
       *****************************************************************
-      *    �����ץ������¸�ߥ����å�
+      *    更新プログラム存在チェック
       *****************************************************************
        2001-PGEXIST-CHECK              SECTION.
       *
@@ -509,7 +509,7 @@ grpsys         PERFORM 910-DBUPDATE-SEC
            IF    ( SACCESS-RC      NOT =  ZERO )
                DISPLAY "*(ORCXRMST4MIGV51)* MODULE NOT FOUND:" WRK-UPPG
                MOVE    SPACE           TO  WRK-MSTERR
-               STRING  "�����ץ�����ब¸�ߤ��ޤ���:"
+               STRING  "更新プログラムが存在しません:"
                                        DELIMITED   BY  SIZE
                        WRK-UPPG        DELIMITED   BY  SIZE
                INTO    WRK-MSTERR
@@ -522,7 +522,7 @@ grpsys         PERFORM 910-DBUPDATE-SEC
            EXIT.
       *
       *****************************************************************
-      *    �Уңư�������
+      *    ＰＲＦ印刷処理
       *****************************************************************
        250-PRINT-PRF-SEC               SECTION.
       *
@@ -539,7 +539,7 @@ grpsys         PERFORM 910-DBUPDATE-SEC
                COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
       *
                MOVE    CNT-PAGE        TO  WRK-ZZZZZ9
-               STRING  "�饤���󥹥ޥ�����ǧ�ꥹ��  "
+               STRING  "ライセンスマスタ確認リスト  "
                                        DELIMITED   BY  SIZE
                        "P-"            DELIMITED   BY  SIZE
                        WRK-ZZZZZ9      DELIMITED   BY  SIZE
@@ -576,11 +576,11 @@ grpsys         PERFORM 910-DBUPDATE-SEC
        250-PRINT-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        260-PRINT-SEC                   SECTION.
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -608,7 +608,7 @@ grpsys         PERFORM 910-DBUPDATE-SEC
            MOVE    1               TO  SPRT-SHORI-RENNUM
            MOVE    ZERO            TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
-           MOVE    "�饤���󥹥ޥ���������ǧ�ꥹ��"
+           MOVE    "ライセンスマスタ更新確認リスト"
                                    TO  SPRT-TITLE
            MOVE    HCMSL55         TO  SPRT-PRTDATA
            MOVE    ZERO            TO  SPRT-TERMID
@@ -621,7 +621,7 @@ grpsys                                 SPA-AREA
            IF    ( SPRT-RETURN     =   ZERO )
                CONTINUE
            ELSE
-               DISPLAY "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               DISPLAY "印刷ＤＢに更新できませんでした"
                MOVE    1           TO  FLG-END
            END-IF
       *
@@ -631,11 +631,11 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ����֥���󥻥����
+      *    ジョブキャンセル処理
       *****************************************************************
        500-CAN-HENSYU-SEC              SECTION.
       *
-           MOVE    "��������ߤ���ޤ���"
+           MOVE    "処理が中止されました"
                                        TO  WRK-MSTERR
       *
            OPEN    INPUT   MSTERR-FILE
@@ -650,7 +650,7 @@ grpsys                                 SPA-AREA
       *
                PERFORM 600-EDIT-PRF-SEC
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "CAN"           TO  SJOBKANRI-MODE
                INITIALIZE                   JOBKANRI-REC
                MOVE    PARA-JOBID      TO  JOB-JOBID
@@ -668,7 +668,7 @@ grpsys                                 SPA-AREA
        500-CAN-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -680,9 +680,9 @@ grpsys                                 SPA-AREA
       *
                INITIALIZE          MSTERR-REC
                STRING  WRK-MSTERR      DELIMITED   BY  SPACE
-                       "��"            DELIMITED   BY  SIZE
+                       "【"            DELIMITED   BY  SIZE
                        WRK-MSTNAME     DELIMITED   BY  SPACE
-                       "��"            DELIMITED   BY  SIZE
+                       "】"            DELIMITED   BY  SIZE
                INTO    MSTERR-REC
                END-STRING
       *
@@ -693,7 +693,7 @@ grpsys                                 SPA-AREA
       *
                PERFORM 600-EDIT-PRF-SEC
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"            TO  SJOBKANRI-MODE
                INITIALIZE                   JOBKANRI-REC
                MOVE    PARA-JOBID       TO  JOB-JOBID
@@ -713,7 +713,7 @@ grpsys                                 SPA-AREA
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    PRF�ե������Խ�����
+      *    PRFファイル編集処理
       *****************************************************************
        600-EDIT-PRF-SEC                SECTION.
       *
@@ -740,7 +740,7 @@ grpsys                                 SPA-AREA
        600-EDIT-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -767,7 +767,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ޥ���̾���Խ�����
+      *    マスタ名称編集処理
       *****************************************************************
        800-MSTNAME-SEC             SECTION.
       *
@@ -784,7 +784,7 @@ grpsys                                 SPA-AREA
        800-MSTNAME-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -795,7 +795,7 @@ grpsys                                 SPA-AREA
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -808,13 +808,13 @@ grpsys                                 SPA-AREA
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ���������������
+      *    マスタ管理検索処理
       *****************************************************************
        900-MSTKANRI-KEY-SEL-SEC        SECTION.
       *
            MOVE    ZERO            TO  FLG-MSTKANRI
       *
-      *    �ޥ��������ޥ�������
+      *    マスタ管理マスタ検索
            INITIALIZE                  MSTKANRI-REC
            MOVE    "ORCADB"            TO  MSTKANRI-KANRICD
            MOVE    PARA-MASTER-KBN     TO  MSTKANRI-KANRICD(7:2)
@@ -838,7 +838,7 @@ grpsys                                 SPA-AREA
        900-MSTKANRI-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ޥ����ǡ����̣Уң��ɹ�����
+      *    マスタデータ別ＰＲＦ読込処理
       *****************************************************************
        900-MSTPRF-READ-SEC             SECTION.
       *
@@ -853,7 +853,7 @@ grpsys                                 SPA-AREA
        900-MSTPRF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �Уң��ɹ�����
+      *    ＰＲＦ読込処理
       *****************************************************************
        900-PRF-READ-SEC                SECTION.
       *
@@ -868,7 +868,7 @@ grpsys                                 SPA-AREA
        900-PRF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
@@ -885,7 +885,7 @@ grpsys                                 SPA-AREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC             SECTION.
       *
@@ -899,7 +899,7 @@ grpsys                                 SPA-AREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -913,7 +913,7 @@ grpsys                                 SPA-AREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹������
+      *    テーブル更新処理
       *****************************************************************
        910-DBUPDATE-SEC            SECTION.
       *
@@ -927,7 +927,7 @@ grpsys                                 SPA-AREA
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹������
+      *    テーブル更新処理
       *****************************************************************
        910-INSERT-SEC              SECTION.
       *
@@ -941,7 +941,7 @@ grpsys                                 SPA-AREA
        910-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥��ܡ��Ƚ���
+      *    ＤＢアボート処理
       *****************************************************************
        920-DBABORT-SEC                 SECTION.
       *
@@ -956,7 +956,7 @@ grpsys                                 SPA-AREA
        920-DBABORT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -980,7 +980,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *
@@ -1003,7 +1003,7 @@ grpsys                                 SPA-AREA
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ӣԣ��ңԽ���
+      *    ＤＢＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
@@ -1019,7 +1019,7 @@ grpsys                                 SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ãϣͣͣɣԽ���
+      *    ＤＢＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *

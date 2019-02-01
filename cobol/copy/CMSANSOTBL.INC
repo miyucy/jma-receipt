@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    ���ǥ����ɥơ��֥�   COPY (CMSANSOTBL.INC)                  *
+      *    酸素コードテーブル   COPY (CMSANSOTBL.INC)                  *
       *----------------------------------------------------------------*
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
-      *    ���ǥ����ɥơ��֥�
+      *    酸素コードテーブル
        01  TBL-SANSO-AREA.
-      *    ���λ��ǡ����ּ�
+      *    液体酸素・定置式
            03  FILLER              PIC X(09)   VALUE   "739200000".
-      *    ���λ��ǡ����̼�
+      *    液体酸素・可般式
            03  FILLER              PIC X(09)   VALUE   "739210000".
-      *    ���ǥܥ���緿
+      *    酸素ボンベ大型
            03  FILLER              PIC X(09)   VALUE   "739220000".
-      *    ���ǥܥ�پ���
+      *    酸素ボンベ小型
            03  FILLER              PIC X(09)   VALUE   "739230000".
-      *    ���λ��ǡ����ּ���Υ���
+      *    液体酸素・定置式（離島）
            03  FILLER              PIC X(09)   VALUE   "739240000".
-      *    ���λ��ǡ����̼���Υ���
+      *    液体酸素・可般式（離島）
            03  FILLER              PIC X(09)   VALUE   "739250000".
-      *    ���ǥܥ���緿��Υ���
+      *    酸素ボンベ大型（離島）
            03  FILLER              PIC X(09)   VALUE   "739260000".
-      *    ���ǥܥ�پ�����Υ���
+      *    酸素ボンベ小型（離島）
            03  FILLER              PIC X(09)   VALUE   "739270000".
       *
        01  TBL-SANSO-AREA-R        REDEFINES   TBL-SANSO-AREA.
            03  TBL-SANSO-OCC       OCCURS   8  INDEXED   TBL-SANSO.
                05  TBL-SANSO-SRYCD     PIC X(09).
-      *    ���ǥե饰
+      *    酸素フラグ
        01  FLG-SANSO-OK                PIC 9(01).
       *
       *

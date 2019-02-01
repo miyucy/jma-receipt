@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPICLAIMR1V2.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : APIÏ¢·ÈÍÑ¥â¥¸¥å¡¼¥ë
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : £Ã£Ì£Á£É£Í¼õÉÕÁ÷¿®(xml2)
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  16/05/XX    NACL¡ÝÂ¿¡¹Ç¼¡¡¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆ
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : APIé€£æºç”¨ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ï¼£ï¼¬ï¼¡ï¼©ï¼­å—ä»˜é€ä¿¡(xml2)
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  16/05/XX    NACLâˆ’å¤šã€…ç´ã€€æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -38,10 +38,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TEND                PIC 9(01).
@@ -52,16 +52,16 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -73,7 +73,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    »þ´ÖÊÔ½¸
+      *    æ™‚é–“ç·¨é›†
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -84,7 +84,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ¥¨¥é¡¼¥³¡¼¥É
+      *    ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -106,7 +106,7 @@
            03  WRK-ACCEPT-YMD          PIC X(08).
            03  WRK-ACCEPT-TIME         PIC X(06).
       *
-      *    È¾³ÑÁ´³ÑÊÑ´¹
+      *    åŠè§’å…¨è§’å¤‰æ›
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
@@ -114,7 +114,7 @@
            03  WRK-LEN                 PIC 9(04).
       *
       *
-      *    CLAIM¥Ñ¥é¥á¥¿
+      *    CLAIMãƒ‘ãƒ©ãƒ¡ã‚¿
        01  LF01-REC. 
            COPY    "CPRLF001.INC".
       *
@@ -134,44 +134,44 @@
                05  WRK-PARA-ENDRC      PIC  X(02).
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *    æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
       *    COPY    "CPORCSNUM.INC".
       *
       *
-      *    API XMLÆÉ¤ß¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLèª­ã¿è¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPCLAIMFRONTV2REQ.INC".
-      *    API XML½ñ¤­¹þ¤ßÍÑÄêµÁÂÎ
+      *    API XMLæ›¸ãè¾¼ã¿ç”¨å®šç¾©ä½“
            COPY    "CPCLAIMFRONTV2RES.INC".
       *ver.4.7
-      *    API XMLÆÉ¤ß¹þ¤ß¶¦ÄÌÄêµÁ
+      *    API XMLèª­ã¿è¾¼ã¿å…±é€šå®šç¾©
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
-      *    ¡Ê¿¦°÷¾ðÊó¡Ë
+      *    ï¼ˆè·å“¡æƒ…å ±ï¼‰
            COPY    "CPSK1010.INC".
-      *    ¡Ê¿ÇÎÅ²Ê¾ðÊó¡Ë
+      *    ï¼ˆè¨ºç™‚ç§‘æƒ…å ±ï¼‰
            COPY    "CPSK1005.INC".
-      *    ¡Ê°åÎÅµ¡´Ø¾ðÊó¡Ë
+      *    ï¼ˆåŒ»ç™‚æ©Ÿé–¢æƒ…å ±ï¼‰
            COPY    "CPSK1001.INC".
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
@@ -180,7 +180,7 @@
       *
            COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -196,7 +196,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -210,19 +210,19 @@
            INITIALIZE                      SPA-AREA
            INITIALIZE                      CNT-AREA
       *
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 100-INIT-SEC
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
       *
            IF      WRK-ERRCD           =   "99"
-      *        ¥æ¡¼¥¶£É£Ä¥¨¥é¡¼
+      *        ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤ã‚¨ãƒ©ãƒ¼
                MOVE   404                  TO  APILST23-HTTPSTATUS
            ELSE
-      *        ÊÖµÑÎÎ°èÊÔ½¸
+      *        è¿”å´é ˜åŸŸç·¨é›†
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -235,14 +235,14 @@
       *
       *
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-CLAIM-FRONTV2REQ
            INITIALIZE                      XML-CLAIM-FRONTV2RES
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -251,14 +251,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ÆüÉÕ¡¦»þ´Ö½ÐÎÏÊÔ½¸
+      *    æ—¥ä»˜ãƒ»æ™‚é–“å‡ºåŠ›ç·¨é›†
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  CLFRRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  CLFRRES-INFORMATION-TIME
       *
-      *    °åÎÅµ¡´Ø¼±ÊÌÈÖ¹æ¥»¥Ã¥È 
+      *    åŒ»ç™‚æ©Ÿé–¢è­˜åˆ¥ç•ªå·ã‚»ãƒƒãƒˆ 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -267,7 +267,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *    ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -285,11 +285,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡½èÍý
+      *    ä¸»ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML¾ðÊó¼è¤ê½Ð¤·
+      *    XMLæƒ…å ±å–ã‚Šå‡ºã—
            PERFORM 1000-APTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -299,21 +299,21 @@
            MOVE    SPACE               TO  WRK-KEICD
       *
            MOVE    ZERO                TO  FLG-SYORI
-      *    ÆþÎÏ¹àÌÜ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›é …ç›®ãƒã‚§ãƒƒã‚¯å‡¦ç†
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
       *
-      *    Á÷¿®ÆâÍÆÊÔ½¸
+      *    é€ä¿¡å†…å®¹ç·¨é›†
            PERFORM 2003-CLAIMHEN-SEC
       *
            IF      WRK-ERRCD           =   SPACE
                EVALUATE    CLFRREQ-REQUEST-NUMBER
                    WHEN    "01"
-      *                £Ã£Ì£Á£É£Í¥Ç¡¼¥¿¾ðÊóÊÔ½¸
+      *                ï¼£ï¼¬ï¼¡ï¼©ï¼­ãƒ‡ãƒ¼ã‚¿æƒ…å ±ç·¨é›†
                        PERFORM 2002-SYORI-01-SEC
                    WHEN    "02"
-      *                Á÷¿®ºÑ¤ß¹¹¿·
+      *                é€ä¿¡æ¸ˆã¿æ›´æ–°
                        PERFORM 2004-SYORI-02-SEC
                    WHEN    OTHER
                        MOVE    "15"              TO  WRK-ERRCD
@@ -325,7 +325,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó¤«¤éÆâÍÆ¤ò¼è¤ê½Ð¤¹
+      *    XMLæƒ…å ±ã‹ã‚‰å†…å®¹ã‚’å–ã‚Šå‡ºã™
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -333,7 +333,7 @@
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
            INITIALIZE                      XML-APIREQ
-      * XML¾ðÊó¼è¤ê½Ð¤·
+      * XMLæƒ…å ±å–ã‚Šå‡ºã—
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_claim_frontv2req"   TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -386,20 +386,20 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
                MOVE    ZERO                TO  CLFRRES-API-RESULT
-               MOVE    "½èÍý½ªÎ»"          TO  CLFRRES-API-RESULT-MSG
+               MOVE    "å‡¦ç†çµ‚äº†"          TO  CLFRRES-API-RESULT-MSG
            ELSE
                IF      WRK-ERRMSG          =   SPACE
-      *        ¥¨¥é¡¼¡¦·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *        ã‚¨ãƒ©ãƒ¼ãƒ»è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                MOVE    WRK-ERRCD           TO  CLFRRES-API-RESULT
@@ -413,7 +413,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML¾ðÊó½ñ¤­¹þ¤ß½èÍý
+      *    XMLæƒ…å ±æ›¸ãè¾¼ã¿å‡¦ç†
       *****************************************************************
        3001-TMDCXMLMAKE-SEC        SECTION.
       *
@@ -458,7 +458,7 @@
       *
       *
       *****************************************************************
-      *    ÆÉ¤ß¹þ¤ó¤ÀXML¤ÎLOW-VALUE ¤ò  SPACE ¤ËÃÖ´¹
+      *    èª­ã¿è¾¼ã‚“ã XMLã®LOW-VALUE ã‚’  SPACE ã«ç½®æ›
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -468,26 +468,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô´ðËÜ¾ðÊóÀßÄêÆâÍÆ¥Á¥§¥Ã¥¯
+      *    æ‚£è€…åŸºæœ¬æƒ…å ±è¨­å®šå†…å®¹ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
            PERFORM 20010-INPUT-HEN-SEC
       *
-      *    ¼õÉÕÆü¥Á¥§¥Ã¥¯
+      *    å—ä»˜æ—¥ãƒã‚§ãƒƒã‚¯
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-ACCEPT-DATE-SEC
            END-IF
-      *    ¼õÉÕ»þ´Ö¥Á¥§¥Ã¥¯
+      *    å—ä»˜æ™‚é–“ãƒã‚§ãƒƒã‚¯
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-ACCEPT-TIME-SEC
            END-IF
-      *    ´µ¼ÔÈÖ¹æ¥Á¥§¥Ã¥¯
+      *    æ‚£è€…ç•ªå·ãƒã‚§ãƒƒã‚¯
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PTNUM-CHK-SEC
            END-IF
-      *    ¿ÇÎÅ²Ê¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
            IF     (WRK-SRYKA           =   SPACE
                                        OR  "XX"  )
                CONTINUE
@@ -496,7 +496,7 @@
                    PERFORM 20011-SRYKA-CHK-SEC
                END-IF
            END-IF
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
            IF     (WRK-DRCD            =   SPACE
                                        OR  "@@@@@"  )
                CONTINUE
@@ -511,39 +511,39 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¹àÌÜÊÑ´¹ÊÔ½¸½èÍý
+      *    å…¥åŠ›é …ç›®å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        20010-INPUT-HEN-SEC     SECTION.
       *
-      *    ¼õÉÕ¿ÇÎÅÆüÉÕ
+      *    å—ä»˜è¨ºç™‚æ—¥ä»˜
            MOVE    CLFRREQ-ACCEPT-DATE     TO  WRK-HEN-DATE
            MOVE    SPACE                   TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD                TO  WRK-ACCEPT-YMD
-      *    Ì¤ÀßÄê»þ¤Ï¥·¥¹¥Æ¥à¾ðÊóÀßÄê
+      *    æœªè¨­å®šæ™‚ã¯ã‚·ã‚¹ãƒ†ãƒ æƒ…å ±è¨­å®š
            IF      WRK-ACCEPT-YMD          =   SPACE
                MOVE    SMCNDATE-YMD        TO  WRK-ACCEPT-YMD
                MOVE    "K1"                TO  WRK-KEICD
            END-IF
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¤È¤¹¤ë
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã¨ã™ã‚‹
            MOVE    WRK-ACCEPT-YMD      TO  SPA-SYSYMD
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            MOVE    CLFRREQ-PATIENTID   TO  WRK-PTNUM
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            MOVE    CLFRREQ-DEP-CODE    TO  WRK-SRYKA
-      *    ¥É¥¯¥¿¡¼
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼
            MOVE    CLFRREQ-DR-CODE     TO  WRK-DRCD
            .
        20010-INPUT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ¼õÉÕÆü¥Á¥§¥Ã¥¯
+      *    å—ä»˜æ—¥ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-ACCEPT-DATE-SEC    SECTION.
       *
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯¥µ¥Ö
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -564,7 +564,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼õÉÕ»þ´Ö¥Á¥§¥Ã¥¯
+      *    å—ä»˜æ™‚é–“ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-ACCEPT-TIME-SEC    SECTION.
       *
@@ -581,11 +581,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¥Á¥§¥Ã¥¯
+      *    æ‚£è€…ç•ªå·ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-PTNUM-CHK-SEC     SECTION.
       *
-      *    ´µ¼ÔÈÖ¹æ¼èÆÀ
+      *    æ‚£è€…ç•ªå·å–å¾—
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-PTNUM           TO  SPTID-PTNUM
@@ -612,11 +612,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²Ê¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-SRYKA-CHK-SEC         SECTION.
       *
-      *    ¿ÇÎÅ²Ê¤ÎÂ¸ºß¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ã®å­˜åœ¨ãƒã‚§ãƒƒã‚¯
            MOVE    SPACE               TO  SYS-1005-REC
            INITIALIZE                  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
@@ -624,7 +624,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SYS-1005-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -639,7 +639,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥É¥¯¥¿¡¼¥³¡¼¥É¥Á¥§¥Ã¥¯
+      *    ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-DRCD-CHK-SEC         SECTION.
       *
@@ -650,7 +650,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢
            MOVE    SYS-1010-REC        TO  SYSKANRI-REC
            PERFORM 900-SYSKANRI-SEL-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -665,12 +665,12 @@
       *
       *
       *****************************************************************
-      *    Á÷¿®ÆâÍÆÊÔ½¸½èÍý
+      *    é€ä¿¡å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        2003-CLAIMHEN-SEC        SECTION.
       *
            MOVE    WRK-PTNUM           TO  CLFRRES-PATIENTID
-      *    ¼Â»ÜÆü(CCYY-MM-DDTHH:MM:SS·Á¼°)
+      *    å®Ÿæ–½æ—¥(CCYY-MM-DDTHH:MM:SSå½¢å¼)
            STRING  CLFRRES-INFORMATION-DATE
                    "T"
                    CLFRRES-INFORMATION-TIME
@@ -682,18 +682,18 @@
        2003-CLAIMHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ç¡¼¥¿¾ðÊóÊÔ½¸½èÍý
+      *    ãƒ‡ãƒ¼ã‚¿æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2002-SYORI-01-SEC           SECTION.
       *
            INITIALIZE                  WRK-CLAIM-PARA
            MOVE    WRK-ACCEPT-TIME     TO  WRK-PARA-TIME
-      *    ¿ÇÎÅÆâÍÆÌ¾¾Î
+      *    è¨ºç™‚å†…å®¹åç§°
            MOVE    CLFRREQ-MEDICAL-NAME
                                        TO  WRK-PARA-SINRYONAIYO
-      *    ¥á¥âÁ÷¿®¶èÊ¬
+      *    ãƒ¡ãƒ¢é€ä¿¡åŒºåˆ†
            MOVE    CLFRREQ-MEMO-CODE   TO  WRK-PARA-MEMO
-      *    Á÷¿®Ï¢ÈÖ
+      *    é€ä¿¡é€£ç•ª
            MOVE    "01"                TO  WRK-PARA-RENNUM
       *
            MOVE    WRK-SRYKA           TO  SPA-SRYKA
@@ -709,487 +709,487 @@
                                                SPA-AREA
                                                LF01-REC
       *
-      *    ´µ¼Ô¾ðÊóÆâÍÆÊÔ½¸
+      *    æ‚£è€…æƒ…å ±å†…å®¹ç·¨é›†
            PERFORM 20021-CLFRRES-HEN-SEC
       *
            .
        2002-SYORI-01-EXT.
            EXIT.
       *****************************************************************
-      *    ¼èÆÀ¾ðÊóÊÔ½¸½èÍý
+      *    å–å¾—æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20021-CLFRRES-HEN-SEC     SECTION.
       *
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
            MOVE    LF01-PTID1          TO  CLFRRES-PTID1
-      * ID¤Î¼ïÎà¥³¡¼¥É
+      * IDã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-IDTYPE1        TO  CLFRRES-IDTYPE1
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
            MOVE    LF01-CRE001-PERSONALID
                                        TO  CLFRRES-CRE001-PERSONALID
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-FULLNAME
                                        TO  CLFRRES-CRE001-FULLNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-FAMILYNAME
                                        TO  CLFRRES-CRE001-FAMILYNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-GIVENNAME
                                        TO  CLFRRES-CRE001-GIVENNAME
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
            MOVE    LF01-CRE001-FAMILYNAME
                                        TO  CLFRRES-CRE001-FAMILYNAME
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
            MOVE    LF01-CRE001-PREFIX
                                        TO  CLFRRES-CRE001-PREFIX
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
            MOVE    LF01-CRE001-DEGREE
                                        TO  CLFRRES-CRE001-DEGREE
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
            MOVE    LF01-CRE001-FACILITYNAME
                                        TO  CLFRRES-CRE001-FACILITYNAME
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
            MOVE    LF01-CRE001-FACILITYID
                                        TO  CLFRRES-CRE001-FACILITYID
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
            MOVE    LF01-CRE001-DPERTNAME
                                        TO  CLFRRES-CRE001-DPERTNAME
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
            MOVE    LF01-CRE001-DPERTID
                                        TO  CLFRRES-CRE001-DPERTID
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-ADRFULLNAME
                                        TO  CLFRRES-CRE001-ADRFULLNAME
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
            MOVE    LF01-CRE001-ADRCLASS
                                        TO  CLFRRES-CRE001-ADRCLASS
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-ADRPREF
                                        TO  CLFRRES-CRE001-ADRPREF
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-ADRCITY
                                        TO  CLFRRES-CRE001-ADRCITY
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-ADRTOWN
                                        TO  CLFRRES-CRE001-ADRTOWN
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE001-ADRHOMENUM
                                        TO  CLFRRES-CRE001-ADRHOMENUM
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
            MOVE    LF01-CRE001-ZIP
                                        TO  CLFRRES-CRE001-ZIP
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE001-COUNTRY
                                        TO  CLFRRES-CRE001-COUNTRY
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            MOVE    LF01-CRE001-EMAIL
                                        TO  CLFRRES-CRE001-EMAIL
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE001-PHONEAREA
                                        TO  CLFRRES-CRE001-PHONEAREA
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE001-PHONECITY
                                        TO  CLFRRES-CRE001-PHONECITY
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
            MOVE    LF01-CRE001-PHONENUM
                                        TO  CLFRRES-CRE001-PHONENUM
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
            MOVE    LF01-CRE001-PHONEEXT
                                        TO  CLFRRES-CRE001-PHONEEXT
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
            MOVE    LF01-CRE001-PHONECOUNTRY
                                        TO  CLFRRES-CRE001-PHONECOUNTRY
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
            MOVE    LF01-CRE001-PHONEMEMO
                                        TO  CLFRRES-CRE001-PHONEMEMO
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE001-PHONEEQUIP
                                        TO  CLFRRES-CRE001-PHONEEQUIP
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
            MOVE    LF01-CRE001-LICENSE
                                        TO  CLFRRES-CRE001-LICENSE
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />)
            MOVE    "<extRefs />"       TO  CLFRRES-M-RX001-I1
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ  (<accessRight permit="all" />) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤  (<accessRight permit="all" />) 
            MOVE    '<accessRight permit="all" />'
                                        TO  CLFRRES-M-RI101-ACC1
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist) 
            MOVE    "Data of Regist"
                                        TO  CLFRRES-M-RI101-TITLE
       *##
       *
-      * [´µ¼Ô¾ðÊó]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * [æ‚£è€…æƒ…å ±]
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
            MOVE    LF01-UID1           TO  CLFRRES-UID1
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ç¢ºå®šæ—¥
            MOVE    LF01-CONFIRMDATE1
                                        TO  CLFRRES-CONFIRMDATE1
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
            MOVE    LF01-CRE101-PERSONALID
                                        TO  CLFRRES-CRE101-PERSONALID
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-FULLNAME
                                        TO  CLFRRES-CRE101-FULLNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-FAMILYNAME
                                        TO  CLFRRES-CRE101-FAMILYNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-GIVENNAME
                                        TO  CLFRRES-CRE101-GIVENNAME
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
            MOVE    LF01-CRE101-MIDDLENAME
                                        TO  CLFRRES-CRE101-MIDDLENAME
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
            MOVE    LF01-CRE101-PREFIX
                                        TO  CLFRRES-CRE101-PREFIX
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
            MOVE    LF01-CRE101-DEGREE
                                        TO  CLFRRES-CRE101-DEGREE
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
            MOVE    LF01-CRE101-FACILITYNAME
                                        TO  CLFRRES-CRE101-FACILITYNAME
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
            MOVE    LF01-CRE101-FACILITYID
                                        TO  CLFRRES-CRE101-FACILITYID
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
            MOVE    LF01-CRE101-DPERTNAME
                                        TO  CLFRRES-CRE101-DPERTNAME
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
            MOVE    LF01-CRE101-DPERTID
                                        TO  CLFRRES-CRE101-DPERTID
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-ADRFULLNAME
                                        TO  CLFRRES-CRE101-ADRFULLNAME
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
            MOVE    LF01-CRE101-ADRCLASS
                                        TO  CLFRRES-CRE101-ADRCLASS
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-ADRPREF
                                        TO  CLFRRES-CRE101-ADRPREF
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-ADRCITY
                                        TO  CLFRRES-CRE101-ADRCITY
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-ADRTOWN
                                        TO  CLFRRES-CRE101-ADRTOWN
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE101-ADRHOMENUM
                                        TO  CLFRRES-CRE101-ADRHOMENUM
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
            MOVE    LF01-CRE101-ZIP
                                        TO  CLFRRES-CRE101-ZIP
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE101-COUNTRY
                                        TO  CLFRRES-CRE101-COUNTRY
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            MOVE    LF01-CRE101-EMAIL
                                        TO  CLFRRES-CRE101-EMAIL
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE101-PHONEAREA
                                        TO  CLFRRES-CRE101-PHONEAREA
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE101-PHONECITY
                                        TO  CLFRRES-CRE101-PHONECITY
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
            MOVE    LF01-CRE101-PHONENUM
                                        TO  CLFRRES-CRE101-PHONENUM
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
            MOVE    LF01-CRE101-PHONEEXT
                                        TO  CLFRRES-CRE101-PHONEEXT
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
            MOVE    LF01-CRE101-PHONECOUNTRY
                                        TO  CLFRRES-CRE101-PHONECOUNTRY
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
            MOVE    LF01-CRE101-PHONEMEMO
                                        TO  CLFRRES-CRE101-PHONEMEMO
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE101-PHONEEQUIP
                                        TO  CLFRRES-CRE101-PHONEEQUIP
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼
            MOVE    LF01-CRE101-LICENSE
                                        TO  CLFRRES-CRE101-LICENSE
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />) 
            MOVE    "<extRefs />"       TO  CLFRRES-M-RX101-I1
       *##
-      * ´µ¼Ô¼çID
+      * æ‚£è€…ä¸»ID
            MOVE    LF01-PTID2          TO  CLFRRES-PTID2
-      * ´µ¼Ô¼çID¤Î¥Æ¡¼¥Ö¥ëÌ¾
+      * æ‚£è€…ä¸»IDã®ãƒ†ãƒ¼ãƒ–ãƒ«å
            MOVE    LF01-IDTYPE2        TO  CLFRRES-IDTYPE2
-      * »áÌ¾(¥«¥Ê)¤ÎÉ½µ­Ë¡
+      * æ°å(ã‚«ãƒŠ)ã®è¡¨è¨˜æ³•
            MOVE    LF01-KANANAME-REPCODE
                                        TO  CLFRRES-KANANAME-REPCODE
-      * »áÌ¾(¥«¥Ê)¤Î¥Õ¥ë¥Í¡¼¥à
+      * æ°å(ã‚«ãƒŠ)ã®ãƒ•ãƒ«ãƒãƒ¼ãƒ 
            MOVE    LF01-KANANAME
                                        TO  CLFRRES-KANANAME
-      * »áÌ¾(´Á»ú)¤ÎÉ½µ­Ë¡
+      * æ°å(æ¼¢å­—)ã®è¡¨è¨˜æ³•
            MOVE    LF01-NAME-REPCODE
                                        TO  CLFRRES-NAME-REPCODE
-      * »áÌ¾(´Á»ú)¤Î¥Õ¥ë¥Í¡¼¥à
+      * æ°å(æ¼¢å­—)ã®ãƒ•ãƒ«ãƒãƒ¼ãƒ 
            MOVE    LF01-NAME           TO  CLFRRES-NAME
-      * À¸Ç¯·îÆü
+      * ç”Ÿå¹´æœˆæ—¥
            MOVE    LF01-BIRTHDAY
                                        TO  CLFRRES-BIRTHDAY
-      * À­ÊÌ
+      * æ€§åˆ¥
            MOVE    LF01-SEX            TO  CLFRRES-SEX
-      * ½»½ê(¼«Âð)
+      * ä½æ‰€(è‡ªå®…)
            MOVE    LF01-HOME-ADRS
                                        TO  CLFRRES-HOME-ADRS
-      * ½»½ê(¼«Âð) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(è‡ªå®…) ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-HOME-KREPCODE
                                        TO  CLFRRES-HOME-KREPCODE
-      * ½»½ê(¼«Âð) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(è‡ªå®…) éƒµä¾¿ç•ªå·
            MOVE    LF01-HOME-POST
                                        TO  CLFRRES-HOME-POST
-      * ½»½ê(Ï¢ÍíÀè)
+      * ä½æ‰€(é€£çµ¡å…ˆ)
            MOVE    LF01-RENRAKU-ADRS
                                        TO  CLFRRES-RENRAKU-ADRS
-      * ½»½ê(Ï¢ÍíÀè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(é€£çµ¡å…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-RENRAKU-KREPCODE
                                        TO  CLFRRES-RENRAKU-KREPCODE
-      * ½»½ê(Ï¢ÍíÀè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(é€£çµ¡å…ˆ) éƒµä¾¿ç•ªå·
            MOVE    LF01-RENRAKU-POST
                                        TO  CLFRRES-RENRAKU-POST
-      * ½»½ê(¶ÐÌ³Àè)
+      * ä½æ‰€(å‹¤å‹™å…ˆ)
            MOVE    LF01-OFFICE-ADRS
                                        TO  CLFRRES-OFFICE-ADRS
-      * ½»½ê(¶ÐÌ³Àè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(å‹¤å‹™å…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-OFFICE-KREPCODE
                                        TO  CLFRRES-OFFICE-KREPCODE
-      * ½»½ê(¶ÐÌ³Àè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(å‹¤å‹™å…ˆ) éƒµä¾¿ç•ªå·
            MOVE    LF01-OFFICE-POST
                                        TO  CLFRRES-OFFICE-POST
-      * ½»½ê(µ¢¾ÊÀè)
+      * ä½æ‰€(å¸°çœå…ˆ)
            MOVE    LF01-KISEI-ADRS
                                        TO  CLFRRES-KISEI-ADRS
-      * ½»½ê(µ¢¾ÊÀè) ¼ïÎà¥³¡¼¥É
+      * ä½æ‰€(å¸°çœå…ˆ) ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-KISEI-KREPCODE
                                        TO  CLFRRES-KISEI-KREPCODE
-      * ½»½ê(µ¢¾ÊÀè) Í¹ÊØÈÖ¹æ
+      * ä½æ‰€(å¸°çœå…ˆ) éƒµä¾¿ç•ªå·
            MOVE    LF01-KISEI-POST
                                        TO  CLFRRES-KISEI-POST
-      * »Ô³°¶ÉÈÖ
+      * å¸‚å¤–å±€ç•ª
            MOVE    LF01-PHONE-AREA
                                        TO  CLFRRES-PHONE-AREA
-      * ¶ÉÈÖ
+      * å±€ç•ª
            MOVE    LF01-PHONE-CITY
                                        TO  CLFRRES-PHONE-CITY
-      * ²ÃÆþÈÖ¹æ
+      * åŠ å…¥ç•ªå·
            MOVE    LF01-PHONE-NUM
                                        TO  CLFRRES-PHONE-NUM
-      * ÆâÀþÈÖ¹æ
+      * å†…ç·šç•ªå·
            MOVE    LF01-PHONE-EXT
                                        TO  CLFRRES-PHONE-EXT
-      * ¹ñÈÖ¹æ
+      * å›½ç•ªå·
            MOVE    LF01-PHONE-COUNTRY
                                        TO  CLFRRES-PHONE-COUNTRY
-      * »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
            MOVE    LF01-PHONE-MEMO
                                        TO  CLFRRES-PHONE-MEMO
-      * ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É [¾ÊÎ¬²ÄÇ½¡¦Â°À­] (PH)
+      * è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰ [çœç•¥å¯èƒ½ãƒ»å±žæ€§] (PH)
            MOVE    LF01-PHONE-EQUIP
                                        TO  CLFRRES-PHONE-EQUIP
-      * »àË´¥Õ¥é¥°
+      * æ­»äº¡ãƒ•ãƒ©ã‚°
            MOVE    LF01-DEATHKBN
                                        TO  CLFRRES-DEATHKBN
-      * [·ò¹¯ÊÝ¸±¾ðÊó]
+      * [å¥åº·ä¿é™ºæƒ…å ±]
            PERFORM VARYING     IDX     FROM    1   BY   1
                    UNTIL      (IDX     >   20 )
                     OR        (LF01-UID2(IDX)  =   SPACE )
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<accessRight permit="all" />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<accessRight permit="all" />)
                MOVE    '<accessRight permit="all" />'
                                        TO  CLFRRES-M-RI2II-ACC1(IDX)
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist)
                MOVE    "Data of Regist"
                                        TO  CLFRRES-M-RI2II-TITLE(IDX)
       *##
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
                MOVE    LF01-UID2 (IDX)
                                        TO  CLFRRES-UID2  (IDX)
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
                MOVE    LF01-CONFIRMDATE2 (IDX)
                                        TO  CLFRRES-CONFIRMDATE2 (IDX)
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
                MOVE    LF01-CRE201-PERSONALID (IDX)
                                        TO  CLFRRES-CRE201-PERSONALID
                                                                (IDX)
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-FULLNAME (IDX)
                                        TO  CLFRRES-CRE201-FULLNAME
                                                                (IDX)
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-FAMILYNAME (IDX)
                                        TO  CLFRRES-CRE201-FAMILYNAME
                                                                (IDX)
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-GIVENNAME (IDX)
                                        TO  CLFRRES-CRE201-GIVENNAME
                                                                (IDX)
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
                MOVE    LF01-CRE201-MIDDLENAME (IDX)
                                        TO  CLFRRES-CRE201-MIDDLENAME
                                                                (IDX)
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
                MOVE    LF01-CRE201-PREFIX (IDX)
                                        TO  CLFRRES-CRE201-PREFIX
                                                                (IDX)
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
                MOVE    LF01-CRE201-DEGREE (IDX)
                                        TO  CLFRRES-CRE201-DEGREE
                                                                (IDX)
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
                MOVE    LF01-CRE201-FACILITYNAME (IDX)
                                        TO  CLFRRES-CRE201-FACILITYNAME
                                                                (IDX)
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
                MOVE    LF01-CRE201-FACILITYID (IDX)
                                        TO  CLFRRES-CRE201-FACILITYID
                                                                (IDX)
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
                MOVE    LF01-CRE201-DPERTNAME (IDX)
                                        TO  CLFRRES-CRE201-DPERTNAME
                                                                (IDX)
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
                MOVE    LF01-CRE201-DPERTID (IDX)
                                        TO  CLFRRES-CRE201-DPERTID
                                                                (IDX)
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-ADRFULLNAME (IDX)
                                        TO  CLFRRES-CRE201-ADRFULLNAME
                                                                (IDX)
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
                MOVE    LF01-CRE201-ADRCLASS (IDX)
                                        TO  CLFRRES-CRE201-ADRCLASS
                                                                (IDX)
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-ADRPREF (IDX)
                                        TO  CLFRRES-CRE201-ADRPREF
                                                                (IDX)
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-ADRCITY (IDX)
                                        TO  CLFRRES-CRE201-ADRCITY
                                                                (IDX)
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-ADRTOWN (IDX)
                                        TO  CLFRRES-CRE201-ADRTOWN
                                                                (IDX)
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
                MOVE    LF01-CRE201-ADRHOMENUM (IDX)
                                        TO  CLFRRES-CRE201-ADRHOMENUM
                                                                (IDX)
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
                MOVE    LF01-CRE201-ZIP (IDX)
                                        TO  CLFRRES-CRE201-ZIP
                                                                (IDX)
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
                MOVE    LF01-CRE201-COUNTRY (IDX)
                                        TO  CLFRRES-CRE201-COUNTRY
                                                                (IDX)
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
                MOVE    LF01-CRE201-EMAIL (IDX)
                                        TO  CLFRRES-CRE201-EMAIL
                                                                (IDX)
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
                MOVE    LF01-CRE201-PHONEAREA (IDX)
                                        TO  CLFRRES-CRE201-PHONEAREA
                                                                (IDX)
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
                MOVE    LF01-CRE201-PHONECITY (IDX)
                                        TO  CLFRRES-CRE201-PHONECITY
                                                                (IDX)
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
                MOVE    LF01-CRE201-PHONENUM (IDX)
                                        TO  CLFRRES-CRE201-PHONENUM
                                                                (IDX)
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
                MOVE    LF01-CRE201-PHONEEXT (IDX)
                                        TO  CLFRRES-CRE201-PHONEEXT
                                                                (IDX)
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
                MOVE    LF01-CRE201-PHONECOUNTRY (IDX)
                                        TO  CLFRRES-CRE201-PHONECOUNTRY
                                                                (IDX)
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
                MOVE    LF01-CRE201-PHONEMEMO (IDX)
                                        TO  CLFRRES-CRE201-PHONEMEMO
                                                                (IDX)
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
                MOVE    LF01-CRE201-PHONEEQUIP (IDX)
                                        TO  CLFRRES-CRE201-PHONEEQUIP
                                                                (IDX)
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
                MOVE    LF01-CRE201-LICENSE (IDX)
                                        TO  CLFRRES-CRE201-LICENSE
                                                                (IDX)
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ  (<extRefs />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤  (<extRefs />)
                MOVE    "<extRefs />"
                                        TO  CLFRRES-M-RX2II-I1
                                                                (IDX)
       *##
-      * ·ò¹¯ÊÝ¸±¼ïÊÌÌ¾¾Î
+      * å¥åº·ä¿é™ºç¨®åˆ¥åç§°
                MOVE    LF01-HKNSBT (IDX)
                                        TO  CLFRRES-HKNSBT    (IDX)
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰
                MOVE    LF01-HKNSBTCODE (IDX)
                                        TO  CLFRRES-HKNSBTCODE (IDX)
-      * ·ò¹¯ÊÝ¸±¼ïÊÌ¥³¡¼¥É¥Æ¡¼¥Ö¥ëÌ¾
+      * å¥åº·ä¿é™ºç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ãƒ†ãƒ¼ãƒ–ãƒ«å
                MOVE    LF01-HKNSBTTBL (IDX)
                                        TO  CLFRRES-HKNSBTTBL (IDX)
-      *ÊÝ¸±¼ÔÈÖ¹æ
+      *ä¿é™ºè€…ç•ªå·
                MOVE    LF01-HKNJANUM (IDX)
                                        TO  CLFRRES-HKNJANUM  (IDX)
-      *µ­¹æ
+      *è¨˜å·
                MOVE    LF01-KIGO (IDX)
                                        TO  CLFRRES-KIGO    (IDX)
-      *ÈÖ¹æ
+      *ç•ªå·
                MOVE    LF01-NUM (IDX)
                                        TO  CLFRRES-NUM    (IDX)
-      *ËÜ¿Í²ÈÂ²¶èÊ¬
+      *æœ¬äººå®¶æ—åŒºåˆ†
                MOVE    LF01-HONKZKKBN (IDX)
                                        TO  CLFRRES-HONKZKKBN (IDX)
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                MOVE    LF01-TEKSTYMD (IDX)
                                        TO  CLFRRES-TEKSTYMD (IDX)
-      *Å¬ÍÑ½ªÎ»Ç¯·îÆü
+      *é©ç”¨çµ‚äº†å¹´æœˆæ—¥
                MOVE    LF01-TEKEDYMD (IDX)
                                        TO  CLFRRES-TEKEDYMD (IDX)
-      * Æþ±¡»þ¤ÎÉéÃ´Î¨
+      * å…¥é™¢æ™‚ã®è² æ‹…çŽ‡
                MOVE    LF01-INRATIO (IDX)
                                        TO  CLFRRES-INRATIO  (IDX)
-      * ³°Íè»þ¤ÎÉéÃ´Î¨
+      * å¤–æ¥æ™‚ã®è² æ‹…çŽ‡
                MOVE    LF01-OUTRATIO (IDX)
                                        TO  CLFRRES-OUTRATIO (IDX)
-      *¸øÈñ¾ðÊó
+      *å…¬è²»æƒ…å ±
                PERFORM VARYING     IDY     FROM    1   BY   1
                        UNTIL      (IDY     >   6 )
-      *Í¥Àè½ç°Ì
+      *å„ªå…ˆé †ä½
                    MOVE    LF01-PRIORITY (IDX IDY)
                                        TO  CLFRRES-PRIORITY
                                                         (IDX IDY)
-      *¸øÈñÌ¾¾Î
+      *å…¬è²»åç§°
                    MOVE    LF01-KOHINAME (IDX IDY)
                                        TO  CLFRRES-KOHINAME
                                                         (IDX IDY)
-      *ÉéÃ´¼ÔÈÖ¹æ
+      *è² æ‹…è€…ç•ªå·
                    MOVE    LF01-FTNJANUM (IDX IDY)
                                        TO  CLFRRES-FTNJANUM
                                                         (IDX IDY)
-      *¼õµë¼ÔÈÖ¹æ
+      *å—çµ¦è€…ç•ªå·
                    MOVE    LF01-JKYSNUM (IDX IDY)
                                        TO  CLFRRES-JKYSNUM
                                                         (IDX IDY)
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                    MOVE    LF01-TTEKSTYMD (IDX IDY)
                                        TO  CLFRRES-TTEKSTYMD
                                                         (IDX IDY)
-      *Å¬ÍÑ½ªÎ»Ç¯·îÆü
+      *é©ç”¨çµ‚äº†å¹´æœˆæ—¥
                    MOVE    LF01-TTEKEDYMD (IDX IDY)
                                        TO  CLFRRES-TTEKEDYMD
                                                         (IDX IDY)
-      * ÉéÃ´¶â¤Þ¤¿¤ÏÉéÃ´Î¨
+      * è² æ‹…é‡‘ã¾ãŸã¯è² æ‹…çŽ‡
                    MOVE    LF01-RATIO-CODE (IDX IDY)
                                        TO  CLFRRES-RATIO-CODE
                                                         (IDX IDY)
@@ -1199,179 +1199,179 @@
                END-PERFORM
            END-PERFORM
       *
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<accessRight permit="all" />)
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<accessRight permit="all" />)
            MOVE    '<accessRight permit="all" />'
                                        TO  CLFRRES-M-RI301-ACC1
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (Data of Regist) 
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (Data of Regist) 
            MOVE    "Data of Regist"
                                        TO  CLFRRES-M-RI301-TITLE
       *##
       *[CLAIM]
-      * Ê¸½ñ¥æ¥Ë¡¼¥¯ID
+      * æ–‡æ›¸ãƒ¦ãƒ‹ãƒ¼ã‚¯ID
            MOVE    LF01-UID3
                                        TO  CLFRRES-UID3
-      * ¥«¥ë¥ÆÅÅ»ÒÊÝÂ¸¤Î³ÎÄêÆü
+      * ã‚«ãƒ«ãƒ†é›»å­ä¿å­˜ã®ç¢ºå®šæ—¥
            MOVE    LF01-CONFIRMDATE3
                                        TO  CLFRRES-CONFIRMDATE3
-      * ºîÀ®¼Ô ¸Ä¿ÍID [É¬¿Ü]
+      * ä½œæˆè€… å€‹äººID [å¿…é ˆ]
            MOVE    LF01-CRE301-PERSONALID
                                        TO  CLFRRES-CRE301-PERSONALID
-      * ºîÀ®¼Ô ¸Ä¿Í¥Õ¥ë¥Í¡¼¥à [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººãƒ•ãƒ«ãƒãƒ¼ãƒ  [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-FULLNAME
                                        TO  CLFRRES-CRE301-FULLNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÀ« [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå§“ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-FAMILYNAME
                                        TO  CLFRRES-CRE301-FAMILYNAME
-      * ºîÀ®¼Ô ¸Ä¿ÍÌ¾ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å€‹äººå [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-GIVENNAME
                                        TO  CLFRRES-CRE301-GIVENNAME
-      * ºîÀ®¼Ô ¥ß¥É¥ë¥Í¡¼¥à
+      * ä½œæˆè€… ãƒŸãƒ‰ãƒ«ãƒãƒ¼ãƒ 
            MOVE    LF01-CRE301-MIDDLENAME
                                        TO  CLFRRES-CRE301-MIDDLENAME
-      * ºîÀ®¼Ô ¸ª½ñ¤­¤Ê¤É
+      * ä½œæˆè€… è‚©æ›¸ããªã©
            MOVE    LF01-CRE301-PREFIX
                                        TO  CLFRRES-CRE301-PREFIX
-      * ºîÀ®¼Ô ³Ø°Ì
+      * ä½œæˆè€… å­¦ä½
            MOVE    LF01-CRE301-DEGREE
                                        TO  CLFRRES-CRE301-DEGREE
-      * ºîÀ®¼Ô »ÜÀß¾ðÊóÌ¾
+      * ä½œæˆè€… æ–½è¨­æƒ…å ±å
            MOVE    LF01-CRE301-FACILITYNAME
                                        TO  CLFRRES-CRE301-FACILITYNAME
-      * ºîÀ®¼Ô »ÜÀßID
+      * ä½œæˆè€… æ–½è¨­ID
            MOVE    LF01-CRE301-FACILITYID
                                        TO  CLFRRES-CRE301-FACILITYID
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊÌ¾¾Î
+      * ä½œæˆè€… è¨ºç™‚ç§‘åç§°
            MOVE    LF01-CRE301-DPERTNAME
                                        TO  CLFRRES-CRE301-DPERTNAME
-      * ºîÀ®¼Ô ¿ÇÎÅ²ÊID
+      * ä½œæˆè€… è¨ºç™‚ç§‘ID
            MOVE    LF01-CRE301-DPERTID
                                        TO  CLFRRES-CRE301-DPERTID
-      * ºîÀ®¼Ô ½»½ê [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ä½æ‰€ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-ADRFULLNAME
                                        TO  CLFRRES-CRE301-ADRFULLNAME
-      * ºîÀ®¼Ô ½»½ê¤Î¼ïÎà
+      * ä½œæˆè€… ä½æ‰€ã®ç¨®é¡ž
            MOVE    LF01-CRE301-ADRCLASS
                                        TO  CLFRRES-CRE301-ADRCLASS
-      * ºîÀ®¼Ô ÅÔÆ»ÉÜ¸© [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… éƒ½é“åºœçœŒ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-ADRPREF
                                        TO  CLFRRES-CRE301-ADRPREF
-      * ºîÀ®¼Ô »Ô¡¢¶è¡¢·´ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… å¸‚ã€åŒºã€éƒ¡ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-ADRCITY
                                        TO  CLFRRES-CRE301-ADRCITY
-      * ºîÀ®¼Ô Ä®¡¢Â¼ [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç”ºã€æ‘ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-ADRTOWN
                                        TO  CLFRRES-CRE301-ADRTOWN
-      * ºîÀ®¼Ô ÈÖÃÏ¡¢ÃúÌÜÅù [¾ò·ïÉÕ¤­É¬¿Ü]
+      * ä½œæˆè€… ç•ªåœ°ã€ä¸ç›®ç­‰ [æ¡ä»¶ä»˜ãå¿…é ˆ]
            MOVE    LF01-CRE301-ADRHOMENUM
                                        TO  CLFRRES-CRE301-ADRHOMENUM
-      * ºîÀ®¼Ô Í¹ÊØÈÖ¹æ
+      * ä½œæˆè€… éƒµä¾¿ç•ªå·
            MOVE    LF01-CRE301-ZIP
                                        TO  CLFRRES-CRE301-ZIP
-      * ºîÀ®¼Ô ¹ñ¥³¡¼¥É
+      * ä½œæˆè€… å›½ã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE301-COUNTRY
                                        TO  CLFRRES-CRE301-COUNTRY
-      * ºîÀ®¼Ô ¥á¡¼¥ë¥¢¥É¥ì¥¹
+      * ä½œæˆè€… ãƒ¡ãƒ¼ãƒ«ã‚¢ãƒ‰ãƒ¬ã‚¹
            MOVE    LF01-CRE301-EMAIL
                                        TO  CLFRRES-CRE301-EMAIL
-      * ºîÀ®¼Ô »Ô³°¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å¸‚å¤–å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE301-PHONEAREA
                                        TO  CLFRRES-CRE301-PHONEAREA
-      * ºîÀ®¼Ô ¶ÉÈÖ [É¬¿Ü]
+      * ä½œæˆè€… å±€ç•ª [å¿…é ˆ]
            MOVE    LF01-CRE301-PHONECITY
                                        TO  CLFRRES-CRE301-PHONECITY
-      * ºîÀ®¼Ô ²ÃÆþÈÖ¹æ [É¬¿Ü]
+      * ä½œæˆè€… åŠ å…¥ç•ªå· [å¿…é ˆ]
            MOVE    LF01-CRE301-PHONENUM
                                        TO  CLFRRES-CRE301-PHONENUM
-      * ºîÀ®¼Ô ÆâÀþÈÖ¹æ
+      * ä½œæˆè€… å†…ç·šç•ªå·
            MOVE    LF01-CRE301-PHONEEXT
                                        TO  CLFRRES-CRE301-PHONEEXT
-      * ºîÀ®¼Ô ¹ñÈÖ¹æ
+      * ä½œæˆè€… å›½ç•ªå·
            MOVE    LF01-CRE301-PHONECOUNTRY
                                        TO  CLFRRES-CRE301-PHONECOUNTRY
-      * ºîÀ®¼Ô »ÈÍÑ»þ´ÖÂÓ¤Ê¤É¤òµ­ºÜ
+      * ä½œæˆè€… ä½¿ç”¨æ™‚é–“å¸¯ãªã©ã‚’è¨˜è¼‰
            MOVE    LF01-CRE301-PHONEMEMO
                                        TO  CLFRRES-CRE301-PHONEMEMO
-      * ºîÀ®¼Ô ÁõÃÖ¤Î¼ïÎà¥³¡¼¥É
+      * ä½œæˆè€… è£…ç½®ã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-CRE301-PHONEEQUIP
                                        TO  CLFRRES-CRE301-PHONEEQUIP
-      * ºîÀ®¼Ô À¸À®¼Ô¤Î»ñ³Ê [É¬¿Ü]
+      * ä½œæˆè€… ç”Ÿæˆè€…ã®è³‡æ ¼ [å¿…é ˆ]
            MOVE    LF01-CRE301-LICENSE
                                        TO  CLFRRES-CRE301-LICENSE
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (<extRefs />)                  const
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (<extRefs />)                  const
            MOVE    "<extRefs />"       TO  CLFRRES-M-RX301-I1
-      * Í½ÌóÀÁµá¥â¥¸¥å¡¼¥ë¤Î¾õÂÖ (claim:status)
+      * äºˆç´„è«‹æ±‚ãƒ¢ã‚¸ãƒ¥ãƒ¼ãƒ«ã®çŠ¶æ…‹ (claim:status)
            MOVE    LF01-UKEYMD-KREPCODE
                                        TO  CLFRRES-UKEYMD-KREPCODE
-      * ¥ª¡¼¥À¡¼È¯¹ÔÆü»þ (claim:oderTime)
+      * ã‚ªãƒ¼ãƒ€ãƒ¼ç™ºè¡Œæ—¥æ™‚ (claim:oderTime)
            MOVE    LF01-CONFIRMDATE4
                                        TO  CLFRRES-CONFIRMDATE4
-      * ¼õÉÕÆü»þ (claim:registTime)
+      * å—ä»˜æ—¥æ™‚ (claim:registTime)
            MOVE    LF01-UKEYMD
                                        TO  CLFRRES-UKEYMD
-      * Æþ±¡³°Íè¶èÊ¬ (claim:admitFlag)
+      * å…¥é™¢å¤–æ¥åŒºåˆ† (claim:admitFlag)
            MOVE    LF01-NYUGAIKBN
                                        TO  CLFRRES-NYUGAIKBN
-      * »ÈÍÑÊÝ¸± (claim:insuranceUid)
+      * ä½¿ç”¨ä¿é™º (claim:insuranceUid)
            MOVE    LF01-FIL1
                                        TO  CLFRRES-FIL1
-      * ¶¦ÄÌ°å»öÀÁµá¥³¡¼¥ÉÂÎ·Ï
+      * å…±é€šåŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»
            MOVE    LF01-IJISKYCOD
                                        TO  CLFRRES-IJISKYCOD
-      * Í½Ìó
+      * äºˆç´„
            MOVE    LF01-YYK
                                        TO  CLFRRES-YYK
-      * Í½Ìó¥³¡¼¥É (claim:appCode)
+      * äºˆç´„ã‚³ãƒ¼ãƒ‰ (claim:appCode)
            MOVE    LF01-YYKCOD
                                        TO  CLFRRES-YYKCOD
       *##
-      * ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ (claim:appCodeId="Claim009"")
+      * ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤ (claim:appCodeId="Claim009"")
            MOVE    'claim:appCodeId="Claim009"'
                                        TO  CLFRRES-C-B3
-      * Í½Ìó¥á¥â
+      * äºˆç´„ãƒ¡ãƒ¢
            MOVE    LF01-YYKMEMO
                                        TO  CLFRRES-YYKMEMO
-      *¿ÇÎÅ²ÊÌ¾¾Î
+      *è¨ºç™‚ç§‘åç§°
            MOVE    LF01-SRYNAME
                                        TO  CLFRRES-SRYNAME
-      *¿ÇÎÅ²ÊÉ½µ­
+      *è¨ºç™‚ç§‘è¡¨è¨˜
            MOVE    LF01-SRYREP
                                        TO  CLFRRES-SRYREP
-      * ¿ÇÎÅ²ÊID
+      * è¨ºç™‚ç§‘ID
            MOVE    LF01-SRYID
                                        TO  CLFRRES-SRYID
-      * ¿ÇÎÅ²ÊID¤Î¥Æ¡¼¥Ö¥ëÌ¾
+      * è¨ºç™‚ç§‘IDã®ãƒ†ãƒ¼ãƒ–ãƒ«å
            MOVE    LF01-SRYIDTBL
                                        TO  CLFRRES-SRYIDTBL
-      * ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î
+      * ç—…æ£Ÿè¨ºç™‚ç§‘åç§°
            MOVE    LF01-SNRNAME
                                        TO  CLFRRES-SNRNAME
-      * ÉÂÅï¿ÇÎÅ²Ê É½µ­Ë¡
+      * ç—…æ£Ÿè¨ºç™‚ç§‘ è¡¨è¨˜æ³•
            MOVE    LF01-SNRREP
                                        TO  CLFRRES-SNRREP
-      * ÉÂÅï¿ÇÎÅ²ÊÌ¾¾Î
+      * ç—…æ£Ÿè¨ºç™‚ç§‘åç§°
            MOVE    LF01-SNRID
                                        TO  CLFRRES-SNRID
-      * ÉÂÅï¿ÇÎÅ²Ê ID¤Î¼ïÎà¥³¡¼¥É
+      * ç—…æ£Ÿè¨ºç™‚ç§‘ IDã®ç¨®é¡žã‚³ãƒ¼ãƒ‰
            MOVE    LF01-SNRIDTBL
                                        TO  CLFRRES-SNRIDTBL
-      * ¿ÇÎÅ¼ïÊÌ¥³¡¼¥É (claim:classCode)
+      * è¨ºç™‚ç¨®åˆ¥ã‚³ãƒ¼ãƒ‰ (claim:classCode)
            MOVE    LF01-BUNDLE-CLASSCODE
                                        TO  CLFRRES-BUNDLE-CLASSCODE
-      *°å»öÀÁµá¥³¡¼¥É  
+      *åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰  
            MOVE    LF01-IJICD          TO  CLFRRES-IJICD
-      * °å»öÀÁµá¥³¡¼¥ÉÂÎ·ÏÌ¾
+      * åŒ»äº‹è«‹æ±‚ã‚³ãƒ¼ãƒ‰ä½“ç³»å
            MOVE    LF01-ID             TO  CLFRRES-ID
-      * °å»öÀÁµáÌ¾¾Î
+      * åŒ»äº‹è«‹æ±‚åç§°
            MOVE    LF01-HOSPSBT        TO  CLFRRES-HOSPSBT
-      * ¼õÉÕ¥á¥â
+      * å—ä»˜ãƒ¡ãƒ¢
            MOVE    LF01-UKE-MEMO       TO  CLFRRES-UKE-MEMO
       *
            .
        20021-CLFRRES-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼õÉÕÁ÷¿®ºÑ¤ß¹¹¿·½èÍý
+      *    å—ä»˜é€ä¿¡æ¸ˆã¿æ›´æ–°å‡¦ç†
       *****************************************************************
        2004-SYORI-02-SEC           SECTION.
       *
@@ -1407,7 +1407,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆüÉÕÊÔ½¸½èÍý
+      *    æ—¥ä»˜ç·¨é›†å‡¦ç†
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1436,7 +1436,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕÊÑ´¹ÊÔ½¸½èÍý
+      *    æ—¥ä»˜å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1458,78 +1458,78 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "10"
-               MOVE    "´µ¼ÔÈÖ¹æ¤Ë³ºÅö¤¹¤ë´µ¼Ô¤¬Â¸ºß¤·¤Þ¤»¤ó"
+               MOVE    "æ‚£è€…ç•ªå·ã«è©²å½“ã™ã‚‹æ‚£è€…ãŒå­˜åœ¨ã—ã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "¼õÉÕÆü¤¬ÎñÆü¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "å—ä»˜æ—¥ãŒæš¦æ—¥ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "¼õÉÕ»þ´Ö¤¬¿ôÃÍ¤Ç¤Ï¤¢¤ê¤Þ¤»¤ó"
+               MOVE    "å—ä»˜æ™‚é–“ãŒæ•°å€¤ã§ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "13"
-               MOVE    "¿ÇÎÅ²Ê¤¬Â¸ºß¤·¤Þ¤»¤ó"
+               MOVE    "è¨ºç™‚ç§‘ãŒå­˜åœ¨ã—ã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
            WHEN    "14"
-               MOVE    "¥É¥¯¥¿¡¼¤¬Â¸ºß¤·¤Þ¤»¤ó¡£"
+               MOVE    "ãƒ‰ã‚¯ã‚¿ãƒ¼ãŒå­˜åœ¨ã—ã¾ã›ã‚“ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "¥ê¥¯¥¨¥¹¥ÈÈÖ¹æ¤¬°ã¤¤¤Þ¤¹"
+               MOVE    "ãƒªã‚¯ã‚¨ã‚¹ãƒˆç•ªå·ãŒé•ã„ã¾ã™"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               MOVE    "¹¹¿·ÂÐ¾Ý¤¬¤¢¤ê¤Þ¤»¤ó¡£"
+               MOVE    "æ›´æ–°å¯¾è±¡ãŒã‚ã‚Šã¾ã›ã‚“ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "21"
-               MOVE    "¼õÉÕ¹¹¿·¥¨¥é¡¼¤Ç¤¹¡£"
+               MOVE    "å—ä»˜æ›´æ–°ã‚¨ãƒ©ãƒ¼ã§ã™ã€‚"
                                                TO  WRK-ERRMSG
-      *·Ù¹ð
+      *è­¦å‘Š
            WHEN    "K1"
-               MOVE    "¼õÉÕÆü¤òÀßÄê¤·¤Þ¤·¤¿"
+               MOVE    "å—ä»˜æ—¥ã‚’è¨­å®šã—ã¾ã—ãŸ"
                                                TO  WRK-ERRMSG
-      *¶¦ÄÌ¥¨¥é¡¼
+      *å…±é€šã‚¨ãƒ©ãƒ¼
            WHEN    "89"
-      *        ORCSCOMMON ¤Î¥¨¥é¡¼
+      *        ORCSCOMMON ã®ã‚¨ãƒ©ãƒ¼
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "¿¦°÷¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "è·å“¡æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "¥·¥¹¥Æ¥àÆüÉÕ¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "´µ¼ÔÈÖ¹æ¹½À®¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "æ‚£è€…ç•ªå·æ§‹æˆæƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "¥°¥ë¡¼¥×°åÎÅµ¡´Ø¤¬ÉÔÀ°¹ç¤Ç¤¹¡£"
-                           "½èÍý¤ò½ªÎ»¤·¤Æ²¼¤µ¤¤¡£"
+                   STRING  "ã‚°ãƒ«ãƒ¼ãƒ—åŒ»ç™‚æ©Ÿé–¢ãŒä¸æ•´åˆã§ã™ã€‚"
+                           "å‡¦ç†ã‚’çµ‚äº†ã—ã¦ä¸‹ã•ã„ã€‚"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "¥·¥¹¥Æ¥à¹àÌÜ¤¬ÀßÄê¤Ç¤­¤Þ¤»¤ó"
+                   MOVE    "ã‚·ã‚¹ãƒ†ãƒ é …ç›®ãŒè¨­å®šã§ãã¾ã›ã‚“"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "Â¾Ã¼Ëö»ÈÍÑÃæ"          TO  WRK-ERRMSG
+               MOVE    "ä»–ç«¯æœ«ä½¿ç”¨ä¸­"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "½èÍý¶èÊ¬Ì¤ÀßÄê"        TO  WRK-ERRMSG
+               MOVE    "å‡¦ç†åŒºåˆ†æœªè¨­å®š"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "Á÷¿®ÆâÍÆ¤Ë¸í¤ê¤¬¤¢¤ê¤Þ¤¹¡£"
+               MOVE   "é€ä¿¡å†…å®¹ã«èª¤ã‚ŠãŒã‚ã‚Šã¾ã™ã€‚"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "Á÷¿®ÆâÍÆ¤ÎÆÉ¹þ¤¬¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE   "é€ä¿¡å†…å®¹ã®èª­è¾¼ãŒã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "¥æ¡¼¥¶£É£ÄÌ¤ÅÐÏ¿¡£"
+               MOVE    "ãƒ¦ãƒ¼ã‚¶ï¼©ï¼¤æœªç™»éŒ²ã€‚"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -1537,7 +1537,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô´ðËÜ¾ðÊó¼èÆÀ
+      *    æ‚£è€…åŸºæœ¬æƒ…å ±å–å¾—
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1567,7 +1567,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -1585,7 +1585,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    ¥«¡¼¥½¥ë¥¯¥í¡¼¥¹
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¯ãƒ­ãƒ¼ã‚¹
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1594,7 +1594,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¡£Ò£Å£Á£Ä
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ã€€ï¼²ï¼¥ï¼¡ï¼¤
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1611,7 +1611,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1625,7 +1625,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1639,7 +1639,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

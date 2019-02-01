@@ -1,65 +1,65 @@
 kanri_cd    : "5012"
-name        : "Äê´üÀÁµáºîÀ®»Ø¼¨¡Ê¸ÄÊÌºîÀ®¡Ë¥³¡¼¥É"
+name        : "å®šæœŸè«‹æ±‚ä½œæˆæŒ‡ç¤ºï¼ˆå€‹åˆ¥ä½œæˆï¼‰ã‚³ãƒ¼ãƒ‰"
 class_cd    : "*"
 item_max    : 10
 item_list   :
 - item_no   : 1
   item      : "PTNUM"
-  item_jp   : "´µ¼ÔÈÖ¹æ"
+  item_jp   : "æ‚£è€…ç•ªå·"
   type      : "X"
   start     : 1
   length    : 20
 - item_no   : 2
   item      : "PTID"
-  item_jp   : "´µ¼Ô£É£Ä"
+  item_jp   : "æ‚£è€…ï¼©ï¼¤"
   type      : "X"
   start     : 21
   length    : 10
 - item_no   : 3
   item      : "SRYYM"
-  item_jp   : "ÀÁµáÇ¯·î"
+  item_jp   : "è«‹æ±‚å¹´æœˆ"
   type      : "X"
   start     : 31
   length    : 6
 - item_no   : 4
   item      : "SAKKBN"
-  item_jp   : "ºîÀ®¶èÊ¬"
+  item_jp   : "ä½œæˆåŒºåˆ†"
   type      : "X"
   start     : 37
   length    : 1
 - item_no   : 5
   item      : "SKYSTYMD"
-  item_jp   : "ÀÁµá³«»ÏÆü"
+  item_jp   : "è«‹æ±‚é–‹å§‹æ—¥"
   type      : "X"
   start     : 38
   length    : 8
 - item_no   : 6
   item      : "SKYEDYMD"
-  item_jp   : "ÀÁµá½ªÎ»Æü"
+  item_jp   : "è«‹æ±‚çµ‚äº†æ—¥"
   type      : "X"
   start     : 46
   length    : 8
 - item_no   : 7
   item      : "NYUINYMD"
-  item_jp   : "Æş±¡Æü"
+  item_jp   : "å…¥é™¢æ—¥"
   type      : "X"
   start     : 54
   length    : 8
 - item_no   : 8
   item      : "TAIINYMD"
-  item_jp   : "Âà±¡Æü"
+  item_jp   : "é€€é™¢æ—¥"
   type      : "X"
   start     : 62
   length    : 8
 - item_no   : 9
   item      : "KBT"
-  item_jp   : "´üÊÌ"
+  item_jp   : "æœŸåˆ¥"
   type      : "X"
   start     : 70
   length    : 1
 - item_no   : 10
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 71
   length    : 430

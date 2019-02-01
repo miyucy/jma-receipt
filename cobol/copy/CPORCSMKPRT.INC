@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------------*
-      *    ����饤��Ģɼ��������                                      *
+      *    オンライン帳票印刷サブ                                      *
       *----------------------------------------------------------------*
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  ORCSMKPRTAREA.
-      *    �ӣȣţ̣�̾
+      *    ＳＨＥＬＬ名
            03  MKPRT-ID                 PIC  X(20).
-      *    Ģɼ̾
+      *    帳票名
            03  MKPRT-DIA                PIC  X(50).
-      *    �ģţ�̾
+      *    ＤＥＦ名
            03  MKPRT-DEF                PIC  X(34).
-      *    �ǡ����μ���
+      *    データの種類
            03  MKPRT-TYPE               PIC  X(16).
-      *    �ǡ�������
+      *    データ内容
            03  MKPRT-DAT                PIC  X(1024).
-      *    ��������
+      *    印刷位置
            03  MKPRT-PRTNM              PIC  X(16).
-      *    ��������
+      *    印刷内容
            03  MKPRT-INFO               PIC  X(100).
-      *    ���ե��å�
+      *    オフセット
       **     03  MKPRT-OFFSET-X           PIC  S9(2)V9(1).
       **     03  MKPRT-OFFSET-Y           PIC  S9(2)V9(1).
       *
-      *    ����������
+      *    復帰コード
            03  MKPRT-RC                 PIC  9(04).
       *

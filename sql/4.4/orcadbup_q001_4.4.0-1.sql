@@ -88,5 +88,5 @@ CREATE VIEW view_q001 AS
     AND view_q004.sryymd >= tbl_ptkohinf.tekstymd 
     AND view_q004.sryymd <= tbl_ptkohinf.tekedymd;
 
-COMMENT ON VIEW view_q001 IS '���ԾȲ�ӥ塼1';
+COMMENT ON VIEW view_q001 IS '患者照会ビュー1';
 

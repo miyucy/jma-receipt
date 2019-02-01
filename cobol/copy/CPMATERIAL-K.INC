@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,21 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �������Ϣ�굻  COPY (CPMATERIAL-K.INC)        *
+      *         特定器材関連手技  COPY (CPMATERIAL-K.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  MATERIAL-K-REC.
            03  MATERK-KEY.
-      *        �����ॳ����
+      *        特定器材コード
                05  MATERK-SRYCD           PIC  X(09).
-      *        Ϣ�֣�
+      *        連番１
                05  MATERK-RENNUM1         PIC  9(03).
-      *        Ϣ�֣�
+      *        連番２
                05  MATERK-RENNUM2         PIC  9(02).
-      *    ���Ź԰٥�����
+      *    診療行為コード
            03  MATERK-SCD              PIC  X(09).
       *
            03  MATERK-CREYMD           PIC  X(08).

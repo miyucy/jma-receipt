@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    £Ó£Ð£Á°ì»þ¥Ç¡¼¥¿¡¡  COPY  (CPSPA-TMP.INC)             *
+      *    ï¼³ï¼°ï¼¡ä¸€æ™‚ãƒ‡ãƒ¼ã‚¿ã€€  COPY  (CPSPA-TMP.INC)             *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  SPATMP-REC.
            03  SPATMP-KEY.
                05  SPATMP-HOSPNUM           PIC 9(02).
-      *¶ÈÌ³£É£Ä
+      *æ¥­å‹™ï¼©ï¼¤
                05  SPATMP-GYOUMUID          PIC X(04).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
                05  SPATMP-TERMID            PIC X(64).
-      *¥Õ¥¡¥¤¥ëÌ¾
+      *ãƒ•ã‚¡ã‚¤ãƒ«å
                05  SPATMP-FILEMEI           PIC X(20).
-      *»ÞÈÖ
+      *æžç•ª
                05  SPATMP-EDANUM            PIC 9(03).
-      *¥Ç¡¼¥¿ÎÎ°è
+      *ãƒ‡ãƒ¼ã‚¿é ˜åŸŸ
            03  SPATMP-DATA-REC              PIC X(600000).
       *
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  SPATMP-UPYMD                 PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  SPATMP-UPHMS                 PIC X(06).

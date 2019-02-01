@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021S7V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ��¾���桡�������
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/09/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 排他制御　解除処理
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/09/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -38,10 +38,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
@@ -63,7 +63,7 @@
            03  FLG-CHK                 PIC 9(01).
            03  FLG-ARI                 PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -72,10 +72,10 @@
            03  IDX-ERR                 PIC 9(04).
            03  IDX-WAR                 PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -88,7 +88,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -103,7 +103,7 @@
            03  WRK-YMD-G.
                05  WRK-YY-2            PIC X(02).
                05  WRK-DATE-6          PIC X(06).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD-G.
                05  WRK-ERRKBN              PIC X(01).
                05  WRK-ERRCD               PIC X(02).
@@ -113,7 +113,7 @@
       *
            03  WRK-OKMSG               PIC X(100).
       *
-      *    ���륫UID
+      *    オルカUID
            03  WRK-ORCA-UID            PIC X(36).
            03  WRK-OPID                PIC X(16).
       *
@@ -133,22 +133,22 @@
                05  WRK-STMM            PIC 9(02).
                05  WRK-STSS            PIC 9(02).
       *
-      *    ���̥ѥ�᥿����
+      *    共通パラメタ内容
        01  WRK-APIV3DATA-AREA.
-      *    �Żҥ����UID
+      *    電子カルテUID
            03  WRK-KARTE-UID           PIC X(36).
-      *    �����ֹ�
+      *    患者番号
            03  WRK-PARA-PTNUM          PIC X(20).
            03  WRK-APIV3DATA-REC.
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  WRK-RESPONSE-NUMBER     PIC X(02).
-      *        �����У�
+      *        処理ＰＧ
                05  WRK-PARA-SYORIPG        PIC X(02).
-      *        ��ǧ������
+      *        確認コード
                05  WRK-SELECT-CODE         PIC X(04).
-      *        ���
+      *        削除
                05  WRK-DELETE-CLASS        PIC X(03).
-      *        ����ɣ�
+      *        削除ＩＤ
                05  WRK-DEL-ORCA-UID        PIC X(64).
                05  WRK-DEL-KARTE-UID       PIC X(64).
       *
@@ -160,122 +160,122 @@
                05  WRK-HMM         PIC Z9.
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
-      *    ����
+      *    全角
            03  WRK-HENYMD-Z        PIC X(22).
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
-      *    MCPAREA ��¸
+      *    MCPAREA 保存
        01  WRK-MCPAREA             PIC X(5000).
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
       **   COPY    "CPMKPASS.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
       *    COPY    "CPORCSPTNUM.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
       *    COPY    "CPORCSNUM.INC".
       *
-      *    �ݸ���������å�����
+      *    保険算定チェックサブ
       *    COPY    "CPORCSAGECHK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
       *    COPY    "CPORCSKANACHK.INC".
-      *    ���ѥ����å��ѥ�᥿�ʳ�ĥ������
+      *    全角チェックパラメタ（拡張漢字）
       *    COPY    "CPORCSKANACHK2.INC".
       *
       *    COPY    "CPORCXKANACONV.INC".
       *
-      *    ��ĥʸ���б�
+      *    拡張文字対応
       *    COPY    "CPORCSSTRING.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
       *    COPY     "CPORCSGDAY.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPMDCXMLV3REQ7.INC".
       *
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPMDCXMLV3RES7.INC".
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *    ������λ�ѥ�᥿
+      *    処理終了パラメタ
       *    COPY    "CPORAPIV3SUB01.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム基本
       *01  SYSBASE-REC.
       *    COPY    "CPSYSBASE.INC".
       *
-      *    �����ƥ�桼����
+      *    システムユーザー
       *01  SYSUSER-REC.
       *    COPY    "CPSYSUSER.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
            COPY    "CPSK1009.INC".
       *
-      *    ��¾�������ʾܺ١�
+      *    排他制御情報（詳細）
            COPY  "CPLDMAP.INC".
-      *    ��¾��������ʾܺ١�
+      *    排他管理情報（詳細）
            COPY  "CPTBLLOCK.INC".
       *
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
-      *    API�ѥ�᥿�ơ��֥�
+      *    APIパラメタテーブル
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
       *
            COPY    "MCPDATA2.INC".
            COPY    "MCPDATA3.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -285,7 +285,7 @@
       *
        01  SCRAREA.
            COPY    "CPAPILSTV2.INC".
-      *V3  ���β�
+      *V3  一体化
            COPY    "API21V3SCRAREA.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -295,7 +295,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -308,18 +308,18 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST11-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
            END-IF
       *
@@ -332,7 +332,7 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -340,7 +340,7 @@
            INITIALIZE                      XML-MEDICALV3RES7
            INITIALIZE                      WRK-APIV3DATA-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -354,14 +354,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  MDCRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  MDCRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -371,10 +371,10 @@
                GO  TO         100-INIT-EXT
            END-IF
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            IF      WRK-ERRCD           =   SPACE
                PERFORM 1001-ORCSCOMMON-SEC
            END-IF
@@ -384,11 +384,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ������������
+      *    ＳＰＡ共通設定処理
       *****************************************************************
        1001-ORCSCOMMON-SEC           SECTION.
       *
-      *    �ӣУ��������� 
+      *    ＳＰＡ共通設定 
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -407,7 +407,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -420,7 +420,7 @@
                                        TO  MDCRES-REQUEST-NUMBER
            MOVE    MDCREQ-REQUEST-NUMBER
                                        TO  MDCRES-RESPONSE-NUMBER
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF     (MDCREQ-ORCA-UID   NOT =   SPACE  )
              AND  (MDCREQ-REQUEST-NUMBER NOT =   "99" )
                PERFORM 2009-PARA-INIT-SEC
@@ -434,7 +434,7 @@
            WHEN    "01"
                MOVE    2                   TO  FLG-SYORI
       **   WHEN    "99"
-      *        ����������λ
+      *        強制処理終了
       *        PERFORM 2099-CANCEL-SEC
       *        MOVE    "00"                TO  MDCRES-RESPONSE-NUMBER
       ***      GO      TO      200-MAIN-EXT
@@ -443,7 +443,7 @@
                MOVE    "00"                TO  MDCRES-RESPONSE-NUMBER
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -452,11 +452,11 @@
                IF      WRK-ERRCD           =   "08"
                    MOVE    "00"            TO  MDCRES-RESPONSE-NUMBER
                END-IF
-      *        �Խ�����
+      *        編集処理
                PERFORM 20010-INPUT-HEN-SEC
-      *        �ѥ�᥿�������
+      *        パラメタ削除処理
                IF     (MDCREQ-ORCA-UID   NOT =   SPACE  )
-      *            �ѥ�᥿�������
+      *            パラメタ削除処理
                    PERFORM 2902-PARA-APIDEL-SEC
                    MOVE    "00"            TO  MDCRES-RESPONSE-NUMBER
                END-IF
@@ -465,10 +465,10 @@
       *
            EVALUATE    MDCREQ-REQUEST-NUMBER
            WHEN    "00"
-      *        ��������
+      *        一覧取得
                PERFORM 2001-SYORI-01-SEC
            WHEN    "01"
-      *        �������
+      *        解除処理
                PERFORM 2002-SYORI-02-SEC
            END-EVALUATE
       *
@@ -477,7 +477,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -486,7 +486,7 @@
            END-IF
            INITIALIZE                      XML-MEDICALV3REQ7
            INITIALIZE                      XML-APIREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalv3req7" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -529,30 +529,30 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-RGTXMLMAKE-SEC   SECTION.
       *
            MOVE    SPACE               TO  WRK-OKMSG
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "����������λ"
+                       MOVE    "検索処理終了"
                                            TO  WRK-OKMSG
                    WHEN    2
-                       MOVE    "��ǧ������λ"
+                       MOVE    "確認処理終了"
                                            TO  WRK-OKMSG
                    WHEN    3
-                       MOVE    "���������λ"
+                       MOVE    "解除処理終了"
                                            TO  WRK-OKMSG
                    WHEN    4
-                       MOVE    "������λ"
+                       MOVE    "処理終了"
                                            TO  WRK-OKMSG
                END-EVALUATE
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                MOVE    ZERO            TO  WRK-ERRCD
                IF      IDX-WAR         >   ZERO
                    MOVE    "W"             TO  WRK-ERRKBN
@@ -563,7 +563,7 @@
                MOVE    WRK-ERRCD-G         TO  MDCRES-API-RESULT
                MOVE    WRK-OKMSG           TO  MDCRES-API-RESULT-MSG
            ELSE
-      *        ���顼��å�����
+      *        エラーメッセージ
                IF      WRK-ERRMSG          =   SPACE
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
@@ -613,7 +613,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -622,11 +622,11 @@
        10001-XML-REMAKE-EXT.
            EXIT.
       *****************************************************************
-      *    ORCA-UID �������
+      *    ORCA-UID 初期処理
       *****************************************************************
        2009-PARA-INIT-SEC            SECTION.
       *
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    MDCREQ-ORCA-UID     TO  WRK-ORCA-UID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
@@ -651,7 +651,7 @@
            END-IF
       *
            IF     (WRK-ERRCD               =   SPACE )
-      *        Ʊ��������³���Ǥ��뤳��
+      *        同じ処理の続きであること
                IF      WRK-PARA-SYORIPG    NOT =   "07"
                    MOVE    "08"                TO  WRK-ERRCD
                END-IF
@@ -662,25 +662,25 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ����������ƥ����å�
+      *    患者基本情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
-      *    ɬ�����ϥ����å�
+      *    必須入力チェック
            PERFORM 20010-INIT-CHECK-SEC
       *
-      *    �Żҥ���ƣգɣĥ����å�
+      *    電子カルテＵＩＤチェック
            IF     (MDCREQ-ORCA-UID   NOT =   SPACE  )
              AND  (WRK-ERRCD           =   SPACE  )
                IF      MDCREQ-KARTE-UID  NOT =   WRK-KARTE-UID
-      *            ¾ü��������
+      *            他端末使用中
                    MOVE    "90"            TO  WRK-ERRCD
                END-IF
            END-IF
       *
-      *    ��³��ʬ
+      *    継続区分
       *    IF      MDCREQ-CONT-MODE  =   "True"
       *        MOVE    1               TO  FLG-CONTKBN
       *    ELSE
@@ -688,7 +688,7 @@
       *    END-IF
       *
       *    IF      WRK-ERRCD           =   SPACE
-      *        ���륫�գɣĽ���
+      *        オルカＵＩＤ処理
       *        PERFORM 20020-ORCAUID-SYORI-SEC
       *    END-IF
       *
@@ -697,7 +697,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���륫�գɣ��Ѵ��Խ�����
+      *    オルカＵＩＤ変換編集処理
       *****************************************************************
        2001-TERMID-HEN-SEC     SECTION.
       *
@@ -713,7 +713,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ����Ѵ��Խ�����
+      *    入力項目変換編集処理
       *****************************************************************
        20010-INPUT-HEN-SEC               SECTION.
       *
@@ -725,18 +725,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ɬ�����ϥ����å�����
+      *    必須入力チェック処理
       *****************************************************************
        20010-INIT-CHECK-SEC    SECTION.
       *
-      *    UID���Żҥ���ơ�
+      *    UID（電子カルテ）
            IF      MDCREQ-KARTE-UID  =   SPACE
                IF     (WRK-ERRCD           =   SPACE  )
                    MOVE    "06"                TO  WRK-ERRCD
                END-IF
            END-IF
       *
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF      MDCREQ-ORCA-UID   =   SPACE
                IF     (MDCREQ-REQUEST-NUMBER   =   "01" )
                  AND  (MDCREQ-SELECT-ANSWER    NOT =   SPACE )
@@ -748,19 +748,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �գɣĥ����ɼ�������
+      *    ＵＩＤコード取得処理
       *****************************************************************
        20020-ORCAUID-SYORI-SEC        SECTION.
       *
-      *    UID�����ɽ���
+      *    UIDコード処理
            IF      MDCREQ-ORCA-UID   =   SPACE
-      *        UID�����ɼ�������
+      *        UIDコード取得処理
                PERFORM 1001-UID-GET-SEC
                MOVE    C-UID               TO  WRK-ORCA-UID
            ELSE
                MOVE    MDCREQ-ORCA-UID   TO  WRK-ORCA-UID
            END-IF
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
                    WRK-ORCA-UID        DELIMITED  BY  SPACE
@@ -774,11 +774,11 @@
            EXIT.
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        1001-UID-GET-SEC     SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -789,15 +789,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾���������������
+      *    排他制御一覧取得処理
       *****************************************************************
        2001-SYORI-01-SEC        SECTION.
       *
-      *    ��¾�����
+      *    排他中一覧
            PERFORM 20011-LOCKLIST-SYORI-SEC
       *
            IF      IDX                 =   ZERO
-      *        ��¾��ʤ�
+      *        排他中なし
                MOVE    "10"            TO  WRK-ERRCD
                MOVE    "00"            TO  MDCRES-RESPONSE-NUMBER
            ELSE
@@ -809,7 +809,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾��������Խ�����
+      *    排他情報一覧編集処理
       *****************************************************************
        20011-LOCKLIST-SYORI-SEC              SECTION.
       *
@@ -851,14 +851,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾�����Խ�����
+      *    排他情報編集処理
       *****************************************************************
        20011-LOCK-HEN-SEC              SECTION.
       *
            ADD     1                   TO  IDX
            MOVE    LOCK-TERMID         TO  MDCRES-LOCK-TERMID-UID
                                                             (IDX)
-      *    API+ �Ϻ������
+      *    API+ は削除する
            IF     (LOCK-KARTE-UID  NOT =   SPACE )
             AND   (LOCK-TERMID(1:4)    =   "API+")
                MOVE    LOCK-TERMID(5:)     TO  MDCRES-LOCK-TERMID-UID
@@ -876,7 +876,7 @@
            IF      SPTID-RC            =   ZERO
                MOVE    SPTID-PTNUM     TO  MDCRES-LOCK-PATIENTID
                                                               (IDX)
-      *        ��̾����
+      *        氏名検索
                INITIALIZE                      PTINF-REC
                MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    LOCK-PTID (1)       TO  PTINF-PTID
@@ -888,7 +888,7 @@
            END-IF
       *
            MOVE    LOCK-LDNAME (1)     TO  MDCRES-LOCK-LDNAME (IDX)
-      *    ��¾��
+      *    排他日
            IF      LOCK-STARTDATE (1)  =   SPACE
                CONTINUE
            ELSE
@@ -905,28 +905,28 @@
            EXIT.
       *
       *****************************************************************
-      *    API�ѥ�᥿��Ͽ����
+      *    APIパラメタ登録処理
       *****************************************************************
        2902-APIPARA-INS-SEC        SECTION.
       *
-      *    �ѥ�᥿�������
+      *    パラメタ削除処理
            PERFORM 2902-PARA-APIDEL-SEC
       *
-      *    ��Ͽ
+      *    登録
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    "AP21"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
            MOVE    "API217V3"          TO  APIPARA-FILEMEI
            MOVE    1                   TO  APIPARA-EDANUM
-      *    �쥹�ݥ��ֹ桦�Żҥ����UID��¸
+      *    レスポンス番号・電子カルテUID保存
            MOVE    MDCREQ-KARTE-UID    TO  APIPARA-KARTE-UID
            MOVE    SPACE               TO  APIPARA-PTNUM
       *
            MOVE    SPACE               TO  WRK-APIV3DATA-REC
            MOVE    MDCRES-RESPONSE-NUMBER
                                        TO  WRK-RESPONSE-NUMBER
-      *    �����У�
+      *    処理ＰＧ
            MOVE    "07"                TO  WRK-PARA-SYORIPG
       *
            MOVE    MDCRES-SELECT-CODE
@@ -958,7 +958,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    更新確認処理
       *****************************************************************
        2002-SYORI-02-SEC     SECTION.
       *
@@ -968,15 +968,15 @@
            MOVE    MDCREQ-DEL-ORCA-UID     TO  MDCRES-DEL-ORCA-UID
            MOVE    MDCREQ-DELETE-CLASS     TO  MDCRES-DELETE-CLASS
       *
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF      MDCREQ-SELECT-ANSWER    =   SPACE
-      *        �����ǧ
+      *        選択確認
                EVALUATE    MDCREQ-DELETE-CLASS
                WHEN    "All"
-      *            ����
+      *            全部
                    PERFORM 20023-KOUSIN-ALLCHK-SEC
                WHEN    SPACE
-      *            ����
+      *            選択
                    PERFORM 20021-KOUSIN-CHK-SEC
                WHEN    OTHER
                    MOVE    "15"            TO  WRK-ERRCD
@@ -990,13 +990,13 @@
                        MOVE    "0001"          TO  MDCRES-SELECT-CODE
                    END-IF
                    PERFORM 292-SELECT-HEN-SEC
-      *            ���륫�գɣĽ���
+      *            オルカＵＩＤ処理
                    PERFORM 20020-ORCAUID-SYORI-SEC
-      *            API�ѥ�᥿��Ͽ
+      *            APIパラメタ登録
                    PERFORM 2902-APIPARA-INS-SEC
                END-IF
            ELSE
-      *        �ѥ�᥿��ǧ
+      *        パラメタ確認
                IF     (WRK-RESPONSE-NUMBER =   "01" )
                   AND (WRK-SELECT-CODE NOT =   SPACE )
                    PERFORM 20021-ANSWER-SYORI-SEC
@@ -1007,22 +1007,22 @@
       *
       *
            IF     (WRK-ERRCD           =   SPACE   )
-      *        ����������λ
+      *        更新処理終了
              AND  (MDCRES-RESPONSE-NUMBER  =   SPACE )
                MOVE    "00"            TO  MDCRES-RESPONSE-NUMBER
-      *        �ѥ�᥿�������
+      *        パラメタ削除処理
                PERFORM 2902-PARA-APIDEL-SEC
                MOVE    SPACE               TO  MDCRES-ORCA-UID
            ELSE
                IF     (MDCRES-RESPONSE-NUMBER  =   SPACE )
                    MOVE    "01"            TO  MDCRES-RESPONSE-NUMBER
-      *            �ѥ�᥿�������
+      *            パラメタ削除処理
                    PERFORM 2902-PARA-APIDEL-SEC
                    MOVE    SPACE               TO  MDCRES-ORCA-UID
                END-IF
            END-IF
       *
-      *    ��¾�����
+      *    排他中一覧
            PERFORM 20011-LOCKLIST-SYORI-SEC
       *
            .
@@ -1030,23 +1030,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������å�����
+      *    更新チェック処理
       *****************************************************************
        20021-ANSWER-SYORI-SEC         SECTION.
       *
            EVALUATE    WRK-SELECT-CODE
            WHEN    "0001"
-      *        �����ǧ
+      *        削除確認
                EVALUATE    MDCREQ-SELECT-ANSWER
                WHEN    "Ok"
                    IF      (WRK-DEL-ORCA-UID   =   MDCREQ-DEL-ORCA-UID)
                       AND  (WRK-DEL-KARTE-UID  =   MDCREQ-DEL-KARTE-UID)
                        PERFORM 20021-KOUSIN-CHK-SEC
-      *                ��������
+      *                更新処理
                        IF     (WRK-ERRCD           =   SPACE )
                            PERFORM 20022-KOUSIN-SYORI-SEC
                            IF      WRK-ERRCD           =   SPACE
-      *                        ���������λ
+      *                        削除処理終了
                                MOVE    3               TO  FLG-SYORI
                            END-IF
                        END-IF
@@ -1063,16 +1063,16 @@
                    MOVE    "12"                TO  WRK-ERRCD
                END-EVALUATE
            WHEN    "0002"
-      *        �������ǧ
+      *        全削除確認
                EVALUATE    MDCREQ-SELECT-ANSWER
                WHEN    "Ok"
                    IF      (WRK-DELETE-CLASS   =   MDCREQ-DELETE-CLASS)
                        PERFORM 20023-KOUSIN-ALLCHK-SEC
-      *                ��������
+      *                更新処理
                        IF     (WRK-ERRCD           =   SPACE )
                            PERFORM 20024-ALLKOUSIN-SYORI-SEC
                            IF      WRK-ERRCD           =   SPACE
-      *                        ���������λ
+      *                        削除処理終了
                                MOVE    3               TO  FLG-SYORI
                            END-IF
                        END-IF
@@ -1097,14 +1097,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������å�����
+      *    更新チェック処理
       *****************************************************************
        20021-KOUSIN-CHK-SEC         SECTION.
       *
            IF      MDCREQ-DEL-KARTE-UID    =   SPACE
                MOVE    MDCREQ-DEL-ORCA-UID TO  WRK-DEL-TERMID
            ELSE
-      *        API+ �Խ�
+      *        API+ 編集
                MOVE    SPACE               TO  WRK-DEL-TERMID
                STRING  "API+"
                        MDCREQ-DEL-ORCA-UID
@@ -1112,7 +1112,7 @@
                                            INTO    WRK-DEL-TERMID
                END-STRING
            END-IF
-      *    LOCK�ơ��֥븡��
+      *    LOCKテーブル検索
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
            MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
@@ -1134,7 +1134,7 @@
       *
            IF     (FLG-LOCK            =   ZERO )
               AND (MDCREQ-DEL-KARTE-UID    =   LOCK-KARTE-UID)
-      *        ����оݥ����å�
+      *        削除対象チェック
                PERFORM 2311-TIME-CHK-SEC
                IF      FLG-ERR             =   1
                    MOVE    "14"            TO  WRK-ERRCD
@@ -1148,14 +1148,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ����оݥ����å�����
+      *    削除対象チェック処理
       *****************************************************************
        2311-TIME-CHK-SEC               SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
            ACCEPT  WRK-SDATE           FROM  DATE
            ACCEPT  WRK-STIME           FROM  TIME
-      *    ���ߤλ��֤��飱ʬ���Ȥ���
+      *    現在の時間から１分前とする
            IF      WRK-STMM             >=  1
                COMPUTE WRK-STMM            =   WRK-STMM    -  1
            ELSE
@@ -1178,11 +1178,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        20022-KOUSIN-SYORI-SEC         SECTION.
       *
-      *    LOCK�ơ��֥븡��
+      *    LOCKテーブル検索
            MOVE    SPACE               TO  TBL-LOCK
            INITIALIZE                      TBL-LOCK
            MOVE    SPA-HOSPNUM         TO  LOCK-HOSPNUM
@@ -1203,7 +1203,7 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-LOCK            =   ZERO
-      *        �ǡ������
+      *        データ削除
                PERFORM 200221-DELETE-SYORI-SEC
            END-IF
       *
@@ -1212,7 +1212,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ����������
+      *    データ削除処理
       *****************************************************************
        200221-DELETE-SYORI-SEC         SECTION.
       *
@@ -1233,7 +1233,7 @@
                GO      TO      200221-DELETE-SYORI-EXT
            END-IF
       *
-      *    ü���ɣ�(����饤���
+      *    端末ＩＤ(オンライン）
            MOVE    SPACE               TO  WRK-DEL-TERMID-Z
            IF     (LOCK-KARTE-UID      =   SPACE )
             AND   (WRK-DEL-TERMID  NOT =   SPACE )
@@ -1249,7 +1249,7 @@
                END-PERFORM
            END-IF
       *
-      *    ����ǡ������
+      *    一時データ削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    LOCK-TERMID         TO  PARA-TERMID
@@ -1267,7 +1267,7 @@
            MOVE    "del4"              TO  MCP-PATHNAME
            PERFORM 910-SPATMP-CALL-SEC
       *
-      *    API�ѥ�᥿���
+      *    APIパラメタ削除
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    WRK-DEL-TERMID      TO  APIPARA-TERMID
@@ -1277,9 +1277,9 @@
            MOVE    "del6"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    ü���ɣ�(����饤���
+      *    端末ＩＤ(オンライン）
            IF      LOCK-KARTE-UID      =   SPACE
-      *        ����ǡ������
+      *        一時データ削除
                INITIALIZE                      PARA-REC
                MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
                MOVE    WRK-DEL-TERMID-Z    TO  PARA-TERMID
@@ -1303,7 +1303,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������������å�����
+      *    全削除更新チェック処理
       *****************************************************************
        20023-KOUSIN-ALLCHK-SEC         SECTION.
       *
@@ -1343,7 +1343,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    一括削除処理
       *****************************************************************
        20024-ALLKOUSIN-SYORI-SEC            SECTION.
       *
@@ -1363,9 +1363,9 @@
            END-IF
            PERFORM UNTIL  (FLG-LOCK        =   1 )
                       OR  (WRK-ERRCD   NOT =   SPACE )
-      *        ü���ɣ�(����饤���
+      *        端末ＩＤ(オンライン）
                MOVE    LOCK-TERMID     TO  WRK-DEL-TERMID
-      *        �ǡ������
+      *        データ削除
                PERFORM 200221-DELETE-SYORI-SEC
       *
                MOVE    "tbl_lock"          TO  MCP-TABLE
@@ -1381,27 +1381,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ��å������Խ�����
+      *    確認メッセージ編集処理
       *****************************************************************
        292-SELECT-HEN-SEC            SECTION.
       *
            MOVE    SPACE               TO  MDCRES-SELECT-MSG
            EVALUATE    MDCRES-SELECT-CODE
                WHEN    "0001"
-                   STRING  "���򤵤줿��¾����������ޤ���"
-                           "ü����Ÿ����Ǥʤ����Ȥ��ǧ���Ʋ�������"
+                   STRING  "選択された排他情報を削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                            DELIMITED  BY  SIZE
                                            INTO    MDCRES-SELECT-MSG
                    END-STRING
                WHEN    "0002"
-                   STRING  "��¾����򤹤٤ƺ�����ޤ���"
-                           "ü����Ÿ����Ǥʤ����Ȥ��ǧ���Ʋ�������"
+                   STRING  "排他情報をすべて削除します。"
+                           "端末が展開中でないことを確認して下さい。"
                                            DELIMITED  BY  SIZE
                                            INTO    MDCRES-SELECT-MSG
                    END-STRING
            END-EVALUATE
       *
-      *    ��ǧ����
+      *    確認あり
       **** MOVE    "True"              TO  MDCRES-SELECT-FLAG
       *
            MOVE    "40"                TO  WRK-ERRCD
@@ -1410,11 +1410,11 @@
        292-SELECT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�������
+      *    パラメタ削除処理
       *****************************************************************
        2902-PARA-APIDEL-SEC          SECTION.
       *
-      *    API�ѥ�᥿���
+      *    APIパラメタ削除
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
@@ -1434,7 +1434,7 @@
        2902-PARA-APIDEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������������å�
+      *    日付暦日チェック
       *****************************************************************
        803-ORCSDAY-CHEK-SEC    SECTION.
       *
@@ -1447,7 +1447,7 @@
                WHEN    "99999999"
                    MOVE    "99999999"          TO  WRK-HENYMD
                WHEN    OTHER
-      *            ���ե����å�����
+      *            日付チェックサブ
                    MOVE    SPACE               TO  STS-AREA-DAY
                    INITIALIZE                      STS-AREA-DAY
                    MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -1468,7 +1468,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1496,7 +1496,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1518,123 +1518,123 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "�����ֹ椬̤����Ǥ�"
+               MOVE    "患者番号が未設定です"
                                                TO  WRK-ERRMSG
       *                                        TO  WRK-ERRMSG
            WHEN    "06"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "07"
-               MOVE    "���륫�գɣĤ�̤����Ǥ���"
+               MOVE    "オルカＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "08"
-               STRING  "�����³����λ���Ƥ��ޤ���"
+               STRING  "初回接続が完了していません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "09"
-               STRING  "�����ν��֤��㤤�ޤ���"
-                       "��������ǽ�����ԤäƲ�������"
+               STRING  "処理の順番が違います。"
+                       "正しい順で処理を行って下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "10"
-               MOVE    "��¾��ξ���Ϥ���ޤ���"
+               MOVE    "排他中の情報はありません。"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "����оݤΣգɣĤ�����Ȱ㤤�ޤ���"
+               MOVE    "削除対象のＵＩＤが前回と違います。"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               STRING  "�����̥��顼�Ǥ���"
+               STRING  "選択結果エラーです。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "13"
-               MOVE    "��¾����¸�ߤ��ޤ���"
+               MOVE    "排他情報が存在しません。"
                                                TO  WRK-ERRMSG
            WHEN    "14"
-               STRING  "ü��Ÿ����Ȼפ�����¾���֤Ǥ���"
-                       "ü����Ÿ����Ǥʤ����Ȥ��ǧ���Ʋ�������"
+               STRING  "端末展開中と思われる排他時間です。"
+                       "端末が展開中でないことを確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "15"
-               MOVE    "�����ʬ���㤤�ޤ���"
+               MOVE    "削除区分が違います。"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               STRING  "������顼�Ǥ���"
+               STRING  "削除エラーです。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "40"
-               STRING  "������ܤ�����ޤ���"
-                       "�����̤��ֵѤ��Ƥ���������"
+               STRING  "選択項目があります。"
+                       "選択結果を返却してください。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
       *
            WHEN    "80"
-               STRING  "����ǡ������ϥ��顼"
+               STRING  "一時データ出力エラー"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "81"
-               STRING  "����оݤ�����ޤ���"
+               STRING  "解除対象がありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "�ꥯ�������ֹ�����"    TO  WRK-ERRMSG
+               MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "�������Ƥ˸��꤬����ޤ���"
+               MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE   "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�����
+      *    管理マスター読込処理
       *****************************************************************
        910-LOCK-READ-SEC        SECTION.
       *
@@ -1652,7 +1652,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-KEYREAD-SEC      SECTION.
       *
@@ -1670,7 +1670,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1678,7 +1678,7 @@
        900-SYSKANRI-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1694,7 +1694,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報取得
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -1725,7 +1725,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -1742,7 +1742,7 @@
        990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �У��ң��ǡ�����������
+      *    ＰＡＲＡデータ検索処理
       *****************************************************************
        9010-PARA-KEYREAD-SEC         SECTION.
       *
@@ -1765,7 +1765,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �У��ң��ǡ�����������
+      *    ＰＡＲＡデータ検索処理
       *****************************************************************
        9010-APIPARA-KEYREAD-SEC         SECTION.
       *
@@ -1797,7 +1797,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥��ɤ߹���
+      *    一時保存テーブル読み込み
       *****************************************************************
        9100-SPATMP-KEYREAD-SEC        SECTION.
       *
@@ -1829,7 +1829,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        910-SPATMP-CALL-SEC                SECTION.
       *
@@ -1844,7 +1844,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�CALL����
+      *    テーブルCALL処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -1858,7 +1858,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1872,7 +1872,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -1886,7 +1886,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

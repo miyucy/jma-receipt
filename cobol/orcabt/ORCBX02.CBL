@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBX02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����
-      *  ����ݡ��ͥ��̾  : �����å��ޥ�����Ͽϳ���ǧ�ꥹ��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/12/14    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : チェックマスタ登録漏れ確認リスト
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/12/14    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -46,7 +46,7 @@
                                    RECORD  KEY     IS  BX0202-KEY
                                    FILE    STATUS  IS  STS-BX0202.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -62,7 +62,7 @@
            03  BX0202-SRYCD        PIC X(09).
            03  BX0202-NAME         PIC X(200).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                         PIC X(200).
       *
@@ -76,13 +76,13 @@
            COPY    "CPRECEERR.INC".
       *
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-RECEERR                         PIC X(02).
            03  STS-BX0201                          PIC X(02).
            03  STS-BX0202                          PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                             PIC 9(01).
            03  FLG-TENSU                           PIC 9(01).
@@ -90,7 +90,7 @@
            03  FLG-CHKSND                          PIC 9(01).
            03  FLG-LOOPEND                         PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE                            PIC 9(05).
            03  CNT-SEQ                             PIC 9(05).
@@ -98,12 +98,12 @@
            03  CNT-Y                               PIC 9(05).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                                PIC 9(05).
            03  IDX-PNT                             PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -117,7 +117,7 @@
            03  WRK-PARA-SRTKBN                     PIC X(01).
            03  WRK-PARA-KJNYMD                     PIC X(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-TITLE                           PIC X(100).
            03  WRK-SYMD                            PIC X(08).
@@ -155,13 +155,13 @@
        01  FRM-AREA.
            03  FRM-HEAD1.
                05  FRM-HEAD1-MIDASI    PIC X(80).
-               05  FRM-HEAD1-FL2       PIC X(08)   VALUE   "��������".
+               05  FRM-HEAD1-FL2       PIC X(08)   VALUE   "作成日：".
                05  FRM-HEAD1-SAKYMD    PIC X(09).
                05  FRM-HEAD1-FL5       PIC X(04)   VALUE   "  P-".
                05  FRM-HEAD1-PCNT      PIC ZZ9.
            03  FRM-HEAD2.
                05  FRM-HEAD2-FL1       PIC X(14)
-                                       VALUE   "���ֻ��ꡧ".
+                                       VALUE   "期間指定：".
                05  FRM-HEAD2-KIKAN     PIC X(10).
                05  FRM-HEAD2-FROM-TO   PIC X(19).
                05  FRM-HEAD2-FL2       PIC X(04)   VALUE   SPACE.
@@ -180,57 +180,57 @@
       *
            COPY    "CPSHELLTBL.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
            COPY    "COMMON-SPA"            REPLACING   //SPA-//
                                            BY          //WSPA-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����å��ޥ�����
+      *    チェックマスタ２
        01  CHKSND-REC.
            COPY    "CPCHKSND.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSS004.INC".
            COPY    "CPORCSS013.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����ģ����極��
+      *    印刷ＤＢ制御サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -244,7 +244,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -260,7 +260,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -310,14 +310,14 @@
       *
            EVALUATE    WRK-PARA-CHKMORE
            WHEN    "1"
-               MOVE    "���ޤ���̾��Ͽϳ���ǧ�ꥹ��"
+               MOVE    "薬剤と病名登録漏れ確認リスト"
                                        TO  WRK-TITLE
            WHEN    "2"
-               MOVE    "���Ź԰٤���̾��Ͽϳ���ǧ�ꥹ��"
+               MOVE    "診療行為と病名登録漏れ確認リスト"
                                        TO  WRK-TITLE
            END-EVALUATE
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
@@ -359,7 +359,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -372,7 +372,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��֥ե������Խ�����
+      *    中間ファイル編集処理
       *****************************************************************
        2001-BX0202-EDIT-SEC        SECTION.
       *
@@ -426,7 +426,7 @@
        2001-BX0202-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ��֥ե�������Ͻ���
+      *    中間ファイル出力処理
       *****************************************************************
        2001-BX0202-WRITE-SEC           SECTION.
       *
@@ -460,7 +460,7 @@
        2001-BX0202-WRITE-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        2001-HCMSL55-EDIT-SEC           SECTION.
       *
@@ -491,7 +491,7 @@
        2001-HCMSL55-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    �إå��Խ�����
+      *    ヘッダ編集処理
       *****************************************************************
        20011-HEAD-SEC                  SECTION.
       *
@@ -505,10 +505,10 @@
       *
            EVALUATE    WRK-PARA-CHKMORE
            WHEN    "1"
-               MOVE    "�㡡���ޤ���̾��Ͽϳ���ǧ�ꥹ�ȡ���"
+               MOVE    "＜　薬剤と病名登録漏れ確認リスト　＞"
                                        TO  FRM-HEAD1-MIDASI
            WHEN    "2"
-               MOVE    "�㡡���Ź԰٤���̾��Ͽϳ���ǧ�ꥹ�ȡ���"
+               MOVE    "＜　診療行為と病名登録漏れ確認リスト　＞"
                                        TO  FRM-HEAD1-MIDASI
            END-EVALUATE
       *
@@ -519,11 +519,11 @@
            MOVE    CNT-PAGE            TO FRM-HEAD1-PCNT
       *
            IF    ( WRK-PARA-MOREKIKAN  =  ZERO )
-               MOVE    "�ʤ�"          TO FRM-HEAD2-KIKAN
+               MOVE    "なし"          TO FRM-HEAD2-KIKAN
            ELSE
                MOVE    WRK-PARA-MOREKIKAN
                                        TO  WRK-KIKAN
-               MOVE    "����ʬ"        TO  WRK-KIKANMES
+               MOVE    "ヶ月分"        TO  WRK-KIKANMES
                MOVE    WRK-KIKAN-G     TO  WRK-KANA-STR
                PERFORM 800-ZENKAKU-SEC
                MOVE    WRK-KANA-STR    TO  FRM-HEAD2-KIKAN
@@ -541,11 +541,11 @@
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-EDTYMD1     TO  WRK-EDSRYYM
       *
-               STRING  "��"            DELIMITED BY SIZE
+               STRING  "（"            DELIMITED BY SIZE
                        WRK-STSRYYM     DELIMITED BY SIZE
                        " - "           DELIMITED BY SIZE
                        WRK-EDSRYYM     DELIMITED BY SIZE
-                       "��"            DELIMITED BY SIZE
+                       "）"            DELIMITED BY SIZE
                INTO    FRM-HEAD2-FROM-TO
                END-STRING
       *
@@ -555,22 +555,22 @@
            IF    ( WRK-PARA-CHKMORE    =  "2" )
       *
                MOVE    1               TO  IDX-PNT
-               STRING  "�оݡ�"    DELIMITED   BY  SIZE
+               STRING  "対象："    DELIMITED   BY  SIZE
                INTO    FRM-HEAD2-RANGE
                WITH    POINTER     IDX-PNT
                END-STRING
       *
                IF    ( WRK-PARA-MOREKENSA  =   "1" )
-                   STRING  "��"        DELIMITED   BY  SIZE
-                           "����"      DELIMITED   BY  SIZE
+                   STRING  "　"        DELIMITED   BY  SIZE
+                           "検査"      DELIMITED   BY  SIZE
                    INTO    FRM-HEAD2-RANGE
                    WITH    POINTER     IDX-PNT
                    END-STRING
                END-IF
       *
                IF    ( WRK-PARA-MOREBUI    =   "1" )
-                   STRING  "��"        DELIMITED   BY  SIZE
-                           "����"      DELIMITED   BY  SIZE
+                   STRING  "　"        DELIMITED   BY  SIZE
+                           "部位"      DELIMITED   BY  SIZE
                    INTO    FRM-HEAD2-RANGE
                    WITH    POINTER     IDX-PNT
                    END-STRING
@@ -586,7 +586,7 @@
        20011-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�����
+      *    明細編集処理
       *****************************************************************
        20011-BODY-SEC                  SECTION.
       *
@@ -596,7 +596,7 @@
            MOVE    BX0202-NAME     TO  FRM-BODY-NAME  (CNT-Y CNT-X)
       *
            INSPECT FRM-BODY-NAME (CNT-Y CNT-X)
-                   REPLACING       ALL "  "    BY  "��"
+                   REPLACING       ALL "  "    BY  "　"
       *
            IF    ( CNT-Y         >=  CONST-Y-MAX )
                COMPUTE CNT-X =   CNT-X  +   1
@@ -609,7 +609,7 @@
        20011-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        20011-PRINT-SEC                 SECTION.
       *
@@ -639,10 +639,10 @@
                                    TO  SPRT-PRIORITY
            MOVE   "HCMSL55.red"    TO  SPRT-PRTID
            IF    ( WRK-PARA-CHKMORE    =   "1" )
-               MOVE    "���ޤ���̾��Ͽϳ���ǧ�ꥹ��"
+               MOVE    "薬剤と病名登録漏れ確認リスト"
                                    TO  SPRT-TITLE
            ELSE
-               MOVE    "���Ź԰٤���̾��Ͽϳ���ǧ�ꥹ��"
+               MOVE    "診療行為と病名登録漏れ確認リスト"
                                    TO  SPRT-TITLE
            END-IF
            MOVE    HCMSL55         TO  SPRT-PRTDATA
@@ -659,7 +659,7 @@
            IF    ( SPRT-RETURN     =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -667,13 +667,13 @@
        20011-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            PERFORM 800-FILE-DEL-SEC
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -693,7 +693,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -707,7 +707,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -728,17 +728,17 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ����ե�����������
+      *    一時ファイル削除処理
       *****************************************************************
        800-FILE-DEL-SEC            SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    SS004-FILENAME  TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    BX0202PARA      TO  IF-FILENAME
            CALL    "orcfiledel"    USING
@@ -748,7 +748,7 @@
        800-FILE-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -768,13 +768,13 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "　"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ�����
+      *    全角変換処理
       *****************************************************************
        800-ZENKAKU-SEC         SECTION.
       *
@@ -790,7 +790,7 @@
        800-ZENKAKU-EXT.
            EXIT.
       *****************************************************************
-      *    ������������
+      *    カレンダー処理
       *****************************************************************
        800-CALENDAR-SEC                SECTION.
       *
@@ -809,7 +809,7 @@
        800-CALENDAR-EXT.
            EXIT.
       *****************************************************************
-      *    ����ե������ɹ�����
+      *    一時ファイル読込処理
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
       *
@@ -848,7 +848,7 @@
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����ե������ɹ�����
+      *    一時ファイル読込処理
       *****************************************************************
        900-BX0202-READ-SEC         SECTION.
       *
@@ -863,7 +863,7 @@
        900-BX0202-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����å��ޥ�������������
+      *    チェックマスタ２検索処理
       *****************************************************************
        900-CHKSND-KEY3-SEL-SEC      SECTION.
       *
@@ -895,7 +895,7 @@
        900-CHKSND-KEY3-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸�������
+      *    ＤＢ検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -912,7 +912,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸�������(FETCH�ϹԤʤ�ʤ���
+      *    ＤＢ検索処理(FETCHは行なわない）
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -926,7 +926,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɹ�����
+      *    ＤＢ読込処理
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -940,7 +940,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *
@@ -954,7 +954,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -978,7 +978,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ����ǽ���
+      *    ＤＢ切断処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -1001,7 +1001,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -1018,7 +1018,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

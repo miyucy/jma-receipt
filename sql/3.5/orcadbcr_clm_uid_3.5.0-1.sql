@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- claimÍÑuid³ÊÇ¼¥Æ¡¼¥Ö¥ë
+-- claimç”¨uidæ ¼ç´ãƒ†ãƒ¼ãƒ–ãƒ«
 --
 -- Create Date : 2007/05/24         --
 --

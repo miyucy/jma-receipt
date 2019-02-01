@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ���������ٽ���ϥѥ�᥿       COPY (CPORCHC04.INC)
-      *                                          (ORCHC04 �ǻ��ѡ�
+      *    診療費明細書出力パラメタ       COPY (CPORCHC04.INC)
+      *                                          (ORCHC04 で使用）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCHC04AREA.
       *
-      *    ��ɼ�ֹ��ɬ�ܡ�
+      *    伝票番号（必須）
            03  ORCHC04-DENPNUM          PIC 9(07).
       *
-      *    ȯ�Զ�ʬ (2:����3:��Ǽ�����ǧ����)
+      *    発行区分 (2:訂正3:収納請求確認画面)
            03  ORCHC04-HAKKOFLG        PIC 9(01).
-      *    ȯ����ˡ��1:�ʡ��ݸ��̡�2:�ݸ��̡�3:���̡�4:����)
-      *             (0:��ɼ�ֹ�ʬ�Τ�)
+      *    発行方法（1:科・保険別、2:保険別、3:科別、4:全体)
+      *             (0:伝票番号分のみ)
            03  ORCHC04-HAKHOUFLG        PIC 9(01).
-      *    ��ɼ�ֹ���֡ʼ�Ǽ����κ�ȯ�ԡ�
+      *    伝票番号枝番（収納からの再発行）
            03  ORCHC04-DENPEDANUM      PIC  9(02).
-      *    ��ɼȯ����(�����������μ����
+      *    伝票発行日(月別請求書兼領収書）
            03  ORCHC04-DENPPRTYMD      PIC  X(08).
-      *    �о���ɼ�ֹ�ʴ��ֻ����
+      *    対象伝票番号（期間指定）
            03  ORCHC04-KIKAN-AREA.
                05  ORCHC04-KIKAN-STYMD     PIC X(08).
                05  ORCHC04-KIKAN-EDYMD     PIC X(08).
                05  ORCHC04-KIKAN-DENPNUM-G.
                    07  ORCHC04-KIKAN-DENPNUM   PIC 9(07)
                                             OCCURS   100.
-      *    ȯ�ԥڡ�����
+      *    発行ページ数
            03  ORCHC04-PAGE            PIC  9(05).
       *
-      *    ���ڡ������ʰ���ե�����̾�Խ��ѡ�
+      *    総ページ数（一時ファイル名編集用）
            03  ORCHC04-PAGE-CNT        PIC  9(06).
       *
-      *    �����ģ½��϶�ʬ(1:�����ģ¤˽��ϡ�
+      *    印刷ＤＢ出力区分(1:印刷ＤＢに出力）
            03  ORCHC04-PRTKBN          PIC X(01).
-      *    ���ѥ�᥿
+      *    一括パラメタ
            03  ORCHC04-PRTAREA         PIC X(25000).

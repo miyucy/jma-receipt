@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,62 +16,62 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÅÀ¿ô¥Þ¥¹¥¿ÅÐÏ¿     COPY (CPACCPTLSTREQ.INC)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆç‚¹æ•°ãƒžã‚¹ã‚¿ç™»éŒ²     COPY (CPACCPTLSTREQ.INC)
       ******************************************************************
         01  XML-MEDICATIONREQ.
             02  MEDIREQ-OBJECT         PIC X(36).
             02  MEDIREQ-MODE           PIC S9(9)   BINARY.
             02  MEDIREQ-APPOINT.
-      *       ¥Þ¥¹¥¿¥³¡¼¥É
+      *       ãƒžã‚¹ã‚¿ã‚³ãƒ¼ãƒ‰
               03  MEDIREQ-MEDICATION-CODE      PIC X(09).
-      *       ´Á»úÌ¾¾Î
+      *       æ¼¢å­—åç§°
               03  MEDIREQ-MEDICATION-NAME      PIC X(100).
-      *       ´Á»úÌ¾¾Î
+      *       æ¼¢å­—åç§°
               03  MEDIREQ-MEDICATION-KNAME     PIC X(100).
-      *       ³«»ÏÆü
+      *       é–‹å§‹æ—¥
               03  MEDIREQ-START-DATE           PIC X(10).
-      *       ½ªÎ»Æü
+      *       çµ‚äº†æ—¥
               03  MEDIREQ-END-DATE             PIC X(10).
-      *       ¼«Èñ¶â³Û
+      *       è‡ªè²»é‡‘é¡
               03  MEDIREQ-AMOUNT-MONEY         PIC X(9).
-      *       ¼«Èñ¥³¡¼¥ÉÎÎ°è
+      *       è‡ªè²»ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-AMOUNT-AREA.
-      *           ¶â³ÛÆâÍÆ¡Ê4:ÀÇ¹þ¤ß¡Ë
+      *           é‡‘é¡å†…å®¹ï¼ˆ4:ç¨Žè¾¼ã¿ï¼‰
                   05  MEDIREQ-CONTENT-MONEY        PIC X(1).
-      *           ½¸·×Àè¡Ê³°Íè¡Ë
+      *           é›†è¨ˆå…ˆï¼ˆå¤–æ¥ï¼‰
                   05  MEDIREQ-TOTAL-OUT            PIC X(3).
-      *           ½¸·×Àè¡ÊÆþ±¡¡Ë
+      *           é›†è¨ˆå…ˆï¼ˆå…¥é™¢ï¼‰
                   05  MEDIREQ-TOTAL-IN             PIC X(3).
-      *           ¼«ÇåÀÕ½¸·×Àè¡Ê³°Íè¡Ë
+      *           è‡ªè³ è²¬é›†è¨ˆå…ˆï¼ˆå¤–æ¥ï¼‰
                   05  MEDIREQ-LIABILITY-TOTAL-OUT  PIC X(1).
-      *           ¼«ÇåÀÕ½¸·×Àè¡ÊÆþ±¡¡Ë
+      *           è‡ªè³ è²¬é›†è¨ˆå…ˆï¼ˆå…¥é™¢ï¼‰
                   05  MEDIREQ-LIABILITY-TOTAL-IN   PIC X(1).
-      *       Éô°Ì¥³¡¼¥ÉÎÎ°è
+      *       éƒ¨ä½ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-LOCATION-AREA.
-      *           Éô°Ì¶èÊ¬
+      *           éƒ¨ä½åŒºåˆ†
                   05  MEDIREQ-LOCATION-CATEGORY    PIC X(1).
-      *       ¥³¥á¥ó¥È¥³¡¼¥ÉÎÎ°è
+      *       ã‚³ãƒ¡ãƒ³ãƒˆã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-COMMENT-AREA.
-      *           ¥«¥é¥à°ÌÃÖ
+      *           ã‚«ãƒ©ãƒ ä½ç½®
                   05  MEDIREQ-COMMENT-OCC      OCCURS   5.
                       07  MEDIREQ-COLUMN-POSITION  PIC X(3).
                       07  MEDIREQ-DIGIT-NUMBER     PIC X(3).
-      *       ÍÑË¡¥³¡¼¥ÉÎÎ°è
+      *       ç”¨æ³•ã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-MEDICATION-AREA.
-      *           ÉþÍÑ»þÅÀ
+      *           æœç”¨æ™‚ç‚¹
                   05  MEDIREQ-MEDICATION-OCC      OCCURS   5.
                       07  MEDIREQ-MEDICATION-POINT  PIC X(1).
-      *           ÍÑË¡¥³¥á¥ó¥È¶èÊ¬
+      *           ç”¨æ³•ã‚³ãƒ¡ãƒ³ãƒˆåŒºåˆ†
                   05  MEDIREQ-MEDICATION-CATEGORY   PIC X(1).
-      *       ÆÃÄê´ïºà¥³¡¼¥ÉÎÎ°è
+      *       ç‰¹å®šå™¨æã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-EQUIPMENT-AREA.
-      *           Ã±°Ì¥³¡¼¥É
+      *           å˜ä½ã‚³ãƒ¼ãƒ‰
                   05  MEDIREQ-UNIT-CODE            PIC X(3).
-      *           ¥Ç¡¼¥¿¶èÊ¬¡Ê3:¥Õ¥£¥ë¥à¡Ë
+      *           ãƒ‡ãƒ¼ã‚¿åŒºåˆ†ï¼ˆ3:ãƒ•ã‚£ãƒ«ãƒ ï¼‰
                   05  MEDIREQ-DATA-CATEGORY        PIC X(1).
-      *       ´ïºà¾¦ÉÊÌ¾¥³¡¼¥ÉÎÎ°è
+      *       å™¨æå•†å“åã‚³ãƒ¼ãƒ‰é ˜åŸŸ
               03  MEDIREQ-COMMERCIAL-AREA.
-      *           ¾¦ÉÊÌ¾¾Î
+      *           å•†å“åç§°
                   05  MEDIREQ-COMMERCIALNAME       PIC X(200).
-      *           ÆÃÄê´ïºà¥³¡¼¥É
+      *           ç‰¹å®šå™¨æã‚³ãƒ¼ãƒ‰
                   05  MEDIREQ-EQUIPMENT-CODE       PIC X(9).

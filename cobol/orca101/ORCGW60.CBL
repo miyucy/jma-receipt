@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGW60.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄê
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯µ¡Ç½¾ðÊó£²
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/02/09    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯æ©Ÿèƒ½æƒ…å ±ï¼’
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/02/09    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/02  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤šã€…ç´  07/05/02  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -40,13 +40,13 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄêÍÑ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®šç”¨å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "W01COMMON-SPA".
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
+      *    ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤
            COPY    "ENUM-VALUE".
       *
        01  SPA-W60.
@@ -342,13 +342,13 @@
                        09  SPA-GMN-ERRA10001KBNMEIL
                                                    PIC X(20).
       *
-      *    ¥Õ¥é¥°¥¨¥ê¥¢
+      *    ãƒ•ãƒ©ã‚°ã‚¨ãƒªã‚¢
        01  FLG-AREA.
            03  FLG-END                     PIC 9(01).
            03  FLG-SYSKANRI                PIC 9(01).
            03  FLG-CHK004                  PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX0                        PIC 9(05).
            03  IDX1                        PIC 9(05).
@@ -356,7 +356,7 @@
            03  IDX-CMB                     PIC 9(05).
            03  IDX-MTRX                    PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-WIDMSG                  PIC X(70).
            03  WRK-KANRICD                 PIC X(04).
@@ -375,32 +375,32 @@
            03  CONST-PAGE-MAX              PIC 9(03)   VALUE 2.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1101.INC".
       *
            COPY    "CPSK2005.INC".
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£´
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼”
            COPY    "CPCHK004.INC".
            COPY    "CPCK1103.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢ÍíÎÎ°è
+      *    é€£çµ¡é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -418,7 +418,7 @@
                                                SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -436,15 +436,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ÆþÎÏ
+      *    å…¥åŠ›
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ²èÌÌÁ«°Ü¤¬¤Ê¤¤»þ¡¢²èÌÌÉ½¼¨¤Ø
+      *    ç”»é¢é·ç§»ãŒãªã„æ™‚ã€ç”»é¢è¡¨ç¤ºã¸
            IF    ( FLG-END         =   ZERO )
                PERFORM 500-SET-SCREEN
            END-IF
@@ -457,21 +457,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ¥¨¥é¡¼²èÌÌ¤è¤ê
+      *    ã‚¨ãƒ©ãƒ¼ç”»é¢ã‚ˆã‚Š
            IF    ( SPA-MOTOPG          =   "WERR" )
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ½é´ü²èÌÌ¥»¥Ã¥È
+      *        åˆæœŸç”»é¢ã‚»ãƒƒãƒˆ
                PERFORM 300-SCREEN-SEC
                IF    ( FLG-END         =   1 )
                    GO  TO  100-INIT-EXT
                END-IF 
       *
-      *        ²èÌÌÊÔ½¸
+      *        ç”»é¢ç·¨é›†
                PERFORM 500-GMNHEN-SEC
                IF    ( SPA-ERRCD   NOT =   SPACE )
                    PERFORM 510-ERRSET-SEC
@@ -492,11 +492,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ½é´ü²èÌÌ½èÍý
+      *    åˆæœŸç”»é¢å‡¦ç†
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    Â¾¤Î£Ì£Ä¤è¤ê
+      *    ä»–ã®ï¼¬ï¼¤ã‚ˆã‚Š
            IF    ( LINKAREA        NOT =   SPACE )
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -514,7 +514,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
+      *    ã‚¹ãƒ‘åˆæœŸç·¨é›†å‡¦ç†
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -529,7 +529,7 @@
       *
            END-PERFORM
       *
-      *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹½é´ü½èÍý
+      *    ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹åˆæœŸå‡¦ç†
            PERFORM 3101-COMBO-SYOKI-SEC
       *
            MOVE    SPACE           TO  WRK-STYUKYMD
@@ -791,7 +791,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý(¥·¥¹¥Æ¥à´ÉÍý¤è¤ê)
+      *    ã‚¹ãƒ‘åˆæœŸç·¨é›†å‡¦ç†(ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ã‚ˆã‚Š)
       *****************************************************************
        3101-SPASET-SEC                 SECTION.
       *
@@ -948,7 +948,7 @@
        3101-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý(¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£´¤è¤ê)
+      *    ã‚¹ãƒ‘åˆæœŸç·¨é›†å‡¦ç†(ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼”ã‚ˆã‚Š)
       *****************************************************************
        3102-SPASET-SEC                 SECTION.
       *
@@ -984,96 +984,96 @@
        3102-SPASET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹½é´ü½èÍý
+      *    ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹åˆæœŸå‡¦ç†
       *****************************************************************
        3101-COMBO-SYOKI-SEC            SECTION.
       *
-      *    À¸ÊÝ¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯
+      *    ç”Ÿä¿å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯
            PERFORM 3101-SEIHOJNUMCHKKBNLST-SEC
       *
-      *    ¿ÇÎÅ²ÊÊÌ¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    è¨ºç™‚ç§‘åˆ¥ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-BYOSRYKAKBNLST-SEC
       *
-      *    ¼çÉÂÌ¾¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä¸»ç—…åãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SYUBYOCHKLST-SEC
       *
-      *    µÞÀ­ÉÂÌ¾´ü´Ö¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ€¥æ€§ç—…åæœŸé–“ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-KYUSEIKKNKBNLST-SEC
       *
-      *    ¿ÇÎÅ³«»ÏÆü¤È¼ÂÆü¿ô¤ÎÈæ³Ó¶èÊ¬¥³¥ó¥ÜÀßÄê½èÍý
+      *    è¨ºç™‚é–‹å§‹æ—¥ã¨å®Ÿæ—¥æ•°ã®æ¯”è¼ƒåŒºåˆ†ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-COMPBYONISSUKBNLST-SEC
       *
-      *    ¡ÖÃæ»ß¡×¤Î¼è¤ê°·¤¤¥³¥ó¥ÜÀßÄê½èÍý
+      *    ã€Œä¸­æ­¢ã€ã®å–ã‚Šæ‰±ã„ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYSTTENKIKBNLST-SEC
       *
-      *    ²á·îÅ¾µ¢ºÑÅ¬±þÉÂÌ¾¥³¥ó¥ÜÀßÄê½èÍý
+      *    éŽæœˆè»¢å¸°æ¸ˆé©å¿œç—…åã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-TENKITEKBYOKBNLST-SEC
       *
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡ÊÌôºÞ¤ÈÉÂÌ¾¡Ë¥³¥ó¥ÜÀßÄê½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè–¬å‰¤ã¨ç—…åï¼‰ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-TEKBYOYKZKBNLST-SEC
       *
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡Ê¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾¡Ë¥³¥ó¥ÜÀßÄê½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè¨ºç™‚è¡Œç‚ºã¨ç—…åï¼‰ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-TEKBYOSRYKBNLST-SEC
       *
-      *    ¸¡ººÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YBKENSAYAKUKBNLST-SEC
       *
-      *    ¼ê½ÑÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ‰‹è¡“è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YBSJTYKZKBNLST-SEC
       *
-      *    Ëã¿ìÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    éº»é…”è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YBMSIYKZKBNLST-SEC
       *
-      *    ½èÊý¤Î¤ß¤ÎÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    å‡¦æ–¹ã®ã¿ã®è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YBSHOHOYKZKBNLST-SEC
       *
-      *    ÌôºÞ¤ÈÉÂÌ¾µ¿¤¤¥³¥ó¥ÜÀßÄê½èÍý
+      *    è–¬å‰¤ã¨ç—…åç–‘ã„ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YBUTAGAIKBNLST-SEC
       *
-      *    Áê¸ßºîÍÑ¥Þ¥¹¥¿»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç›¸äº’ä½œç”¨ãƒžã‚¹ã‚¿å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-YKZHEIMSTKBNLST-SEC
       *
-      *    Ê»ÍÑ»»Äê·Ù¹ð¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šè­¦å‘Šã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYHEIWRNKBNLST-SEC
       *
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYHEIMSTKBNLST-SEC
       *
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½ÆÃÎã¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨ç‰¹ä¾‹ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYHEIEXPKBNLST-SEC
       *
-      *    »»ÄêÏ³¤ìÆÃÄê´ïºà´ØÏ¢¼êµ»¥Þ¥¹¥¿»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç®—å®šæ¼ã‚Œç‰¹å®šå™¨æé–¢é€£æ‰‹æŠ€ãƒžã‚¹ã‚¿å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYMATERKKBNLST-SEC
       *
-      *    ÅÅ»ÒÅÀ¿ôÉ½²ó¿ô»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨å›žæ•°å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYKAISUMSTKBNLST-SEC
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿·Ù¹ð¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿è­¦å‘Šã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-SRYKAISUWRNKBNLST-SEC
       *
-      *    ±¡³°½èÊý¤Î½èÍý¥³¥ó¥ÜÀßÄê½èÍý
+      *    é™¢å¤–å‡¦æ–¹ã®å‡¦ç†ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-INGAIPROCKBNLST-SEC
       *
-      *    ¤½¤ÎÂ¾¤Î¥Á¥§¥Ã¥¯¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ãã®ä»–ã®ãƒã‚§ãƒƒã‚¯ã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-ERR990009KBNLST-SEC
       *
-      *    ¡ÖÌôºÞ¤ÈÉÂÌ¾¡×¤ËÌ¤ÅÐÏ¿¤ÎÌôºÞ¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    ã€Œè–¬å‰¤ã¨ç—…åã€ã«æœªç™»éŒ²ã®è–¬å‰¤ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-ERRA10001KBNLST-SEC
       *
-      *    ´µ¼ÔËè¤ÎÎã³°ÀßÄê»ÈÍÑ¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ‚£è€…æ¯Žã®ä¾‹å¤–è¨­å®šä½¿ç”¨ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-REIGAICHKKBNLST-SEC
       *
-      *    Ä¢É¼½ÐÎÏ½ç¥³¥ó¥ÜÀßÄê½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›é †ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
            PERFORM 3101-PRTSRTKBNLST-SEC
       *
-      *    ´µ¼ÔÊÌ¥Á¥§¥Ã¥¯¥ê¥¹¥ÈÀßÄê½èÍý
+      *    æ‚£è€…åˆ¥ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆè¨­å®šå‡¦ç†
            PERFORM 3101-PRTPTLSTKBNLST-SEC
       *
            .
        3101-COMBO-SYOKI-EXT.
            EXIT.
       *****************************************************************
-      *    À¸ÊÝ¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç”Ÿä¿å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SEIHOJNUMCHKKBNLST-SEC           SECTION.
       *
@@ -1082,10 +1082,10 @@
            MOVE    2               TO  SPA-GMN-SEIHOJNUMCHKKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"  TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (1)
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"  TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SEIHOJNUMCHKKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-SEIHOJNUMCHKKBNMEIL (2)
       *
            MOVE    SPA-GMN-SEIHOJNUMCHKKBNLST  (2)
@@ -1095,7 +1095,7 @@
        3101-SEIHOJNUMCHKKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÊÌ¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    è¨ºç™‚ç§‘åˆ¥ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-BYOSRYKAKBNLST-SEC           SECTION.
       *
@@ -1104,10 +1104,10 @@
            MOVE    2               TO  SPA-GMN-BYOSRYKAKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-BYOSRYKAKBNL    (1)
-           MOVE    "¤¹¤ë"          TO  SPA-GMN-BYOSRYKAKBNMEIL (1)
+           MOVE    "ã™ã‚‹"          TO  SPA-GMN-BYOSRYKAKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-BYOSRYKAKBNL    (2)
-           MOVE    "¤·¤Ê¤¤"        TO  SPA-GMN-BYOSRYKAKBNMEIL (2)
+           MOVE    "ã—ãªã„"        TO  SPA-GMN-BYOSRYKAKBNMEIL (2)
       *
            MOVE    SPA-GMN-BYOSRYKAKBNLST  (1)
                                    TO  SPA-GMN-BYOSRYKAKBN-G
@@ -1116,7 +1116,7 @@
        3101-BYOSRYKAKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¼çÉÂÌ¾¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä¸»ç—…åãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SYUBYOCHKLST-SEC           SECTION.
       *
@@ -1125,10 +1125,10 @@
            MOVE    2               TO  SPA-GMN-SYUBYOCHK-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SYUBYOCHKL    (1)
-           MOVE    "¤¹¤ë"          TO  SPA-GMN-SYUBYOCHKMEIL (1)
+           MOVE    "ã™ã‚‹"          TO  SPA-GMN-SYUBYOCHKMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SYUBYOCHKL    (2)
-           MOVE    "¤·¤Ê¤¤"        TO  SPA-GMN-SYUBYOCHKMEIL (2)
+           MOVE    "ã—ãªã„"        TO  SPA-GMN-SYUBYOCHKMEIL (2)
       *
            MOVE    SPA-GMN-SYUBYOCHKLST  (2)
                                    TO  SPA-GMN-SYUBYOCHK-G
@@ -1137,7 +1137,7 @@
        3101-SYUBYOCHKLST-EXT.
            EXIT.
       *****************************************************************
-      *    µÞÀ­ÉÂÌ¾´ü´Ö¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ€¥æ€§ç—…åæœŸé–“ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-KYUSEIKKNKBNLST-SEC           SECTION.
       *
@@ -1146,19 +1146,19 @@
            MOVE    5               TO  SPA-GMN-KYUSEIKKNKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-KYUSEIKKNKBNL    (1)
-           MOVE    "¤·¤Ê¤¤"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (1)
+           MOVE    "ã—ãªã„"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-KYUSEIKKNKBNL    (2)
-           MOVE    "£±¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (2)
+           MOVE    "ï¼‘ãƒ¶æœˆ"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (2)
       *
            MOVE    "2"             TO  SPA-GMN-KYUSEIKKNKBNL    (3)
-           MOVE    "£²¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (3)
+           MOVE    "ï¼’ãƒ¶æœˆ"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (3)
       *
            MOVE    "3"             TO  SPA-GMN-KYUSEIKKNKBNL    (4)
-           MOVE    "£³¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (4)
+           MOVE    "ï¼“ãƒ¶æœˆ"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (4)
       *
            MOVE    "4"             TO  SPA-GMN-KYUSEIKKNKBNL    (5)
-           MOVE    "£´¥ö·î"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (5)
+           MOVE    "ï¼”ãƒ¶æœˆ"        TO  SPA-GMN-KYUSEIKKNKBNMEIL (5)
       *
            MOVE    SPA-GMN-KYUSEIKKNKBNLST  (1)
                                    TO  SPA-GMN-KYUSEIKKNKBN-G
@@ -1167,7 +1167,7 @@
        3101-KYUSEIKKNKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ³«»ÏÆü¤È¼ÂÆü¿ô¤ÎÈæ³Ó¶èÊ¬¥³¥ó¥ÜÀßÄê½èÍý
+      *    è¨ºç™‚é–‹å§‹æ—¥ã¨å®Ÿæ—¥æ•°ã®æ¯”è¼ƒåŒºåˆ†ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-COMPBYONISSUKBNLST-SEC           SECTION.
       *
@@ -1176,10 +1176,10 @@
            MOVE    2               TO  SPA-GMN-COMPBYONISSUKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-COMPBYONISSUKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"  TO  SPA-GMN-COMPBYONISSUKBNMEIL (1)
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"  TO  SPA-GMN-COMPBYONISSUKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-COMPBYONISSUKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-COMPBYONISSUKBNMEIL (2)
       *
            MOVE    SPA-GMN-COMPBYONISSUKBNLST  (1)
@@ -1189,7 +1189,7 @@
        3101-COMPBYONISSUKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÃæ»ß¡×¤Î¼è¤ê°·¤¤¥³¥ó¥ÜÀßÄê½èÍý
+      *    ã€Œä¸­æ­¢ã€ã®å–ã‚Šæ‰±ã„ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYSTTENKIKBNLST-SEC           SECTION.
       *
@@ -1198,11 +1198,11 @@
            MOVE    2               TO  SPA-GMN-SRYSTTENKIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYSTTENKIKBNL    (1)
-           MOVE    "Å¾µ¢Æü¤«¤é£±¥ö·î·Ð²á¸å¤Ë½é¿ÇÎÁ»»Äê²ÄÇ½"
+           MOVE    "è»¢å¸°æ—¥ã‹ã‚‰ï¼‘ãƒ¶æœˆçµŒéŽå¾Œã«åˆè¨ºæ–™ç®—å®šå¯èƒ½"
                                    TO  SPA-GMN-SRYSTTENKIKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYSTTENKIKBNL    (2)
-           MOVE    "Å¾µ¢Æü¤«¤é£±¥ö·î°ÊÆâ¤Ç¤â½é¿ÇÎÁ»»Äê²ÄÇ½"
+           MOVE    "è»¢å¸°æ—¥ã‹ã‚‰ï¼‘ãƒ¶æœˆä»¥å†…ã§ã‚‚åˆè¨ºæ–™ç®—å®šå¯èƒ½"
                                    TO  SPA-GMN-SRYSTTENKIKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYSTTENKIKBNLST  (1)
@@ -1212,7 +1212,7 @@
        3101-SRYSTTENKIKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ²á·îÅ¾µ¢ºÑÅ¬±þÉÂÌ¾¥³¥ó¥ÜÀßÄê½èÍý
+      *    éŽæœˆè»¢å¸°æ¸ˆé©å¿œç—…åã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-TENKITEKBYOKBNLST-SEC      SECTION.
       *
@@ -1221,11 +1221,11 @@
            MOVE    2               TO  SPA-GMN-TENKITEKBYOKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-TENKITEKBYOKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-TENKITEKBYOKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-TENKITEKBYOKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-TENKITEKBYOKBNMEIL (2)
       *
            MOVE    SPA-GMN-TENKITEKBYOKBNLST  (1)
@@ -1235,7 +1235,7 @@
        3101-TENKITEKBYOKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡ÊÌôºÞ¤ÈÉÂÌ¾¡Ë¥³¥ó¥ÜÀßÄê½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè–¬å‰¤ã¨ç—…åï¼‰ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-TEKBYOYKZKBNLST-SEC      SECTION.
       *
@@ -1244,15 +1244,15 @@
            MOVE    3               TO  SPA-GMN-TEKBYOYKZKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-TEKBYOYKZKBNL    (1)
-           MOVE    "¹Ô¤ï¤Ê¤¤"
+           MOVE    "è¡Œã‚ãªã„"
                                    TO  SPA-GMN-TEKBYOYKZKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-TEKBYOYKZKBNL    (2)
-           MOVE    "¹Ô¤¦"
+           MOVE    "è¡Œã†"
                                    TO  SPA-GMN-TEKBYOYKZKBNMEIL (2)
       *
            MOVE    "2"             TO  SPA-GMN-TEKBYOYKZKBNL    (3)
-           MOVE    "¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¤Ë¤Ê¤¤ÌôºÞ¤Î¤ß¹Ô¤¦"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ã«ãªã„è–¬å‰¤ã®ã¿è¡Œã†"
                                    TO  SPA-GMN-TEKBYOYKZKBNMEIL (3)
       *
            MOVE    SPA-GMN-TEKBYOYKZKBNLST  (1)
@@ -1262,7 +1262,7 @@
        3101-TEKBYOYKZKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡ÊÌôºÞ¤ÈÉÂÌ¾¡Ë¥³¥ó¥ÜÀßÄê½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè–¬å‰¤ã¨ç—…åï¼‰ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-TEKBYOSRYKBNLST-SEC      SECTION.
       *
@@ -1271,15 +1271,15 @@
            MOVE    3               TO  SPA-GMN-TEKBYOSRYKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-TEKBYOSRYKBNL    (1)
-           MOVE    "¹Ô¤ï¤Ê¤¤"
+           MOVE    "è¡Œã‚ãªã„"
                                    TO  SPA-GMN-TEKBYOSRYKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-TEKBYOSRYKBNL    (2)
-           MOVE    "¹Ô¤¦"
+           MOVE    "è¡Œã†"
                                    TO  SPA-GMN-TEKBYOSRYKBNMEIL (2)
       *
            MOVE    "2"             TO  SPA-GMN-TEKBYOSRYKBNL    (3)
-           MOVE    "¥Á¥§¥Ã¥¯¥Þ¥¹¥¿¤Ë¤Ê¤¤¿ÇÎÅ¹Ô°Ù¤Î¤ß¹Ô¤¦"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ã«ãªã„è¨ºç™‚è¡Œç‚ºã®ã¿è¡Œã†"
                                    TO  SPA-GMN-TEKBYOSRYKBNMEIL (3)
       *
            MOVE    SPA-GMN-TEKBYOSRYKBNLST  (1)
@@ -1289,7 +1289,7 @@
        3101-TEKBYOSRYKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YBKENSAYAKUKBNLST-SEC      SECTION.
       *
@@ -1298,11 +1298,11 @@
            MOVE    2               TO  SPA-GMN-YBKENSAYAKUKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YBKENSAYAKUKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-YBKENSAYAKUKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YBKENSAYAKUKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-YBKENSAYAKUKBNMEIL (2)
       *
            MOVE    SPA-GMN-YBKENSAYAKUKBNLST  (1)
@@ -1312,7 +1312,7 @@
        3101-YBKENSAYAKUKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YBSJTYKZKBNLST-SEC      SECTION.
       *
@@ -1321,11 +1321,11 @@
            MOVE    2               TO  SPA-GMN-YBSJTYKZKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YBSJTYKZKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-YBSJTYKZKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YBSJTYKZKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-YBSJTYKZKBNMEIL (2)
       *
            MOVE    SPA-GMN-YBSJTYKZKBNLST  (1)
@@ -1335,7 +1335,7 @@
        3101-YBSJTYKZKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YBMSIYKZKBNLST-SEC      SECTION.
       *
@@ -1344,11 +1344,11 @@
            MOVE    2               TO  SPA-GMN-YBMSIYKZKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YBMSIYKZKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-YBMSIYKZKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YBMSIYKZKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-YBMSIYKZKBNMEIL (2)
       *
            MOVE    SPA-GMN-YBMSIYKZKBNLST  (1)
@@ -1358,7 +1358,7 @@
        3101-YBMSIYKZKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YBSHOHOYKZKBNLST-SEC      SECTION.
       *
@@ -1367,11 +1367,11 @@
            MOVE    2               TO  SPA-GMN-YBSHOHOYKZKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YBSHOHOYKZKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-YBSHOHOYKZKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YBSHOHOYKZKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-YBSHOHOYKZKBNMEIL (2)
       *
            MOVE    SPA-GMN-YBSHOHOYKZKBNLST  (1)
@@ -1381,7 +1381,7 @@
        3101-YBSHOHOYKZKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ÌôºÞ¤ÈÉÂÌ¾µ¿¤¤¥³¥ó¥ÜÀßÄê½èÍý
+      *    è–¬å‰¤ã¨ç—…åç–‘ã„ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YBUTAGAIKBNLST-SEC           SECTION.
       *
@@ -1390,11 +1390,11 @@
            MOVE    2               TO  SPA-GMN-YBUTAGAIKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YBUTAGAIKBNL    (1)
-           MOVE    "Å¬±þÉÂÌ¾¤È¤¹¤ë"
+           MOVE    "é©å¿œç—…åã¨ã™ã‚‹"
                                    TO  SPA-GMN-YBUTAGAIKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YBUTAGAIKBNL    (2)
-           MOVE    "Å¬±þÉÂÌ¾¤È¤·¤Ê¤¤"
+           MOVE    "é©å¿œç—…åã¨ã—ãªã„"
                                    TO  SPA-GMN-YBUTAGAIKBNMEIL (2)
       *
            MOVE    SPA-GMN-YBUTAGAIKBNLST  (1)
@@ -1404,7 +1404,7 @@
        3101-YBUTAGAIKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Áê¸ßºîÍÑ¥Þ¥¹¥¿»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç›¸äº’ä½œç”¨ãƒžã‚¹ã‚¿å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-YKZHEIMSTKBNLST-SEC           SECTION.
       *
@@ -1413,11 +1413,11 @@
            MOVE    2               TO  SPA-GMN-YKZHEIMSTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-YKZHEIMSTKBNL    (1)
-           MOVE    "»²¾È¤¹¤ë"
+           MOVE    "å‚ç…§ã™ã‚‹"
                                    TO  SPA-GMN-YKZHEIMSTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-YKZHEIMSTKBNL    (2)
-           MOVE    "»²¾È¤·¤Ê¤¤"
+           MOVE    "å‚ç…§ã—ãªã„"
                                    TO  SPA-GMN-YKZHEIMSTKBNMEIL (2)
       *
            MOVE    SPA-GMN-YKZHEIMSTKBNLST  (2)
@@ -1427,7 +1427,7 @@
        3101-YKZHEIMSTKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»Äê·Ù¹ð¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šè­¦å‘Šã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYHEIWRNKBNLST-SEC           SECTION.
       *
@@ -1436,11 +1436,11 @@
            MOVE    2               TO  SPA-GMN-SRYHEIWRNKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYHEIWRNKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-SRYHEIWRNKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYHEIWRNKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-SRYHEIWRNKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYHEIWRNKBNLST  (1)
@@ -1450,7 +1450,7 @@
        3101-SRYHEIWRNKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYHEIMSTKBNLST-SEC           SECTION.
       *
@@ -1459,11 +1459,11 @@
            MOVE    2               TO  SPA-GMN-SRYHEIMSTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYHEIMSTKBNL    (1)
-           MOVE    "»²¾È¤¹¤ë"
+           MOVE    "å‚ç…§ã™ã‚‹"
                                    TO  SPA-GMN-SRYHEIMSTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYHEIMSTKBNL    (2)
-           MOVE    "»²¾È¤·¤Ê¤¤"
+           MOVE    "å‚ç…§ã—ãªã„"
                                    TO  SPA-GMN-SRYHEIMSTKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYHEIMSTKBNLST  (2)
@@ -1473,7 +1473,7 @@
        3101-SRYHEIMSTKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½ÆÃÎã¥³¥ó¥ÜÀßÄê½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨ç‰¹ä¾‹ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYHEIEXPKBNLST-SEC           SECTION.
       *
@@ -1482,11 +1482,11 @@
            MOVE    2               TO  SPA-GMN-SRYHEIEXPKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYHEIEXPKBNL    (1)
-           MOVE    "ÆÃÎã¾ò·ï¤¬¤¢¤ë¤â¤Î¤â»²¾È¤¹¤ë"
+           MOVE    "ç‰¹ä¾‹æ¡ä»¶ãŒã‚ã‚‹ã‚‚ã®ã‚‚å‚ç…§ã™ã‚‹"
                                    TO  SPA-GMN-SRYHEIEXPKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYHEIEXPKBNL    (2)
-           MOVE    "ÆÃÎã¾ò·ï¤¬¤¢¤ë¤â¤Î¤Ï»²¾È¤·¤Ê¤¤"
+           MOVE    "ç‰¹ä¾‹æ¡ä»¶ãŒã‚ã‚‹ã‚‚ã®ã¯å‚ç…§ã—ãªã„"
                                    TO  SPA-GMN-SRYHEIEXPKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYHEIEXPKBNLST  (2)
@@ -1496,7 +1496,7 @@
        3101-SRYHEIEXPKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    »»ÄêÏ³¤ìÆÃÄê´ïºà´ØÏ¢¼êµ»¥Þ¥¹¥¿»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç®—å®šæ¼ã‚Œç‰¹å®šå™¨æé–¢é€£æ‰‹æŠ€ãƒžã‚¹ã‚¿å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYMATERKKBNLST-SEC           SECTION.
       *
@@ -1505,11 +1505,11 @@
            MOVE    2               TO  SPA-GMN-SRYMATERKKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYMATERKKBNL    (1)
-           MOVE    "»²¾È¤¹¤ë"
+           MOVE    "å‚ç…§ã™ã‚‹"
                                    TO  SPA-GMN-SRYMATERKKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYMATERKKBNL    (2)
-           MOVE    "»²¾È¤·¤Ê¤¤"
+           MOVE    "å‚ç…§ã—ãªã„"
                                    TO  SPA-GMN-SRYMATERKKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYMATERKKBNLST  (2)
@@ -1519,7 +1519,7 @@
        3101-SRYMATERKKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½²ó¿ô»²¾È¥³¥ó¥ÜÀßÄê½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨å›žæ•°å‚ç…§ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYKAISUMSTKBNLST-SEC           SECTION.
       *
@@ -1528,10 +1528,10 @@
            MOVE    2               TO  SPA-GMN-SRYKAISUMSTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYKAISUMSTKBNL    (1)
-           MOVE    "»²¾È¤¹¤ë"      TO  SPA-GMN-SRYKAISUMSTKBNMEIL (1)
+           MOVE    "å‚ç…§ã™ã‚‹"      TO  SPA-GMN-SRYKAISUMSTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYKAISUMSTKBNL    (2)
-           MOVE    "»²¾È¤·¤Ê¤¤"    TO  SPA-GMN-SRYKAISUMSTKBNMEIL (2)
+           MOVE    "å‚ç…§ã—ãªã„"    TO  SPA-GMN-SRYKAISUMSTKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYKAISUMSTKBNLST  (2)
                                    TO  SPA-GMN-SRYKAISUMSTKBN-G
@@ -1540,7 +1540,7 @@
        3101-SRYKAISUMSTKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿·Ù¹ð¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿è­¦å‘Šã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-SRYKAISUWRNKBNLST-SEC           SECTION.
       *
@@ -1549,10 +1549,10 @@
            MOVE    2               TO  SPA-GMN-SRYKAISUWRNKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-SRYKAISUWRNKBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"  TO  SPA-GMN-SRYKAISUWRNKBNMEIL (1)
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"  TO  SPA-GMN-SRYKAISUWRNKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-SRYKAISUWRNKBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤" TO SPA-GMN-SRYKAISUWRNKBNMEIL (2)
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„" TO SPA-GMN-SRYKAISUWRNKBNMEIL (2)
       *
            MOVE    SPA-GMN-SRYKAISUWRNKBNLST  (2)
                                    TO  SPA-GMN-SRYKAISUWRNKBN-G
@@ -1561,7 +1561,7 @@
        3101-SRYKAISUWRNKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ±¡³°½èÊý¤Î½èÍý¹àÌÜ¥³¥ó¥ÜÊÔ½¸½èÍý
+      *    é™¢å¤–å‡¦æ–¹ã®å‡¦ç†é …ç›®ã‚³ãƒ³ãƒœç·¨é›†å‡¦ç†
       *****************************************************************
        3101-INGAIPROCKBNLST-SEC    SECTION.
       *
@@ -1569,12 +1569,12 @@
            MOVE    3               TO  SPA-GMN-INGAIPROCKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-INGAIPROCKBNL    (1)
-           MOVE    "´Þ¤Þ¤Ê¤¤"      TO  SPA-GMN-INGAIPROCKBNMEIL (1)
+           MOVE    "å«ã¾ãªã„"      TO  SPA-GMN-INGAIPROCKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-INGAIPROCKBNL    (2)
-           MOVE    "±¡³°½èÊý¤ò´Þ¤à"
+           MOVE    "é™¢å¤–å‡¦æ–¹ã‚’å«ã‚€"
                                    TO  SPA-GMN-INGAIPROCKBNMEIL (2)
            MOVE    "2"             TO  SPA-GMN-INGAIPROCKBNL    (3)
-           MOVE    "±¡³°½èÊý¤Î¤ß"  TO  SPA-GMN-INGAIPROCKBNMEIL (3)
+           MOVE    "é™¢å¤–å‡¦æ–¹ã®ã¿"  TO  SPA-GMN-INGAIPROCKBNMEIL (3)
       *
            MOVE    SPA-GMN-INGAIPROCKBNLST  (2)
                                    TO  SPA-GMN-INGAIPROCKBN-G
@@ -1583,7 +1583,7 @@
        3101-INGAIPROCKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾¥¨¥é¡¼¥³¥ó¥ÜÀßÄê½èÍý
+      *    ãã®ä»–ã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-ERR990009KBNLST-SEC           SECTION.
       *
@@ -1592,11 +1592,11 @@
            MOVE    2               TO  SPA-GMN-ERR990009KBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-ERR990009KBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-ERR990009KBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-ERR990009KBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-ERR990009KBNMEIL (2)
       *
            MOVE    SPA-GMN-ERR990009KBNLST  (1)
@@ -1606,7 +1606,7 @@
        3101-ERR990009KBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÌôºÞ¤ÈÉÂÌ¾¡×¤ËÌ¤ÅÐÏ¿¤ÎÌôºÞ¥Á¥§¥Ã¥¯¥³¥ó¥ÜÀßÄê½èÍý
+      *    ã€Œè–¬å‰¤ã¨ç—…åã€ã«æœªç™»éŒ²ã®è–¬å‰¤ãƒã‚§ãƒƒã‚¯ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-ERRA10001KBNLST-SEC           SECTION.
       *
@@ -1615,11 +1615,11 @@
            MOVE    2               TO  SPA-GMN-ERRA10001KBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-ERRA10001KBNL    (1)
-           MOVE    "¥Á¥§¥Ã¥¯¤¹¤ë"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã™ã‚‹"
                                    TO  SPA-GMN-ERRA10001KBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-ERRA10001KBNL    (2)
-           MOVE    "¥Á¥§¥Ã¥¯¤·¤Ê¤¤"
+           MOVE    "ãƒã‚§ãƒƒã‚¯ã—ãªã„"
                                    TO  SPA-GMN-ERRA10001KBNMEIL (2)
       *
            MOVE    SPA-GMN-ERRA10001KBNLST  (2)
@@ -1629,7 +1629,7 @@
        3101-ERRA10001KBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔËè¤ÎÎã³°ÀßÄê»ÈÍÑ¥³¥ó¥ÜÀßÄê½èÍý
+      *    æ‚£è€…æ¯Žã®ä¾‹å¤–è¨­å®šä½¿ç”¨ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-REIGAICHKKBNLST-SEC           SECTION.
       *
@@ -1638,10 +1638,10 @@
            MOVE    2               TO  SPA-GMN-REIGAICHKKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-REIGAICHKKBNL    (1)
-           MOVE    "»ÈÍÑ¤·¤Ê¤¤"    TO  SPA-GMN-REIGAICHKKBNMEIL (1)
+           MOVE    "ä½¿ç”¨ã—ãªã„"    TO  SPA-GMN-REIGAICHKKBNMEIL (1)
       *
            MOVE    "1"             TO  SPA-GMN-REIGAICHKKBNL    (2)
-           MOVE    "»ÈÍÑ¤¹¤ë"      TO  SPA-GMN-REIGAICHKKBNMEIL (2)
+           MOVE    "ä½¿ç”¨ã™ã‚‹"      TO  SPA-GMN-REIGAICHKKBNMEIL (2)
       *
            MOVE    SPA-GMN-REIGAICHKKBNLST  (1)
                                    TO  SPA-GMN-REIGAICHKKBN-G
@@ -1650,7 +1650,7 @@
        3101-REIGAICHKKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    Ä¢É¼½ÐÎÏ½ç¥³¥ó¥ÜÀßÄê½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›é †ã‚³ãƒ³ãƒœè¨­å®šå‡¦ç†
       *****************************************************************
        3101-PRTSRTKBNLST-SEC           SECTION.
       *
@@ -1659,16 +1659,16 @@
            MOVE    4               TO  SPA-GMN-PRTSRTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-PRTSRTKBNL    (1)
-           MOVE    "´µ¼ÔÈÖ¹æ½ç"    TO  SPA-GMN-PRTSRTKBNMEIL (1)
+           MOVE    "æ‚£è€…ç•ªå·é †"    TO  SPA-GMN-PRTSRTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-PRTSRTKBNL    (2)
-           MOVE    "¥«¥Ê»áÌ¾½ç"    TO  SPA-GMN-PRTSRTKBNMEIL (2)
+           MOVE    "ã‚«ãƒŠæ°åé †"    TO  SPA-GMN-PRTSRTKBNMEIL (2)
       *
            MOVE    "3"                 TO  SPA-GMN-PRTSRTKBNL    (3)
-           MOVE    "ÊÝ¸±¡¢´µ¼ÔÈÖ¹æ½ç"  TO  SPA-GMN-PRTSRTKBNMEIL (3)
+           MOVE    "ä¿é™ºã€æ‚£è€…ç•ªå·é †"  TO  SPA-GMN-PRTSRTKBNMEIL (3)
       *
            MOVE    "4"                 TO  SPA-GMN-PRTSRTKBNL    (4)
-           MOVE    "ÊÝ¸±¡¢¥«¥Ê»áÌ¾½ç"  TO  SPA-GMN-PRTSRTKBNMEIL (4)
+           MOVE    "ä¿é™ºã€ã‚«ãƒŠæ°åé †"  TO  SPA-GMN-PRTSRTKBNMEIL (4)
       *
            MOVE    SPA-GMN-PRTSRTKBNLST  (1)
                                    TO  SPA-GMN-PRTSRTKBN-G
@@ -1677,7 +1677,7 @@
        3101-PRTSRTKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÌ¥Á¥§¥Ã¥¯¥ê¥¹¥ÈÀßÄê½èÍý
+      *    æ‚£è€…åˆ¥ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆè¨­å®šå‡¦ç†
       *****************************************************************
        3101-PRTPTLSTKBNLST-SEC           SECTION.
       *
@@ -1686,10 +1686,10 @@
            MOVE    2               TO  SPA-GMN-PRTPTLSTKBN-MAX
       *
            MOVE    "1"             TO  SPA-GMN-PRTPTLSTKBNL    (1)
-           MOVE    "ºîÀ®¤·¤Ê¤¤"    TO  SPA-GMN-PRTPTLSTKBNMEIL (1)
+           MOVE    "ä½œæˆã—ãªã„"    TO  SPA-GMN-PRTPTLSTKBNMEIL (1)
       *
            MOVE    "2"             TO  SPA-GMN-PRTPTLSTKBNL    (2)
-           MOVE    "ºîÀ®¤¹¤ë"      TO  SPA-GMN-PRTPTLSTKBNMEIL (2)
+           MOVE    "ä½œæˆã™ã‚‹"      TO  SPA-GMN-PRTPTLSTKBNMEIL (2)
       *
            MOVE    SPA-GMN-PRTPTLSTKBNLST  (1)
                                    TO  SPA-GMN-PRTPTLSTKBN-G
@@ -1698,7 +1698,7 @@
        3101-PRTPTLSTKBNLST-EXT.
            EXIT.
       *****************************************************************
-      *    ³ÎÇ§²èÌÌ¡Ê£Ã£É£Ä£±¡Ë£Ï£Ë½èÍý
+      *    ç¢ºèªç”»é¢ï¼ˆï¼£ï¼©ï¼¤ï¼‘ï¼‰ï¼¯ï¼«å‡¦ç†
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
@@ -1716,35 +1716,35 @@
        330-WID1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                           SECTION.
       *
            MOVE    MCP-WIDGET      TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT       ALSO      MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
            WHEN    "CLICKED"       ALSO    "B01"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 210-BACK
-      *    ¥¯¥ê¥¢
+      *    ã‚¯ãƒªã‚¢
            WHEN    "CLICKED"       ALSO    "B02"
                PERFORM 220-CLEAR-SEC
-      *    ºï½ü
+      *    å‰Šé™¤
            WHEN    "CLICKED"       ALSO    "B03"
                MOVE    "CHANGE"    TO  MCP-PUTTYPE
                PERFORM 403-DEL-SEC
-      *    ¥¿¥ÖÀÚÂØ
+      *    ã‚¿ãƒ–åˆ‡æ›¿
            WHEN    "CLICKED"       ALSO    "B08"
                PERFORM 480-TAB-SWITCH-SEC
-      *    ¥Á¥§¥Ã¥¯¥Þ¥È¥ê¥¯¥¹
+      *    ãƒã‚§ãƒƒã‚¯ãƒžãƒˆãƒªã‚¯ã‚¹
            WHEN    "CLICKED"       ALSO    "CHKMTRX01"
            WHEN    "CLICKED"       ALSO    "CHKMTRX02"
            WHEN    "CLICKED"       ALSO    "CHKMTRX03"
            WHEN    "CLICKED"       ALSO    "CHKMTRX04"
            WHEN    "CLICKED"       ALSO    "CHKMTRX05"
                PERFORM  4100-CHKMTRX-CHK-SEC
-      *    ÅÐÏ¿
+      *    ç™»éŒ²
            WHEN    "CLICKED"       ALSO    "B12"
                PERFORM 480-TOUROKU-SEC
            END-EVALUATE
@@ -1753,22 +1753,22 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ²ñÏÃ¡¡½èÍý
+      *    ä¼šè©±ã€€å‡¦ç†
       *****************************************************************
        200-ENTRY                             SECTION.
       *
            MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *    ¥¿¥ÖÀÚÂØ
+      *    ã‚¿ãƒ–åˆ‡æ›¿
            WHEN    "SWITCH"       ALSO    "nb1"
                PERFORM 440-TAB-CHANGE-SEC
       *
            WHEN    OTHER
       *
-      *        ÆþÎÏ¸Ä½ê¤Î¥»¥Ã¥È
+      *        å…¥åŠ›å€‹æ‰€ã®ã‚»ãƒƒãƒˆ
                PERFORM 400-GMN-INPUT-SEC
-      *        ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *        å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
                PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
       *
@@ -1778,7 +1778,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¸Ä½ê¤Î¥»¥Ã¥È½èÍý
+      *    å…¥åŠ›å€‹æ‰€ã®ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        400-GMN-INPUT-SEC           SECTION.
       *
@@ -1790,7 +1790,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥È¥ê¥¯¥¹¥Á¥§¥Ã¥¯½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžãƒˆãƒªã‚¯ã‚¹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4100-CHKMTRX-CHK-SEC        SECTION.
       *
@@ -1823,11 +1823,11 @@
        4100-CHKMTRX-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ²èÌÌ¤ò£Ó£Ð£Á¤Ë¥»¥Ã¥È
+      *    ç”»é¢ã‚’ï¼³ï¼°ï¼¡ã«ã‚»ãƒƒãƒˆ
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            PERFORM 4101-INPUT-CHK-SEC
@@ -1838,15 +1838,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥åŠ›ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-INPUT-CHK-SEC          SECTION.
       *
            EVALUATE    SPA-GMN-PAGENO
-      *    ÀßÄê£±
+      *    è¨­å®šï¼‘
            WHEN    ZERO
                PERFORM 4102-PAGE00-KIHON-CHK-SEC
-      *    ÀßÄê£²
+      *    è¨­å®šï¼’
            WHEN    1
                PERFORM 4102-PAGE01-KIHON-CHK-SEC
            END-EVALUATE
@@ -1856,7 +1856,7 @@
        4101-INPUT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ²èÌÌ£Ó£Ð£ÁÊÔ½¸½èÍý
+      *    ç”»é¢ï¼³ï¼°ï¼¡ç·¨é›†å‡¦ç†
       *****************************************************************
        4101-GMN-SPA-SET-SEC            SECTION.
       *
@@ -1900,7 +1900,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÀßÄê£±´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    è¨­å®šï¼‘åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4102-PAGE00-KIHON-CHK-SEC       SECTION.
       *
@@ -1973,7 +1973,7 @@
        4102-PAGE00-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÀßÄê£²´ðËÜ¥Á¥§¥Ã¥¯½èÍý
+      *    è¨­å®šï¼’åŸºæœ¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4102-PAGE01-KIHON-CHK-SEC       SECTION.
       *
@@ -2030,7 +2030,7 @@
        4102-PAGE01-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    À¸ÊÝ¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ç”Ÿä¿å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SEIHOJNUMCHKKBN-CHK-SEC        SECTION.
       *
@@ -2048,7 +2048,7 @@
        4101-SEIHOJNUMCHKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÊÌ¥Á¥§¥Ã¥¯¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚ç§‘åˆ¥ãƒã‚§ãƒƒã‚¯åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-BYOSRYKAKBN-CHK-SEC        SECTION.
       *
@@ -2066,7 +2066,7 @@
        4101-BYOSRYKAKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¼çÉÂÌ¾¥Á¥§¥Ã¥¯¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ä¸»ç—…åãƒã‚§ãƒƒã‚¯åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SYUBYOCHK-CHK-SEC          SECTION.
       *
@@ -2084,7 +2084,7 @@
        4101-SYUBYOCHK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    µ¿¤¤´ü´Ö¥Á¥§¥Ã¥¯½èÍý
+      *    ç–‘ã„æœŸé–“ãƒã‚§ãƒƒã‚¯å‡¦ç†
       ***************************************************************
        4101-UTAGAIKKN-CHK-SEC          SECTION.
       *
@@ -2101,7 +2101,7 @@
        4101-UTAGAIKKN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    µÞÀ­´ü´Ö¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    æ€¥æ€§æœŸé–“åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-KYUSEIKKNKBN-CHK-SEC       SECTION.
       *
@@ -2119,7 +2119,7 @@
        4101-KYUSEIKKNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ³«»ÏÆü¤È¼ÂÆü¿ô¤ÎÈæ³Ó¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚é–‹å§‹æ—¥ã¨å®Ÿæ—¥æ•°ã®æ¯”è¼ƒåŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-COMPBYONISSUKBN-CHK-SEC       SECTION.
       *
@@ -2137,7 +2137,7 @@
        4101-COMPBYONISSUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÃæ»ß¡×¤Î¼è¤ê°·¤¤¥Á¥§¥Ã¥¯½èÍý
+      *    ã€Œä¸­æ­¢ã€ã®å–ã‚Šæ‰±ã„ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYSTTENKIKBN-CHK-SEC       SECTION.
       *
@@ -2155,7 +2155,7 @@
        4101-SRYSTTENKIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ²á·îÅ¾µ¢ºÑÅ¬±þÉÂÌ¾¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    éŽæœˆè»¢å¸°æ¸ˆé©å¿œç—…ååŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-TENKITEKBYOKBN-CHK-SEC     SECTION.
       *
@@ -2173,7 +2173,7 @@
        4101-TENKITEKBYOKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡ÊÌôºÞ¤ÈÉÂÌ¾¡Ë¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè–¬å‰¤ã¨ç—…åï¼‰åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-TEKBYOYKZKBN-CHK-SEC     SECTION.
       *
@@ -2191,7 +2191,7 @@
        4101-TEKBYOYKZKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡Ê¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾¡Ë¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè¨ºç™‚è¡Œç‚ºã¨ç—…åï¼‰åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-TEKBYOSRYKBN-CHK-SEC     SECTION.
       *
@@ -2209,7 +2209,7 @@
        4101-TEKBYOSRYKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YBKENSAYAKUKBN-CHK-SEC     SECTION.
       *
@@ -2227,7 +2227,7 @@
        4101-YBKENSAYAKUKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ê½ÑÌôºÞÂÐ¾Ý¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    æ‰‹è¡“è–¬å‰¤å¯¾è±¡åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YBSJTYKZKBN-CHK-SEC     SECTION.
       *
@@ -2245,7 +2245,7 @@
        4101-YBSJTYKZKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ëã¿ìÌôºÞÂÐ¾Ý¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    éº»é…”è–¬å‰¤å¯¾è±¡åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YBMSIYKZKBN-CHK-SEC     SECTION.
       *
@@ -2263,7 +2263,7 @@
        4101-YBMSIYKZKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ½èÊý¤Î¤ß¤ÎÌôºÞÂÐ¾Ý¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    å‡¦æ–¹ã®ã¿ã®è–¬å‰¤å¯¾è±¡åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YBSHOHOYKZKBN-CHK-SEC     SECTION.
       *
@@ -2281,7 +2281,7 @@
        4101-YBSHOHOYKZKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÌôºÞ¤ÈÉÂÌ¾µ¿¤¤¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    è–¬å‰¤ã¨ç—…åç–‘ã„åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YBUTAGAIKBN-CHK-SEC        SECTION.
       *
@@ -2299,7 +2299,7 @@
        4101-YBUTAGAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Áê¸ßºîÍÑ¥Þ¥¹¥¿»²¾È¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ç›¸äº’ä½œç”¨ãƒžã‚¹ã‚¿å‚ç…§åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-YKZHEIMSTKBN-CHK-SEC        SECTION.
       *
@@ -2317,7 +2317,7 @@
        4101-YKZHEIMSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»Äê·Ù¹ð¥¨¥é¡¼¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šè­¦å‘Šã‚¨ãƒ©ãƒ¼åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYHEIWRNKBN-CHK-SEC        SECTION.
       *
@@ -2335,7 +2335,7 @@
        4101-SRYHEIWRNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½»²¾È¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨å‚ç…§åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYHEIMSTKBN-CHK-SEC        SECTION.
       *
@@ -2353,7 +2353,7 @@
        4101-SRYHEIMSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½ÆÃÎã¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨ç‰¹ä¾‹åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYHEIEXPKBN-CHK-SEC        SECTION.
       *
@@ -2371,7 +2371,7 @@
        4101-SRYHEIEXPKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄê´ïºà´ØÏ¢¼êµ»»²¾È¥Á¥§¥Ã¥¯½èÍý
+      *    ç‰¹å®šå™¨æé–¢é€£æ‰‹æŠ€å‚ç…§ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYMATERKKBN-CHK-SEC        SECTION.
       *
@@ -2389,7 +2389,7 @@
        4101-SRYMATERKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½²ó¿ô»²¾È¥Á¥§¥Ã¥¯½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨å›žæ•°å‚ç…§ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYKAISUMSTKBN-CHK-SEC        SECTION.
       *
@@ -2407,7 +2407,7 @@
        4101-SRYKAISUMSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿·Ù¹ð¥¨¥é¡¼¥Á¥§¥Ã¥¯½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿è­¦å‘Šã‚¨ãƒ©ãƒ¼ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-SRYKAISUWRNKBN-CHK-SEC        SECTION.
       *
@@ -2425,7 +2425,7 @@
        4101-SRYKAISUWRNKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ±¡³°½èÊý¤Î½èÍý¥Á¥§¥Ã¥¯½èÍý
+      *    é™¢å¤–å‡¦æ–¹ã®å‡¦ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-INGAIPROCKBN-CHK-SEC        SECTION.
       *
@@ -2443,7 +2443,7 @@
        4101-INGAIPROCKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾¥¨¥é¡¼¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ãã®ä»–ã‚¨ãƒ©ãƒ¼åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-ERR990009KBN-CHK-SEC        SECTION.
       *
@@ -2461,7 +2461,7 @@
        4101-ERR990009KBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÌôºÞ¤ÈÉÂÌ¾¡×¤ËÌ¤ÅÐÏ¿¤ÎÌôºÞ¥Á¥§¥Ã¥¯¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    ã€Œè–¬å‰¤ã¨ç—…åã€ã«æœªç™»éŒ²ã®è–¬å‰¤ãƒã‚§ãƒƒã‚¯åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-ERRA10001KBN-CHK-SEC        SECTION.
       *
@@ -2479,7 +2479,7 @@
        4101-ERRA10001KBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔËè¤ÎÎã³°ÀßÄê¥Á¥§¥Ã¥¯½èÍý
+      *    æ‚£è€…æ¯Žã®ä¾‹å¤–è¨­å®šãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-REIGAICHKKBN-CHK-SEC        SECTION.
       *
@@ -2497,7 +2497,7 @@
        4101-REIGAICHKKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ä¢É¼½ÐÎÏ½ç¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›é †åŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-PRTSRTKBN-CHK-SEC          SECTION.
       *
@@ -2515,7 +2515,7 @@
        4101-PRTSRTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÌ¥Á¥§¥Ã¥¯¥ê¥¹¥È¶èÊ¬¥Á¥§¥Ã¥¯½èÍý
+      *    æ‚£è€…åˆ¥ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆåŒºåˆ†ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4101-PRTPTLSTKBN-CHK-SEC        SECTION.
       *
@@ -2533,7 +2533,7 @@
        4101-PRTPTLSTKBN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    À¸ÊÝ¼õµë¼ÔÈÖ¹æÈ´¤±¥Á¥§¥Ã¥¯¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ç”Ÿä¿å—çµ¦è€…ç•ªå·æŠœã‘ãƒã‚§ãƒƒã‚¯åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SEIHOJNUMCHKKBNLST-CHK-SEC       SECTION.
       *
@@ -2557,7 +2557,7 @@
        4200-SEIHOJNUMCHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ÊÊÌ¥Á¥§¥Ã¥¯¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚ç§‘åˆ¥ãƒã‚§ãƒƒã‚¯åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-BYOSRYKAKBNLST-CHK-SEC       SECTION.
       *
@@ -2581,7 +2581,7 @@
        4200-BYOSRYKAKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¼çÉÂÌ¾¥Á¥§¥Ã¥¯¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ä¸»ç—…åãƒã‚§ãƒƒã‚¯åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SYUBYOCHKLST-CHK-SEC       SECTION.
       *
@@ -2605,7 +2605,7 @@
        4200-SYUBYOCHKLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    µÞÀ­´ü´Ö¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    æ€¥æ€§æœŸé–“åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-KYUSEIKKNKBNLST-CHK-SEC    SECTION.
       *
@@ -2629,7 +2629,7 @@
        4200-KYUSEIKKNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ³«»ÏÆü¤È¼ÂÆü¿ô¤ÎÈæ³Ó¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚é–‹å§‹æ—¥ã¨å®Ÿæ—¥æ•°ã®æ¯”è¼ƒåŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-COMPBYONISSUKBNLST-CHK-SEC    SECTION.
       *
@@ -2653,7 +2653,7 @@
        4200-COMPBYONISSUKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÃæ»ß¡×¤Î¼è¤ê°·¤¤ÀßÄê½èÍý
+      *    ã€Œä¸­æ­¢ã€ã®å–ã‚Šæ‰±ã„è¨­å®šå‡¦ç†
       *****************************************************************
        4200-SRYSTTENKIKBNLST-CHK-SEC    SECTION.
       *
@@ -2677,7 +2677,7 @@
        4200-SRYSTTENKIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ²á·îÅ¾µ¢ºÑÅ¬±þÉÂÌ¾¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    éŽæœˆè»¢å¸°æ¸ˆé©å¿œç—…ååŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-TENKITEKBYOKBNLST-CHK-SEC     SECTION.
       *
@@ -2701,7 +2701,7 @@
        4200-TENKITEKBYOKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡ÊÌôºÞ¤ÈÉÂÌ¾¡Ë¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè–¬å‰¤ã¨ç—…åï¼‰åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-TEKBYOYKZKBNLST-CHK-SEC     SECTION.
       *
@@ -2725,7 +2725,7 @@
        4200-TEKBYOYKZKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Å¬±þÉÂÌ¾¥Þ¥¹¥¿»ÈÍÑ¡Ê¿ÇÎÅ¹Ô°Ù¤ÈÉÂÌ¾¡Ë¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    é©å¿œç—…åãƒžã‚¹ã‚¿ä½¿ç”¨ï¼ˆè¨ºç™‚è¡Œç‚ºã¨ç—…åï¼‰åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-TEKBYOSRYKBNLST-CHK-SEC     SECTION.
       *
@@ -2749,7 +2749,7 @@
        4200-TEKBYOSRYKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¸¡ººÌôºÞÂÐ¾Ý¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    æ¤œæŸ»è–¬å‰¤å¯¾è±¡åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YBKENSAYAKUKBNLST-CHK-SEC     SECTION.
       *
@@ -2773,7 +2773,7 @@
        4200-YBKENSAYAKUKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ê½ÑÌôºÞÂÐ¾Ý¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    æ‰‹è¡“è–¬å‰¤å¯¾è±¡åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YBSJTYKZKBNLST-CHK-SEC     SECTION.
       *
@@ -2797,7 +2797,7 @@
        4200-YBSJTYKZKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ëã¿ìÌôºÞÂÐ¾Ý¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    éº»é…”è–¬å‰¤å¯¾è±¡åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YBMSIYKZKBNLST-CHK-SEC     SECTION.
       *
@@ -2821,7 +2821,7 @@
        4200-YBMSIYKZKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ½èÊý¤Î¤ß¤ÎÌôºÞÂÐ¾Ý¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    å‡¦æ–¹ã®ã¿ã®è–¬å‰¤å¯¾è±¡åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YBSHOHOYKZKBNLST-CHK-SEC     SECTION.
       *
@@ -2845,7 +2845,7 @@
        4200-YBSHOHOYKZKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÌôºÞ¤ÈÉÂÌ¾µ¿¤¤¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    è–¬å‰¤ã¨ç—…åç–‘ã„åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YBUTAGAIKBNLST-CHK-SEC     SECTION.
       *
@@ -2869,7 +2869,7 @@
        4200-YBUTAGAIKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Áê¸ßºîÍÑ¥Þ¥¹¥¿»²¾È¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ç›¸äº’ä½œç”¨ãƒžã‚¹ã‚¿å‚ç…§ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-YKZHEIMSTKBNLST-CHK-SEC     SECTION.
       *
@@ -2893,7 +2893,7 @@
        4200-YKZHEIMSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»Äê·Ù¹ð¥¨¥é¡¼¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šè­¦å‘Šã‚¨ãƒ©ãƒ¼åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYHEIWRNKBNLST-CHK-SEC     SECTION.
       *
@@ -2917,7 +2917,7 @@
        4200-SRYHEIWRNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½»²¾È¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨å‚ç…§ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYHEIMSTKBNLST-CHK-SEC     SECTION.
       *
@@ -2941,7 +2941,7 @@
        4200-SRYHEIMSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ê»ÍÑ»»ÄêÅÅ»ÒÅÀ¿ôÉ½ÆÃÎã¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ä½µç”¨ç®—å®šé›»å­ç‚¹æ•°è¡¨ç‰¹ä¾‹ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYHEIEXPKBNLST-CHK-SEC     SECTION.
       *
@@ -2965,7 +2965,7 @@
        4200-SRYHEIEXPKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄê´ïºà´ØÏ¢¼êµ»»²¾È¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ç‰¹å®šå™¨æé–¢é€£æ‰‹æŠ€å‚ç…§ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYMATERKKBNLST-CHK-SEC     SECTION.
       *
@@ -2989,7 +2989,7 @@
        4200-SRYMATERKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÅ»ÒÅÀ¿ôÉ½²ó¿ô»²¾È¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    é›»å­ç‚¹æ•°è¡¨å›žæ•°å‚ç…§ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYKAISUMSTKBNLST-CHK-SEC  SECTION.
       *
@@ -3013,7 +3013,7 @@
        4200-SRYKAISUMSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿·Ù¹ð¥¨¥é¡¼¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿è­¦å‘Šã‚¨ãƒ©ãƒ¼ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-SRYKAISUWRNKBNLST-CHK-SEC  SECTION.
       *
@@ -3037,7 +3037,7 @@
        4200-SRYKAISUWRNKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ±¡³°½èÊý¤Î½èÍý¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    é™¢å¤–å‡¦æ–¹ã®å‡¦ç†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-INGAIPROCKBNLST-CHK-SEC  SECTION.
       *
@@ -3061,7 +3061,7 @@
        4200-INGAIPROCKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¤½¤ÎÂ¾¥¨¥é¡¼¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ãã®ä»–ã‚¨ãƒ©ãƒ¼åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-ERR990009KBNLST-CHK-SEC     SECTION.
       *
@@ -3085,7 +3085,7 @@
        4200-ERR990009KBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¡ÖÌôºÞ¤ÈÉÂÌ¾¡×¤ËÌ¤ÅÐÏ¿¤ÎÌôºÞ¥Á¥§¥Ã¥¯¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    ã€Œè–¬å‰¤ã¨ç—…åã€ã«æœªç™»éŒ²ã®è–¬å‰¤ãƒã‚§ãƒƒã‚¯åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-ERRA10001KBNLST-CHK-SEC     SECTION.
       *
@@ -3109,7 +3109,7 @@
        4200-ERRA10001KBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔËè¤ÎÎã³°ÀßÄê¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    æ‚£è€…æ¯Žã®ä¾‹å¤–è¨­å®šã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-REIGAICHKKBNLST-CHK-SEC    SECTION.
       *
@@ -3133,7 +3133,7 @@
        4200-REIGAICHKKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ä¢É¼½ÐÎÏ½ç¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›é †åŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-PRTSRTKBNLST-CHK-SEC       SECTION.
       *
@@ -3157,7 +3157,7 @@
        4200-PRTSRTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼ÔÊÌ¥Á¥§¥Ã¥¯¥ê¥¹¥È¶èÊ¬¥³¥ó¥Ü¥Á¥§¥Ã¥¯½èÍý
+      *    æ‚£è€…åˆ¥ãƒã‚§ãƒƒã‚¯ãƒªã‚¹ãƒˆåŒºåˆ†ã‚³ãƒ³ãƒœãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4200-PRTPTLSTKBNLST-CHK-SEC     SECTION.
       *
@@ -3181,7 +3181,7 @@
        4200-PRTPTLSTKBNLST-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -3198,7 +3198,7 @@
        210-BACK-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¯¥ê¥¢¡¡½èÍý
+      *    ã‚¯ãƒªã‚¢ã€€å‡¦ç†
       *****************************************************************
        220-CLEAR-SEC                   SECTION.
       *
@@ -3214,7 +3214,7 @@
       *
            MOVE    2               TO  SPA-GMN-UTAGAIKKN
       *
-      *    ¥³¥ó¥Ü¥Ü¥Ã¥¯¥¹½é´ü½èÍý
+      *    ã‚³ãƒ³ãƒœãƒœãƒƒã‚¯ã‚¹åˆæœŸå‡¦ç†
            PERFORM 3101-COMBO-SYOKI-SEC
       *
            .
@@ -3222,7 +3222,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¿¥ÖÀÚÂØ½èÍý
+      *    ã‚¿ãƒ–åˆ‡æ›¿å‡¦ç†
       *****************************************************************
        480-TAB-SWITCH-SEC          SECTION.
       *
@@ -3239,7 +3239,7 @@
        480-TAB-SWITCH-EXT.
            EXIT.
       *****************************************************************
-      *    ºï½ü³ÎÇ§²èÌÌÉ½¼¨½èÍý
+      *    å‰Šé™¤ç¢ºèªç”»é¢è¡¨ç¤ºå‡¦ç†
       *****************************************************************
        403-DEL-SEC                               SECTION.
       *
@@ -3249,7 +3249,7 @@
        403-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ºï½ü½èÍý
+      *    å‰Šé™¤å‡¦ç†
       *****************************************************************
        4031-DEL-SEC                              SECTION.
       *
@@ -3268,7 +3268,7 @@
        4031-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ºï½ü½èÍý (SYS 1101)
+      *    å‰Šé™¤å‡¦ç† (SYS 1101)
       *****************************************************************
        40311-DEL-SEC                              SECTION.
       *
@@ -3291,7 +3291,7 @@
        40311-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ºï½ü½èÍý (CHK004 1103)
+      *    å‰Šé™¤å‡¦ç† (CHK004 1103)
       *****************************************************************
        40312-DEL-SEC                              SECTION.
       *
@@ -3321,11 +3321,11 @@
        40312-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¿¥ÖÊÔ½¸½èÍý
+      *    ã‚¿ãƒ–ç·¨é›†å‡¦ç†
       *****************************************************************
        440-TAB-CHANGE-SEC              SECTION.
       *
-      *    ²èÌÌ£Ó£Ð£ÁÊÔ½¸½èÍý
+      *    ç”»é¢ï¼³ï¼°ï¼¡ç·¨é›†å‡¦ç†
            PERFORM 4101-GMN-SPA-SET-SEC
       *
            EVALUATE    SPA-GMN-PAGENO
@@ -3357,7 +3357,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÐÏ¿½èÍý
+      *    ç™»éŒ²å‡¦ç†
       *****************************************************************
        480-TOUROKU-SEC             SECTION.
       *
@@ -3387,14 +3387,14 @@
        480-TOUROKU-EXT.
            EXIT.
       *****************************************************************
-      *       ÅÐÏ¿½èÍý
+      *       ç™»éŒ²å‡¦ç†
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý1101¹¹¿·½èÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†1101æ›´æ–°å‡¦ç†
            PERFORM 4901-KOUSHIN-SEC
       *
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£´(1103)¹¹¿·½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼”(1103)æ›´æ–°å‡¦ç†
            PERFORM 4902-KOUSHIN-SEC
       *
            IF    ( SPA-ERRCD           =   SPACE )
@@ -3406,7 +3406,7 @@
        490-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
-      *       ÅÐÏ¿½èÍý¡ÊSYSKANRI 1101)
+      *       ç™»éŒ²å‡¦ç†ï¼ˆSYSKANRI 1101)
       *****************************************************************
        4901-KOUSHIN-SEC           SECTION.
       *
@@ -3567,7 +3567,7 @@
        4901-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
-      *       ÅÐÏ¿½èÍý¡ÊCHK004 1103)
+      *       ç™»éŒ²å‡¦ç†ï¼ˆCHK004 1103)
       *****************************************************************
        4902-KOUSHIN-SEC            SECTION.
       *
@@ -3593,7 +3593,7 @@
        4902-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
-      *       ÅÐÏ¿½èÍý¡ÊCHK004 1103)
+      *       ç™»éŒ²å‡¦ç†ï¼ˆCHK004 1103)
       *****************************************************************
        49021-KOUSHIN-SEC               SECTION.
       *
@@ -3615,7 +3615,7 @@
        49021-KOUSHIN-EXT.
            EXIT.
       *****************************************************************
-      *    ´ØÏ¢¥Á¥§¥Ã¥¯
+      *    é–¢é€£ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        4801-KANREN-CHK                 SECTION.
       *
@@ -3631,7 +3631,7 @@
        4801-KANREN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼«²èÌÌÊÔ½¸½èÍý
+      *    è‡ªç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-SET-SCREEN                  SECTION.
       *
@@ -3656,14 +3656,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÊÔ½¸½èÍý
+      *    ç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
            MOVE    SPACE           TO  W60
            INITIALIZE                  W60
       *
-      *    ¥¿¥Ö¥Ú¡¼¥¸ÈÖ¹æ
+      *    ã‚¿ãƒ–ãƒšãƒ¼ã‚¸ç•ªå·
            MOVE    SPA-GMN-PAGENO  TO  W60-PAGENO
       *
            MOVE    SPA-W01-STYUKYMDH   TO  W60-STYUKYMD
@@ -3686,9 +3686,9 @@
                                    TO  W60-CHKMTRX-STYLE (IDX-MTRX)
       *
                IF    ( SPA-GMN-CHKMTRX (IDX-MTRX)  =   "1" )
-                   MOVE    "¡û"    TO  W60-MTRX    (IDX-MTRX)
+                   MOVE    "â—‹"    TO  W60-MTRX    (IDX-MTRX)
                ELSE
-                   MOVE    "¡ß"    TO  W60-MTRX    (IDX-MTRX)
+                   MOVE    "Ã—"    TO  W60-MTRX    (IDX-MTRX)
                END-IF
       *
            END-PERFORM
@@ -4034,7 +4034,7 @@
            END-PERFORM
       *
       *
-      *    ¹àÌÜ¾õÂÖÊÔ½¸
+      *    é …ç›®çŠ¶æ…‹ç·¨é›†
            PERFORM 500-GMNHEN-STATE-EDIT-SEC
       *
            PERFORM 5001-MAPCUR-SEC
@@ -4044,7 +4044,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹àÌÜ¾õÂÖÊÔ½¸½èÍý
+      *    é …ç›®çŠ¶æ…‹ç·¨é›†å‡¦ç†
       *****************************************************************
        500-GMNHEN-STATE-EDIT-SEC       SECTION.
       *
@@ -4075,7 +4075,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
+      *    ç”»é¢ã‚«ãƒ¼ã‚½ãƒ«ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -4182,7 +4182,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÆþÎÏ¸Ä½ê¤Î¥»¥Ã¥È½èÍý
+      *    å…¥åŠ›å€‹æ‰€ã®ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        5011-INPUT-CUR-SEC          SECTION.
       *
@@ -4275,7 +4275,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥«¡¼¥½¥ë¥¹¥­¥Ã¥×½èÍý
+      *    ã‚«ãƒ¼ã‚½ãƒ«ã‚¹ã‚­ãƒƒãƒ—å‡¦ç†
       *****************************************************************
        5012-SKIP-CUR-SEC          SECTION.
       *
@@ -4290,7 +4290,7 @@
        5012-SKIP-CUR-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºç†
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -4298,17 +4298,17 @@
       *
            EVALUATE    SPA-ERRCD
            WHEN    "0001"
-               STRING   "µ¿¤¤ÉÂÌ¾¥Á¥§¥Ã¥¯´ü´Ö¤Ï"
+               STRING   "ç–‘ã„ç—…åãƒã‚§ãƒƒã‚¯æœŸé–“ã¯"
                                        DELIMITED   BY  SIZE
-                        "£±¡Á£¹¥ö·î¤Î´ü´Ö¤ÇÀßÄê¤·¤Æ¤¯¤À¤µ¤¤"
+                        "ï¼‘ã€œï¼™ãƒ¶æœˆã®æœŸé–“ã§è¨­å®šã—ã¦ãã ã•ã„"
                                        DELIMITED   BY  SIZE
                INTO     SPA-ERRMSG
                END-STRING
            WHEN    "0101"
-               MOVE    "ÉÂÌ¾¥Á¥§¥Ã¥¯¾ò·ï¤òÀßÄê¤·¤Æ¤¯¤À¤µ¤¤"
+               MOVE    "ç—…åãƒã‚§ãƒƒã‚¯æ¡ä»¶ã‚’è¨­å®šã—ã¦ãã ã•ã„"
                                        TO  SPA-ERRMSG
            WHEN    "4001"              THRU    "4999"
-               MOVE    "¹¹¿·½èÍý¤Ë¼ºÇÔ¤·¤Þ¤·¤¿"
+               MOVE    "æ›´æ–°å‡¦ç†ã«å¤±æ•—ã—ã¾ã—ãŸ"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -4332,7 +4332,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¬¥¤¥É¥á¥Ã¥»¡¼¥¸É½¼¨
+      *    ã‚¬ã‚¤ãƒ‰ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤º
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -4340,9 +4340,9 @@
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "ÅÐÏ¿½èÍý¤ò¤·¤Þ¤¹"    TO  WRK-WIDMSG
+                   MOVE    "ç™»éŒ²å‡¦ç†ã‚’ã—ã¾ã™"    TO  WRK-WIDMSG
                WHEN    "1002"
-                   MOVE    "ºï½ü½èÍý¤ò¤·¤Þ¤¹"    TO  WRK-WIDMSG
+                   MOVE    "å‰Šé™¤å‡¦ç†ã‚’ã—ã¾ã™"    TO  WRK-WIDMSG
            END-EVALUATE
       *
            MOVE    SPACE                TO  WID1
@@ -4365,7 +4365,7 @@
        520-WIDSET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -4376,7 +4376,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY10)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -4402,7 +4402,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY8)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†(KEY8)
       *****************************************************************
        900-SYSKANRI-KEY8-SEL-SEC       SECTION.
       *
@@ -4428,7 +4428,7 @@
        900-SYSKANRI-KEY8-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£´¸¡º÷½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼”æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-CHK004-KEY10-SEL-SEC         SECTION.
       *
@@ -4450,7 +4450,7 @@
        900-CHK004-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Á¥§¥Ã¥¯¥Þ¥¹¥¿£´¸¡º÷½èÍý
+      *    ãƒã‚§ãƒƒã‚¯ãƒžã‚¹ã‚¿ï¼”æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-CHK004-KEY10-FET-SEC         SECTION.
       *
@@ -4470,7 +4470,7 @@
        900-CHK004-KEY10-FET-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -4488,7 +4488,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                  SECTION.
       *
@@ -4502,7 +4502,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC            SECTION.
       *
@@ -4516,7 +4516,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£Ä£Å£Ì£Å£Ô£Å½èÍý
+      *    ï¼¤ï¼¢ï¼¤ï¼¥ï¼¬ï¼¥ï¼´ï¼¥å‡¦ç†
       *****************************************************************
        910-DBDELETE-SEC                 SECTION.
       *
@@ -4530,7 +4530,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBDELETE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£É£Î£Ó£Å£Ò£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼©ï¼®ï¼³ï¼¥ï¼²ï¼´å‡¦ç†
       *****************************************************************
        910-DBINSERT-SEC                SECTION.
       *
@@ -4544,7 +4544,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBINSERT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â£Õ£Ð£Ä£Á£Ô£Å½èÍý
+      *    ï¼¤ï¼¢ï¼µï¼°ï¼¤ï¼¡ï¼´ï¼¥å‡¦ç†
       *****************************************************************
        910-DBUPDATE-SEC                SECTION.
       *
@@ -4558,7 +4558,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBUPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW                  SECTION.
       *

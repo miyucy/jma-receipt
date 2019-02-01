@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,40 +17,40 @@
       ********************************************************************
       *****************************************************************
       *
-      *    �쥻�ץȺ����ؼ� ���̣ӣУ�(SPA-WORK ������)
+      *    レセプト作成指示 共通ＳＰＡ(SPA-WORK の内容)
       *          
       *****************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  SPA-O01KYOUTU.
       *
-      *������ʬ
+      *処理区分
            03  SPA-O01-SYOKBN              PIC  X(01).
-      *�ե������ʬ�ʣ�����硡�������̡�
+      *ファイル区分（１：一括　２：個別）
            03  SPA-O01-FILEKBN             PIC  X(01).
-      *����ǯ��
+      *請求年月
            03  SPA-O01-SRYYM               PIC  9(06).
-      *����
+      *期別
            03  SPA-O01-KBT-G.
                05  SPA-O01-KBT             PIC X(01)
                                            OCCURS  3.
-      *������ʬ
+      *印刷区分
            03  SPA-O01-PRTKBN              PIC X(01).
-      *��ɼȯ����
+      *伝票発行日
            03  SPA-O01-DENPPRTYMD          PIC  X(08).
-      *������֥����å��ܥ���
+      *請求期間チェックボタン
            03  SPA-O01-CHK-KIKAN01         PIC X(01).
            03  SPA-O01-CHK-KIKAN02         PIC X(01).
            03  SPA-O01-CHK-KIKAN03         PIC X(01).
-      *�����ƥ����ա�ǯ�������Խ���
+      *システム日付（年月全角編集）
            03  SPA-O01-SYSYMH              PIC X(16).
-      *��ư���ܶ�ʬ
+      *自動遷移区分
            03  SPA-O01-CHGWINDOWKBN        PIC X(01).
-      *�ٹ��å�����
+      *警告メッセージ
            03  SPA-OIDCD                   PIC  X(04).
            03  SPA-OIDCD2                  PIC  X(04).
-      *�ٹ���̤��
+      *警告画面より
            03  SPA-OID1-AREA. 
                05  SPA-OID1-FLG            PIC  X(02).
                05  SPA-O99-FLG             PIC  X(02).

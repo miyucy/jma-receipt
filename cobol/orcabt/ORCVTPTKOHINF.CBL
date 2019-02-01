@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,34 +18,34 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTPTKOHINF.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ãӣ֥ե����륳��С��Ƚ����ʴ��Ը����
-      *  ������            : 
-      *  01/04/11    MCC-����      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : ＣＳＶファイルコンバート処理（患者公費）
+      *  管理者            : 
+      *  01/04/11    MCC-太田      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/11/01  �����ֹ�ζ���ޤǤǷ��
-      *                                     ���Խ�  
-      *  01.00.02    MCC-��ƣ     01/12/12  �����ֹ湽���˹�碌��
-      *                                     �����ͤ��Խ���Ԥ�  
-      *  01.00.03    MCC-��ƣ     01/12/12  �ģ¥����륤�󥿡��ե�����
-      *                                     ���ѹ�  
-      *  01.00.04    MCC-ƣ��     02/01/07  Ŭ�ѳ���ǯ�������Խ�����
-      ************************************  OpenCOBOL�б�
-      *  01.00.05    MCC-��ƣ     02/02/14  ʸ���ȿ������Ѵ�
-      *  01.01.01    NACL-����    02/11/28  ��ʧ��ʬ���ɲ�
-      *  01.01.02    NACL-��ƣ    03/12/03  Ϸ���ݷ��Ŭ�ѳ�����������
-      *  01.01.03    NACL-����    05/07/15  ���顼��å�����
-      *  01.01.04    NACL-����    05/08/09  ��ô��ʬ�ɲ�
-      *  01.01.05    NACL-����    05/09/28  ��¤�ѹ�
-      *  01.01.06    NACL-����    06/07/26  MONFUNC�б�
-      *  03.05.00    NACL-¿��Ǽ  07/05/16  ���롼�׿����б�
-      *  04.01.00    NACL-¿��Ǽ  07/11/06  �����ɲý������
-      *  04.02.00    NACL-¿��Ǽ  08/04/28  �ȣ������������б�¾
-      *  04.05.00    NACL-¿��Ǽ  12/12/26  ��ô���ֹ������б�
-      *  04.08.00    NACL-¿��Ǽ  17/09/26  ˡ���ֹ棶��Ƚ���ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/11/01  患者番号の空白までで桁数
+      *                                     を編集  
+      *  01.00.02    MCC-伊藤     01/12/12  患者番号構成に合わせて
+      *                                     前０詰め編集を行う  
+      *  01.00.03    MCC-伊藤     01/12/12  ＤＢコールインターフェイス
+      *                                     の変更  
+      *  01.00.04    MCC-藤原     02/01/07  適用開始年月日の編集修正
+      ************************************  OpenCOBOL対応
+      *  01.00.05    MCC-伊藤     02/02/14  文字と数字の変換
+      *  01.01.01    NACL-森脇    02/11/28  支払区分の追加
+      *  01.01.02    NACL-伊藤    03/12/03  老人保健の適用開始日の設定
+      *  01.01.03    NACL-森脇    05/07/15  エラーメッセージ
+      *  01.01.04    NACL-森脇    05/08/09  負担区分追加
+      *  01.01.05    NACL-森脇    05/09/28  構造変更
+      *  01.01.06    NACL-森脇    06/07/26  MONFUNC対応
+      *  03.05.00    NACL-多々納  07/05/16  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/06  公費追加処理削除
+      *  04.02.00    NACL-多々納  08/04/28  Ｈ２０．４改正対応他
+      *  04.05.00    NACL-多々納  12/12/26  負担者番号全角対応
+      *  04.08.00    NACL-多々納  17/09/26  法別番号６２判定追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,25 +53,25 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    ���ϴ��Ը������ãӣ֥ե�����
+      *    入力患者公費情報ＣＳＶファイル
            SELECT  CSV-FILE        ASSIGN
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-LST.
       *
-      *    ʬ��ե�����
+      *    分割ファイル
            SELECT  ISAM-FILE       ASSIGN
                                    ASS-ISAM
                                    ORGANIZATION    IS  INDEXED
@@ -81,7 +81,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-RECKBN             PIC X(01).
@@ -89,18 +89,18 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
-      *    ���ϴ��Ը������ãӣ֥ե�����
+      *    入力患者公費情報ＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC.
            03  CSV-R                   PIC X(300).
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   300.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
       *
-      *    ʬ��ե�����
+      *    分割ファイル
        FD  ISAM-FILE.
        01  ISAM-REC.
            03  ISAM-KEY.
@@ -114,26 +114,26 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ERR                 PIC X(256).
-      *    ��֥쥳���ɥե�����
+      *    中間レコードファイル
            03  ASS-ISAM                PIC X(256)  VALUE
                "/tmp/ORCVTPTKOHINF_ISAM".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
            03  STS-LST                 PIC X(02).
            03  STS-ISAM                PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
@@ -157,7 +157,7 @@
            03  FLG-YMD                 PIC 9(01).
            03  FLG-ZENKAKU             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
@@ -166,7 +166,7 @@
            03  CNT-COMMIT              PIC 9(06).
            03  CNT-PTKOHINF            PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -195,7 +195,7 @@
            03  FILLER                  PIC X(01).
            03  PARA2-HKNNUM            PIC X(03).
       *
-      *    �ѥ�᡼����¸
+      *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-05-1               PIC X(02).
            03  PARA-06-2               PIC X(08).
@@ -212,7 +212,7 @@
            03  PARA-11-3               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -256,7 +256,7 @@
                05  WRK-BDD             PIC 9(02).
            03  WRK-AGE                 PIC 9(03).
       *
-      *    ���ե����ޥå���
+      *    新フォーマット用
        01  WRK-HEN-AREA.
            03  WRK-HEN-PTNUM           PIC X(20).
            03  WRK-HEN-FTNKBN          PIC X(01).
@@ -264,11 +264,11 @@
            03  WRK-HEN-TEKSTYMD        PIC X(08).
            03  WRK-HEN-TEKEDYMD        PIC X(08).
       *
-      *    Ģɼ�����ΰ�
+      *    帳票出力領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCVTPTKOHINF.CBL��".
+                                       "【PGID:ORCVTPTKOHINF.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -278,15 +278,15 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]ɬ��̤����        [2]���ܷ������     ".
+                   " [1]必須未入力        [2]項目桁数不正     ".
                    07  FILLER          PIC X(37) VALUE
-                   " [3]������            [4]������������".
+                   " [3]誤入力            [4]地方公費不正".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]�����ֹ��������  [6]���Ծ���������� ".
+                   " [5]患者番号取得失敗  [6]患者情報取得失敗 ".
                    07  FILLER          PIC X(42) VALUE
-                   " [7]�����ֹ湹������  [8]���Ը�����ϼ���".
+                   " [7]患者番号更新失敗  [8]患者公費出力失敗".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -294,7 +294,7 @@
                    "-------------------------------------------------".
       *
        01  ERRLST-AREA.
-      *    ���顼�ֹ棱�����������ǻ���
+      *    エラー番号１・２・３　で使用
            03  ERR-REC1.
                05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -304,7 +304,7 @@
                    07  ERR1-ERRNO      PIC X(03).
                    07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    ���顼�ֹ棴�����������ǻ���
+      *    エラー番号４・５・６　で使用
            03  ERR-REC2.
                05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -329,39 +329,39 @@
                05  ERR2-TEKEDYMD       PIC X(08).
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ����
+      *    システム管理（医療機関情報）
            COPY    "CPSK1001.INC".
-      *    �����ƥ�����ʴ����ֹ湽��������
+      *    システム管理（患者番号構成管理）
            COPY    "CPSK1009.INC".
-      *    ���Ը������
+      *    患者公費情報
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    LIKE����KEY�б�
+      *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
       ****************************************************************
@@ -373,7 +373,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -381,7 +381,7 @@
       *
            PERFORM 200-MAIN-SEC
                    UNTIL   FLG-CSV     =   1
-      *    ʬ��쥳���ɤ�����н���
+      *    分割レコードがあれば処理
       **** PERFORM 250-PTKOHINF-BUNKATU-SET-SEC
       *
            PERFORM 300-END-SEC
@@ -390,7 +390,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -400,18 +400,18 @@
            INITIALIZE                  WRK-AREA
            INITIALIZE                  SPA-AREA
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    ASS-PARA
            END-UNSTRING
       *
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
            IF  FLG-PARA            =   2
                MOVE    1           TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
-      *    ���ŵ����ֹ�
+      *    医療機関番号
            IF      PARA-HOSPNUM    NUMERIC
                MOVE    PARA-HOSPNUM    TO  SPA-HOSPNUM
            ELSE
@@ -427,13 +427,13 @@
            MOVE    SPA-SYSYMD(1:4) TO  MES-TITLE1-YY
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
-      *    ü���ɣĸ���
+      *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
            PERFORM 120-CP1001-KENSAKU-SEC
            IF  FLG-CSV             =   1
                GO  TO  100-INIT-EXT
@@ -444,7 +444,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �ãӣ����ϥե����롡�������
+      *    ＣＳＶ入力ファイル　初期処理
            OPEN    INPUT           CSV-FILE
            IF  STS-CSV         NOT =   ZERO
                MOVE    1           TO  FLG-CSV
@@ -453,16 +453,16 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
            PERFORM 2710-ERRLST-INIT-SEC
            IF  FLG-CSV             =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      **** ʬ��쥳���ɥե����롡�������
+      **** 分割レコードファイル　初期処理
       *    MOVE    "/tmp/ORCVTPTKOHINF_ISAM"
       ****                         TO  ASS-ISAM
-      *    ISAM�ե����륯�ꥢ
+      *    ISAMファイルクリア
            OPEN    OUTPUT              ISAM-FILE
            CLOSE                       ISAM-FILE
       *
@@ -472,7 +472,7 @@
            MOVE    PARA-09-3       TO  WRK-COMMIT
            MOVE    PARA-11-3       TO  WRK-ERR
       *
-      *    ���Ը���ãӣ֥ե����롡��������
+      *    患者公費ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -480,7 +480,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
@@ -506,7 +506,7 @@
       *
            CLOSE                       PARA-FILE
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            IF    ( PARA-05-1           IS  NUMERIC )   AND
                  ( PARA-09-3           IS  NUMERIC )   AND
                  ( PARA-11-3           IS  NUMERIC )
@@ -521,7 +521,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼����������ʣ���
+      *    パラメータ情報取得（１）
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
@@ -564,7 +564,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -602,7 +602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1009-KENSAKU-SEC      SECTION.
       *
@@ -638,19 +638,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            IF      CNT-CSV (4:3)       =   ZERO
                DISPLAY "***(ORCVTPTKOHINF)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      **** ���ꤷ������ˤʤä��饳�ߥåȽ�����Ԥ�
+      **** 指定した件数になったらコミット処理を行う
       *    IF  CNT-COMMIT              =   WRK-COMMIT
       *        PERFORM 900-DBCOMMIT-SEC
       *        MOVE    ZERO            TO  CNT-COMMIT
       **** END-IF
-      *    ���顼�����ꤷ������ˤʤä��������ȴ����
+      *    エラーが指定した件数になったら処理を抜ける
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
@@ -667,8 +667,8 @@
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
       *
-      *    ���Ը���ãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ���ޤ��Ϲ��ܥ��顼���Ĥޤ�
+      *    患者公費ＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX   >       14 )
                    OR      ( WRK-PO-ED     >=  300  )
@@ -683,34 +683,34 @@
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1           TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����
+      *            項目終了文字後のカンマ位置を取得
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽���
+      *        項目共通処理
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *        �����̽���
+      *        項目別処理
                IF      FLG-DATAEND     =   ZERO
                    PERFORM 240-KOUMOKU-BETU-SEC
                END-IF
            END-PERFORM
       *
            IF      FLG-ERRARI          =   ZERO
-      *        ���Ը��񥻥åȽ���
+      *        患者公費セット処理
       ******** PERFORM 250-PTKOHINF-SET-SEC
-      *        ���Ը�����֥ǡ�������
+      *        患者公費中間データ出力
                PERFORM 400-PTKOHINF-ISM-SEC
                IF      FLG-ERR         NOT =   ZERO
-      *            ���顼�ꥹ���Խ�/���Ͻ���
+      *            エラーリスト編集/出力処理
                    PERFORM 270-ERRREC-EDIT-SEC
                    MOVE    2           TO  FLG-ERRARI
                    PERFORM 270-ERRLST-OUT-SEC
                END-IF
            ELSE
-      *        ���顼�ꥹ�Ƚ��Ͻ���
+      *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
            END-IF
       *
-      *    ���Ը���ãӣ֥ե����롡��������
+      *    患者公費ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -718,7 +718,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
@@ -726,19 +726,19 @@
            PERFORM VARYING   IDY   FROM    WRK-PO-ST   BY  1
                    UNTIL   ( IDY           >=  300  )
                    OR      ( FLG-COMMA     =   1    )
-      *        ����ޤΰ���
+      *        カンマの位置
                IF  ( CSV-X (IDY)       =   ","   )  OR
                    ((IDX               =   14 )  AND
                     (CSV-X (IDY)       =   SPACE))
                    MOVE    IDY         TO  WRK-PO-ED
                    MOVE    1           TO  FLG-COMMA
                ELSE
-      *            ����ޤ�­��ʤ����ν�λ���ַ���
+      *            カンマが足りない場合の終了位置決定
                    IF      CSV-X (IDY) NOT =   SPACE
                        MOVE    IDY         TO  WRK-PO-ED
                    END-IF
                END-IF
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF      CSV-X (IDY)         =   """"
                    IF      FLG-DELI1       =   ZERO
                        MOVE    1       TO  FLG-DELI1
@@ -759,15 +759,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽���
+      *    項目共通処理
       *****************************************************************
        220-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -778,16 +778,16 @@
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1           TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
            IF      FLG-DELI1           =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                COMPUTE   WRK-MO-ST     =   WRK-PO-ST   +   1
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-MO-CNT  =   WRK-PO-ED
@@ -797,7 +797,7 @@
                                        -   WRK-PO-ST
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT      =   WRK-PO-ED  -  WRK-PO-ST
            END-IF
@@ -807,56 +807,56 @@
            EXIT.
       *
       *****************************************************************
-      *    �����̽���
+      *    項目別処理
       *****************************************************************
        240-KOUMOKU-BETU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
-      *    ���������ֹ�
+      *    １：患者番号
            WHEN    1
                PERFORM 2410-PTNUM-SET-SEC
-      *    �����쥳�����ֹ�ʸ����ֹ��
+      *    ２：レコード番号（公費番号）
            WHEN    2
                PERFORM 2410-RECORD-KOH-SET-SEC
-      *    ����ˡ���ֹ�
+      *    ３：法別番号
            WHEN    3
                PERFORM 2410-HBTNUM-SET-SEC
-      *    ����ˡ���ֹ�����������
+      *    ４：法別番号（地方公費）
            WHEN    4
                PERFORM 2410-HBTNUM-CHIHO-SET-SEC
-      *    ������ô��ʬ
+      *    ５：負担区分
            WHEN    5
                PERFORM 2410-FTNKBN-SET-SEC
-      *    �����ݸ��ֹ�
+      *    ６：保険番号
            WHEN    6
                PERFORM 2410-HKNNUM-SET-SEC
-      *    ������ô���ֹ�
+      *    ７：負担者番号
            WHEN    7
                PERFORM 2410-FTNJANUM-SET-SEC
-      *    ����������ֹ�
+      *    ８：受給者番号
            WHEN    8
                PERFORM 2410-JKYSNUM-SET-SEC
-      **    �������������ô��
+      **    ９：公費一部負担金
       *     WHEN    9
       *         CONTINUE
-      *    ������Ŭ�ѳ�����
+      *    １０：適用開始日
            WHEN    10
                PERFORM 2410-TEKSTYMD-SET-SEC
-      *    ������Ŭ�ѽ�λ��
+      *    １１：適用終了日
            WHEN    11
                PERFORM 2410-TEKEDYMD-SET-SEC
-      *    �����������ǧ��
+      *    １２：公費確認日
            WHEN    12
                PERFORM 2410-KAKUNINYMD-SET-SEC
-      *    ��������Ͽ��
+      *    １３：登録日
            WHEN    13
                PERFORM 2410-CREYMD-SET-SEC
-      *    ������������
+      *    １４：更新日
            WHEN    14
                PERFORM 2410-UPYMD-SET-SEC
-      *    �ե����ޥåȥ��顼
+      *    フォーマットエラー
            WHEN    OTHER
-      *        ��ե����ޥåȤξ��
+      *        旧フォーマットの場合
                IF      PARA-00-3       =  "1"
                    IF      IDX         >   12
                        MOVE    3       TO  FLG-ERR
@@ -874,7 +874,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ������
+      *    項目空白処理
       *****************************************************************
        2401-SPACE-HENSYU-SEC       SECTION.
       *
@@ -891,11 +891,11 @@
                    END-IF
                END-PERFORM
       *
-      *        ��������Ѷ������
+      *        後ろの全角空白を削除
                IF      WRK-LEN             >   1
                    PERFORM 24021-KUHAKU-DEL-SEC
                END-IF
-      *        Ⱦ�ѱѿ����Ǥ��뤳��
+      *        半角英数字であること
                IF      WRK-LEN             >   1
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"             TO  KANACHK-SYORI
@@ -905,7 +905,7 @@
                    CALL    "ORCSKANACHK"       USING
                                                ORCSKANACHKAREA
                    IF      FLG-ZENKAKU         =   1
-      *                ������ֹ�Ϻ��ߤ򥨥顼
+      *                受給者番号は混在をエラー
                        IF     (KANACHK-RC          NOT =   ZERO )  OR
                               (KANACHK-SYUBETU         =   ZERO )  OR
                               (KANACHK-RC2         NOT =   ZERO )  OR
@@ -920,7 +920,7 @@
                                                    KANACHK-OUT-INPUT)
                            CONTINUE
                        ELSE
-      *                    ���ѡ����ߡ��֤ζ���ϥ��顼
+      *                    全角・混在、間の空白はエラー
                            MOVE    3               TO  FLG-ERR
                        END-IF
                    END-IF
@@ -931,21 +931,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ѷ���������
+      *    全角空白削除処理
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
            COMPUTE IDZ             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDZ:2)    =   "��"
+           IF      WRK-DATA (IDZ:2)    =   "　"
                MOVE    1                   TO  WRK-LEN
                PERFORM VARYING IDS     FROM    IDZ BY  -2
                        UNTIL   IDS     <   2
-                   IF      WRK-DATA (IDS:2)    NOT =   "��"
+                   IF      WRK-DATA (IDS:2)    NOT =   "　"
                        COMPUTE WRK-LEN         =   IDS     +   1
                        MOVE    2               TO  IDS
                    ELSE
                        IF      IDS             =   3
-                           IF      WRK-DATA (1:2)      NOT =   "��"
+                           IF      WRK-DATA (1:2)      NOT =   "　"
                                MOVE    2               TO  WRK-LEN
                            END-IF
                        END-IF
@@ -957,7 +957,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ��������ֹ桡����
+      *    項目１：患者番号　処理
       *****************************************************************
        2410-PTNUM-SET-SEC          SECTION.
       *
@@ -968,7 +968,7 @@
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    ����ޤǤ��Խ�����
+      *    空白までを編集する
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-HEN-PTNUM
            MOVE    ZERO                TO  WRK-CNT
@@ -1005,7 +1005,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ����쥳�����ֹ�ʸ����ֹ�ˡ�����
+      *    項目２：レコード番号（公費番号）　処理
       *****************************************************************
        2410-RECORD-KOH-SET-SEC     SECTION.
       *
@@ -1040,7 +1040,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ���ˡ���ֹ�
+      *    項目３：法別番号
       *****************************************************************
        2410-HBTNUM-SET-SEC         SECTION.
       *
@@ -1068,9 +1068,9 @@
                WHEN    "54"
       *H29.10
                WHEN    "62"
-      **������ START ---------------------------------------------
+      **コメント START ---------------------------------------------
       *                                 OR  "55"  OR  "56"
-      **������ END   ---------------------------------------------
+      **コメント END   ---------------------------------------------
                    CONTINUE
                WHEN    OTHER
                    MOVE    3           TO  FLG-ERR
@@ -1078,17 +1078,17 @@
            END-EVALUATE
       *
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
-      *    �����������ô̵����
+      *    特定疾患（負担無し）
            WHEN    "50"
                MOVE    "091"           TO  PTKOH-KOHNUM
-      **������ START ---------------------------------------------
-      **    ʡ��
+      **コメント START ---------------------------------------------
+      **    福祉
       *     WHEN    "55"
       *         MOVE    "191"           TO  PTKOH-KOHNUM
-      **    ����
+      **    乳児
       *     WHEN    "56"
       *         MOVE    "190"           TO  PTKOH-KOHNUM
-      **������ END   ---------------------------------------------
+      **コメント END   ---------------------------------------------
            WHEN    OTHER
                MOVE    "0"             TO  PTKOH-KOHNUM (1:1)
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
@@ -1100,7 +1100,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ���ˡ���ֹ�����������
+      *    項目４：法別番号（地方公費）
       *****************************************************************
        2410-HBTNUM-CHIHO-SET-SEC   SECTION.
       *
@@ -1129,13 +1129,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����ô��ʬ
+      *    項目５：負担区分
       *****************************************************************
        2410-FTNKBN-SET-SEC       SECTION.
       *
-      *    ��ե����ޥåȤξ�缡�ι���
+      *    旧フォーマットの場合次の項目
            IF      PARA-00-3         =  "1"
-      *        Ϸ���ݷ�ʤ���ô��ʬ�ˣ��򥻥å�
+      *        老人保健なら負担区分に１をセット
                IF      PTKOH-KOHNUM   =   "027"
                    MOVE    "1"        TO  WRK-HEN-FTNKBN
                ELSE
@@ -1173,7 +1173,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ����ݸ��ֹ�
+      *    項目６：保険番号
       *****************************************************************
        2410-HKNNUM-SET-SEC         SECTION.
       *
@@ -1197,7 +1197,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����ô���ֹ�
+      *    項目７：負担者番号
       *****************************************************************
        2410-FTNJANUM-SET-SEC       SECTION.
       *
@@ -1222,7 +1222,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ���������ֹ�
+      *    項目８：受給者番号
       *****************************************************************
        2410-JKYSNUM-SET-SEC        SECTION.
       *
@@ -1241,7 +1241,7 @@
            PERFORM 2401-SPACE-HENSYU-SEC
            MOVE    WRK-DATA (1:WRK-LEN)
                                    TO  PTKOH-JKYSNUM
-      *    ���Ŵѻ�ˡ�μ�����ֹ����Ϥϥ��顼
+      *    医療観察法の受給者番号入力はエラー
            IF      PTKOH-KOHNUM    =   "030"
                IF      PTKOH-JKYSNUM   NOT =   SPACE
                    MOVE    3           TO  FLG-ERR
@@ -1252,7 +1252,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����Ŭ�ѳ�����������
+      *    項目１０：適用開始日　処理
       *****************************************************************
        2410-TEKSTYMD-SET-SEC       SECTION.
       *
@@ -1286,7 +1286,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����Ŭ�ѽ�λ��������
+      *    項目１１：適用終了日　処理
       *****************************************************************
        2410-TEKEDYMD-SET-SEC       SECTION.
       *
@@ -1327,7 +1327,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ����������ǧ��������
+      *    項目１２：公費確認日　処理
       *****************************************************************
        2410-KAKUNINYMD-SET-SEC     SECTION.
       *
@@ -1357,7 +1357,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�������Ͽ��������
+      *    項目１３：登録日　処理
       *****************************************************************
        2410-CREYMD-SET-SEC         SECTION.
       *
@@ -1384,7 +1384,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����������������
+      *    項目１４：更新日　処理
       *****************************************************************
        2410-UPYMD-SET-SEC          SECTION.
       *
@@ -1410,26 +1410,26 @@
        2410-UPYMD-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ը���ޥ����ɣӣ��ͽ���
+      *    患者公費マスタＩＳＡＭ処理
       *****************************************************************
        400-PTKOHINF-ISM-SEC        SECTION.
       *
-      *    �����ֹ��ɤ߹���
+      *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
            IF      FLG-PTNUM           =   1
                MOVE    5               TO  FLG-ERR
            END-IF
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
            IF      FLG-PTINF           =   1
                MOVE    6               TO  FLG-ERR
            END-IF
-      *    ������������å�
+      *    地方公費チェック
            IF     (FLG-ERR             =   ZERO )
              AND  (PTKOH-KOHNUM        =  SPACE )
                PERFORM 4001-CHIHOU-HEN-SEC
            END-IF
-      *    ��ʧ����ʬ���å�
+      *    支払い区分セット
            IF      FLG-ERR             =   ZERO
                PERFORM 4002-PAYKBN-HEN-SEC
            END-IF
@@ -1438,7 +1438,7 @@
                GO      TO      400-PTKOHINF-ISM-EXT
            END-IF
       *
-      *    �ɣӣ����ɹ���
+      *    ＩＳＡＭ読込み
            MOVE    ZERO            TO  FLG-ISAM
            MOVE    ZERO            TO  IDI
            PERFORM UNTIL   FLG-ISAM    NOT =   ZERO
@@ -1446,7 +1446,7 @@
                INITIALIZE                  ISAM-REC
                MOVE    PTNUM-PTID      TO  ISAM-PTID
                MOVE    IDI             TO  ISAM-KOHID
-      *        ¸�ߥ����å�
+      *        存在チェック
                PERFORM 900-ISAM-READ-SEC
            END-PERFORM
       *
@@ -1459,7 +1459,7 @@
            MOVE    WRK-HEN-TEKSTYMD    TO  PTKOH-TEKSTYMD
            MOVE    WRK-HEN-TEKEDYMD    TO  PTKOH-TEKEDYMD
       *
-      *    ʬ��쥳���ɤ��ɲ�
+      *    分割レコードに追加
            INITIALIZE                      ISAM-REC
            MOVE    PTNUM-PTID          TO  ISAM-PTID
            MOVE    IDI                 TO  ISAM-KOHID
@@ -1476,12 +1476,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������å�����
+      *    地方公費チェック処理
       *****************************************************************
        4001-CHIHOU-HEN-SEC              SECTION.
       *
-      *    ��ǯ��������ǯ������
-      *    �����ʤ����ǯ�����������ʳ��ʤ����ǯ����������
+      *    生年月日から年齢を求める
+      *    １日ならば生年月日、１日以外ならば生年月日の翌月１日
            MOVE    ZERO                TO  WRK-BASEYMD
            MOVE    ZERO                TO  WRK-AGE
            MOVE    PTINF-BIRTHDAY      TO  WRK-BASEYMD
@@ -1493,7 +1493,7 @@
                END-IF
                MOVE    01              TO  WRK-BDD
            END-IF
-      *    ǯ��
+      *    年齢
            COMPUTE WRK-AGE         =   WRK-SYSYY - WRK-BYY
            IF      WRK-AGE         >   0
                IF      WRK-SYSMM     <   WRK-BMM
@@ -1541,11 +1541,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʧ����ʬ���åȽ���
+      *    支払い区分セット処理
       *****************************************************************
        4002-PAYKBN-HEN-SEC              SECTION.
       *
-      *    ��ʧ����ʬ���å�
+      *    支払い区分セット
            IF      PTKOH-KOHNUM    =   "027"
       *****    IF      WRK-HEN-TEKEDYMD    <=  "20020930"
                IF      WRK-HEN-TEKSTYMD    <=  "20020930"
@@ -1557,7 +1557,7 @@
                            MOVE    "01"    TO  PTKOH-PAYKBN
                        WHEN    "2"
                        WHEN    "3"
-      *                    ����������ô�ϳ������ˤ��
+      *                    ２、３割負担は開始日による
                            IF      WRK-HEN-TEKSTYMD    >=  "20061001"
                                MOVE    "03"        TO  PTKOH-PAYKBN
                            ELSE
@@ -1574,7 +1574,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ�����
+      *    エラーリスト編集処理
       *****************************************************************
        270-ERRREC-EDIT-SEC         SECTION.
       *
@@ -1592,22 +1592,22 @@
            END-IF
       *
            EVALUATE    FLG-ERR
-      *    ɬ�ܹ���̤���ϥ��顼
+      *    必須項目未入力エラー
            WHEN    1
-      *    ���ܷ�����顼
+      *    項目桁数エラー
            WHEN    2
-      *    �����ϥ��顼
+      *    誤入力エラー
            WHEN    3
                PERFORM 2710-ERRREC-EDIT-BETU1-SEC
-      *    �������񥨥顼
+      *    地方公費エラー
            WHEN    4
-      *    �����ֹ�������顼
+      *    患者番号取得エラー
            WHEN    5
-      *    ���Ծ���������顼
+      *    患者情報取得エラー
            WHEN    6
-      *    �ֹ�ģ¹������顼
+      *    番号ＤＢ更新エラー
            WHEN    7
-      *    ���Ը���ģ½��ϥ��顼
+      *    患者公費ＤＢ出力エラー
            WHEN    8
                PERFORM 2710-ERRREC-EDIT-BETU2-SEC
            END-EVALUATE
@@ -1617,32 +1617,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別１　処理
       *****************************************************************
        2710-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
-      *    ���顼�����ֹ�ž��
+      *    エラー内容番号転送
            MOVE    "["             TO  ERR1-ERRNO (IDE)(1:1)
            MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO (IDE)(2:1)
            MOVE    "]"             TO  ERR1-ERRNO (IDE)(3:1)
       *
-      *    ���顼����̾��ž��
+      *    エラー項目名称転送
            EVALUATE    WRK-KOUMOKU-NO
-      *    ���������ֹ�
+      *    １：患者番号
            WHEN    1
-               MOVE    "�����ֹ�:"     TO  ERR1-KOMOKU(IDE)
-      *    �����쥳�����ֹ�ʸ����ֹ��
+               MOVE    "患者番号:"     TO  ERR1-KOMOKU(IDE)
+      *    ２：レコード番号（公費番号）
            WHEN    2
-               MOVE    "�쥳��  :"     TO  ERR1-KOMOKU(IDE)
-      *    ����ˡ���ֹ�
+               MOVE    "レコ番  :"     TO  ERR1-KOMOKU(IDE)
+      *    ３：法別番号
            WHEN    3
-               MOVE    "ˡ���ֹ�:"     TO  ERR1-KOMOKU(IDE)
-      *    ����ˡ���ֹ�����������
+               MOVE    "法別番号:"     TO  ERR1-KOMOKU(IDE)
+      *    ４：法別番号（地方公費）
            WHEN    4
-      *        ˡ���ֹ桦ˡ���ֹ�����������ξ�������äƤ�����
+      *        法別番号・法別番号（地方公費）両方に入っている場合
                IF  ( FLG-NODATA        =   ZERO  )  AND
                    ( PTKOH-KOHNUM  NOT =   SPACE )
-                   MOVE    "ˡ���ֹ�:"     TO  ERR1-KOMOKU(IDE)
+                   MOVE    "法別番号:"     TO  ERR1-KOMOKU(IDE)
                    MOVE    PTKOH-KOHNUM    TO  ERR1-ATAI  (IDE)(1:8)
                    ADD     1               TO  IDE
                    IF  IDE                 >   4
@@ -1651,46 +1651,46 @@
                    MOVE    "["             TO  ERR1-ERRNO (IDE)(1:1)
                    MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO (IDE)(2:1)
                    MOVE    "]"             TO  ERR1-ERRNO (IDE)(3:1)
-                   MOVE    "ˡ������:"     TO  ERR1-KOMOKU(IDE)
+                   MOVE    "法別地方:"     TO  ERR1-KOMOKU(IDE)
                ELSE
-                   MOVE    "ˡ������:"     TO  ERR1-KOMOKU(IDE)
+                   MOVE    "法別地方:"     TO  ERR1-KOMOKU(IDE)
                END-IF
-      *    ������ô��ʬ
+      *    ５：負担区分
            WHEN    5
-               MOVE    "��ô��ʬ:"     TO  ERR1-KOMOKU(IDE)
-      *    �����ݸ��ֹ�
+               MOVE    "負担区分:"     TO  ERR1-KOMOKU(IDE)
+      *    ６：保険番号
            WHEN    6
-               MOVE    "�ݸ��ֹ�:"     TO  ERR1-KOMOKU(IDE)
-      *    ������ô���ֹ�
+               MOVE    "保険番号:"     TO  ERR1-KOMOKU(IDE)
+      *    ７：負担者番号
            WHEN    7
-               MOVE    "��ô����:"     TO  ERR1-KOMOKU(IDE)
-      *    ����������ֹ�
+               MOVE    "負担者番:"     TO  ERR1-KOMOKU(IDE)
+      *    ８：受給者番号
            WHEN    8
-               MOVE    "�������:"     TO  ERR1-KOMOKU(IDE)
-      *    �������������ô��
+               MOVE    "受給者番:"     TO  ERR1-KOMOKU(IDE)
+      *    ９：公費一部負担金
            WHEN    9
-               MOVE    "�������:"     TO  ERR1-KOMOKU(IDE)
-      *    ������Ŭ�ѳ�����
+               MOVE    "公費一部:"     TO  ERR1-KOMOKU(IDE)
+      *    １０：適用開始日
            WHEN    10
-               MOVE    "Ŭ�ѳ���:"     TO  ERR1-KOMOKU(IDE)
-      *    ������Ŭ�ѽ�λ��
+               MOVE    "適用開始:"     TO  ERR1-KOMOKU(IDE)
+      *    １１：適用終了日
            WHEN    11
-               MOVE    "Ŭ�ѽ�λ:"     TO  ERR1-KOMOKU(IDE)
-      *    �����������ǧ��
+               MOVE    "適用終了:"     TO  ERR1-KOMOKU(IDE)
+      *    １２：公費確認日
            WHEN    12
-               MOVE    "�����ǧ:"     TO  ERR1-KOMOKU(IDE)
-      *    ��������Ͽ��
+               MOVE    "公費確認:"     TO  ERR1-KOMOKU(IDE)
+      *    １３：登録日
            WHEN    13
-               MOVE    "��Ͽ��  :"     TO  ERR1-KOMOKU(IDE)
-      *    ������������
+               MOVE    "登録日  :"     TO  ERR1-KOMOKU(IDE)
+      *    １４：更新日
            WHEN    14
-               MOVE    "������  :"     TO  ERR1-KOMOKU(IDE)
-      *    �ե����ޥåȥ��顼
+               MOVE    "更新日  :"     TO  ERR1-KOMOKU(IDE)
+      *    フォーマットエラー
            WHEN    OTHER
-               MOVE    "��¿����:"     TO  ERR1-KOMOKU(IDE)
+               MOVE    "過多項目:"     TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
-      *    ���顼��ž��
+      *    エラー値転送
            IF  WRK-MO-CNT          NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  ERR1-ATAI  (IDE)(1:8)
@@ -1701,7 +1701,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別２　処理
       *****************************************************************
        2710-ERRREC-EDIT-BETU2-SEC  SECTION.
       *
@@ -1711,11 +1711,11 @@
            MOVE    "["             TO  ERR2-ERRNO (1:1)
            MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO (2:1)
            MOVE    "]"             TO  ERR2-ERRNO (3:1)
-           MOVE    "�����ֹ�:"     TO  ERR2-PTNUMMES
-           MOVE    "���ԣɣ�:"     TO  ERR2-PTIDMES
-           MOVE    "�����ֹ�:"     TO  ERR2-KOHNUMMES
-           MOVE    "Ϣ��:"         TO  ERR2-KOHIDMES
-           MOVE    "����:"         TO  ERR2-TEKSTEDMES
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "公費番号:"     TO  ERR2-KOHNUMMES
+           MOVE    "連番:"         TO  ERR2-KOHIDMES
+           MOVE    "期間:"         TO  ERR2-TEKSTEDMES
       *
            MOVE    SPA-PTNUM       TO  ERR2-PTNUM
            MOVE    PTKOH-PTID      TO  ERR2-PTID
@@ -1745,7 +1745,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
       *****************************************************************
        2710-ERRLST-INIT-SEC        SECTION.
       *
@@ -1770,7 +1770,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ�Ƚ��Ͻ���
+      *    エラーリスト出力処理
       *****************************************************************
        270-ERRLST-OUT-SEC          SECTION.
       *
@@ -1787,7 +1787,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ե����å�����
+      *    日付チェック処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -1808,14 +1808,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
       *    DB DISCONNECT
            PERFORM 900-DBDISCONNECT-SEC
       *
-      *    Ģɼ���ϡ���λ����
+      *    帳票出力　終了処理
            CLOSE                       CSV-FILE
            CLOSE                       ERR-FILE
            CLOSE                       ISAM-FILE
@@ -1830,7 +1830,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ƣţԣãȽ���
+      *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -1846,7 +1846,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ������ɤ߹��߽���
+      *    患者番号変換マスタ　読み込み処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -1885,7 +1885,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ���ޥ����ɹ�
+      *    患者情報マスタ読込
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1923,7 +1923,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ������ɤ߹��߽���
+      *    患者番号変換マスタ　読み込み処理
       *****************************************************************
        900-PTKOHINF-READ-SEC       SECTION.
       *
@@ -1938,7 +1938,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        900-PTKOHINF-SELECT-SEC     SECTION.
       *
@@ -1956,7 +1956,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        900-PTKOHINF-FETCH-SEC      SECTION.
       *
@@ -1974,7 +1974,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ݸ��ޥ����ɹ�
+      *    患者保険マスタ読込
       *****************************************************************
        900-PTKOHINF-CLOSE-SEC      SECTION.
       *
@@ -1986,7 +1986,7 @@
        900-PTKOHINF-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1999,7 +1999,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2014,7 +2014,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2028,7 +2028,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ը���ãӣ֥ե����롡��������
+      *    患者公費ＣＳＶファイル　検索処理
       *****************************************************************
        900-CSV-KENSAKU-SEC         SECTION.
       *
@@ -2046,7 +2046,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -2064,7 +2064,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *      
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -2086,7 +2086,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
      *****************************************************************
-      *    ʬ��쥳���ɥե������ɹ�
+      *    分割レコードファイル読込
       *****************************************************************
        900-ISAM-READ-SEC           SECTION.
       *
@@ -2101,7 +2101,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ʬ��쥳���ɥե�������ɹ�
+      *    分割レコードファイル順読込
       *****************************************************************
        900-ISAM-NEXT-SEC           SECTION.
       *
@@ -2116,7 +2116,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -2138,7 +2138,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,15 +15,15 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �ե�����¸�ߥ����å�����(COBOL)
+      *    ファイル存在チェックサブ(COBOL)
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SACCESS-AREA.
-      *    R:�ե�����¸�ߥ����å�
-      *    W:�񤭹��߲��ݥ����å�
-      *    X:�¹ԥե�����¸�ߥ����å�(COB_LIBRARY_PATH�򻲾Ȥ���õ��)
+      *    R:ファイル存在チェック
+      *    W:書き込み可否チェック
+      *    X:実行ファイル存在チェック(COB_LIBRARY_PATHを参照して探索)
            03  SACCESS-MODE                    PIC X(01).
            03  SACCESS-IN-FILENAME             PIC X(1024).
            03  SACCESS-OT-FILENAME             PIC X(1024).

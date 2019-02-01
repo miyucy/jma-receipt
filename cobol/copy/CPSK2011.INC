@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,50 +16,50 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK2011.INC)            *
-      *         �ʣ���������                                     *
-      *         �쥻�ŵ����ֹ���ڤ�ʸ���������                 *
+      *         システム管理マスタ     (CPSK2011.INC)            *
+      *         （２０１１）                                     *
+      *         レセ電記号番号区切り文字設定情報                 *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SYS-2011-REC.
            03  SYS-2011-KEY.
                05  SYS-2011-HOSPNUM    PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-2011-KANRICD    PIC X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-2011-KBNCD      PIC X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-2011-STYUKYMD   PIC X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-2011-EDYUKYMD   PIC X(08).
-      *���ڤ�ʸ������ե饰�ʵ����
+      *区切り文字設定フラグ（記号）
            03  SYS-2011-KIGO-DELIMITER-FLG
                                        PIC X(01).
-      *���ڤ�ʸ�������о��ݸ��ԥե饰�ʵ����
+      *区切り文字設定対象保険者フラグ（記号）
            03  SYS-2011-KIGO-DELIMITER-HKNJANUM-FLG
                                        PIC X(01).
-      *���ڤ�ʸ������ե饰���ֹ��
+      *区切り文字設定フラグ（番号）
            03  SYS-2011-NUM-DELIMITER-FLG
                                        PIC X(01).
-      *���ڤ�ʸ�������о��ݸ��ԥե饰���ֹ��
+      *区切り文字設定対象保険者フラグ（番号）
            03  SYS-2011-NUM-DELIMITER-HKNJANUM-FLG
                                        PIC X(01).
-      *ͽ��
+      *予備
            03  SYS-2011-YOBI           PIC X(496).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-2011-TERMID         PIC X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  SYS-2011-OPID           PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-2011-CREYMD         PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-2011-UPYMD          PIC X(08).
-      *��������
+      *更新時間
            03  SYS-2011-UPHMS          PIC X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-2011-UPD-KEY.
                05  SYS-2011-UPD-HOSPNUM
                                        PIC 9(2).

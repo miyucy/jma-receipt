@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,12 +16,12 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    •Ï•ª•≥•·•Û•»∆˛Œœ ∂¶ƒÃ≤ËÃÃ£”£–£¡
-      *                             ° £√£µ£∞°¢£√£µ£∞£±°À
+      *    „É¨„Çª„Ç≥„É°„É≥„ÉàÂÖ•Âäõ ÂÖ±ÈÄöÁîªÈù¢Ôº≥Ôº∞Ôº°
+      *                             ÔºàÔº£ÔºïÔºê„ÄÅÔº£ÔºïÔºêÔºëÔºâ
       *----------------------------------------------------------*
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
       *
        01  SPA-C50.
@@ -53,12 +53,12 @@
                        09  SPA-GMN-THKNCOMBY1      PIC X(01).
                        09  SPA-GMN-THKNCOMBIMEI    PIC X(50).
                    07  SPA-GMN-HKNMAX              PIC 9(04).
-      *            œ´∫“ ›∏±∂Ë ¨
+      *            Âä¥ÁÅΩ‰øùÈô∫Âå∫ÂàÜ
                    07  SPA-GMN-RSI-THKNKBN-OCC  OCCURS  50.
                        09  SPA-GMN-RSI-THKNKBN     PIC X(01).
                05  SPA-GMN-RSI-HKNKBN         PIC X(01).
       *
-      *        ºıø«∆¸∞ÏÕ˜° •¢•’•ø°º•±•¢°À
+      *        ÂèóË®∫Êó•‰∏ÄË¶ßÔºà„Ç¢„Éï„Çø„Éº„Ç±„Ç¢Ôºâ
                05  SPA-GMN-JYURRK-LIST.
                    07  SPA-GMN-JYURRK-OCC  OCCURS  10.
                        09  SPA-GMN-TRRKNUM         PIC 9(02).
@@ -99,7 +99,7 @@
                    07  SPA-GMN-SELNUM       PIC 9(03)
                                              OCCURS  12.
                    07  SPA-GMN-SELNUM-MAX   PIC 9(04).
-      *         £ºÃ
+      *        Ë§áÂÜô
                05  SPA-GMN-COPY-AREA.
                    07  SPA-GMN-COPYYM         PIC X(06).
                    07  SPA-GMN-NAI-COPYYM     PIC X(06).
@@ -113,7 +113,7 @@
                        09  SPA-GMN-TCOMMENT      PIC X(100).
                    07  SPA-COMMENT-MAX           PIC 9(03).
                05  SPA-GMN-COMSEL                PIC 9(03).
-      *        æ…æıæ‹µ≠∂Ë ¨
+      *        ÁóáÁä∂Ë©≥Ë®òÂå∫ÂàÜ
                05  SPA-GMN-SJKBN-G.
                    07  SPA-GMN-SJKBN           PIC X(02).
                    07  SPA-GMN-SJKBN-H         PIC X(01).
@@ -122,7 +122,7 @@
                    07  SPA-GMN-SJKBN-LIST      OCCURS  50.
                        09  SPA-GMN-SJKBNLST    PIC X(53).
                    07  SPA-SJKBN-MAX           PIC 9(03).
-      *        œ¢»÷
+      *        ÈÄ£Áï™
                05  SPA-NAI-RENNUM              PIC 9(02).
       *
            03  SPA-NAI-AREA.
@@ -132,7 +132,7 @@
                05  SPA-NAI-KEIFLG         PIC 9(01).
                05  SPA-NAI-KEIMSG         PIC X(04).
       *
-      *     ∏Œ„∆˛Œœ≤ËÃÃÕ—
+      *    Êñá‰æãÂÖ•ÂäõÁîªÈù¢Áî®
            03  SPA-C501-AREA.
                05  SPA-C501-CUR            PIC 9(02).
                05  SPA-C501-BUNNREI-G.

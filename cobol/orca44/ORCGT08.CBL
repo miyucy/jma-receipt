@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGT08.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ɽ�����������
-      *  ����ݡ��ͥ��̾  : ����饤������ݥ쥻�Ÿ��̺�������
-      *  ������            : 
-      *  08/09/29     NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 総括表・公費請求書
+      *  コンポーネント名  : オンライン請求−レセ電個別作成履歴
+      *  管理者            : 
+      *  08/09/29     NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.01    NACL-ƣ��    13/10/07  ϫ�ҥ쥻���б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.01    NACL-藤原    13/10/07  労災レセ電対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
            COPY    "T06SCR-SPA".
@@ -83,14 +83,14 @@
                05  WRK-HDD         PIC 9(02).
       *
        01  WRK-CONST-AREA.
-      *    �����
+      *    最大行
            03  WRK-CONS-KANRILST-MAX
                                    PIC 9(04)   VALUE   100.
            03  WRK-CONS-RECELST-MAX
                                    PIC 9(04)   VALUE   1000.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
        01  ONRECE-K-REC.
@@ -99,23 +99,23 @@
        01  ONRECE-B-REC.
            COPY    "CPONRECE-BODY.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -134,7 +134,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -151,7 +151,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
            END-EVALUATE.
@@ -165,11 +165,11 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ������̥��å�
+      *    初期画面セット
            PERFORM 300-SCREEN-SEC
            IF      FLG-END             =   1
                GO  TO  100-INIT-EXT
@@ -188,7 +188,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
@@ -198,7 +198,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -209,13 +209,13 @@
                                    TO  T08-SRYYM
            IF      SPA-GMN-T06-TEISYUTUSAKI1
                                    =   "T"
-               MOVE    "����"          TO  T08-TEISYUTUSAKI
+               MOVE    "社保"          TO  T08-TEISYUTUSAKI
            ELSE
                IF      SPA-GMN-T06-TEISYUTUSAKI4
                                        =   "T"
-                   MOVE    "ϫ��"          TO  T08-TEISYUTUSAKI
+                   MOVE    "労災"          TO  T08-TEISYUTUSAKI
                ELSE
-                   MOVE    "����"          TO  T08-TEISYUTUSAKI
+                   MOVE    "国保"          TO  T08-TEISYUTUSAKI
                END-IF
            END-IF
       *
@@ -279,7 +279,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������������Խ�����
+      *    作成一覧明細編集処理
       *****************************************************************
        3101-RECE-LIST-HENSYU-SEC        SECTION.
       *
@@ -315,9 +315,9 @@
                MOVE    WRK-ZZZ9        TO  T08-RECE-TRENNUM      (IDX)
                EVALUATE    ONRECE-B-NYUGAIKBN
                    WHEN    "1"
-                       MOVE    "��"        TO  T08-RECE-TNYUGAIKBN (IDX)
+                       MOVE    "入"        TO  T08-RECE-TNYUGAIKBN (IDX)
                    WHEN    "2"
-                       MOVE    "��"        TO  T08-RECE-TNYUGAIKBN (IDX)
+                       MOVE    "外"        TO  T08-RECE-TNYUGAIKBN (IDX)
                END-EVALUATE
                MOVE    ONRECE-B-PTNUM  TO  T08-RECE-TPTNUM       (IDX)
                MOVE    ONRECE-B-NAME   TO  T08-RECE-TNAME        (IDX)
@@ -340,19 +340,19 @@
                        EVALUATE    ONRECE-B-RECESYUBETU
                            WHEN    "7101"
                            WHEN    "7091"
-                               MOVE    "���¡���̳"        TO
+                               MOVE    "傷病・業務"        TO
                                            T08-RECE-TRECESYUBETU (IDX)
                            WHEN    "7102"
                            WHEN    "7092"
-                               MOVE    "���¡��̶�"        TO
+                               MOVE    "傷病・通勤"        TO
                                            T08-RECE-TRECESYUBETU (IDX)
                            WHEN    "7071"
                            WHEN    "7081"
-                               MOVE    "û������̳"        TO
+                               MOVE    "短期・業務"        TO
                                            T08-RECE-TRECESYUBETU (IDX)
                            WHEN    "7072"
                            WHEN    "7082"
-                               MOVE    "û�����̶�"        TO
+                               MOVE    "短期・通勤"        TO
                                            T08-RECE-TRECESYUBETU (IDX)
                            WHEN    OTHER
                                MOVE    ONRECE-B-RECESYUBETU    TO
@@ -369,7 +369,7 @@
                                        TO  T08-RECE-THKNJANUM    (IDX)
                END-IF
                STRING  ONRECE-B-KIGO   DELIMITED   BY  SPACE
-                       "��"            DELIMITED   BY  SIZE
+                       "　"            DELIMITED   BY  SIZE
                        ONRECE-B-NUM    DELIMITED   BY  SPACE
                                        INTO    T08-RECE-TKIGO    (IDX)
                END-STRING
@@ -382,17 +382,17 @@
                            WHEN    "A"
                            WHEN    "D"
                            WHEN    "G"
-                               MOVE    "��"   TO  T08-RECE-THOJOKBN(IDX)
+                               MOVE    "職"   TO  T08-RECE-THOJOKBN(IDX)
                            WHEN    "2"
                            WHEN    "B"
                            WHEN    "E"
                            WHEN    "H"
-                               MOVE    "��"   TO  T08-RECE-THOJOKBN(IDX)
+                               MOVE    "下"   TO  T08-RECE-THOJOKBN(IDX)
                            WHEN    "3"
                            WHEN    "C"
                            WHEN    "F"
                            WHEN    "I"
-                               MOVE    "��"   TO  T08-RECE-THOJOKBN(IDX)
+                               MOVE    "通"   TO  T08-RECE-THOJOKBN(IDX)
                        END-EVALUATE
                END-EVALUATE
       * 
@@ -420,27 +420,27 @@
       *
            IF      SPA-GMN-T06-TEISYUTUSAKI4
                                        =   "T"
-               MOVE    "ǯ��ڽ��ֹ���"    TO  T08-RECE-LIST-HYODAI1
+               MOVE    "年金証書番号等"    TO  T08-RECE-LIST-HYODAI1
            ELSE
-               MOVE    "���桦�ֹ�"        TO  T08-RECE-LIST-HYODAI1
+               MOVE    "記号・番号"        TO  T08-RECE-LIST-HYODAI1
            END-IF
            .
        3101-RECE-LIST-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    �������ʬɽ��
+      *    前回処理分表示
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 440-BACK-HENSYU-SEC
-      *    �������ʬɽ��
+      *    次回処理分表示
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 450-NEXT-HENSYU-SEC
            END-EVALUATE
@@ -450,7 +450,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������
+      *    戻る処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -470,7 +470,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ʬɽ������
+      *    前回処理分表示処理
       *****************************************************************
        440-BACK-HENSYU-SEC             SECTION.
       *
@@ -486,7 +486,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ʬɽ������
+      *    次回処理分表示処理
       *****************************************************************
        450-NEXT-HENSYU-SEC             SECTION.
       *
@@ -502,7 +502,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -532,7 +532,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����ӣţ̣ţãԽ���
+      *    管理ファイルＳＥＬＥＣＴ処理
       *****************************************************************
        900-ONRECE-KANRI-SELECT-SEC     SECTION.
       *
@@ -550,7 +550,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ե�����FETCH����
+      *    管理ファイルFETCH処理
       *****************************************************************
        900-ONRECE-KANRI-FETCH-SEC      SECTION.
       *
@@ -567,7 +567,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٥ե�����SELECT����
+      *    明細ファイルSELECT処理
       *****************************************************************
        900-ONRECE-BODY-SELECT-SEC     SECTION.
       *
@@ -585,7 +585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٥ե�����FETCH����
+      *    明細ファイルFETCH処理
       *****************************************************************
        900-ONRECE-BODY-FETCH-SEC      SECTION.
       *
@@ -602,7 +602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -629,7 +629,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        900-PTINF-READ-N-SEC       SECTION.
       *
@@ -647,7 +647,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -664,7 +664,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -677,7 +677,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -689,7 +689,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -702,7 +702,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

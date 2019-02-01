@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,56 +19,56 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCR0483.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ������ա�
-      *  ����ݡ��ͥ��̾  : ���̳��ϫ�Ҽ��������ٽ�ե��������
-      *                      ��̳�ҳ������ǡ����Խ���ϫ�ҡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/10/29    NACL-ƣ��      ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      公務災害印刷データ編集（労災）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/10/29    NACL-藤原      新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.02.01    NACL-����    08/03/24  ʿ������ǯ��������б�
-      *                                     �ʿ��Ŷ�ʬ���������������б���
-      *  04.02.02    NACL-ƣ��    08/04/18  �֥쥻���̿��売�����������
-      *                                     �ɾ��ܵ���ʬ�����ɣ������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.02.01    NACL-門脇    08/03/24  平成２０年４月改正対応
+      *                                     （診療区分６４：病理診断対応）
+      *  04.02.02    NACL-藤原    08/04/18  「レセ電通信医２０００６号」
+      *                                     症状詳記区分コード５２の追加
       *
-      *  04.03.01    NACL-ƣ��    08/07/09  ���쥻�����ʱ��������ޤ���б�
-      *  04.03.02    NACL-ƣ��    09/01/16  �ɾ��ܵ���ʬ��ɽ����ѹ�
-      *  04.03.03    NACL-����    09/02/04  �����������ξ����б�
+      *  04.03.01    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
+      *  04.03.02    NACL-藤原    09/01/16  症状詳記区分の表題の変更
+      *  04.03.03    NACL-門脇    09/02/04  請求点が０の場合の対応
       *
-      *  04.05.01    NACL-����    09/06/10  Ŧ�������ؤΥ����ȵ����б�
-      *  04.05.02    NACL-����    09/06/29  ���ܴ��ֵ�����ˡ����ǽ
-      *                                     �ʵٶȾ����������
-      *  04.05.03    NACL-ƣ��    10/03/03  ʿ������ǯ��������б�
-      *  04.05.04    NACL-ƣ��    10/03/29  �ֲ���̤�б��פε��ܤ����
-      *  04.05.05    NACL-ƣ��    11/08/02  �����쥻���������ѹ��б�
-      *  04.05.06    NACL-����    13/02/08  ��������red�ե�������Ѥΰ١�
-      *                                     HCM56V03.red�˽���
+      *  04.05.01    NACL-門脇    09/06/10  摘要欄下部へのコメント記載対応
+      *  04.05.02    NACL-門脇    09/06/29  療養期間記載方法選択機能
+      *                                     （休業証明請求時）
+      *  04.05.03    NACL-藤原    10/03/03  平成２２年４月改正対応
+      *  04.05.04    NACL-藤原    10/03/29  「改正未対応」の記載をやめる
+      *  04.05.05    NACL-藤原    11/08/02  点検レセ印字位置変更対応
+      *  04.05.06    NACL-門脇    13/02/08  入外共通redファイル使用の為、
+      *                                     HCM56V03.redに修正
       *
-      *  04.06.01    NACL-ƣ��    10/10/04  �쥻�ץȥ�����ʸ�������б�
-      *  04.06.02    NACL-ƣ��    11/10/07  ����̾�򣳹Ԥޤǵ��ܲ�ǽ�Ȥ���
-      *  04.06.03    NACL-����    13/04/11  �����������������ܴ����Խ�����
-      *  04.06.04    NACL-ƣ��    13/04/30  �ֽ��¤ηв�׵����б�
-      *  04.06.05    NACL-����    13/06/07  ��׳ۥ���ΰ����ѹ�
-      *  04.06.06    NACL-����    13/10/07  ���ܴ��ֵ��ܽ���
+      *  04.06.01    NACL-藤原    10/10/04  レセプトコメント文字数増対応
+      *  04.06.02    NACL-藤原    11/10/07  傷病名を３行まで記載可能とする
+      *  04.06.03    NACL-門脇    13/04/11  実日数９９９の療養期間編集修正
+      *  04.06.04    NACL-藤原    13/04/30  「傷病の経過」記載対応
+      *  04.06.05    NACL-門脇    13/06/07  合計額ワーク領域桁数変更
+      *  04.06.06    NACL-門脇    13/10/07  療養期間記載修正
       *
-      *  04.07.01    NACL-ƣ��    11/09/02  ϫ�����������б�
-      *  04.07.02    NACL-ƣ��    12/01/24  monpe-0.6.20�б�
-      *  04.07.03    NACL-ƣ��    13/05/27  �ɾ��ܵ���ɽ���ʿ������ǯ����
-      *                                     ����ʬ�ʹߤ����Ƶ���
-      *  04.07.04    NACL-����    14/10/02  Ŧ����κǽ��Ԥޤǵ��ܤ��Ƥ���
-      *                                     ���ڡ�������褦����
-      *  04.07.05    NACL-����    14/10/15  ���ܴ��֤ε��ܽ���
-      *  04.07.06    NACL-ƣ��    14/12/03  ʿ������ǯ����������б�
-      *  04.07.07    NACL-����    15/03/09  �ɾ��ܵ��������б�
+      *  04.07.01    NACL-藤原    11/09/02  労災請求書作成対応
+      *  04.07.02    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.03    NACL-藤原    13/05/27  症状詳記の表題を平成２５年７月
+      *                                     診療分以降は全て記載
+      *  04.07.04    NACL-門脇    14/10/02  摘要欄の最終行まで記載してから
+      *                                     改ページするよう修正
+      *  04.07.05    NACL-門脇    14/10/15  療養期間の記載修正
+      *  04.07.06    NACL-藤原    14/12/03  平成２６年１１月改正対応
+      *  04.07.07    NACL-門脇    15/03/09  症状詳記９０の対応
       *
-      *  04.08.01    NACL-ƣ��    12/01/08  ������ʬ�������ѥ쥻�ץȵ�
-      *                                     ���б�
-      *  04.08.02    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
+      *  04.08.02    NACL-藤原    14/07/07  一時ディレクトリ対応
       *
-      *  05.00.01    NACL-ƣ��    17/07/04  �ȣ��ϣң��б�
+      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -94,45 +94,45 @@
                                    RECORD  KEY     IS  RECE47-KEY
                                    FILE    STATUS  IS  STS-RECE47.
       *
-      *    ���եե�����
+      *    日付ファイル
            SELECT  RECEYMD-FILE    ASSIGN  RECEYMD
                                    FILE    STATUS  IS  STS-RECEYMD.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ݸ��̴��Ծ���ե�����
+      *    保険別患者情報ファイル
        FD  RECE41-FILE.
        01  RECE41-REC.
            COPY    "CPRCF041.INC".
       *
-      *    ��̾�ե�����    
+      *    病名ファイル    
        FD  RECE43-FILE.
        01  RECE43-REC.
            COPY    "CPRCF043.INC".
       *
-      *    ����Ŧ����ե�����
+      *    点数摘要欄ファイル
        FD  RECE47-FILE.
        01  RECE47-REC. 
            COPY    "CPRCF047.INC".
       *
-      *    ���եե�����
+      *    日付ファイル
        FD  RECEYMD-FILE.
        01  RECEYMD-REC.
            03  RECEYMD-CREYMD      PIC X(08).
            03  RECEYMD-CREHMS      PIC X(06). 
            03  RECEYMD-RECENUM     PIC 9(06). 
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
       *
            COPY    "CPRECEDAT1.INC"
@@ -148,23 +148,23 @@
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //RECEYMD//.
       *****03  FILLER              PIC X(04)   VALUE   ".dat".
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    ��̳�ҳ�
+      *    公務災害
       *****COPY    "HCM56.INC".
       *****COPY    "HCM56V01.INC"  REPLACING  //HCM56V01//
            COPY    "HCM56V03.INC"  REPLACING  //HCM56V03//
                                    BY         //HCM56//.
       *
-      *    ��̳�ҳ���³��� 
+      *    公務災害（続紙） 
       *****COPY    "HCM57.INC".
       *****COPY    "HCM57V01.INC"  REPLACING  //HCM57V01//
            COPY    "HCM57V02.INC"  REPLACING  //HCM57V02//
                                    BY         //HCM57//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE41          PIC X(02).
            03  STS-RECE43          PIC X(02).
@@ -172,7 +172,7 @@
            03  STS-RECEERR         PIC X(02).
            03  STS-RECEYMD         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(03).
            03  FLG-RECE41          PIC 9(01).
@@ -198,7 +198,7 @@
            03  FLG-RECECOM-HENSYU  PIC 9(01).
            03  FLG-STS             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE47          PIC 9(06).
@@ -207,7 +207,7 @@
            03  CNT-PAGE            PIC 9(03).
            03  CNT-KENSU           PIC 9(03). 
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME.
                05  SYS-THH         PIC 9(02).
@@ -223,7 +223,7 @@
                05  WRK-SYSMM       PIC 9(02).
                05  WRK-SYSDD       PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDW                 PIC 9(04).
            03  IDW1                PIC 9(04).
@@ -261,24 +261,24 @@
                05  KEY-O-PTID      PIC  9(10).
                05  KEY-O-RECEKA    PIC  X(02).
       *
-      *    ���ŵ��ءʴ��ܾ�����������ΰ�
+      *    医療機関（基本情報）退避用領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC     OCCURS  100.
                05  TBL-SYS1001     PIC  X(610).
-      *    ���ŵ��ءʽ�����������������ΰ�
+      *    医療機関（住所等情報）退避用領域
        01  TBL-SYS1002-T.
            03  TBL-SYS1002-OCC     OCCURS  100.
                05  TBL-SYS1002     PIC  X(610).
-      *    ϫ�Ҽ�����ŵ����������ΰ�
+      *    労災自賠医療機関退避用領域
        01  TBL-SYS4001-T.
            03  TBL-SYS4001-OCC     OCCURS  100.
                05  TBL-SYS4001     PIC  X(610).
-      *    Ģɼ�̰��ŵ����Խ���������������ΰ�
+      *    帳票別医療機関編集情報指定退避用領域
        01  TBL-SYS1900-T.
            03  TBL-SYS1900-OCC     OCCURS  100.
                05  TBL-SYS1900     PIC  X(610).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-CREYMD  PIC  X(08).
@@ -334,38 +334,38 @@
                05  WRK-KYUGYO-MM2  PIC 9(02).
       *
            03  WRK-EDIT-AREA.
-      *        ����̾Ϣ��     
+      *        傷病名連番     
                05  WRK-LINE                    PIC 9(02).
-      *        �Խ�����̾ʸ���� 
+      *        編集傷病名文字数 
                05  WRK-CLM                     PIC 9(03).
-      *        ����Խ�����̾ʸ���� 
+      *        ワーク編集傷病名文字数 
                05  WRK-WCLM                    PIC 9(03).
-      *        ��̾ʸ����         
+      *        病名文字数         
                05  WRK-MOJISU                  PIC 9(03).
-      *        �Խ����ϰ���         
+      *        編集開始位置         
                05  WRK-STCLM                   PIC 9(03).
-      *        ����̾���Խ���         
+      *        傷病名欄編集行         
                05  WRK-LINEBYO                 PIC 9(02).
-      *        Ŭ�����Խ���         
+      *        適用欄編集行         
                05  WRK-LINETEK                 PIC 9(03).
-      *        ���Ԥ�³���ΤȤ��ʽ���̾��         
+      *        前行の続きのとき（傷病名）         
                05  WRK-CONTINUE                PIC 9(01).
       *
                05  WRK-SRYKBN                  PIC X(04).    
-      *    ����̾�Խ�
+      *    傷病名編集
            03  WRK-BYOMEI                      PIC X(150).
            03  WRK-BYOMEIW                     PIC X(150).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（疑い）
            03  WRK-HENFLG1                     PIC X(01).
-      *    ����̾�Խ��ե饰�ʵ�����
+      *    傷病名編集フラグ（急性）
            03  WRK-HENFLG2                     PIC X(01). 
-      *    ����̾�Խ��ʽ���̾���
+      *    傷病名編集（傷病名欄）
            03  WRK-BYOMEI1                     PIC X(54).
            03  WRK-BYOMEI1-W   REDEFINES       WRK-BYOMEI1.
                05  WRK-BYOMEI1-NO              PIC X(04).
                05  WRK-BYOMEI1-NAME            PIC X(50).
                
-      *    ����̾�Խ���Ŭ�����
+      *    傷病名編集（適用欄）
            03  WRK-BYOMEI2                     PIC X(52).
            03  WRK-BYOMEI2-W   REDEFINES       WRK-BYOMEI2.
                05  WRK-BYOMEI2-NO              PIC X(04).
@@ -375,7 +375,7 @@
                    07  WRK-BYOMEI2-ELSE.
                        09  WRK-BYOMEI2-YMD     PIC X(22).
       *
-      *    ����̾�����Ԥˤʤ�Ȥ����Խ�
+      *    傷病名が３行になるときの編集
            03  WRK-BYOMEI3                     PIC X(54).
            03  WRK-MOJISU3                     PIC 9(03).
       *
@@ -409,7 +409,7 @@
            03  WRK-CNT-X           REDEFINES   WRK-CNT
                                    PIC X(10).
       *
-      *    �쥻�ץȥ������Խ�
+      *    レセプトコメント編集
            03  WRK-COMMENT-G.
                05  WRK-COMMENT     PIC X(50)
                                        OCCURS  48.
@@ -423,11 +423,11 @@
                05  WRK-SJKBN       PIC 9(02).
            03  WRK-RECECOM-SJKBN   PIC X(02).
       *
-      *    ������Խ�
+      *    手術歴編集
            03  WRK-OPECOM          PIC 9(01).
            03  WRK-OPECOM-HEN      PIC X(50).
       *
-      *    ʣ����쥻��Ϣ��
+      *    複数枚レセ用連番
            03  WRK-HEN-PAGE-AREA.
                05  WRK-PAGE1       PIC Z9.
                05  WRK-PAGE-HEN    PIC X(01).
@@ -444,14 +444,14 @@
            03  WRK-ERR-FILE-MSG    PIC X(100).
            03  WRK-ERR-FILE-MSG1   PIC X(17).
            03  WRK-ERR-FLG         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1PARA//
                                    BY         //WRK-ERR-FILE-NM//.
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
-      *    �쥻�ץȳ�Ǽ��
+      *    レセプト格納用
        01  TABLE-AREA                          VALUE   SPACE.
            03  TBL-RECE-MAX        PIC 9(02).
            03  TBL-RECE-OCC            OCCURS  99.
@@ -460,10 +460,10 @@
                05  TBL-RECE-FORMID PIC X(20). 
                05  TBL-RECE-RENNUM PIC 9(02).
       *
-      *    ���ڤ���
+      *    区切り線
        01  WRK-LINE-AREA.
            03  WRK-KUGIRI1         PIC X(52)   VALUE
-               ALL "��".
+               ALL "—".
       *
        01  WRK-TENSU-AREA.
            03  WRK-KHNTENZ         PIC ZZZZZZZ.
@@ -476,84 +476,84 @@
            03  WRK-ZZ              PIC ZZ.
            03  WRK-TANKAZ          PIC Z9.9.
       *
-      *    ������եե�����
+      *    ワーク日付ファイル
        01  WRK-RECEYMD-REC.
            03  WRK-RECEYMD-CREYMD  PIC X(08).
            03  WRK-RECEYMD-CREHMS  PIC X(06). 
            03  WRK-RECEYMD-RECENUM PIC 9(06). 
       *
-      *   �ɾ��ܵ���ʬ��ɽ��
+      *   症状詳記区分の表題
        01  TBL-RECECOM-AREA.
            03  FILLER              PIC X(52)   VALUE
-               "�ڼ礿������ο��Ǻ���Ȥʤ��׾��ɾ���".
+               "【主たる疾患の診断根拠となる臨床症状】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڼ礿������ο��Ǻ���Ȥʤ��׾��ɾ��οǻ������긫��".
+               "【主たる疾患の診断根拠となる臨床症状の診察検査所見】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڼ�ʼ��Ź԰١ʼ�ѡ����֡���ʪ�������ˤ�ɬ������".
+               "【主な治療行為（手術、処置、薬物治療等）の必要性】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڼ�ʼ��Ź԰١ʼ�ѡ����֡���ʪ�������ˤηв��".
+               "【主な治療行為（手術、処置、薬物治療等）の経過】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڹ�������������������ʾ�����ޤ˷���ɾ�����".
+               "【合計点数が１００万点以上の薬剤に係る症状等】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڹ�������������������ʾ�ν��֤˷���ɾ�����".
+               "【合計点数が１００万点以上の処置に係る症状等】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڤ���¾��".
+               "【その他】".
            03  FILLER              PIC X(52)   VALUE
-               "������ˡ�˵��ꤹ�뼣���˷��뼣�����ס�".
+               "【薬事法に規定する治験に係る治験概要】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڼ����̥�ϥӥ�ơ������˷��뼣�ŷ�³����ͳ����".
+               "【疾患別リハビリテーションに係る治療継続の理由等】".
            03  FILLER              PIC X(52)   VALUE
-               "�����Ѿɸ����˷���ɾ��ɽ��".
+               "【廃用症候群に係る評価表】".
            03  FILLER              PIC X(52)   VALUE
-               "�ھ嵭�ʳ��ο��������ٽ��".
+               "【上記以外の診療報酬明細書】".
            03  FILLER              PIC X(52)   VALUE
-               "�ڰ����ʰ��ŵ�����ˡ�˵��ꤹ�뼣���˷��뼣�����ס�".
+               "【医薬品医療機器等法に規定する治験に係る治験概要】".
        01  TBL-RECECOM-AREA-R      REDEFINES   TBL-RECECOM-AREA.
            03  TBL-RECECOM-NAME    PIC X(52)   OCCURS   12.
       *
-      *    ����̾��
+      *    傷病名欄
        01  TBL-BYOMEI-NO-AREA.
            03  FILLER              PIC X(40)   VALUE
-               "����������������������������������������".
+               "ア　イ　ウ　エ　オ　カ　キ　ク　ケ　コ　".
            03  FILLER              PIC X(40)   VALUE
-               "���������������������������������ơ��ȡ�".
+               "サ　シ　ス　セ　ソ　タ　チ　チ　テ　ト　".
            03  FILLER              PIC X(40)   VALUE
-               "�ʡ��˥̡��͡��Ρ����ϡ��ҡ��ա��ء��ۡ�".
+               "ナ　ニヌ　ネ　ノ　　ハ　ヒ　フ　ヘ　ホ　".
            03  FILLER              PIC X(44)   VALUE
-               "�ޡ��ߡ��ࡡ�ᡡ�⡡�䡡�桡�衡��򡡥�".
+               "マ　ミ　ム　メ　モ　ヤ　ユ　ヨ　ワ　ヲ　ン　".
        01  TBL-BYOMEI-NO-AREA-R    REDEFINES   TBL-BYOMEI-NO-AREA.
            03  TBL-BYOMEI-NO       PIC X(04)   OCCURS  41.
       *
        01  WRK-CONS-AREA.    
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-CONS-RETURN     PIC X(01)   VALUE   X"0A".
            03  WRK-CONS-RECECOM-MAX
                                    PIC 9(02)   VALUE   48.
            03  WRK-CONS-RECECOM-LENGTH-MAX
                                    PIC 9(04)   VALUE   2400.
       *
-      *    ǯ����
+      *    年月日
        01  WRK-CONS-HENYMD         PIC X(22)   VALUE
-                                           "ʿ������ǯ���������".
+                                           "平成　　年　　月　　日".
       *
        01  WRK-BYOMEI-AREA.     
       *     
-      *    Ŭ�������Կ�
+      *    適用欄最大行数
            03  WRK-TEKIYOU-LINE    PIC 9(02)   VALUE   35.
       *     
-      *    Ŭ�������Կ���³���
+      *    適用欄最大行数（続紙）
            03  WRK-TEKIYOU-HCM57-LINE
                                    PIC 9(03)   VALUE   110.
       *     
-      *    ���¤ηв������Կ�
+      *    傷病の経過欄最大行数
            03  WRK-KEIKA-HCM56-LINE
                                    PIC 9(02)   VALUE   5.
       *
-      *    ����̾�����Կ�
+      *    傷病名欄最大行数
            03  WRK-BYOMEI-LINE     PIC 9(02)   VALUE   3.
-      *    ����̾����ʸ�����ʽ���̾���
+      *    傷病名最大文字数（傷病名欄）
            03  WRK-BYOMEI1-MAX     PIC 9(02)   VALUE   50.
-      *    ����̾����ʸ������Ŭ�����
+      *    傷病名最大文字数（適用欄）
            03  WRK-BYOMEI2-MAX     PIC 9(02)   VALUE   48.
       *     
            COPY    "ORCA-DBMETA".
@@ -561,21 +561,21 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK4001.INC".
       *
            COPY    "CPSK1010.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
            COPY    "CPSK1002.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
@@ -584,49 +584,49 @@
       *
            COPY    "CPRCF008.INC".
       *
-      *    �쥻�ץȥ����ȥޥ���
+      *    レセプトコメントマスタ
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
       *
-      *    �쥻�ץȴ���     
+      *    レセプト管理     
        01  RECE07-REC. 
            COPY    "CPRCF007.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
-      *    ����򥳥��ȥޥ���
+      *    手術歴コメントマスタ
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
-      *    �������
+      *    請求管理
            COPY    "CPRCF010.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
@@ -644,7 +644,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -662,7 +662,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -689,7 +689,7 @@
            DISPLAY "WRK-PARA-SRYYM     =" WRK-PARA-SRYYM
            DISPLAY "WRK-PARA-PRTKBN    =" WRK-PARA-PRTKBN
       *
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
            MOVE    "RECE410"           TO  RECE41PARA-FILE-ID
            MOVE    WRK-PARA-TERMID     TO  RECE41PARA-TERMID
 grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE41PARA-HOSPNUM
@@ -729,11 +729,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECEYMD-HOSPNUM
            PERFORM 100-DBOPEN-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0483"      TO  JOB-PGID
-               MOVE    "��̳�ҳ��������ǡ����Խ���ϫ�ҡ�"
+               MOVE    "公務災害・印刷データ編集（労災）"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF    
@@ -791,7 +791,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            READ    RECEYMD-FILE
                AT  END
-                   MOVE    "�ѥ�᥿���եե����뤬����ޤ���"
+                   MOVE    "パラメタ日付ファイルがありません。"
                                          TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    CLOSE   RECEYMD-FILE
@@ -817,12 +817,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؾ��󸡺�
+      *    医療機関情報検索
       *****************************************************************
        120-HOSPINF-GET-SEC            SECTION.
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ���ŵ��ؾ���
+      *       医療機関情報
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1001"           TO  SYS-KANRICD
               MOVE    "*"              TO  SYS-KBNCD
@@ -835,7 +835,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
               IF      FLG-SYSKANRI     =   ZERO
                   MOVE    MCPDATA-REC   TO  SYS-1001-REC
               ELSE    
-                  MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                  MOVE    "医療機関情報が取得できませんでした。"
                                         TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -874,7 +874,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
       *
               IF      SYSKAN-IDX          =   ZERO
-                  MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+                  MOVE    "医療機関情報が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -882,7 +882,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ���ŵ��ؾ���ʽ���Ϥۤ���
+      *       医療機関情報（所在地ほか）
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1002"           TO  SYS-KANRICD
               MOVE    "*"              TO  SYS-KBNCD
@@ -895,7 +895,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               IF      FLG-SYSKANRI     =   ZERO
                   MOVE    MCPDATA-REC  TO  SYS-1002-REC
               ELSE    
-                  MOVE "���ŵ��ؾ���ʽ���ϡˤ������Ǥ��ޤ���Ǥ�����"
+                  MOVE "医療機関情報（所在地）が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -934,7 +934,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
       *
               IF      SYSKAN-IDX          =   ZERO
-                  MOVE "���ŵ��ؾ���ʽ���ϡˤ������Ǥ��ޤ���Ǥ�����"
+                  MOVE "医療機関情報（所在地）が取得できませんでした。"
                                        TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -942,7 +942,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
            END-IF
       *
            IF   WRK-PARA-SRYYM    NOT =  ZERO
-      *       ϫ�Ұ��ŵ��ؾ���
+      *       労災医療機関情報
               INITIALIZE                   SYSKANRI-REC
               MOVE    "4001"           TO  SYS-KANRICD
               MOVE    "*"              TO  SYS-KBNCD
@@ -958,7 +958,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                       MOVE    SPACE        TO  SYS-4001-RSIIRYOCDN
                   END-IF     
               ELSE    
-              MOVE    "ϫ�Ҽ����հ��ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+              MOVE    "労災自賠責医療機関情報が取得できませんでした。"
                                            TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -997,7 +997,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
       *
               IF      SYSKAN-IDX          =   ZERO
-              MOVE    "ϫ�Ҽ����հ��ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+              MOVE    "労災自賠責医療機関情報が取得できませんでした。"
                                            TO  WRK-RECEERR
                   PERFORM 500-ERR-HENSYU-SEC
                   GO  TO  120-HOSPINF-GET-EXT
@@ -1008,7 +1008,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
                                            FLG-SYS-1901
                                            FLG-SYS-1902
       *
-      *    Ģɼ�̻������
+      *    帳票別指定情報
            IF   WRK-PARA-SRYYM     NOT =  ZERO
               INITIALIZE                   SYSKANRI-REC
               MOVE    "1900"           TO  SYS-KANRICD
@@ -1094,7 +1094,7 @@ grpsys        PERFORM 900-DBSELECT-SEC
               PERFORM 900-CLOSE-SEC
            END-IF 
       *
-      *    �ѥ�᥿�ģ��ɤ߹���
+      *    パラメタＤＢ読み込み
            INITIALIZE                      BTPARA-REC
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                MOVE    WRK-PARA-SHELLID    TO  BTPARA-SHELLID
@@ -1103,14 +1103,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                PERFORM 900-BTPARA-READ-SEC
                IF      FLG-BTPARA          =   1
                    MOVE
-                   "�ѥ�᥿���󤬼����Ǥ��ޤ���Ǥ�����"
+                   "パラメタ情報が取得できませんでした。"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    MOVE    2               TO  FLG-STS
                END-IF
            END-IF
       *         
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            MOVE    SPACE           TO  SYSKANRI-REC
            INITIALIZE                  SYSKANRI-REC
            MOVE    "2005"          TO  SYS-KANRICD
@@ -1137,16 +1137,16 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            PERFORM         UNTIL   FLG-RECE41     =   1
                            OR      FLG-STS        =   2 
       *
-      *        ���Ծ����ɹ�����
+      *        患者情報読込処理
                PERFORM 2001-PTINF-HEN-SEC
-      *            �쥻�ץȼ����̷���������
+      *            レセプト種別別件数カウント
                MOVE    ZERO            TO  CNT-KENSU
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM         UNTIL   FLG-RECE41     =   1
@@ -1168,11 +1168,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *        ����ǯ���Խ��ɹ�����
+      *        診療年月編集読込処理
       *****************************************************************
        2001-PTINF-HEN-SEC       SECTION.
       *
-      *    ����ǯ���Խ�
+      *    診療年月編集
            MOVE    RECE41-SRYYM        TO  WRK-STYMD (1:6)
            MOVE    "01"                TO  WRK-STYMD (7:2)
            MOVE    WRK-STYMD           TO  WRK-SYMD
@@ -1194,7 +1194,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        2001-SYORI-SEC                SECTION.
       *
@@ -1202,45 +1202,45 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            INITIALIZE                  WRK-EDIT-AREA
            INITIALIZE                  TABLE-AREA
       *
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
            PERFORM 310-HC101-HEAD-HEN-SEC
       *
-      *    Ģɼ�Խ�<����>����
+      *    帳票編集<点数>処理
            PERFORM 330-HC101-TENSU-HEN-SEC
       *
-      *    Ģɼ�Խ�<����̾>����
+      *    帳票編集<傷病名>処理
            PERFORM 320-HC101-BYOMEI-HEN-SEC
       *
-      *    Ģɼ�Խ�<���¤ηв�>����
+      *    帳票編集<傷病の経過>処理
            IF      RECE41-SRYYM        <   201307
                PERFORM 360-HC101-COMMENT-HEN-SEC
            ELSE
                PERFORM 360-COMMENT-HENSYU-SEC
            END-IF 
       *
-      *    Ģɼ�Խ�<�����>����
+      *    帳票編集<手術歴>処理
            PERFORM 380-HC101-OPECOM-HEN-SEC
       *
-      *    Ģɼ�Խ�<Ŭ��>����
+      *    帳票編集<適用>処理
            PERFORM 340-HC101-ZAI-HEN-SEC
       *
-      *    Ģɼ�Խ�<���¤ηв�>����
+      *    帳票編集<傷病の経過>処理
            IF      RECE41-SRYYM        >=  201307
                PERFORM 360-HC101-COMMENT-HEN-SEC
            END-IF
       *
-      *    Ģɼ����������³���
+      *    帳票印刷処理（続紙）
            IF      CNT-PAGE           >   1
                PERFORM 390-PRINT-OUT-SEC
            END-IF    
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            IF      FLG-STS            =   ZERO
                MOVE    1                  TO  CNT-PAGE
                PERFORM 390-PRINT-OUT-SEC
            END-IF    
       *
-      *    Ģɼ��������
+      *    帳票更新処理
            PERFORM 391-DB-WRITE-SEC
       *
            .
@@ -1248,7 +1248,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *     
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HC101-HEAD-HEN-SEC          SECTION.
       *
@@ -1256,38 +1256,38 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *     
            INITIALIZE                      HCM56
       *
-           MOVE    "����"              TO  HCM56-TOUYAKUNAME
-           MOVE    "��"                TO  HCM56-TOUYAKUTANI (1)
+           MOVE    "処方"              TO  HCM56-TOUYAKUNAME
+           MOVE    "回"                TO  HCM56-TOUYAKUTANI (1)
                                            HCM56-TOUYAKUTANI (2)
                                            HCM56-SONOTATANI
-           MOVE    "��������"          TO  HCM56-SONOTANAME  (1)
-           MOVE    "��������"          TO  HCM56-SONOTANAME  (2)
+           MOVE    "処方せん"          TO  HCM56-SONOTANAME  (1)
+           MOVE    "薬　　剤"          TO  HCM56-SONOTANAME  (2)
       *
-           MOVE    "�ߡ�"              TO  HCM56-SYOKAKERU   (1)
+           MOVE    "円×"              TO  HCM56-SYOKAKERU   (1)
                                            HCM56-SYOKAKERU   (2)
                                            HCM56-SYOKAKERU   (3)
-           MOVE    "����"              TO  HCM56-SYONICHI    (1)
+           MOVE    "　回"              TO  HCM56-SYONICHI    (1)
                                            HCM56-SYONICHI    (2)
-           MOVE    "����"              TO  HCM56-SYONICHI    (3)
+           MOVE    "　日"              TO  HCM56-SYONICHI    (3)
       *
            MOVE    WRK-CONS-HENYMD     TO  HCM56-SEIKYUYMD
                                            HCM56-NYUINYMD
       *
-      *    �����ֹ�
+      *    患者番号
            STRING   RECE41-PTNUM   DELIMITED   BY  SPACE
                     " "            DELIMITED   BY  SIZE
                     RECE41-RECEKA  DELIMITED   BY  SPACE
                                    INTO    HCM56-PTNUM
            END-STRING         
-      *    ���ʻ�̾
+      *    カナ氏名
            MOVE    RECE41-KANANAME     TO  HCM56-KANANAME
-      *    ��̾
+      *    氏名
            MOVE    RECE41-NAME         TO  HCM56-NAME
-      *    ���Ŵ���
+      *    診療期間
            MOVE    WRK-CONS-HENYMD     TO  WRK-HCM56-STRYMD
                                            WRK-HCM56-ENDYMD
-           MOVE    "����"              TO  WRK-HCM56-STRFL
-           MOVE    "�ޤ�"              TO  WRK-HCM56-ENDFL
+           MOVE    "から"              TO  WRK-HCM56-STRFL
+           MOVE    "まで"              TO  WRK-HCM56-ENDFL
       *
            IF      RECE41-JNISSU  =  999
               IF  (RECE41-KYUGYOFLG      =   SPACE)
@@ -1353,7 +1353,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                                TO  IDX6
                END-IF
                IF    RECE41-NYUINFLG  =  1
-      *          ���Ŵ��֡ʳ��ϡ�
+      *          診療期間（開始）
                  PERFORM VARYING   IDX4   FROM   IDX5    BY  1
                          UNTIL     IDX4    >     IDX6
                    IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE)  OR
@@ -1371,7 +1371,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                      MOVE    IDX6                TO  IDX4
                    END-IF
                  END-PERFORM
-      *          ���Ŵ��֡ʽ�λ��
+      *          診療期間（終了）
                  PERFORM VARYING   IDX4   FROM   IDX6    BY  -1
                          UNTIL     IDX4    <     IDX5
                    IF    ( RECE41-NYUINBITBL(IDX4) =   SPACE ) OR
@@ -1391,19 +1391,19 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                  END-PERFORM
                END-IF
            END-IF
-           MOVE    "����"              TO  WRK-HCM56-STRFL 
-           MOVE    "�ޤ�"              TO  WRK-HCM56-ENDFL 
+           MOVE    "から"              TO  WRK-HCM56-STRFL 
+           MOVE    "まで"              TO  WRK-HCM56-ENDFL 
            INSPECT WRK-HCM56-STRYMD
-                               REPLACING    ALL   "  "   BY   "��"
+                               REPLACING    ALL   "  "   BY   "　"
            INSPECT WRK-HCM56-ENDYMD
-                               REPLACING    ALL   "  "   BY   "��"
+                               REPLACING    ALL   "  "   BY   "　"
            MOVE    WRK-HCM56-STRYMD    TO  HCM56-STRYMD
            MOVE    WRK-HCM56-ENDYMD    TO  HCM56-ENDYMD
       *
-      *    ������
+      *    実日数
            MOVE    RECE41-JNISSU       TO  WRK-JNISSU
            MOVE    WRK-JNISSU          TO  HCM56-JITSUNISSU
-      *    ž����
+      *    転帰日
            IF      RECE41-TENKIYMD     =   SPACE
                MOVE    WRK-CONS-HENYMD     TO  HCM56-TENKIYMD
            ELSE
@@ -1411,23 +1411,23 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                PERFORM 31012-SE-WA-YMDEDIT-SEC
                MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-TENKIYMD
            END-IF
-      *    ž����ͳ
+      *    転帰事由
            EVALUATE    RECE41-TENKI
                WHEN    "1"
-                   MOVE    "��"            TO  HCM56-TENKI(1)
+                   MOVE    "○"            TO  HCM56-TENKI(1)
                WHEN    "3"
-                   MOVE    "��"            TO  HCM56-TENKI(2)
+                   MOVE    "○"            TO  HCM56-TENKI(2)
                WHEN    "5"
-                   MOVE    "��"            TO  HCM56-TENKI(3)
+                   MOVE    "○"            TO  HCM56-TENKI(3)
                WHEN    "7"
-                   MOVE    "��"            TO  HCM56-TENKI(4)
+                   MOVE    "○"            TO  HCM56-TENKI(4)
                WHEN    "9"
-                   MOVE    "��"            TO  HCM56-TENKI(5)
+                   MOVE    "○"            TO  HCM56-TENKI(5)
            END-EVALUATE
-      *    �������
+      *    合計点数
            MOVE    RECE41-TOTALTEN     TO  WRK-TOTALTEN
            MOVE    WRK-TOTALTEN        TO  HCM56-KOMUTEN
-      *    ����ñ��
+      *    １点単価
            INITIALIZE              ORCSNUMAREA
            EVALUATE    RECE41-KOMUKBN
                WHEN    "1"
@@ -1457,15 +1457,15 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                +   RECE41-TOTALKIN2
            MOVE    WRK-GOKEI           TO  WRK-KGK9
            MOVE    WRK-KGK9            TO  HCM56-KOMUKINGAKU (3)
-      *    �����
+      *    所在地
            IF      FLG-SYS-1902        =   1
                MOVE    SYS-1902-ADRS1      TO  HCM56-HOSPJYUSYO (1:)
                MOVE    SYS-1902-ADRS2      TO  HCM56-HOSPJYUSYO (51:)
            ELSE
                MOVE    SYS-1002-ADRS       TO  HCM56-HOSPJYUSYO
            END-IF
-           INSPECT HCM56-HOSPJYUSYO REPLACING   ALL "  "    BY  "��"
-      *    ̾��
+           INSPECT HCM56-HOSPJYUSYO REPLACING   ALL "  "    BY  "　"
+      *    名称
            IF      FLG-SYS-1901        =   1
                MOVE    SYS-1901-HOSPNAME1  TO  HCM56-HOSPNAME (1:)
                MOVE    SYS-1901-HOSPNAME2  TO  HCM56-HOSPNAME (41:)
@@ -1473,12 +1473,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            ELSE 
                MOVE    SYS-1001-HOSPNAME   TO  HCM56-HOSPNAME
            END-IF
-           INSPECT HCM56-HOSPNAME  REPLACING   ALL "  "    BY  "��"
-      *    ��դλ�̾
+           INSPECT HCM56-HOSPNAME  REPLACING   ALL "  "    BY  "　"
+      *    医師の氏名
            IF   RECE41-DRCD  =  SPACE
                MOVE    SYS-1001-KANRINAME  TO  HCM56-ISYA
            ELSE
-      *        ��������
+      *        職員情報
                INITIALIZE                   SYSKANRI-REC
                MOVE    "1010"           TO  SYS-KANRICD
                MOVE    RECE41-DRCD      TO  SYS-KBNCD
@@ -1494,11 +1494,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                END-IF
            END-IF
       *
-      *    �����ѥ쥻�ץȺ�����
+      *    点検用レセプト作成時
            IF      WRK-PARA-PRTKBN NOT =   "1"
                IF      SYS-200501-INSPECT-CHARACTER-KBN
                                            =   "0"
-                   MOVE    "�����ѥ쥻�ץ�"    TO  HCM56-LABEL
+                   MOVE    "点検用レセプト"    TO  HCM56-LABEL
                    MOVE    "MonpeLayerIn -L SEN MonpeLayerOut"
                                                TO  HCM56-LOPTION
                END-IF
@@ -1512,7 +1512,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *     
       *****************************************************************
-      *    Ģɼ�Խ�<³��إå�����>����
+      *    帳票編集<続紙ヘッダー部>処理
       *****************************************************************
        310-HCM57-HEAD-HEN-SEC          SECTION.
       *
@@ -1521,14 +1521,14 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            INITIALIZE                  HCM57
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    HCM56-PTNUM         TO  HCM57-PTNUM
-      *    ���ʻ�̾
+      *    カナ氏名
            MOVE    HCM56-KANANAME      TO  HCM57-KANANAME
-      *    ��̾
+      *    氏名
            MOVE    HCM56-NAME          TO  HCM57-NAME
       *
-      *    �����ѥ쥻�ץȺ�����
+      *    点検用レセプト作成時
            MOVE    HCM56-LABEL         TO  HCM57-LABEL
            MOVE    HCM56-LOPTION       TO  HCM57-LOPTION
       *
@@ -1537,11 +1537,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<����̾>����
+      *    帳票編集<傷病名>処理
       *****************************************************************
        320-HC101-BYOMEI-HEN-SEC      SECTION.
       *
-      *    �ѥ�᡼�������ե��������Խ�
+      *    パラメータ０３ファイルより編集
            MOVE    LOW-VALUE           TO  WRK-BYO-OLD
       *
            INITIALIZE                  WRK-EDIT-AREA
@@ -1552,7 +1552,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    ZERO                TO  FLG-TENKI
            MOVE    ZERO                TO  WRK-MOJISU3
       *
-      *    ����̾���Խ�
+      *    傷病名の編集
            INITIALIZE                      RECE43-REC
            MOVE    RECE41-HOSPNUM      TO  RECE43-HOSPNUM
            MOVE    RECE41-SRYYM        TO  RECE43-SRYYM
@@ -1579,7 +1579,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                OR     ( RECE41-RECEKA    NOT =   RECE43-RECEKA    )
                OR     ( RECE41-HKNID     NOT =   RECE43-HKNID     )
                OR     ( RECE41-TEKSTYMD  NOT =   RECE43-TEKSTYMD  )
-      *        ��̾�Խ�����
+      *        病名編集処理
                PERFORM 3210-BYOMEI-SET-SEC
       *
            END-PERFORM
@@ -1602,7 +1602,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
        320-HC101-BYOMEI-HEN-EXT.
            EXIT.
       ****************************************************************
-      *     ��̾�Խ�����
+      *     病名編集処理
       ****************************************************************
        3210-BYOMEI-SET-SEC           SECTION.
       *
@@ -1618,16 +1618,16 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                 END-IF
             END-IF
       *
-      *    �о���̾���Խ�
+      *    対象病名を編集
            COMPUTE     WRK-STCLM       =   WRK-CLM   +   1
-      *    ñ��̾ʸ������׻�
+      *    単病名文字数を計算
            COMPUTE WRK-MOJISU          =   RECE43-BYOMEIMOJI   *   2
            MOVE    RECE43-BYOMEI       TO  WRK-BYOMEI
            MOVE    SPACE               TO  WRK-BYOMEI3
            MOVE    ZERO                TO  WRK-MOJISU3
       *
            EVALUATE    TRUE
-      *        ����̾����Խ�
+      *        傷病名欄に編集
                WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
                    MOVE    WRK-BYOMEI      TO  WRK-BYOMEI1-NAME
                                                           (WRK-STCLM:)
@@ -1652,7 +1652,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                                        98 
                        END-IF                                   
                    END-IF    
-      *        Ŭ������Խ�
+      *        適用欄に編集
                WHEN    WRK-LINEBYO     >=  WRK-BYOMEI-LINE
                    MOVE    WRK-BYOMEI      TO  WRK-BYOMEI2-NAME
                                                           (WRK-STCLM:)
@@ -1673,7 +1673,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            IF      WRK-BYOMEI3       NOT =   SPACE
                EVALUATE    TRUE
-      *            ����̾����Խ�
+      *            傷病名欄に編集
                    WHEN    WRK-LINEBYO     <   WRK-BYOMEI-LINE
                        PERFORM 3221-BYOMEI1-OUT-SEC
                        IF      WRK-LINEBYO     <   WRK-BYOMEI-LINE 
@@ -1685,7 +1685,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                                                           (WRK-STCLM:)
                             MOVE    1               TO  WRK-CONTINUE    
                        END-IF                                   
-      *            Ŭ������Խ�
+      *            適用欄に編集
                    WHEN    WRK-LINEBYO     >=  WRK-BYOMEI-LINE
                        PERFORM  3222-BYOMEI2-OUT-SEC
                        MOVE    1               TO  WRK-CONTINUE
@@ -1706,24 +1706,24 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       ****************************************************************
-      *     ����̾����Ͻ���
+      *     傷病名欄出力処理
       ****************************************************************
        3221-BYOMEI1-OUT-SEC        SECTION.
       *
-      *    ����̾��ιԥ������
+      *    傷病名欄の行カウント
            ADD     1               TO  WRK-LINEBYO
       *
            IF  WRK-CONTINUE        =   ZERO
-      *        ��̾�ι��֥������
+      *        病名の項番カウント
                ADD     1                   TO  WRK-LINE
-      *        ����
+      *        項番
                IF      WRK-LINE        <   42
                    MOVE    TBL-BYOMEI-NO (WRK-LINE)
                                            TO  WRK-BYOMEI1-NO 
                ELSE
-                   MOVE    "����"          TO  WRK-BYOMEI1-NO 
+                   MOVE    "　　"          TO  WRK-BYOMEI1-NO 
                END-IF
-      *        ���ų�����
+      *        診療開始日
 
                MOVE    WRK-BYOMEI1-NO      TO  HCM56-SRYYMD
                                                     (WRK-LINEBYO)
@@ -1732,12 +1732,12 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                MOVE    LNK-DAY2-EDTYMD3    TO  HCM56-SRYYMD
                                                     (WRK-LINEBYO) (3:)
            END-IF
-      *    ��̾
+      *    病名
            INSPECT WRK-BYOMEI1
-                           REPLACING    ALL   "  "   BY   "��"
+                           REPLACING    ALL   "  "   BY   "　"
            MOVE    WRK-BYOMEI1     TO  HCM56-SYOBYO(WRK-LINEBYO)
       *
-      *    ���ꥢ
+      *    クリア
            MOVE    SPACE           TO  WRK-BYOMEI1
            MOVE    ZERO            TO  WRK-CLM
            MOVE    ZERO            TO  WRK-CONTINUE
@@ -1746,11 +1746,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
        3221-BYOMEI1-OUT-EXT.
            EXIT.
       ****************************************************************
-      *     ����̾ Ŭ������Ͻ���
+      *     傷病名 適用欄出力処理
       ****************************************************************
        3222-BYOMEI2-OUT-SEC        SECTION.
       *
-      *    Ŭ����ιԥ������
+      *    適用欄の行カウント
            IF      WRK-LINETEK     >=   WRK-LINE-MAX
                PERFORM 34120-PAGE-SEC
            END-IF    
@@ -1758,44 +1758,44 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       
       *
            IF  WRK-CONTINUE        =   ZERO
-      *        ��̾�ι��֥������
+      *        病名の項番カウント
                ADD     1                   TO  WRK-LINE
-      *        ����
+      *        項番
                IF      WRK-LINE        <   42
                    MOVE    TBL-BYOMEI-NO (WRK-LINE)
                                            TO  WRK-BYOMEI2-NO 
                ELSE
-                   MOVE    "����"          TO  WRK-BYOMEI2-NO 
+                   MOVE    "　　"          TO  WRK-BYOMEI2-NO 
                END-IF
            END-IF    
       *
-      *    ���ų�������������륹�ڡ�����ͭ����
+      *    診療開始日を印字するスペースが有る場合
            IF  WRK-BYOMEI2-ELSE    =   SPACE
-      *        ����ǯ������ž�����Խ�����
+      *        診療年月日・転帰　編集処理
                PERFORM 32221-SRYYMD-TENKI-HEN-SEC
                MOVE    ZERO            TO  FLG-TENKI
            END-IF    
       *
            INSPECT WRK-BYOMEI2
-                           REPLACING    ALL   "  "   BY   "��"
+                           REPLACING    ALL   "  "   BY   "　"
            IF      CNT-PAGE        =   1
                MOVE    WRK-BYOMEI2 TO  HCM56-TEKIYO (WRK-LINETEK)
            ELSE
                MOVE    WRK-BYOMEI2 TO  HCM57-TEKIYO (WRK-LINETEK)
            END-IF    
       *
-      *    �Ǹ����̾�˰������륹�ڡ������ʤ��ä��Ȥ� 
+      *    最後の病名に印字するスペースがなかったとき 
            IF       FLG-TENKI              =   1     
-      *        ����ǯ�����Խ�����
+      *        診療年月日編集処理
                MOVE    SPACE           TO  WRK-BYOMEI2
                PERFORM 32221-SRYYMD-TENKI-HEN-SEC
-      *        Ŭ����ιԥ������
+      *        適用欄の行カウント
                IF      WRK-LINETEK     >=   WRK-TEKIYOU-LINE
                    PERFORM 34120-PAGE-SEC
                END-IF    
                ADD     1               TO  WRK-LINETEK
                INSPECT WRK-BYOMEI2
-                           REPLACING    ALL   "  "   BY   "��"
+                           REPLACING    ALL   "  "   BY   "　"
                IF      CNT-PAGE        =   1
                    MOVE    WRK-BYOMEI2 TO  HCM56-TEKIYO  (WRK-LINETEK)
                ELSE
@@ -1804,7 +1804,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            END-IF
       *
       *
-      *    ���ꥢ
+      *    クリア
            MOVE    SPACE           TO  WRK-BYOMEI2
            MOVE    ZERO            TO  WRK-CLM
            MOVE    ZERO            TO  WRK-CONTINUE
@@ -1814,7 +1814,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ�����Խ�����
+      *    診療年月日編集処理
       *****************************************************************
        32221-SRYYMD-TENKI-HEN-SEC    SECTION.
       *
@@ -1827,18 +1827,18 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *     
       *****************************************************************
-      *    Ģɼ�Խ�<����>����
+      *    帳票編集<点数>処理
       *****************************************************************
        330-HC101-TENSU-HEN-SEC      SECTION.
       *
-      *    ���
+      *    初診
            EVALUATE    RECE41-SHOSHINTIME
                WHEN    "1"
-                   MOVE  "��"          TO  HCM56-SYOSHIN (1)
+                   MOVE  "○"          TO  HCM56-SYOSHIN (1)
                WHEN    "2"
-                   MOVE  "��"          TO  HCM56-SYOSHIN (2)
+                   MOVE  "○"          TO  HCM56-SYOSHIN (2)
                WHEN    "3"
-                   MOVE  "��"          TO  HCM56-SYOSHIN (3)
+                   MOVE  "○"          TO  HCM56-SYOSHIN (3)
            END-EVALUATE
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1859,11 +1859,11 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<��>����
+      *    帳票編集<剤>処理
       *****************************************************************
        340-HC101-ZAI-HEN-SEC      SECTION.
       *
-      *    Ŧ����˴��˰�������Ƥ����硢���Ԥ�����
+      *    摘要欄に既に印刷されている場合、１行あける
            IF  WRK-LINETEK             >   ZERO
       *
                IF  WRK-LINETEK          >=   WRK-LINE-MAX
@@ -1877,7 +1877,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    ZERO                TO  CNT-RECE47
            MOVE    ZERO                TO  CNT-ZAIMEISAISU
       *
-      *    �ѥ�᡼�������ե��������Խ�
+      *    パラメータ０６ファイルより編集
            INITIALIZE                      RECE47-REC
            MOVE    RECE41-HOSPNUM      TO  RECE47-HOSPNUM
            MOVE    RECE41-SRYYM        TO  RECE47-SRYYM
@@ -1911,7 +1911,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                END-IF
                ADD     1                     TO  CNT-ZAIMEISAISU
       *
-      *        �쥻�ץȣ����ե������Խ�����
+      *        レセプト０６ファイル編集処理
                PERFORM 3410-RECE47-HENSYU-SEC
       *
                MOVE    RECE47-ZAINUM        TO  WRK-R061-ZAINUM-O
@@ -1924,16 +1924,16 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
        340-HC101-ZAI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �쥻�ץȣ����ե������Խ�����
+      *    レセプト０６ファイル編集処理
       *****************************************************************
        3410-RECE47-HENSYU-SEC           SECTION.
       *
       ***  IF  CNT-ZAIMEISAISU           =   1
-      *        ���ι԰����ٿ����ɲä���Ȳ��Ԥˤʤ뤫
+      *        次の行為明細数を追加すると何行になるか
       ***      COMPUTE   WRK-WLINETEK    =   WRK-LINETEK
       ***                                +   RECE47-ZAIMEISAISU
       ***      IF  CNT-RECE47           >   1
-      *            ���Ŷ�ʬ���ѹ����Ƥ����硢���Ŷ��ڤ���ʬ���ɲ�
+      *            診療区分が変更している場合、診療区切り線分を追加
       ***          IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
       ***              ADD     1             TO  WRK-WLINETEK
       ***              MOVE    1             TO  FLG-KUGIRI
@@ -1943,19 +1943,19 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       ***      IF  WRK-WLINETEK          >         WRK-LINE-MAX
       ***          PERFORM 34120-PAGE-SEC
       *
-      *            ���ڤ���
+      *            区切り線
       ***          IF  FLG-KUGIRI        =   2
       ***              PERFORM 34110-KUGIRI-LINE-SEC
       ***          END-IF
-      *            ���Ŷ�ʬ
+      *            診療区分
       ***          ADD     1               TO  WRK-LINETEK
       ***          PERFORM 34111-SRYKBN-HENSYU-SEC
       ***      ELSE
-      *            ���ڤ���
+      *            区切り線
       ***          IF  FLG-KUGIRI    NOT =   ZERO
       ***              PERFORM 34110-KUGIRI-LINE-SEC
       ***          END-IF
-      *            ���Ŷ�ʬ
+      *            診療区分
       ***          ADD     1             TO  WRK-LINETEK
       ***          IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
       ***              PERFORM 34111-SRYKBN-HENSYU-SEC
@@ -1967,7 +1967,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            IF  CNT-ZAIMEISAISU           =   1
              IF  CNT-RECE47            >   1
-      *          ���Ŷ�ʬ���ѹ����Ƥ����硢���Ŷ��ڤ���ʬ���ɲ�
+      *          診療区分が変更している場合、診療区切り線分を追加
                  IF  RECE47-SRYKBN    NOT =   WRK-R061-SRYKBN-O
                      MOVE    1             TO  FLG-KUGIRI
                  END-IF
@@ -1977,13 +1977,13 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            IF      WRK-LINETEK          >=   WRK-LINE-MAX
              PERFORM 34120-PAGE-SEC
            ELSE
-      *      ���ڤ���
+      *      区切り線
              IF      FLG-KUGIRI    NOT =   ZERO
                  PERFORM 34110-KUGIRI-LINE-SEC
              END-IF
            END-IF
       *
-      *    ���Ŷ�ʬ
+      *    診療区分
            IF      WRK-LINETEK          >=   WRK-LINE-MAX
              PERFORM 34120-PAGE-SEC
            END-IF
@@ -1997,9 +1997,9 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
              PERFORM 34111-SRYKBN-HENSYU-SEC
            END-IF
       *
-      *    ����
+      *    明細
            INSPECT RECE47-TEKIYO-INF
-                           REPLACING    ALL   "  "   BY   "��"
+                           REPLACING    ALL   "  "   BY   "　"
            IF      CNT-PAGE        =   1
                MOVE    RECE47-TEKIYO-INF  TO  HCM56-TEKIYO(WRK-LINETEK)
            ELSE    
@@ -2011,7 +2011,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ڤ����Խ�����
+      *    区切り線編集処理
       *****************************************************************
        34110-KUGIRI-LINE-SEC       SECTION.
       *
@@ -2028,7 +2028,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ŷ�ʬ̾���Խ�����
+      *    診療区分名称編集処理
       *****************************************************************
        34111-SRYKBN-HENSYU-SEC     SECTION.
       *                  
@@ -2044,41 +2044,41 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
            EVALUATE    RECE47-SRYKBN
                WHEN    "11"
-                   MOVE    "���"         TO  WRK-SRYKBN
+                   MOVE    "初診"         TO  WRK-SRYKBN
                WHEN    "12"
-                   MOVE    "�ƿ�"         TO  WRK-SRYKBN
+                   MOVE    "再診"         TO  WRK-SRYKBN
                WHEN    "13"
-                   MOVE    "��Ƴ"         TO  WRK-SRYKBN
+                   MOVE    "指導"         TO  WRK-SRYKBN
                WHEN    "14"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "在宅"         TO  WRK-SRYKBN
                WHEN    "21"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "内服"         TO  WRK-SRYKBN
                WHEN    "22"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "屯服"         TO  WRK-SRYKBN
                WHEN    "23"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "外用"         TO  WRK-SRYKBN
                WHEN    "25"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "処方"         TO  WRK-SRYKBN
                WHEN    "26"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "麻毒"         TO  WRK-SRYKBN
                WHEN    "27"
-                   MOVE    "Ĵ��"         TO  WRK-SRYKBN
+                   MOVE    "調基"         TO  WRK-SRYKBN
                WHEN    "31"
-                   MOVE    "�鲼"         TO  WRK-SRYKBN
+                   MOVE    "皮下"         TO  WRK-SRYKBN
                WHEN    "32"
-                   MOVE    "��̮"         TO  WRK-SRYKBN
+                   MOVE    "静脈"         TO  WRK-SRYKBN
                WHEN    "33"
-                   MOVE    "¾"           TO  WRK-SRYKBN
+                   MOVE    "他"           TO  WRK-SRYKBN
                WHEN    "40"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "処置"         TO  WRK-SRYKBN
                WHEN    "50"
-                   MOVE    "���"         TO  WRK-SRYKBN
+                   MOVE    "手術"         TO  WRK-SRYKBN
                WHEN    "60"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "検査"         TO  WRK-SRYKBN
                WHEN    "70"
-                   MOVE    "����"         TO  WRK-SRYKBN
+                   MOVE    "画像"         TO  WRK-SRYKBN
                WHEN    "80"
-                   MOVE    "¾"           TO  WRK-SRYKBN
+                   MOVE    "他"           TO  WRK-SRYKBN
                WHEN    OTHER
                    MOVE    SPACE          TO  WRK-SRYKBN
            END-EVALUATE
@@ -2095,16 +2095,16 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
       *
       *
       *****************************************************************
-      *    ���ڡ�������
+      *    改ページ処理
       *****************************************************************
        34120-PAGE-SEC       SECTION.
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            IF      CNT-PAGE      >   1
                PERFORM 390-PRINT-OUT-SEC
            END-IF    
       * 
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
            ADD     1             TO  CNT-PAGE
            PERFORM 310-HCM57-HEAD-HEN-SEC
            MOVE    ZERO          TO  WRK-LINETEK
@@ -2114,7 +2114,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���¤ηв�>����
+      *    帳票編集<傷病の経過>処理
       *****************************************************************
        360-COMMENT-HENSYU-SEC      SECTION.
       *
@@ -2124,7 +2124,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    SPACE               TO  WRK-RECECOM-NAME 
                                            WRK-RECECOM-SJKBN
       *     
-      *    Ŭ���󥳥���     
+      *    適用欄コメント     
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key16"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
@@ -2134,7 +2134,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<������>����
+      *    帳票編集<コメント>処理
       *****************************************************************
        360-HC101-COMMENT-HEN-SEC      SECTION.
       *
@@ -2144,27 +2144,27 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            MOVE    SPACE               TO  WRK-RECECOM-NAME
                                            WRK-RECECOM-SJKBN
       *
-      *    Ŭ����˵��ܤ���Ȥ�������
+      *    適用欄に記載するときの設定
            IF      RECE41-SRYYM        >=  201307
                MOVE    WRK-KEIKA-HCM56-LINE    TO  WRK-KEIKA-LINE
            END-IF
       *
-      *    Ŭ���󥳥���
+      *    適用欄コメント
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key7"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *
-      *    �ɾ��ܵ������ȡʣ�����������
+      *    症状詳記コメント（０１〜０６）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key8"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *
-      *    �ɾ��ܵ������ȡʤ���¾��
+      *    症状詳記コメント（その他）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key9"              TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
       *
-      *    �ɾ��ܵ������ȡʣ�����������������������
+      *    症状詳記コメント（５０、５１、５２、９０）
            MOVE    "tbl_rececom"       TO  WRK-MCP-TABLE
            MOVE    "key23"             TO  WRK-MCP-PATHNAME
            PERFORM 3601-RECECOM-HENSYU-SEC
@@ -2173,7 +2173,7 @@ grpsys         MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�������ɤ߹��߽���
+      *    レセコメント読み込み処理
       *****************************************************************
        3601-RECECOM-HENSYU-SEC    SECTION.
       *
@@ -2218,7 +2218,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ȥβ��ԥ����ɺ������
+      *    コメントの改行コード削除処理
       *****************************************************************
        3601-COMMENT-HENSYU-SEC    SECTION.
       *
@@ -2226,8 +2226,8 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    ZERO            TO  WRK-RECEHEN
            MOVE    ZERO            TO  FLG-RECECOM-SJKBN
       *
-      *    �ɾ��ܵ���ʬ�θ��Ф��򵭺�
-      *   ��ʿ������ǯ����ʹߤ����Ƶ��ܡ�
+      *    症状詳記区分の見出しを記載
+      *   （平成２５年７月以降は全て記載）
            IF      RECE41-SRYYM    <   201307
                IF      RECECOM-SJKBN   =   "51"   OR  "52"
                    MOVE    RECECOM-SJKBN   TO  RECECOM-SJKBN
@@ -2311,7 +2311,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    ZERO            TO  FLG-RECECOM-HENSYU
       *
                        IF      WRK-KEIKA-LINE  <   WRK-KEIKA-HCM56-LINE
-      *                  ���¤ηв���ؾɾ��ܵ���ʬ�θ��Ф��򵭺�
+      *                  傷病の経過欄へ症状詳記区分の見出しを記載
                          IF      FLG-RECECOM-SJKBN   =   1
                              ADD     1           TO  WRK-KEIKA-LINE
                              MOVE    WRK-RECECOM-NAME
@@ -2320,7 +2320,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                          END-IF
                          IF      WRK-KEIKA-LINE
                                              <   WRK-KEIKA-HCM56-LINE
-      *                      ���¤ηв�����Խ�
+      *                      傷病の経過欄へ編集
                              ADD     1           TO  WRK-KEIKA-LINE
                              MOVE    WRK-COMMENT (IDX)
                                                  TO
@@ -2330,9 +2330,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF
       *
                        IF      FLG-RECECOM-HENSYU  =   ZERO
-      *                    Ŧ������Խ�
+      *                    摘要欄へ編集
                            IF      WRK-RECECOM         =   ZERO
-      *                        Ŧ����ˣ��Ԥ�����
+      *                        摘要欄に１行あける
                                MOVE    1               TO  WRK-RECECOM
                                IF      WRK-LINETEK         >   ZERO
                                    IF      WRK-LINETEK >=  WRK-LINE-MAX
@@ -2343,7 +2343,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                END-IF
                            END-IF
       *
-      *                    �ɾ��ܵ���ʬ�θ��Ф��򵭺�
+      *                    症状詳記区分の見出しを記載
                            IF      FLG-RECECOM-SJKBN   =   1
                                IF      WRK-LINETEK      >=  WRK-LINE-MAX
                                    PERFORM 34120-PAGE-SEC
@@ -2382,14 +2382,14 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�����>����
+      *    帳票編集<手術歴>処理
       *****************************************************************
        380-HC101-OPECOM-HEN-SEC      SECTION.
       *
            MOVE    ZERO                TO  WRK-OPECOM
                                            WRK-OPECOM-HEN
       *
-      *    ������Խ�
+      *    手術歴編集
            INITIALIZE                      OPECOM-REC
            MOVE    RECE41-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE41-PTID         TO  OPECOM-PTID
@@ -2428,7 +2428,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    �������Խ�
+      *    コメント編集
            INITIALIZE                      OPECOM-REC
            MOVE    RECE41-HOSPNUM      TO  OPECOM-HOSPNUM
            MOVE    RECE41-PTID         TO  OPECOM-PTID
@@ -2468,12 +2468,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ȥβ��ԥ����ɺ������
+      *    コメントの改行コード削除処理
       *****************************************************************
        3801-OPECOM-HENSYU-SEC    SECTION.
       *
            IF      WRK-OPECOM          =   ZERO
-      *        ����̾�Ȥδ֤˶��ڤ��������
+      *        傷病名との間に区切り線を出力
                IF      WRK-LINETEK         >   ZERO
                    IF      WRK-LINETEK >=  WRK-LINE-MAX
                        PERFORM 34120-PAGE-SEC
@@ -2482,7 +2482,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                END-IF
            ELSE
-      *        �����ȥ����Ȥδ֤˲���
+      *        手術歴とコメントの間に改行
                IF    ( WRK-OPECOM-MCP-PATHNAME
                                            =   "key5" )
                AND   ( WRK-OPECOM          =   1      )
@@ -2516,11 +2516,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��Ǽ����
+      *    帳票格納処理
       *****************************************************************
        390-PRINT-OUT-SEC               SECTION.
       *
-      *    �쥻�ץȼ��������ΤȤ�³��Ͻ��Ϥ��ʤ�
+      *    レセプト種別不明のとき続紙は出力しない
       **** IF    ( RECE41-RECESYUBETU   =   ZERO )
       **** AND   ( CNT-PAGE             >   1    )
       ****     GO  TO  390-PRINT-OUT-EXT
@@ -2546,7 +2546,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票更新処理
       *****************************************************************
        391-DB-WRITE-SEC                SECTION.
       *
@@ -2564,10 +2564,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
       ****         ADD     1                   TO  WRK-RECENUM
       ****     END-IF
       * 
-      *        �쥻�ץ����ٴ����ģ�
+      *        レセプト明細管理ＤＢ
                PERFORM 3901-RECE08-INSERT-SEC
       *
-      *        �쥻�ץ�Ģɼ�����ե��������
+      *        レセプト帳票管理ファイル出力
                IF    ( FLG-ERR              =   ZERO     )
                AND   ( WRK-PARA-SHELLID NOT =  "RECEPTX" )
                    PERFORM 3903-RECE07-WRITE-SEC
@@ -2578,7 +2578,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                ADD     TBL-RECE-MAX        TO  WRK-RECENUM
            END-IF
       *
-      *    ��������ģ¹���
+      *    請求管理ＤＢ更新
            IF      FLG-ERR              =   ZERO
                PERFORM 3904-RECE10-HENSYU-SEC
            END-IF
@@ -2593,7 +2593,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
       *
       *****************************************************************
-      *    �쥻�ץ����ٴ����ģ�
+      *    レセプト明細管理ＤＢ
       *****************************************************************
        3901-RECE08-INSERT-SEC        SECTION.
       *
@@ -2645,7 +2645,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
            PERFORM 900-RECE08-READ-SEC
            IF      FLG-RECE08          =   ZERO
                DISPLAY "ORCR0483 MCP-RC=" MCP-RC " " RECE08-KEY 
-               STRING   "�쥻�ץ����٤˹����Ǥ��ޤ��󡡴����ֹ��"
+               STRING   "レセプト明細に更新できません　患者番号＝"
                                                DELIMITED  BY  SIZE
                         RECE41-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
@@ -2661,7 +2661,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE08-HOSPNUM
                                            TO  RECE08-FORMID
                MOVE    TBL-RECE-PRTDATA (IDXY)
                                            TO  RECE08-PRTDATA
-      *        ʣ����쥻�ξ��Ϣ�֤򵭺�
+      *        複数枚レセの場合連番を記載
                IF      TBL-RECE-MAX        >   1
                    MOVE    SPACE               TO  WRK-HEN-PAGE-AREA
                    MOVE    TBL-RECE-RENNUM (IDXY) 
@@ -2693,7 +2693,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                ELSE 
                    DISPLAY "ORCR0483 " MCP-RC " " RECE08-KEY 
                    STRING
-                        "�쥻�ץ����٤˹����Ǥ��ޤ���Ǥ����������ֹ��"
+                        "レセプト明細に更新できませんでした　患者番号＝"
                                                DELIMITED  BY  SIZE
                         RECE41-PTNUM           DELIMITED  BY  SIZE  
                                                INTO  WRK-RECEERR
@@ -2706,7 +2706,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ͻ���
+      *    出力処理
       *****************************************************************
        3903-RECE07-WRITE-SEC        SECTION.
       *
@@ -2819,10 +2819,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                DISPLAY "ORCR0483 MCP-RC= "  MCP-RC   
                IF      FLG-RECE07         =   1    
-               MOVE    "�쥻�ץȴ����ģ¤��ɲäǤ��ޤ���Ǥ���"
+               MOVE    "レセプト管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
                ELSE
-               MOVE    "�쥻�ץȴ����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "レセプト管理ＤＢに更新できませんでした"
                                                TO  WRK-RECEERR
                END-IF 
                PERFORM 900-DB-ERR-ABORT-SEC
@@ -2832,11 +2832,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ģ¹���
+      *    請求管理ＤＢ更新
       *****************************************************************
        3904-RECE10-HENSYU-SEC          SECTION.
       * 
-      *    �ƥ��ȴ��ԡ��쥻�ץȼ��������ΤȤ��������ʤ�
+      *    テスト患者、レセプト種別不明のとき更新しない
            IF    ( RECE41-TSTPTNUMKBN  =   "1"  )
            OR    ( RECE41-RECESYUBETU  =   ZERO )
                GO  TO  3904-RECE10-HENSYU-EXT
@@ -2959,10 +2959,10 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            ELSE
                DISPLAY "ORCR0483 SEIKYU MCP-RC= "  MCP-RC
                IF      FLG-RECE10          =   1
-               MOVE    "��������ģ¤��ɲäǤ��ޤ���Ǥ���"
+               MOVE    "請求管理ＤＢに追加できませんでした"
                                                TO  WRK-RECEERR
                ELSE
-               MOVE    "��������ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "請求管理ＤＢに更新できませんでした"
                                                TO  WRK-RECEERR
                END-IF
                PERFORM 900-DB-ERR-ABORT-SEC
@@ -2972,7 +2972,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �������������Խ�
+      *    西暦→和暦日付編集
       *****************************************************************
        31012-SE-WA-YMDEDIT-SEC        SECTION.
       *
@@ -2995,7 +2995,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -3010,7 +3010,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -3027,7 +3027,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -3038,26 +3038,26 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -3089,7 +3089,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -3109,7 +3109,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
            CLOSE   RECEYMD-FILE
       *          
-      *    �ե�����ạ̃ϣӣŽ���
+      *    ファイルＣＬＯＳＥ処理
            CLOSE                       RECE41-FILE
            CLOSE                       RECE43-FILE
            CLOSE                       RECE47-FILE
@@ -3119,14 +3119,14 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            DISPLAY "*** ORCR0483 END ***"
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״�����λ����
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    CNT-OUT         TO  JOB-UPDCNT
                MOVE    CNT-RECE41      TO  JOB-UPDCNT1
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        �Уգӣ����ν���
+      *        ＰＵＳＨ通知処理
                PERFORM 3001-PUSH-SEC
             END-IF
       *
@@ -3137,7 +3137,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �Уգӣ����ν���
+      *    ＰＵＳＨ通知処理
       *****************************************************************
        3001-PUSH-SEC        SECTION.
       *
@@ -3184,7 +3184,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -3207,7 +3207,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����縡������
+      *    レセプト０２データ順検索処理
       *****************************************************************
        990-RECE41-READ-SEC           SECTION.
       *
@@ -3246,7 +3246,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        MOVE    RECE41-RECEKA       TO  KEY-N-RECEKA
       *
                        IF      WRK-PARA-SRYYM      =  ZERO
-      *                    ���ŵ��أɣ��Խ�
+      *                    医療機関ＩＤ編集
                            MOVE  RECE41-SRYYM  TO  WRK-SYS-SRYYMD(1:6)
                            MOVE  "01"          TO  WRK-SYS-SRYYMD(7:2)
                            PERFORM 900-SYSKANRI-HENSYU-SEC
@@ -3261,14 +3261,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    ����ǯ����оݤȤʤ륷������������ʸ��̽����Τ�
+      *    診療年月の対象となるシス管理を取得（個別処理のみ
       ****************************************************************
        900-SYSKANRI-HENSYU-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-SYS-1901
                                            FLG-SYS-1902
       *
-      *    ���ŵ��ؾ���ʴ��ܾ����
+      *    医療機関情報（基本情報）
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
@@ -3282,7 +3282,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-PERFORM
            IF      FLG-SET             =   ZERO
-               STRING  "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������ǯ���"
+               STRING  "医療機関情報が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -3291,7 +3291,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                GO  TO  900-SYSKANRI-HENSYU-EXT
            END-IF
       *
-      *    ���ŵ��ؾ���ʽ���Ϥۤ���
+      *    医療機関情報（所在地ほか）
            MOVE    ZERO                TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM    1   BY  1
@@ -3306,7 +3306,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
            IF      FLG-SET             =   ZERO
                STRING
-              "���ŵ��ؾ���ʽ���ϡˤ������Ǥ��ޤ���Ǥ���������ǯ���"
+              "医療機関情報（所在地）が取得できませんでした。診療年月＝"
                                                DELIMITED  BY  SIZE 
                        WRK-SYS-SRYYMD (1:6)    DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -3315,7 +3315,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                GO  TO  900-SYSKANRI-HENSYU-EXT
            END-IF
       *    
-      *    ϫ�Ҽ�����ŵ��ؾ���
+      *    労災自賠医療機関情報
            MOVE    ZERO           TO  FLG-SET
       *
            PERFORM VARYING SYSKAN-IDX  FROM  1  BY  1
@@ -3334,7 +3334,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-PERFORM
            IF     FLG-SET  =  ZERO
                STRING
-               "ϫ�Ҽ�����ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ���������ǯ���"
+               "労災自賠医療機関情報が取得できませんでした。診療年月＝"
                                                 DELIMITED  BY  SIZE 
                              RECE41-SRYYM       DELIMITED  BY  SIZE
                                             INTO    WRK-RECEERR
@@ -3343,7 +3343,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                GO  TO  900-SYSKANRI-HENSYU-EXT
            END-IF
       *
-      *    Ģɼ�̻�����ŵ����Խ�����
+      *    帳票別指定医療機関編集情報
            IF      FLG-SYS-1900        =   1
                MOVE    ZERO                TO  FLG-SET
       *
@@ -3391,7 +3391,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト０３１データ読み
       ****************************************************************
        990-RECE43-NEXT-SEC           SECTION.
       *
@@ -3421,7 +3421,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ������ǡ����ɤ�
+      *    レセプト０６１データ読み
       ****************************************************************
        990-RECE47-NEXT-SEC           SECTION.
       *
@@ -3458,7 +3458,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȴ����ɹ�����
+      *    レセプト管理読込処理
       *****************************************************************
        900-RECE07-READ-SEC           SECTION.
       *
@@ -3488,7 +3488,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȰ����ɹ�����
+      *    レセプト印刷読込処理
       *****************************************************************
        900-RECE08-READ-SEC           SECTION.
       *
@@ -3517,7 +3517,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        960-KANRIMST-READ-SEC         SECTION.
       *
@@ -3543,7 +3543,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-KANRIMST-NEXT-SEC         SECTION.
       *
@@ -3559,7 +3559,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȥ����ȥޥ������ңţ���
+      *    レセプトコメントマスタ　ＲＥＡＤ
       *****************************************************************
        900-RECECOM-READ-SEC         SECTION.
       *
@@ -3576,7 +3576,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    手術歴マスター読込
       *****************************************************************
        900-OPECOM-READ-SEC           SECTION.
       *
@@ -3602,7 +3602,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    手術歴マスター読込
       *****************************************************************
        900-OPECOM-READ-N-SEC           SECTION.
       *
@@ -3620,7 +3620,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *      
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
@@ -3646,7 +3646,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-N-SEC          SECTION.
       *
@@ -3664,7 +3664,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ɹ�
+      *    請求管理読込
       *****************************************************************
        900-SEIKYU-INV-SEC         SECTION.
       *
@@ -3695,7 +3695,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
       *
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -3712,7 +3712,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ¹������顼����
+      *    ＤＢ更新エラー処理
       *****************************************************************
        900-DB-ERR-ABORT-SEC                SECTION.
       *
@@ -3742,7 +3742,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -3755,7 +3755,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -3781,7 +3781,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -3793,7 +3793,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -3805,7 +3805,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -3818,7 +3818,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -3836,7 +3836,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

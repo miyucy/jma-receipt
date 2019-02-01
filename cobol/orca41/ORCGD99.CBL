@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGD99.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥Ç¡¼¥¿¥Á¥§¥Ã¥¯¥µ¥Ö
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½èÍý·ë²Ì
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/05/22    ¤Ò¤µ¤Ê¤¬ ¡¡   ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ‡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å‡¦ç†çµæžœ
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/05/22    ã²ã•ãªãŒ ã€€   æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    ¤Ò¤µ¤Ê¤¬     03/07/29  ¥Á¥§¥Ã¥¯ÆâÍÆÁ´·ï°õºþÄÉ²Ã
-      *  01.00.02    NACL-ÂÀÅÄ    03/11/21  ¥¿¥¤¥Þ¡¼¥¤¥Ù¥ó¥ÈÄÉ²ÃÅù
-      *  03.05.00    NACL-ÂÀÅÄ    07/06/01  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    ã²ã•ãªãŒ     03/07/29  ãƒã‚§ãƒƒã‚¯å†…å®¹å…¨ä»¶å°åˆ·è¿½åŠ 
+      *  01.00.02    NACL-å¤ªç”°    03/11/21  ã‚¿ã‚¤ãƒžãƒ¼ã‚¤ãƒ™ãƒ³ãƒˆè¿½åŠ ç­‰
+      *  03.05.00    NACL-å¤ªç”°    07/06/01  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,19 +43,19 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
            COPY    "D01COMMON-SPA".
       *   
            COPY    "ENUM-VALUE".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
@@ -72,40 +72,40 @@
                05  WRK-SS          PIC X(02).
       *
        01  WRK-CONS-AREA.
-      *    ¥·¥¹¥Æ¥à´ÉÍý£Ä£Â¡Ê£³£°£°£³¡Ë¤Î¥­¡¼ÃÍ  
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ï¼¤ï¼¢ï¼ˆï¼“ï¼ï¼ï¼“ï¼‰ã®ã‚­ãƒ¼å€¤  
            03  WRK-CONS-3003-KBNCD PIC X(08)   VALUE   "041".
-      *    °õºþ´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
+      *    å°åˆ·ç®¡ç†ï¼¤ï¼¢ã®ã‚­ãƒ¼å€¤  
            03  WRK-CONS-PRTKANRI-TBL-KEY
                                    PIC X(08)   VALUE   "ORCBSD1".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                    PIC X(14)   VALUE   SPACE.
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£Â¤Î¥­¡¼ÃÍ  
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢ã®ã‚­ãƒ¼å€¤  
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "ORCBSD1".
            03  WRK-CONS-JOB-JOBID  PIC 9(07)   VALUE   ZERO.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSK3003.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -124,7 +124,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -134,7 +134,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ²èÌÌÁ«°Ü
+      *    ç”»é¢é·ç§»
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE
@@ -146,7 +146,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       * 
@@ -155,19 +155,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    Ìá¤ë
+      *    æˆ»ã‚‹
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ½èÍý¾õÂÖ
+      *    å‡¦ç†çŠ¶æ…‹
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
-      *    ¥×¥ì¥Ó¥å¡¼²èÌÌ¤Ø
+      *    ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ç”»é¢ã¸
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
@@ -176,7 +176,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -197,7 +197,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¹¹¿·½èÍý
+      *    æ›´æ–°å‡¦ç†
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.
       *
@@ -217,7 +217,7 @@
        4501-NEXT-GMN-EXT.
            EXIT.
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý
+      *    å‡¦ç†ç¢ºèªå‡¦ç†
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *     
@@ -241,7 +241,7 @@
                    MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                    PERFORM VARYING IDX FROM    1   BY  1
                            UNTIL   IDX >       SYS-3003-JOBID
-      *                ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
+      *                ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
                        MOVE    "CHK"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    IDX             TO  JOB-JOBID
@@ -258,7 +258,7 @@
                    END-PERFORM
                END-IF
            ELSE
-      *       ¥¸¥ç¥Ö´ÉÍý¥Á¥§¥Ã¥¯½èÍý
+      *       ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒã‚§ãƒƒã‚¯å‡¦ç†
                MOVE    "CHK"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-CONS-JOB-JOBID
@@ -279,7 +279,7 @@
            MOVE    "B01"               TO  MCP-WIDGET
            IF    ( D99-MSG             =   SPACE )
                IF    ( D99-COUNT       >   ZERO  )
-                   MOVE    "½èÍý¤ÏÀµ¾ï¤Ë½ªÎ»¤·¤Þ¤·¤¿"
+                   MOVE    "å‡¦ç†ã¯æ­£å¸¸ã«çµ‚äº†ã—ã¾ã—ãŸ"
                                                 TO  D99-MSG
                    IF    ( SPA-DID1-FLG    =   "PV" )
                     AND  ( WRK-PRT-PAGE    >   ZERO )
@@ -289,7 +289,7 @@
                        MOVE    "B01"            TO  MCP-WIDGET
                    END-IF
                ELSE
-                   MOVE    "³ºÅö¤¹¤ë½èÍý¤Ï¤¢¤ê¤Þ¤»¤ó"
+                   MOVE    "è©²å½“ã™ã‚‹å‡¦ç†ã¯ã‚ã‚Šã¾ã›ã‚“"
                                                 TO  D99-MSG
                END-IF                                 
            END-IF                                 
@@ -297,7 +297,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            IF    ( SPA-DID1-FLG    =   "PV" )
-               MOVE    "F12:¥×¥ì¥Ó¥å¡¼"    TO  D99-B12-LABEL
+               MOVE    "F12:ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼"    TO  D99-B12-LABEL
            END-IF
       *
            MOVE    "CURRENT"           TO  MCP-PUTTYPE
@@ -309,7 +309,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý³ÎÇ§½èÍý
+      *    å‡¦ç†ç¢ºèªå‡¦ç†
       *****************************************************************
        4901-KAKUNIN-HYOUJI-SEC            SECTION.
       *
@@ -333,7 +333,7 @@
            MOVE    WRK-PAGE        TO  D99-PAGE     (IDX)
            MOVE    JOB-YOBI        TO  D99-ERRMSG   (IDX)
            IF      JOB-ENDYMD      =   SPACE
-               MOVE    "½èÍýÃæ¤Ç¤¹"    TO  D99-MSG
+               MOVE    "å‡¦ç†ä¸­ã§ã™"    TO  D99-MSG
            ELSE
                IF      JOB-ERRCD       =   SPACE
                    CONTINUE
@@ -342,9 +342,9 @@
                   PERFORM 4901-JOB-ERRSET-SEC
                   IF      D99-MSG     =   SPACE
                        STRING  JOB-YOBI    DELIMITED  BY  SPACE
-                               "¡Ú"        DELIMITED  BY  SIZE
+                               "ã€"        DELIMITED  BY  SIZE
                                JOB-SHELLMSG DELIMITED  BY  SPACE
-                               "¡Û"         DELIMITED  BY  SIZE      
+                               "ã€‘"         DELIMITED  BY  SIZE      
                                             INTO  D99-MSG
                        END-STRING   
                    END-IF                          
@@ -359,32 +359,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸¥»¥Ã¥È½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        4901-JOB-ERRSET-SEC             SECTION.
       *
            EVALUATE    JOB-ERRCD
                WHEN    "0001"
-                   MOVE    "¡Ú¥Õ¥¡¥¤¥ë¤¬¤¢¤ê¤Þ¤»¤ó¡Û" 
+                   MOVE    "ã€ãƒ•ã‚¡ã‚¤ãƒ«ãŒã‚ã‚Šã¾ã›ã‚“ã€‘" 
                                                TO  D99-MSG
                WHEN    "0002"
-                   MOVE    "¡Ú£æ£ä£ä¤¬µ¯Æ°¤µ¤ì¤Æ¤¤¤Þ¤»¤ó¡Û" 
+                   MOVE    "ã€ï½†ï½„ï½„ãŒèµ·å‹•ã•ã‚Œã¦ã„ã¾ã›ã‚“ã€‘" 
                                                TO  D99-MSG
                WHEN    "0003"
                WHEN    "0004"
-                   MOVE    "¡Ú£æ£ä£ä¤Ç½èÍý¤¬¼ºÇÔ¤·¤Þ¤·¤¿¡Û" 
+                   MOVE    "ã€ï½†ï½„ï½„ã§å‡¦ç†ãŒå¤±æ•—ã—ã¾ã—ãŸã€‘" 
                                                TO  D99-MSG
                WHEN    "0011"
-                   MOVE    "¡ÚÇÞÂÎ¤¬¥Þ¥¦¥ó¥È¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡Û" 
+                   MOVE    "ã€åª’ä½“ãŒãƒžã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã§ã—ãŸã€‘" 
                                                TO  D99-MSG
                WHEN    "0012"
-                   MOVE    "¡ÚÇÞÂÎ¤¬¥¢¥ó¥Þ¥¦¥ó¥È¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡Û" 
+                   MOVE    "ã€åª’ä½“ãŒã‚¢ãƒ³ãƒžã‚¦ãƒ³ãƒˆã§ãã¾ã›ã‚“ã§ã—ãŸã€‘" 
                                                TO  D99-MSG
                WHEN    "0021"
-                   MOVE    "¡Ú¥Õ¥¡¥¤¥ë¥³¥Ô¡¼¤Ç¥¨¥é¡¼¤¬È¯À¸¤·¤Þ¤·¤¿¡Û" 
+                   MOVE    "ã€ãƒ•ã‚¡ã‚¤ãƒ«ã‚³ãƒ”ãƒ¼ã§ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ã¾ã—ãŸã€‘" 
                                                TO  D99-MSG
                WHEN    "0127"
-                   MOVE    "¡Ú¥¹¥¯¥ê¥×¥È¤¬¼Â¹Ô¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡Û" 
+                   MOVE    "ã€ã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒå®Ÿè¡Œã§ãã¾ã›ã‚“ã§ã—ãŸã€‘" 
                                                TO  D99-MSG
            END-EVALUATE
       *
@@ -393,7 +393,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¥­¡¼¡Ë
+      *    ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -434,7 +434,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

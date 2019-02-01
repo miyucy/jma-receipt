@@ -1,89 +1,89 @@
 kanri_cd    : "2003"
-name        : "¥ì¥»¥×¥ÈºîÀ®»Ø¼¨¡Ê°õºş½ç¡Ë¾ğÊó"
+name        : "ãƒ¬ã‚»ãƒ—ãƒˆä½œæˆæŒ‡ç¤ºï¼ˆå°åˆ·é †ï¼‰æƒ…å ±"
 class_cd    : "*"
 item_max    : 14
 item_list   :
 - item_no   : 1
   item      : "SYURUINAME"
-  item_jp   : "¥ì¥»¥×¥È¼ïÎàÌ¾¾Î"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®é¡åç§°"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "TEISYUTUSAKI"
-  item_jp   : "Äó½ĞÀè"
+  item_jp   : "æå‡ºå…ˆ"
   type      : "X"
   start     : 41
   length    : 1
 - item_no   : 3
   item      : "SYUBETU1"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£±"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼‘"
   type      : "X"
   start     : 42
   length    : 4
 - item_no   : 4
   item      : "SYUBETU2"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£²"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼’"
   type      : "X"
   start     : 46
   length    : 4
 - item_no   : 5
   item      : "SYUBETU3"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£³"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼“"
   type      : "X"
   start     : 50
   length    : 4
 - item_no   : 6
   item      : "SYUBETU4"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£´"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼”"
   type      : "X"
   start     : 54
   length    : 4
 - item_no   : 7
   item      : "SYUBETU5"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£µ"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼•"
   type      : "X"
   start     : 58
   length    : 4
 - item_no   : 8
   item      : "SYUBETU6"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£¶"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼–"
   type      : "X"
   start     : 62
   length    : 4
 - item_no   : 9
   item      : "SYUBETU7"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£·"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼—"
   type      : "X"
   start     : 66
   length    : 4
 - item_no   : 10
   item      : "SYUBETU8"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£¸"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼˜"
   type      : "X"
   start     : 70
   length    : 4
 - item_no   : 11
   item      : "SYUBETU9"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£¹"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼™"
   type      : "X"
   start     : 74
   length    : 4
 - item_no   : 12
   item      : "SYUBETU10"
-  item_jp   : "¥ì¥»¥×¥È¼ïÊÌ£±£°"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥ï¼‘ï¼"
   type      : "X"
   start     : 78
   length    : 4
 - item_no   : 13
   item      : "NYUGAIKBN"
-  item_jp   : "Æş³°¶èÊ¬"
+  item_jp   : "å…¥å¤–åŒºåˆ†"
   type      : "X"
   start     : 82
   length    : 1
 - item_no   : 14
   item      : "DSPSEQ"
-  item_jp   : "É½¼¨½ç"
+  item_jp   : "è¡¨ç¤ºé †"
   type      : "9"
   start     : 83
   length    : 3

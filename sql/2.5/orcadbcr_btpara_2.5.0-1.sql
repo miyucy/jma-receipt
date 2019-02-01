@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ¥Ğ¥Ã¥Á°úÅÏ¤·¥Ñ¥é¥á¥¿¾ğÊó       --
+-- ãƒãƒƒãƒå¼•æ¸¡ã—ãƒ‘ãƒ©ãƒ¡ã‚¿æƒ…å ±       --
 --                                --
 -- Table Name  : TBL_BTPARA       --
 -- Create Date : 2004/10/14       --

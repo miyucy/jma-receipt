@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,17 +16,17 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ��ץ�����  ���������� ���̲��̣ӣУ�
-      *                             �ʣʣ������ʣ�����,�ʣ�������
+      *    会計カード  カード入力 共通画面ＳＰＡ
+      *                             （Ｊ０２，Ｊ０２１,Ｊ０２２）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.02     MCC-¿��Ǽ   02/04/25  ϫ���ɲ�
-      * 01.00.03     NACL-¿��Ǽ  02/08/06  ���������Ϥإ��ե�������
-      *                                     �ɲ�
-      * 01.00.04     NACL-¿��Ǽ  02/10/25  �����б��ɲ�
-      * 04.08.00     NACL-¿��Ǽ  16/02/XX  ����̾ɽ���б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.02     MCC-多々納   02/04/25  労災追加
+      * 01.00.03     NACL-多々納  02/08/06  コメント入力へアフターケア
+      *                                     追加
+      * 01.00.04     NACL-多々納  02/10/25  入院対応追加
+      * 04.08.00     NACL-多々納  16/02/XX  一般名表示対応
       ************************************************************
       *
        01  SPA-J02.
@@ -39,11 +39,11 @@
                05  SPA-GMN-CUR                   PIC 9(02).
                05  SPA-IDXZ                      PIC 9(02).
                05  SPA-SRYACCT-MAX               PIC 9(04).
-      *        ���ѹ��ե饰
+      *        剤変更フラグ
                05  SPA-J02-SYORI                 PIC 9(01).
-      *        ���ѹ��ե饰
+      *        月変更フラグ
                05  SPA-J02-SEL                   PIC 9(01).
-      *        ��ũ���顼����
+      *        点滴エラーあり
                05  SPA-J02-TENTEKI               PIC 9(01).
       *
                05  SPA-GMN-AREA.
@@ -61,7 +61,7 @@
                        09  SPA-GMN-SRYKBN            PIC X(02).
                        09  SPA-GMN-SRYKBNH           PIC X(01).
                        09  SPA-GMN-SRYKBNMEI         PIC X(16).
-      *            �ݸ��ȹ礻
+      *            保険組合せ
                    07  SPA-GMN-HHKNCOMBI-G.
                        09  SPA-GMN-HHKNCOMBI          PIC X(04).
                        09  SPA-GMN-HHKNCOMBIH         PIC X(01).
@@ -93,7 +93,7 @@
       *
                        09  SPA-GMN-IKKATU            PIC X(99).
       *
-      *        ������������
+      *        診療履歴内容
                05  SPA-GMN-RRKTBL.
                    07  SPA-GMN-RRK-LIST          OCCURS  100.
                        09  SPA-GMN-RRKNO         PIC 9(03).
@@ -105,20 +105,20 @@
                05  SPA-NAIGMN-AREA.
                    07  SPA-NAI-RRKSELNUM         PIC 9(03).
                    07  SPA-NAI-HENSRYYMD         PIC X(08).
-      *            Ϸ��Ƚ��
+      *            老人判定
                    07  SPA-GMN-ROUJIN            PIC 9(01).
-      *            �ݸ���ʬ
+      *            保険区分
                    07  SPA-NAI-HKNKBN            PIC 9(01).
-      *            �ݸ���ʬ
+      *            保険区分
                    07  SPA-NAI-HKNNUM            PIC X(03).
-      *            ϫ����  �ͻ��ʬ
+      *            労災用  四肢区分
                    07  SPA-NAI-SISIKBN           PIC 9(01).
-      *            ϫ����  ����ǯ����
+      *            労災用  傷病年月日
                    07  SPA-RSI-SHOBYOYMD         PIC X(08).
-      *            ���Ų�
+      *            診療科
                    07  SPA-NAIGMN-SRYKA          PIC X(02).
                    07  SPA-NAIGMN-SRYKBN         PIC X(02).
-      *            �����������
+      *            入院料包括日
                    07  SPA-NAI-NYUHKT-G.
                        09  SPA-NAI-HKTCHKFLG       PIC 9(01)
                                                    OCCURS   31.
@@ -134,14 +134,14 @@
                            11  SPA-GNAI-DAY        PIC 9(03)
                                                    OCCURS   31.
                    07  SPA-NAI-MAX                 PIC 9(04).
-      *            ����������ʬ����
+      *            入院料包括区分あり
                    07  SPA-NAI-NYUHKTKBN           PIC 9(01).
                    07  SPA-NAI-HKTERR              PIC 9(01).
                    07  SPA-NAI-HKTKEI              PIC 9(01).
-      *    ����ǯ������
+      *    診療年月末日
                    07  SPA-SRYMATU         PIC 9(02).
                    07  SPA-DAY-IDX         PIC 9(02).
-      *            ��������
+      *            診療履歴
                    07  SPA-NAI-RRKTBL.
                        09  SPA-NAI-RRK-LIST          OCCURS  100.
                            11  SPA-RRK-RRKYMD        PIC  X(08).
@@ -160,16 +160,16 @@
                            11  SPA-RRK-HKNCOMBI      PIC  X(04).
                            11  SPA-RRK-DRCD          PIC  X(05).
                            11  SPA-RRK-RRKYMD-MAE    PIC  X(08).
-      *                    ������
+      *                    新規時
       ******************** 11  SPA-RRK-SRYKBN        PIC  X(02).
                            11  SPA-RRK-ADD           PIC  X(01).
                            11  SPA-RRK-UPD           PIC  X(01).
-      *        ��Ǽ������å�����
+      *        収納更新メッセージ
                05  SPA-GMN-SYUMSG              PIC X(20).
-      *        �����ե饰
+      *        更新フラグ
                05  SPA-UPDFLG                  PIC X(01).
                05  SPA-SYUNOU-KOUSIN           PIC 9(01).
-      *        ��¸���Ų�
+      *        保存診療科
                05  SPA-MAE-SRYKA-G.
                    07  SPA-MAE-SRYKA         PIC X(02).
                    07  SPA-MAE-SRYKAH        PIC X(01).
@@ -185,20 +185,20 @@
                    07  SPA-MAE-HHKNCOMBIH         PIC X(01).
                    07  SPA-MAE-HHKNCOMBIMEI       PIC X(50).
                05  SPA-J025-SYORI          PIC 9(02).
-      *        ��ʬ����ٻ
+      *        内分泌負荷試験
                05  SPA-NAI-NAIBUNERR       PIC X(80).
                05  SPA-NAI-NAIBUNCHK       PIC 9(01).
-      *        Ϣ�ַٹ�
+      *        連番警告
                05  SPA-NAI-KEIFLG2         PIC 9(01).
       *
-      *    ����Τ�
+      *    初期のみ
         03  SPA-J02-SYOKI.
-      *        ������ʬ
+      *        入外区分
                05  SPA-GMN-NYUGAIKBN-COMB.
                    07  SPA-GMN-NYUGAIKBN-LST     PIC X(10)
                                                      OCCURS  2.
                05  SPA-NYUGAI-MAX                PIC 9(04).
-      *        ���ż��̶�ʬ
+      *        診療種別区分
                05  SPA-GMN-SRYKBN-COMB.
                    07  SPA-GMN-SRYKBN-LST        PIC X(19)
                                                      OCCURS   20.
@@ -207,19 +207,19 @@
                05  SPA-NAI-SRYKBN-FLG            PIC 9(01).
                05  SPA-NAI-SRYKA-FLG             PIC 9(01).
       *
-      *������ũ���ꥨ�顼��å�����
+      *入院点滴算定エラーメッセージ
                05  SPA-GMN-NYUIN-AREA.
                    07  SPA-GMN-NYUINMSG          PIC X(50)
                                                  OCCURS   2.
-      *        �쥻�ץȥץ�ӥ塼
+      *        レセプトプレビュー
                05  SPA-NAI-RESPRVFLG             PIC X(01).
       *H28.2
-      *        ��ȯ�����ʤؤ��ѹ��Ľ�̾
+      *        後発医薬品への変更可署名
       *        05  SPA-KOUHATUKA                 PIC X(01).
-      *        ����̾ɽ��
+      *        一般名表示
       *        05  SPA-GENERICFLG                 PIC X(01).
       *
-      *        �ݸ��ȹ礻����
+      *        保険組合せ一覧
                05  SPA-HKNCOMI-AREA.
                    07  SPA-GMN-HKNCOMBI-LISTG.
                        09  SPA-GMN-HKN-LIST    OCCURS  40.
@@ -241,12 +241,12 @@
                            11  SPA-NAI-TKOH4HKNNUM     PIC  X(03).
                            11  SPA-NAI-TTEKSTYMD       PIC  X(08).
                            11  SPA-NAI-TTEKEDYMD       PIC  X(08).
-      *                    Ŭ�Ѵ���
+      *                    適用期間
                            11  SPA-GMN-TTEKSTYMD       PIC  X(09).
                            11  SPA-GMN-TTEKEDYMD       PIC  X(09).
                        09  SPA-HKN-MAX             PIC  9(04).
       *
-      *    �ݸ��ȹ礻����������
+      *    保険組合せ一覧画面用
            03  SPA-J021-AREA.
                05  SPA-J021-CUR                PIC 9(02).
                05  SPA-J021-MAX                PIC 9(04).
@@ -291,7 +291,7 @@
                    07  SPA-J021-ENDAY                PIC 9(02).
                    07  SPA-J021-NAI-ACCT             PIC 9(01).
       *
-      *    ������ϲ�����
+      *    回数入力画面用
            03  SPA-J022-AREA.
                05  SPA-J022NAI-DAYCHK-G.
                    07  SPA-J022NAI-DAYCHK-TBL      OCCURS  31.
@@ -307,7 +307,7 @@
                05  SPA-J022-GMN.
                    07  SPA-J022-DAY            PIC 9(03)   OCCURS   9.
       *
-      *    ��Ǽ��ǧ������
+      *    収納確認画面用
            03  SPA-J025-AREA.
                05  SPA-J025-CUR            PIC 9(02).
                05  SPA-J025-LIST-G.
@@ -324,7 +324,7 @@
                    07  SPA-J025-MAX               PIC 9(04).
                05  SPA-J025-ERRMSG         PIC X(100).
       *
-      *    ����ƣ����ȯ��
+      *    カルテ３号紙発行
            03  SPA-J026-AREA.
                05  SPA-J026-CUR            PIC 9(02).
                05  SPA-J026-GMN-AREA.
@@ -333,7 +333,7 @@
                    07  SPA-J026-GMN-ENDLINE       PIC 9(02).
                    07  SPA-J026-GMN-MIDASI        PIC X(40).
       *
-      *    �ץ�ӥ塼���ݸ�����
+      *    プレビュー用保険情報
            03  SPA-XC01-AREA.
                05  SPA-XC01-CHK            PIC X(01).
                05  SPA-XC01-HKNKBN         PIC X(01).

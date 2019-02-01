@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGP02F.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ����ʣ�̸������ʣУ����ơ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/07/08    MCC-¿��Ǽ    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者複写元一覧（Ｐ０２Ｆ）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/07/08    MCC-多々納    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/11/11  MONFUNC �б� ¾
-      *  03.05.00    NACL-¿��Ǽ  07/05/XX  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/11/11  MONFUNC 対応 他
+      *  03.05.00    NACL-多々納  07/05/XX  グループ診療対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,38 +42,38 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ������ɽ��
+      *    画面非表示
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ������Ͽ�Ѷ��̥ѥ�᥿
+      *    患者登録用共通パラメタ
            COPY    "P02COMMON-SPA".
       *
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
            03  CNT-ENT             PIC 9(06).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYY         PIC 9(04).
@@ -109,39 +109,39 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -187,7 +187,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -205,15 +205,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -226,20 +226,20 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "PERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
       *
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
       *
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -259,14 +259,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
            IF      SPA-GMN2E-SYORI     =   ZERO
-               MOVE    "�㴵��ʣ�̡�"          TO  SPA-GMN2F-MIDASI
+               MOVE    "＜患者複写＞"          TO  SPA-GMN2F-MIDASI
            ELSE
-               MOVE    "�㴵��ɳ�դ�ʣ�̡�"    TO  SPA-GMN2F-MIDASI
+               MOVE    "＜患者紐付け複写＞"    TO  SPA-GMN2F-MIDASI
            END-IF
       *
            MOVE    ZERO                TO  SPA-GMN2F-SELNUM
@@ -277,7 +277,7 @@
            END-IF
       *
            PERFORM 310-SPA-SET-SEC
-      *    ����Τߤλ����оݤȤ���
+      *    １件のみの時、対象とする
            IF      SPA-GMN2F-MAX       =   1
                MOVE    1                   TO  IDX
                MOVE    SPA-GMN2F-PTNUM(IDX)
@@ -296,11 +296,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        310-SPA-SET-SEC             SECTION.
       *
-      *    �����ɹ���
+      *    一覧読込み
            INITIALIZE                  SPA-GMN2F-KNJLIST-AREA
       *
            MOVE    ZERO                TO  SPA-GMN2F-MAX
@@ -317,7 +317,7 @@
            MOVE    ZERO                TO  IDX
            COMPUTE IDY                 =   WRK-MOJISU  +  1
       *
-      *    ��������
+      *    漢字検索
            INITIALIZE                  PTINF-REC
            IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
                MOVE    SPA-HOSPNUM             TO  PTINF-HOSPNUM
@@ -334,7 +334,7 @@
                MOVE    "%"             TO  PTINF-KANANAME(IDY:1)
            END-IF
       *
-      *    ���ԥޥ������������̾�Ǹ���
+      *    患者マスターを漢字氏名で検索
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -351,7 +351,7 @@
            PERFORM UNTIL      (IDX             >=  100       ) OR
                               (FLG-PTINF       =   1          )
                MOVE    ZERO            TO  FLG-OK
-      *        ����ɳ�դ�Ƚ��
+      *        患者紐付け判定
                IF      SPA-GMN2E-GRPHOSPNUM    =   SPACE
                    MOVE    1                   TO  FLG-OK
                ELSE
@@ -369,7 +369,7 @@
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 810-PTINF-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -384,13 +384,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ����Խ�����
+      *    患者マスタ編集処理
       *****************************************************************
        2012-PTINF-HENSYU-SEC          SECTION.
       *
            MOVE    IDX                 TO  SPA-GMN2F-SEQNUM (IDX)
       *
-      *    �����ֹ��Ѵ���ꡢ����ID��괵��NO���������
+      *    患者番号変換より、患者IDより患者NOを取得する
            MOVE    PTINF-PTID          TO  SPA-GMN2F-PTID  (IDX)
       *
            INITIALIZE                      ORCSPTIDAREA
@@ -422,7 +422,7 @@
            .
       *
       *****************************************************************
-      *    ����ɳ�դ�Ƚ�����
+      *    患者紐付け判定処理
       *****************************************************************
        410111-PTSAME-CHK-SEC           SECTION.
       *
@@ -446,7 +446,7 @@
            IF      FLG-PTSAME          =   1
                MOVE    1                   TO  FLG-OK
            ELSE
-      *        Ʊ����ŵ��ؤ���Ͽ�Ѥ�
+      *        同一医療機関で登録済み
                MOVE    PTSAME-REC          TO  MCPDATA-REC
                MOVE    "tbl_ptsame"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -478,17 +478,17 @@
       *
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
       *****        MOVE    SPACE           TO  SPA-GMN2E-PTNUM
       *****        MOVE    ZERO            TO  SPA-GMN2E-PTID
                    PERFORM 210-BACK
-      *        ����
+      *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 220-NEXT-HEN-SEC
            END-EVALUATE
@@ -497,18 +497,18 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ������������
+      *        検索項目入力
                WHEN    "ACTIVATE"      ALSO    "KNJKEY"
                    PERFORM 41012-KNJKEY-SEC
-      *        ��������
+      *        キー入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41011-SELNUM-CHK-SEC
-      *        ������
+      *        行選択
                WHEN    ANY             ALSO    "KNJLIST"
                    PERFORM 41012-LISTSEL-SEC
            END-EVALUATE
@@ -517,7 +517,7 @@
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *   �����������ϡ�����
+      *   検索項目入力　処理
       *****************************************************************
        41012-KNJKEY-SEC                SECTION.
       *
@@ -534,7 +534,7 @@
        41012-KNJKEY-EXT.
            EXIT.
       *****************************************************************
-      *    �ֹ����򡡽���
+      *    番号選択　処理
       *****************************************************************
        41011-SELNUM-CHK-SEC                SECTION.
       *
@@ -542,7 +542,7 @@
       *
            MOVE    P02F-SELNUM         TO  SPA-GMN2F-SELNUM
       *
-      *    ����ΤߤȤ������Ȥ���
+      *    １件のみとき、１とする
            IF     (SPA-GMN2F-MAX       =   1  )  AND
                   (SPA-GMN2F-SELNUM    =   ZERO)
                MOVE    1               TO   SPA-GMN2F-SELNUM
@@ -566,10 +566,10 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41012-LISTSEL-SEC       SECTION.
-      *    ������
+      *    行選択
            MOVE    ZERO                TO  SPA-GMN2F-SELNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   200
@@ -589,7 +589,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǽ���
+      *    次頁処理
       *****************************************************************
        220-NEXT-HEN-SEC       SECTION.
       *
@@ -598,7 +598,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -619,7 +619,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -640,7 +640,7 @@
       *
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -675,7 +675,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -691,20 +691,20 @@
       *
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���ڡ����Ϥ���ޤ���"
+                   MOVE    "次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "�оݤΥǡ�������������ʾ夢��ޤ�"
+                   MOVE    "対象のデータが１００件以上あります"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -728,7 +728,7 @@
       *
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        700-SEIWA-HEN-SEC             SECTION.
       *
@@ -754,7 +754,7 @@
       *
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�
+      *    患者マスター読込
       *****************************************************************
        810-PTINF-READ-SEC         SECTION.
       *
@@ -771,7 +771,7 @@
        810-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    Ʊ�촵�Լ��̥ޥ������ɹ�����
+      *    同一患者識別マスター読込処理
       *****************************************************************
        900-PTSAME-READ-SEC         SECTION.
       *
@@ -788,7 +788,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -801,7 +801,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -816,7 +816,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -830,7 +830,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

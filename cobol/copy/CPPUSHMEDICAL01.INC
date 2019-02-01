@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,26 +18,26 @@
        01  PUSHMD01-REC.
            03  PUSHMD01-EVENT                  PIC X(50).
            03  PUSHMD01-BODY.
-      *      ππø∑•‚°º•…
+      *      Êõ¥Êñ∞„É¢„Éº„Éâ
              05  PUSHMD01-PMODE                PIC X(10).
-      *      ¥µº‘»÷πÊ
+      *      ÊÇ£ËÄÖÁï™Âè∑
              05  PUSHMD01-PTNUM                PIC X(20).
-      *      •∑•π•∆•‡∆¸…’
+      *      „Ç∑„Çπ„ÉÜ„É†Êó•‰ªò
              05  PUSHMD01-SYSYMD               PIC X(10).
-      *      •∑•π•∆•‡ª˛¥÷
+      *      „Ç∑„Çπ„ÉÜ„É†ÊôÇÈñì
              05  PUSHMD01-SYSTIME              PIC X(08).
-      *      ø«Œ≈∆¸…’
+      *      Ë®∫ÁôÇÊó•‰ªò
              05  PUSHMD01-SRYYMD               PIC X(10).
-      *      ø«Œ≈æ Û
+      *      Ë®∫ÁôÇÊÉÖÂ†±
              05  PUSHMD01-MEDICAL-G.
                  07  PUSHMD01-MEDICAL-TBL      OCCURS   15.
-      *       ›∏±¡»πÁ§ª
+      *      ‰øùÈô∫ÁµÑÂêà„Åõ
                      09  PUSHMD01-HKNCOMBI     PIC X(04).
-      *      ø«Œ≈≤ 
+      *      Ë®∫ÁôÇÁßë
                      09  PUSHMD01-SRYKA        PIC X(02).
-      *      •…•Ø•ø°º•≥°º•…
+      *      „Éâ„ÇØ„Çø„Éº„Ç≥„Éº„Éâ
                      09  PUSHMD01-DRCD         PIC X(05).
-      *      ≈¡…º»÷πÊ
+      *      ‰ºùÁ•®Áï™Âè∑
                      09  PUSHMD01-DENPNUM      PIC X(07).
       *
 

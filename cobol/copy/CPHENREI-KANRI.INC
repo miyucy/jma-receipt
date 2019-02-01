@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,28 +16,28 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥ª¥ó¥é¥¤¥óÊÖÌá´ÉÍý   COPY (CPHENREI-KANRI.INC)        *
+      *    ã‚ªãƒ³ãƒ©ã‚¤ãƒ³è¿”æˆ»ç®¡ç†   COPY (CPHENREI-KANRI.INC)        *
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.06.01    NACL-Æ£¸¶    10/12/20  ÊÝ¸±¼Ô¤«¤é¤ÎÊÖÌáÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.06.01    NACL-è—¤åŽŸ    10/12/20  ä¿é™ºè€…ã‹ã‚‰ã®è¿”æˆ»å¯¾å¿œ
       *
-      *  04.08.01    NACL-Æ£¸¶    16/06/27  °åÎÅµ¡´Ø¥³¡¼¥ÉÊÑ¹¹»þ¤Î¥ì¥»ÅÅ
-      *                                     ¥Ç¡¼¥¿Åù¤ÎºîÀ®ÂÐ±þ
-      *                                      ¡Ê£±Æü¤«¤é¤ÎÊÑ¹¹¤Î¤ß¡Ë
+      *  04.08.01    NACL-è—¤åŽŸ    16/06/27  åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰å¤‰æ›´æ™‚ã®ãƒ¬ã‚»é›»
+      *                                     ãƒ‡ãƒ¼ã‚¿ç­‰ã®ä½œæˆå¯¾å¿œ
+      *                                      ï¼ˆï¼‘æ—¥ã‹ã‚‰ã®å¤‰æ›´ã®ã¿ï¼‰
       ************************************************************
       *01  HENREI-KANRI-REC.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
            03  HENREI-K-HOSPNUM    PIC 9(2).
-      *Äó½ÐÀè
+      *æå‡ºå…ˆ
            03  HENREI-K-TEISYUTUSAKI
                                    PIC X(1).
-      *Äó½ÐÀè
+      *æå‡ºå…ˆ
            03  HENREI-K-TEISYUTUSAKI2
                                    PIC X(1).
-      *°åÎÅµ¡´Ø¥³¡¼¥É¡ÊRE¥ì¥³¡¼¥É¤Î¿ÇÎÅÇ¯·î¤Ë³ºÅö¡Ë
+      *åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ï¼ˆREãƒ¬ã‚³ãƒ¼ãƒ‰ã®è¨ºç™‚å¹´æœˆã«è©²å½“ï¼‰
            03  HENREI-K-HOSPCD     PIC X(7).
-      *¿³ººÂ¦¤¬½èÍý¤·¤¿Ç¯·î(HI¥ì¥³¡¼¥É¤ÎÇ¯·î)
+      *å¯©æŸ»å´ãŒå‡¦ç†ã—ãŸå¹´æœˆ(HIãƒ¬ã‚³ãƒ¼ãƒ‰ã®å¹´æœˆ)
            03  HENREI-K-SYORIYM    PIC X(6).
       *
            03  HENREI-K-RECV-TOTAL-CNT
@@ -51,13 +51,13 @@
       *
            03  HENREI-K-RECV-GO-TEN
                                    PIC 9(10).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  HENREI-K-TERMID     PIC X(64).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  HENREI-K-OPID       PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  HENREI-K-CREYMD     PIC X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  HENREI-K-UPYMD      PIC X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  HENREI-K-UPHMS      PIC X(06).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÆþ±¡´ðËÜ¾ðÊó    COPY (CPHSCONFBASEV2REQ.INC)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆå…¥é™¢åŸºæœ¬æƒ…å ±    COPY (CPHSCONFBASEV2REQ.INC)
       ******************************************************************
         01  XML-HSCONFBASEREQ.
             03  HSCBREQ-CONTEXT          PIC S9(9)   BINARY.

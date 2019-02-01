@@ -36,5 +36,5 @@ CREATE INDEX idx_order_sryymd ON tbl_order USING btree (sryymd);
 
 CREATE INDEX idx_order_ptnum ON tbl_order USING btree (ptnum);
 
-COMMENT ON TABLE "tbl_order" IS 'Æþ±¡¥ª¡¼¥À';
+COMMENT ON TABLE "tbl_order" IS 'å…¥é™¢ã‚ªãƒ¼ãƒ€';
 

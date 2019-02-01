@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÉéÃ´¶â·×»»¾ðÊó
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆè² æ‹…é‡‘è¨ˆç®—æƒ…å ±
       *                                    COPY (CPACSIMULATEV2REQ.INC)
       ******************************************************************
         01  XML-ACSIMULATEREQ.
@@ -29,71 +29,71 @@
             02  ACSREQ-MODE             PIC S9(9)   BINARY.
             02  ACSREQ-RECORDNAME       PIC X(128).
             02  ACSREQ-MEDICALREQ.
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               03  ACSREQ-PATIENTID         PIC X(20).
-      *       ¿ÇÎÅÆüÉÕ
+      *       è¨ºç™‚æ—¥ä»˜
               03  ACSREQ-PERFORM-DATE      PIC X(10).
-      *       »þ´Ö³°¶èÊ¬¡Ê¿Ç»¡ÎÁ¡Ë
+      *       æ™‚é–“å¤–åŒºåˆ†ï¼ˆè¨ºå¯Ÿæ–™ï¼‰
               03  ACSREQ-TIME-CLASS        PIC X(1).
       *
               03  ACSREQ-MEDICAL-INFO.
-      *         ¿ÇÎÅ²Ê
+      *         è¨ºç™‚ç§‘
                 04  ACSREQ-APPOINT-DEP-CODE    PIC X(2).
-      *         ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *         ä¿é™ºçµ„åˆã›ç•ªå·
                 04  ACSREQ-COMBINATION-NUMBER  PIC X(4).
-      *         ÊÝ¸±¾ðÊó
+      *         ä¿é™ºæƒ…å ±
                 04  ACSREQ-INSURANCE-INFO.
-      *           ÊÝ¸±¤Î¼ïÎà
+      *           ä¿é™ºã®ç¨®é¡ž
                   05  ACSREQ-MAIN-INSURANCE-CLASS    PIC X(03).
-      *           ÊÝ¸±¼ÔÈÖ¹æ
+      *           ä¿é™ºè€…ç•ªå·
                   05  ACSREQ-MAIN-INSURANCE-NUMBER   PIC X(08).
-      *           ÊÝ¸±¤Î¼ïÎàÌ¾¾Î
+      *           ä¿é™ºã®ç¨®é¡žåç§°
                   05  ACSREQ-MAIN-INSURANCE-NAME     PIC X(20).
-      *           µ­¹æ
+      *           è¨˜å·
                   05  ACSREQ-MAIN-MARK               PIC X(80).
-      *           ÈÖ¹æ
+      *           ç•ªå·
                   05  ACSREQ-MAIN-NUMBER             PIC X(80).
-      *           ·ÑÂ³¶èÊ¬
+      *           ç¶™ç¶šåŒºåˆ†
                   05  ACSREQ-MAIN-CONTINUATION       PIC X(01).
-      *           Êä½õ¶èÊ¬
+      *           è£œåŠ©åŒºåˆ†
                   05  ACSREQ-MAIN-ASSISTANCE         PIC X(01).
-      *           ËÜ¿Í²ÈÂ²¶èÊ¬
+      *           æœ¬äººå®¶æ—åŒºåˆ†
                   05  ACSREQ-MAIN-FAMILY             PIC X(01).
-      *           ÈïÊÝ¸±¼ÔÌ¾
+      *           è¢«ä¿é™ºè€…å
                   05  ACSREQ-MAIN-POLICYHOLDER       PIC X(100).
-      *           Í­¸ú³«»ÏÆü
+      *           æœ‰åŠ¹é–‹å§‹æ—¥
                   05  ACSREQ-MAIN-START-DATE         PIC X(10).
-      *           Í­¸ú½ªÎ»Æü
+      *           æœ‰åŠ¹çµ‚äº†æ—¥
                   05  ACSREQ-MAIN-END-DATE           PIC X(10).
-      *           ¸øÈñ¾ðÊó
+      *           å…¬è²»æƒ…å ±
                   05  ACSREQ-PUBLIC-INSURANCE-INF  OCCURS  4 TIMES.
-      *             ¸øÈñ¤Î¼ïÎà
+      *             å…¬è²»ã®ç¨®é¡ž
                     06  ACSREQ-INSURANCE-CLASS       PIC X(03).
-      *             ¸øÈñ¤Î¼ïÎàÌ¾¾Î
+      *             å…¬è²»ã®ç¨®é¡žåç§°
                     06  ACSREQ-INSURANCE-NAME        PIC X(20).
-      *             ÉéÃ´¼ÔÈÖ¹æ
+      *             è² æ‹…è€…ç•ªå·
                     06  ACSREQ-PROVIDER-NUMBER       PIC X(08).
-      *             ¼õµë¼ÔÈÖ¹æ
+      *             å—çµ¦è€…ç•ªå·
                     06  ACSREQ-RECIPIENT-NUMBER      PIC X(20).
-      *             Í­¸ú³«»ÏÆü
+      *             æœ‰åŠ¹é–‹å§‹æ—¥
                     06  ACSREQ-INSURANCE-START-DATE  PIC X(10).
-      *             Í­¸ú½ªÎ»Æü
+      *             æœ‰åŠ¹çµ‚äº†æ—¥
                     06  ACSREQ-INSURANCE-END-DATE    PIC X(10).
-      *         ¿ÇÎÅÆâÍÆ
+      *         è¨ºç™‚å†…å®¹
                 04  ACSREQ-MDC-INFO         OCCURS  40 TIMES.
-      *           ¿ÇÎÅ¼ïÊÌ¶èÊ¬
+      *           è¨ºç™‚ç¨®åˆ¥åŒºåˆ†
                   05  ACSREQ-MDC-CLASS               PIC X(3).
       *??
                   05  ACSREQ-MDC-CLASS-NAME          PIC X(50).
-      *           ²ó¿ô
+      *           å›žæ•°
                   05  ACSREQ-MDC-CLASS-NUMBER        PIC X(50).
-      *           ºÞÆâÍÆ
+      *           å‰¤å†…å®¹
                   05  ACSREQ-PRESCRIPTION-INFO     OCCURS  40 TIMES.
-      *             ¿ÇÎÅ¥³¡¼¥É
+      *             è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                     06  ACSREQ-PRSCRPT-CODE          PIC X(9).
-      *             ¿ÇÎÅÌ¾¾Î¡Ê¥³¥á¥ó¥È¡Ë
+      *             è¨ºç™‚åç§°ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆï¼‰
                     06  ACSREQ-PRSCRPT-NAME          PIC X(80).
-      *             ¿ôÎÌ
+      *             æ•°é‡
                     06  ACSREQ-PRSCRPT-NUMBER        PIC X(40).
-      *             ½èÊý¤»¤ó°ìÈÌÌ¾µ­ºÜ
+      *             å‡¦æ–¹ã›ã‚“ä¸€èˆ¬åè¨˜è¼‰
                     06  ACSREQ-GENERIC-FLG           PIC X(03).

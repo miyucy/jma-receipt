@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,34 +16,34 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ť����ɥơ��֥�        COPY (CPHKTSRYCDWK.INC)
+      *    包括診療コードテーブル        COPY (CPHKTSRYCDWK.INC)
       *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.08.00     NACL-��ƣ    16/03/13  Ϣ�֣��墪����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-伊藤    16/03/13  連番２桁→３桁
       ************************************************************
       *01  HKTSRYCDWK-REC.
            03  HKTSRYCDWK-SYORIKBN            PIC  X(01).
            03  HKTSRYCDWK-KEY.
-      *�������ֹ�
+      *包括管理番号
                05  HKTSRYCDWK-KANRICD         PIC  9(03).
-      *�������ֹ�Ϣ��
+      *包括管理番号連番
                05  HKTSRYCDWK-RENNUM          PIC  9(03).
-      *ͭ��������
+      *有効開始日
                05  HKTSRYCDWK-YUKOSTYMD       PIC  X(08).
-      *ͭ����λ��
+      *有効終了日
                05  HKTSRYCDWK-YUKOEDYMD       PIC  X(08).
-      *����оݿ��Ź԰٥�����
+      *包括対象診療行為コード
            03  HKTSRYCDWK-SRYCD               PIC  X(09).
-      *ü���ɣ�
+      *端末ＩＤ
            03  HKTSRYCDWK-TERMID              PIC  X(16).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
            03  HKTSRYCDWK-OPID                PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  HKTSRYCDWK-CREYMD              PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  HKTSRYCDWK-UPYMD               PIC  X(08).
-      *��������
+      *更新時間
            03  HKTSRYCDWK-UPHMS               PIC  X(06).

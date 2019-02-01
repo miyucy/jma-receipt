@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,12 +18,12 @@
        01  PUSHPT01-REC.
            03  PUSHPT01-EVENT                  PIC X(50).
            03  PUSHPT01-BODY.
-      *      ππø∑•‚°º•…
+      *      Êõ¥Êñ∞„É¢„Éº„Éâ
              05  PUSHPT01-PMODE                PIC X(10).
-      *      ¥µº‘»÷πÊ
+      *      ÊÇ£ËÄÖÁï™Âè∑
              05  PUSHPT01-PTNUM                PIC X(20).
-      *      •∑•π•∆•‡∆¸…’
+      *      „Ç∑„Çπ„ÉÜ„É†Êó•‰ªò
              05  PUSHPT01-SYSYMD               PIC X(10).
-      *      •∑•π•∆•‡ª˛¥÷
+      *      „Ç∑„Çπ„ÉÜ„É†ÊôÇÈñì
              05  PUSHPT01-SYSTIME              PIC X(08).
 

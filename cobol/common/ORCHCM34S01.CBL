@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,33 +18,33 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCHCM34S01.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡²ñ·×¥«¡¼¥É¾ðÊóÊÔ½¸¥µ¥Ö
-      *                      ¡Ê²ñ·×¥«¡¼¥É¤Î¥µ¥Ö£Ð£Ç¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/08/18    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢ä¼šè¨ˆã‚«ãƒ¼ãƒ‰æƒ…å ±ç·¨é›†ã‚µãƒ–
+      *                      ï¼ˆä¼šè¨ˆã‚«ãƒ¼ãƒ‰ã®ã‚µãƒ–ï¼°ï¼§ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/08/18    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL¡ÝÂÀÅÄ   04/02/02  ¼¼ÎÁº¹³Û¡¦¿©»ö¤Î»»Äê¤ò
-      *                                     »ÃÄêÅª¤Ë½¤Àµ
-      *  01.00.02    NACL¡ÝÂÀÅÄ   04/03/03  °åÎÅµ¡´Ø¸º»»ÂÐ±þ
-      *  01.00.03    NACL¡ÝÂÀÅÄ   04/03/11  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
-      *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡ËÂÐ±þ
-      *  01.00.04    NACL¡ÝÂÀÅÄ   04/08/23  Æþ±¡²ñ·×¼¼ÎÁº¹³Û¶èÊ¬
-      *  00.00.05    NACL-¾®Æ¦Âô  05/09/16  °Ê²¼¤ÎÆÃÄêÆþ±¡ÎÁ¤Î³°Çñ·×»»¤ò½¤Àµ
-      *                                     ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
-      *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
-      *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
-      *  01.00.06    NACL-¾®Æ¦Âô  06/03/22  ÆÃÄêÆþ±¡ÎÁÄÉ²ÃÊ¬¡ÊÇ¾Â´Ãæ¥±¥¢¥æ¥Ë¡Ë
-      *                                     ³°ÇñÃÖ¤­´¹¤¨½èÍý
-      *  01.00.07    NACL-¾®Æ¦Âô  06/05/23  ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ½¤Àµ
-      *  03.01.01    NACL-ÌçÏÆ    06/06/30  ÎÅÍÜÉÂÅï¤ÎÂ¾°åÎÅµ¡´Ø¼õ¿ÇÂÐ±þ
-      *  03.05.00    NACL-ÂÀÅÄ    07/05/28  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.01.00    NACL-ÂÀÅÄ    07/11/20  ¼¼ÎÁº¹³Û£¶·åÂÐ±þ
-      *  04.01.00    NACL-ÂÀÅÄ    07/12/19  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÈ½ÄêÄÉ²Ã
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACLâˆ’å¤ªç”°   04/02/02  å®¤æ–™å·®é¡ãƒ»é£Ÿäº‹ã®ç®—å®šã‚’
+      *                                     æš«å®šçš„ã«ä¿®æ­£
+      *  01.00.02    NACLâˆ’å¤ªç”°   04/03/03  åŒ»ç™‚æ©Ÿé–¢æ¸›ç®—å¯¾å¿œ
+      *  01.00.03    NACLâˆ’å¤ªç”°   04/03/11  æœ‰åºŠè¨ºç™‚æ‰€ï¼‘ç¾¤å…¥é™¢åŸºæœ¬æ–™ï¼‘
+      *                                     ï¼ˆåŒ»å¸«é…ç½®é©åˆï¼‰å¯¾å¿œ
+      *  01.00.04    NACLâˆ’å¤ªç”°   04/08/23  å…¥é™¢ä¼šè¨ˆå®¤æ–™å·®é¡åŒºåˆ†
+      *  00.00.05    NACL-å°è±†æ²¢  05/09/16  ä»¥ä¸‹ã®ç‰¹å®šå…¥é™¢æ–™ã®å¤–æ³Šè¨ˆç®—ã‚’ä¿®æ­£
+      *                                     è¨ºç™‚æ‰€è€äººåŒ»ç™‚ç®¡ç†æ–™
+      *                                     è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼‘
+      *                                     è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼’
+      *  01.00.06    NACL-å°è±†æ²¢  06/03/22  ç‰¹å®šå…¥é™¢æ–™è¿½åŠ åˆ†ï¼ˆè„³å’ä¸­ã‚±ã‚¢ãƒ¦ãƒ‹ï¼‰
+      *                                     å¤–æ³Šç½®ãæ›ãˆå‡¦ç†
+      *  01.00.07    NACL-å°è±†æ²¢  06/05/23  å¤–æ³Šæ™‚ã®å…¥é™¢åŸºæœ¬æ–™å–å¾—ä¿®æ­£
+      *  03.01.01    NACL-é–€è„‡    06/06/30  ç™‚é¤Šç—…æ£Ÿã®ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºå¯¾å¿œ
+      *  03.05.00    NACL-å¤ªç”°    07/05/28  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.01.00    NACL-å¤ªç”°    07/11/20  å®¤æ–™å·®é¡ï¼–æ¡å¯¾å¿œ
+      *  04.01.00    NACL-å¤ªç”°    07/12/19  çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ã®åˆ¤å®šè¿½åŠ 
       *****************************************************************
       *
       *
@@ -58,7 +58,7 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-OVER                        PIC 9(01).
            03  FLG-HIT                         PIC 9(01).
@@ -107,7 +107,7 @@
            03  FLG-SKJZAIPTN                   PIC 9(01).
            03  FLG-SKJFTN                      PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-SYS5000                     PIC 9(05).
            03  CNT-KANKYO-DAY-G.
@@ -115,7 +115,7 @@
                05  CNT-KANKYO-DAY              PIC 9(01)
                                                OCCURS  31.
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX0                            PIC 9(05).
            03  IDX1                            PIC 9(05).
@@ -147,7 +147,7 @@
            03  IDX-WSYOKUJI                    PIC 9(05).
            03  IDX-KANKYO                      PIC 9(05).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-YMD.
                05  WRK-YYMM                    PIC X(06).
@@ -282,112 +282,112 @@
            03  WRK-HKNCOMBI-SND-G.
                05  WRK-HKNCOMBI-SND            PIC 9(04).
       *
-      *    Æþ±¡ÎÁ
+      *    å…¥é™¢æ–™
        01  WNYUINRYO-AREA.
            03  WNYUINRYO-OCC1                  OCCURS 02.
                05  WNYUINRYO-OCC2-MAX          PIC 9(05).
                05  WNYUINRYO-OCC2              OCCURS 20.
                    07  WNYUINRYO-ZAINUM        PIC 9(08).
-      *            Æþ±¡´ðËÜÎÁ¿ÇÎÅ¶èÊ¬
+      *            å…¥é™¢åŸºæœ¬æ–™è¨ºç™‚åŒºåˆ†
                    07  WNYUINRYO-SRYKBN        PIC X(02).
-      *            ºÞÅÀ¿ô
+      *            å‰¤ç‚¹æ•°
                    07  WNYUINRYO-ZAITEN        PIC 9(08).
-      *            ÌÀºÙ¿ô
+      *            æ˜Žç´°æ•°
                    07  WNYUINRYO-SRYCDTOTAL    PIC 9(14).
-      *            ºÞ²ó¿ô
+      *            å‰¤å›žæ•°
                    07  WNYUINRYO-ZAIKAISU      PIC 9(07).
-      *            ÌÀºÙ¿ô
+      *            æ˜Žç´°æ•°
                    07  WNYUINRYO-MEISAISU      PIC 9(03).
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  WNYUINRYO-SRYCD         PIC X(09)   OCCURS  20.
-      *            ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *            è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                    07  WNYUINRYO-DAY-TBL.
                        09  WNYUINRYO-DAY       PIC 9(03)   OCCURS  31.
       *
-      *    ³°Çñ
+      *    å¤–æ³Š
        01  WGAIHAKU-AREA.
            03  WGAIHAKU-OCC1                   OCCURS 02.
                05  WGAIHAKU-OCC2-MAX           PIC 9(05).
                05  WGAIHAKU-OCC2               OCCURS 20.
-      *            ¥½¡¼¥ÈÍÑÈÖ¹æ
+      *            ã‚½ãƒ¼ãƒˆç”¨ç•ªå·
                    07  WGAIHAKU-NUM            PIC 9(03).
-      *                ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¹ç·×
+      *                è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰åˆè¨ˆ
                    07  WGAIHAKU-SRYCDTOTAL     PIC 9(14).
-      *            Æþ±¡´ðËÜÎÁ¿ÇÎÅ¶èÊ¬
+      *            å…¥é™¢åŸºæœ¬æ–™è¨ºç™‚åŒºåˆ†
                    07  WGAIHAKU-SRYKBN         PIC X(02).
-      *            ºÞÅÀ¿ô
+      *            å‰¤ç‚¹æ•°
                    07  WGAIHAKU-ZAITEN         PIC 9(08).
-      *            ºÞ²ó¿ô
+      *            å‰¤å›žæ•°
                    07  WGAIHAKU-ZAIKAISU       PIC 9(07).
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  WGAIHAKU-SRYCD          PIC X(09)
                                                OCCURS 20.
-      *            ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *            è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                    07  WGAIHAKU-DAY-TBL.
                        09  WGAIHAKU-DAY        PIC 9(03)   OCCURS  31.
       *
-      *    ¼¼ÎÁº¹³Û
+      *    å®¤æ–™å·®é¡
        01  WBRMSAGAKU-AREA.
            03  WBRMSAGAKU-OCC1-MAX             PIC 9(05).
            03  WBRMSAGAKU-OCC1                 OCCURS 20.
-      *        ¥½¡¼¥ÈÍÑÈÖ¹æ
+      *        ã‚½ãƒ¼ãƒˆç”¨ç•ªå·
                05  WBRMSAGAKU-NUM              PIC 9(03).
-      *        Æþ±¡´ðËÜÎÁ¿ÇÎÅ¶èÊ¬
+      *        å…¥é™¢åŸºæœ¬æ–™è¨ºç™‚åŒºåˆ†
                05  WBRMSAGAKU-SRYKBN           PIC X(02).
-      *        ºÞÅÀ¿ô
+      *        å‰¤ç‚¹æ•°
                05  WBRMSAGAKU-ZAITEN           PIC 9(08).
-      *        ¼¼ÎÁº¹³Û¶èÊ¬¥³¡¼¥É
+      *        å®¤æ–™å·®é¡åŒºåˆ†ã‚³ãƒ¼ãƒ‰
                05  WBRMSAGAKU-SAGAKUCD         PIC X(02).
-      *        ºÞ²ó¿ô
+      *        å‰¤å›žæ•°
                05  WBRMSAGAKU-ZAIKAISU         PIC 9(07).
-      *        ¿ÇÎÅ¥³¡¼¥É
+      *        è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  WBRMSAGAKU-SRYCD            PIC X(09).
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                05  WBRMSAGAKU-DAY-TBL.
                    07  WBRMSAGAKU-DAY          PIC 9(03)  OCCURS  31.
       *
-      *    ¿©»ö
+      *    é£Ÿäº‹
        01  WSYOKUJI-AREA.
            03  WSYOKUJI-OCC1-MAX               PIC 9(05).
            03  WSYOKUJI-OCC1                   OCCURS 50.
-      *        ¥½¡¼¥ÈÍÑÈÖ¹æ
+      *        ã‚½ãƒ¼ãƒˆç”¨ç•ªå·
                05  WSYOKUJI-NUM                PIC 9(03).
-      *        ´Ä¶­ÎÅÍÜºÞ¥Õ¥é¥°
+      *        ç’°å¢ƒç™‚é¤Šå‰¤ãƒ•ãƒ©ã‚°
                05  WSYOKUJI-KANKYO             PIC 9(03).
-      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¹ç·×
+      *        è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰åˆè¨ˆ
                05  WSYOKUJI-SRYCDTOTAL         PIC 9(14).
-      *        ¿ôÎÌ¹ç·×
+      *        æ•°é‡åˆè¨ˆ
                05  WSYOKUJI-SURYOTOTAL         PIC 9(10).
-      *        Æþ±¡´ðËÜÎÁ¿ÇÎÅ¶èÊ¬
+      *        å…¥é™¢åŸºæœ¬æ–™è¨ºç™‚åŒºåˆ†
                05  WSYOKUJI-SRYKBN             PIC X(02).
-      *        ºÞÅÀ¿ô
+      *        å‰¤ç‚¹æ•°
                05  WSYOKUJI-ZAITEN             PIC 9(08).
-      *        ºÞ²ó¿ô
+      *        å‰¤å›žæ•°
                05  WSYOKUJI-ZAIKAISU           PIC 9(07).
-      *        ÌÀºÙ¿ô
+      *        æ˜Žç´°æ•°
                05  WSYOKUJI-MEISAISU           PIC 9(08).
                05  WSYOKUJI-SRYCD-OCC          OCCURS  20.
-      *            ¿ôÎÌ
+      *            æ•°é‡
                    07  WSYOKUJI-SURYO          PIC 9(05).
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  WSYOKUJI-SRYCD          PIC X(09).
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                05  WSYOKUJI-DAY-TBL.
                    07  WSYOKUJI-DAY            PIC 9(03)   OCCURS  31.
-      *        À¸³èÎÅÍÜ¥Õ¥é¥°
+      *        ç”Ÿæ´»ç™‚é¤Šãƒ•ãƒ©ã‚°
                05  WSYOKUJI-LIFE               PIC 9(01).
-      *        ¿©»ö¡Ê´Ä¶­¡ËÉéÃ´³ÛºÞ¥Õ¥é¥°
+      *        é£Ÿäº‹ï¼ˆç’°å¢ƒï¼‰è² æ‹…é¡å‰¤ãƒ•ãƒ©ã‚°
                05  WSYOKUJI-PTFTN              PIC 9(01).
       *
-      *    ¿©»ö
+      *    é£Ÿäº‹
        01  WSKJH1804-AREA.
-      *    ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¹ç·×
+      *    è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰åˆè¨ˆ
            03  WSKJH1804-SRYCDTOTAL        PIC 9(14).
-      *    ¿ôÎÌ¹ç·×
+      *    æ•°é‡åˆè¨ˆ
            03  WSKJH1804-SURYOTOTAL        PIC 9(10).
-      *    ºÞÅÀ¿ô
+      *    å‰¤ç‚¹æ•°
            03  WSKJH1804-ZAITEN            PIC 9(08).
-      *    ÌÀºÙ¿ô
+      *    æ˜Žç´°æ•°
            03  WSKJH1804-MEISAISU          PIC 9(08).
            03  WSKJH1804-SRYCD-CNT-G.
                05  WSKJH1804-SRYCD-CNT-VAL.
@@ -408,12 +408,12 @@
                    WSKJH1804-SRYCD-CNT-VAL     OCCURS 11.
                    07  WSKJH1804-SRYCD-CNT     PIC 9(05).
       *
-      *    Æþ±¡ÎÁ²Ã»»
+      *    å…¥é™¢æ–™åŠ ç®—
        01  WNYUINKSN-AREA.
            03  WNYUINKSN-OCC1                  OCCURS 02.
                05  WNYUINKSN-OCC2-MAX          PIC 9(05).
                05  WNYUINKSN-OCC2              OCCURS 50.
-      *            É½ÍÑÈÖ¹æ¡Ê¥½¡¼¥ÈÍÑ¡Ë
+      *            è¡¨ç”¨ç•ªå·ï¼ˆã‚½ãƒ¼ãƒˆç”¨ï¼‰
                    07 WNYUINKSN-CDKBN-SYO      PIC 9(01).
                    07 WNYUINKSN-CDKBN-BU       PIC 9(02).
                    07 WNYUINKSN-CDKBN-KBN      PIC X(01).
@@ -423,33 +423,33 @@
                    07 WNYUINKSN-CDKBN-KOUBAN   PIC 9(02).
                    07 WNYUINKSN-KOUHYOJYUNNUM
                                                PIC 9(09).
-      *            Æþ±¡´ðËÜÎÁ¿ÇÎÅ¶èÊ¬
+      *            å…¥é™¢åŸºæœ¬æ–™è¨ºç™‚åŒºåˆ†
                    07  WNYUINKSN-SRYKBN        PIC X(02).
-      *            ºÞÅÀ¿ô
+      *            å‰¤ç‚¹æ•°
                    07  WNYUINKSN-ZAITEN        PIC 9(08).
-      *            ºÞ²ó¿ô
+      *            å‰¤å›žæ•°
                    07  WNYUINKSN-ZAIKAISU      PIC 9(07).
-      *            ¿ÇÎÅ¥³¡¼¥É
+      *            è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                    07  WNYUINKSN-SRYCD         PIC X(09).
-      *            ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *            è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
                    07  WNYUINKSN-DAY-TBL.
                        09  WNYUINKSN-DAY       PIC  9(03)  OCCURS  31.
       *
-      *    ÎÅÍÜÃ´Åö¼êÅö
+      *    ç™‚é¤Šæ‹…å½“æ‰‹å½“
        01  WRYYTAN-AREA.
-      *    ¿ÇÎÅ¶èÊ¬
+      *    è¨ºç™‚åŒºåˆ†
            03  WRYYTAN-SRYKBN                  PIC X(02).
-      *    ºÞÅÀ¿ô
+      *    å‰¤ç‚¹æ•°
            03  WRYYTAN-ZAITEN                  PIC 9(08).
-      *    ºÞ²ó¿ô
+      *    å‰¤å›žæ•°
            03  WRYYTAN-ZAIKAISU                PIC 9(07).
-      *    ¿ÇÎÅ¥³¡¼¥É
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  WRYYTAN-SRYCD                   PIC X(09).
-      *    ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *    è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  WRYYTAN-DAY-TBL.
                05  WRYYTAN-DAY                 PIC 9(03)   OCCURS  31.
       *
-      *    ¥½¡¼¥ÈÍÑÎÎ°è
+      *    ã‚½ãƒ¼ãƒˆç”¨é ˜åŸŸ
        01  SRT-AREA.
            03  SRT-IDX1                        PIC 9(05).
            03  SRT-IDX2                        PIC 9(05).
@@ -479,7 +479,7 @@
                05  SRT-DAY-TBL.
                    07  SRT-DAY                 PIC 9(03)   OCCURS  31.
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
+      *    ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤
        01  CONST-AREA.
            03  CONST-H9999                 PIC X(08)   VALUE "999999".
            03  CONST-H3004                 PIC X(08)   VALUE "201804".
@@ -492,96 +492,96 @@
            03  CONST-H1804                 PIC X(06)   VALUE "200604".
            03  CONST-H1810                 PIC X(06)   VALUE "200610".
            03  CONST-H1604                 PIC X(06)   VALUE "200404".
-      *    Æþ±¡ÎÁÊÔ½¸ºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    å…¥é™¢æ–™ç·¨é›†ä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-WNYUINRYO-MAX             PIC 9(05)   VALUE 20.
-      *    ³°ÇñÊÔ½¸ºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    å¤–æ³Šç·¨é›†ä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-WGAIHAKU-MAX              PIC 9(05)   VALUE 20.
-      *    ¼¼ÎÁº¹³ÛÊÔ½¸ºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    å®¤æ–™å·®é¡ç·¨é›†ä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-WBRMSAGAKU-MAX            PIC 9(05)   VALUE 20.
-      *    ¿©»öÊÔ½¸ºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    é£Ÿäº‹ç·¨é›†ä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-WSYOKUJI-MAX              PIC 9(05)   VALUE 50.
-      *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸ºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    å…¥é™¢æ–™åŠ ç®—ç·¨é›†ä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-WNYUINKSN-MAX             PIC 9(05)   VALUE 50.
-      *    ÊÖµÑºÇÂç·ï¿ô
+      *    è¿”å´æœ€å¤§ä»¶æ•°
            03  CONST-HENKYAKU-MAX              PIC 9(05)   VALUE 100.
-      *    ¥½¡¼¥Èºî¶ÈÎÎ°èºÇÂç·ï¿ô
+      *    ã‚½ãƒ¼ãƒˆä½œæ¥­é ˜åŸŸæœ€å¤§ä»¶æ•°
            03  CONST-SRT-MAX                   PIC 9(05)   VALUE 100.
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
            03  CONST-SKJ-RYOYO1                PIC X(09)
                                                    VALUE "197000110".
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰
            03  CONST-SKJ-RYOYO2                PIC X(09)
                                                    VALUE "197000710".
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
            03  CONST-SKJ-RYOYO1-RDS            PIC X(09)
                                                    VALUE "197003110".
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
            03  CONST-SKJ-RYOYO2-RDS            PIC X(09)
                                                    VALUE "197003210".
-      *    ÆÃÊÌ´ÉÍý²Ã»»
+      *    ç‰¹åˆ¥ç®¡ç†åŠ ç®—
            03  CONST-SKJ-TOKKANRI              PIC X(09)
                                                    VALUE "197000270".
-      *    ÆÃÊÌ¿©²Ã»»
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—
            03  CONST-SKJ-TOKSYOKU              PIC X(09)
                                                    VALUE "197000470".
-      *    ¿©Æ²²Ã»»
+      *    é£Ÿå ‚åŠ ç®—
            03  CONST-SKJ-SYOKUDO               PIC X(09)
                                                    VALUE "197000570".
-      *    Ê£¿ô¸¥Î©²Ã»»
+      *    è¤‡æ•°çŒ®ç«‹åŠ ç®—
            03  CONST-SKJ-FKSKONDATE            PIC X(09)
                                                    VALUE "197000670".
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰é£Ÿäº‹ç™‚é¤Š
            03  CONST-LIFE-RYOYO1               PIC X(09)
                                                    VALUE "197001310".
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜ¡ÊÎ®Æ°¿©¡Ë
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰é£Ÿäº‹ç™‚é¤Šï¼ˆæµå‹•é£Ÿï¼‰
            03  CONST-LIFE-RYOYO1-RDS           PIC X(09)
                                                    VALUE "197003510".
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë´Ä¶­ÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰ç’°å¢ƒç™‚é¤Š
            03  CONST-LIFE-KANKYO1              PIC X(09)
                                                    VALUE "197001410".
-      *    ÆÃÊÌ¿©²Ã»»¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03  CONST-LIFE-TOKSYOKU             PIC X(09)
                                                    VALUE "197001570".
-      *    ¿©Æ²²Ã»»¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    é£Ÿå ‚åŠ ç®—ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
            03  CONST-LIFE-SYOKUDO              PIC X(09)
                                                    VALUE "197001670".
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰é£Ÿäº‹ç™‚é¤Š
            03  CONST-LIFE-RYOYO2               PIC X(09)
                                                    VALUE "197001710".
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë´Ä¶­ÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰ç’°å¢ƒç™‚é¤Š
            03  CONST-LIFE-KANKYO2              PIC X(09)
                                                    VALUE "197001810".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä¸€èˆ¬ï¼‰
            03  CONST-SKJFTN-IPN                PIC X(09)
                                                    VALUE "197000810".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼’ãƒ»ï¼™ï¼æ—¥ä»¥ä¸‹ï¼‰
            03  CONST-SKJFTN-TEI2               PIC X(09)
                                                    VALUE "197000910".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼’ãƒ»ï¼™ï¼æ—¥è¶…ï¼‰
            03  CONST-SKJFTN-TEI2-90            PIC X(09)
                                                    VALUE "197001010".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼‘ï¼‰
            03  CONST-SKJFTN-TEI1               PIC X(09)
                                                    VALUE "197001110".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡¦¾®»ùËýÀ­ÆÃÄê¼ÀÉÂ´µ¼Ô¡Ë¡Ê°ìÈÌ¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆæŒ‡å®šé›£ç—…ãƒ»å°å…æ…¢æ€§ç‰¹å®šç–¾ç—…æ‚£è€…ï¼‰ï¼ˆä¸€èˆ¬ï¼‰
            03  CONST-SKJFTN-NANBYO               PIC X(09)
                                                    VALUE "197003310".
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡Ë¡Ê°ìÈÌ¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆç²¾ç¥žï¼‘å¹´è¶…ï¼‰ï¼ˆä¸€èˆ¬ï¼‰
            03  CONST-SKJFTN-SEISHIN               PIC X(09)
                                                    VALUE "197003410".
-      *    ÁªÄêÎÅÍÜ¡ÊÆþ±¡£±£¸£°ÆüÄ¶¡Ë¸º»»¡ÊÆþ±¡´ðËÜÎÁ¡Ë
+      *    é¸å®šç™‚é¤Šï¼ˆå…¥é™¢ï¼‘ï¼˜ï¼æ—¥è¶…ï¼‰æ¸›ç®—ï¼ˆå…¥é™¢åŸºæœ¬æ–™ï¼‰
            03  CONST-SENTEI                    PIC X(09)
                                                    VALUE "190122890".
       *
            03  CONST-SKJ-COMMENT-G.
                05  CONST-SKJ-COMMENT-VAL.
-      *    ¿©»öÄ«
+      *    é£Ÿäº‹æœ
                    07  CONST-SKJ-ASA           PIC 9(09)
                                                VALUE 99999918.
-      *    ¿©»öÃë
+      *    é£Ÿäº‹æ˜¼
                    07  CONST-SKJ-HIRU          PIC 9(09)
                                                VALUE 99999919.
-      *    ¿©»öÍ¼
+      *    é£Ÿäº‹å¤•
                    07  CONST-SKJ-YUU           PIC 9(09)
                                                VALUE 99999920.
                05  CONST-SKJ-COMMENT-R REDEFINES CONST-SKJ-COMMENT-VAL.
@@ -604,10 +604,10 @@
                05  TSKJFTN-MONEY               PIC 9(10).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
@@ -616,30 +616,30 @@
       *
            COPY    "CPSK5113.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ¿ÇÎÅ²ñ·×
+      *    è¨ºç™‚ä¼šè¨ˆ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
            COPY    "CPTENSU.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ÁªÄêÎÅÍÜÈñ
+      *    é¸å®šç™‚é¤Šè²»
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
       *
@@ -648,56 +648,56 @@
                                            //TNSXX-// BY //TTNSXX-//.
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+      *    ä¿é™ºç®—å®šç”¨å¹´é½¢ãƒ»å‰²åˆè¨ˆç®—ã‚µãƒ–
            COPY    "CPORCSAGECHK.INC".
       *
-      *    ÉÂÅïÁªÄêÆþ±¡¼«¸ÊÉéÃ´¼èÆÀ¥µ¥Ö
+      *    ç—…æ£Ÿé¸å®šå…¥é™¢è‡ªå·±è² æ‹…å–å¾—ã‚µãƒ–
            COPY    "CPORCSBTUSENTEI.INC".
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYULIFE.INC".
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö£²
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ã‚µãƒ–ï¼’
            COPY    "CPORCSNYULIFE2.INC".
       *
-      *    ¿©»öÉéÃ´¿ø¤¨ÃÖ¤­ÂÐ¾Ý¼èÆÀ¥µ¥Ö
+      *    é£Ÿäº‹è² æ‹…æ®ãˆç½®ãå¯¾è±¡å–å¾—ã‚µãƒ–
            COPY    "CPORCSSKJKEEP.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    ´µ¼Ô½êÆÀ¾ðÊóÊÔ½¸¥µ¥Ö
+      *    æ‚£è€…æ‰€å¾—æƒ…å ±ç·¨é›†ã‚µãƒ–
            COPY    "CPORCSSYOTOKU.INC".
       *
-      *    Æþ±¡ÎÁ¤È°Û¤Ê¤ë¿©»ö»»ÄêÊÝ¸±ÁÈ¤ß¹ç¤ï¤»¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™ã¨ç•°ãªã‚‹é£Ÿäº‹ç®—å®šä¿é™ºçµ„ã¿åˆã‚ã›å–å¾—ã‚µãƒ–
            COPY    "CPORCSSKJHKN.INC".
       *
-      *    Æþ±¡ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊó¥µ¥Ö
+      *    å…¥é™¢ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±ã‚µãƒ–
            COPY    "CPORCSNTENSU.INC".
       *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¥µ¥Ö
+      *    å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—å–å¾—ã‚µãƒ–
            COPY    "CPORCSKANGOGEN.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                        SECTION.
       *
-      *    Æþ±¡²ñ·×¥«¡¼¥É¾ðÊóÊÔ½¸¥µ¥Ö¥Ñ¥é¥á¥¿
+      *    å…¥é™¢ä¼šè¨ˆã‚«ãƒ¼ãƒ‰æƒ…å ±ç·¨é›†ã‚µãƒ–ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCHCM34S01.INC".
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                       DIVISION    USING
@@ -706,7 +706,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -727,13 +727,13 @@
            INITIALIZE                      HCM34S01-HENKYAKU-AREA
            MOVE    ZERO                TO  HCM34S01-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
            PERFORM 150-INIT-SEC
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            PERFORM 200-MAIN-SEC
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
            PERFORM 300-END-SEC
       *
            .
@@ -743,17 +743,17 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    »»ÄêÇ¯·î¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
+      *    ç®—å®šå¹´æœˆãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã“ã¨
            IF    ( HCM34S01-SANTEIYM       =   SPACE )
                MOVE    1                   TO  HCM34S01-RC
                PERFORM 990-EXIT-PROGRAM-SEC
            END-IF
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                          PTINF-REC
            MOVE    HCM34S01-HOSPNUM        TO  PTINF-HOSPNUM
            MOVE    HCM34S01-PTID           TO  PTINF-PTID
@@ -769,7 +769,7 @@
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      *    ³ºÅöÊÝ¸±ÁÈ¤ß¹ç¤ï¤»¤ÎÆþ±¡²ñ·×¤¬Â¸ºß¤¹¤ë¤«¥Á¥§¥Ã¥¯
+      *    è©²å½“ä¿é™ºçµ„ã¿åˆã‚ã›ã®å…¥é™¢ä¼šè¨ˆãŒå­˜åœ¨ã™ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
            INITIALIZE                          FLG-NYUINDAY-G
       *
            MOVE    "5"                     TO  WRK-NACCT-ZAISKBKBN
@@ -803,7 +803,7 @@
                                                WRK-SKYEDYMD
            MOVE    1                       TO  WRK-SKYSTDD
            MOVE    31                      TO  WRK-SKYEDDD
-      *    ´ü´Ö»ØÄê¶èÊ¬¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¾ì¹ç¡¢´ü´Ö¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
+      *    æœŸé–“æŒ‡å®šåŒºåˆ†ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã€æœŸé–“ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã“ã¨
            IF    ( HCM34S01-KIKANKBN       =   "1" )
                IF    ( HCM34S01-SKYSTYMD   IS  NOT NUMERIC )
                    MOVE    12              TO  HCM34S01-RC
@@ -882,7 +882,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷½èÍý¡Ê£Ë£Å£Ù£±£·¡Ë
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢å‡¦ç†ï¼ˆï¼«ï¼¥ï¼¹ï¼‘ï¼—ï¼‰
       *****************************************************************
        1001-NYUINACCT-KEY17-SEL-SEC    SECTION.
       *
@@ -906,7 +906,7 @@
        1001-NYUINACCT-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×ÆÉ¤ß¹þ¤ß½èÍý¡Ê£Ë£Å£Ù£±£·¡Ë
+      *    å…¥é™¢ä¼šè¨ˆèª­ã¿è¾¼ã¿å‡¦ç†ï¼ˆï¼«ï¼¥ï¼¹ï¼‘ï¼—ï¼‰
       *****************************************************************
        1001-NYUINACCT-KEY17-READ-SEC    SECTION.
       *
@@ -923,7 +923,7 @@
        1001-NYUINACCT-KEY17-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        150-INIT-SEC                    SECTION.
       *
@@ -940,10 +940,10 @@
                                            ORCSSKJHKN-AREA
                                            ORCSKANGOGEN-AREA
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±å–å¾—å‡¦ç†
            PERFORM 1501-SYS1001-GET-SEC
       *
-      *    Æþ±¡´ðËÜ¾ðÊó¼èÆÀ
+      *    å…¥é™¢åŸºæœ¬æƒ…å ±å–å¾—
            PERFORM 1501-SYS5000-GET-SEC
       *
            EVALUATE    TRUE
@@ -1105,7 +1105,7 @@
        150-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    °åÎÅµ¡´Ø¾ðÊó¼èÆÀ½èÍý
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        1501-SYS1001-GET-SEC            SECTION.
       *
@@ -1141,7 +1141,7 @@
        1501-SYS1001-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡´ðËÜ¾ðÊó¼èÆÀ
+      *    å…¥é™¢åŸºæœ¬æƒ…å ±å–å¾—
       *****************************************************************
        1501-SYS5000-GET-SEC            SECTION.
       *
@@ -1197,7 +1197,7 @@
        1501-SYS5000-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡´ðËÜ¾ðÊóÊÔ½¸
+      *    å…¥é™¢åŸºæœ¬æƒ…å ±ç·¨é›†
       *****************************************************************
        1501-SYS5000-HEN-SEC            SECTION.
       *
@@ -1262,7 +1262,7 @@
        1501-SYS5000-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÝ¸±ÀßÄê½èÍý
+      *    é£Ÿäº‹ä¿é™ºè¨­å®šå‡¦ç†
       *****************************************************************
        1501-SHOKUJI-HOKEN-SEC          SECTION.
       *
@@ -1354,39 +1354,39 @@
        1501-SHOKUJI-HOKEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
-      *    ³°Çñ¥Á¥§¥Ã¥¯
+      *    å¤–æ³Šãƒã‚§ãƒƒã‚¯
            PERFORM 2001-GAIHAKU-CHK-SEC
       *
-      *    Æþ±¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æ–™ãƒã‚§ãƒƒã‚¯å‡¦ç†
            PERFORM 2001-NYUINRYO-CHK-SEC
       *
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý¡Ê³°Çñ¤âÊÔ½¸¡Ë
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†ï¼ˆå¤–æ³Šã‚‚ç·¨é›†ï¼‰
            PERFORM 2001-NYUINRYO-HEN-SEC
       *
-      *    ¼¼ÎÁº¹³ÛÊÔ½¸½èÍý
+      *    å®¤æ–™å·®é¡ç·¨é›†å‡¦ç†
            PERFORM 2001-BRMSAGAKU-HEN-SEC
       *
-      *    ¿©»öÊÔ½¸½èÍý
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H1804 )
                PERFORM 2002-SYOKUJI-HEN-SEC
            ELSE
                PERFORM 2001-SYOKUJI-HEN-SEC
            END-IF
       *
-      *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™åŠ ç®—ç·¨é›†å‡¦ç†
            PERFORM 2001-NYUINKSN-HEN-SEC
       *
-      *    ÎÅÍÜÃ´ÅöÈñÊÔ½¸½èÍý
+      *    ç™‚é¤Šæ‹…å½“è²»ç·¨é›†å‡¦ç†
            PERFORM 2001-RYYTAN-HEN-SEC
       *
-      *    ºÞ£Ó£Ï£Ò£Ô½èÍý
+      *    å‰¤ï¼³ï¼¯ï¼²ï¼´å‡¦ç†
            PERFORM 2001-ZAISORT-SEC
       *
-      *    ÊÖµÑÃÍÀßÄê½èÍý
+      *    è¿”å´å€¤è¨­å®šå‡¦ç†
            PERFORM 2001-HENKYAKU-SET-SEC
       *
            .
@@ -1394,7 +1394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¥Á¥§¥Ã¥¯½èÍý
+      *    å¤–æ³Šãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2001-GAIHAKU-CHK-SEC            SECTION.
       *
@@ -1425,7 +1425,7 @@
        2001-GAIHAKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æ–™ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2001-NYUINRYO-CHK-SEC           SECTION.
       *
@@ -1450,7 +1450,7 @@
       *
                    PERFORM 20011-NYUINRYO-CHK-SEC
       *
-      *            Æþ±¡ÎÁ¤ò»»Äê¤·¤Æ¤¤¤ëÆü¤Ë¤Á¤òÂàÈò
+      *            å…¥é™¢æ–™ã‚’ç®—å®šã—ã¦ã„ã‚‹æ—¥ã«ã¡ã‚’é€€é¿
                    PERFORM VARYING     IDX1    FROM    1   BY  1
                            UNTIL     ( IDX1    >   31 )
       *
@@ -1465,7 +1465,7 @@
       *
                    END-PERFORM
       *
-      *            ÆÃÄêÆþ±¡ÎÁ¤ò»»Äê¤·¤Æ¤¤¤¿Æü¤Ë¤Á¤òÂàÈò
+      *            ç‰¹å®šå…¥é™¢æ–™ã‚’ç®—å®šã—ã¦ã„ãŸæ—¥ã«ã¡ã‚’é€€é¿
                    IF    ( NACCT-SRYKBN        =    "92" )
                        PERFORM VARYING     IDX1    FROM    1   BY  1
                                UNTIL     ( IDX1    >   31 )
@@ -1491,7 +1491,7 @@
        2001-NYUINRYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æ–™ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        20011-NYUINRYO-CHK-SEC           SECTION.
       *
@@ -1522,7 +1522,7 @@
        20011-NYUINRYO-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-NYUINRYO-HEN-SEC           SECTION.
       *
@@ -1549,26 +1549,26 @@
        2001-NYUINRYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-NYUINRYO-HEN-SEC          SECTION.
       *
            PERFORM 20011-NYUINACT-GET-SEC
       *
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
            PERFORM 200110-NYUINRYO-HEN-SEC
       *
-      *    ³°ÇñÊÔ½¸½èÍý
+      *    å¤–æ³Šç·¨é›†å‡¦ç†
            PERFORM 200111-GAIHAKU-HEN-SEC
       *
-      *    ÁªÄêÆþ±¡ÎÁ´µ¼Ô¼«¸ÊÉéÃ´ÊÔ½¸½èÍý
+      *    é¸å®šå…¥é™¢æ–™æ‚£è€…è‡ªå·±è² æ‹…ç·¨é›†å‡¦ç†
            PERFORM 200111-SENTEIPTFTN-HEN-SEC
       *
            .
        20011-NYUINRYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        200110-NYUINRYO-HEN-SEC         SECTION.
       *
@@ -1582,7 +1582,7 @@
                 AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    =   ZERO )
       *
-      *            Æþ±¡ÎÁ´ðËÜ¾ðÊóÀßÄê½èÍý
+      *            å…¥é™¢æ–™åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
                    PERFORM 2001111-NYUINKHNINF-SET-SEC
       *
                    IF    ( FLG-SENTEIDAY(IDXD) =   1 )
@@ -1611,7 +1611,7 @@
        200110-NYUINRYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINRYO-HEN-SEC         SECTION.
       *
@@ -1689,7 +1689,7 @@
        200111-NYUINRYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁÊÔ½¸½èÍý
+      *    é¸å®šå…¥é™¢æ–™ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SENTEI-HEN-SEC           SECTION.
       *
@@ -1722,7 +1722,7 @@
        200111-SENTEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»½èÍý
+      *    å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—å‡¦ç†
       *****************************************************************
        200111-YKTTYMD-HEN-SEC         SECTION.
       *
@@ -1737,7 +1737,7 @@
        200111-YKTTYMD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ³°ÇñÊÔ½¸½èÍý
+      *    å¤–æ³Šç·¨é›†å‡¦ç†
       *****************************************************************
        200111-GAIHAKU-HEN-SEC          SECTION.
       *
@@ -1747,7 +1747,7 @@
                MOVE    2               TO  IDXA
            END-IF
       *
-      *    ³°Çñ´ðËÜÅÀ¿ô¼èÆÀ
+      *    å¤–æ³ŠåŸºæœ¬ç‚¹æ•°å–å¾—
            PERFORM 200111-GAIHAKU-KHNTEN-GET-SEC
       *
            PERFORM VARYING IDXD    FROM    1   BY  1
@@ -1758,10 +1758,10 @@
                 AND  ( FLG-NYUINRYODAY (IDXD)  =   1 )
                 AND  ( FLG-GAIHAKUDAY(IDXD)    >   ZERO )
       *
-      *            ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *            å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
                    PERFORM 200111-GAIHAKU-SRYCD-GET-SEC
       *
-      *            ³°ÇñÅÀ¿ô¼èÆÀ½èÍý
+      *            å¤–æ³Šç‚¹æ•°å–å¾—å‡¦ç†
                    EVALUATE    TRUE
                    WHEN  ( NACCT-SRYYM >=  CONST-H2804 )
                        PERFORM 2002-H28-GAIHAKU-TENSU-GET-SEC
@@ -1769,7 +1769,7 @@
                        PERFORM 2002-GAIHAKU-TENSU-GET-SEC
                    END-EVALUATE
       *
-      *            ³°Çñ´ðËÜ¾ðÊóÀßÄê½èÍý
+      *            å¤–æ³ŠåŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
                    PERFORM 200111-GAIHAKKHNINF-SET-SEC
                    IF    ( IDXB        >   ZERO )
                      AND ( FLG-OVER    =   ZERO )
@@ -1796,11 +1796,11 @@
        200111-GAIHAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Çñ´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    å¤–æ³ŠåŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
       *****************************************************************
        200111-GAIHAKU-KHNTEN-GET-SEC   SECTION.
       *
-      *    Æþ±¡´ðËÜÎÁ¤Î¥³¡¼¥É¤òÃµ¤¹
+      *    å…¥é™¢åŸºæœ¬æ–™ã®ã‚³ãƒ¼ãƒ‰ã‚’æŽ¢ã™
            MOVE    ZERO                TO  WRK-KHNTEN
            MOVE    ZERO                TO  WRK-NYUKHNKSNKBN
            MOVE    ZERO                TO  WRK-NYUKHNKBN
@@ -1887,7 +1887,7 @@
                                            WRK-KHNSRYCD
            END-IF
       *
-      *    ´Ç¸îÈæÎ¨´ð½àÌ¤Ã£¤Î¥Á¥§¥Ã¥¯
+      *    çœ‹è­·æ¯”çŽ‡åŸºæº–æœªé”ã®ãƒã‚§ãƒƒã‚¯
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H2404 )
                CONTINUE
            ELSE
@@ -1898,14 +1898,14 @@
                END-IF
            END-IF
       *
-      *    ÁªÄêÆþ±¡»þ¤Î¥³¡¼¥É¼èÆÀ
+      *    é¸å®šå…¥é™¢æ™‚ã®ã‚³ãƒ¼ãƒ‰å–å¾—
            PERFORM 900-SENTEICDCHG-KEY2-SEL-SEC
-      *    ÆÃÄêÆþ±¡´ðËÜÎÁ¡Ê¾ã³²¼Ô»ÜÀßÅùÆþ±¡´ðËÜÎÁ¡Ë¡ÊÌë¶Ð»þ´ÖÄ¶²á¸º»»¡Ë
-      *    ¤ÏÁªÄêÆþ±¡¤ÎÂÐ¾Ý³°
+      *    ç‰¹å®šå…¥é™¢åŸºæœ¬æ–™ï¼ˆéšœå®³è€…æ–½è¨­ç­‰å…¥é™¢åŸºæœ¬æ–™ï¼‰ï¼ˆå¤œå‹¤æ™‚é–“è¶…éŽæ¸›ç®—ï¼‰
+      *    ã¯é¸å®šå…¥é™¢ã®å¯¾è±¡å¤–
            IF      NSRY-SRYCD (IDX-KHN)  =  "190161310"
                 MOVE   1                 TO  FLG-SENTEICDCHG
            END-IF
-      *    °ìÈÌÉÂÅï¡¢ÆÃÄêµ¡Ç½ÉÂ±¡¡¢ÀìÌçÉÂ±¡°Ê³°¤ÏÁªÄêÆþ±¡¤ÎÂÐ¾Ý³°
+      *    ä¸€èˆ¬ç—…æ£Ÿã€ç‰¹å®šæ©Ÿèƒ½ç—…é™¢ã€å°‚é–€ç—…é™¢ä»¥å¤–ã¯é¸å®šå…¥é™¢ã®å¯¾è±¡å¤–
            IF    ( HCM34S01-SANTEIYM    >=   CONST-H3004 )
                IF    ( TTNS-CDKBN-KBNNUM =   100 OR 104 OR 105 )
                    CONTINUE
@@ -1935,7 +1935,7 @@
        200111-GAIHAKU-KHNTEN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ´Ç¸îÈæÎ¨´ð½àÌ¤Ã£¥Á¥§¥Ã¥¯½èÍý
+      *    çœ‹è­·æ¯”çŽ‡åŸºæº–æœªé”ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        2001111-KNGMITATU-CHK-SEC       SECTION.
       *
@@ -2077,13 +2077,13 @@
            WHEN  "190813270"
            WHEN  "190813870"
                MOVE  "190805710"       TO  WRK-GAIHAKU-SRYCD
-      *    ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
+      *    è¨ºç™‚æ‰€è€äººåŒ»ç™‚ç®¡ç†æ–™
            WHEN  "190774210"
                  MOVE  "190774110"     TO  WRK-GAIHAKU-SRYCD
-      *    Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
+      *    è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼‘
            WHEN  "190740010"
                  MOVE  "190739910"     TO  WRK-GAIHAKU-SRYCD
-      *    Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *    è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼’
            WHEN  "190813510"
                  MOVE  "190813410"     TO  WRK-GAIHAKU-SRYCD
            END-EVALUATE
@@ -2107,7 +2107,7 @@
        2001111-KNGMITATU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        200111-GAIHAKU-SRYCD-GET-SEC    SECTION.
       *
@@ -2285,7 +2285,7 @@
        200111-GAIHAKU-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý(H28.3Ëø)
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†(H28.3è¿„)
       *****************************************************************
        2001111-TAKIKAN-SEC             SECTION.
       *
@@ -2302,7 +2302,7 @@
        2001111-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý(H30.04°Ê¹ß)
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†(H30.04ä»¥é™)
       *****************************************************************
        20013-TAKIKAN-SEC               SECTION.
       *
@@ -2381,7 +2381,7 @@
        20013-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *    (H28.4 - H30.3)
       *****************************************************************
        20012-H28-TAKIKAN-SEC           SECTION.
@@ -2453,7 +2453,7 @@
        20012-H28-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý(H28.3Ëø)
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†(H28.3è¿„)
       *****************************************************************
        20012-TAKIKAN-SEC               SECTION.
       *
@@ -2575,7 +2575,7 @@
        20012-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý¡ÊÁªÄêÆþ±¡»þ¡Ë
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†ï¼ˆé¸å®šå…¥é™¢æ™‚ï¼‰
       *****************************************************************
        2001111-SENTEI-TAKIKAN-SEC      SECTION.
       *
@@ -2590,8 +2590,8 @@
        2001111-SENTEI-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý¡ÊÁªÄêÆþ±¡»þ¡Ë
-      *    ¡ÊH30.4.1°Ê¹ß¡Ë
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†ï¼ˆé¸å®šå…¥é™¢æ™‚ï¼‰
+      *    ï¼ˆH30.4.1ä»¥é™ï¼‰
       *****************************************************************
        20011111-SENTEI-TAKIKAN-SEC      SECTION.
       *
@@ -2606,8 +2606,8 @@
        20011111-SENTEI-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý¡ÊÁªÄêÆþ±¡»þ¡Ë
-      *    ¡ÊH30.3.31Ëø¡Ë
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†ï¼ˆé¸å®šå…¥é™¢æ™‚ï¼‰
+      *    ï¼ˆH30.3.31è¿„ï¼‰
       *****************************************************************
        20011112-SENTEI-TAKIKAN-SEC      SECTION.
       *
@@ -2665,7 +2665,7 @@
        20011112-SENTEI-TAKIKAN-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄêÍËÆü¡¦ÆÃÄê»þ´Ö¸º»»¿ÇÎÅ¥³¡¼¥É¼èÆÀ
+      *    ç‰¹å®šæ›œæ—¥ãƒ»ç‰¹å®šæ™‚é–“æ¸›ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—
       *****************************************************************
        2001111-GAIHAKU-GENSAN-SEC      SECTION.
       *
@@ -2682,7 +2682,7 @@
        2001111-GAIHAKU-GENSAN-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄêÍËÆü¡¦ÆÃÄê»þ´Ö¸º»»¿ÇÎÅ¥³¡¼¥É¼èÆÀ(H30.4°Ê¹ß)
+      *    ç‰¹å®šæ›œæ—¥ãƒ»ç‰¹å®šæ™‚é–“æ¸›ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—(H30.4ä»¥é™)
       *****************************************************************
        20021-GAIHAKU-GENSAN-SEC        SECTION.
       *
@@ -2736,7 +2736,7 @@
        20021-GAIHAKU-GENSAN-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄêÍËÆü¡¦ÆÃÄê»þ´Ö¸º»»¿ÇÎÅ¥³¡¼¥É¼èÆÀ(H28.4 - H30.3)
+      *    ç‰¹å®šæ›œæ—¥ãƒ»ç‰¹å®šæ™‚é–“æ¸›ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—(H28.4 - H30.3)
       *****************************************************************
        2002-H28-GAIHAKU-GENSAN-SEC     SECTION.
       *
@@ -2787,7 +2787,7 @@
        2002-H28-GAIHAKU-GENSAN-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÄêÍËÆü¡¦ÆÃÄê»þ´Ö¸º»»¿ÇÎÅ¥³¡¼¥É¼èÆÀ(H28.3Ëø)
+      *    ç‰¹å®šæ›œæ—¥ãƒ»ç‰¹å®šæ™‚é–“æ¸›ç®—è¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—(H28.3è¿„)
       *****************************************************************
        2002-GAIHAKU-GENSAN-SEC      SECTION.
       *
@@ -2848,7 +2848,7 @@
        2002-GAIHAKU-GENSAN-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý(H30.4°Ê¹ß¡Ë
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†(H30.4ä»¥é™ï¼‰
       *****************************************************************
        20021-TAKIKAN2-SEC               SECTION.
       *
@@ -2863,7 +2863,7 @@
        20021-TAKIKAN2-EXT.
            EXIT.
       *****************************************************************
-      *    Â¾°åÎÅµ¡´Ø¼õ¿Ç»þ³°Çñ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý(H30.3Ëø¡Ë
+      *    ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºæ™‚å¤–æ³Šè¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†(H30.3è¿„ï¼‰
       *****************************************************************
        2002-TAKIKAN2-SEC               SECTION.
       *
@@ -2897,7 +2897,7 @@
        2002-TAKIKAN2-EXT.
            EXIT.
       *****************************************************************
-      *    ³°ÇñÅÀ¿ô¼èÆÀ½èÍý
+      *    å¤–æ³Šç‚¹æ•°å–å¾—å‡¦ç†
       *****************************************************************
        2002-H28-GAIHAKU-TENSU-GET-SEC  SECTION.
       *
@@ -3012,7 +3012,7 @@
        2002-H28-GAIHAKU-TENSU-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ³°ÇñÅÀ¿ô¼èÆÀ½èÍý
+      *    å¤–æ³Šç‚¹æ•°å–å¾—å‡¦ç†
       *****************************************************************
        2002-GAIHAKU-TENSU-GET-SEC    SECTION.
       *
@@ -3134,13 +3134,13 @@
        2002-GAIHAKU-TENSU-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄê³°Çñ»þ¤Î·¸¿ô¥»¥Ã¥È½èÍý
+      *    é¸å®šå¤–æ³Šæ™‚ã®ä¿‚æ•°ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        200111-SENTEI-KEISU-GET-SEC     SECTION.
       *
            MOVE    ZERO                TO  WRK-SENTEI-KEISU
       *
-      *    ÁªÄêÆþ±¡¤Î¾ì¹ç¤Î·¸¿ô¤òµá¤á¤Æ¤ª¤¯
+      *    é¸å®šå…¥é™¢ã®å ´åˆã®ä¿‚æ•°ã‚’æ±‚ã‚ã¦ãŠã
            EVALUATE    TRUE
            WHEN (  NACCT-SRYYM         <=  "200303" )
                MOVE   0.1           TO     WRK-SENTEI-KEISU
@@ -3155,7 +3155,7 @@
        200111-SENTEI-KEISU-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Çñ´ðËÜ¾ðÊóÊÔ½¸½èÍý
+      *    å¤–æ³ŠåŸºæœ¬æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-GAIHAKKHNINF-SET-SEC     SECTION.
       *
@@ -3206,7 +3206,7 @@
        200111-GAIHAKKHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ´ðËÜ¾ðÊóÀßÄê½èÍý
+      *    å…¥é™¢æ–™åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-NYUINKHNINF-SET-SEC     SECTION.
       *
@@ -3247,11 +3247,11 @@
        2001111-NYUINKHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¼èÆÀ½èÍý
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºå–å¾—å‡¦ç†
       *****************************************************************
        20011-NYUINACT-GET-SEC          SECTION.
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¸¡º÷½èÍý
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºæ¤œç´¢å‡¦ç†
            MOVE    ZERO                TO  FLG-NYUINACT
            INITIALIZE                      NYUINACT-REC
            MOVE    NACCT-HOSPNUM        TO  NSRY-HOSPNUM
@@ -3270,7 +3270,7 @@
                MOVE    MCPDATA-REC     TO  NYUINACT-REC
            END-IF
       *
-      *    Æþ±¡¹Ô°Ù¥¯¥í¡¼¥º
+      *    å…¥é™¢è¡Œç‚ºã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
@@ -3279,7 +3279,7 @@
        20011-NYUINACT-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁºÞÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™å‰¤ç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-NYUINRYO-SHIFT-SEC          SECTION.
       *
@@ -3295,7 +3295,7 @@
        2001111-NYUINRYO-SHIFT-EXT.
            EXIT.
       *****************************************************************
-      *    É¸·ç¡¦Äê¿ôÄ¶²áÊÔ½¸½èÍý
+      *    æ¨™æ¬ ãƒ»å®šæ•°è¶…éŽç·¨é›†å‡¦ç†
       *****************************************************************
        2001111-HYOKETSU-HEN-SEC          SECTION.
       *
@@ -3311,11 +3311,11 @@
        2001111-HYOKETSU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁ´µ¼Ô¼«¸ÊÉéÃ´ÊÔ½¸½èÍý
+      *    é¸å®šå…¥é™¢æ–™æ‚£è€…è‡ªå·±è² æ‹…ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SENTEIPTFTN-HEN-SEC      SECTION.
       *
-      *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÈ½Äê
+      *    å…¥é™¢æ‚£è€…ã®è€äººåˆ¤å®š
            INITIALIZE   ORCSAGECHKAREA
            MOVE    HCM34S01-HOSPNUM     TO  AGECHK-HOSPNUM
            MOVE    HCM34S01-PTID       TO  AGECHK-PTID
@@ -3353,7 +3353,7 @@
                        PERFORM 2001111-SENTEI-FTN-TNS-SET-SEC
                    END-IF
       *
-      *            ÁªÄêÆþ±¡ÎÁ´µ¼Ô¼«¸ÊÉéÃ´³ÛÊÔ½¸½èÍý
+      *            é¸å®šå…¥é™¢æ–™æ‚£è€…è‡ªå·±è² æ‹…é¡ç·¨é›†å‡¦ç†
                    EVALUATE    SYS-5000-SENTEI-FTNKBN
                    WHEN    "1"
                    WHEN    "2"
@@ -3411,7 +3411,7 @@
        200111-SENTEIPTFTN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁ´µ¼Ô¼«¸ÊÉéÃ´ÅÀ¿ô¾ðÊóÀßÄê½èÍý
+      *    é¸å®šå…¥é™¢æ–™æ‚£è€…è‡ªå·±è² æ‹…ç‚¹æ•°æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SENTEI-FTN-TNS-SET-SEC  SECTION.
       *
@@ -3420,7 +3420,7 @@
            MOVE    SPACE               TO  WRK-SENTEISRYCD
                                            WRK-SENTEIIPNCD
       *
-      *    Æþ±¡´ðËÜÎÁ¤Î¥³¡¼¥É¤òÃµ¤¹
+      *    å…¥é™¢åŸºæœ¬æ–™ã®ã‚³ãƒ¼ãƒ‰ã‚’æŽ¢ã™
            MOVE    ZERO                TO  IDX-KHN
            PERFORM VARYING IDXC    FROM    1   BY  1
                    UNTIL ( IDXC    >   5 )
@@ -3444,7 +3444,7 @@
            MOVE    SENCHG-IPNSRYCD     TO  WRK-SENTEIIPNCD
            MOVE    SENCHG-SENTEISRYCD  TO  WRK-SENTEISRYCD
       *
-      *    ÅÀ¿ô¤â²þ¤á¤Æµá¤á¤Ê¤ª¤¹
+      *    ç‚¹æ•°ã‚‚æ”¹ã‚ã¦æ±‚ã‚ãªãŠã™
            MOVE    SENCHG-SENTEISRYCD  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
       *
@@ -3455,7 +3455,7 @@
                 MOVE    TNS-TEN         TO  WRK-ZAI-SENTEI-KHNTEN
            END-IF
       *
-      *    ´Ç¸îÈæÎ¨´ð½àÌ¤Ã£¤Î¥Á¥§¥Ã¥¯
+      *    çœ‹è­·æ¯”çŽ‡åŸºæº–æœªé”ã®ãƒã‚§ãƒƒã‚¯
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H2404 )
                CONTINUE
            ELSE
@@ -3465,7 +3465,7 @@
                END-IF
            END-IF
       *
-      *    ÉÂÅïÀßÄê¤ÎÁªÄê¼«¸ÊÉéÃ´¾ðÊó¤Î¼èÆÀ
+      *    ç—…æ£Ÿè¨­å®šã®é¸å®šè‡ªå·±è² æ‹…æƒ…å ±ã®å–å¾—
            IF    SYS-5000-SENTEI-FTNKBN   =   "3"
                INITIALIZE                  ORCSBTUSENTEIAREA
                MOVE    HCM34S01-HOSPNUM    TO  SBTUSENTEI-HOSPNUM
@@ -3480,7 +3480,7 @@
        2001111-SENTEI-FTN-TNS-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁ´µ¼Ô¼«¸ÊÉéÃ´ÀßÄê½èÍý
+      *    é¸å®šå…¥é™¢æ–™æ‚£è€…è‡ªå·±è² æ‹…è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SENTEI-PTFTN-SEC        SECTION.
       *
@@ -3506,7 +3506,7 @@
            PERFORM     200111-SENTEI-KEISU-GET-SEC
       *
            EVALUATE    WRK-SENTEI-FTNKBN
-      *    ÄêÎ¨ÀßÄê
+      *    å®šçŽ‡è¨­å®š
            WHEN   "1"
                IF    ( WRK-SENTEI-TANKA-X      =   SPACE )
                    MOVE   10           TO  WRK-SENTEI-TANKA
@@ -3556,7 +3556,7 @@
                        END-IF
                    END-IF
                END-EVALUATE
-      *    Äê³ÛÀßÄê
+      *    å®šé¡è¨­å®š
            WHEN    "2"
       *
                IF    ( WRK-SENTEI-KINGAKU-X   =   SPACE )
@@ -3585,11 +3585,11 @@
        2001111-SENTEI-PTFTN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼¼ÎÁº¹³ÛÊÔ½¸½èÍý
+      *    å®¤æ–™å·®é¡ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-BRMSAGAKU-HEN-SEC          SECTION.
       *
-      *    ¼¼ÎÁº¹³Û¾ðÊó¼èÆÀ½èÍý
+      *    å®¤æ–™å·®é¡æƒ…å ±å–å¾—å‡¦ç†
            PERFORM 20011-SYS-5113-GET-SEC
       *
            MOVE    "3"                 TO  WRK-NACCT-ZAISKBKBN
@@ -3623,7 +3623,7 @@
       *
                IF    ( FLG-SANTEI          =   1 )
       *
-      *            ¼¼ÎÁº¹³Û´ðËÜ¾ðÊóÀßÄê½èÍý
+      *            å®¤æ–™å·®é¡åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
                    PERFORM 20011-BRMSAGAKU-KHNINF-SET-SEC
                    IF    ( IDXB        >   ZERO )
                      AND ( FLG-OVER    =   ZERO )
@@ -3648,7 +3648,7 @@
        2001-BRMSAGAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¼¼ÎÁº¹³Û¾ðÊó¼èÆÀ½èÍý
+      *    å®¤æ–™å·®é¡æƒ…å ±å–å¾—å‡¦ç†
       *****************************************************************
        20011-SYS-5113-GET-SEC          SECTION.
       *
@@ -3708,7 +3708,7 @@
        20011-SYS-5113-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¼¼ÎÁº¹³Û´ðËÜ¾ðÊóÀßÄê½èÍý
+      *    å®¤æ–™å·®é¡åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        20011-BRMSAGAKU-KHNINF-SET-SEC  SECTION.
       *
@@ -3783,14 +3783,14 @@
        20011-BRMSAGAKU-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-SYOKUJI-HEN-SEC            SECTION.
       *
-      *    ¿©»ö´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    é£Ÿäº‹åŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
            PERFORM 20011-SKJ-KHNTEN-GET-SEC
       *
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯
+      *    é£Ÿå ‚åŠ ç®—ãƒã‚§ãƒƒã‚¯
            PERFORM 20011-SYOKUDOKSN-CHK-SEC
       *
            MOVE    "4"                 TO  WRK-NACCT-ZAISKBKBN
@@ -3801,7 +3801,7 @@
                IF    ( NACCT-SRYCDTOTAL    =   197000570 )
                    CONTINUE
                ELSE
-      *            ¿©»öÊÔ½¸½èÍý
+      *            é£Ÿäº‹ç·¨é›†å‡¦ç†
                    PERFORM 20011-SYOKUJI-HEN-SEC
                END-IF
       *
@@ -3818,48 +3818,48 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    é£Ÿäº‹åŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
       *****************************************************************
        20011-SKJ-KHNTEN-GET-SEC        SECTION.
       *
            INITIALIZE                  WRK-SKJ-TEN-G
       *
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
            MOVE    CONST-SKJ-RYOYO1    TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-RYOYO1
            END-IF
       *
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰
            MOVE    CONST-SKJ-RYOYO2    TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-RYOYO2
            END-IF
       *
-      *    ÆÃÊÌ´ÉÍý²Ã»»
+      *    ç‰¹åˆ¥ç®¡ç†åŠ ç®—
            MOVE    CONST-SKJ-TOKKANRI  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-TOKKANRI
            END-IF
       *
-      *    ÆÃÊÌ¿©²Ã»»
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—
            MOVE    CONST-SKJ-TOKSYOKU  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-TOKSYOKU
            END-IF
       *
-      *    ¿©Æ²²Ã»»
+      *    é£Ÿå ‚åŠ ç®—
            MOVE    CONST-SKJ-SYOKUDO   TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SYOKUDO
            END-IF
       *
-      *    Ê£¿ô¸¥Î©²Ã»»
+      *    è¤‡æ•°çŒ®ç«‹åŠ ç®—
            MOVE    CONST-SKJ-FKSKONDATE
                                        TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
@@ -3867,28 +3867,28 @@
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-FKSKONDATE
            END-IF
       *
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê°ìÈÌ¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä¸€èˆ¬ï¼‰
            MOVE    CONST-SKJFTN-IPN    TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-IPN
            END-IF
       *
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°Æü°Ê²¼¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼’ãƒ»ï¼™ï¼æ—¥ä»¥ä¸‹ï¼‰
            MOVE    CONST-SKJFTN-TEI2    TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-TEI2
            END-IF
       *
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£²¡¦£¹£°ÆüÄ¶¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼’ãƒ»ï¼™ï¼æ—¥è¶…ï¼‰
            MOVE    CONST-SKJFTN-TEI2-90 TO WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-TEI2-90
            END-IF
       *
-      *    ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÄã£±¡Ë
+      *    é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆä½Žï¼‘ï¼‰
            MOVE    CONST-SKJFTN-TEI1   TO WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
@@ -3896,22 +3896,22 @@
            END-IF
       *
            IF    ( HCM34S01-SANTEIYM  >=   CONST-H2804 )
-      *        Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *        å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
                MOVE    CONST-SKJ-RYOYO1-RDS
                                        TO  WRK-TNS-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-RYOYO1-RDS
-      *        Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *        å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
                MOVE    CONST-SKJ-RYOYO2-RDS
                                        TO  WRK-TNS-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-RYOYO2-RDS
-      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡Ê»ØÄêÆñÉÂ¡¦¾®»ùËýÀ­ÆÃÄê¼ÀÉÂ´µ¼Ô¡Ë¡Ê°ìÈÌ¡Ë
+      *        é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆæŒ‡å®šé›£ç—…ãƒ»å°å…æ…¢æ€§ç‰¹å®šç–¾ç—…æ‚£è€…ï¼‰ï¼ˆä¸€èˆ¬ï¼‰
                MOVE    CONST-SKJFTN-NANBYO
                                        TO  WRK-TNS-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
                MOVE    TNS-TEN         TO  WRK-SKJ-TEN-SKJFTN-NANBYO
-      *        ¿©»öÎÅÍÜÉ¸½àÉéÃ´³Û¡ÊÀº¿À£±Ç¯Ä¶¡Ë¡Ê°ìÈÌ¡Ë
+      *        é£Ÿäº‹ç™‚é¤Šæ¨™æº–è² æ‹…é¡ï¼ˆç²¾ç¥žï¼‘å¹´è¶…ï¼‰ï¼ˆä¸€èˆ¬ï¼‰
                MOVE    CONST-SKJFTN-SEISHIN
                                        TO  WRK-TNS-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
@@ -3926,19 +3926,19 @@
                 OR   ( LNK-NYUINDAY-KBN(IDXD)  =   "1" )
       *
                    EVALUATE    LNK-SYOTOKU-SKJKBN(IDXD)
-      *            Äã½êÆÀ£²
+      *            ä½Žæ‰€å¾—ï¼’
                    WHEN    "2"
                        MOVE   CONST-SKJFTN-TEI2
                                          TO  TSKJFTN-SRYCD(IDXD)
                        MOVE   WRK-SKJ-TEN-SKJFTN-TEI2
                                          TO  TSKJFTN-MONEY(IDXD)
-      *            Äã½êÆÀ£²¡Ê£¹£°Æü±Û¤¨¡Ë
+      *            ä½Žæ‰€å¾—ï¼’ï¼ˆï¼™ï¼æ—¥è¶Šãˆï¼‰
                    WHEN    "3"
                        MOVE   CONST-SKJFTN-TEI2-90
                                          TO  TSKJFTN-SRYCD(IDXD)
                        MOVE   WRK-SKJ-TEN-SKJFTN-TEI2-90
                                          TO  TSKJFTN-MONEY(IDXD)
-      *            Äã½êÆÀ£±
+      *            ä½Žæ‰€å¾—ï¼‘
                    WHEN    "1"
                    WHEN    "4"
                        MOVE   CONST-SKJFTN-TEI1
@@ -3981,48 +3981,48 @@
        20011-SKJ-KHNTEN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    À¸³è´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    ç”Ÿæ´»åŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
       *****************************************************************
        20011-LIFE-KHNTEN-GET-SEC        SECTION.
       *
            INITIALIZE                  WRK-LIFE-TEN-G
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰é£Ÿäº‹ç™‚é¤Š
            MOVE    CONST-LIFE-RYOYO1   TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-LIFE-TEN-RYOYO1
            END-IF
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë´Ä¶­ÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰ç’°å¢ƒç™‚é¤Š
            MOVE    CONST-LIFE-KANKYO1  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-LIFE-TEN-KANKYO1
            END-IF
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë¿©»öÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰é£Ÿäº‹ç™‚é¤Š
            MOVE    CONST-LIFE-RYOYO2   TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-LIFE-TEN-RYOYO2
            END-IF
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë´Ä¶­ÎÅÍÜ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰ç’°å¢ƒç™‚é¤Š
            MOVE    CONST-LIFE-KANKYO2  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-LIFE-TEN-KANKYO2
            END-IF
       *
-      *    ÆÃÊÌ¿©²Ã»»
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—
            MOVE    CONST-LIFE-TOKSYOKU TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
                MOVE    TNS-TEN         TO  WRK-LIFE-TEN-TOKSYOKU
            END-IF
       *
-      *    ¿©Æ²²Ã»»
+      *    é£Ÿå ‚åŠ ç®—
            MOVE    CONST-LIFE-SYOKUDO  TO  WRK-TNS-SRYCD
            PERFORM 900-TENSU-KEY-SEL-SEC
            IF    ( FLG-TENSU           =   ZERO )
@@ -4030,7 +4030,7 @@
            END-IF
       *
            IF    ( HCM34S01-SANTEIYM  >=   CONST-H2804 )
-      *        Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¿©»öÎÅÍÜ¡ÊÎ®Æ°¿©¡Ë
+      *        å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰é£Ÿäº‹ç™‚é¤Šï¼ˆæµå‹•é£Ÿï¼‰
                MOVE    CONST-LIFE-RYOYO1-RDS
                                        TO  WRK-TNS-SRYCD
                PERFORM 900-TENSU-KEY-SEL-SEC
@@ -4041,7 +4041,7 @@
        20011-LIFE-KHNTEN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯
+      *    é£Ÿå ‚åŠ ç®—ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20011-SYOKUDOKSN-CHK-SEC        SECTION.
       *
@@ -4073,7 +4073,7 @@
        20011-SYOKUDOKSN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-SYOKUJI-HEN-SEC           SECTION.
       *
@@ -4092,10 +4092,10 @@
       *
                IF    ( FLG-SANTEI          =   1 )
       *
-      *            ¿©»ö¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *            é£Ÿäº‹è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
                    PERFORM 200111-SYOKUJI-SRYCD-GET-SEC
       *
-      *            ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý
+      *            é£Ÿäº‹åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
                    PERFORM 200111-SYOKUJI-KHNINF-SET-SEC
                    IF    ( IDXB        >   ZERO )
                      AND ( FLG-OVER    =   ZERO )
@@ -4120,7 +4120,7 @@
        20011-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    é£Ÿäº‹ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        200111-SYOKUJI-SRYCD-GET-SEC    SECTION.
       *
@@ -4147,7 +4147,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿©»öÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    é£Ÿäº‹ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        2002-H28-SYOKUJI-SRYCD-GET-SEC      SECTION.
       *
@@ -4159,38 +4159,38 @@
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
       *
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                        WHEN  2
       *
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰
                            PERFORM 2001111-SKJ-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN  2
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                    ÆÃÊÌ¿©²Ã»»
+      *                    ç‰¹åˆ¥é£ŸåŠ ç®—
                            PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                        END-EVALUATE
                    WHEN  3
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
                            PERFORM 2001111-SKJ-RYOYO1-RDS-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                        WHEN  2
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
                            PERFORM 2001111-SKJ-RYOYO2-RDS-SET-SEC
                        END-EVALUATE
       *
@@ -4250,7 +4250,7 @@
        2002-H28-SYOKUJI-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    é£Ÿäº‹ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        2002-SYOKUJI-SRYCD-GET-SEC      SECTION.
       *
@@ -4262,61 +4262,61 @@
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
       *
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                    ÆÃÊÌ´ÉÍý²Ã»»
+      *                    ç‰¹åˆ¥ç®¡ç†åŠ ç®—
                            PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                        WHEN  2
       *
-      *                    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+      *                    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰
                            PERFORM 2001111-SKJ-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN  2
       *
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                        PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                ÆÃÊÌ´ÉÍý²Ã»»
+      *                ç‰¹åˆ¥ç®¡ç†åŠ ç®—
                        PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
       *
-      *                ÆÃÊÌ¿©²Ã»»
+      *                ç‰¹åˆ¥é£ŸåŠ ç®—
                        PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
       *
-      *                ¿©Æ²²Ã»»
+      *                é£Ÿå ‚åŠ ç®—
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
                    WHEN  3
       *
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                        PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                ÆÃÊÌ´ÉÍý²Ã»»
+      *                ç‰¹åˆ¥ç®¡ç†åŠ ç®—
                        PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
       *
-      *                ¿©Æ²²Ã»»
+      *                é£Ÿå ‚åŠ ç®—
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
       *
-      *                Ê£¿ô¸¥Î©²Ã»»
+      *                è¤‡æ•°çŒ®ç«‹åŠ ç®—
                        PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
       *
                    WHEN  4
       *
-      *                Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *                å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
                        PERFORM 2001111-SKJ-RYOYO1-SET-SEC
       *
-      *                ÆÃÊÌ´ÉÍý²Ã»»
+      *                ç‰¹åˆ¥ç®¡ç†åŠ ç®—
                        PERFORM 2001111-SKJ-TOKKANRI-SET-SEC
       *
-      *                ÆÃÊÌ¿©²Ã»»
+      *                ç‰¹åˆ¥é£ŸåŠ ç®—
                        PERFORM 2001111-SKJ-TOKSYOKU-SET-SEC
       *
-      *                ¿©Æ²²Ã»»
+      *                é£Ÿå ‚åŠ ç®—
                        PERFORM 2001111-SKJ-SYOKUDO-SET-SEC
       *
-      *                Ê£¿ô¸¥Î©²Ã»»
+      *                è¤‡æ•°çŒ®ç«‹åŠ ç®—
                        PERFORM 2001111-SKJ-FKSKONDATE-SET-SEC
       *
                    END-EVALUATE
@@ -4365,7 +4365,7 @@
        2002-SYOKUJI-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÄ«¥³¥á¥ó¥ÈÀßÄê½èÍý
+      *    é£Ÿäº‹æœã‚³ãƒ¡ãƒ³ãƒˆè¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-ASA-SET-SEC         SECTION.
       *
@@ -4378,7 +4378,7 @@
        2001111-SKJ-ASA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÃë¥³¥á¥ó¥ÈÀßÄê½èÍý
+      *    é£Ÿäº‹æ˜¼ã‚³ãƒ¡ãƒ³ãƒˆè¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-HIRU-SET-SEC         SECTION.
       *
@@ -4391,7 +4391,7 @@
        2001111-SKJ-HIRU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÍ¼¥³¥á¥ó¥ÈÀßÄê½èÍý
+      *    é£Ÿäº‹å¤•ã‚³ãƒ¡ãƒ³ãƒˆè¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-YUU-SET-SEC         SECTION.
       *
@@ -4404,7 +4404,7 @@
        2001111-SKJ-YUU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡ËÀßÄê½èÍý
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-RYOYO1-SET-SEC      SECTION.
       *
@@ -4420,7 +4420,7 @@
        2001111-SKJ-RYOYO1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
       *****************************************************************
        2001111-SKJ-RYOYO1-RDS-SET-SEC      SECTION.
       *
@@ -4436,7 +4436,7 @@
        2001111-SKJ-RYOYO1-RDS-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡ËÀßÄê½èÍý
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-RYOYO2-SET-SEC      SECTION.
       *
@@ -4452,7 +4452,7 @@
        2001111-SKJ-RYOYO2-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
       *****************************************************************
        2001111-SKJ-RYOYO2-RDS-SET-SEC      SECTION.
       *
@@ -4468,7 +4468,7 @@
        2001111-SKJ-RYOYO2-RDS-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ´ÉÍý²Ã»»ÀßÄê½èÍý
+      *    ç‰¹åˆ¥ç®¡ç†åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-TOKKANRI-SET-SEC    SECTION.
       *
@@ -4480,7 +4480,7 @@
        2001111-SKJ-TOKKANRI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ´ÉÍý²Ã»»ÀßÄê½èÍý
+      *    ç‰¹åˆ¥ç®¡ç†åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        20011111-SKJ-TOKKANRI-SET-SEC   SECTION.
       *
@@ -4496,7 +4496,7 @@
        20011111-SKJ-TOKKANRI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ¿©²Ã»»ÀßÄê½èÍý
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-TOKSYOKU-SET-SEC    SECTION.
       *
@@ -4512,7 +4512,7 @@
        2001111-SKJ-TOKSYOKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»ÀßÄê½èÍý
+      *    é£Ÿå ‚åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-SYOKUDO-SET-SEC     SECTION.
       *
@@ -4525,7 +4525,7 @@
        2001111-SKJ-SYOKUDO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»ÀßÄê½èÍý
+      *    é£Ÿå ‚åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        20011111-SKJ-SYOKUDO-SET-SEC     SECTION.
       *
@@ -4541,7 +4541,7 @@
        20011111-SKJ-SYOKUDO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Ê£¿ô¸¥Î©²Ã»»ÀßÄê½èÍý
+      *    è¤‡æ•°çŒ®ç«‹åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-FKSKONDATE-SET-SEC  SECTION.
       *
@@ -4558,7 +4558,7 @@
        2001111-SKJ-FKSKONDATE-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¿©»öÉéÃ´ÀßÄê½èÍý
+      *    æ‚£è€…é£Ÿäº‹è² æ‹…è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-SKJ-SKJFTN-SET-SEC      SECTION.
       *
@@ -4582,7 +4582,7 @@
        2001111-SKJ-SKJFTN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    À¸³èÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    ç”Ÿæ´»ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        200111-SEIKATU-SRYCD-GET-SEC    SECTION.
       *
@@ -4608,7 +4608,7 @@
        200111-SEIKATU-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    À¸³èÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    ç”Ÿæ´»ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        2002-H28-SEIKATU-SRYCD-GET-SEC      SECTION.
       *
@@ -4620,34 +4620,34 @@
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
       *
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
                        WHEN  2
       *
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰
                            PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN  2
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
-      *                    ÆÃÊÌ¿©²Ã»»
+      *                    ç‰¹åˆ¥é£ŸåŠ ç®—
                            PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
                        END-EVALUATE
                    WHEN  3
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰
                            PERFORM 2001111-LIFE-RYOYO1-RDS-SET-SEC
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
                        END-EVALUATE
                    END-EVALUATE
@@ -4705,7 +4705,7 @@
        2002-H28-SEIKATU-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    À¸³èÎÅ¹Ô°Ù¥³¡¼¥É¼èÆÀ½èÍý
+      *    ç”Ÿæ´»ç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰å–å¾—å‡¦ç†
       *****************************************************************
        2002-SEIKATU-SRYCD-GET-SEC      SECTION.
       *
@@ -4717,25 +4717,25 @@
                        EVALUATE    WRK-SHOKUJIRYOYO
                        WHEN    1
       *
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰
                            PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
-      *                    ¿©Æ²²Ã»»
+      *                    é£Ÿå ‚åŠ ç®—
                            PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
                        WHEN  2
       *
-      *                    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡Ë
+      *                    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰
                            PERFORM 2001111-LIFE-RYOYO2-SET-SEC
                        END-EVALUATE
                    WHEN  2
       *
-      *                Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë
+      *                å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰
                        PERFORM 2001111-LIFE-RYOYO1-SET-SEC
       *
-      *                ÆÃÊÌ¿©²Ã»»
+      *                ç‰¹åˆ¥é£ŸåŠ ç®—
                        PERFORM 2001111-LIFE-TOKSYOKU-SET-SEC
       *
-      *                ¿©Æ²²Ã»»
+      *                é£Ÿå ‚åŠ ç®—
                        PERFORM 2001111-LIFE-SYOKUDO-SET-SEC
       *
                    END-EVALUATE
@@ -4785,7 +4785,7 @@
        2002-SEIKATU-SRYCD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡ËÀßÄê½èÍý
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-LIFE-RYOYO1-SET-SEC     SECTION.
       *
@@ -4802,7 +4802,7 @@
        2001111-LIFE-RYOYO1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£±¡Ë¡ÊÎ®Æ°¿©¡ËÀßÄê½èÍý
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆæµå‹•é£Ÿï¼‰è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-LIFE-RYOYO1-RDS-SET-SEC     SECTION.
       *
@@ -4819,7 +4819,7 @@
        2001111-LIFE-RYOYO1-RDS-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê£²¡ËÀßÄê½èÍý
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆï¼’ï¼‰è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-LIFE-RYOYO2-SET-SEC     SECTION.
       *
@@ -4836,7 +4836,7 @@
        2001111-LIFE-RYOYO2-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÃÊÌ¿©²Ã»»ÀßÄê½èÍý
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-LIFE-TOKSYOKU-SET-SEC   SECTION.
       *
@@ -4852,7 +4852,7 @@
        2001111-LIFE-TOKSYOKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»ÀßÄê½èÍý
+      *    é£Ÿå ‚åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-LIFE-SYOKUDO-SET-SEC     SECTION.
       *
@@ -4865,7 +4865,7 @@
        2001111-LIFE-SYOKUDO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»ÀßÄê½èÍý
+      *    é£Ÿå ‚åŠ ç®—è¨­å®šå‡¦ç†
       *****************************************************************
        20011111-LIFE-SYOKUDO-SET-SEC   SECTION.
       *
@@ -4881,7 +4881,7 @@
        20011111-LIFE-SYOKUDO-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ´µ¼Ô¿©»öÉéÃ´ÀßÄê½èÍý
+      *    æ‚£è€…é£Ÿäº‹è² æ‹…è¨­å®šå‡¦ç†
       *****************************************************************
        2002-LIFE-SKJFTN-SET-SEC     SECTION.
       *
@@ -4906,7 +4906,7 @@
        2002-LIFE-SKJFTN-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý
+      *    é£Ÿäº‹åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        200111-SYOKUJI-KHNINF-SET-SEC   SECTION.
       *
@@ -4954,14 +4954,14 @@
        200111-SYOKUJI-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†
       *****************************************************************
        2002-SYOKUJI-HEN-SEC            SECTION.
       *
-      *    ¿©»ö´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    é£Ÿäº‹åŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
            PERFORM 20011-SKJ-KHNTEN-GET-SEC
       *
-      *    À¸³è´ðËÜÅÀ¿ô¼èÆÀ½èÍý
+      *    ç”Ÿæ´»åŸºæœ¬ç‚¹æ•°å–å¾—å‡¦ç†
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H1810 )
                PERFORM 20011-LIFE-KHNTEN-GET-SEC
            ELSE
@@ -4977,7 +4977,7 @@
                    CONTINUE
                ELSE
       *
-      *            ¿©»öÂàÈòÎÎ°èÊÔ½¸½èÍý
+      *            é£Ÿäº‹é€€é¿é ˜åŸŸç·¨é›†å‡¦ç†
                    PERFORM 20021-WSKJNACCT-HEN-SEC
                END-IF
       *
@@ -4989,7 +4989,7 @@
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM 910-DBCLOSECURSOR-SEC
       *
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯
+      *    é£Ÿå ‚åŠ ç®—ãƒã‚§ãƒƒã‚¯
            PERFORM 20021-SYOKUDOKSN-CHK-SEC
       *
            IF    ( FLG-EXSYOKUJI   =   ZERO )
@@ -5013,7 +5013,7 @@
            IF    ( HCM34S01-SANTEIYM   >=  CONST-H1810 )
             AND  ( WRK-SHOKUJIRYOYO     =  1 OR 2 )
             AND  ( CONST-WSYOKUJI-MAX  >   WSYOKUJI-OCC1-MAX )
-      *            Æþ±¡»þÀ¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÊÔ½¸½èÍý
+      *            å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šç’°å¢ƒç™‚é¤Šç·¨é›†å‡¦ç†
                    PERFORM 20021-KANKYO-HEN-SEC
            END-IF
       *
@@ -5021,7 +5021,7 @@
        2002-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö¿ÇÎÅ¥³¡¼¥É¹ç·×ÊÔ½¸½èÍý
+      *    é£Ÿäº‹è¨ºç™‚ã‚³ãƒ¼ãƒ‰åˆè¨ˆç·¨é›†å‡¦ç†
       *****************************************************************
        20021-SKJ-SRYCDTTL-HEN-SEC      SECTION.
       *
@@ -5043,7 +5043,7 @@
        20021-SKJ-SRYCDTTL-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö¿ÇÎÅ¥³¡¼¥É¹ç·×ÊÔ½¸½èÍý
+      *    é£Ÿäº‹è¨ºç™‚ã‚³ãƒ¼ãƒ‰åˆè¨ˆç·¨é›†å‡¦ç†
       *****************************************************************
        20021-SYOKUJI-ZAI-EDIT-SEC      SECTION.
       *
@@ -5061,7 +5061,7 @@
        20021-SYOKUJI-ZAI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÂàÈòÎÎ°èÊÔ½¸½èÍý
+      *    é£Ÿäº‹é€€é¿é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        20021-WSKJNACCT-HEN-SEC         SECTION.
       *
@@ -5154,7 +5154,7 @@
        20021-WSKJNACCT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©Æ²²Ã»»¥Á¥§¥Ã¥¯
+      *    é£Ÿå ‚åŠ ç®—ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        20021-SYOKUDOKSN-CHK-SEC        SECTION.
       *
@@ -5171,7 +5171,7 @@
        20021-SYOKUDOKSN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†
       *****************************************************************
        20021-SYOKUJI-HEN-SEC           SECTION.
       *
@@ -5235,7 +5235,7 @@
        20021-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý¡Ê¿©»öÎÅÍÜ¡Ë
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†ï¼ˆé£Ÿäº‹ç™‚é¤Šï¼‰
       *****************************************************************
        200211-SYOKUJI-HEN-SEC          SECTION.
       *
@@ -5328,7 +5328,7 @@
        200211-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»öÊÔ½¸½èÍý¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    é£Ÿäº‹ç·¨é›†å‡¦ç†ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
       *****************************************************************
        200212-SYOKUJI-HEN-SEC          SECTION.
       *
@@ -5415,7 +5415,7 @@
        200212-SYOKUJI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý
+      *    é£Ÿäº‹åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        20021-SYOKUJI-KHNINF-SET-SEC    SECTION.
       *
@@ -5473,7 +5473,7 @@
        20021-SYOKUJI-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý¡Ê¿©»öÎÅÍÜ¡Ë
+      *    é£Ÿäº‹åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†ï¼ˆé£Ÿäº‹ç™‚é¤Šï¼‰
       *****************************************************************
        200211-SYOKUJI-KHNINF-SET-SEC   SECTION.
       *
@@ -5557,7 +5557,7 @@
        200211-SYOKUJI-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö´ðËÜ¾ðÊóÀßÄê½èÍý¡ÊÀ¸³èÎÅÍÜ¡Ë
+      *    é£Ÿäº‹åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰
       *****************************************************************
        200212-SYOKUJI-KHNINF-SET-SEC   SECTION.
       *
@@ -5644,7 +5644,7 @@
        200212-SYOKUJI-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÊÔ½¸½èÍý
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šç’°å¢ƒç™‚é¤Šç·¨é›†å‡¦ç†
       *****************************************************************
        20021-KANKYO-HEN-SEC            SECTION.
       *
@@ -5738,7 +5738,7 @@
        20021-KANKYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ´Ä¶­ÎÅÍÜÉ¸½àÉéÃ´³ÛÊÔ½¸½èÍý
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šç’°å¢ƒç™‚é¤Šæ¨™æº–è² æ‹…é¡ç·¨é›†å‡¦ç†
       *****************************************************************
        200211-KANKYOFTN-HEN-SEC            SECTION.
       *
@@ -5776,21 +5776,21 @@
        200211-KANKYOFTN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ²Ã»»ÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™åŠ ç®—ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-NYUINKSN-HEN-SEC           SECTION.
       *
-      *    ¸º»»¾ðÊóÊÔ½¸½èÍý
+      *    æ¸›ç®—æƒ…å ±ç·¨é›†å‡¦ç†
            PERFORM 20011-NYUINGEN-HEN-SEC
       *
-      *    ²Ã»»¾ðÊóÊÔ½¸½èÍý
+      *    åŠ ç®—æƒ…å ±ç·¨é›†å‡¦ç†
            PERFORM 20011-NYUINKSN-HEN-SEC
       *
            .
        2001-NYUINKSN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¸º»»¾ðÊóÊÔ½¸½èÍý
+      *    æ¸›ç®—æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-NYUINGEN-HEN-SEC          SECTION.
       *
@@ -5823,7 +5823,7 @@
        20011-NYUINGEN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¸º»»¾ðÊóÊÔ½¸½èÍý
+      *    æ¸›ç®—æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINGEN-HEN-SEC         SECTION.
       *
@@ -5880,7 +5880,7 @@
        200111-NYUINGEN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ²Ã»»´ðËÜ¾ðÊóÀßÄê½èÍý
+      *    åŠ ç®—åŸºæœ¬æƒ…å ±è¨­å®šå‡¦ç†
       *****************************************************************
        2001111-KSN-KHNINF-SET-SEC      SECTION.
       *
@@ -5920,7 +5920,7 @@
        2001111-KSN-KHNINF-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ²Ã»»¾ðÊóÊÔ½¸½èÍý
+      *    åŠ ç®—æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-NYUINKSN-HEN-SEC          SECTION.
       *
@@ -5949,7 +5949,7 @@
        20011-NYUINKSN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ²Ã»»¾ðÊóÊÔ½¸½èÍý
+      *    åŠ ç®—æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINKSN-HEN-SEC          SECTION.
       *
@@ -6006,7 +6006,7 @@
        200111-NYUINKSN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÎÅÍÜÃ´Åö¼êÅöÊÔ½¸½èÍý
+      *    ç™‚é¤Šæ‹…å½“æ‰‹å½“ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-RYYTAN-HEN-SEC             SECTION.
       *
@@ -6031,7 +6031,7 @@
        2001-RYYTAN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÎÅÍÜÃ´Åö¼êÅöÊÔ½¸½èÍý
+      *    ç™‚é¤Šæ‹…å½“æ‰‹å½“ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-RYYTAN-HEN-SEC            SECTION.
       *
@@ -6058,21 +6058,21 @@
        20011-RYYTAN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ºÞ£Ó£Ï£Ò£Ô½èÍý
+      *    å‰¤ï¼³ï¼¯ï¼²ï¼´å‡¦ç†
       *****************************************************************
        2001-ZAISORT-SEC                SECTION.
       *
-      *    £Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
            PERFORM 20011-SORTAREA-HEN-SEC
       *
-      *    £Ó£Ï£Ò£Ôºî¶ÈÎÎ°è£Ó£Ï£Ò£Ô½èÍý
+      *    ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸï¼³ï¼¯ï¼²ï¼´å‡¦ç†
            PERFORM 20011-SORTAREA-SORT-SEC
       *
            .
        2001-ZAISORT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        20011-SORTAREA-HEN-SEC          SECTION.
       *
@@ -6081,25 +6081,25 @@
            PERFORM VARYING IDXA    FROM    1   BY  1
                    UNTIL ( IDXA    >   2 )
       *
-      *        Æþ±¡ÎÁ£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *        å…¥é™¢æ–™ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
                PERFORM 200111-NYUINRYO-SRT-SET-SEC
       *
-      *        ³°Çñ£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *        å¤–æ³Šï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
                PERFORM 200111-GAIHAKU-SRT-SET-SEC
       *
-      *        Æþ±¡ÎÁ²Ã»»£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *        å…¥é™¢æ–™åŠ ç®—ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
                PERFORM 200111-NYUINKSN-SRT-SET-SEC
       *
            END-PERFORM
       *
-      *    ¿©»ö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    é£Ÿäº‹ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
            PERFORM 200111-SYOKUJI-SRT-SET-SEC
       *
-      *    ¼¼ÎÁº¹³Û£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    å®¤æ–™å·®é¡ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
            PERFORM 200111-BRMSAGAKU-SRT-SET-SEC
       *
            IF    ( WRYYTAN-SRYKBN      NOT =   SPACE )
-      *        ÎÅÍÜÃ´Åö¼êÅö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *        ç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
                PERFORM 200111-RYYTAN-SRT-SET-SEC
            END-IF
       *
@@ -6107,7 +6107,7 @@
        20011-SORTAREA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINRYO-SRT-SET-SEC     SECTION.
       *
@@ -6150,7 +6150,7 @@
        200111-NYUINRYO-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ³°Çñ£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    å¤–æ³Šï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-GAIHAKU-SRT-SET-SEC      SECTION.
       *
@@ -6194,7 +6194,7 @@
        200111-GAIHAKU-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ²Ã»»£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    å…¥é™¢æ–™åŠ ç®—ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-NYUINKSN-SRT-SET-SEC     SECTION.
       *
@@ -6251,7 +6251,7 @@
        200111-NYUINKSN-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¿©»ö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    é£Ÿäº‹ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-SYOKUJI-SRT-SET-SEC      SECTION.
       *
@@ -6300,7 +6300,7 @@
        200111-SYOKUJI-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¼¼ÎÁº¹³Û£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    å®¤æ–™å·®é¡ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-BRMSAGAKU-SRT-SET-SEC    SECTION.
       *
@@ -6342,7 +6342,7 @@
        200111-BRMSAGAKU-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ÎÅÍÜÃ´Åö¼êÅö£Ó£Ï£Ò£Ôºî¶ÈÎÎ°èÊÔ½¸½èÍý
+      *    ç™‚é¤Šæ‹…å½“æ‰‹å½“ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸç·¨é›†å‡¦ç†
       *****************************************************************
        200111-RYYTAN-SRT-SET-SEC       SECTION.
       *
@@ -6376,11 +6376,11 @@
        200111-RYYTAN-SRT-SET-EXT.
            EXIT.
       *****************************************************************
-      *    £Ó£Ï£Ò£Ôºî¶ÈÎÎ°è£Ó£Ï£Ò£Ô½èÍý
+      *    ï¼³ï¼¯ï¼²ï¼´ä½œæ¥­é ˜åŸŸï¼³ï¼¯ï¼²ï¼´å‡¦ç†
       *****************************************************************
        20011-SORTAREA-SORT-SEC         SECTION.
       *
-      *    ¥½¡¼¥ÈÍÑ¥ï¡¼¥¯¤Ë¤Ä¤¤¤ÆÊÂ¤ÓÂØ¤¨¤ò¹Ô¤¦
+      *    ã‚½ãƒ¼ãƒˆç”¨ãƒ¯ãƒ¼ã‚¯ã«ã¤ã„ã¦ä¸¦ã³æ›¿ãˆã‚’è¡Œã†
            PERFORM VARYING SRT-IDX1    FROM    2   BY  1
                    UNTIL ( SRT-IDX1    >   SRT-MAX )
                COMPUTE SRT-STIDX   =   SRT-IDX1    -   1
@@ -6401,7 +6401,7 @@
        20011-SORTAREA-SORT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÖµÑÃÍÀßÄê½èÍý
+      *    è¿”å´å€¤è¨­å®šå‡¦ç†
       *****************************************************************
        2001-HENKYAKU-SET-SEC           SECTION.
       *
@@ -6511,7 +6511,7 @@
        2001-HENKYAKU-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -6521,7 +6521,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý¡Ê¼ç¥­¡¼¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-TENSU-KEY-SEL-SEC           SECTION.
       *
@@ -6550,7 +6550,7 @@
        900-TENSU-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ÁªÄêÎÅÍÜ¥³¡¼¥ÉÃÖ´¹¸¡º÷½èÍý
+      *    é¸å®šç™‚é¤Šã‚³ãƒ¼ãƒ‰ç½®æ›æ¤œç´¢å‡¦ç†
       *****************************************************************
        900-SENTEICDCHG-KEY2-SEL-SEC    SECTION.
       *
@@ -6578,7 +6578,7 @@
        900-SENTEICDCHG-KEY2-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷½èÍý
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢å‡¦ç†
       *****************************************************************
        900-NYUINACCT-KEY62-SEL-SEC         SECTION.
       *
@@ -6605,7 +6605,7 @@
        900-NYUINACCT-KEY17-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡²ñ·×ÆÉ¤ß¹þ¤ß½èÍý
+      *    å…¥é™¢ä¼šè¨ˆèª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-NYUINACCT-KEY62-FET-SEC     SECTION.
       *
@@ -6625,7 +6625,7 @@
        900-NYUINACCT-KEY62-FET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -6642,7 +6642,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -6656,7 +6656,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -6670,7 +6670,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC               SECTION.
       *
@@ -6684,7 +6684,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à½ªÎ»½èÍý¡Ê¥¨¥é¡¼»þ¡Ë
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ çµ‚äº†å‡¦ç†ï¼ˆã‚¨ãƒ©ãƒ¼æ™‚ï¼‰
       *****************************************************************
        990-EXIT-PROGRAM-SEC            SECTION.
       *

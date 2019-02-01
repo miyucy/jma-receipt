@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -20,28 +20,28 @@
       ****************************************************************
       *    OS           LINUX                                         
       *                                                               
-      *    PROGRAM      ORCSGAIFTN  /  ��ô��ۻ��ꥵ��               
-      *                                �ʳ����ѡ�                     
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/06/30    NACL������    ��������
+      *    PROGRAM      ORCSGAIFTN  /  負担金額算定サブ               
+      *                                （外来用）                     
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/06/30    NACL−門脇    新規作成
       ****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    04/10/01  ���������������������б�
-      *  01.00.02    NACL-����    04/11/25  ʡ�縩���Ļ��ü�׻��б�
-      *  01.00.03    NACL-����    05/07/19  ��Ǽ�����ɲä�ȼ������
-      *  01.00.04    NACL-����    06/03/22  ��Ω�ٱ�ˡ�б�
-      *  03.05.00    NACL-����    07/05/08  ���롼�׿����б�
-      *  04.01.01    NACL-����    07/12/07  �����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    04/10/01  自賠責特定器材等消費税対応
+      *  01.00.02    NACL-門脇    04/11/25  福島県乳幼児特殊計算対応
+      *  01.00.03    NACL-門脇    05/07/19  収納項目追加に伴う修正
+      *  01.00.04    NACL-門脇    06/03/22  自立支援法対応
+      *  03.05.00    NACL-門脇    07/05/08  グループ診療対応
+      *  04.01.01    NACL-門脇    07/12/07  公害対応
       *
-      *  04.06.01    NACL-����    13/02/18  ϫ�ҥ쥻���б�
-      *                                     �ʿ����Ź԰٥������б���
+      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
+      *                                     （新診療行為コード対応）
       *
-      *  04.08.01    NACL-����    16/02/12  �軰�Թ԰��б�
-      *  04.08.02    NACL-����    17/07/14  �²λ������������б�
-      *  04.08.03    NACL-����    18/04/26  ��ʪ���ե�å������ե饰���ꥢ
-      *  04.08.04    NACL-����    18/05/15  Ʊ����ʬ�Υǡ����Խ�����
+      *  04.08.01    NACL-門脇    16/02/12  第三者行為対応
+      *  04.08.02    NACL-門脇    17/07/14  和歌山県地方公費対応
+      *  04.08.03    NACL-門脇    18/04/26  現物給付メッセージフラグクリア
+      *  04.08.04    NACL-門脇    18/05/15  同一会計分のデータ編集修正
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -54,7 +54,7 @@
       *
        WORKING-STORAGE SECTION.
       *
-      *    ź�����ΰ�
+      *    添え字領域
        01  IDX-AREA.
            03  IDX                         PIC 9(02).
            03  IDX2                        PIC 9(03).
@@ -63,16 +63,16 @@
            03  IDZ                         PIC 9(02).
            03  IDZ2                        PIC 9(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-OK                      PIC 9(01).
            03  FLG-TOKUSYU-SAI             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-KENSU                   PIC 9(03).
       *
-      *    ����ΰ�
+      *    ワーク領域
        01  WRK-AREA.
            03  WRK-TAIHI-HKNCOMBINUM       PIC X(04).
            03  WRK-SYUTEN                  PIC 9(07).
@@ -217,7 +217,7 @@
            03  WRK-KEISAN                  PIC S9(07).
            03  WRK-KEISAN2                 PIC S9(07)V9(01).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY                  PIC 9(02).
@@ -229,25 +229,25 @@
                05  WRK-SYSDD               PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ�ޥ�����
+      *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �����Ǽ�ޥ�����
+      *    ワーク収納マスター
        01  WRK-SYUNOU-REC-T.
          02 WRK-SYUNOU-REC     OCCURS 15.
            COPY    "CPSYUNOU.INC" REPLACING  //SYU-// BY //WRK-SYU-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCS01.INC"   REPLACING  //LNK-// BY //WRK-//.
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       ***  COPY    "CPORCMCP.INC".
       *
@@ -269,14 +269,14 @@ grpsys     COPY    "COMMON-SPA".
                                      SPA-AREA
            .
       ******************************************************************
-      *        �����������
+      *        依頼制御処理
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
       *
            MOVE       ZERO      TO     LNK-S01-RC.
       *
-      *    ��ץ쥳���ɤ��ĥ쥳���ɤΥե饰���������Υ��å�
+      *    合計レコードをもつレコードのフラグ等、引数のセット
       *
            INITIALIZE                  FLG-AREA
                                        CNT-AREA.
@@ -398,20 +398,20 @@ grpsys     COPY    "COMMON-SPA".
       *
            END-PERFORM.
       *
-      *    ��ô��׻�
+      *    負担金計算
            MOVE     LNK-S01-KOUREI-ZAITAKU-KBN
                                            TO  WRK-ZAITAKU-KBN.
       *
            PERFORM     100-SANTEI-SEC.
       *
-      *    �ü�׻��ʺƷ׻���
+      *    特殊計算（再計算）
            IF  (CNT-KENSU        >    1)
            AND (FLG-TOKUSYU-SAI  =    1)
              MOVE   "1"   TO   LNK-S01-RETRY-FLG
              PERFORM   100-SANTEI-SEC
            END-IF.
       *
-      *    ��Ǽ�ι��ܺ��Խ��ΰ٤κ��ۻ���
+      *    収納の項目再編集の為の差額算出
       *
            INITIALIZE                  WRK-SKYMONEY-TBL.
            INITIALIZE                  WRK-RUI.
@@ -1194,7 +1194,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            END-PERFORM.
       *
-      *    ��Ǽ�ι��ܺ��Խ�
+      *    収納の項目再編集
       *
            PERFORM    VARYING   IDX    FROM   1   BY   1
                               UNTIL  (IDX                 >    15 )
@@ -1307,7 +1307,7 @@ grpsys     COPY    "COMMON-SPA".
            STOP RUN.
       *
       ******************************************************************
-      *    ����
+      *    算定
       ******************************************************************
        100-SANTEI-SEC                     SECTION.
       *
@@ -1350,8 +1350,8 @@ grpsys     COPY    "COMMON-SPA".
                                          TO  WRK-SYUNOU-REC(IDZ)
                         END-IF
                       ELSE
-      *                 ������Ǽ����ץ쥳���ɤǡ�
-      *                 ��ץ쥳���ɤ�⤿�ʤ��쥳���ɤ��ɤ������
+      *                 当該収納が合計レコードで、
+      *                 合計レコードをもたないレコードを読む込む場合
                         IF   LNK-SYU-SRYKA(IDY)   NOT =  "00"
                             ADD   1      TO  IDZ
                             MOVE  LNK-SYUNOU-REC(IDY)
@@ -1376,9 +1376,9 @@ grpsys     COPY    "COMMON-SPA".
                       ELSE
                         IF   WRK-S01-TTLARIFLG(IDY)  =    "1"
                           IF     WRK-S01-KAGRPFLG       =   "0"
-      *                     ��ʣ���ʤޤȤὸ�פ������
-      *                     ������Ǽ����ץ쥳���ɤ�⤿�ʤ��쥳���ɤǡ�
-      *                     ��ץ쥳���ɤ��ĥ쥳���ɤ��ɤ������
+      *                     ＜複数科まとめ集計する場合＞
+      *                     当該収納が合計レコードをもたないレコードで、
+      *                     合計レコードをもつレコードを読む込む場合
                             IF   LNK-SYU-SRYKA(IDY)       =  "00"
                               ADD   1      TO  IDZ
                               MOVE  LNK-SYUNOU-REC(IDY)
@@ -1403,7 +1403,7 @@ grpsys     COPY    "COMMON-SPA".
                   END-PERFORM
                 END-IF
       *
-      *         ʣ���ʤޤȤὸ�פ��ʤ���硢��ץ쥳���ɤϽ������ʤ�
+      *         複数科まとめ集計しない場合、合計レコードは処理しない
                 IF   ((WRK-S01-KAGRPFLG   =   "1"   ) AND
                       (SYU-SRYKA          =   "00"  ))
                 OR   ( SYU-HKNCOMBINUM    =   "9999" )
@@ -1431,7 +1431,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       ******************************************************************
-      *    �����å��ѣɣģ��Խ�
+      *    チェック用ＩＤＸ編集
       ******************************************************************
        1001-SANTEI-IDX-HENSYU-SEC             SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG028.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : ˬ��������ξ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  17/03/07    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 訪問診療等の状況
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  17/03/07    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,28 +34,28 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥե�����
+      *    統計用ファイル
            SELECT  TOKEI-FILE          ASSIGN    TOKEIPARA
                                        ORGANIZATION    IS  INDEXED
                                        ACCESS  MODE    IS  DYNAMIC
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥե�����
+      *    統計用ファイル
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
                05  TOKEI-PTID          PIC 9(10).
            03  TOKEI-SRYCD             PIC 9(01)   OCCURS 2.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
@@ -68,12 +68,12 @@
       *
            COPY    "HCMSL80.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
@@ -83,23 +83,23 @@
            03  FLG-TOKEI               PIC 9(01).
            03  FLG-SYUKEI              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PAGE                PIC 9(03).
            03  CNT-TOKEI               PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(03).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -109,7 +109,7 @@
            03  WRK-PARA-STRYM          PIC X(06).
            03  WRK-PARA-ENDYM          PIC X(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -137,145 +137,145 @@
            03  WRK-PRT-LINE1-1.
                05  FILLER              PIC X(47)   VALUE   SPACE.
                05  FILLER              PIC X(16)   VALUE
-                   "ˬ��������ξ���".
+                   "訪問診療等の状況".
            03  WRK-PRT-LINE1-2.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(22)   VALUE
-                   "�ݸ����ŵ���̾��������".
+                   "保険医療機関名　　：　".
                05  WRK-PRT-HOSPNAME    PIC X(78)   VALUE   SPACE.
            03  WRK-PRT-LINE1-3.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(22)   VALUE
-                   "�ݸ����ŵ��إ����ɡ���".
+                   "保険医療機関コード：　".
                05  WRK-PRT-HOSPCD      PIC X(78)   VALUE   SPACE.
            03  WRK-PRT-LINE1-4.
                05  FILLER              PIC X(66)   VALUE   SPACE.
                05  FILLER              PIC X(12)   VALUE
-                   "���ǯ������".
+                   "報告年月日：".
                05  WRK-PRT-PRTYMD      PIC X(22)   VALUE   SPACE.
            03  WRK-PRT-LINE2-1.
                05  FILLER              PIC X(10)   VALUE   SPACE.
                05  FILLER              PIC X(42)   VALUE
-               "��ľ�ᣱǯ�֤�ˬ��������μ»ܲ���ˤĤ���".
-               05  FILLER              PIC X(02)   VALUE   "��".
+               "○直近１年間の訪問診療等の実施回数について".
+               05  FILLER              PIC X(02)   VALUE   "（".
                05  WRK-PRT-STRYM       PIC X(16)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "��".
+               05  FILLER              PIC X(02)   VALUE   "〜".
                05  WRK-PRT-ENDYM       PIC X(16)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "��".
+               05  FILLER              PIC X(02)   VALUE   "）".
            03  WRK-PRT-LINE2-2.
                05  FILLER              PIC X(20)   VALUE   SPACE.
-               05  FILLER              PIC X(56)   VALUE   "����".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               05  FILLER              PIC X(56)   VALUE   "往診".
+               05  FILLER              PIC X(10)   VALUE   "…　[１]".
                05  WRK-PRT-Y-OUSHIN    PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　回".
            03  WRK-PRT-LINE2-3.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "�ںƷǡۤ����۵ޤα���".
+               "【再掲】うち緊急の往診".
                05  FILLER              PIC X(10)   VALUE   SPACE.
                05  WRK-PRT-Y-KINKYU    PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　回".
            03  WRK-PRT-LINE2-4.
                05  FILLER              PIC X(20)   VALUE   SPACE.
-               05  FILLER              PIC X(56)   VALUE   "ˬ�����".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               05  FILLER              PIC X(56)   VALUE   "訪問診療".
+               05  FILLER              PIC X(10)   VALUE   "…　[２]".
                05  WRK-PRT-Y-HOUMON    PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　回".
            03  WRK-PRT-LINE2-5.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "ˬ��Ǹ�(�۵ޤ�ޤ�)".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               "訪問看護(緊急を含む)".
+               05  FILLER              PIC X(10)   VALUE   "…　[３]".
                05  WRK-PRT-Y-KANGO     PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　回".
            03  WRK-PRT-LINE2-6.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "ˬ����Ťι�ײ��([��]��[��]��[��])".
+               "訪問診療の合計回数([１]＋[２]＋[３])".
                05  FILLER              PIC X(10)   VALUE   SPACE.
                05  WRK-PRT-Y-TOTAL     PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　回".
            03  WRK-PRT-LINE3-1.
                05  FILLER              PIC X(10)   VALUE   SPACE.
                05  FILLER              PIC X(50)   VALUE
-               "��ľ�ᣱ��֤ˤ������������ˬ����Ťξ����ˤĤ���".
-               05  FILLER              PIC X(02)   VALUE   "��".
+               "○直近１月間における往診又は訪問診療の状況について".
+               05  FILLER              PIC X(02)   VALUE   "（".
                05  WRK-PRT-KJNYM       PIC X(16)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "��".
+               05  FILLER              PIC X(02)   VALUE   "）".
            03  WRK-PRT-LINE3-2.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "��ǡ��ƿǡ���������ˬ����Ť�»ܤ������Կ�".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               "初診、再診、往診又は訪問診療を実施した患者数".
+               05  FILLER              PIC X(10)   VALUE   "…　[１]".
                05  WRK-PRT-M-TOTAL     PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "��̾".
+               05  FILLER              PIC X(04)   VALUE   "　名".
            03  WRK-PRT-LINE3-3.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "��������ˬ����Ť�»ܤ������Կ�".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               "往診又は訪問診療を実施した患者数".
+               05  FILLER              PIC X(10)   VALUE   "…　[２]".
                05  WRK-PRT-M-HOUMON    PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "��̾".
+               05  FILLER              PIC X(04)   VALUE   "　名".
            03  WRK-PRT-LINE3-4.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(56)   VALUE
-               "��������ˬ����Ť�»ܤ������Ԥγ��([��]��[��])".
-               05  FILLER              PIC X(10)   VALUE   "�ġ�[��]".
+               "往診又は訪問診療を実施した患者の割合([２]／[１])".
+               05  FILLER              PIC X(10)   VALUE   "…　[３]".
                05  WRK-PRT-M-WARIAI    PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(04)   VALUE   "����".
+               05  FILLER              PIC X(04)   VALUE   "　％".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���Ų�ץޥ���
+      *    診療会計マスタ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ź԰٥ޥ���
+      *    診療行為マスタ
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -284,7 +284,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -298,7 +298,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -313,7 +313,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -347,14 +347,14 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBG028"          TO  JOB-PGID
-           MOVE    "ˬ��������ξ���"  TO  JOB-SHELLMSG
+           MOVE    "訪問診療等の状況"  TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
@@ -374,7 +374,7 @@
            MOVE    SGETTEMP-FULLNAMES(2)
                                        TO  RECEERR
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
            .
@@ -382,11 +382,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    ��ǯ���򥻥å�
+      *    １年前をセット
            MOVE    WRK-PARA-KJNYM      TO  WRK-SYMD(1:6)
            IF      WRK-SMM     =   12
                MOVE    1               TO  WRK-SMM
@@ -399,19 +399,19 @@
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-PRT-STRYM
            MOVE    WRK-SYMD(1:6)       TO  WRK-PARA-STRYM
       *
-      *    ����å�
+      *    基準月セット
            MOVE    WRK-PARA-KJNYM      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-PRT-ENDYM
                                            WRK-PRT-KJNYM
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-PRT-PRTYMD
       *
-      *    ���ŵ��ؾ��󥻥å�
+      *    医療機関情報セット
            PERFORM 900-SYS1001-DBREAD-SEC
       *
            .
@@ -419,17 +419,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �ǡ����򥯥ꥢ����
+      *    データをクリアする
            OPEN    OUTPUT              TOKEI-FILE
            CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *
-      *    ���Ź԰ٽ��׽���
+      *    診療行為集計処理
            PERFORM 220-MAIN-SRYACT-SEC
       *
            CLOSE                       TOKEI-FILE
@@ -437,13 +437,13 @@
            IF      CNT-TOKEI       NOT =   ZERO
                OPEN    INPUT               TOKEI-FILE
       *
-      *        ���׽��Ͻ���
+      *        統計出力処理
                PERFORM 260-TOKEI-OUT-SEC
       *
                CLOSE                       TOKEI-FILE
            END-IF
       *
-      *    ���׽��Ͻ���
+      *    統計出力処理
            PERFORM 300-PRT-OUT-SEC
       *
            MOVE    1               TO  FLG-END
@@ -453,19 +453,19 @@
            EXIT.
       *
       *****************************************************************
-      *   ���Ź԰ٽ��׽���
+      *   診療行為集計処理
       *****************************************************************
        220-MAIN-SRYACT-SEC         SECTION.
       *
            MOVE    ZERO            TO  WRK-Y-SYUKEI-G
       *
-      *    ���Ź԰��ɤ߹���
+      *    診療行為読み込み
            PERFORM 900-SRYACT-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-SRYACT  =   1
-      *        ���Ų�׽��׽���
+      *        診療会計集計処理
                PERFORM 230-MAIN-SRYACCT-SEC
-      *        ���Ź԰��ɤ߹���
+      *        診療行為読み込み
                PERFORM 900-SRYACT-DBFETCH-SEC
            END-PERFORM
       *
@@ -478,7 +478,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�׽��׽���
+      *    診療会計集計処理
       *****************************************************************
        230-MAIN-SRYACCT-SEC           SECTION.
       *
@@ -494,13 +494,13 @@
                END-IF
            END-IF
       *
-      *    ���Ų���ɤ߹���
+      *    診療会計読み込み
            PERFORM 900-SRYACCT-READ-SEC
            IF      FLG-SRYACCT        =   1
                GO  TO  230-MAIN-SRYACCT-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻�ɤ߹���
+      *    保険組合せ読み込み
            PERFORM 900-HKNCOMBI-READ-SEC
            IF      FLG-HKNCOMBI       =   1
                GO  TO  230-MAIN-SRYACCT-EXT
@@ -509,7 +509,7 @@
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL ( IDX     >   5 )
                    OR    ( SRY-SRYCD(IDX)      =   SPACE )
-      *        �����ɥ����å�
+      *        コードチェック
                PERFORM 240-SRYCD-CHEK-SEC
            END-PERFORM
       *
@@ -517,18 +517,18 @@
        230-MAIN-SRYACCT-EXT.
            EXIT.
       *****************************************************************
-      *    �����ɥ����å�����
+      *    コードチェック処理
       *****************************************************************
        240-SRYCD-CHEK-SEC          SECTION.
       *
            MOVE    ZERO            TO  FLG-SYUKEI
       *
            EVALUATE    SRY-SRYCD(IDX)
-      *        ����
+      *        往診
                WHEN    "114000110"
                WHEN    "114001610"
                    MOVE    1           TO  FLG-SYUKEI
-      *        ���Ƕ۵ޡʺƷǡ�
+      *        往診緊急（再掲）
                WHEN    "114000370"
                WHEN    "114001870"
                WHEN    "114011570"
@@ -562,7 +562,7 @@
                WHEN    "114030170"
                WHEN    "114030270"
                    MOVE    2           TO  FLG-SYUKEI
-      *        ˬ�����
+      *        訪問診療
                WHEN    "114001110"
                WHEN    "114030310"
                WHEN    "114019510"
@@ -571,13 +571,13 @@
                WHEN    "114019810"
                WHEN    "114007610"
                WHEN    "114007710"
-      *    H30.4����
+      *    H30.4改正
                WHEN    "114042110"
                WHEN    "114042210"
                WHEN    "114042810"
                WHEN    "114046310"
                    MOVE    3           TO  FLG-SYUKEI
-      *        ˬ��Ǹ�ʶ۵ޤ�ޤ��
+      *        訪問看護（緊急を含む）
                WHEN    "114004510"
                WHEN    "114010610"
                WHEN    "114004610"
@@ -593,7 +593,7 @@
                WHEN    "114027510"
                WHEN    "114020510"
                    MOVE    4           TO  FLG-SYUKEI
-      *        ���
+      *        初診
                WHEN    "111000110"
                WHEN    "111012510"
                WHEN    "111012710"
@@ -603,7 +603,7 @@
                WHEN    "113019910"
                WHEN    "099110001"
                    MOVE    5           TO  FLG-SYUKEI
-      *        �ƿ�
+      *        再診
                WHEN    "112007410"
                WHEN    "112007950"
                WHEN    "112008350"
@@ -617,7 +617,7 @@
                WHEN    "113019810"
                WHEN    "113020010"
                WHEN    "099120001"
-      *    H30.4����
+      *    H30.4改正
                WHEN    "112023210"
                    MOVE    6           TO  FLG-SYUKEI
            END-EVALUATE
@@ -659,11 +659,11 @@
        240-SRYCD-CHEK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ץ��åȽ���
+      *    統計セット処理
       *****************************************************************
        250-TOKEI-SET-SEC           SECTION.
       *
-      *    ���ץǡ�������
+      *    統計データ検索
            INITIALIZE                  TOKEI-REC
            MOVE    SRY-PTID        TO  TOKEI-PTID
            PERFORM 900-TOKEI-READ-SEC
@@ -687,27 +687,27 @@
        250-TOKEI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ���׽��Ͻ���
+      *    統計出力処理
       *****************************************************************
        260-TOKEI-OUT-SEC           SECTION.
       *
            MOVE    ZERO            TO  WRK-M-SYUKEI-G
       *
            INITIALIZE                  TOKEI-REC
-      *    ���ץե������ɤ߹���
+      *    統計ファイル読み込み
            PERFORM 900-TOKEI-NEXT-SEC
       *
            PERFORM UNTIL ( FLG-TOKEI           =   1  )
-      *        ��ǡ��ƿǡ����ǡ�ˬ�䴵�Կ�
+      *        初診、再診、往診、訪問患者数
                IF    ( TOKEI-SRYCD(1)  NOT =   ZERO )  OR
                      ( TOKEI-SRYCD(2)  NOT =   ZERO )
                    COMPUTE WRK-M-TOTAL     =   WRK-M-TOTAL     +   1
                END-IF
-      *        ���ǡ�ˬ�䴵�Կ�
+      *        往診、訪問患者数
                IF    ( TOKEI-SRYCD(2)  NOT =   ZERO )
                    COMPUTE WRK-M-HOUMON    =   WRK-M-HOUMON    +   1
                END-IF
-      *        ���ץե������ɤ߹���
+      *        統計ファイル読み込み
                PERFORM 900-TOKEI-NEXT-SEC
            END-PERFORM
       *
@@ -721,7 +721,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�����
+      *    帳票編集処理
       *****************************************************************
        300-PRT-OUT-SEC             SECTION.
       *
@@ -770,14 +770,14 @@
            MOVE    WRK-PRT-LINE3-3 TO  HCMSL80-MOJI(32)
            MOVE    WRK-PRT-LINE3-4 TO  HCMSL80-MOJI(34)
       *
-      *    ��������
+      *    印刷処理
            PERFORM 330-PRINT-OUT-SEC
            .
        300-PRT-OUT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        330-PRINT-OUT-SEC           SECTION.
       *
@@ -797,7 +797,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMSL80.red"       TO  SPRT-PRTID
-           MOVE    "ˬ��������ξ���"  TO  SPRT-TITLE
+           MOVE    "訪問診療等の状況"  TO  SPRT-TITLE
            MOVE    HCMSL80             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
            MOVE    LNK-PRTKANRI-OPID   TO  SPRT-OPID
@@ -817,7 +817,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -830,13 +830,13 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "　"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -850,7 +850,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -872,11 +872,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    TOKEIPARA       TO  IF-FILENAME
            CALL    "orcfiledel"        USING
@@ -885,7 +885,7 @@ grpsys                                     SPA-AREA
            DISPLAY "*** ORCBG028 IN "      CNT-TOKEI
            DISPLAY "*** ORCBG028 END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -905,7 +905,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
      *****************************************************************
-      *    ���ץե������ɹ�
+      *    統計ファイル読込
       *****************************************************************
        900-TOKEI-READ-SEC          SECTION.
       *
@@ -922,7 +922,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ץե�������ɹ�
+      *    統計ファイル順読込
       *****************************************************************
        900-TOKEI-NEXT-SEC          SECTION.
       *
@@ -938,7 +938,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��إޥ�������
+      *    医療機関マスタ検索
       *****************************************************************
        900-SYS1001-DBREAD-SEC      SECTION.
       *
@@ -962,7 +962,7 @@ grpsys                                     SPA-AREA
        900-SYS1001-DBREAD-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ�������
+      *    システム管理マスタ検索
       *****************************************************************
        900-SYSKANRI-DBREAD-SEC      SECTION.
       *
@@ -984,11 +984,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ�������
+      *    診療行為マスタ検索
       *****************************************************************
        900-SRYACT-DBSELECT-SEC     SECTION.
       *
-      *    �оݿ���ǯ��Ǹ���
+      *    対象診療年月で検索
            INITIALIZE                  SRYACT-REC
            MOVE    SPA-HOSPNUM     TO  SRY-HOSPNUM
            MOVE    WRK-PARA-STRYM  TO  SRY-SRYYM
@@ -1010,7 +1010,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ�������
+      *    診療行為マスタ検索
       *****************************************************************
        900-SRYACT-DBFETCH-SEC      SECTION.
       *
@@ -1029,11 +1029,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�ץޥ�������
+      *    診療会計マスタ検索
       *****************************************************************
        900-SRYACCT-READ-SEC        SECTION.
       *
-      *    �����ο��Ų�ץǡ����򸡺�
+      *    該当の診療会計データを検索
            INITIALIZE                  SRYACCT-REC
            MOVE    SPA-HOSPNUM     TO  ACCT-HOSPNUM
            MOVE    SRY-NYUGAIKBN   TO  ACCT-NYUGAIKBN
@@ -1062,11 +1062,11 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻����
+      *    保険組合せ検索
       *****************************************************************
        900-HKNCOMBI-READ-SEC        SECTION.
       *
-      *    �����ο��Ų�ץǡ����򸡺�
+      *    該当の診療会計データを検索
            INITIALIZE                  HKNCOMBI-REC
            MOVE    ACCT-HOSPNUM    TO  COMB-HOSPNUM
            MOVE    ACCT-PTID       TO  COMB-PTID
@@ -1098,7 +1098,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -1116,7 +1116,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -1131,7 +1131,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ạ̃ϣӣŽ���
+      *    ＤＢＣＬＯＳＥ処理
       *****************************************************************
        900-DBCLOSECURSOR-SEC       SECTION.
       *
@@ -1146,7 +1146,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1170,7 +1170,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

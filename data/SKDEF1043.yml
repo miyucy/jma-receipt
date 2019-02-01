@@ -1,35 +1,35 @@
 kanri_cd    : "1043"
-name        : "²ñ·×¾È²ñµ¡Ç½¾ğÊó"
+name        : "ä¼šè¨ˆç…§ä¼šæ©Ÿèƒ½æƒ…å ±"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "SRYKBN-FLG"
-  item_jp   : "Á´²Ê¤ÎÉ½¼¨½ç"
+  item_jp   : "å…¨ç§‘ã®è¡¨ç¤ºé †"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SRYKA-FLG"
-  item_jp   : "¿ÇÎÅ²Ê¤Î½é´üÉ½¼¨"
+  item_jp   : "è¨ºç™‚ç§‘ã®åˆæœŸè¡¨ç¤º"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "RESPRVFLG"
-  item_jp   : "¥ì¥»¥×¥È¥Ö¥ì¥Ó¥å¡¼"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆãƒ–ãƒ¬ãƒ“ãƒ¥ãƒ¼"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "PRVLAYOUT"
-  item_jp   : "¥ì¥»¥×¥È¥ì¥¤¥¢¥¦¥È"
+  item_jp   : "ãƒ¬ã‚»ãƒ—ãƒˆãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 5
   length    : 496

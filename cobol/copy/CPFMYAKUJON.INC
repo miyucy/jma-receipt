@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -40,7 +40,7 @@
                   09  FMYAKUJON-HOSP-NAME         PIC X(120)
                                                  OCCURS   3.
                 07  FMYAKUJON-HOSP-POST           PIC X(7).
-      *         ΩªΩÍ
+      *         ‰ΩèÊâÄ
                 07  FMYAKUJON-HOSP-ADRS-G.
                   09  FMYAKUJON-HOSP-ADRS         PIC X(200)
                                                  OCCURS   3.

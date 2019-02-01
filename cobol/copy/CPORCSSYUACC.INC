@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,154 +15,154 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ����󥢥������ѥѥ�᥿      COPY (CPORCSSYUACC.INC)
-      *                                  ���ѥץ������ (ORCSSYUACC)
-      *    �������
-      *      ������ʬ
-      *      ����ǯ��
-      *      ������ʬ
-      *      ���ԣɣ�
-      *      ���ϲ�
+      *    主情報アクセス用パラメタ      COPY (CPORCSSYUACC.INC)
+      *                                  使用プログラム (ORCSSYUACC)
+      *    設定項目
+      *      処理区分
+      *      診療年月
+      *      入外区分
+      *      患者ＩＤ
+      *      入力科
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       ************************************************************
       *
            03  LNK-SYUACC-IN.
-      *        ������ʬ
-      *        1:����ξ������
+      *        処理区分
+      *        1:当月の情報取得
                05  LNK-SYUACC-I-KBN       PIC X(02).
-      *        ����ǯ��
+      *        診療年月
                05  LNK-SYUACC-I-SRYYM     PIC 9(06).
-      *        ������ʬ
+      *        入外区分
                05  LNK-SYUACC-I-NYUGAIKBN PIC X(01).
-      *        ���ԣɣ�
+      *        患者ＩＤ
                05  LNK-SYUACC-I-PTID      PIC 9(10).
       *
            03  LNK-SYUACC-IO.
-      *        ���Ų�(�����Ͼ���)
+      *        診療科(手入力情報)
                05  LNK-SYUACC-IO-H-SRYKA   PIC X(02).
-      *        �쥻�ץȾ���
+      *        レセプト情報
                05  LNK-SYUACC-IO-OCC               OCCURS  100.
-      *            ������ʬ
+      *            入外区分
                    07  LNK-SYUACC-IO-NYUGAIKBN
                                        PIC X(01).
-      *            ������ʧ����
+      *            審査支払機関
                    07  LNK-SYUACC-IO-TEISYUTUSAKI
                                        PIC 9(01).
-      *            �쥻�ץȼ���
+      *            レセプト種別
                    07  LNK-SYUACC-IO-RECESYUBETU
                                        PIC X(04).
-      *            �ݸ����ֹ�
+      *            保険者番号
                    07  LNK-SYUACC-IO-HKNJANUM
                                        PIC X(08).
-      *            �����ʬ
+      *            補助区分
                    07  LNK-SYUACC-IO-HOJOKBN
                                        PIC X(01).
-      *            ����ɣġʸ���ñ�ȤΤߡ�
+      *            公費ＩＤ（公費単独のみ）
                    07  LNK-SYUACC-IO-KOHID
                                        PIC 9(10).
-      *            ʬ���ʬ
+      *            分割区分
                    07  LNK-SYUACC-IO-RECEIPT-KBN
                                        PIC X(10).
-      *            �ݸ��ֹ�ʼ��ݸ���
+      *            保険番号（主保険）
                    07  LNK-SYUACC-IO-HKNNUM
                                        PIC X(03).
-      *            �����ƥ���
+      *            システム主科
                    07  LNK-SYUACC-IO-SYUKA-AUTO
                                        PIC X(02).
-      *            �����ϼ��
+      *            手入力主科
                    07  LNK-SYUACC-IO-SYUKA-INPUT
                                        PIC X(02).
-      *            ����̾���
+      *            主科別情報
                    07  LNK-SYUACC-IO-SYUKA-AREA.
                        09  LNK-SYUACC-IO-SRYKATBL      OCCURS  50.
-      *                    ���
+      *                    主科
                            11  LNK-SYUACC-IO-SRYKA
                                        PIC X(02).
-      *                    �ݸ��ȹ礻�ֹ�
+      *                    保険組合せ番号
                            11  LNK-SYUACC-IO-HKNCOMBI-AREA.
                                13  LNK-SYUACC-IO-HKNCOMBI
                                        PIC 9(04)   OCCURS  10.
-      *                    �����������
+      *                    請求点数合計
                            11  LNK-SYUACC-IO-TENSU
                                        PIC S9(09).
-      *                    ���ǲ�����(������)
+      *                    受診回数合計(入院外)
                            11  LNK-SYUACC-IO-KAISU    
                                        PIC 9(03).
-      *                    �̻��������(����)
+      *                    通算日数合計(入院)
                            11  LNK-SYUACC-IO-NISSU
                                        PIC 9(03).
-      *                    ��λ��
+      *                    終了日
                            11  LNK-SYUACC-IO-EDDAY
                                        PIC 9(02).
       *
            03  LNK-SYUACC-IO2.
-      *      ��ʥǡ�����Ʊ���쥤������
+      *      主科データと同じレイアウト
              05  LNK-SYUACC-IO2-OCC               OCCURS  100.
                07  LNK-IO2-SYU-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                  09  LNK-IO2-SYU-HOSPNUM       PIC 9(2).
-      *������ʬ
+      *入外区分
                  09  LNK-IO2-SYU-NYUGAIKBN     PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                  09  LNK-IO2-SYU-PTID          PIC 9(10).
-      *��׶�ʬ
+      *会計区分
                  09  LNK-IO2-SYU-TEN-KBN       PIC X(01).
-      *����ǯ��
+      *診療年月
                  09  LNK-IO2-SYU-SRYYM         PIC 9(06).
-      *������ʧ����
+      *審査支払機関
                  09  LNK-IO2-SYU-TEISYUTUSAKI  PIC 9(01).
-      *�ݸ����ֹ�
+      *保険者番号
                  09  LNK-IO2-SYU-HKNJANUM      PIC X(08).
-      *�����ʬ
+      *補助区分
                  09  LNK-IO2-SYU-HOJOKBN       PIC X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                  09  LNK-IO2-SYU-KOHID         PIC 9(10).
-      *ʬ���ʬ
+      *分割区分
                  09  LNK-IO2-SYU-RECEIPT-KBN   PIC X(10).
-      *�쥻�ץȼ���
+      *レセプト種別
                  09  LNK-IO2-SYU-RECESYUBETU   PIC X(04).
-      *���Ų�
+      *診療科
                  09  LNK-IO2-SYU-SRYKA         PIC X(02).
-      *�ݸ��ֹ�ʼ��ݸ���
+      *保険番号（主保険）
                07  LNK-IO2-SYU-HKNNUM          PIC X(03).
-      *���Ųʡ����ϡ�
+      *診療科（入力）
                07  LNK-IO2-SYU-SRYKA-INPUT     PIC X(02).
-      *���Ųʡʥ����ƥ��
+      *診療科（システム）
                07  LNK-IO2-SYU-SRYKA-AUTO      PIC X(02).
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                07  LNK-IO2-SYU-HKNCOMBI-AREA.
                  09  LNK-IO2-SYU-HKNCOMBI      PIC 9(04)
                                                OCCURS  10.
-      *�����������
+      *請求点数合計
                07  LNK-IO2-SYU-TENSU           PIC S9(09).
-      *���ǲ�����(������)
+      *受診回数合計(入院外)
                07  LNK-IO2-SYU-KAISU           PIC 9(03).
-      *�̻��������(����)
+      *通算日数合計(入院)
                07  LNK-IO2-SYU-NISSU           PIC 9(03).
-      *��λ��
+      *終了日
                07  LNK-IO2-SYU-EDDAY           PIC 9(02).
-      *̤����쥻�ǻȤ�ͽ��
+      *未請求レセで使う予定
                07  LNK-IO2-SYU-MISEIKYU-FLG    PIC X(02).
-      *����ե饰
+      *削除フラグ
                07  LNK-IO2-SYU-DLT-FLG         PIC X(01).
-      *ü���ɣ�
+      *端末ＩＤ
                07  LNK-IO2-SYU-TERMID          PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
                07  LNK-IO2-SYU-OPID            PIC X(16).
-      *����ǯ����
+      *作成年月日
                07  LNK-IO2-SYU-CREYMD          PIC X(08).
-      *����ǯ����
+      *更新年月日
                07  LNK-IO2-SYU-UPYMD           PIC X(08).
-      *��������
+      *更新時間
                07  LNK-IO2-SYU-UPHMS           PIC X(06).
-      *    ����������
+      *    復帰コード
            03  LNK-SYUACC-RC           PIC S9(9) BINARY.

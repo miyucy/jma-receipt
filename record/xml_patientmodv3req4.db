@@ -17,84 +17,84 @@ xml_patientmodv3req4 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };
-#---    Äã½êÆÀ¼Ô£²¾ğÊó¡ÊÄã½êÆÀ¼ÔÍúÎò¡Ë
+#---    ä½æ‰€å¾—è€…ï¼’æƒ…å ±ï¼ˆä½æ‰€å¾—è€…å±¥æ­´ï¼‰
 	Income_Information	{
             Income_Mode			varchar(6);
 	    Income_Info 	{
-#---            Ç§Äê³«»ÏÆü
+#---            èªå®šé–‹å§‹æ—¥
             	Income_StartDate			varchar(10);
             	Income_ExpiredDate			varchar(10);
-#---            É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+#---            æ¨™æº–è² æ‹…é¡æ¸›é¡é–‹å§‹æ—¥
             	Income_Reduction_Date			varchar(10);
-#---            Ä¹´üÆş±¡³ºÅöÇ¯·îÆü
+#---            é•·æœŸå…¥é™¢è©²å½“å¹´æœˆæ—¥
             	Income_Long_Period_Date			varchar(10);
-#---            Ç§ÄêÈÏ°Ï¶èÊ¬
+#---            èªå®šç¯„å›²åŒºåˆ†
             	Income_Certificate_Code			varchar(01);
-#---            ¶­³¦ÁØ³ºÅö¶èÊ¬
+#---            å¢ƒç•Œå±¤è©²å½“åŒºåˆ†
             	Income_Boundary_Code			varchar(01);
             	} [20];
         };
-#---    Äã½êÆÀ¼Ô£±¾ğÊó¡ÊÇ¯¶âÍúÎò¡Ë
+#---    ä½æ‰€å¾—è€…ï¼‘æƒ…å ±ï¼ˆå¹´é‡‘å±¥æ­´ï¼‰
 	Pension_Information	{
             Pension_Mode				varchar(6);
 	    Pension_Info 	{
-#---            Ç§Äê³«»ÏÆü
+#---            èªå®šé–‹å§‹æ—¥
             	Pension_StartDate			varchar(10);
             	Pension_ExpiredDate			varchar(10);
-#---            É¸½àÉéÃ´³Û¸º³Û³«»ÏÆü
+#---            æ¨™æº–è² æ‹…é¡æ¸›é¡é–‹å§‹æ—¥
             	Pension_Reduction_Date			varchar(10);
-#---            Ï·ÎğÊ¡»ãÇ¯¶â¼õµë¼Ô¾Ú¶èÊ¬
+#---            è€é½¢ç¦ç¥‰å¹´é‡‘å—çµ¦è€…è¨¼åŒºåˆ†
             	Pension_Welfare_Code			varchar(01);
-#---            Ç§ÄêÈÏ°Ï¶èÊ¬
+#---            èªå®šç¯„å›²åŒºåˆ†
             	Pension_Certificate_Code		varchar(01);
-#---            ¶­³¦ÁØ³ºÅö¶èÊ¬
+#---            å¢ƒç•Œå±¤è©²å½“åŒºåˆ†
             	Pension_Boundary_Code			varchar(01);
             	} [20];
         };
-#---    µìÀ«ÍúÎò
+#---    æ—§å§“å±¥æ­´
 	Maiden_Information	{
             Maiden_Mode				varchar(6);
 	    Maiden_Info 	{
-#---            ÊÑ¹¹ÆüÉÕ
+#---            å¤‰æ›´æ—¥ä»˜
             	Maiden_Change_Date		varchar(10);
-#---            µìÀ«¥«¥Ê»áÌ¾
+#---            æ—§å§“ã‚«ãƒŠæ°å
 		WholeName_inKana 		varchar(100);
-#---            µìÀ«»áÌ¾
+#---            æ—§å§“æ°å
 		WholeName			varchar(100);
-#---            µìÀ«ÄÌ¾ÎÌ¾
+#---            æ—§å§“é€šç§°å
 		NickName			varchar(100);
             	} [20];
         };
-#---    ÆÃµ­»ö¹à
+#---    ç‰¹è¨˜äº‹é …
 	Special_Notes_Information	{
             Special_Notes_Mode			varchar(6);
 	    Special_Notes_Info 	{
-#---            Æş³°¶èÊ¬
+#---            å…¥å¤–åŒºåˆ†
             	Special_Notes_InOut			varchar(1);
-#---            ¥ì¥»ÅÅ¶èÊ¬
+#---            ãƒ¬ã‚»é›»åŒºåˆ†
             	Special_Notes_Receipt_Code		varchar(02);
-#---            ¥ì¥»ÅÅ¶èÊ¬Ì¾¾Î
+#---            ãƒ¬ã‚»é›»åŒºåˆ†åç§°
             	Special_Notes_Receipt_Code_Name		varchar(12);
-#---            ³«»ÏÇ¯·î
+#---            é–‹å§‹å¹´æœˆ
             	Special_Notes_StartDate			varchar(7);
             	Special_Notes_ExpiredDate		varchar(7);
             	} [50];
         };
-#---    ´µ¼Ô¸ÄÊÌ¾ğÊó
+#---    æ‚£è€…å€‹åˆ¥æƒ…å ±
 	Personally_Information	{
             Personally_Mode			varchar(6);
 	    Personally_Info 	{
-#---            ½ĞÀ¸»şÂÎ½Å
+#---            å‡ºç”Ÿæ™‚ä½“é‡
             	Birth_Weight			varchar(4);
-#---            ÃÏ°èÊñ³ç¿ÇÎÅÂĞ¾İ¼ÀÉÂ
+#---            åœ°åŸŸåŒ…æ‹¬è¨ºç™‚å¯¾è±¡ç–¾ç—…
 		Community_Disease  {
 			Target_Disease		varchar(05);
 	            	} [4];
-#---            Ç§ÃÎ¾ÉÃÏ°èÊñ³ç¿ÇÎÅ
+#---            èªçŸ¥ç—‡åœ°åŸŸåŒ…æ‹¬è¨ºç™‚
             	Community_Disease2		varchar(05);
-#---            ¾®»ù¤«¤«¤ê¤Ä¤±¿ÇÎÅ
+#---            å°å…ã‹ã‹ã‚Šã¤ã‘è¨ºç™‚
             	Community_Disease3		varchar(05);
-#---            Ç¥ÉØÀßÄê
+#---            å¦Šå©¦è¨­å®š
             	Pregnant_Class			varchar(05);
             	};
         };

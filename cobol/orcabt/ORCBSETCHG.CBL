@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBSETCHG.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��������
-      *  ����ݡ��ͥ��̾  : ���åȥ����ɰ���ִ���
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  10/03/XX    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 日次処理
+      *  コンポーネント名  : セットコード一括置換え
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  10/03/XX    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.08.00     NACL-¿��Ǽ  14/07/18  ����ե������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.08.00     NACL-多々納  14/07/18  一時ファイル対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,36 +35,36 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ��ǧ�����ʽġ�
+      *    確認一覧（縦）
            COPY    "HCMSL80.INC".
-      *    ���顼�����ʲ���
+      *    エラー一覧（横）
            COPY    "HCMSL55.INC".
-      *    Ģɼ
+      *    帳票
            COPY    "HCPOM2.INC".
       *
-      *    ����ե������б�
+      *    一時ファイル対応
            COPY    "CPRECEERR.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
            03  STS-PARA                PIC X(02).
            03  STS-DATA                PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -88,7 +88,7 @@
       *
            03  FLG-KIZAI            PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE1               PIC 9(03).
            03  CNT-PAGE1               PIC 9(05).
@@ -101,7 +101,7 @@
            03  CNT-KEI                 PIC 9(05).
            03  CNT-OUT                 PIC 9(05).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDX-S                   PIC 9(04).
@@ -113,7 +113,7 @@
            03  IDX4                    PIC 9(04).
            03  IDX-P                   PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
@@ -124,7 +124,7 @@
                05  SYS-TMM             PIC 9(02).
                05  SYS-TSS             PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -134,7 +134,7 @@
            03  WRK-PARA-SYORIKBN       PIC X(01).
            03  WRK-PARA-SRYYMD         PIC X(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -168,7 +168,7 @@
                05  WRK-KEIKAYMD        PIC X(10).
                05  WRK-KEIKA-H2        PIC X(14).
                05  WRK-CHNGCD          PIC X(09).
-      *    �����Ϳ���
+      *    換算値数量
            03  WRK-SURYO               PIC 9(05)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1        PIC 9(05).
@@ -187,147 +187,147 @@
            03  WRK-ERRCD               PIC X(04).
            03  WRK-ERRMSG              PIC X(80).
            03  WRK-ERRMSG2             PIC X(80).
-      *   ������
+      *   撮影料
        01  TBL-SATUEI-AREA.
-      * ñ�㻣��
+      * 単純撮影
            03  FILLER              PIC X(02)  VALUE   "01".
-      *    ñ�㻣�ơʥ��ʥ������ơ�
+      *    単純撮影（アナログ撮影）
            03  FILLER              PIC X(09)  VALUE   "170001910".
-      *    ñ�㻣�ơʥǥ����뻣�ơ�
+      *    単純撮影（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170027910".
       *
-      * �ü컣��
+      * 特殊撮影
            03  FILLER              PIC X(02)  VALUE   "02".
-      *    �ʥ��ʥ������ơ�
+      *    （アナログ撮影）
            03  FILLER              PIC X(09)  VALUE   "170002010".
-      *    �ʥǥ����뻣�ơ�
+      *    （デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170028010".
       *
-      * ¤�ƺ޻��ѻ���
+      * 造影剤使用撮影
            03  FILLER              PIC X(02)  VALUE   "03".
-      *    ¤�ƺ޻��ѻ��ơʥ��ʥ������ơ�
+      *    造影剤使用撮影（アナログ撮影）
            03  FILLER              PIC X(09)  VALUE   "170002110".
-      *    ¤�ƺ޻��ѻ��ơʥǥ����뻣�ơ�
+      *    造影剤使用撮影（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170028110".
       *
-      * ��˼����
+      * 乳房撮影
            03  FILLER              PIC X(02)  VALUE   "04".
-      *    ��˼���ơʥ��ʥ������ơ�
+      *    乳房撮影（アナログ撮影）
            03  FILLER              PIC X(09)  VALUE   "170027010".
-      *    ��˼���ơʥǥ����뻣�ơ�
+      *    乳房撮影（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170028210".
       *
-      *    ñ�㻣�ơʼ�����
+      *    単純撮影（手前）
            03  FILLER              PIC X(02)  VALUE   "05".
            03  FILLER              PIC X(09)  VALUE   "170021750".
-      *    ñ�㻣�ơʼ����ˡʥǥ����뻣�ơ�
+      *    単純撮影（手前）（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170031350".
       *
-      *    ñ�㻣�ơ�û����
+      *    単純撮影（短期）
            03  FILLER              PIC X(02)  VALUE   "06".
            03  FILLER              PIC X(09)  VALUE   "170023950".
-      *    ñ�㻣�ơ�û���ˡʥǥ����뻣�ơ�
+      *    単純撮影（短期）（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170031550".
       *
-      *    ñ�����
+      *    単純間接
            03  FILLER              PIC X(02)  VALUE   "07".
            03  FILLER              PIC X(09)  VALUE   "170002410".
-      *    ñ����ܡʥǥ����뻣�ơ�
+      *    単純間接（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170028310".
       *
-      *    ñ����ܡʼ�����
+      *    単純間接（手前）
            03  FILLER              PIC X(02)  VALUE   "08".
            03  FILLER              PIC X(09)  VALUE   "170021850".
-      *    ñ����ܡʼ����ˡʥǥ����뻣�ơ�
+      *    単純間接（手前）（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170031450".
       *
-      *    ñ����ܡ�û����
+      *    単純間接（短期）
            03  FILLER              PIC X(02)  VALUE   "09".
            03  FILLER              PIC X(09)  VALUE   "170024050".
-      *    ñ����ܡ�û���ˡʥǥ����뻣�ơ�
+      *    単純間接（短期）（デジタル撮影）
            03  FILLER              PIC X(09)  VALUE   "170031650".
       *
-      *    �ü컣�ơʿ��ǡ����ơ�
+      *    特殊撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "10".
            03  FILLER              PIC X(09)  VALUE   "170005530".
            03  FILLER              PIC X(09)  VALUE   "170028930".
-      *    �ü컣�ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    特殊撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "11".
            03  FILLER              PIC X(09)  VALUE   "170005630".
            03  FILLER              PIC X(09)  VALUE   "170029030".
-      *    �ѥ�ȥ⥰��ե����ʿ��ǡ����ơ�
+      *    パントモグラフィー（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "12".
            03  FILLER              PIC X(09)  VALUE   "170006530".
            03  FILLER              PIC X(09)  VALUE   "170029130".
-      *    �ѥ�ȥ⥰��ե�����¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    パントモグラフィー（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "13".
            03  FILLER              PIC X(09)  VALUE   "170006630".
            03  FILLER              PIC X(09)  VALUE   "170029230".
-      *    ���ػ��ơʿ��ǡ����ơ�
+      *    断層撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "14".
            03  FILLER              PIC X(09)  VALUE   "170006930".
            03  FILLER              PIC X(09)  VALUE   "170029330".
-      *    ���ػ��ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    断層撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "15".
            03  FILLER              PIC X(09)  VALUE   "170007030".
            03  FILLER              PIC X(09)  VALUE   "170029430".
-      *    Ʊ��¿�ػ��ơʿ��ǡ����ơ�
+      *    同時多層撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "16".
            03  FILLER              PIC X(09)  VALUE   "170007130".
            03  FILLER              PIC X(09)  VALUE   "170029530".
-      *    Ʊ��¿�ػ��ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    同時多層撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "17".
            03  FILLER              PIC X(09)  VALUE   "170007200".
            03  FILLER              PIC X(09)  VALUE   "170029630".
-      *    ��ž���ǻ��ơʿ��ǡ����ơ�
+      *    回転横断撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "18".
            03  FILLER              PIC X(09)  VALUE   "170007330".
            03  FILLER              PIC X(09)  VALUE   "170029730".
-      *    ��ž���ǻ��ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    回転横断撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "19".
            03  FILLER              PIC X(09)  VALUE   "170007430".
            03  FILLER              PIC X(09)  VALUE   "170029830".
-      *    ���ݥåȻ��ơʿ��ǡ����ơ�
+      *    スポット撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "20".
            03  FILLER              PIC X(09)  VALUE   "170007530".
            03  FILLER              PIC X(09)  VALUE   "170029930".
-      *    ���ݥåȻ��ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    スポット撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "21".
            03  FILLER              PIC X(09)  VALUE   "170007630".
            03  FILLER              PIC X(09)  VALUE   "170030030".
-      *    ��Ƭ�����Զѹջ��ơʿ��ǡ����ơ�
+      *    児頭骨盤不均衡撮影（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "22".
            03  FILLER              PIC X(09)  VALUE   "170008430".
            03  FILLER              PIC X(09)  VALUE   "170030430".
-      *    ��Ƭ�����Զѹջ��ơ�¾����Ʊ��ʻ�ܡˡʿ��ǡ����ơ�
+      *    児頭骨盤不均衡撮影（他方と同時併施）（診断・撮影）
            03  FILLER              PIC X(02)  VALUE   "23".
            03  FILLER              PIC X(09)  VALUE   "170008530".
            03  FILLER              PIC X(09)  VALUE   "170030530".
-      *    �ü컣�ơʻ��ơ����ǡ˿�����
+      *    特殊撮影（撮影・診断）新生児
            03  FILLER              PIC X(02)  VALUE   "24".
            03  FILLER              PIC X(09)  VALUE   "170019130".
            03  FILLER              PIC X(09)  VALUE   "170030730".
-      *    �ü컣�ơ�¾����Ʊ��ʻ�ܡˡʻ��ơ����ǡ˿�����
+      *    特殊撮影（他方と同時併施）（撮影・診断）新生児
            03  FILLER              PIC X(02)  VALUE   "25".
            03  FILLER              PIC X(09)  VALUE   "170019330".
            03  FILLER              PIC X(09)  VALUE   "170030930".
-      *    �ü컣�ơʻ��ơ����ǡ����Ļ�
+      *    特殊撮影（撮影・診断）乳幼児
            03  FILLER              PIC X(02)  VALUE   "26".
            03  FILLER              PIC X(09)  VALUE   "170019230".
            03  FILLER              PIC X(09)  VALUE   "170030830".
-      *    �ü컣�ơ�¾����Ʊ��ʻ�ܡˡʻ��ơ����ǡ����Ļ�
+      *    特殊撮影（他方と同時併施）（撮影・診断）乳幼児
            03  FILLER              PIC X(02)  VALUE   "27".
            03  FILLER              PIC X(09)  VALUE   "170019430".
            03  FILLER              PIC X(09)  VALUE   "170031030".
-      *    ¦Ƭ���������ػ��ơʻ��ơ����ǡ�
+      *    側頭骨曲面断層撮影（撮影・診断）
            03  FILLER              PIC X(02)  VALUE   "28".
            03  FILLER              PIC X(09)  VALUE   "170008130".
            03  FILLER              PIC X(09)  VALUE   "170030130".
-      *    ��ܹ��������ػ��ơʻ��ơ����ǡ�
+      *    上顎骨曲面断層撮影（撮影・診断）
            03  FILLER              PIC X(02)  VALUE   "29".
            03  FILLER              PIC X(09)  VALUE   "170008230".
            03  FILLER              PIC X(09)  VALUE   "170030230".
-      *    ��ɡ�ж������ػ��ơʻ��ơ����ǡ�
+      *    副鼻腔曲面断層撮影（撮影・診断）
            03  FILLER              PIC X(02)  VALUE   "30".
            03  FILLER              PIC X(09)  VALUE   "170008330".
            03  FILLER              PIC X(09)  VALUE   "170030330".
@@ -336,21 +336,21 @@
        01  TBL-SATUEI-AREA-R       REDEFINES  TBL-SATUEI-AREA.
            03  TBL-SATUEI-OCC      OCCURS     30  INDEXED  TBL-SIDX.
                05  TBL-SATUKBN             PIC X(02).
-      *        �������ʥ��ʥ�����
+      *        撮影料（アナログ）
                05  TBL-SATU-SRYCD-A        PIC X(09).
-      *        �������ʥǥ������
+      *        撮影料（デジタル）
                05  TBL-SATU-SRYCD-D        PIC X(09).
       *
-      *    �ꥹ���ΰ�
+      *    リスト領域
        01  LST-PRT-AREA.
            03  LST-PRT-HEAD1N.
                05  FILLER              PIC X(01)   VALUE   SPACE.
                05  FILLER              PIC X(30)   VALUE   
-                   "�����ʥ������Ƣ��ǥ����뻣�ơ�".
+                   "＃アナログ撮影→デジタル撮影　".
                05  PRT-TAITOL          PIC X(20).
                05  FILLER              PIC X(04)   VALUE   SPACE.
                05  FILLER              PIC X(08)   VALUE
-                   "��������".
+                   "開始日：".
                05  PRT-SRYYMD          PIC X(22).
            03  LST-PRT-HEAD1.
                05  FILLER              PIC X(74)   VALUE   SPACE.
@@ -359,28 +359,28 @@
                05  PRT-PAGE            PIC ZZ9.
            03  LST-PRT-HEAD2.
                05  FILLER              PIC X(12)   VALUE
-                   "���åȣã�".
+                   "セットＣＤ".
                05  FILLER              PIC X(20)   VALUE
-                   "ͭ�����֡��оݡ�".
+                   "有効期間（対象）".
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  FILLER              PIC X(46)   VALUE
-                   "���å�̾��".
+                   "セット名称".
       *
            03  LST-PRT-TAIL1.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(12)   VALUE
-                   "���������".
+                   "更新件数：".
                05  PRT-UPDCNT          PIC ZZ,ZZ9.
                05  FILLER              PIC X(04)   VALUE
-                   "����".
+                   "　件".
       *
            03  LST-PRT-TAIL2.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(16)   VALUE
-                   "�оݥ��åȷ����".
+                   "対象セット件数：".
                05  PRT-CNT             PIC ZZ,ZZ9.
                05  FILLER              PIC X(04)   VALUE
-                   "����".
+                   "　件".
       *
        01  LST-PRT-BODY.
            03  PRT-SETCD               PIC X(08).
@@ -425,16 +425,16 @@
       *
        01  COMT-TAITOL1.
            03  FILLER              PIC X(20)   VALUE   
-               "���åȳ�ǧ�ꥹ�ȡ�".
+               "セット確認リスト＃".
        01  COMT-TAITOL2.
            03  FILLER              PIC X(20)   VALUE   
-               "���åȹ����ꥹ�ȡ�".
+               "セット更新リスト＃".
       *
-      *    ����
+      *    内容
        01  WRK-PRTHEN-AREA.
-      *    Ⱦ��
+      *    半角
            03  WRK-TBL-REC             PIC X(90)   OCCURS   800.
-      *    ����
+      *    全角
            03  WRK-TBL-REC2            PIC X(108)  OCCURS   800.
       *
        01  LINE-MAX                    PIC 9(03)   VALUE   69.
@@ -491,28 +491,28 @@
                05  FILLER          PIC X(01)   VALUE   ")".
       *
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK1001.INC".
            COPY    "CPSK1009.INC".
-      *    �����å���ǽ������� 
+      *    チェック機能制御情報 
            COPY    "CPSK1008.INC".
       *
-      *    �����ޥ���
+      *    点数マスタ
            COPY    "CPTENSU.INC".
-      *    ���å�
+      *    セット
        01  INPUTCD-REC.
            COPY    "CPINPUTCD.INC".
       *
-      *    ���å�
+      *    セット
        01  INPUTSET-REC.
            COPY    "CPINPUTSET.INC".
       *
@@ -530,54 +530,54 @@
            COPY    "CPINPUTSET.INC"  REPLACING
                                      //ISET-// BY //HZN-ISET-//.
       *
-      *    Ϸ�Ͱ��̥������Ѵ�
+      *    老人一般コード変換
        01  SRYCDCHG-REC.
            COPY    "CPSRYCDCHG.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ��������
+      *    印刷管理
       *01  PRTKANRI-REC.
       *    COPY    "CPPRTKANRI.INC".
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       *01  PRTDATA-REC.
       *    COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
       *    COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
       *    COPY    "CPORCSFDEL.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
       *    COPY    "CPORCSPRTNM.INC".
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -585,7 +585,7 @@
            COPY    "ORCA-SPA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -599,7 +599,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -613,7 +613,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -648,10 +648,10 @@
                                        WRK-PARA-SRYYMD
            END-UNSTRING
       *
-      *    �ӣУ�����
+      *    ＳＰＡ設定
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    RECEERR             TO  SGETTEMP-BASENAMES (1)
            CALL    "ORCSGETTEMP"       USING
@@ -666,13 +666,13 @@
       *                                MCPAREA
       *                                SPA-AREA
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBSETCHG"        TO  JOB-PGID
-           MOVE    "���������åȰ���ѹ�"
+           MOVE    "撮影料セット一括変更"
                                        TO  JOB-SHELLMSG
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"               USING
@@ -692,7 +692,7 @@
                                        JOBKANRI-REC
                                        SPA-AREA
       *
-      *    ����ͥ��å�
+      *    初期値セット
            PERFORM 110-SYOKI-SET-SEC
       *
            .
@@ -700,11 +700,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ͥ��å�
+      *    初期値セット
       *****************************************************************
        110-SYOKI-SET-SEC           SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
            INITIALIZE                  STS-AREA-DAY
@@ -719,19 +719,19 @@
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            END-IF
       *
-      *    ������
+      *    処理日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  PRT-SYSYMD
       *
-      *    ��������
+      *    処理時間
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    SYS-THH             TO  WRK-THH
            MOVE    SYS-TMM             TO  WRK-TMM
       ***  MOVE    WRK-HENTIME         TO  PRT-TIME
       *
-      *�ӣУ�����
-      *    ������
+      *ＳＰＡ設定
+      *    改正日
            IF      WRK-PARA-SRYYMD     =   SPACE
               MOVE    "20100401"           TO  WRK-PARA-SRYYMD
            END-IF
@@ -741,7 +741,7 @@
            MOVE    WRK-PARA-SRYYMD     TO  SPA-SRYYMD
            MOVE    WRK-PARA-SRYYMD     TO  WRK-STR-SRYYMD
       *
-      *    ������
+      *    診療日
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    "21"                TO  LNK-DAY2-IRAI
@@ -751,7 +751,7 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  PRT-SRYYMD
       *
-      *    ������������
+      *    診療日の前日
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -764,25 +764,25 @@
            IF      STS-DAY-RC1         =   ZERO
                MOVE    LNK-DAY6-KEISAN     TO  WRK-MAE-SRYYMD
            ELSE
-               MOVE    "�����������������顼�Ǥ��������Ǥ��ޤ���"
+               MOVE    "開始日の前日がエラーです。処理できません。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO      TO      110-SYOKI-SET-EXT
            END-IF
       *
            MOVE    ALL "*"             TO  SPA-TERMID
-      *    ���ڥ졼���ɣ�
+      *    オペレータＩＤ
            MOVE    LNK-PRTKANRI-OPID   TO  SPA-OPID
            INSPECT SPA-OPID            REPLACING  ALL " "  BY  "*"
       *
-      *    ��ʬȽ��
+      *    区分判定
            EVALUATE    WRK-PARA-SYORIKBN
                WHEN    "1"
                    MOVE    COMT-TAITOL1        TO  PRT-TAITOL
                WHEN    "2"
                    MOVE    COMT-TAITOL2        TO  PRT-TAITOL
                WHEN    OTHER
-                   MOVE    "������ʬ�����ꤵ��Ƥ��ޤ���"
+                   MOVE    "処理区分が設定されていません。"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
            END-EVALUATE
@@ -792,14 +792,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ���ϥ��åȸ���
+      *    入力セット検索
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
-      *    ���ϥ��åȸ���
+      *    入力セット検索
            INITIALIZE                      INPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  ISET-HOSPNUM
       *
@@ -835,7 +835,7 @@
                    MOVE    ZERO                TO  FLG-SYORI-SET
                    IF     (ISET-YUKOSTYMD      <=  WRK-MAE-SRYYMD )
                    AND    (ISET-YUKOEDYMD      =   "99999999"     )
-      *                ͭ��������
+      *                有効期間内
                        MOVE    1               TO  FLG-SYORI-SET
                    END-IF
                END-IF
@@ -869,7 +869,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���å��ѹ�����
+      *    セット変更処理
       *****************************************************************
        2001-SET-SYORI-SEC             SECTION.
       *
@@ -880,19 +880,19 @@
                               (TBL-ISET-SETCD (IDX)    =   SPACE )
                PERFORM 2000-SRYCD-CHK1-SEC
                IF      WRK-SKBN            NOT =   SPACE
-      *            �ǥ����륳���ɤ��ѹ�
+      *            デジタルコードへ変更
                    MOVE    WRK-SRYCD-D     TO  HZN-ISET-INPUTCD (IDX)
                    MOVE    1               TO  FLG-OK
                END-IF
            END-PERFORM
       *
            IF     WRK-PARA-SYORIKBN    =   "1"
-      *        ����ɽ��
+      *        一覧表示
                IF      FLG-OK              =   1
                    PERFORM 20011-SET-LIST-SEC
                END-IF
            ELSE
-      *        ���åȰ���ѹ�
+      *        セット一括変更
                IF      FLG-OK              =   1
                    PERFORM 20012-SET-CHNG-SEC
                END-IF
@@ -903,7 +903,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݥ��åȰ�������
+      *    対象セット一覧処理
       *****************************************************************
        20011-SET-LIST-SEC             SECTION.
       *
@@ -914,12 +914,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ���åȴ��ֹ�������
+      *    セット期間更新処理
       *****************************************************************
        20012-SET-CHNG-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-SET-ERR
-      *    ���åȸ���
+      *    セット検索
            MOVE    TBL-INPUTSET-REC(1) TO  INPUTSET-REC
       *
            MOVE    INPUTSET-REC        TO  MCPDATA-REC
@@ -934,7 +934,7 @@
                MOVE    1                   TO  FLG-INPUTSET
            END-IF
            PERFORM UNTIL    FLG-INPUTSET   =   1
-      *        �ɲäγ������ʹߤγ�����������С��ڤ��ؤ��ʤ�
+      *        追加の開始日以降の開始日があれば、切り替えなし
                IF     (ISET-YUKOSTYMD      >=  WRK-STR-SRYYMD )
                    MOVE    1               TO  FLG-SET-ERR
                END-IF
@@ -956,7 +956,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ֹ�������
+      *    期間更新処理
       *****************************************************************
        200111-INPUTSET-SET-SEC            SECTION.
       *
@@ -992,8 +992,8 @@
                    DISPLAY "INPUTSET INS ERR:" MCP-RC
                     ",KEY:" ISET-KEY
                    MOVE    SPACE               TO  WRK-RECEERR
-                   STRING  "���åȹ����ǥ��顼�Ȥʤ�ޤ�����"
-                           "������λ���ޤ���"
+                   STRING  "セット更新でエラーとなりました。"
+                           "処理を終了します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-RECEERR
                    END-STRING
@@ -1021,8 +1021,8 @@
                    DISPLAY "INPUTSET INS ERR:" MCP-RC
                     ",KEY:" ISET-KEY
                    MOVE    SPACE               TO  WRK-RECEERR
-                   STRING  "���åȹ����ǥ��顼�Ȥʤ�ޤ�����"
-                           "������λ���ޤ���"
+                   STRING  "セット更新でエラーとなりました。"
+                           "処理を終了します。"
                                        DELIMITED  BY  SIZE
                                        INTO  WRK-RECEERR
                    END-STRING
@@ -1040,11 +1040,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѹ������ʥ���������Ƚ�����
+      *    変更前アナログコード判定処理
       *****************************************************************
        2000-SRYCD-CHK1-SEC             SECTION.
       *
-      *    ��������Ƚ��
+      *    撮影料の判断
            SET     TBL-SIDX            TO  1
            SEARCH  TBL-SATUEI-OCC      VARYING   TBL-SIDX
                AT   END
@@ -1062,14 +1062,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������
+      *    印刷初期処理
       *****************************************************************
        7001-PRT-INIT-SEC          SECTION.
       *
            MOVE    ZERO                TO  IDX-P
            MOVE    ZERO                TO  CNT-LINE2
            MOVE    SPACE               TO  HCPOM2
-      *    ���Ф��Խ�
+      *    見出し編集
            ADD     1                   TO  CNT-PAGE1
            MOVE    CNT-PAGE1           TO  PRT-PAGE
            MOVE    LST-PRT-HEAD1N      TO  HCPOM2-MOJI (1)
@@ -1081,7 +1081,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ͽ��ǧ��å���������
+      *    登録確認メッセージ処理
       *****************************************************************
        700-PTNUM-PRINT-SEC          SECTION.
       *
@@ -1097,14 +1097,14 @@
                MOVE    HZN-INPUTSET-REC (1)  TO  INPUTSET-REC
            END-IF
            MOVE    ISET-SETCD          TO  PRT-SETCD
-      *    ����
+      *    期間
            MOVE    ISET-YUKOSTYMD      TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  PRT-STYMD
            MOVE    ISET-YUKOEDYMD      TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  PRT-EDYMD
-           MOVE    "��"                TO  PRT-P1
+           MOVE    "〜"                TO  PRT-P1
       *
            MOVE    SPACE               TO  INPUTCD-REC
            MOVE    ISET-HOSPNUM        TO  ICD-HOSPNUM
@@ -1125,7 +1125,7 @@
            MOVE    "tbl_inputcd"       TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���å�̾�Ρ��Խ�
+      *    セット名称　編集
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI
            MOVE    ICD-DSPNAME         TO  KANACHK-MAE-INPUT
@@ -1140,7 +1140,7 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   400 )
                IF     WRK-PARA-SYORIKBN    =   "1"
-      *            ����ɽ��
+      *            一覧表示
                    MOVE    TBL-INPUTSET-REC (IDX)  TO  INPUTSET-REC
                ELSE
                    MOVE    HZN-INPUTSET-REC (IDX)  TO  INPUTSET-REC
@@ -1151,13 +1151,13 @@
                    PERFORM 7001-INPUTSET-PRT-SEC
                END-IF
            END-PERFORM
-      *    �Խ�����
+      *    編集処理
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-HEN-MAX
                IF      IDX-P               >=  LINE-MAX
-      *            ��������
+      *            印刷処理
                    PERFORM 400-HCPOM2-PRINT-SEC
-      *            ���Ф��Խ�
+      *            見出し編集
                    PERFORM 7001-PRT-INIT-SEC
                END-IF
                ADD     1                   TO  IDX-P
@@ -1175,7 +1175,7 @@
        700-PTNUM-PRINT-EXIT.
            EXIT.
       *****************************************************************
-      *    �����Խ���������
+      *    明細編集印刷処理
       *****************************************************************
        7001-INPUTSET-PRT-SEC          SECTION.
       *
@@ -1188,20 +1188,20 @@
            MOVE    ISET-INPUTCD        TO  B01-SRYCD
            EVALUATE    ISET-INPUTCD(1:1)
                WHEN    "S"
-      *            ��«���å�
+      *            約束セット
                    PERFORM 20021-YAKUSOKU-HEN-SEC
                WHEN    "."
-      *            ���ż���
+      *            診療種別
                    PERFORM 20022-SRYSYUKBN-HEN-SEC
                WHEN    OTHER
-      *            �����ޥ���
+      *            点数マスタ
                    PERFORM 20023-SRYCD-HEN-SEC
            END-EVALUATE
            .
        7001-INPUTSET-PRT-EXIT.
            EXIT.
       *****************************************************************
-      *    ��«���åȽ���
+      *    約束セット処理
       *****************************************************************
        20021-YAKUSOKU-HEN-SEC          SECTION.
       *
@@ -1228,13 +1228,13 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-INPUTCD         =   ZERO
-      *        ɽ��̾
+      *        表示名
                MOVE    ICD-DSPNAME         TO  B01N-NAME
            END-IF
-      *    ���
+      *    回数
            IF     (ISET-KAISU              >   1     )
                MOVE    ISET-KAISU          TO  B01-KAISU
-               MOVE    "��"                TO  B01-KAKERU
+               MOVE    "×"                TO  B01-KAKERU
                MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
            END-IF
       *
@@ -1244,11 +1244,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���ż��̽���
+      *   診療種別処理
       *****************************************************************
        20022-SRYSYUKBN-HEN-SEC          SECTION.
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -1270,14 +1270,14 @@
            EXIT.
       *
       *****************************************************************
-      *   �����Խ�����
+      *   １行編集処理
       *****************************************************************
        20024-TBL-HEN01-SEC          SECTION.
       *
-           INSPECT B01N-YOBI1          REPLACING  ALL "  "  BY  "��"
-           INSPECT B01N-YOBI2          REPLACING  ALL "  "  BY  "��"
-           INSPECT B01N-ZUMIFLG        REPLACING  ALL "  "  BY  "��"
-           INSPECT B01N-NAME           REPLACING  ALL "  "  BY  "��"
+           INSPECT B01N-YOBI1          REPLACING  ALL "  "  BY  "　"
+           INSPECT B01N-YOBI2          REPLACING  ALL "  "  BY  "　"
+           INSPECT B01N-ZUMIFLG        REPLACING  ALL "  "  BY  "　"
+           INSPECT B01N-NAME           REPLACING  ALL "  "  BY  "　"
       *
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    BODY-01             TO  WRK-TBL-REC  (WRK-HEN-MAX)
@@ -1289,7 +1289,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ���ť����ɽ���
+      *   診療コード処理
       *****************************************************************
        20023-SRYCD-HEN-SEC          SECTION.
       *
@@ -1316,53 +1316,53 @@
                             (FLG-OK        =   1  )
                MOVE    TNS-NAME            TO  WRK-NAME
       *!
-      *        ��������̾��
+      *        検査正式名称
                IF     (TNS-SRYCD(1:1)      =   "1") AND
                       (TNS-SRYKBN          =   "60")  AND
                       (TNS-FORMALNAME  NOT =   SPACE )  AND
                       (TNS-FORMALNAME  NOT =   TNS-NAME )
                    MOVE    SPACE               TO  WRK-NAME
                    STRING  TNS-NAME        DELIMITED  BY  SPACE
-                           "����"          DELIMITED  BY  SIZE
+                           "　【"          DELIMITED  BY  SIZE
                            TNS-FORMALNAME  DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE
+                           "】"            DELIMITED  BY  SIZE
                                            INTO  WRK-NAME
                    END-STRING
                END-IF
       *!
-      *        ��ྦ��̾�����ɤδ�ॳ����
+      *        器材商品名コードの器材コード
                IF     (FLG-KIZAI           =   1   )  AND
                       (TNS-SRYCD(1:1)      =   "7" )
                    MOVE    SPACE               TO  WRK-NAME
-                   STRING  "��"            DELIMITED  BY  SIZE
+                   STRING  "〔"            DELIMITED  BY  SIZE
                            TNS-NAME        DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE
+                           "〕"            DELIMITED  BY  SIZE
                                            INTO  WRK-NAME
                    END-STRING
                END-IF
       *
                IF     (TNS-YUKOSTYMD       <=  SPA-SRYYMD )  AND
                       (TNS-YUKOEDYMD       >=  SPA-SRYYMD )
-      *            �������о�ʬ
+      *            診療日対象分
                    MOVE    1               TO  FLG-OK
                END-IF
-      *        �в����������ꤢ��
+      *        経過措置日設定あり
       *        IF     (HCSET-KEIKAYMD      NOT =   SPACE )   AND
       *               (TNS-SRYCD (1:1)         =   "6"   )   AND
       *               (TNS-KEIKASOCHIYMD   NOT =   SPACE
       *                                        AND ZERO  )
       *            IF     (TNS-YUKOSTYMD       <=  HCSET-KEIKAYMD ) AND
       *                   (TNS-YUKOEDYMD       >=  HCSET-KEIKAYMD )
-      *                �в���������ͭ��
+      *                経過措置日に有効
       *                MOVE    1               TO  FLG-OK
       *            END-IF
-      *            �в�������Ƚ��
+      *            経過措置日判定
       *            IF      HCSET-KEIKAYMD      =   TNS-KEIKASOCHIYMD
       *                MOVE    1               TO  FLG-KEIKA
       *                MOVE    1               TO  FLG-OK-KEIKA
       *            END-IF
       *        END-IF
-      *        �в�������
+      *        経過措置日
       *        IF      TNS-KEIKASOCHIYMD   =   SPACE  OR  ZERO
       *            CONTINUE
       *        ELSE
@@ -1382,36 +1382,36 @@
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
-               MOVE    "��"            TO  B01N-ZUMIFLG
+               MOVE    "削"            TO  B01N-ZUMIFLG
            ELSE
-      *        �в�������Ƚ��
+      *        経過措置日判定
                IF     FLG-OK-KEIKA         =   1
-                   MOVE    "��"            TO  B01N-ZUMIFLG
+                   MOVE    "経"            TO  B01N-ZUMIFLG
                END-IF
            END-IF
       *
            IF      ISET-COMMENT    NOT =   SPACE
                MOVE    ISET-COMMENT        TO  WRK-NAME
            END-IF
-      *    ̾���Խ�
+      *    名称編集
            MOVE    WRK-NAME            TO  B01N-NAME
            IF      WRK-NAME(61:)       =   SPACE
                CONTINUE
            ELSE
-      *        �����Խ�
+      *        １行編集
                PERFORM 20024-TBL-HEN01-SEC
                IF      WRK-NAME(81:)   NOT =   SPACE
                    MOVE    WRK-NAME(81:)       TO  B01N-NAME
                END-IF
            END-IF
       *
-      *    �в�������
+      *    経過措置日
            IF      WRK-TNS-KEIKASOCHIYMD   NOT =   SPACE
                MOVE    SPACE               TO  WRK-KEIKAYMD-G
                MOVE    WRK-TNS-KEIKASOCHIYMD   TO  WRK-SYMD
                PERFORM 800-SEIWA-HEN-SEC
                MOVE    WRK-HENYMDG         TO  WRK-KEIKAYMD
-               MOVE    "�ڷв���������"    TO  WRK-KEIKA-H
+               MOVE    "【経過措置日】"    TO  WRK-KEIKA-H
                PERFORM 200231-SRYCDCHG-CHK-SEC
            ELSE
                MOVE    SPACE               TO  WRK-KEIKAYMD-G
@@ -1420,7 +1420,7 @@
            MOVE    SPACE               TO  WRK-HEN-SURYO
            MOVE    SPACE               TO  WRK-HEN-SURYO-2
            MOVE    SPACE               TO  WRK-HEN-SURYO-3
-      *    ���̡����ޡ�����
+      *    数量（薬剤・器材）
            IF     (ISET-INPUTCD(1:1)   =   "6"  OR  "7" )  OR
                  ((ISET-INPUTCD(1:1)   NOT =   "1"   )  AND
                   (ISET-SURYO1         NOT =   1     )  )
@@ -1428,7 +1428,7 @@
                MOVE    WRK-HEN-SURYO       TO  B01-SURYO-HEN
                MOVE    WRK-TNS-TANINAME    TO  B01N-TANINAME
            ELSE
-      *        ���ť�����
+      *        診療コード
                IF      (ISET-INPUTCD(1:1)      =   "1"  ) AND
                        (ISET-SURYO1        NOT =   1    ) AND
                        (WRK-TNS-KZMCOMPSIKIBETU
@@ -1439,7 +1439,7 @@
                END-IF
            END-IF
       *
-      *    ʬ����ʥե����Τߡ�
+      *    分画数（フィルムのみ）
            IF     (ISET-INPUTCD(1:1)   =   "7" )  AND
                   (ISET-SURYO2         >   ZERO)  AND
                   (WRK-TNS-DATAKBN     =   "3" )
@@ -1448,13 +1448,13 @@
                MOVE    WRK-HEN-SURYO-2     TO  B01-SURYO-HEN
                MOVE    SPACE               TO  B01N-TANINAME
            END-IF
-      *    ���Ļ��û�����������Ψ�Ͽ��̵��ܤʤ�
+      *    乳幼児加算・酸素補正率は数量記載なし
            IF     (ISET-INPUTCD        =   "799990070" 
                                        OR  "770020070" )
                MOVE    SPACE               TO  B01-HENSYU
                MOVE    SPACE               TO  B01N-TANINAME
            END-IF
-      *    ����¾
+      *    その他
       ***  IF      ISET-ATAI-AREA      NOT =   SPACE
       *        MOVE    SPACE           TO  B01-HENSYU
       *        STRING  ISET-ATAI1      DELIMITED  BY  SPACE
@@ -1468,7 +1468,7 @@
       *        END-STRING
       ***  END-IF
       *
-      *    ������
+      *    換算値
            MOVE    SPACE               TO  WRK-HEN-INPUTHEN
            IF      ISET-KANSURYO       >   ZERO
                MOVE    ISET-KANSURYO        TO  WRK-SURYO
@@ -1488,34 +1488,34 @@
            IF      WRK-HEN-INPUTHEN (10:)   =   SPACE
                MOVE    WRK-HEN-INPUTHEN     TO  B01-INPUT-HEN
            ELSE
-      *        �����Խ�
+      *        １行編集
                PERFORM 20024-TBL-HEN01-SEC
                MOVE    WRK-HEN-INPUTHEN     TO  B01-KANSURYO-HEN
            END-IF
-      *    �в�������
+      *    経過措置日
            IF      WRK-KEIKAYMD-G  NOT =   SPACE
-      *        �����Խ�
+      *        １行編集
                PERFORM 20024-TBL-HEN01-SEC
-      *        �����Խ�
+      *        １行編集
                MOVE    WRK-KEIKAYMD-G      TO  B01-HENSYU-4
                PERFORM 20024-TBL-HEN01-SEC
                MOVE    SPACE           TO  WRK-KEIKAYMD-G
            END-IF
-      *    ���
+      *    回数
            IF     (ISET-KAISU              >   1     )
              OR  ((ISET-INPUTCD(1:3)       =   "001" )  AND
                   (ISET-KAISU              >   ZERO  ))
                MOVE    ISET-KAISU          TO  B01-KAISU
-               MOVE    "��"                TO  B01-KAKERU
+               MOVE    "×"                TO  B01-KAKERU
                IF      B01N-TANINAME       =   SPACE
                    MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
                ELSE
-      *           �����Խ�
+      *           １行編集
                    PERFORM 20024-TBL-HEN01-SEC
                    MOVE    WRK-HEN-KAISU       TO  B01-KAISU-HEN
                END-IF
            END-IF
-      *    �����Խ�
+      *    １行編集
            IF     (BODY-01             =   SPACE )  AND
                   (BODY-01N            =   SPACE )
                CONTINUE
@@ -1526,7 +1526,7 @@
        20023-SRYCD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �в����֥�����Ƚ�����
+      *    経過措置コード判定処理
       *****************************************************************
        200231-SRYCDCHG-CHK-SEC             SECTION.
       *
@@ -1551,7 +1551,7 @@
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SRYCDCHG        =   ZERO
                MOVE    CHG-RJNSRYCD          TO  WRK-CHNGCD
-               MOVE    "���ܹԥ����ɡ�"      TO  WRK-KEIKA-H2
+               MOVE    "　移行コード："      TO  WRK-KEIKA-H2
            END-IF
       *
            .
@@ -1559,19 +1559,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Խ���������
+      *    処理件数編集印刷処理
       *****************************************************************
        2903-END-HENSYU-SEC          SECTION.
       *
            IF      IDX-P               =   ZERO
                PERFORM 7001-PRT-INIT-SEC
            END-IF
-      *    ��ǧ���
+      *    確認件数
            ADD     3                   TO  IDX-P
            IF      IDX-P               >   LINE-MAX
-      *        ��������
+      *        印刷処理
                PERFORM 400-HCPOM2-PRINT-SEC
-      *        ���Ф��Խ�
+      *        見出し編集
                PERFORM 7001-PRT-INIT-SEC
                MOVE    1               TO  IDX-P
            END-IF
@@ -1583,14 +1583,14 @@
                MOVE    CNT-OK              TO  PRT-UPDCNT
                MOVE    LST-PRT-TAIL1       TO   HCPOM2-MOJI (IDX-P)
            END-IF
-      *    ��������
+      *    印刷処理
            PERFORM 400-HCPOM2-PRINT-SEC
       *
            .
        2903-END-HENSYU-EXIT.
            EXIT.
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        400-HCPOM2-PRINT-SEC          SECTION.
       *
@@ -1613,7 +1613,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                     TO  SPRT-PRIORITY
            MOVE    "HCPOM2.red"     TO  SPRT-PRTID
-           MOVE    "�������åȰ���Ѵ���ǧ�ꥹ��"
+           MOVE    "改正セット一括変換確認リスト"
                                     TO  SPRT-TITLE
            MOVE    HCPOM2           TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID
@@ -1629,7 +1629,7 @@
            IF      SPRT-RETURN          =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1638,7 +1638,7 @@
        400-HCPOM2-PRINT-EXIT.
            EXIT.
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -1647,7 +1647,7 @@
            DISPLAY "*** ORCBSETCHG OK :"  CNT-OK   " ***"
            DISPLAY "*** ORCBSETCHG END ***"
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1667,7 +1667,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1681,7 +1681,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1702,7 +1702,7 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    数量変換編集処理
       *****************************************************************
        810-SURYO-HEN-SEC             SECTION.
       *
@@ -1740,7 +1740,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
       *
@@ -1764,7 +1764,7 @@
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1781,7 +1781,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����ɥޥ��������ɹ�
+      *    入力コードマスター次読込
       *****************************************************************
        920-INPUTCD-NEXT-SEC         SECTION.
       *
@@ -1800,7 +1800,7 @@
        920-INPUTCD-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    ���ϥ��åȥǡ������ɹ�
+      *    入力セットデータ次読込
       *****************************************************************
        900-INPUTSET-READ-SEC         SECTION.
       *
@@ -1819,7 +1819,7 @@
        900-INPUTSET-READ-EXT.
            EXIT.
       *****************************************************************
-      *    Ϸ�Ͱ��̥������Ѵ��ɹ�
+      *    老人一般コード変換読込
       *****************************************************************
        990-SRYCDCHG-READ-SEC         SECTION.
       *
@@ -1836,7 +1836,7 @@
        990-SRYCDCHG-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1850,7 +1850,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1866,7 +1866,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -1881,20 +1881,20 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡���������
+      *    ＤＢ　更新処理
       *****************************************************************
        990-DBCOMMIT-SEC                SECTION.
       *
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
            PERFORM 900-DBDISCONNECT-SEC
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
            PERFORM 100-DBOPEN-SEC
            .
        990-DBCOMMIT-SEC-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1918,7 +1918,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

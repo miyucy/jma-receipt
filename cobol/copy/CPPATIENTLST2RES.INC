@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,88 +16,88 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ󥹴��Ծ����������   COPY (CPPATIENTLST2RES.INC)
+      *    ＡＰＩレスポンス患者情報一覧取得   COPY (CPPATIENTLST2RES.INC)
       ******************************************************************
         01  XML-PATIENTLST2RES.
             02  PATLSTRES-OBJECT           PIC X(36).
             02  PATLSTRES-MODE             PIC S9(9)   BINARY.
             02  PATLSTRES-PATIENTINFORES.
-      *       �»���
+      *       実施日
               03  PATLSTRES-INFORMATION-DATE   PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  PATLSTRES-INFORMATION-TIME   PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  PATLSTRES-API-RESULT         PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  PATLSTRES-API-RESULT-MSG     PIC X(100).
               03  PATLSTRES-RESKEY             PIC X(100).
-      *       �оݴ��Է��
+      *       対象患者件数
               03  PATLSTRES-PATIENTID-CNT      PIC X(03).
-      *       ���顼���Է��
+      *       エラー患者件数
               03  PATLSTRES-PATIENTID-ERR      PIC X(03).
-      *       ���Ծ���
+      *       患者情報
               03  PATLSTRES-PATIENT-INFOMATION    OCCURS   100.
-      *           �����ֹ�
+      *           患者番号
                   04  PATLSTRES-PATIENTID          PIC X(20).
-      *           ������̾
+      *           漢字氏名
                   04  PATLSTRES-NAME               PIC X(100).
-      *           ���ʻ�̾
+      *           カナ氏名
                   04  PATLSTRES-KANANAME           PIC X(100).
-      *           ��ǯ����
+      *           生年月日
                   04  PATLSTRES-BIRTHDAY           PIC X(10).
-      *           ����
+      *           性別
                   04  PATLSTRES-SEX                PIC X(1).
-      *           ���Լ������
+      *           患者自宅情報
                   04  PATLSTRES-ADDRESS-INFO.
-      *               ͹���ֹ�
+      *               郵便番号
                       06  PATLSTRES-HOME-ZIP-CODE      PIC X(7).
-      *               ����
+      *               住所
                       06  PATLSTRES-HOME-ADDRESSES1    PIC X(200).
-      *               �����ֹ�
+      *               番地番号
                       06  PATLSTRES-HOME-ADDRESSES2    PIC X(200).
-      *               ���������ֹ�����
+      *               自宅電話番号（昼）
                       06  PATLSTRES-HOME-HPONE1        PIC X(15).
-      *               ���������ֹ�����
+      *               自宅電話番号（昼）
                       06  PATLSTRES-HOME-HPONE2        PIC X(15).
-      *           ������ʬ�ʣ����������
+      *           入院区分（１：入院中）
                   04  PATLSTRES-OUTPATIENT-CLASS       PIC X(01).
-      *           �ݸ�����
+      *           保険情報
                   04  PATLSTRES-INSURANCE-INFO     OCCURS  3 TIMES.
-      *               �ݸ��μ���
+      *               保険の種類
                       06  PATLSTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *               �ݸ��μ���̾��
+      *               保険の種類名称
                       06  PATLSTRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *               �ݸ����ֹ�
+      *               保険者番号
                       06  PATLSTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *               ����
+      *               記号
                       06  PATLSTRES-MAIN-MARK              PIC X(80).
-      *               �ֹ�
+      *               番号
                       06  PATLSTRES-MAIN-NUMBER            PIC X(80).
-      *               ��³��ʬ
+      *               継続区分
                       06  PATLSTRES-MAIN-CONTINUATION      PIC X(01).
-      *               �����ʬ
+      *               補助区分
                       06  PATLSTRES-MAIN-ASSISTANCE        PIC X(01).
-      *               �ܿͲ�²��ʬ
+      *               本人家族区分
                       06  PATLSTRES-MAIN-FAMILY            PIC X(01).
-      *               ���ݸ���̾
+      *               被保険者名
                       06  PATLSTRES-MAIN-POLICYHOLDER      PIC X(100).
-      *               ͭ��������
+      *               有効開始日
                       06  PATLSTRES-MAIN-START-DATE        PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       06  PATLSTRES-MAIN-END-DATE          PIC X(10).
-      *            �������
+      *            公費情報
                    04  PATLSTRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *               ����μ���
+      *               公費の種類
                       06  PATLSTRES-INSURANCE-CLASS         PIC X(03).
-      *               ����μ���̾��
+      *               公費の種類名称
                       06  PATLSTRES-INSURANCE-NAME          PIC X(20).
-      *               ��ô���ֹ�
+      *               負担者番号
                       06  PATLSTRES-PROVIDER-NUMBER         PIC X(08).
-      *               ������ֹ�
+      *               受給者番号
                       06  PATLSTRES-RECIPIENT-NUMBER        PIC X(20).
-      *               ͭ��������
+      *               有効開始日
                       06  PATLSTRES-INSURANCE-START-DATE    PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       06  PATLSTRES-INSURANCE-END-DATE      PIC X(10).
       *

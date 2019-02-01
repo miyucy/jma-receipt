@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼Ô¸ÄÊÌÀßÄê                  COPY (CPPTCONF.INC)     *
+      *    æ‚£è€…å€‹åˆ¥è¨­å®š                  COPY (CPPTCONF.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTCONF-REC.
-      *¥­¡¼
+      *ã‚­ãƒ¼
            03  PTCONF-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  PTCONF-HOSPNUM             PIC  9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  PTCONF-PTID                PIC  9(10).
-      *ÀßÄê£Ë£Å£Ù (Configuration KEY)
+      *è¨­å®šï¼«ï¼¥ï¼¹ (Configuration KEY)
                05  PTCONF-CKEY                PIC  X(25).
-      *ÀßÄê¥Ç¡¼¥¿ (Configuration DATA)
+      *è¨­å®šãƒ‡ãƒ¼ã‚¿ (Configuration DATA)
            03  PTCONF-CDATA                   PIC  X(10).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTCONF-TERMID                  PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTCONF-OPID                    PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTCONF-CREYMD                  PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTCONF-UPYMD                   PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTCONF-UPHMS                   PIC  X(06).

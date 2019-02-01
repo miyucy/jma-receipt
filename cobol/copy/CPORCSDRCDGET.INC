@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,49 +15,49 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ��ե����ɼ����ѥѥ�᥿      COPY (CPORCSDRCDGET.INC)
-      *                                  ���ѥץ������ (ORCSDRCDGET)
-      *    �������
-      *      ����ǯ��
-      *      ������ʬ
-      *      ���ԣɣ�
-      *      �ݸ��ȹ礻
-      *     �������Τߡ�
-      *      �о�ǯ��������
-      *      ����ǯ����
+      *    医師コード取得用パラメタ      COPY (CPORCSDRCDGET.INC)
+      *                                  使用プログラム (ORCSDRCDGET)
+      *    設定項目
+      *      診療年月
+      *      入外区分
+      *      患者ＩＤ
+      *      保険組合せ
+      *     （入院のみ）
+      *      対象年月日情報
+      *      入院年月日
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
            03  LNK-DRCDGET-IN.
-      *        ����ǯ��
+      *        診療年月
                05  LNK-DRCDGET-I-SRYYM     PIC 9(06).
-      *        ������ʬ
+      *        入外区分
                05  LNK-DRCDGET-I-NYUGAIKBN PIC X(01).
-      *        ���ԣɣ�
+      *        患者ＩＤ
                05  LNK-DRCDGET-I-PTID      PIC 9(10).
-      *        �ݸ��ȹ礻����
+      *        保険組合せ情報
                05  LNK-DRCDGET-I-HKNCOMBI-OCC.
-      *        �ݸ��ȹ礻
+      *        保険組合せ
                    07  LNK-DRCDGET-I-HKNCOMBI
                                            PIC 9(04)   OCCURS  10.
-      *        �о�ǯ��������
+      *        対象年月日情報
                05  LNK-DRCDGET-I-TEKYMD.
-      *        Ŭ�ѳ���ǯ����
+      *        適用開始年月日
                    07  LNK-DRCDGET-I-TEKSTYMD
                                            PIC X(08). 
-      *        Ŭ�ѽ�λǯ����
+      *        適用終了年月日
                    07  LNK-DRCDGET-I-TEKEDYMD
                                            PIC X(08). 
-      *        ����ǯ����
+      *        入院年月日
                05  LNK-DRCDGET-I-NYUINYMD  PIC X(08). 
       *
            03  LNK-DRCDGET-OT.
-      *        ��ե�����
+      *        医師コード
                05  LNK-DRCDGET-O-DRCD      PIC X(05).
-      *        ���Ų�
+      *        診療科
                05  LNK-DRCDGET-O-DRCD-SRYKA
                                            PIC X(02).
-      *    ����������
+      *    復帰コード
            03  LNK-DRCDGET-RC           PIC S9(9) BINARY.

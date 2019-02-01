@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,22 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ÆÃÄê´ïºàÅ¬±þ¼À´µ  COPY (CPMATERIAL-S.INC)        *
+      *         ç‰¹å®šå™¨æé©å¿œç–¾æ‚£  COPY (CPMATERIAL-S.INC)        *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  MATERIAL-S-REC.
            03  MATERS-KEY.
                05  MATERS-SRYCD           PIC  X(09).
                05  MATERS-RENNUM1         PIC  9(03).
                05  MATERS-RENNUM2         PIC  9(02).
-      *    ½ýÉÂÌ¾Ì¾¾Î
+      *    å‚·ç—…ååç§°
            03  MATERS-BYOMEI           PIC  X(200).
-      *    ½ýÉÂÌ¾¥³¡¼¥É
+      *    å‚·ç—…åã‚³ãƒ¼ãƒ‰
            03  MATERS-BYOMEICD         PIC  X(07).
-      *    Å¬±þ¼À´µÌ¾¶èÊ¬
+      *    é©å¿œç–¾æ‚£ååŒºåˆ†
            03  MATERS-BYOMEIKBN        PIC  9(01).
       *
            03  MATERS-CREYMD           PIC  X(08).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,61 +16,61 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó£Ä£Â              (CPFILE-INFO.INC)       *
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±ï¼¤ï¼¢              (CPFILE-INFO.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  FILE-INFO-REC.
       *
           03  FILE-INFO-KEY.
       *
                05  FILE-INFO-HOSPNUM   PIC 9(2).
-      *£Ë£Å£Ù
+      *ï¼«ï¼¥ï¼¹
                05  FILE-INFO-TBL-KEY   PIC X(08).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  FILE-INFO-SRYYM     PIC X(06).
-      *¥·¥§¥ë£É£Ä
+      *ã‚·ã‚§ãƒ«ï¼©ï¼¤
                05  FILE-INFO-SHELLID   PIC X(20).
-      *Ï¢ÈÖ
+      *é€£ç•ª
                05  FILE-INFO-RENNUM    PIC 9(03).
-      *½èÍýÆâÏ¢ÈÖ
+      *å‡¦ç†å†…é€£ç•ª
                05  FILE-INFO-SHORI-RENNUM
                                        PIC 9(03).
-      *ÀÁµáÇ¯·îÆü
+      *è«‹æ±‚å¹´æœˆæ—¥
            03  FILE-INFO-SKYYMD        PIC X(08).
-      *¥¿¥¤¥È¥ë
+      *ã‚¿ã‚¤ãƒˆãƒ«
            03  FILE-INFO-TITLE         PIC X(100).
-      *¿³ºº»ÙÊ§µ¡´Ø
+      *å¯©æŸ»æ”¯æ‰•æ©Ÿé–¢
            03  FILE-INFO-TEISYUTUSAKI  PIC X(01).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
            03  FILE-INFO-NYUGAIKBN     PIC X(01).
-      *·ï¿ô
+      *ä»¶æ•°
            03  FILE-INFO-CNT-ALL       PIC 9(07).
-      *·ï¿ô¡ÊÆþ±¡¡Ë
+      *ä»¶æ•°ï¼ˆå…¥é™¢ï¼‰
            03  FILE-INFO-CNT-NYUIN     PIC 9(07).
-      *·ï¿ô¡ÊÆþ±¡³°¡Ë
+      *ä»¶æ•°ï¼ˆå…¥é™¢å¤–ï¼‰
            03  FILE-INFO-CNT-GAIRAI    PIC 9(07).
-      *¸µ³ÊÇ¼¾ì½ê
+      *å…ƒæ ¼ç´å ´æ‰€
            03  FILE-INFO-FOR-FOLDER    PIC X(200).
-      *¸µ¥Õ¥¡¥¤¥ëÌ¾
+      *å…ƒãƒ•ã‚¡ã‚¤ãƒ«å
            03  FILE-INFO-FOR-DATA      PIC X(200).
-      *Àè³ÊÇ¼¾ì½ê
+      *å…ˆæ ¼ç´å ´æ‰€
            03  FILE-INFO-TO-FOLDER     PIC X(200).
-      *Àè¥Õ¥¡¥¤¥ëÌ¾
+      *å…ˆãƒ•ã‚¡ã‚¤ãƒ«å
            03  FILE-INFO-TO-DATA       PIC X(200).
-      *¥³¡¼¥É¶èÊ¬¡Ê¶õÇò¡¢£±¡§£Ó¡Ý£ê£é£ó £²¡§£Å£Õ£Ã¡Ë
+      *ã‚³ãƒ¼ãƒ‰åŒºåˆ†ï¼ˆç©ºç™½ã€ï¼‘ï¼šï¼³âˆ’ï½Šï½‰ï½“ ï¼’ï¼šï¼¥ï¼µï¼£ï¼‰
            03  FILE-INFO-CODE-TYPE     PIC X(01).
-      *£Ã£Ó£ÖÍÑ£Ä£ÂÍ­Ìµ¶èÊ¬¡Ê£±¡§£Ä£ÂÍ­¡Ë
+      *ï¼£ï¼³ï¼¶ç”¨ï¼¤ï¼¢æœ‰ç„¡åŒºåˆ†ï¼ˆï¼‘ï¼šï¼¤ï¼¢æœ‰ï¼‰
            03  FILE-INFO-DATA-TYPE     PIC X(01).
-      *¥¨¥é¡¼¥³¡¼¥É¡Ê£±¡§¥¨¥é¡¼Í­¡Ë
+      *ã‚¨ãƒ©ãƒ¼ã‚³ãƒ¼ãƒ‰ï¼ˆï¼‘ï¼šã‚¨ãƒ©ãƒ¼æœ‰ï¼‰
            03  FILE-INFO-ERR-CODE      PIC X(01).
-      *¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸
+      *ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
            03  FILE-INFO-ERR-MSG       PIC X(200).
-      *½èÍýÆü
+      *å‡¦ç†æ—¥
            03  FILE-INFO-SYOYMD        PIC X(08).
-      *ºîÀ®Æü
+      *ä½œæˆæ—¥
            03  FILE-INFO-CREYMD        PIC X(08).
-      *ºîÀ®»þ´Ö
+      *ä½œæˆæ™‚é–“
            03  FILE-INFO-CREHMS        PIC X(06).

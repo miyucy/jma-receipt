@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       ******************************************************************
-      *    ���У����ӽ�λ�ǡ����Խ����֥ѥ�᥿
+      *    ＡＰＩ中途終了データ編集サブパラメタ
       *                                           (CPORAPISUBWKSRY.INC)
       ******************************************************************
        01  ORAPISUBWKSRYAREA.
-      *    ������ʬ
+      *    処理区分
            03  ORAPIWKSRY-SYORIKBN     PIC X(01).
-      *    ���ֳ��û���ʬ
+      *    時間外加算区分
            03  ORAPIWKSRY-TIMEFLG      PIC X(01).
-      *    �ݸ�����
+      *    保険情報
            03  ORAPIWKSRY-HKNCOMBI-AREA.
-      *        �ݸ��ȹ礻�ֹ�
+      *        保険組合せ番号
                05  ORAPIWKSRY-HKNCOMBI     PIC X(04).
       *
-      *    ��������
+      *    診療内容
            03  ORAPIWKSRY-SRYACT-AREA.
                05  ORAPIWKSRY-MDC-INFO         OCCURS  40 TIMES.
-      *            ���ż��̶�ʬ
+      *            診療種別区分
                    07  ORAPIWKSRY-MDC-CLASS        PIC X(3).
-      *            ���Ŷ�ʬ̾��
+      *            診療区分名称
                    07  ORAPIWKSRY-MDC-CLASS-NAME   PIC X(50).
-      *            ���
+      *            回数
                    07  ORAPIWKSRY-MDC-CLASS-NUMBER PIC X(50).
-      *            ������
+      *            剤内容
                    07  ORAPIWKSRY-PRESCRIPTION-INFO    OCCURS  40 TIMES.
-      *                ���ť�����
+      *                診療コード
                        09  ORAPIWKSRY-PRSCRPT-CODE     PIC X(9).
-      *                ����̾�Ρʥ����ȡ�
+      *                診療名称（コメント）
                        09  ORAPIWKSRY-PRSCRPT-NAME     PIC X(80).
-      *                ����
+      *                数量
                        09  ORAPIWKSRY-PRSCRPT-NUMBER   PIC X(40).
-      *                �����������̾����
+      *                処方せん一般名記載
                        09  ORAPIWKSRY-GENERIC-FLG      PIC X(03).
       *
-      *    ���顼��ʬ
+      *    エラー区分
            03  ORAPIWKSRY-ERRCD        PIC X(04).
            03  ORAPIWKSRY-ERRMSG       PIC X(100).
       *

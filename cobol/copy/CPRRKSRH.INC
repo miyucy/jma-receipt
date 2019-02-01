@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,43 +16,43 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¼õ¿ÇÍúÎò¾È²ñ¥Æ¡¼¥Ö¥ë    COPY (CPRRKSRH.INC)         *
+      *    å—è¨ºå±¥æ­´ç…§ä¼šãƒ†ãƒ¼ãƒ–ãƒ«    COPY (CPRRKSRH.INC)         *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  RRKSRH-REC.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
             03  RRKSRH-HOSPNUM         PIC 9(2).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
             03  RRKSRH-TERMID          PIC X(64).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
             03  RRKSRH-PTID            PIC 9(10).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
             03  RRKSRH-NYUGAIKBN       PIC X(1).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
             03  RRKSRH-SRYKA           PIC X(2).
-      *¥É¥¯¥¿¡¼
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼
             03  RRKSRH-DRCD            PIC X(5).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
             03  RRKSRH-HKNCOMBINUM     PIC 9(4).
-      *¿ÇÎÅÆü
+      *è¨ºç™‚æ—¥
             03  RRKSRH-SRYYMD          PIC X(8).
-      *ºîÀ®Æü
+      *ä½œæˆæ—¥
             03  RRKSRH-CREYMD          PIC X(8).
-      *¹¹¿·Æü
+      *æ›´æ–°æ—¥
             03  RRKSRH-UPYMD           PIC X(8).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
             03  RRKSRH-UPHMS           PIC X(6).
-      *°Ê²¼¸¡º÷ÍÑ¹àÌÜ
-      *³«»Ï¿ÇÎÅÆü
+      *ä»¥ä¸‹æ¤œç´¢ç”¨é …ç›®
+      *é–‹å§‹è¨ºç™‚æ—¥
             03  RRKSRH-STSRYYMD        PIC X(8).
-      *½ªÎ»¿ÇÎÅÆü
+      *çµ‚äº†è¨ºç™‚æ—¥
             03  RRKSRH-EDSRYYMD        PIC X(8).
-      *¸øÈñ¤Î¼ïÎà
+      *å…¬è²»ã®ç¨®é¡ž
             03  RRKSRH-KOHNUM-G.
                 05 RRKSRH-KOHNUM       PIC X(3) OCCURS 5.
-      *ÆüÉÕ¡Ü»þ¹ï
+      *æ—¥ä»˜ï¼‹æ™‚åˆ»
             03  RRKSRH-YMDHMS          PIC X(14).
 

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,57 +16,57 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ¥ì¥»¥×¥ÈÊÔÄÖ½ç¾ÜºÙÀßÄê (CPRECE-PUTH.INC)         *
-      *         £È£Å£Á£Ä                                         *
+      *         ãƒ¬ã‚»ãƒ—ãƒˆç·¨ç¶´é †è©³ç´°è¨­å®š (CPRECE-PUTH.INC)         *
+      *         ï¼¨ï¼¥ï¼¡ï¼¤                                         *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  RECE-PUTH-REC.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
             02  RECE-PUTH-HOSPNUM      PIC 9(2).
-      *°õºþ½ç»ØÄê¡Ê¸©Æâ¸©³°¡Ë
+      *å°åˆ·é †æŒ‡å®šï¼ˆçœŒå†…çœŒå¤–ï¼‰
             02  RECE-PUTH-PREFKBN-PRTJYUN
                                        PIC X(1).
-      *°õºþ½ç»ØÄê¡ÊÊÝ¸±¼Ô¡Ë
+      *å°åˆ·é †æŒ‡å®šï¼ˆä¿é™ºè€…ï¼‰
             02  RECE-PUTH-HKNJANUM-PRTJYUN
                                        PIC X(1).
-      *°åÎÅµ¡´Ø¤Î½êºßÃÏÊÝ¸±¼Ô
+      *åŒ»ç™‚æ©Ÿé–¢ã®æ‰€åœ¨åœ°ä¿é™ºè€…
             02  RECE-PUTH-HKNJANUM     PIC X(8).
-      *°åÎÅµ¡´Ø¤Î½êºßÃÏÊÝ¸±¼Ô°õºþ°ÌÃÖ
+      *åŒ»ç™‚æ©Ÿé–¢ã®æ‰€åœ¨åœ°ä¿é™ºè€…å°åˆ·ä½ç½®
             02  RECE-PUTH-HKNJANUM-PRTKBN
                                        PIC X(1).
-      *°õºþ½çÀßÄê¡Ê£±¡§¸©Æâ¡¢£²¡§¸©³°¡Ë
+      *å°åˆ·é †è¨­å®šï¼ˆï¼‘ï¼šçœŒå†…ã€ï¼’ï¼šçœŒå¤–ï¼‰
             02  RECE-PUTH-PRTJYUN-TBL  OCCURS  2.
-      *Âè°ì°õºþ½çÀßÄê
+      *ç¬¬ä¸€å°åˆ·é †è¨­å®š
                 03  RECE-PUTH-SRT-01   PIC X(2).
-      *°ìÈÌ¹ñÊÝÀßÄê
+      *ä¸€èˆ¬å›½ä¿è¨­å®š
                 03  RECE-PUTH-KKHKBN   PIC X(2).
-      *Ä¹´ü¡ÊÄ¹´ü¹â³ÛÎÅÍÜÈñ¡Ë
+      *é•·æœŸï¼ˆé•·æœŸé«˜é¡ç™‚é¤Šè²»ï¼‰
                 03  RECE-PUTH-CHOUKI   PIC X(1).
-      *ºßÁí¿Ç¡¦ºß°åÁí
+      *åœ¨ç·è¨ºãƒ»åœ¨åŒ»ç·
                 03  RECE-PUTH-ZAITAKU  PIC X(1).
-      *¹â³ÛÅÀ¿ô
+      *é«˜é¡ç‚¹æ•°
                 03  RECE-PUTH-KOUGAKU-TEN
                                        PIC 9(7).
-      *ºÇ½ª½ÐÎÏ½ç
+      *æœ€çµ‚å‡ºåŠ›é †
                 03  RECE-PUTH-SRT-LAST PIC X(1).
-      *Í­¸ú³«»ÏÇ¯·îÆü
+      *æœ‰åŠ¹é–‹å§‹å¹´æœˆæ—¥
             02  RECE-PUTH-STYUKYMD     PIC X(8).
-      *Í­¸ú½ªÎ»Ç¯·îÆü
+      *æœ‰åŠ¹çµ‚äº†å¹´æœˆæ—¥
             02  RECE-PUTH-EDYUKYMD     PIC X(8).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
             02  RECE-PUTH-TERMID       PIC X(64).
-      *¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
             02  RECE-PUTH-OPID         PIC X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
             02  RECE-PUTH-CREYMD       PIC X(8).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
             02  RECE-PUTH-UPYMD        PIC X(8).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
             02  RECE-PUTH-UPHMS        PIC X(6).
       *
-      *¼ç¥­¡¼¹¹¿·ÍÑ¹àÌÜ
+      *ä¸»ã‚­ãƒ¼æ›´æ–°ç”¨é …ç›®
             02  RECE-PUTH-UPSTYUKYMD   PIC X(08).
             02  RECE-PUTH-UPEDYUKYMD   PIC X(08).

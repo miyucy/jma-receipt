@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,88 +15,88 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    �쥻�ץȼ����Խ��ѥ�᥿      COPY (CPORCSSYUBETU.INC)
-      *                                  ���ѥץ������ (ORCSSYUBETU)
-      *    �������
-      *      ���ŵ��أɣ�
-      *      ���ֹ�
-      *      ���ԣɣ�
-      *      ����ǯ��
-      *      ������ʬ
-      *      ǯ��
+      *    レセプト種別編集パラメタ      COPY (CPORCSSYUBETU.INC)
+      *                                  使用プログラム (ORCSSYUBETU)
+      *    設定項目
+      *      医療機関ＩＤ
+      *      県番号
+      *      患者ＩＤ
+      *      診療年月
+      *      入外区分
+      *      年齢
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.01.01    NACL-ƣ��    07/01/21  ���������ô���ֹ��ѹ��б�
-      *                                     �����ݤθ���ñ�ȤΤߡ�
-      *                                     Ŭ�ѳ���ǯ�������ɲ�
+      *  04.01.01    NACL-藤原    07/01/21  月途中の負担者番号変更対応
+      *                                     （生保の公費単独のみ）
+      *                                     適用開始年月日の追加
       *
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *                                     �쥻�ץȼ��̡ʻ�쥻�ץȡˤ��ɲ�
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *                                     レセプト種別（紙レセプト）の追加
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ� 
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加 
       ************************************************************
       *
        01  ORCSSYUBETUAREA.
       *
            03  LNK-SYUBETU-IN.
-      *        ���ŵ��أɣ�
+      *        医療機関ＩＤ
                05  LNK-SYUBETU-HOSPNUM     PIC 9(2).
-      *        ���ֹ�
+      *        県番号
                05  LNK-SYUBETU-PREFNUM     PIC 9(02).
-      *        ����ǯ��
+      *        診療年月
                05  LNK-SYUBETU-SRYYM       PIC 9(06).
-      *        ������ʬ
+      *        入外区分
                05  LNK-SYUBETU-NYUGAIKBN   PIC X(01).
-      *        ���ԣɣ�
+      *        患者ＩＤ
                05  LNK-SYUBETU-PTID        PIC 9(10).
-      *        ��ǯ����
+      *        生年月日
                05  LNK-SYUBETU-BIRTHDAY    PIC X(08).
       *
            03  LNK-SYUBETU-OT.
-      *        �쥻�ץȾ���
+      *        レセプト情報
                05  LNK-SYUBETU-OCC         OCCURS  100.
-      *            ������ʧ����
+      *            審査支払機関
                    07  LNK-SYUBETU-TEISYUTUSAKI
                                        PIC 9(01).
-      *            �쥻�ץȼ���
+      *            レセプト種別
                    07  LNK-SYUBETU-RECESYUBETU
                                        PIC X(04).
-      *            �쥻�ץȼ��̡ʻ�쥻�ץȡ�
+      *            レセプト種別（紙レセプト）
                    07  LNK-SYUBETU-RECESYUBETU-Y
                                        PIC 9(04).
-      *            �ݸ����ֹ�
+      *            保険者番号
                    07  LNK-SYUBETU-HKNJANUM
                                        PIC X(08).
-      *            �����ʬ
+      *            補助区分
                    07  LNK-SYUBETU-HOJOKBN
                                        PIC X(01).
-      *            ����ɣġʸ���ñ�ȤΤߡ�
+      *            公費ＩＤ（公費単独のみ）
                    07  LNK-SYUBETU-KOHID
                                        PIC 9(10).
-      *            Ŭ�ѳ���ǯ����
+      *            適用開始年月日
                    07  LNK-SYUBETU-TEKSTYMD
                                        PIC X(08).
-      *            ʬ���ʬ
+      *            分割区分
                    07  LNK-SYUBETU-RECEIPT-KBN
                                        PIC X(10).
-      *            �ݸ��ֹ�ʼ��ݸ���
+      *            保険番号（主保険）
                    07  LNK-SYUBETU-HKNNUM
                                        PIC X(03).
-      *            �ݸ��ȹ礻�ֹ�
+      *            保険組合せ番号
                    07  LNK-SYUBETU-HKNCOMBI-AREA.
                        09  LNK-SYUBETU-HKNCOMBI
                                        PIC 9(04)   OCCURS  10.
       *
-      *    ����������  ����������ܥ��顼
-      *                ��������ǯ��顼��ʿ������ǯ���������
-      *                ����ǯ��������顼
-      *                �����оݥ쥻�ץȤʤ�
+      *    復帰コード  １：設定項目エラー
+      *                ２：診療年月エラー（平成１４年９月以前）
+      *                ３：年齢取得エラー
+      *                ９：対象レセプトなし
            03  LNK-SYUBETU-RC              PIC S9(9) BINARY.

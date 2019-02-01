@@ -1,12 +1,12 @@
 \set ON_ERROR_STOP
 --
--- ¼ıÇ¼ÍúÎòÈÖ¹æ(SYURRKNUM)ÄÉ²Ã
--- ¼ıÇ¼ÍúÎò»ŞÈÖ¹æ(SYURRKEDANUM)ÄÉ²Ã
--- ¼ıÇ¼ÍúÎò¹¹¿·¶èÊ¬(SYURRKUPDKBN)ÄÉ²Ã
+-- åç´å±¥æ­´ç•ªå·(SYURRKNUM)è¿½åŠ 
+-- åç´å±¥æ­´æç•ªå·(SYURRKEDANUM)è¿½åŠ 
+-- åç´å±¥æ­´æ›´æ–°åŒºåˆ†(SYURRKUPDKBN)è¿½åŠ 
 -- 
 -- Create Date : 2006/12/19           --
 --
---  ¹àÌÜÄÉ²Ã                        --
+--  é …ç›®è¿½åŠ                         --
 alter table TBL_SYUMEI
    add column SYURRKNUM		integer;
 alter table TBL_SYUMEI
@@ -15,7 +15,7 @@ alter table TBL_SYUMEI
    add column SYURRKUPDKBN	char(1);
 
 
---  ¥¼¥íÀßÄê                       --
+--  ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYUMEI
    alter SYURRKNUM	set default 0;
 alter table TBL_SYUMEI

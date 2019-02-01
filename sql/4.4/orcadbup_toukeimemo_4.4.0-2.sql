@@ -1,6 +1,6 @@
 --                                    --
--- Åý·×³Ð¤¨½ñ¤­¥Ç¡¼¥¿¹¹¿·             --
--- Æü¼¡¡¦·î¼¡Åý·×¥×¥í¥°¥é¥à           --
+-- çµ±è¨ˆè¦šãˆæ›¸ããƒ‡ãƒ¼ã‚¿æ›´æ–°             --
+-- æ—¥æ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆãƒ—ãƒ­ã‚°ãƒ©ãƒ            --
 --                                    --
 -- Create Date : 2009/02/24           --
 --                                    --
@@ -11,7 +11,7 @@ delete from tbl_toukeimemo where pgid = 'ORCBG021' and kanricd = '0000' and kbnc
 delete from tbl_toukeimemo where hospnum = 0;
 
 COPY tbl_toukeimemo FROM stdin;
-ORCBG021	0000	000     	00000000	99999999									¿ÇÎÅÇ¯·î¡¡¡¡¿ÇÎÅÇ¯·î¤òÆþÎÏ¤·¤Þ¤¹¡£\n°õºþ¶èÊ¬¡¡¡¡£°¡§Á´¤Æ¤ÎÉÂÌ¾¤òÂÐ¾Ý¤È¤·¤Þ¤¹¡£\n¡¡¡¡¡¡¡¡¡¡¡¡£±¡§¼«±¡¥³¡¼¥É¤Þ¤¿¤ÏÉÂÌ¾¥³¡¼¥É¤ÇÆþÎÏ¤µ¤ì¤¿\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ÉÂÌ¾¤òÂÐ¾Ý¤È¤·¤Þ¤¹¡£\n½èÍý¶èÊ¬¡¡¡¡£°¡§ÆþÎÏ¤µ¤ì¤¿¿ÇÎÅÇ¯·î¤Ë¿ÇÎÅ¤¬¤¢¤ë´µ¼Ô¤Î¤ß\n¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡ÂÐ¾Ý¤È¤·¤Þ¤¹¡£\n¡¡¡¡¡¡¡¡¡¡¡¡£±¡§Á´¤Æ¤Î´µ¼Ô¤òÂÐ¾Ý¤È¤·¤Þ¤¹¡£\n\n¢¨ÆþÎÏ¤µ¤ì¤¿¿ÇÎÅÇ¯·î¤è¤êÁ°¤ËÅ¾µ¢¤È¤Ê¤Ã¤¿ÉÂÌ¾¤Ï½èÍýÂÐ¾Ý³°¤Ç¤¹¡£\n\n\n			20090224	20090224	150000	0	 		
+ORCBG021	0000	000     	00000000	99999999									è¨ºç™‚å¹´æœˆã€€ã€€è¨ºç™‚å¹´æœˆã‚’å…¥åŠ›ã—ã¾ã™ã€‚\nå°åˆ·åŒºåˆ†ã€€ã€€ï¼ï¼šå…¨ã¦ã®ç—…åã‚’å¯¾è±¡ã¨ã—ã¾ã™ã€‚\nã€€ã€€ã€€ã€€ã€€ã€€ï¼‘ï¼šè‡ªé™¢ã‚³ãƒ¼ãƒ‰ã¾ãŸã¯ç—…åã‚³ãƒ¼ãƒ‰ã§å…¥åŠ›ã•ã‚ŒãŸ\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ç—…åã‚’å¯¾è±¡ã¨ã—ã¾ã™ã€‚\nå‡¦ç†åŒºåˆ†ã€€ã€€ï¼ï¼šå…¥åŠ›ã•ã‚ŒãŸè¨ºç™‚å¹´æœˆã«è¨ºç™‚ãŒã‚ã‚‹æ‚£è€…ã®ã¿\nã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€å¯¾è±¡ã¨ã—ã¾ã™ã€‚\nã€€ã€€ã€€ã€€ã€€ã€€ï¼‘ï¼šå…¨ã¦ã®æ‚£è€…ã‚’å¯¾è±¡ã¨ã—ã¾ã™ã€‚\n\nâ€»å…¥åŠ›ã•ã‚ŒãŸè¨ºç™‚å¹´æœˆã‚ˆã‚Šå‰ã«è»¢å¸°ã¨ãªã£ãŸç—…åã¯å‡¦ç†å¯¾è±¡å¤–ã§ã™ã€‚\n\n\n			20090224	20090224	150000	0	 		
 \.
 
 insert into tbl_toukeimemo select a.pgid,a.kanricd,a.kbncd,a.styukymd,a.edyukymd,a.para1,a.para2,a.para3,a.para4,a.para5,

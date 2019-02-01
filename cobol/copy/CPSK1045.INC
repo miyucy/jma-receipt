@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,56 +16,56 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK1043.INC)   *
-      *         �ʣ���������                            *
-      *         ͽ��ǽ����                            *
+      *         システム管理マスタ     (CPSK1043.INC)   *
+      *         （１０４５）                            *
+      *         予約機能情報                            *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.00    NACL-¿��Ǽ  10/06/21  ͽ�����Ϣư�ɲ�
-      *  04.07.00    NACL-¿��Ǽ  11/06/XX  �����ݸ��ȹ礻��ʬ�ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  10/06/21  予約受付連動追加
+      *  04.07.00    NACL-多々納  11/06/XX  受付保険組合せ区分追加
       ************************************************************
        01  SYS-1045-REC.
            03  SYS-1045-KEY.
                05  SYS-1045-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-1045-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-1045-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-1045-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-1045-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-1045-TBL.
-      *����ɥ�����ɽ��
+      *初期ドクター表示
                05  SYS-1045-INIT-DRCD   PIC  X(05).
-      *ͽ������ν��ɽ��
+      *予約一覧の初期表示
                05  SYS-1045-YYKINIT-FLG PIC  X(01).
-      *ͽ���Ⱥ�����
+      *予約枠最大件数
                05  SYS-1045-YYKMAXCNT   PIC  9(02).
-      *ͽ��ɼȯ�Զ�ʬ
+      *予約票発行区分
                05  SYS-1045-YYKHYO-KBN  PIC  X(01).
-      *ͽ�󴵼��ֹ�Ϣư��ʬ
+      *予約患者番号連動区分
                05  SYS-1045-YYKPTNUM-KBN   PIC  X(01).
-      *ͽ������ֹ�Ϣư��ʬ
+      *予約受付番号連動区分
                05  SYS-1045-YYKUKE-KBN  PIC  X(01).
-      *�����ݸ��ȹ礻��ʬ
+      *受付保険組合せ区分
                05  SYS-1045-UKEHKNCHK-KBN    PIC  X(01).
-      *ͽ��
+      *予備
                05  SYS-1045-YOBI        PIC  X(488).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-1045-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-1045-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-1045-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-1045-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-1045-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-1045-UPD-KEY.
                05  SYS-1045-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1045-UPD-KANRICD     PIC X(04).

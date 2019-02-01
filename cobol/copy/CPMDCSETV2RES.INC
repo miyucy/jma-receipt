@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɡ����åȹ������� (xml2)  COPY (CPMDCSETV2RES.INC)
+      *    ＡＰＩ　セット更新情報 (xml2)  COPY (CPMDCSETV2RES.INC)
       ******************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
         01  XML-MEDICALSETRES.
             02  MDCRES-CONTEXT             PIC S9(9)   BINARY.
@@ -28,78 +28,78 @@
             02  MDCRES-MODE                PIC S9(9)   BINARY.
             02  MDCRES-RECORDNAME          PIC X(128).
             02  MDCRES-MEDICALRES.
-      *        �»���
+      *        実施日
                03  MDCRES-INFORMATION-DATE  PIC X(10).
-      *        �»ܻ���
+      *        実施時間
                03  MDCRES-INFORMATION-TIME  PIC X(8).
-      *        �ֵѥ�����
+      *        返却コード
                03  MDCRES-API-RESULT        PIC X(3).
-      *        �ֵѥ�å�����
+      *        返却メッセージ
                03  MDCRES-API-RESULT-MSG    PIC X(100).
       *
                03  MDCRES-RESKEY            PIC X(100).
       *
-      *        �����
+      *        基準日
                03  MDCRES-BASE-DATE        PIC X(10).
-      *        ���åȥ�����
+      *        セットコード
                03  MDCRES-SETCD            PIC X(06).
-      *        ���å�̾��
+      *        セット名称
                03  MDCRES-SETCD-NAME       PIC X(80).
-      *        ͭ������ǯ����
+      *        有効開始年月日
                03  MDCRES-START-DATE       PIC X(10).
-      *        ͭ����λǯ����
+      *        有効終了年月日
                03  MDCRES-END-DATE         PIC X(10).
-      *        ���ž���
+      *        診療情報
                03  MDCRES-MDC-INFO-G.
                   05  MDCRES-MDC-INFO          OCCURS   40.
-      *             ���ż��̶�ʬ
+      *             診療種別区分
                     09  MDCRES-MDC-CLASS             PIC X(3).
-      *             ���ż���̾��
+      *             診療種別名称
                     09  MDCRES-MDC-CLASS-NAME        PIC X(40).
-      *             ���
+      *             回数
                     09  MDCRES-MDC-CLASS-NUMBER      PIC X(03).
       *
                     09  MDCRES-PRESCRIPTION-INFO    OCCURS   40.
-      *                 ���ť�����
+      *                 診療コード
                         11  MDCRES-PRSCRPT-CODE          PIC X(9).
-      *                 ����̾��
+      *                 診療名称
                         11  MDCRES-PRSCRPT-NAME          PIC X(80).
-      *                 ����
+      *                 数量
                         11  MDCRES-PRSCRPT-NUMBER        PIC X(11).
-      *                 ������
+      *                 自費金額
                         11  MDCRES-PRSCRPT-MONEY         PIC X(07).
-      *                 ��������������
+      *                 コメント埋め込み値
                         11  MDCRES-PRSCRPT-ATAI-G.
                             13  MDCRES-PRSCRPT-ATAI      PIC X(08)
                                                          OCCURS   5.
-      *                 ��³�����Ȼؼ���ʬ
+      *                 継続コメント指示区分
                         11  MDCRES-PRSCRPT-CONTKBN       PIC X(01).
-      *                 ����������ؼ���ʬ
+      *                 内服種類数指示区分
                         11  MDCRES-PRSCRPT-NAIFKBN       PIC X(01).
       *
-      *        �ǡ�����å�����
+      *        データメッセージ
                03  MDCRES-MEDICAL-MSG1-G.
                    05  MDCRES-MEDICAL-MSG1-TBL     OCCURS   50.
-      *                ���顼������
+      *                エラーコード
                        07  MDCRES-MEDI-RESULT        PIC X(4).
-      *                ���顼��å�����
+      *                エラーメッセージ
                        07  MDCRES-MEDI-RESULT-MSG    PIC X(200).
-      *                ���顼����
+      *                エラー剤番
                        07  MDCRES-MEDI-POSITION       PIC X(03).
-      *                ���顼���ֹ�
+      *                エラー行番号
                        07  MDCRES-MEDI-ITEM-POSITION  PIC X(02).
-      *                ���顼������
+      *                エラーコード
                        07  MDCRES-MEDI-CODE           PIC X(09).
                03  MDCRES-WARNING-MSG-G.
-      *            ��˥󥰥�å�����
+      *            ワーニングメッセージ
                    05  MDCRES-MEDI-WARNING-TBL   OCCURS  50.
-      *               ��˥󥰥�����
+      *               ワーニングコード
                       07  MDCRES-MEDI-WARNING       PIC X(04).
-      *               ��˥󥰥�å�����
+      *               ワーニングメッセージ
                       07  MDCRES-WARNING-MSG        PIC X(200).
-      *               ��˥󥰺�
+      *               ワーニング剤
                       07  MDCRES-WRG-POSITION       PIC X(03).
-      *               ��˥󥰹��ֹ�
+      *               ワーニング行番号
                       07  MDCRES-WRG-ITEM-POSITION  PIC X(02).
-      *               ��˥󥰥�����
+      *               ワーニングコード
                       07  MDCRES-WRG-MEDI-CODE      PIC X(09).

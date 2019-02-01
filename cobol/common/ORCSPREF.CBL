@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCSPREF.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¶¦ÄÌ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÅÔÆ»ÉÜ¸©Ì¾¼èÆÀ
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  08/11/23    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…±é€š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : éƒ½é“åºœçœŒåå–å¾—
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  08/11/23    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -51,53 +51,53 @@
       *
        01  CONST-AREA.
            03  CONST-PREF-G.
-             05  CONST-PREF01 PIC X(22) VALUE "01ËÌ³¤Æ»    ËÌ³¤Æ»    ".
-             05  CONST-PREF02 PIC X(22) VALUE "02ÀÄ¿¹¸©    ÀÄ¿¹      ".
-             05  CONST-PREF03 PIC X(22) VALUE "03´ä¼ê¸©    ´ä¼ê      ".
-             05  CONST-PREF04 PIC X(22) VALUE "04µÜ¾ë¸©    µÜ¾ë      ".
-             05  CONST-PREF05 PIC X(22) VALUE "05½©ÅÄ¸©    ½©ÅÄ      ".
-             05  CONST-PREF06 PIC X(22) VALUE "06»³·Á¸©    »³·Á      ".
-             05  CONST-PREF07 PIC X(22) VALUE "07Ê¡Åç¸©    Ê¡Åç      ".
-             05  CONST-PREF08 PIC X(22) VALUE "08°ñ¾ë¸©    °ñ¾ë      ".
-             05  CONST-PREF09 PIC X(22) VALUE "09ÆÊÌÚ¸©    ÆÊÌÚ      ".
-             05  CONST-PREF10 PIC X(22) VALUE "10·²ÇÏ¸©    ·²ÇÏ      ".
-             05  CONST-PREF11 PIC X(22) VALUE "11ºë¶Ì¸©    ºë¶Ì      ".
-             05  CONST-PREF12 PIC X(22) VALUE "12ÀéÍÕ¸©    ÀéÍÕ      ".
-             05  CONST-PREF13 PIC X(22) VALUE "13ÅìµþÅÔ    ÅìµþÅÔ    ".
-             05  CONST-PREF14 PIC X(22) VALUE "14¿ÀÆàÀî¸©  ¿ÀÆàÀî    ".
-             05  CONST-PREF15 PIC X(22) VALUE "15¿·³ã¸©    ¿·³ã      ".
-             05  CONST-PREF16 PIC X(22) VALUE "16ÉÙ»³¸©    ÉÙ»³      ".
-             05  CONST-PREF17 PIC X(22) VALUE "17ÀÐÀî¸©    ÀÐÀî      ".
-             05  CONST-PREF18 PIC X(22) VALUE "18Ê¡°æ¸©    Ê¡°æ      ".
-             05  CONST-PREF19 PIC X(22) VALUE "19»³Íü¸©    »³Íü      ".
-             05  CONST-PREF20 PIC X(22) VALUE "20Ä¹Ìî¸©    Ä¹Ìî      ".
-             05  CONST-PREF21 PIC X(22) VALUE "21´ôÉì¸©    ´ôÉì      ".
-             05  CONST-PREF22 PIC X(22) VALUE "22ÀÅ²¬¸©    ÀÅ²¬      ".
-             05  CONST-PREF23 PIC X(22) VALUE "23°¦ÃÎ¸©    °¦ÃÎ      ".
-             05  CONST-PREF24 PIC X(22) VALUE "24»°½Å¸©    »°½Å      ".
-             05  CONST-PREF25 PIC X(22) VALUE "25¼¢²ì¸©    ¼¢²ì      ".
-             05  CONST-PREF26 PIC X(22) VALUE "26µþÅÔÉÜ    µþÅÔÉÜ    ".
-             05  CONST-PREF27 PIC X(22) VALUE "27ÂçºåÉÜ    ÂçºåÉÜ    ".
-             05  CONST-PREF28 PIC X(22) VALUE "28Ê¼¸Ë¸©    Ê¼¸Ë      ".
-             05  CONST-PREF29 PIC X(22) VALUE "29ÆàÎÉ¸©    ÆàÎÉ      ".
-             05  CONST-PREF30 PIC X(22) VALUE "30ÏÂ²Î»³¸©  ÏÂ²Î»³    ".
-             05  CONST-PREF31 PIC X(22) VALUE "31Ä»¼è¸©    Ä»¼è      ".
-             05  CONST-PREF32 PIC X(22) VALUE "32Åçº¬¸©    Åçº¬      ".
-             05  CONST-PREF33 PIC X(22) VALUE "33²¬»³¸©    ²¬»³      ".
-             05  CONST-PREF34 PIC X(22) VALUE "34¹­Åç¸©    ¹­Åç      ".
-             05  CONST-PREF35 PIC X(22) VALUE "35»³¸ý¸©    »³¸ý      ".
-             05  CONST-PREF36 PIC X(22) VALUE "36ÆÁÅç¸©    ÆÁÅç      ".
-             05  CONST-PREF37 PIC X(22) VALUE "37¹áÀî¸©    ¹áÀî      ".
-             05  CONST-PREF38 PIC X(22) VALUE "38°¦É²¸©    °¦É²      ".
-             05  CONST-PREF39 PIC X(22) VALUE "39¹âÃÎ¸©    ¹âÃÎ      ".
-             05  CONST-PREF40 PIC X(22) VALUE "40Ê¡²¬¸©    Ê¡²¬      ".
-             05  CONST-PREF41 PIC X(22) VALUE "41º´²ì¸©    º´²ì      ".
-             05  CONST-PREF42 PIC X(22) VALUE "42Ä¹ºê¸©    Ä¹ºê      ".
-             05  CONST-PREF43 PIC X(22) VALUE "43·§ËÜ¸©    ·§ËÜ      ".
-             05  CONST-PREF44 PIC X(22) VALUE "44ÂçÊ¬¸©    ÂçÊ¬      ".
-             05  CONST-PREF45 PIC X(22) VALUE "45µÜºê¸©    µÜºê      ".
-             05  CONST-PREF46 PIC X(22) VALUE "46¼¯»ùÅç¸©  ¼¯»ùÅç    ".
-             05  CONST-PREF47 PIC X(22) VALUE "47²­Æì¸©    ²­Æì      ".
+             05  CONST-PREF01 PIC X(22) VALUE "01åŒ—æµ·é“    åŒ—æµ·é“    ".
+             05  CONST-PREF02 PIC X(22) VALUE "02é’æ£®çœŒ    é’æ£®      ".
+             05  CONST-PREF03 PIC X(22) VALUE "03å²©æ‰‹çœŒ    å²©æ‰‹      ".
+             05  CONST-PREF04 PIC X(22) VALUE "04å®®åŸŽçœŒ    å®®åŸŽ      ".
+             05  CONST-PREF05 PIC X(22) VALUE "05ç§‹ç”°çœŒ    ç§‹ç”°      ".
+             05  CONST-PREF06 PIC X(22) VALUE "06å±±å½¢çœŒ    å±±å½¢      ".
+             05  CONST-PREF07 PIC X(22) VALUE "07ç¦å³¶çœŒ    ç¦å³¶      ".
+             05  CONST-PREF08 PIC X(22) VALUE "08èŒ¨åŸŽçœŒ    èŒ¨åŸŽ      ".
+             05  CONST-PREF09 PIC X(22) VALUE "09æ ƒæœ¨çœŒ    æ ƒæœ¨      ".
+             05  CONST-PREF10 PIC X(22) VALUE "10ç¾¤é¦¬çœŒ    ç¾¤é¦¬      ".
+             05  CONST-PREF11 PIC X(22) VALUE "11åŸ¼çŽ‰çœŒ    åŸ¼çŽ‰      ".
+             05  CONST-PREF12 PIC X(22) VALUE "12åƒè‘‰çœŒ    åƒè‘‰      ".
+             05  CONST-PREF13 PIC X(22) VALUE "13æ±äº¬éƒ½    æ±äº¬éƒ½    ".
+             05  CONST-PREF14 PIC X(22) VALUE "14ç¥žå¥ˆå·çœŒ  ç¥žå¥ˆå·    ".
+             05  CONST-PREF15 PIC X(22) VALUE "15æ–°æ½ŸçœŒ    æ–°æ½Ÿ      ".
+             05  CONST-PREF16 PIC X(22) VALUE "16å¯Œå±±çœŒ    å¯Œå±±      ".
+             05  CONST-PREF17 PIC X(22) VALUE "17çŸ³å·çœŒ    çŸ³å·      ".
+             05  CONST-PREF18 PIC X(22) VALUE "18ç¦äº•çœŒ    ç¦äº•      ".
+             05  CONST-PREF19 PIC X(22) VALUE "19å±±æ¢¨çœŒ    å±±æ¢¨      ".
+             05  CONST-PREF20 PIC X(22) VALUE "20é•·é‡ŽçœŒ    é•·é‡Ž      ".
+             05  CONST-PREF21 PIC X(22) VALUE "21å²é˜œçœŒ    å²é˜œ      ".
+             05  CONST-PREF22 PIC X(22) VALUE "22é™å²¡çœŒ    é™å²¡      ".
+             05  CONST-PREF23 PIC X(22) VALUE "23æ„›çŸ¥çœŒ    æ„›çŸ¥      ".
+             05  CONST-PREF24 PIC X(22) VALUE "24ä¸‰é‡çœŒ    ä¸‰é‡      ".
+             05  CONST-PREF25 PIC X(22) VALUE "25æ»‹è³€çœŒ    æ»‹è³€      ".
+             05  CONST-PREF26 PIC X(22) VALUE "26äº¬éƒ½åºœ    äº¬éƒ½åºœ    ".
+             05  CONST-PREF27 PIC X(22) VALUE "27å¤§é˜ªåºœ    å¤§é˜ªåºœ    ".
+             05  CONST-PREF28 PIC X(22) VALUE "28å…µåº«çœŒ    å…µåº«      ".
+             05  CONST-PREF29 PIC X(22) VALUE "29å¥ˆè‰¯çœŒ    å¥ˆè‰¯      ".
+             05  CONST-PREF30 PIC X(22) VALUE "30å’Œæ­Œå±±çœŒ  å’Œæ­Œå±±    ".
+             05  CONST-PREF31 PIC X(22) VALUE "31é³¥å–çœŒ    é³¥å–      ".
+             05  CONST-PREF32 PIC X(22) VALUE "32å³¶æ ¹çœŒ    å³¶æ ¹      ".
+             05  CONST-PREF33 PIC X(22) VALUE "33å²¡å±±çœŒ    å²¡å±±      ".
+             05  CONST-PREF34 PIC X(22) VALUE "34åºƒå³¶çœŒ    åºƒå³¶      ".
+             05  CONST-PREF35 PIC X(22) VALUE "35å±±å£çœŒ    å±±å£      ".
+             05  CONST-PREF36 PIC X(22) VALUE "36å¾³å³¶çœŒ    å¾³å³¶      ".
+             05  CONST-PREF37 PIC X(22) VALUE "37é¦™å·çœŒ    é¦™å·      ".
+             05  CONST-PREF38 PIC X(22) VALUE "38æ„›åª›çœŒ    æ„›åª›      ".
+             05  CONST-PREF39 PIC X(22) VALUE "39é«˜çŸ¥çœŒ    é«˜çŸ¥      ".
+             05  CONST-PREF40 PIC X(22) VALUE "40ç¦å²¡çœŒ    ç¦å²¡      ".
+             05  CONST-PREF41 PIC X(22) VALUE "41ä½è³€çœŒ    ä½è³€      ".
+             05  CONST-PREF42 PIC X(22) VALUE "42é•·å´ŽçœŒ    é•·å´Ž      ".
+             05  CONST-PREF43 PIC X(22) VALUE "43ç†Šæœ¬çœŒ    ç†Šæœ¬      ".
+             05  CONST-PREF44 PIC X(22) VALUE "44å¤§åˆ†çœŒ    å¤§åˆ†      ".
+             05  CONST-PREF45 PIC X(22) VALUE "45å®®å´ŽçœŒ    å®®å´Ž      ".
+             05  CONST-PREF46 PIC X(22) VALUE "46é¹¿å…å³¶çœŒ  é¹¿å…å³¶    ".
+             05  CONST-PREF47 PIC X(22) VALUE "47æ²–ç¸„çœŒ    æ²–ç¸„      ".
            03    CONST-PREF-R    REDEFINES  CONST-PREF-G.
              05  CONST-PREF-OCC         OCCURS 47.
                  07  CONST-PREFNUM      PIC X(02).
@@ -105,11 +105,11 @@
                  07  CONST-PREFNAME2    PIC X(10).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
       *
@@ -126,7 +126,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -140,7 +140,7 @@
       *
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -152,7 +152,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -172,7 +172,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *

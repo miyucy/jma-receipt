@@ -1,59 +1,59 @@
 kanri_cd    : "2009"
-name        : "¼ç²ÊÀßÄê¾ğÊó"
+name        : "ä¸»ç§‘è¨­å®šæƒ…å ±"
 class_cd    : "*"
 item_max    : 9
 item_list   :
 - item_no   : 1
   item      : "SYUKA-KBN"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²ÊÂĞ±ş¤ÎÍ­Ìµ"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘å¯¾å¿œã®æœ‰ç„¡"
   type      : "X"
   start     : 1
   length    : 1
 - item_no   : 2
   item      : "SYUKA-NYUIN"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²ÊÀßÄê¾ğÊó¡ÊÆş±¡¡Ë"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘è¨­å®šæƒ…å ±ï¼ˆå…¥é™¢ï¼‰"
   type      : "X"
   start     : 2
   length    : 1
 - item_no   : 3
   item      : "SYUKA-GAIRAI"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²ÊÀßÄê¾ğÊó¡ÊÆş±¡³°¡Ë"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘è¨­å®šæƒ…å ±ï¼ˆå…¥é™¢å¤–ï¼‰"
   type      : "X"
   start     : 3
   length    : 1
 - item_no   : 4
   item      : "SYUKA-MODE"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²Ê¾ğÊó¼èÆÀ"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘æƒ…å ±å–å¾—"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 5
   item      : "SYUKA-SELECT"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²Ê¤Î¸õÊä¤¬Ê£¿ô¤Ë¤Ê¤ë¾ì¹ç¤Î¿ÇÎÅ²Ê¥³¡¼¥É¤ÎÀßÄê"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘ã®å€™è£œãŒè¤‡æ•°ã«ãªã‚‹å ´åˆã®è¨ºç™‚ç§‘ã‚³ãƒ¼ãƒ‰ã®è¨­å®š"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 6
   item      : "SYUKA-SYAHO"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²Ê¼ÒÊİÀßÄê"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘ç¤¾ä¿è¨­å®š"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 7
   item      : "SYUKA-KOKUHO"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²Ê¹ñÊİÀßÄê"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘å›½ä¿è¨­å®š"
   type      : "X"
   start     : 7
   length    : 1
 - item_no   : 8
   item      : "SYUKA-KOUIKI"
-  item_jp   : "¼ç²ÊÀßÄê¡§¼ç²Ê¹­°èÏ¢¹çÀßÄê"
+  item_jp   : "ä¸»ç§‘è¨­å®šï¼šä¸»ç§‘åºƒåŸŸé€£åˆè¨­å®š"
   type      : "X"
   start     : 8
   length    : 1
 - item_no   : 9
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 9
   length    : 492

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,28 +18,28 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGY01.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ͽ����Ͽ
-      *  ����ݡ��ͥ��̾  : ͽ��������ϡʣ٣�����
-      *  ������            : 
-      *  00/12/01    MCC��   ��   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 予約登録
+      *  コンポーネント名  : 予約状況入力（Ｙ０１）
+      *  管理者            : 
+      *  00/12/01    MCC−   　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01/05/24  �����ֹ楼���ͤ����
-      *  01.00.02    NACL-¿��Ǽ  02/08/02  ���̤ΣӣУ�����¸�ΰ���Խ�
-      *  01.00.03    NACL-¿��Ǽ  02/11/20  GO TO �轤��¾
-      *  01.00.04    NACL-¿��Ǽ  03/03/05  ��¾��������ɲ�
-      *  01.00.05    NACL-¿��Ǽ  03/12/01  ����ɽ�򣲣������
-      *  01.00.06    NACL-¿��Ǽ  05/09/21  ����ͽ���������ɲ�¾
-      *  01.00.07    NACL-¿��Ǽ  06/05/12  MONFUNC �б�
-      *  03.03.00    NACL-¿��Ǽ  06/10/10  ̾���������ɲ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/07  ���롼�׿����б�
-      *  04.01.00    NACL-¿��Ǽ  08/01/30  ͽ�����ƥơ��֥��б�
-      *  04.03.00    NACL-¿��Ǽ  08/06/18  ���ɽ�������б�
-      *  04.04.00    NACL-¿��Ǽ  09/01/16  ͽ���⡦ͽ��ɼ�б�
-      *  04.05.00    NACL-¿��Ǽ  09/10/27  ��ĥ�����б�
-      *  04.08.00    NACL-����    13/10/10  ���饤����Ȱ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01/05/24  患者番号ゼロ詰め処理
+      *  01.00.02    NACL-多々納  02/08/02  画面のＳＰＡを保存領域へ編集
+      *  01.00.03    NACL-多々納  02/11/20  GO TO 先修正他
+      *  01.00.04    NACL-多々納  03/03/05  排他制御処理追加
+      *  01.00.05    NACL-多々納  03/12/01  一覧表を２００件へ
+      *  01.00.06    NACL-多々納  05/09/21  患者予約日検索追加他
+      *  01.00.07    NACL-多々納  06/05/12  MONFUNC 対応
+      *  03.03.00    NACL-多々納  06/10/10  名前検索の追加
+      *  03.05.00    NACL-多々納  07/05/07  グループ診療対応
+      *  04.01.00    NACL-多々納  08/01/30  予約内容テーブル対応
+      *  04.03.00    NACL-多々納  08/06/18  初期表示設定対応
+      *  04.04.00    NACL-多々納  09/01/16  予約メモ・予約票対応
+      *  04.05.00    NACL-多々納  09/10/27  拡張漢字対応
+      *  04.08.00    NACL-森脇    13/10/10  クライアント印刷対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,23 +54,23 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ���̿���
+      *    画面色等
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ͽ���ѥ�������ΰ�
+      *    予約用ワークスパ領域
            COPY    "Y01COMMON-SPA".
       *
-      *    ͽ����ΰ�
+      *    予約パ領域
            COPY    "Y01SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
@@ -85,18 +85,18 @@
            03  FLG-HENKOU          PIC 9(01).
            03  FLG-CALENDAR        PIC 9(01).
       *----(04.08.00)--ADD-START---
-      *    ���饤����Ȱ���ͭ
+      *    クライアント印刷有
            03  FLG-CLIENT-OK       PIC 9(01).
       *----(04.08.00)--ADD-END-----
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -117,7 +117,7 @@
            03  IDX-S1              PIC 9(04).
            03  IDX-S2              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYSYMD.
                05  WRK-SYSYY         PIC 9(04).
@@ -189,7 +189,7 @@
                05  WRK-DR-SEMONKACD   PIC X(02)
                                               OCCURS  5.
       *
-      *    �����ꥹ�Ȱ���
+      *    コラムリスト位置
            03  WRK-Y01-ROW             PIC S9(09).
            03  FLG-GMN-INIT            PIC  9(01).
       *
@@ -205,8 +205,8 @@
            03  WRK-H-NAME              PIC X(50).
            03  WRK-H-NAME1             PIC X(02).
       *
-      *  �ӣϣң��ѥ��
-      *    ���մ��԰���
+      *  ＳＯＲＴ用ワーク
+      *    受付患者一覧
        01  WRK-SORT-AREA.
            03  WRK-YYKTIME             PIC X(04).
            03  WRK-IDX                 PIC 9(04).
@@ -249,57 +249,57 @@
            03  WRK-CAL-DAY         PIC 9(02).
        01  WRK-GMN-TAIYYMM         PIC X(12).
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA"    REPLACING
                                    //SPA-// BY //HZN-SPA-//.
       *
-      *    ͽ��ޥ��������
+      *    予約マスターワーク
        01  HZN-YYK-REC.
            COPY    "CPYYK.INC"      REPLACING
                                    //YYK-// BY //HZN-YYK-//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
-      *    �������ƾ���
+      *    診療内容情報
            COPY  "CPSK1012.INC".
-      *    ���Ų�
+      *    診療科
            COPY  "CPSK1005.INC".
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
-      *    ͽ���ǧϢ�������ɾ���
+      *    予約確認連絡コード情報
            COPY  "CPSK0051.INC".
-      *    ͽ������
+      *    予約内容
            COPY  "CPSK1028.INC".
-      *    ͽ������
+      *    予約内容
            COPY  "CPSK1045.INC".
-      *    Ģɼ�У�
+      *    帳票ＰＧ
            COPY  "CPSK1032.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ͽ��ޥ�����
+      *    予約マスター
        01  YYK-REC.
            COPY    "CPYYK.INC".
       *
-      *    ͽ����ޥ�����
+      *    予約メモマスター
        01  YYKCOM-REC.
            COPY    "CPYYKCOM.INC".
       *
-      *    ͽ������ޥ�����
+      *    予約雛形マスター
        01  YYKEXAMPLE-REC.
            COPY    "CPYYKEXAMPLE.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
       *
            COPY  "CPORCSDAY.INC".
       *
@@ -307,46 +307,46 @@
       *
            COPY  "CPORCSGDAY.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
-      *    �ɥ������Խ��Ѵ�����
+      *    ドクター編集変換サブ
            COPY    "CPORCSDRSET.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK2.INC".
-      *    ��ĥʸ���б�
+      *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
       *
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ͽ��ɼ�ѥ�᥿
+      *    予約票パラメタ
            COPY    "CPORCHC67.INC".
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
-      *    ����饤��Ģɼ���̥ѥ�᥿
+      *    オンライン帳票共通パラメタ
            COPY    "CPONPRTDATA.INC".
       *----(04.08.00)--ADD-START---
-      *    ���饤����Ȱ�������
+      *    クライアント印刷制御
            COPY    "CPORCSPRTCTRL.INC".
       *----(04.08.00)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -373,7 +373,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -391,15 +391,15 @@
            EVALUATE    MCP-STATUS  ALSO MCP-EVENT ALSO MCP-WIDGET(1:1)
                WHEN    "LINK"      ALSO ANY       ALSO ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"      ALSO "CLICKED" ALSO "B"
                    PERFORM 210-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -412,18 +412,18 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "YERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
            END-IF
       *
@@ -438,19 +438,19 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-MOTOPG
                WHEN    "Y011"
-      *            �����Ͽ����
+      *            メモ登録画面
                    MOVE    10                  TO  SPA-GMN-CUR
                WHEN    "Y012"
-      *            ��⡦ʸ����Ͽ����
+      *            メモ・文例登録画面
                    MOVE    3                   TO  SPA-GMN-CUR
                WHEN    "YID1"
-      *            ��ǧ����
+      *            確認画面
                    PERFORM 30010-YID1-SET-SEC
                WHEN    OTHER
                    PERFORM 300-INIT-SYORI-SEC
@@ -461,7 +461,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        300-INIT-SYORI-SEC              SECTION.
       *
@@ -490,7 +490,7 @@
                    MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                    MOVE    SPACE               TO  SPA-GMN-YYKNAME
                WHEN    "Y05"
-      *            ���Ը����λ��������ֹ�ɽ��
+      *            患者検索の時、患者番号表示
                    MOVE    SPA-Y01-PTNUM       TO  SPA-GMN-PTNUM
                    MOVE    SPA-Y01-PTID        TO  SPA-GMN-PTID
                    MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-NAME
@@ -498,7 +498,7 @@
                    MOVE    SPA-Y01-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
                    MOVE    SPA-Y01-YYKNAME     TO  SPA-GMN-YYKNAME
                WHEN    "U01"
-      *            ���դ�������
+      *            受付より選択後
                    IF     (SPA-PTID       NOT =   ZERO   )
                        MOVE    SPA-PTID           TO  SPA-GMN-PTID
                        MOVE    SPA-PTNUM          TO  SPA-GMN-PTNUM
@@ -508,7 +508,7 @@
                        MOVE    SPA-NAME           TO  SPA-GMN-YYKNAME
                    END-IF
                WHEN    "P97"
-      *            ��̾�������
+      *            氏名検索より
                    IF     (SPA-PTID           =   ZERO   )
                        MOVE    SPA-Y01-YYKNAME    TO  SPA-GMN-YYKNAME
                        MOVE    SPACE              TO  SPA-Y01-YYKNAME
@@ -523,10 +523,10 @@
       *TEST
                WHEN    "K02"
                WHEN    "U02"
-      *            ���ա����Ź԰٤�������
+      *            受付・診療行為より選択後
                    IF     (SPA-PTID        NOT =   ZERO   )
                    AND    (SYS-1045-YYKPTNUM-KBN   =   "1"  )
-      *                 �����ֹ�Ϣư�Խ�����
+      *                 患者番号連動編集処理
                        PERFORM 3101-PTNUM-AUTO-SEC
                    END-IF
                    INITIALIZE                  SPA-KYOTUKEY
@@ -536,7 +536,7 @@
            MOVE    SPACE               TO  SPA-GMN-SELBAN
            MOVE    ZERO                TO  SPA-NAI-SELBAN
       *
-      *    ���ɽ��������Τǡ��������Ϥ��
+      *    初期表示があるので、患者入力より
            IF     (SPA-GMN-PTNUM       =   SPACE  )  AND
                   (SPA-GMN-YYKNAME     =   SPACE  )
                MOVE    3                   TO  SPA-GMN-CUR
@@ -549,7 +549,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�Ϣư�Խ�����
+      *    患者番号連動編集処理
       *****************************************************************
        3101-PTNUM-AUTO-SEC              SECTION.
       *
@@ -559,7 +559,7 @@
            MOVE    SPA-SEX             TO  SPA-GMN-SEX
            MOVE    SPA-BIRTHDAYW       TO  SPA-GMN-BIRTHDAYH
            MOVE    SPA-NAME            TO  SPA-GMN-YYKNAME
-      *    ���Ų�
+      *    診療科
            IF     (SPA-SRYKA           =   SPACE
                                        OR  ZERO      )
              OR   (SPA-SRYKA           =   SPA-GMN-SRYKA )
@@ -574,7 +574,7 @@
                    END-IF
                END-PERFORM
            END-IF
-      *    �ɥ�����
+      *    ドクター
            IF     (SPA-DRCD(2:4)       =   SPACE
                                        OR  ZERO   )
              OR   (SPA-DRCD(2:4)       =   SPA-GMN-DRCD)
@@ -599,20 +599,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-Y01-AREA
       *
-      *    ���ɽ������
+      *    初期表示情報
            MOVE    SPACE               TO  SYS-1045-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1045-HOSPNUM
            MOVE    "1045"              TO  SYS-1045-KANRICD
            MOVE    "*"                 TO  SYS-1045-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1045-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1045-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1045-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
@@ -633,15 +633,15 @@
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���ɽ���ɥ�����
+      *    初期表示ドクター
            MOVE    SYS-1045-INIT-DRCD  TO  SPA-Y01-INIT-DRCD
            MOVE    SYS-1045-YYKINIT-FLG
                                        TO  SPA-Y01-YYKINIT-FLG
            MOVE    SYS-1045-YYKHYO-KBN
                                        TO  SPA-Y01-YYKHYO-KBN
-      *    ͽ��ɼ��ʬ
-           MOVE    "0 ȯ�Ԥ��ʤ�"      TO  SPA-GMN-YYKHYO-LIST (1)
-           MOVE    "1 ȯ�Ԥ���"        TO  SPA-GMN-YYKHYO-LIST (2)
+      *    予約票区分
+           MOVE    "0 発行しない"      TO  SPA-GMN-YYKHYO-LIST (1)
+           MOVE    "1 発行する"        TO  SPA-GMN-YYKHYO-LIST (2)
            MOVE    2                   TO  SPA-YYKHYO-MAX
            EVALUATE    SPA-Y01-YYKHYO-KBN
                WHEN    "1"
@@ -651,7 +651,7 @@
                    MOVE    "0"                 TO  SPA-Y01-YYKHYO-KBN
            END-EVALUATE
       *
-      *    ͽ���Ⱥ�����
+      *    予約枠最大件数
            IF     (FLG-SYSKANRI        =   ZERO )
               AND (SYS-1045-YYKMAXCNT  >   ZERO )
                MOVE    SYS-1045-YYKMAXCNT  TO  SPA-Y01-YYKMAXCNT
@@ -659,12 +659,12 @@
                MOVE    12                  TO  SPA-Y01-YYKMAXCNT
            END-IF
       *
-      *    �������Ƥ�ӣУ��˥��å�
+      *    診療内容をＳＰＡにセット
            MOVE    SPACE               TO  SYS-1012-REC
            MOVE    "1012"              TO  SYS-1012-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1012-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1012-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1012-HOSPNUM
            MOVE    SYS-1012-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -699,7 +699,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -715,12 +715,12 @@
                                        TO  SPA-GMN-SRYNAIYO
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1005-KEY
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -745,7 +745,7 @@
                MOVE    SYS-1005-SRYKANAME1     TO  SPA-GMN-SRYKAMEI
                MOVE    SPA-GMN-SRYKA-G         TO  SPA-GMN-SRYKALST
                                                               (IDX)
-      *        û��̾����¸
+      *        短縮名３保存
                MOVE    SYS-1005-SRYKANAME3     TO  SPA-NAI-SRYKAMEI3
                                                               (IDX)
                MOVE    IDX                     TO  SPA-SRYKA-MAX
@@ -754,19 +754,19 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �������
+      *    初期設定
            MOVE    SPA-GMN-SRYKALST(1) TO  SPA-GMN-SRYKA-G
       *
-      *    ���������ӣУ��˥��å�
+      *    職員情報をＳＰＡにセット
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -787,7 +787,7 @@
                                (FLG-SYSKANRI   =   1    )
                MOVE    MCPDATA-REC             TO  SYS-1010-REC
                IF     (SYS-1010-KBNCD(1:1) =   "1"  )
-      *H27.12  ��ɽ��
+      *H27.12  非表示
                 AND   (SYS-1010-HYOJIFLG   NOT =   "1" )
                    ADD     1                   TO  IDX
                    MOVE    SYS-1010-KBNCD(2:4)
@@ -795,7 +795,7 @@
                    MOVE    SPACE               TO  SPA-GMN-D1
                    MOVE    SYS-1010-NAME       TO  SPA-GMN-DRNAMEMEI
                    MOVE    SPA-GMN-DRNAME      TO  SPA-GMN-DRCDLST (IDX)
-      *            �����
+      *            専門家
                    MOVE    SYS-1010-SEMONKACD (1)
                                                TO  SPA-NAI-DR-SEMONKACD
                                                                 (IDX 1)
@@ -811,7 +811,7 @@
                    MOVE    SYS-1010-SEMONKACD (5)
                                                TO  SPA-NAI-DR-SEMONKACD
                                                                 (IDX 5)
-      *            ���ɽ���ɥ�����
+      *            初期表示ドクター
                    IF     (SPA-Y01-INIT-DRCD   NOT =   SPACE  )
                       AND (SPA-Y01-INIT-DRCD   =   SYS-1010-KBNCD(1:5))
                        MOVE    IDX             TO  IDX-INIT
@@ -824,7 +824,7 @@
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -838,10 +838,10 @@
            ELSE
                MOVE    SPA-Y01-DRNAME      TO  SPA-GMN-DRNAME
            END-IF
-      *    �ɥ����������ɤ�����Խ�
+      *    ドクターコードからの編集
            PERFORM 410121-DRCD-HENSYU-SEC
       *
-      *    ͽ���ǧϢ��������
+      *    予約確認連絡コード
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    SPACE               TO  SYS-0051-REC
            INITIALIZE                  SYS-0051-REC
@@ -879,20 +879,20 @@
                PERFORM 900-SYSKANRIT-READ-SEC
            END-PERFORM
       *
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
            MOVE    SPA-GMN-KAKRENLST (1)
                                        TO  SPA-GMN-KAKREN-G
       *
-      **** MOVE    "00 ��������"       TO  SPA-GMN-YYKKBNLST (01)
-      *    MOVE    "01 ���Ԥˤ��ͽ��" TO  SPA-GMN-YYKKBNLST (02)
-      *    MOVE    "02 ��դˤ��ͽ��" TO  SPA-GMN-YYKKBNLST (03)
+      **** MOVE    "00 　　　　"       TO  SPA-GMN-YYKKBNLST (01)
+      *    MOVE    "01 患者による予約" TO  SPA-GMN-YYKKBNLST (02)
+      *    MOVE    "02 医師による予約" TO  SPA-GMN-YYKKBNLST (03)
       *    MOVE    SPA-GMN-YYKKBNLST (2)
       *                                TO  SPA-GMN-YYKKBN-G
       ***  MOVE    3                   TO  SPA-YYKKBN-MAX
-      *    ͽ������
+      *    予約内容
            MOVE    ZERO                TO  FLG-SYSKANRI
            MOVE    SPACE               TO  SYS-1028-REC
            INITIALIZE                  SYS-1028-REC
@@ -963,7 +963,7 @@
            ELSE
                MOVE    SPA-SYSYMD          TO  WRK-SYSYMD
            END-IF
-      *    ͽ�����Խ�
+      *    予約日編集
            PERFORM 3101-YYKYMD-HENSYU-SEC
       *
            .
@@ -971,7 +971,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ����������Խ�����
+      *    予約日からの編集処理
       *****************************************************************
        3101-YYKYMD-HENSYU-SEC         SECTION.
       *
@@ -984,15 +984,15 @@
                                        TO  SPA-GMN-TAIYYMM
               MOVE LNK-DAY2-EDTYMD1 (2:2)
                                        TO  SPA-GMN-TAIYYMM (5:2)
-              MOVE "ǯ"                TO  SPA-GMN-TAIYYMM (7:2)
+              MOVE "年"                TO  SPA-GMN-TAIYYMM (7:2)
               MOVE LNK-DAY2-EDTYMD1 (5:2)
                                        TO  SPA-GMN-TAIYYMM (9:2)
-              MOVE "��"                TO  SPA-GMN-TAIYYMM (11:2)
+              MOVE "月"                TO  SPA-GMN-TAIYYMM (11:2)
            ELSE
               MOVE SPACE               TO  SPA-GMN-TAIYYMM
            END-IF
       *
-      * ��������������
+      * １日の曜日算出
            MOVE    "31"                TO  LNK-DAY3-IRAI
            MOVE    WRK-SYSYMD          TO  LNK-DAY3-YMD
            MOVE    "01"                TO  LNK-DAY3-YMD(7:2)
@@ -1010,7 +1010,7 @@
                END-PERFORM
            END-IF
       *
-      * �������λ���
+      * 月末日の算出
            MOVE    "71"                TO  LNK-DAY7-IRAI
            MOVE    WRK-SYSYMD (1:6)    TO  LNK-DAY7-YM
            CALL    "ORCSDAY"       USING    STS-AREA-DAY
@@ -1036,7 +1036,7 @@
                MOVE    WRK-HI          TO  SPA-NAI-YMD (IDX)(7:2)
            END-PERFORM
       *
-      *    ������̤Ǥϡ������ƥ����դ��оݤȤ���ɽ������
+      *    初期画面では、システム日付を対象とし、表示する
            MOVE    WRK-SYSDD           TO  SPA-NAI-HYOJHI
            MOVE    ZERO                TO  WRK-HI
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1052,10 +1052,10 @@
            END-IF
       *
            MOVE    WRK-SEL-SYUU        TO  SPA-SEL-SYUU
-      *    ͽ��ơ��֥��Խ�����
+      *    予約テーブル編集処理
            PERFORM 510-YYKTBL-SET-SEC
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            COMPUTE SPA-SEL-YOUBI    =   WRK-HI
                                     -  ((SPA-SEL-SYUU  -  1 )  *  7 )
            MOVE    ZERO             TO  SPA-SEL-TIME
@@ -1066,7 +1066,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        3101-SEIWA-HEN-SEC             SECTION.
       *
@@ -1090,7 +1090,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��ơ��֥��Խ�����
+      *    予約テーブル編集処理
       *****************************************************************
        510-YYKTBL-SET-SEC           SECTION.
       *
@@ -1131,12 +1131,12 @@
       *            UNTIL       IDX     >   1
                IF      SPA-NAI-YMDR (SPA-SEL-SYUU IDX)
                                        NOT =   SPACE  AND  ZERO
-      *            �оݸ������򥫥�������ꥻ�å�
+      *            対象見出日をカレンダーよりセット
                    MOVE    SPA-NAI-YMDR (SPA-SEL-SYUU IDX)(7:2)
                                            TO  SPA-GMN-GOKKEN (IDX)
                                                           (2:2)
       **                                                  (3:2)
-      *            ���������ͽ�����¸����
+      *            時間帯毎の予約を保存する
                    INITIALIZE                  YYK-REC
                    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
                    MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
@@ -1163,7 +1163,7 @@
                        MOVE    "key3"              TO  MCP-PATHNAME
                        PERFORM 900-YOYAKU-READ-SEC
                    END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
                    MOVE    "tbl_yyk"           TO  MCP-TABLE
                    MOVE    "key3"              TO  MCP-PATHNAME
                    PERFORM 990-DBCLOSE-SEC
@@ -1175,7 +1175,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ���������ͽ���Խ�����
+      *    時間帯毎の予約編集処理
       *****************************************************************
        5201-YYKHEN-SEC           SECTION.
       *
@@ -1224,12 +1224,12 @@
         5201-YYKHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ���̡ʣ٣ɣģ��ˣϣ˽���
+      *    確認画面（ＹＩＤ１）ＯＫ処理
       *****************************************************************
        30010-YID1-SET-SEC          SECTION.
       *
            EVALUATE    SPA-YID1CD
-      *        ͽ���̾����
+      *        予約氏名確定
                WHEN    "0101"
                    MOVE    SPACE               TO  SPA-YID1CD
                    IF      SPA-YID1-FLG         =   "OK"
@@ -1254,46 +1254,46 @@
         30010-YID1-SET-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        210-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
       *            MOVE ZERO             TO   FLG-END
                    PERFORM 210-BACK
-      *    ���ꥢ
+      *    クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 220-CLEAR-SEC
-      *    ͽ����
+      *    予約取消
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM 420-YYKDEL-SEC
-      *    ͽ��
+      *    予約
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 480-YOYAKU-SEC
-      *    ͽ�������
+      *    予約一覧へ
                WHEN    "CLICKED"       ALSO    "B05"
                    PERFORM 440-YYKICHI-SEC
-      *    ̤������
+      *    未院一覧
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MINICHI-SEC
-      *    ���ְ���
+      *    週間一覧
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-KANJCHI-SEC
-      *    ͽ��������
+      *    予約日検索
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 470-PTNUM-ICHI-SEC
-      *    ��̾����
+      *    氏名検索
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 470-SIMEIKEN-SEC
-      *    ���հ�����
+      *    受付一覧へ
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-UKEICHI-SEC
-      *    ͽ����Ͽ
+      *    予約登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOROKU-SEC
-      *    ͽ������Ͽ
+      *    予約メモ登録
                WHEN    "CLICKED"       ALSO    "B10"
                WHEN    "CLICKED"       ALSO    "B10C"
                    PERFORM 4100-Y011-SYORI-SEC
@@ -1303,7 +1303,7 @@
        210-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -1312,33 +1312,33 @@
       *
           EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
                WHEN    "ACTIVATE"      ALSO    "SRYNAIYO"
-      *        ������������
+      *        診療内容入力
                    PERFORM 41011-SRYNAIYO-SEC
-      *       �ɥ���������
+      *       ドクター入力
                WHEN    "ACTIVATE"      ALSO    "DRNAME"
                    PERFORM 41012-DRNAME-SEC
-      *        �����ֹ�����
+      *        患者番号入力
                WHEN    "ACTIVATE"      ALSO    "PTNUM"
                    PERFORM 41013-PTNUM-SEC
-      *        ����ͽ��Ի�̾
+      *        新患予約者氏名
                WHEN    "ACTIVATE"      ALSO    "YYKNAME"
                    PERFORM 41014-YYKNAME-SEC
-      *        �����ֹ�����
+      *        選択番号入力
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 41018-SELBAN-SEC
-      *        �ꥹ������
+      *        リスト選択
                WHEN    "SELECT"        ALSO    "PTLIST"
                    PERFORM 41019-CLIST-SEC
-      *        ������������
+      *        カレンダー選択
                WHEN    "CLICKED"       ALSO    "C01"
                WHEN    "CLICKED"       ALSO    "CALENDAR1"
                    PERFORM 41020-CALENDAR-SEC
-      *        ����¾����
+      *        その他選択
                WHEN    "CLICKED"       ALSO     ANY
                    PERFORM 4101A-SELFURIWAKE-SEC
-      *        �������ʬ
+      *        一括入力分
                WHEN    OTHER
-      *           ���ϥ����å�����
+      *           入力チェック処理
                   MOVE    1                   TO  FLG-TOUROKU
                   PERFORM 410-INPUT-CHK-SEC
            END-EVALUATE
@@ -1347,13 +1347,13 @@
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ�󴵼Կ�ʬ����
+      *    予約患者振分処理
       *****************************************************************
        4101A-SELFURIWAKE-SEC         SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET(1:6)
                WHEN    "CLICKED"       ALSO    "CH_DAY"
-      *        ����������
+      *        日選択入力
                    MOVE    MCP-WIDGET(7:1)
                                        TO  WRK-GMN-GOKSEL
                    PERFORM 41016-GOKSEL-SEC
@@ -1362,7 +1362,7 @@
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET(1:9)
                WHEN    "CLICKED"       ALSO    "CH_KENSUU"
-      *        ������������
+      *        時間選択入力
                    MOVE    MCP-WIDGET(10:2)
                                        TO  WRK-GMN-KENSEL
                    PERFORM 41017-KENSEL-SEC
@@ -1372,13 +1372,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -1386,7 +1386,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
@@ -1406,35 +1406,35 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
-      *    ͽ��������
+      *    予約日入力
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41014-YYKYMD-SEC
            END-IF
-      *    ͽ�����
+      *    予約時間
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41015-YYKTIME-SEC
            END-IF
-      *    ���Ų�
+      *    診療科
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41016-SRYKA-SEC
            END-IF
-      *    ͽ������
+      *    予約内容
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41017-YYKKBN-SEC
            END-IF
-      *    ��ǧϢ��
+      *    確認連絡
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41018-KAKREN-SEC
            END-IF
-      *    ���
+      *    メモ
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41018-COMMENT-SEC
            END-IF
-      *    ͽ��ɼȯ��
+      *    予約票発行
            IF      SPA-ERRCD           =   SPACE
                PERFORM 41018-YYKHYO-SEC
            END-IF
@@ -1443,7 +1443,7 @@
        4102-KIHON-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������������
+      *    診療内容入力
       *****************************************************************
        41011-SRYNAIYO-SEC            SECTION.
       *
@@ -1469,7 +1469,7 @@
            END-IF
       *
            IF      SPA-GMN-SRYNAIYOCD  NOT =   SPA-MAE-SRYNAIYOCD
-      *        ͽ��ɽ�������
+      *        予約表設定処理
                PERFORM 410151-HYOJI-HEN-SEC
            END-IF
            MOVE    SPA-GMN-SRYNAIYOCD  TO  SPA-MAE-SRYNAIYOCD
@@ -1480,7 +1480,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɥ���������
+      *    ドクター入力
       *****************************************************************
        41012-DRNAME-SEC            SECTION.
       *
@@ -1495,7 +1495,7 @@
                MOVE    ZERO                TO  SPA-NAI-DRCD2
                GO      TO      41012-DRNAME-EXT
            END-IF
-      *    �������Ѵ�
+      *    コード変換
            INITIALIZE                      ORCSNUMAREA
            MOVE    SPA-GMN-DRCD        TO  SNUM-INX
            CALL    "ORCSNUM"           USING
@@ -1511,13 +1511,13 @@
            END-IF
       *
            IF      SPA-ERRCD          =   SPACE
-      *        �ɥ����������ɤ�����Խ�
+      *        ドクターコードからの編集
                PERFORM 410121-DRCD-HENSYU-SEC
            END-IF
       *
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-DRCD    NOT =   WRK-DRCD
-      *            ͽ��ɽ�������
+      *            予約表設定処理
                     PERFORM 410151-HYOJI-HEN-SEC
                END-IF
            END-IF
@@ -1530,7 +1530,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɥ��������ϥ����å����Խ�����
+      *    ドクター入力チェック・編集処理
       *****************************************************************
        410121-DRCD-HENSYU-SEC            SECTION.
       *
@@ -1547,7 +1547,7 @@
                END-IF
            END-PERFORM
            IF      FLG-HENFLG          =   ZERO
-      *        �ɥ��������ʤ����������ƥ�����򸡺�����
+      *        ドクターがない時、システム管理を検索する
                PERFORM 410121-DRCD-CHK-SEC
                IF      FLG-HENFLG          =   ZERO
                    MOVE    "0002"              TO  SPA-ERRCD
@@ -1559,7 +1559,7 @@
                MOVE    "1"                 TO  SPA-NAI-DRCD1
                MOVE    SPA-GMN-DRCD        TO  SPA-NAI-DRCD2
       *
-      *        ����ʤ���ɽ�������ͽ���̾���ʤ�����
+      *        専門科を初期表示する（予約氏名がない時）
                IF      SPA-GMN-NAME        =   SPACE
                    PERFORM VARYING     IDX     FROM    1   BY  1
                            UNTIL       IDX     >   5
@@ -1583,11 +1583,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɥ��������ϥ����å�����
+      *    ドクター入力チェック処理
       *****************************************************************
        410121-DRCD-CHK-SEC            SECTION.
       *
-      *    ��������ʥɥ�������
+      *    職員情報（ドクター）
            MOVE    SPACE               TO  SYS-1010-REC
            INITIALIZE                  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
@@ -1596,7 +1596,7 @@
            MOVE    SPA-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1010-EDYUKYMD
       *
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -1627,7 +1627,7 @@
                                            TO  WRK-DR-SEMONKACD(4)
                MOVE    SYS-1010-SEMONKACD(5)
                                            TO  WRK-DR-SEMONKACD(5)
-      *        �Ǹ�ιԤ��Խ�����
+      *        最後の行へ編集する
                IF      SPA-DRCD-MAX        =   99
                    MOVE    99              TO  SPA-DRCD-MAX
                ELSE
@@ -1645,7 +1645,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����
+      *    患者番号入力
       *****************************************************************
        41013-PTNUM-SEC            SECTION.
       *
@@ -1657,7 +1657,7 @@
                MOVE    SPACE               TO  SPA-GMN-NAME
                MOVE    SPACE               TO  SPA-GMN-SEX
                MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
-      *        ��̾���Ϥ�
+      *        氏名入力へ
                MOVE    4               TO  SPA-GMN-CUR
                GO      TO      41013-PTNUM-EXT
            END-IF
@@ -1679,7 +1679,7 @@
            MOVE    SPTNUM-PTNUM        TO  SPA-GMN-PTNUM
            MOVE    SPTNUM-PTID         TO  SPA-GMN-PTID
       *
-      *    ���ԥޥ�����¸�ߥ����å�
+      *    患者マスター存在チェック
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-GMN-PTID        TO  PTINF-PTID
            PERFORM 920-PTINF-READ-SEC
@@ -1698,16 +1698,16 @@
       *
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "��"                TO  SPA-GMN-SEX
+                   MOVE    "男"                TO  SPA-GMN-SEX
                WHEN    "2"
-                   MOVE    "��"                TO  SPA-GMN-SEX
+                   MOVE    "女"                TO  SPA-GMN-SEX
            END-EVALUATE
       *
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 3101-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  SPA-GMN-BIRTHDAYH
       *
-      *    ��¾�������
+      *    排他制御処理
            PERFORM 990-LOCK-IN-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      41013-PTNUM-EXT
@@ -1726,7 +1726,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ͽ��Ի�̾
+      *    新患予約者氏名
       *****************************************************************
        41014-YYKNAME-SEC            SECTION.
       *
@@ -1746,7 +1746,7 @@
                END-IF
            END-IF
       *
-      *    ͽ����
+      *    予約修正
            IF      SPA-YYK-SYORI       =   2
                IF      SPA-GMN-YYKNAME     =   SPA-GMN-NAME
                    MOVE    5               TO  SPA-GMN-CUR
@@ -1754,10 +1754,10 @@
                END-IF
            END-IF
       *
-      *    ����Ⱦ�ѥ����å�
-      *    ���ѥ����å�
+      *    全角半角チェック
+      *    全角チェック
            IF      SPA-ENCODING        =   2
-      *        ��ĥ�����б�
+      *        拡張漢字対応
                INITIALIZE                  ORCSKANACHK2AREA
                MOVE    "1"                 TO  KANACHK2-SYORI
                MOVE    SPA-GMN-YYKNAME     TO  KANACHK2-MAE-INPUT
@@ -1771,7 +1771,7 @@
                    MOVE    KANACHK2-OUT-INPUT  TO  SPA-GMN-YYKNAME
                END-IF
            ELSE
-      *        ��ĥ�����Բ�
+      *        拡張漢字不可
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "1"                 TO  KANACHK-SYORI
                MOVE    SPA-GMN-YYKNAME     TO  KANACHK-MAE-INPUT
@@ -1793,7 +1793,7 @@
            PERFORM 410141-KNJKEN-HEN-SEC
       *
       *
-      *    ͽ������Ͽ���ͽ���̾�Τ��ѹ�
+      *    予約修正中は新規予約氏名のみ変更
            IF      SPA-YYK-SYORI       =   2
                MOVE    SPA-GMN-YYKNAME     TO  SPA-GMN-NAME
                MOVE    5                   TO  SPA-GMN-CUR
@@ -1815,7 +1815,7 @@
       *    END-IF
       *
            IF      IDZ                  >   1
-      *        ��̾������
+      *        氏名検索へ
                MOVE    SPA-GMN-YYKNAME     TO  SPA-Y01-YYKNAME
                PERFORM 470-SIMEIKEN-SEC
            ELSE
@@ -1826,7 +1826,7 @@
                    MOVE    SPACE               TO  SPA-GMN-SEX
                    MOVE    SPACE               TO  SPA-GMN-BIRTHDAYH
                ELSE
-      *        ���ԥޥ�����ͽ��Ԥ���
+      *        患者マスタに予約者あり
                    IF     (WRK-NAME            =   SPA-GMN-YYKNAME) OR
                           (WRK-KANANAME        =   SPA-GMN-YYKNAME)
                        CONTINUE
@@ -1848,7 +1848,7 @@
                    MOVE    WRK-BIRTHDAYH   TO  SPA-GMN-BIRTHDAYH
                    MOVE    WRK-NAME        TO  SPA-GMN-YYKNAME
       *
-      *            ��¾�������
+      *            排他制御処理
                    PERFORM 990-LOCK-IN-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                         GO      TO      41014-YYKNAME-EXT
@@ -1862,14 +1862,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ը�������
+      *    患者検索処理
       *****************************************************************
        410141-KNJKEN-HEN-SEC        SECTION.
       *
            MOVE    ZERO                TO  IDZ
       *
            MOVE    SPACE               TO  WRK-NAME-KEY
-      *    ��������
+      *    漢字検索
            INITIALIZE                  PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
       ***  STRING  SPA-GMN-YYKNAME     DELIMITED  BY  SPACE
@@ -1877,12 +1877,12 @@
       **************************       INTO    PTINF-NAME
       *                                INTO    WRK-NAME-KEY
       ***  END-STRING
-      *    ��ʬ����
+      *    部分検索
            PERFORM 410141-NAME-HEN-SEC
            MOVE    WRK-NAME-KEY        TO  PTINF-NAME
            MOVE    WRK-NAME-KEY        TO  PTINF-KANANAME
       *
-      *    ���ԥޥ������������̾�Ǹ���
+      *    患者マスターを漢字氏名で検索
            MOVE    PTINF-REC           TO  MCPDATA-REC
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
@@ -1904,7 +1904,7 @@
                MOVE    "key5"              TO  MCP-PATHNAME
                PERFORM 910-PTINF-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_ptinf"         TO  MCP-TABLE
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -1914,27 +1914,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ�����
+      *    氏名編集処理
       *****************************************************************
        410141-NAME-HEN-SEC          SECTION.
       *
            MOVE    SPACE               TO  WRK-NAME1
            MOVE    SPACE               TO  WRK-NAME2
            MOVE    SPA-GMN-YYKNAME     TO  WRK-NAME-KEY
-      *    ���μ��Ρ����
+      *    ＊の次の　削除
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "sub"               TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME-KEY        TO  ORCSSTR-STRING1
-           MOVE    "����"              TO  ORCSSTR-STRING2
-           MOVE    "��"                TO  ORCSSTR-STRING3
+           MOVE    "＊　"              TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING3
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            MOVE    ORCSSTR-STRING1     TO  WRK-NAME-KEY
-      *    ����̾���Ȥ���
+      *    ＊は名前とする
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "search"            TO  ORCSSTR-COMMAND
            MOVE    WRK-NAME-KEY        TO  ORCSSTR-STRING1
-           MOVE    "��"                TO  ORCSSTR-STRING2
+           MOVE    "＊"                TO  ORCSSTR-STRING2
            CALL    "orcsstring"        USING
                                        ORCSSTRINGAREA
            IF      ORCSSTR-NUM1        =   ZERO
@@ -1980,7 +1980,7 @@
                MOVE    SPACE               TO  WRK-NAME-KEY
                STRING  WRK-NAME1       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
-                       "��"            DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    WRK-NAME-KEY
@@ -1990,7 +1990,7 @@
                   (WRK-NAME2       NOT =   SPACE )
                MOVE    SPACE               TO  WRK-NAME-KEY
                STRING  "%"             DELIMITED  BY  SIZE
-                       "��"            DELIMITED  BY  SIZE
+                       "　"            DELIMITED  BY  SIZE
                        WRK-NAME2       DELIMITED  BY  SPACE
                        "%"             DELIMITED  BY  SIZE
                                        INTO    WRK-NAME-KEY
@@ -2000,11 +2000,11 @@
        410141-NAME-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ����Խ�����
+      *    患者マスタ編集処理
       *****************************************************************
        410141-PTINF-HENSYU-SEC          SECTION.
       *
-      *    �����ֹ��Ѵ���ꡢ����NO��괵��ID���������
+      *    患者番号変換より、患者NOより患者IDを取得する
       *
            ADD     1                   TO  IDZ
            MOVE    PTINF-PTID          TO  WRK-PTID
@@ -2024,9 +2024,9 @@
            MOVE    PTINF-KANANAME     TO  WRK-KANANAME
            EVALUATE    PTINF-SEX
                WHEN    "1"
-                   MOVE    "��"                TO  WRK-SEX
+                   MOVE    "男"                TO  WRK-SEX
                WHEN    "2"
-                   MOVE    "��"                TO  WRK-SEX
+                   MOVE    "女"                TO  WRK-SEX
            END-EVALUATE
       *
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
@@ -2037,7 +2037,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ͽ��������
+      *    予約日入力
       *****************************************************************
        41014-YYKYMD-SEC             SECTION.
       *
@@ -2054,7 +2054,7 @@
                GO      TO      41014-YYKYMD-EXT
            END-IF
       *
-      *    ����ɽ����������ͽ����֤�
+      *    一覧表より選択時、予約時間へ
            IF      SPA-YYK-SYORI       =   2
       *********MOVE    6                   TO  SPA-GMN-CUR
                CONTINUE
@@ -2077,7 +2077,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ͽ���������
+      *    予約時間入力
       *****************************************************************
        41015-YYKTIME-SEC             SECTION.
       *
@@ -2104,7 +2104,7 @@
                        MOVE    1               TO  FLG-TIME
                    ELSE
                      IF      FLG-TIME            =   ZERO
-      *                ��
+      *                時
                        ADD     1               TO  IDX-T1
                        IF      IDX-T1          >   2
                            MOVE    1               TO  FLG-TIME
@@ -2114,7 +2114,7 @@
                        END-IF
                      END-IF
                      IF      FLG-TIME          =   1
-      *                ʬ
+      *                分
                        ADD     1               TO  IDX-T2
                        IF      IDX-T2          >   2
                            MOVE    "0008"          TO  SPA-ERRCD
@@ -2131,7 +2131,7 @@
                GO    TO      41015-YYKTIME-EXT
            END-IF
       *
-      *    ͽ���
+      *    予約時
            INITIALIZE                      ORCSNUMAREA
            MOVE    2                   TO  SNUM-KETSUU
            MOVE    WRK-THHX            TO  SNUM-INX
@@ -2146,7 +2146,7 @@
            ELSE
                MOVE    SNUM-OUTNUM         TO  WRK-THH
            END-IF
-      *    ͽ��ʬ
+      *    予約分
            INITIALIZE                      ORCSNUMAREA
            MOVE    2                   TO  SNUM-KETSUU
            MOVE    WRK-TSSX            TO  SNUM-INX
@@ -2176,7 +2176,7 @@
                MOVE    6                   TO  SPA-GMN-CUR
                GO      TO      41015-YYKTIME-EXT
            END-IF
-      *    ͽ�����
+      *    予約時間
            MOVE    WRK-TIME            TO  SPA-NAI-YYKTIME
            MOVE    WRK-TIME            TO  SPA-NAI-KYYKTIME
            IF      SPA-NAI-YYKTIME(1:2)    <=  "08"
@@ -2185,7 +2185,7 @@
            IF      SPA-NAI-YYKTIME(1:2)    >=  "21"
                MOVE    "21"                TO  SPA-NAI-KYYKTIME(1:2)
            END-IF
-      *    ����ͽ�����
+      *    キー予約時間
       *****MOVE    SPA-NAI-YYKTIME         TO  SPA-NAI-KYYKTIME(1:2)
            MOVE    ZERO                    TO  SPA-NAI-KYYKTIME(3:2)
       *
@@ -2197,7 +2197,7 @@
                        (SPA-NAI-KYYKTIME    =   SPA-CHK-KYYKTIME)
                    CONTINUE
                ELSE
-      *            ͽ���������å�
+      *            予約件数チェック
                    PERFORM 410161-YYKKEN-CHK-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    6                   TO  SPA-GMN-CUR
@@ -2212,7 +2212,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    ͽ���������å�
+      *    予約件数チェック
       *****************************************************************
        410161-YYKKEN-CHK-SEC        SECTION.
       *
@@ -2227,7 +2227,7 @@
            MOVE    ZERO                TO  YYK-YYKID
            PERFORM 910-YOYAKU-INV-SEC
            IF      FLG-YYK             =   ZERO
-      *        �����������ʥ����ƥ����դ��������
+      *        最大件数修正（システム日付より後の日）
                IF     (YYK-YYKYMD          >=  SPA-SYSYMD )
                  AND  (YYK-YYKMAXCNT   NOT =   SPA-Y01-YYKMAXCNT)
                    MOVE    SPA-Y01-YYKMAXCNT   TO  YYK-YYKMAXCNT
@@ -2243,7 +2243,7 @@
        410161-YYKKEN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�����
+      *    診療科入力
       *****************************************************************
        41016-SRYKA-SEC            SECTION.
       *
@@ -2261,7 +2261,7 @@
                    MOVE    1               TO  FLG-HENFLG
                END-IF
            END-PERFORM
-      *    ����ʤ��ϥ��顼
+      *    選択なしはエラー
            IF      FLG-HENFLG          =   ZERO
                MOVE    "0009"              TO  SPA-ERRCD
                MOVE    7                   TO  SPA-GMN-CUR
@@ -2273,7 +2273,7 @@
        41016-SRYKA-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ����������
+      *    予約内容入力
       *****************************************************************
        41017-YYKKBN-SEC            SECTION.
       *
@@ -2291,7 +2291,7 @@
                    MOVE    1               TO  FLG-HENFLG
                END-IF
            END-PERFORM
-      *    ����ʤ��ϥ��顼
+      *    選択なしはエラー
            IF      FLG-HENFLG          =   ZERO
                MOVE    "0010"              TO  SPA-ERRCD
                MOVE    8                   TO  SPA-GMN-CUR
@@ -2302,7 +2302,7 @@
        41017-YYKKBN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧϢ������
+      *    確認連絡入力
       *****************************************************************
        41018-KAKREN-SEC            SECTION.
       *
@@ -2322,7 +2322,7 @@
        41018-KAKREN-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    メモ入力
       *****************************************************************
        41018-COMMENT-SEC            SECTION.
       *
@@ -2335,7 +2335,7 @@
                        PERFORM 410180-COMMENT-DEL-SEC
                    END-IF
                ELSE
-      *            ���ѥ����å�
+      *            全角チェック
                    PERFORM 410181-COMMENT-CHEK-SEC
                END-IF
            END-IF
@@ -2345,7 +2345,7 @@
                IF     (SPA-NAI-COMMENT(1)  =   SPACE )
                   AND (SPA-NAI-YYKID       =   ZERO  )
                   AND (SPA-NAI-YYKCOPY     =   ZERO  )
-      *            ����ʣ��
+      *            雛形複写
                    PERFORM 410189-YYKEXAMPLE-HEN-SEC
                    MOVE    1               TO  SPA-NAI-YYKCOPY
                END-IF
@@ -2354,7 +2354,7 @@
        41018-COMMENT-EXT.
            EXIT.
       *****************************************************************
-      *    ������������
+      *    メモ空白削除処理
       *****************************************************************
        410180-COMMENT-DEL-SEC                SECTION.
       *
@@ -2370,7 +2370,7 @@
        410180-COMMENT-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������å�����
+      *    メモチェック処理
       *****************************************************************
        410181-COMMENT-CHEK-SEC                SECTION.
       *
@@ -2390,7 +2390,7 @@
        410181-COMMENT-CHEK-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ʸ��ʣ�̽���
+      *    予約文例複写処理
       *****************************************************************
        410189-YYKEXAMPLE-HEN-SEC                SECTION.
       *
@@ -2429,7 +2429,7 @@
        410189-YYKEXAMPLE-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ɼ��ʬ����
+      *    予約票区分入力
       *****************************************************************
        41018-YYKHYO-SEC                SECTION.
       *
@@ -2445,7 +2445,7 @@
                END-IF
            END-PERFORM
       *
-      *    ���򥨥顼�Ͻ��ɽ����
+      *    選択エラーは初期表示へ
            IF      FLG-HENFLG          =   ZERO
                MOVE    SPA-Y01-YYKHYO-KBN  TO  SPA-GMN-YYKHYO
                PERFORM VARYING IDY     FROM   1   BY  1
@@ -2462,7 +2462,7 @@
        41018-YYKHYO-EXT.
            EXIT.
       *****************************************************************
-      *    ����������
+      *    日選択入力
       *****************************************************************
        410151-HYOJI-HEN-SEC        SECTION.
       *
@@ -2481,12 +2481,12 @@
                MOVE    "0018"          TO  SPA-ERRCD
                GO      TO      410151-HYOJI-HEN-EXT
            END-IF
-      *    ͽ��ơ��֥��Խ�
+      *    予約テーブル編集
            INITIALIZE                  SPA-SEL-AREA
            MOVE    WRK-SEL-SYUU        TO  SPA-SEL-SYUU
            PERFORM 510-YYKTBL-SET-SEC
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            COMPUTE SPA-SEL-YOUBI    =   WRK-HI
                                     -  ((SPA-SEL-SYUU  -  1 )  *  7 )
            MOVE    ZERO             TO  SPA-SEL-TIME
@@ -2497,17 +2497,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������
+      *    日選択入力
       *****************************************************************
        41016-GOKSEL-SEC             SECTION.
       *
            MOVE    WRK-GMN-GOKSEL   TO  SPA-SEL-YOUBI
       *****COMPUTE SPA-SEL-YOUBI = WRK-GMN-GOKSEL * 1
            MOVE    ZERO             TO  SPA-SEL-TIME
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            PERFORM 4001-KNJICHI-SEC
       *
-      *    ͽ�������Ǥʤ����������������������ֹ��
+      *    予約処理中でなく、選択数がある時、選択番号へ
            IF      SPA-YYK-SYORI       =   ZERO
                IF      SPA-GMN-MAX         >   ZERO
                    MOVE    12              TO  SPA-GMN-CUR
@@ -2522,7 +2522,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
       *****************************************************************
        4001-KNJICHI-SEC            SECTION.
       *
@@ -2542,7 +2542,7 @@
                MOVE    SPA-SEL-TIME    TO  IDX-T
            END-IF
       *
-      *    �о�����ͽ������
+      *    対象日を予約日へ
            MOVE    SPA-NAI-YYYKYMD (01 IDX-Y)
                                        TO  SPA-NAI-YYKYMD
       *
@@ -2559,7 +2559,7 @@
            END-IF
            MOVE    WRK-KEY-YYKTIME     TO  YYK-KEYYYKTIME
            MOVE    ZERO                TO  YYK-YYKID
-      *    ���������ͽ�����¸����
+      *    時間帯毎の予約を保存する
            INITIALIZE                  YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
@@ -2600,7 +2600,7 @@
                    MOVE    YYK-NAME        TO  SPA-GMN-TNAME    (IDX)
                    PERFORM 41002-SRYKAMEI-SET-SEC
                    IF      YYK-RAIINZUMI   =   "1"
-                       MOVE    "�象"      TO  SPA-GMN-TRAIINZUMI(IDX)
+                       MOVE    "来院"      TO  SPA-GMN-TRAIINZUMI(IDX)
                    END-IF
                    MOVE    YYK-PTID        TO  SPA-NAI-TPTID   (IDX)
                    IF      YYK-PTID    NOT =   ZERO
@@ -2631,7 +2631,7 @@
                MOVE    WRK-PATH            TO  MCP-PATHNAME
                PERFORM 900-YOYAKU-READ-SEC
            END-PERFORM
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    WRK-PATH            TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -2640,7 +2640,7 @@
       *
            PERFORM 40011-TBLSORT-SEC 
       *
-      *     �оݻ���ɽ��
+      *     対象時間表示
            IF      WRK-KEY-YYKTIME     =   ZERO
                MOVE    SPACE                   TO  SPA-GMN-TAITIME
                MOVE    ZERO                    TO  SPA-NAI-KYYKTIME
@@ -2650,13 +2650,13 @@
                MOVE    WRK-KEY-YYKTIME(1:2)    TO  SPA-GMN-TAITIME(1:2)
                MOVE    ":"                     TO  SPA-GMN-TAITIME(3:1)
                MOVE    WRK-KEY-YYKTIME(3:2)    TO  SPA-GMN-TAITIME(4:2)
-      *        ͽ����֤�ɽ��
+      *        予約時間の表示
                MOVE    WRK-KEY-YYKTIME         TO  SPA-NAI-KYYKTIME
                MOVE    SPA-GMN-TAITIME         TO  SPA-GMN-YYKTIME
                MOVE    WRK-KEY-YYKTIME         TO  SPA-NAI-YYKTIME
            END-IF
       *
-      *     �о���ɽ��
+      *     対象日表示
            MOVE    SPA-NAI-YYYKYMD (01 IDX-Y)
                                        TO  WRK-SYMD
            PERFORM 3101-SEIWA-HEN-SEC
@@ -2669,7 +2669,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ��̾�������
+      *    科名設定処理
       *****************************************************************
        41002-SRYKAMEI-SET-SEC             SECTION.
       *
@@ -2685,13 +2685,13 @@
            END-PERFORM
       *
            IF      FLG-HENFLG          =   ZERO
-      *        �ơ��֥�ˤʤ��Ȥ��������ƥ�������
+      *        テーブルにないとき、システム管理より
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    YYK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    YYK-YYKYMD          TO  SYS-1005-STYUKYMD
            MOVE    YYK-YYKYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
@@ -2719,7 +2719,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ���԰����ӣϣңԽ���
+      *    患者一覧ＳＯＲＴ処理
       *****************************************************************
        40011-TBLSORT-SEC             SECTION.
       *
@@ -2768,7 +2768,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    ������������
+      *    時間選択入力
       *****************************************************************
        41017-KENSEL-SEC             SECTION.
       *
@@ -2778,10 +2778,10 @@
            COMPUTE SPA-SEL-YOUBI    =   7
                                     -  (WRK-KEI    -   WRK-GMN-KENSEL)
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            PERFORM 4001-KNJICHI-SEC
       *
-      *    ͽ�������Ǥʤ����������������������ֹ��
+      *    予約処理中でなく、選択数がある時、選択番号へ
            IF      SPA-YYK-SYORI       =   ZERO
                IF      SPA-GMN-MAX      >   ZERO
                    MOVE    12               TO  SPA-GMN-CUR
@@ -2797,7 +2797,7 @@
            EXIT.
       *       
       *****************************************************************
-      *    �����ֹ�����
+      *    選択番号入力
       *****************************************************************
        41018-SELBAN-SEC             SECTION.
       *
@@ -2831,11 +2831,11 @@
        41018-SELBAN-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ꥹ�������
+      *    予約リスト選択時
       *****************************************************************
        410181-YYKSET-SEC            SECTION.
       *
-      *    ͽ��ޥ������ѹ���
+      *    予約マスター変更へ
            INITIALIZE                  SPA-GMN-YYKAREA
       *
            MOVE    SPA-NAI-TYYKYMD (SPA-NAI-SELBAN)
@@ -2881,12 +2881,12 @@
                    MOVE    WRK-BIRTHDAYH       TO  SPA-GMN-BIRTHDAYH
                    MOVE    PTINF-NAME          TO  SPA-GMN-YYKNAME
       *
-      *            ��¾�������
+      *            排他制御処理
                    PERFORM 990-LOCK-IN-SEC
                END-IF
            END-IF
       *
-      *    ���Ų�
+      *    診療科
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
                IF      SPA-GMN-SRYKACDL (IDX)      =   SPA-GMN-SRYKA
@@ -2894,7 +2894,7 @@
                    MOVE    SPA-SRYKA-MAX           TO  IDX
                END-IF
            END-PERFORM
-      *    ͽ������
+      *    予約内容
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-YYKKBN-MAX
                IF      SPA-GMN-YYKKBNLST(IDX)(1:2)
@@ -2904,7 +2904,7 @@
                    MOVE    SPA-YYKKBN-MAX  TO  IDX
                END-IF
            END-PERFORM
-      *    Ϣ��
+      *    連絡
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-KAKREN-MAX
                IF      SPA-GMN-KAKRENLST(IDX)(1:2)
@@ -2928,7 +2928,7 @@
       *
            MOVE    SPA-NAI-YYKYMD(7:2) TO  SPA-NAI-HYOJHI
       *!
-      *    ͽ����
+      *    予約メモ
            MOVE    ZERO                TO  SPA-NAI-YYKCOPY
            INITIALIZE                  SPA-NAI-COMMENT-G
            INITIALIZE                  YYKCOM-REC
@@ -2936,9 +2936,9 @@
            MOVE    SPA-Y01-SRYNAIYO    TO  YYKCOM-SRYNAIYO
            MOVE    SPA-Y01-DRCD        TO  YYKCOM-DRCD
            MOVE    SPA-NAI-YYKYMD      TO  YYKCOM-YYKYMD
-      *    ����ͽ�����
+      *    キー予約時間
            MOVE    SPA-Y01-YYKTIME     TO  YYKCOM-KEYYYKTIME
-      *    ͽ��ɣ�
+      *    予約ＩＤ
            MOVE    SPA-NAI-YYKID       TO  YYKCOM-YYKID
       *
            MOVE    YYKCOM-REC          TO  MCPDATA-REC
@@ -2971,7 +2971,7 @@
        410181-YYKSET-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ꥹ�������
+      *    予約リスト選択時
       *****************************************************************
        41019-CLIST-SEC            SECTION.
       *
@@ -2989,11 +2989,11 @@
        41019-CLIST-EXT.
            EXIT.
       *****************************************************************
-      *    �������������
+      *    カレンダー選択時
       *****************************************************************
        41020-CALENDAR-SEC         SECTION.
       *
-      *    �������Ϥ�ǯ���ӣУ���ǯ��Υ����å�
+      *    画面入力の年月＝ＳＰＡの年月のチェック
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    Y01-YEAR            TO  WRK-CAL-YEAR
@@ -3009,10 +3009,10 @@
                                        TO  SPA-GMN-TAIYYMM
                    MOVE LNK-DAY2-EDTYMD1 (2:2)
                                        TO  SPA-GMN-TAIYYMM (5:2)
-                   MOVE "ǯ"                TO  SPA-GMN-TAIYYMM (7:2)
+                   MOVE "年"                TO  SPA-GMN-TAIYYMM (7:2)
                    MOVE LNK-DAY2-EDTYMD1 (5:2)
                                        TO  SPA-GMN-TAIYYMM (9:2)
-                   MOVE "��"           TO  SPA-GMN-TAIYYMM (11:2)
+                   MOVE "月"           TO  SPA-GMN-TAIYYMM (11:2)
                    MOVE  SPA-GMN-TAIYYMM
                                        TO  WRK-GMN-TAIYYMM
            ELSE
@@ -3033,7 +3033,7 @@
                PERFORM 410202-CALSET-SEC
            END-IF
       *
-      *    ͽ�������Ǥʤ����������������������ֹ��
+      *    予約処理中でなく、選択数がある時、選択番号へ
            IF      SPA-YYK-SYORI       =   ZERO
                IF      SPA-GMN-MAX      >   ZERO
                    MOVE    12               TO  SPA-GMN-CUR
@@ -3049,13 +3049,13 @@
            EXIT.
       *       
       *****************************************************************
-      *    �о�������
+      *    対象日入力
       *****************************************************************
        41015-HYOJHI-SEC             SECTION.
       *
       *
            IF      SPA-GMN-DAY        >=  01  AND  <=  31
-      *        ͽ��ɽ�������
+      *        予約表設定処理
                PERFORM 410151-HYOJI-HEN-SEC
            ELSE
                MOVE    "0015"          TO  SPA-ERRCD
@@ -3064,7 +3064,7 @@
        41015-HYOJHI-EXT.
            EXIT.
       *****************************************************************
-      *    ��������������δ��԰�����������ʰ۷��
+      *    カレンダー選択時の患者一覧等の設定（異月）
       *****************************************************************
        410202-CALSET-SEC               SECTION.
       *
@@ -3084,15 +3084,15 @@
                                        TO  SPA-GMN-TAIYYMM
               MOVE LNK-DAY2-EDTYMD1 (2:2)
                                        TO  SPA-GMN-TAIYYMM (5:2)
-              MOVE "ǯ"                TO  SPA-GMN-TAIYYMM (7:2)
+              MOVE "年"                TO  SPA-GMN-TAIYYMM (7:2)
               MOVE LNK-DAY2-EDTYMD1 (5:2)
                                        TO  SPA-GMN-TAIYYMM (9:2)
-              MOVE "��"                TO  SPA-GMN-TAIYYMM (11:2)
+              MOVE "月"                TO  SPA-GMN-TAIYYMM (11:2)
            ELSE
               MOVE SPACE               TO  SPA-GMN-TAIYYMM
            END-IF
       *
-      * ��������������
+      * １日の曜日算出
            MOVE    "31"                TO  LNK-DAY3-IRAI
            MOVE    WRK-SYSYMD          TO  LNK-DAY3-YMD
            MOVE    "01"                TO  LNK-DAY3-YMD(7:2)
@@ -3111,7 +3111,7 @@
                END-PERFORM
            END-IF
       *
-      * �������λ���
+      * 月末日の算出
            MOVE    "71"                TO  LNK-DAY7-IRAI
            MOVE    WRK-SYSYMD (1:6)    TO  LNK-DAY7-YM
            CALL    "ORCSDAY"       USING    STS-AREA-DAY
@@ -3152,10 +3152,10 @@
            END-IF
       *
            MOVE    WRK-SEL-SYUU        TO  SPA-SEL-SYUU
-      *    ͽ��ơ��֥��Խ�����
+      *    予約テーブル編集処理
            PERFORM 510-YYKTBL-SET-SEC
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            COMPUTE SPA-SEL-YOUBI    =   WRK-HI
                                     -  ((SPA-SEL-SYUU  -  1 )  *  7 )
            MOVE    ZERO             TO  SPA-SEL-TIME
@@ -3166,7 +3166,7 @@
        410202-CALSET-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ���ä�
+      *    予約取消し
       *****************************************************************
        420-YYKDEL-SEC             SECTION.
       *
@@ -3189,12 +3189,12 @@
                GO      TO      420-YYKDEL-EXT
            END-IF
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    ͽ��������
+      *    予約削除処理
            PERFORM 4903-YYKDEL-SEC
       ***  INITIALIZE                  YYK-REC
       *    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3216,7 +3216,7 @@
       *                                    MCPDATA-REC
       *                                    SPA-AREA
       *
-      *    ͽ��Ϳ��ѹ�
+      *    予約人数変更
       *    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
       *    MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
       *    MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
@@ -3233,7 +3233,7 @@
       *        MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
       *        MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
       *
-      *        ����
+      *        更新
       *        MOVE    YYK-REC             TO  MCPDATA-REC
       *        MOVE    "DBUPDATE"          TO  MCP-FUNC
       *        MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -3260,18 +3260,18 @@
                MOVE    "0015"          TO  SPA-ERRCD
                GO      TO      420-YYKDEL-EXT
            END-IF
-      *    ͽ��ơ��֥��Խ�
+      *    予約テーブル編集
            INITIALIZE                  SPA-SEL-AREA
            MOVE    WRK-SEL-SYUU        TO  SPA-SEL-SYUU
            PERFORM 510-YYKTBL-SET-SEC
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            COMPUTE SPA-SEL-YOUBI    =   WRK-HI
                                     -  ((SPA-SEL-SYUU  -  1 )  *  7 )
            MOVE    ZERO             TO  SPA-SEL-TIME
            PERFORM 4001-KNJICHI-SEC
       *
-      *    ͽ�󥯥ꥢ
+      *    予約クリア
            INITIALIZE                  SPA-GMN-YYKAREA
            MOVE    SPA-SYSYMD          TO  SPA-NAI-YYKYMD
            MOVE    SPA-SYSYMDWH        TO  SPA-GMN-YYKYMD
@@ -3284,7 +3284,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ������
+      *    クリア処理へ
       *****************************************************************
        220-CLEAR-SEC             SECTION.
       *
@@ -3293,16 +3293,16 @@
                   (SPA-GMN-PTID        =   ZERO  )  AND
                   (SPA-GMN-YYKNAME     =   SPACE )
                INITIALIZE                      SPA-Y01-YYK-AREA
-      *        ���ɽ����
+      *        初期表示へ
                PERFORM 310-SPASET-SEC
                MOVE    1                   TO  SPA-GMN-CUR
            ELSE
                MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
                MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
                MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
-      *        ��¾����������
+      *        排他制御解除処理
                PERFORM 990-LOCK-OUT-SEC
-      *        ͽ�����ƽ��
+      *        予約内容初期
                MOVE    SPA-SYSYMD          TO  SPA-NAI-YYKYMD
                MOVE    SPA-SYSYMDWH        TO  SPA-GMN-YYKYMD
                MOVE    1                   TO  FLG-CALENDAR
@@ -3314,7 +3314,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��إ��������ư
+      *    予約へカーソル移動
       *****************************************************************
        480-YOYAKU-SEC             SECTION.
       *
@@ -3327,42 +3327,42 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ����Ͽ������
+      *    予約登録　処理
       *****************************************************************
        490-TOROKU-SEC             SECTION.
       *
-      *    ��Ͽ�����å�����
+      *    登録チェック処理
            PERFORM 4901-TOROKU-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      490-TOROKU-EXT
            END-IF
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
            IF      SPA-Y01-YYKID       =   ZERO
-      *        ͽ���ɲý���
+      *        予約追加処理
                PERFORM 4901-YYKADD-SEC
            ELSE
                IF      (SPA-GMN-SRYNAIYOCD =   SPA-Y01-SRYNAIYO) AND
                        (SPA-NAI-DRCD(2:4)  =   SPA-Y01-DRCD(2:4)) AND
                        (SPA-NAI-YYKYMD     =   SPA-OLD-YYKYMD )   AND
                        (SPA-NAI-KYYKTIME   =   SPA-Y01-YYKTIME)
-      *            ͽ��������
+      *            予約修正処理
                    PERFORM 4902-YYKUPD-SEC
                ELSE
-      *            ͽ��������
+      *            予約削除処理
                    PERFORM 4903-YYKDEL-SEC
-      *            ͽ���ɲý���
+      *            予約追加処理
                    PERFORM 4901-YYKADD-SEC
                END-IF
            END-IF
       *
-      *    ͽ��ɼ����
+      *    予約票印刷
            IF      SPA-ERRCD           =   SPACE
-      *        �������Ԥϰ������ʤ�
+      *        新規患者は印刷しない
                IF     (SPA-GMN-YYKHYO      =   "0" )
                OR     (SPA-GMN-PTID        =   ZERO )
                    CONTINUE
@@ -3371,7 +3371,7 @@
                END-IF
            END-IF
       *
-      *    ͽ�󥯥ꥢ
+      *    予約クリア
            MOVE    1                   TO  FLG-CALENDAR
            PERFORM 2201-YYK-CLEAR-SEC
            MOVE    3                   TO  SPA-GMN-CUR
@@ -3380,14 +3380,14 @@
        490-TOROKU-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ�󥯥ꥢ����
+      *    予約クリア処理
       *****************************************************************
        2201-YYK-CLEAR-SEC             SECTION.
       *
            MOVE    ZERO                TO  SPA-YYK-SYORI
            MOVE    ZERO                TO  SPA-Y01-KEIKOKU
       *
-      *    �����奫����������ɽ��
+      *    更新後カレンダー内容表示
            IF      FLG-CALENDAR        =   1
                MOVE    SPA-NAI-YYKYY       TO  Y01-YEAR
                MOVE    SPA-NAI-YYKMM       TO  Y01-MONTH
@@ -3399,13 +3399,13 @@
            MOVE    SPACE               TO  SPA-CHK-YYKYMD
            MOVE    ZERO                TO  SPA-CHK-KYYKTIME
       *
-      *    ���Ųʡʥɥ����������ɤ����
+      *    診療科（ドクターコードから）
            PERFORM 410121-DRCD-HENSYU-SEC
            IF      SPA-GMN-SRYKA       =   SPACE
                MOVE    SPA-GMN-SRYKALST (1)    TO  SPA-GMN-SRYKA-G
            END-IF
       *
-      *    ͽ������
+      *    予約内容
            IF      SPA-YYKKBN-HYOJI    =   ZERO
                MOVE    SPA-GMN-YYKKBNLST (2)
                                            TO  SPA-GMN-YYKKBN-G
@@ -3413,7 +3413,7 @@
                MOVE    SPA-GMN-YYKKBNLST (SPA-YYKKBN-HYOJI)
                                            TO  SPA-GMN-YYKKBN-G
            END-IF
-      *    ��ǧϢ��
+      *    確認連絡
            MOVE    SPA-GMN-KAKRENLST (1)
                                        TO  SPA-GMN-KAKREN-G
            MOVE    SPACE               TO  SPA-GMN-SELBAN
@@ -3421,18 +3421,18 @@
       *
            MOVE    3                   TO  SPA-GMN-CUR
       *
-      *    ��¾����������
+      *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
            .
        2201-YYK-CLEAR-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ���ɲý���
+      *    予約追加処理
       *****************************************************************
        4901-TOROKU-CHK-SEC             SECTION.
       *
-      *    �������ƥ����å�
+      *    診療内容チェック
            MOVE    ZERO               TO  FLG-HENFLG
            PERFORM VARYING IDY     FROM   1   BY  1
                    UNTIL  (IDY     >      SPA-SRYNAIYO-MAX  )  OR
@@ -3446,7 +3446,7 @@
                MOVE    "0001"              TO  SPA-ERRCD
                MOVE    01                  TO  SPA-GMN-CUR
            END-IF
-      *   �ɥ���������
+      *   ドクター入力
            MOVE    ZERO               TO  FLG-HENFLG
            PERFORM VARYING IDY     FROM   1   BY  1
                    UNTIL  (IDY     >      SPA-DRCD-MAX  )  OR
@@ -3461,7 +3461,7 @@
                MOVE    "0002"              TO  SPA-ERRCD
                MOVE    02                  TO  SPA-GMN-CUR
            END-IF
-      *    ���ϥ����å�����
+      *    入力チェック処理
            IF      SPA-ERRCD           =   SPACE
                MOVE    2                   TO  FLG-TOUROKU
                PERFORM 410-INPUT-CHK-SEC
@@ -3482,7 +3482,7 @@
                MOVE    "0014"              TO  SPA-ERRCD
                GO      TO      4901-TOROKU-CHK-EXT
            END-IF
-      *    ͽ���������λ��ٹ�
+      *    予約日か過去の時警告
            IF     (SPA-Y01-KEIKOKU     =   ZERO )  AND
                   (SPA-NAI-YYKYMD      <   SPA-SYSYMD)
                MOVE    "K001"              TO  SPA-ERRCD
@@ -3492,11 +3492,11 @@
        4901-TOROKU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ���ɲý���
+      *    予約追加処理
       *****************************************************************
        4901-YYKADD-SEC             SECTION.
       *
-      *    ���٥쥳���ɺ�����
+      *    明細レコード最大件数
            MOVE    SPACE               TO  YYK-REC
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3530,7 +3530,7 @@
                ADD     1                   TO  WRK-YYKID
            END-IF
       *
-      *    ͽ��ɣġᣰ������
+      *    予約ＩＤ＝００検索
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
            MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
@@ -3542,7 +3542,7 @@
            IF      FLG-YYK             =   ZERO
                ADD     1                   TO  YYK-YYKCNT
                MOVE    YYK-YYKCNT          TO  WRK-YYKCNT
-      *        �����������ʥ����ƥ����դ��������
+      *        最大件数修正（システム日付より後の日）
                IF     (YYK-YYKYMD          >=  SPA-SYSYMD )
                  AND  (YYK-YYKMAXCNT   NOT =   SPA-Y01-YYKMAXCNT)
                    MOVE    SPA-Y01-YYKMAXCNT   TO  YYK-YYKMAXCNT
@@ -3601,7 +3601,7 @@
                END-IF
            END-IF
       *
-      *    ���٥쥳�����ɲ�
+      *    明細レコード追加
       *    MOVE    SPACE               TO  YYK-REC
       *    INITIALIZE                      YYK-REC
       *    MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3637,7 +3637,7 @@
            IF      WRK-YYKID           =   ZERO
                MOVE    WRK-YYKCNT          TO  WRK-YYKID
            END-IF
-      *    ���٥쥳�����ɲ�
+      *    明細レコード追加
            MOVE    SPACE               TO  YYK-REC
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3677,7 +3677,7 @@
                DISPLAY "Y01 YYK MEI INS ERR:" MCP-RC "."
            END-IF
       *
-      *    ͽ������Ͽ
+      *    予約メモ登録
            IF      SPA-ERRCD           =   SPACE
                PERFORM 49014-YYKCOM-ADD-SEC
            END-IF
@@ -3685,14 +3685,14 @@
        4901-YYKADD-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ������Ͽ����
+      *    予約メモ登録処理
       *****************************************************************
        49014-YYKCOM-ADD-SEC            SECTION.
       *
            PERFORM VARYING     IDX-YY  FROM    1   BY  1
                    UNTIL      (IDX-YY      >   6   )
                            OR (SPA-NAI-COMMENT (IDX-YY)  =   SPACE)
-      *        �쥳�����ɲ�
+      *        レコード追加
                MOVE    SPACE               TO  YYKCOM-REC
                INITIALIZE                      YYKCOM-REC
                MOVE    SPA-HOSPNUM         TO  YYKCOM-HOSPNUM
@@ -3729,11 +3729,11 @@
        49014-YYKCOM-ADD-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��������
+      *    予約修正処理
       *****************************************************************
        4902-YYKUPD-SEC            SECTION.
       *
-      *    ͽ������
+      *    予約メモ削除
            PERFORM 49031-YYKCOM-DEL-SEC
       *
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3748,19 +3748,19 @@
                MOVE    SPA-GMN-SRYKA       TO  YYK-SRYKA
                MOVE    SPA-GMN-YYKKBN      TO  YYK-YYKKBN
                MOVE    SPA-GMN-KAKREN      TO  YYK-KAKREN
-      *        ͽ���̾
+      *        予約氏名
                IF      YYK-PTID            =   ZERO
                    MOVE    SPA-GMN-YYKNAME     TO  YYK-NAME
                END-IF
-      *        ͽ��ǡ�������
+      *        予約データ更新
                PERFORM 49030-YYK-UPDATE-SEC
                IF      SPA-ERRCD           =   SPACE
                    MOVE    SPA-NAI-YYKID       TO  WRK-YYKID
-      *            ͽ������Ͽ
+      *            予約メモ登録
                    PERFORM 49014-YYKCOM-ADD-SEC
                END-IF
            ELSE
-      *        ͽ���ɲý���
+      *        予約追加処理
                PERFORM 4901-YYKADD-SEC
            END-IF
       *
@@ -3769,11 +3769,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��������
+      *    予約削除処理
       *****************************************************************
        4903-YYKDEL-SEC            SECTION.
       *
-      *    ��ͽ��ɣġ⣰�����
+      *    前予約ＩＤ≠００削除
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
            MOVE    SPA-Y01-DRCD        TO  YYK-DRCD
@@ -3787,10 +3787,10 @@
                DISPLAY "Y01 YYK MEI DEL ??:" MCP-RC "."
                        ",KEY:" YYK-KEY
            END-IF
-      *    ͽ������
+      *    予約メモ削除
            PERFORM 49031-YYKCOM-DEL-SEC
       *
-      *    ���٥쥳���ɺ�����
+      *    明細レコード最大件数
            MOVE    SPACE               TO  YYK-REC
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
@@ -3823,7 +3823,7 @@
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ��ͽ��ɣġᣰ������
+      *    前予約ＩＤ＝００修正
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-Y01-SRYNAIYO    TO  YYK-SRYNAIYO
            MOVE    SPA-Y01-DRCD        TO  YYK-DRCD
@@ -3840,7 +3840,7 @@
        4903-YYKDEL-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��������
+      *    予約削除処理
       *****************************************************************
        49030-YYK-DELETE-SEC             SECTION.
       *
@@ -3861,7 +3861,7 @@
        49030-YYK-DELETE-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ�󹹿�����
+      *    予約更新処理
       *****************************************************************
        49030-YYK-UPDATE-SEC             SECTION.
       *
@@ -3886,7 +3886,7 @@
        49030-YYK-UPDATE-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ����������
+      *    予約メモ削除処理
       *****************************************************************
        49031-YYKCOM-DEL-SEC             SECTION.
       *
@@ -3911,21 +3911,21 @@
        49031-YYKCOM-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ɼ��������
+      *    予約票印刷処理
       *****************************************************************
        4908-YYKHYO-PRINT-SEC             SECTION.
       *
-      *    ������������������
+      *    印刷制御情報取得サブ
            CALL    "ORCSONPRTSET"      USING   SPA-AREA
            MOVE    2                   TO  SPA-CLIENT-TEMP-FLG
       *
            IF     (SPA-CLIENT-PRT-FLG  =   2 )
              OR   (SPA-PRTCONF         =   "1" )
-      *        ���饤����Ȱ�����������������
+      *        クライアント印刷制御情報取得サブ
                PERFORM 4901-CLIENT-PRT-SEC
            END-IF
       *
-      *    ͽ��ɼ����
+      *    予約票出力
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "1"                 TO  ORCSPRTNM-KBN
            MOVE    "00000010"          TO  ORCSPRTNM-KBNCD
@@ -3941,7 +3941,7 @@
       *
            INITIALIZE                  ORCHC67AREA
            MOVE    "1"                 TO  ORCHC67-KBN
-      *    ͽ����
+      *    予約日
            MOVE    SPA-NAI-YYKYMD      TO  ORCHC67-SRYYMD
       *
            MOVE    SPA-AREA            TO  HZN-SPA-AREA
@@ -3962,7 +3962,7 @@
            MOVE    HZN-SPA-AREA        TO  SPA-AREA
       *
            IF      (SPA-CLIENT-PRT-FLG =   1  )
-      *        �������ߡ�����
+      *        印刷ダミー処理
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"    USING   SPA-AREA
            END-IF
@@ -3972,11 +3972,11 @@
        4908-YYKHYO-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ͽ���̤�
+      *    メモ登録画面へ
       *****************************************************************
        4100-Y011-SYORI-SEC            SECTION.
       *
-      *    ���Ԥλ��꤬�ʤ�����ʸ����Ͽ��
+      *    患者の指定がない時、文例登録へ
            IF     (SPA-GMN-PTNUM       =   SPACE )  AND
                   (SPA-GMN-PTID        =   ZERO  )  AND
                   (SPA-GMN-YYKNAME     =   SPACE )
@@ -3988,7 +3988,7 @@
        4100-Y011-SYORI-SEC-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ͽ����
+      *    メモ登録画面
       *****************************************************************
        41001-Y011-SET-SEC       SECTION.
       *
@@ -4011,7 +4011,7 @@
            MOVE    SPA-WORK            TO  SPA-Y01KYOUTU
            MOVE    SPA-FREE            TO  SPA-Y01
       *
-      *    ���������ư
+      *    カーソル移動
            MOVE    SPACE               TO  MCP-WIDGET
            PERFORM VARYING     IDD2    FROM    1   BY  1
                    UNTIL      (IDD2    >       6  )
@@ -4040,7 +4040,7 @@
        41001-Y011-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ʸ���������
+      *    文例選択画面
       *****************************************************************
        41002-Y012-SET-SEC       SECTION.
       *
@@ -4064,7 +4064,7 @@
            MOVE    SPA-WORK            TO  SPA-Y01KYOUTU
            MOVE    SPA-FREE            TO  SPA-Y01
       *
-      *    ���������ư
+      *    カーソル移動
            MOVE    "BUNNUM"            TO  MCP-WIDGET
       *
            MOVE    "Y01"               TO  SPA-MOTOPG
@@ -4081,7 +4081,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �象�Ѥߡ�����
+      *    来院済み　処理
       *****************************************************************
        450-RAIZUMI-SEC             SECTION.
       *
@@ -4090,7 +4090,7 @@
                GO      TO      450-RAIZUMI-EXT
            END-IF
       *
-      *    ͽ��ޥ������ɹ�����
+      *    予約マスター読込処理
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-GMN-SRYNAIYOCD  TO  YYK-SRYNAIYO
            MOVE    SPA-NAI-DRCD        TO  YYK-DRCD
@@ -4112,7 +4112,7 @@
                MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
                MOVE    SPA-OPID            TO  YYK-OPID
       *
-      *        ����
+      *        更新
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBUPDATE"          TO  MCP-FUNC
                MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -4123,7 +4123,7 @@
                                                SPA-AREA
            END-IF
       *
-      *    ͽ�󴵼԰������Խ�
+      *    予約患者一覧再編集
            PERFORM 4001-KNJICHI-SEC
       *
            MOVE    ZERO                TO  SPA-NAI-SELBAN
@@ -4137,7 +4137,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ�����������
+      *    予約一覧処理へ
       *****************************************************************
        440-YYKICHI-SEC            SECTION.
       *
@@ -4146,17 +4146,17 @@
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
-      *    ͽ�������������ͽ������ʳ��λ��������ƥ����դȤ���
+      *    予約日が選択時、予約時、以外の時、システム日付とする
            IF      SPA-SEL-YOUBI       =   ZERO
                MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS
            ELSE
                 MOVE    SPA-NAI-YYYKYMD (01  SPA-SEL-YOUBI)
                                            TO  SPA-Y01-YYKYMDS
            END-IF
-      *    ͽ������λ��������Խ�
+      *    予約一覧の時ゼロを編集
            MOVE    ZERO                TO  SPA-Y01-YYKID
       *
-      *    ��¾����������
+      *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
@@ -4175,7 +4175,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ̤������������
+      *    未院一覧処理へ
       *****************************************************************
        460-MINICHI-SEC            SECTION.
       *
@@ -4184,17 +4184,17 @@
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
-      *    ͽ�������������ͽ������ʳ��λ��������ƥ����դȤ���
+      *    予約日が選択時、予約時、以外の時、システム日付とする
            IF      SPA-SEL-YOUBI       =   ZERO
                MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS
            ELSE
                 MOVE    SPA-NAI-YYYKYMD (01  SPA-SEL-YOUBI)
                                            TO  SPA-Y01-YYKYMDS
            END-IF
-      *    ̤�������λ�01���Խ�
+      *    未院一覧の時01を編集
            MOVE    01                  TO  SPA-Y01-YYKID
       *
-      *    ��¾����������
+      *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
@@ -4218,7 +4218,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���԰���������
+      *    患者一覧処理へ
       *****************************************************************
        470-KANJCHI-SEC            SECTION.
       *
@@ -4227,7 +4227,7 @@
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
-      *    ͽ�������������ͽ������ʳ��λ��������ƥ����դȤ���
+      *    予約日が選択時、予約時、以外の時、システム日付とする
            IF      SPA-SEL-YOUBI       =   ZERO
                MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS
            ELSE
@@ -4235,7 +4235,7 @@
                                            TO  SPA-Y01-YYKYMDS
            END-IF
       *
-      *    ��¾����������
+      *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    "Y01"               TO  SPA-MOTOPG
@@ -4256,7 +4256,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ͽ��������������
+      *   予約日検索処理へ
       *****************************************************************
        470-PTNUM-ICHI-SEC            SECTION.
       *
@@ -4265,7 +4265,7 @@
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
       *
-      *    ͽ����������
+      *    予約日検索へ
            IF     (SPA-GMN-PTID        =   ZERO ) OR
                   (SPA-GMN-NAME        =   SPACE )
                CONTINUE
@@ -4292,11 +4292,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾������
+      *    氏名検索へ
       *****************************************************************
        470-SIMEIKEN-SEC             SECTION.
       *
-      *    ���̰ܹ��ѤΥ��Ѥ��Խ�����
+      *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
@@ -4322,18 +4322,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ���հ�����
+      *    受付一覧へ
       *****************************************************************
        490-UKEICHI-SEC             SECTION.
       *
-      *    ���̰ܹ��ѤΥ��Ѥ��Խ�����
+      *    画面移行用のスパを編集する
            INITIALIZE                  SPA-KYOTUKEY
            INITIALIZE                  SPA-Y01-YYK-AREA
            MOVE    SPA-GMN-SRYNAIYO    TO  SPA-Y01-SRYNAIYOG
            MOVE    SPA-GMN-DRNAME      TO  SPA-Y01-DRNAME
            MOVE    SPA-NAI-DRCD        TO  SPA-Y01-DRCD
       *
-      *    ��¾����������
+      *    排他制御解除処理
            PERFORM 990-LOCK-OUT-SEC
       *
            MOVE    SPA-Y01KYOUTU       TO  SPA-WORK
@@ -4354,14 +4354,14 @@
        490-UKEICHI-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
            MOVE    SPA-MOTOPG3         TO  SPA-SAKIPG
            IF      SPA-MOTOPG3         =   SPACE
       *                                OR  "U01"
-      *         ��̳�����
+      *         業務選択へ
                 MOVE   "M01"            TO  SPA-SAKIPG
            END-IF
            IF      SPA-MOTOPG3         =   "U01"
@@ -4384,11 +4384,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���饤����Ȱ�����������
+      *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC          SECTION.
       *
-      *    ���饤����Ȱ�����������������
+      *    クライアント印刷制御情報取得サブ
            INITIALIZE                  ORCSPRTCTRLAREA
            CALL    "ORCSPRTCTRL"       USING   SPA-AREA
                                                ORCSPRTCTRLAREA
@@ -4399,7 +4399,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -4426,7 +4426,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -4445,8 +4445,8 @@
                MOVE    WRK-Y01-ROW         TO  Y01-PTLIST-ROW
            END-IF
       *
-      *    ��������
-      *    ͽ�������������ͽ������ʳ��λ��������ƥ����դȤ���
+      *    カレンダー
+      *    予約日が選択時、予約時、以外の時、システム日付とする
       *    IF      SPA-SEL-YOUBI       =   ZERO
       *********MOVE    WRK-SYSYMD          TO  SPA-Y01-YYKYMDS
       *        MOVE    SPA-GMN-YEAR        TO  WRK-CAL-YEAR
@@ -4471,7 +4471,7 @@
            MOVE    SPA-GMN-MONTH       TO  Y01-MONTH
            MOVE    SPA-GMN-DAY         TO  Y01-DAY
       *
-      *    ��������
+      *    診療内容
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-SRYNAIYO-MAX
                MOVE    SPA-GMN-SRYNAIYOLST (IDX)
@@ -4479,7 +4479,7 @@
            END-PERFORM
            MOVE    SPA-SRYNAIYO-MAX    TO  Y01-SRYNAIYO-COUNT
            MOVE    SPA-GMN-SRYNAIYO    TO  Y01-SRYNAIYO
-      *    �ɥ�����
+      *    ドクター
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-DRCD-MAX
                MOVE    SPA-GMN-DRCDLST (IDX)
@@ -4487,7 +4487,7 @@
            END-PERFORM
            MOVE    SPA-DRCD-MAX        TO  Y01-DRNAME-COUNT
            MOVE    SPA-GMN-DRNAME      TO  Y01-DRNAME
-      *    ���Ų�
+      *    診療科
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-SRYKA-MAX
                MOVE    SPA-GMN-SRYKALST (IDX)
@@ -4495,7 +4495,7 @@
            END-PERFORM
            MOVE    SPA-SRYKA-MAX       TO  Y01-SRYKA-COUNT
            MOVE    SPA-GMN-SRYKA-G     TO  Y01-SRYKA
-      *    ͽ������
+      *    予約内容
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-YYKKBN-MAX
                MOVE    SPA-GMN-YYKKBNLST (IDX)
@@ -4503,7 +4503,7 @@
            END-PERFORM
            MOVE    SPA-YYKKBN-MAX       TO  Y01-YYKKBN-COUNT
            MOVE    SPA-GMN-YYKKBN-G     TO  Y01-YYKKBN
-      *    Ϣ����ǧ
+      *    連絡確認
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-KAKREN-MAX
                MOVE    SPA-GMN-KAKRENLST (IDX)
@@ -4519,14 +4519,14 @@
            MOVE    SPA-GMN-YYKNAME     TO  Y01-YYKNAME
            MOVE    SPA-GMN-YYKYMD      TO  Y01-YYKYMD
            MOVE    SPA-GMN-YYKTIME     TO  Y01-YYKTIME
-      *    ���
+      *    メモ
            MOVE    SPA-NAI-COMMENT(1)  TO  Y01-COMMENT1
       *
            MOVE    SPA-GMN-TAIYYMM     TO  Y01-TAIYYMM
            MOVE    SPA-GMN-TAIYMD      TO  Y01-TAIYMD
            MOVE    SPA-GMN-TAITIME     TO  Y01-TAIKENSUU
       *    MOVE    SPA-GMN-HYOJHI      TO  Y01-HYOJHI
-      *    ͽ��ɽ��
+      *    予約表示
            MOVE    "whitebutton"       TO  Y01-CH-DAY1-STYLE
                                            Y01-CH-DAY2-STYLE
                                            Y01-CH-DAY3-STYLE
@@ -4574,7 +4574,7 @@
                                            TO  Y01-TRAIINZUMI (IDX)
                MOVE    IDX
                                            TO  Y01-PTLIST-COUNT
-      *        �����ȿž
+      *        選択行反転
                IF      SPA-GMN-TBANGO (IDX)    =   SPA-NAI-SELBAN
                    MOVE    "T"             TO  Y01-PTLIST-SELECT  (IDX)
                ELSE
@@ -4584,7 +4584,7 @@
            END-PERFORM
            MOVE    SPA-GMN-MAX         TO  Y01-PTLIST-COUNT
       *
-      *    ͽ��ɼ
+      *    予約票
            PERFORM VARYING     IDX     FROM    1  BY  1
                    UNTIL       IDX     >   SPA-YYKHYO-MAX
                MOVE    SPA-GMN-YYKHYO-LIST (IDX)
@@ -4604,7 +4604,7 @@
       *
            PERFORM 5001-MAPCUR-SEC
       *
-      *    ���������
+      *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
            .
@@ -4612,14 +4612,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
            MOVE    WIDGET-NORMAL       TO  Y01-PTNUM-STATE
            MOVE    WIDGET-NORMAL       TO  Y01-YYKNAME-STATE
       *
-      *    �����ֹ椬���ϻ��ϡ������ֹ������Բ�
+      *    選択番号が入力時は、患者番号入力不可
            IF      SPA-YYK-SYORI         =   2
                MOVE    WIDGET-INSENSITIVE      TO  Y01-PTNUM-STATE
                IF      SPA-GMN-PTNUM   NOT =   SPACE
@@ -4631,7 +4631,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -4677,7 +4677,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ϸ奫�����륻�åȽ���
+      *    一括入力後カーソルセット処理
       *****************************************************************
        50011-GMN-CURSET-SEC              SECTION.
       *
@@ -4704,101 +4704,101 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�������ƥ����ɤ����Ϥ˸��꤬����ޤ�"
+                   MOVE    "診療内容コードの入力に誤りがあります"
                                                TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "�ɥ����������ɤ����Ϥ˸��꤬����ޤ�"
+                   MOVE    "ドクターコードの入力に誤りがあります"
                                                TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���Ϥ��줿�����ֹ����Ͽ����Ƥ��ޤ���"
+                   MOVE    "入力された患者番号は登録されていません"
                                                TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "�����δ��Ԥ�¸�ߤ��ޤ���"
+                   MOVE    "該当の患者が存在しません"
                                                TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "�����ֹ�˸��꤬����ޤ�"
+                   MOVE    "選択番号に誤りがあります"
                                                TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "�����ֹ��ͽ���̾���������Ϥ���Ƥ��ޤ�"
+                   MOVE    "患者番号と予約氏名が共に入力されています"
                                                TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "ͽ�������������顼�Ǥ�"
+                   MOVE    "予約日の暦日エラーです"
                                                TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "ͽ����֤�HH:SS�����Ϥ��Ʋ�����"
+                   MOVE    "予約時間はHH:SSで入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "���Ų����򥨥顼"
+                   MOVE    "診療科選択エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "ͽ���������򥨥顼"
+                   MOVE    "予約内容選択エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "ͽ����֤����Ϥ˸��꤬����ޤ�"
+                   MOVE    "予約時間の入力に誤りがあります"
                                                TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "ͽ����֤ϣ������֤����Ϥ��Ʋ�����"
+                   MOVE    "予約時間は２４時間で入力して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0013"
-                   MOVE    "ͽ�󴵼Ԥ���ꤷ�Ʋ�������"
+                   MOVE    "予約患者を指定して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "ͽ����֤���ꤷ�Ʋ�������"
+                   MOVE    "予約時間を指定して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "�������������򥨥顼�Ǥ���"
+                   MOVE    "カレンダーの選択エラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "0016"
-                   MOVE    "�����ֹ����򥨥顼�Ǥ���"
+                   MOVE    "選択番号選択エラーです。"
                                                TO  SPA-ERRMSG
                WHEN    "0017"
-                   MOVE    "ͽ���̾�����Ѥ����Ϥ��Ʋ�������"
+                   MOVE    "予約氏名は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "ͽ�������ɽ���Ǥ��ޤ���"
+                   MOVE    "予約一覧が表示できません。"
                                                TO  SPA-ERRMSG
                WHEN    "0019"
-                   MOVE    "��⣱�����Ѥ����Ϥ��Ʋ�������"
+                   MOVE    "メモ１は全角で入力して下さい。"
                                                TO  SPA-ERRMSG
                WHEN    "0020"
-                   STRING  "Ʊ��Ʊ̾�δ��Ԥ�¸�ߤ��ޤ���"
-                           "���Ԥ��ѹ�����ʤ����ͽ�󤷤Ʋ�����"
+                   STRING  "同姓同名の患者が存在します。"
+                           "患者を変更するなら再度予約して下さい"
                                                DELIMITED   BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K100"
-                   MOVE    "�ٹ�ͽ�����������С����Ƥޤ�"
+                   MOVE    "警告！予約件数がオーバーしてます"
                                                TO  SPA-ERRMSG
                WHEN    "1010"
-                   MOVE    "ͽ�󥭡��ǡ����������顼"
+                   MOVE    "予約キーデータ更新エラー"
                                                TO  SPA-ERRMSG
                WHEN    "1011"
-                   MOVE    "ͽ�����٥ǡ����������顼"
+                   MOVE    "予約明細データ更新エラー"
                                                TO  SPA-ERRMSG
                WHEN    "1012"
-                   MOVE    "ͽ�����٥ǡ���������顼"
+                   MOVE    "予約明細データ削除エラー"
                                                TO  SPA-ERRMSG
                WHEN    "1013"
-                   STRING  "ͽ������Ӥ�ͽ����Ͽ����������ʾ��"
-                           "�ʤ�ޤ���"
-                           "����ʾ���Ͽ�Ǥ��ޤ���"
-      ******************   "ͽ����֤�ͽ�󤹤٤ƺ�����Ʋ�������"
+                   STRING  "予約時間帯の予約登録回数が９９以上に"
+                           "なります。"
+                           "これ以上登録できません。"
+      ******************   "予約時間の予約すべて削除して下さい。"
                                        DELIMITED   BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "K001"
-                   MOVE    "���ա�ͽ���������Ǥ���"
+                   MOVE    "注意！予約日が過去です。"
                                                TO  SPA-ERRMSG
       *
                WHEN    "9999"
-                   MOVE    "¾ü���ǻ�����Ǥ���"
+                   MOVE    "他端末で使用中です。"
                                                TO  SPA-ERRMSG
                    MOVE    SLOCK-MSG           TO  SPA-ERRMSG(21:)
       *
@@ -4822,7 +4822,7 @@
        510-ERRMSG-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ��å�����ɽ������
+      *    確認メッセージ表示処理
       *****************************************************************
        510-YID1CDSET-SEC            SECTION.
       *
@@ -4833,8 +4833,8 @@
       *
            EVALUATE    SPA-YID1CD
                WHEN    "0101"
-                   STRING  "ͽ���̾�ǳ����δ��Ԥ�����¸�ߤ��ޤ���"
-                           "�����ֹ���Խ����ޤ�����"
+                   STRING  "予約氏名で該当の患者が１件存在します。"
+                           "患者番号を編集しますか？"
                                            DELIMITED  BY  SIZE
                                            INTO    WRK-YID1MSG
                    END-STRING
@@ -4846,7 +4846,7 @@
            INITIALIZE                       YID1
            MOVE    SPA-YID1CD           TO  YID1-ID1CODE
            MOVE    WRK-YID1MSG          TO  YID1-ID1MSG
-           MOVE    "�Σ�"               TO  YID1-B01
+           MOVE    "ＮＯ"               TO  YID1-B01
       *
            MOVE    "B12"                TO  MCP-WIDGET
       *
@@ -4865,7 +4865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��ޥ������ɹ�����
+      *    予約マスター読込処理
       *****************************************************************
        900-YOYAKU-READ-SEC         SECTION.
       *
@@ -4882,7 +4882,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ��ޥ������ɹ������ʼ祭���������ɤ߹��ߡ�
+      *    予約マスター読込処理（主キー検索、読み込み）
       *****************************************************************
        910-YOYAKU-INV-SEC         SECTION.
       *
@@ -4897,7 +4897,7 @@
            ELSE
                 MOVE    1              TO  FLG-YYK
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_yyk"           TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -4907,7 +4907,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�����
+      *    患者マスター読込処理
       *****************************************************************
        910-PTINF-READ-SEC        SECTION.
       *
@@ -4924,7 +4924,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ��ʼ祭����
+      *    患者マスター読込（主キー）
       *****************************************************************
        920-PTINF-READ-SEC         SECTION.
       *
@@ -4957,7 +4957,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRIT-READ-SEC         SECTION.
       *
@@ -4973,7 +4973,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ���⡡�ңţ���
+      *    予約メモ　ＲＥＡＤ
       *****************************************************************
        900-YYKCOM-READ-SEC         SECTION.
       *
@@ -4990,7 +4990,7 @@
        900-YYKCOM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ʸ�㡡�ңţ���
+      *    予約文例　ＲＥＡＤ
       *****************************************************************
        900-YYKEXAMPLE-READ-SEC         SECTION.
       *
@@ -5007,7 +5007,7 @@
        900-YYKEXAMPLE-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -5021,7 +5021,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -5035,7 +5035,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -5050,11 +5050,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾�������
+      *    排他制御処理
       *****************************************************************
        990-LOCK-IN-SEC         SECTION.
       *
-      *    ��¾�������
+      *    排他制御処理
            MOVE    1                   TO  SLOCK-MODE
            MOVE    SPA-GMN-PTID        TO  SLOCK-PTID
            CALL    "ORCSLOCK"          USING
@@ -5069,11 +5069,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾����������
+      *    排他制御解除処理
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
-      *    ��¾����������
+      *    排他制御解除処理
            MOVE    2                   TO  SLOCK-MODE
            CALL    "ORCSLOCK"          USING
                                        MCPAREA
@@ -5084,7 +5084,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

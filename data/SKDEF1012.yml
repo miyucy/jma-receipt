@@ -1,29 +1,29 @@
 kanri_cd    : "1012"
-name        : "¿ÇÎÅÆâÍÆ¾ğÊó"
+name        : "è¨ºç™‚å†…å®¹æƒ…å ±"
 class_cd    : "*"
 item_max    : 4
 item_list   :
 - item_no   : 1
   item      : "SRYNAIYO"
-  item_jp   : "¿ÇÎÅÆâÍÆ"
+  item_jp   : "è¨ºç™‚å†…å®¹"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "SRYNAIYODSP"
-  item_jp   : "¿ÇÎÅÆâÍÆÉ½¼¨ÍÑ"
+  item_jp   : "è¨ºç™‚å†…å®¹è¡¨ç¤ºç”¨"
   type      : "X"
   start     : 41
   length    : 24
 - item_no   : 3
   item      : "SRYNAIYOHYOJI"
-  item_jp   : "½é´üÉ½¼¨ÍÑ"
+  item_jp   : "åˆæœŸè¡¨ç¤ºç”¨"
   type      : "X"
   start     : 65
   length    : 1
 - item_no   : 4
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 66
   length    : 435

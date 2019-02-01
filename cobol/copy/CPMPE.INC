@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,8 +18,8 @@
       *    monpushevent                  COPY (CPMPE.INC)        *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘        ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ        Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
       * 01  MPE-REC.
             03  MPE-UUID                   PIC X(37).
@@ -31,6 +31,6 @@
               04  MPE-PUSHED-AT-FL1        PIC X(01).
               04  MPE-PUSHED-AT-TIME       PIC X(08).
             03  MPE-DATA                   PIC X(4096).
-      * ∞ ≤ºvirtualπ‡Ã‹
+      * ‰ª•‰∏ãvirtualÈ†ÖÁõÆ
             03  MPE-PUSHED-FROM            PIC X(32).
             03  MPE-PUSHED-TO              PIC X(32).

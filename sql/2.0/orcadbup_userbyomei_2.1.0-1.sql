@@ -1,18 +1,18 @@
 --                                    --
---  ¼«±¡ÉÂÌ¾¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹            --
+--  è‡ªé™¢ç—…åãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´            --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     ÉÂÌ¾¼ïÊÌ       BYOMEISBT       --
---     ´ğËÜÉÂÌ¾¥³¡¼¥É KHNBYOMEICD     --
---     ´ğËÜÉô°Ì¥³¡¼¥É KHNBUICD        --
+-- é …ç›®ã®è¿½åŠ                          --
+--     ç—…åç¨®åˆ¥       BYOMEISBT       --
+--     åŸºæœ¬ç—…åã‚³ãƒ¼ãƒ‰ KHNBYOMEICD     --
+--     åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰ KHNBUICD        --
 --                                    --
---     ÉÂÌ¾¥³¡¼¥É   £²£±¤ËÊÑ¹¹        --
---     ÉÂÌ¾¥³¡¼¥É¿ô £¹¡Ê£°£²¡Ë¤ËÊÑ¹¹  --
+--     ç—…åã‚³ãƒ¼ãƒ‰   ï¼’ï¼‘ã«å¤‰æ›´        --
+--     ç—…åã‚³ãƒ¼ãƒ‰æ•° ï¼™ï¼ˆï¼ï¼’ï¼‰ã«å¤‰æ›´  --
 --                                    --
 -- Create Date : 2003/09/17           --
 --                                    --
 
--- TBL_USERBYOMEIWK ºîÀ®              --
+-- TBL_USERBYOMEIWK ä½œæˆ              --
 
 CREATE TABLE "tbl_userbyomeiwk" (
 	"hospid" character(24) NOT NULL,
@@ -43,16 +43,16 @@ CREATE TABLE "tbl_userbyomeiwk" (
 	Constraint "tbl_userbyomeiwk_primary_key" Primary Key ("hospid", "cdsyu", "byomeiinputcd")
 );
 
--- TBL_USERBYOMEI ¢ª TBL_USERBYOMEIWK   --
+-- TBL_USERBYOMEI â†’ TBL_USERBYOMEIWK   --
 
 insert into tbl_userbyomeiwk
 select * from tbl_userbyomei;
 
--- TBL_USERBYOMEI ºï½ü               --
+-- TBL_USERBYOMEI å‰Šé™¤               --
 
 drop table tbl_userbyomei;
 
--- TBL_USERBYOMEI ºîÀ®               --
+-- TBL_USERBYOMEI ä½œæˆ               --
 
 CREATE TABLE "tbl_userbyomei" (
 	"hospid" character(24) NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE "tbl_userbyomei" (
 	Constraint "tbl_userbyomei_primary_key" Primary Key ("hospid", "cdsyu", "byomeiinputcd")
 );
 
--- TBL_USERBYOMEIWK ¢ª TBL_USERBYOMEI   --
+-- TBL_USERBYOMEIWK â†’ TBL_USERBYOMEI   --
 
 insert into tbl_userbyomei
 (hospid,
@@ -161,7 +161,7 @@ upymd,
 uphms
  from tbl_userbyomeiwk;
 
--- TBL_USERBYOMEIWK ºï½ü             --
+-- TBL_USERBYOMEIWK å‰Šé™¤             --
 
 drop table tbl_userbyomeiwk;
 

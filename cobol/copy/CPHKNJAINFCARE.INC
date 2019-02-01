@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÊÝ¸±¼Ô¡Ê²ð¸îÊÝ¸±¡Ë      COPY (CPHKNJAINFCARE.INC)     *
+      *    ä¿é™ºè€…ï¼ˆä»‹è­·ä¿é™ºï¼‰      COPY (CPHKNJAINFCARE.INC)     *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  HKNJAINFCARE-REC.
-      *ÊÝ¸±¼ÔÈÖ¹æ
+      *ä¿é™ºè€…ç•ªå·
            03  HKNJAC-HKNJANUM               PIC  X(08).
-      *ÊÝ¸±¼ÔÌ¾
+      *ä¿é™ºè€…å
            03  HKNJAC-HKNJANAME              PIC  X(200).
-      *Í¹ÊØÈÖ¹æ
+      *éƒµä¾¿ç•ªå·
            03  HKNJAC-POST                   PIC  X(07).
-      *½»½ê
+      *ä½æ‰€
            03  HKNJAC-ADRS                   PIC  X(200).
-      *ÈÖÃÏÊý½ñ
+      *ç•ªåœ°æ–¹æ›¸
            03  HKNJAC-BANTI                  PIC  X(200).
-      *ÅÅÏÃÈÖ¹æ
+      *é›»è©±ç•ªå·
            03  HKNJAC-TEL                    PIC  X(15).
-      *°ÛÆ°¶èÊ¬
+      *ç•°å‹•åŒºåˆ†
            03  HKNJAC-IDOKBN                 PIC  X(01).
-      *°ÛÆ°Ç¯·îÆü
+      *ç•°å‹•å¹´æœˆæ—¥
            03  HKNJAC-IDOYMD                 PIC  X(08).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  HKNJAC-TERMID                 PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  HKNJAC-OPID                   PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  HKNJAC-CREYMD                 PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  HKNJAC-UPYMD                  PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  HKNJAC-UPHMS                  PIC  X(06).

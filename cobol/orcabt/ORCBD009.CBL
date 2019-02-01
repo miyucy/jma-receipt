@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBD009.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����Ģɼ
-      *  ����ݡ��ͥ��̾  : ���������������顼�ꥹ�ȡʣȣãͣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/12/07    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 日次帳票
+      *  コンポーネント名  : 入院オーダーエラーリスト（ＨＣＭ４５）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/12/07    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      *  Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07/06/04  ���롼�׿����б�
-      *  04.08.01    NACL-����    14/07/29  ����ե�����ǥ��쥯�ȥ�����
+      *  プログラム修正履歴
+      *  Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07/06/04  グループ診療対応
+      *  04.08.01    NACL-森脇    14/07/29  一時ファイルディレクトリ設定
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -36,21 +36,21 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �¤��ؤ��ե�����
+      *    並び替えファイル
            SELECT  BD009-FILE      ASSIGN   BD009PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  BD009-KEY
                                    FILE    STATUS  IS  STS-BD009.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �¤��ؤ��ե�����
+      *    並び替えファイル
        FD  BD009-FILE.
        01  BD009-REC.
            02  BD009-KEY.
@@ -68,13 +68,13 @@
                                    REPLACING  //ORDER-//
                                    BY         //BD009-ORDER-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �¤��ؤ��ե�����
+      *    並び替えファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //BD009//.
@@ -83,15 +83,15 @@
            COPY    "CPRECEERR.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    Ģɼ�ΰ�
+      *    帳票領域
            COPY    "HCM45.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-BD009           PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-ORDER           PIC 9(01).
@@ -101,21 +101,21 @@
            03  FLG-END             PIC 9(01).
            03  FLG-LOOP-END        PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(05).
            03  CNT-NUM             PIC 9(05).
            03  CNT-ORDER           PIC 9(05).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDP                 PIC 9(05).
            03  IDX                 PIC 9(05).
@@ -123,7 +123,7 @@
            03  IDZ                 PIC 9(05).
            03  IDXL                PIC 9(05).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -136,7 +136,7 @@
            03  WRK-PARA-UKEEDYMD   PIC X(08).
            03  WRK-PARA-SYORIKBN   PIC X(01).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-RECEERR         PIC X(200).
       *
@@ -163,31 +163,31 @@
            03  WRK-Z5              PIC ZZZZ9.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY    "CPSK1031.INC".
       *
-      *    ���������ޥ���
+      *    オーダーマスタ
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
-      *    �����ֹ�ޥ���
+      *    患者番号マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -198,41 +198,41 @@
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �������������ɣ�̾
+      *    入院オーダーＩＤ名
            COPY    "CPNORDERID.INC".
       *
-      *    ���������������顼�ꥹ���Խ�����
+      *    入院オーダーエラーリスト編集サブ
            COPY    "CPORCBD009S.INC".
       *
-      *    ���������������顼�ꥹ���Խ����ָ����ѥ��������ޥ���
+      *    入院オーダーエラーリスト編集サブ検索用オーダーマスタ
        01  LNK-ORDER-REC.
            COPY    "CPORDER.INC"   REPLACING  //ORDER-//
                                    BY         //LNK-ORDER-//.
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    ���ղ����Ѵ�����
+      *    日付画面変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    LIKE����KEY�б�
+      *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
       *----(04.08.01)--ADD-START---
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
@@ -250,7 +250,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -265,7 +265,7 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -303,14 +303,14 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID
                                    TO  JOB-SHELLID
            MOVE    "ORCBD009"      TO  JOB-PGID
-           MOVE    "��������������ǧ�ꥹ��"
+           MOVE    "入院オーダー確認リスト"
                                    TO  JOB-SHELLMSG
            MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
            PERFORM 800-ORCSJOB-SEC
@@ -335,7 +335,7 @@
            MOVE    SPACE           TO  WRK-ITEM
            INSPECT WRK-ITEM  TALLYING  WRK-ITEM-SIZE  FOR ALL " "
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
            .
@@ -343,14 +343,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
-      *    ���������å�
+      *    作成日セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
            PERFORM 400-YMD-HEN-SEC
@@ -363,12 +363,12 @@
            END-IF
       *
            IF      WRK-PARA-SYORIKBN   =   "1"
-               MOVE    "����"      TO  WRK-SYORIKBN
+               MOVE    "全て"      TO  WRK-SYORIKBN
            ELSE
-               MOVE    "���顼ʬ"  TO  WRK-SYORIKBN
+               MOVE    "エラー分"  TO  WRK-SYORIKBN
            END-IF
       *
-      *    �����򥻥å�
+      *    キーをセット
            MOVE    "tbl_order"     TO  WRK-PATH-TABLE
            IF    ( WRK-PARA-UKESTYMD   =   SPACE ) AND
                  ( WRK-PARA-UKEEDYMD   =   SPACE )
@@ -387,13 +387,13 @@
            END-IF
       *
            IF      WRK-PARA-UKESTYMD   >   WRK-PARA-UKEEDYMD
-               MOVE    "�����ϰϤ�����������ޤ���"
+               MOVE    "日付範囲が正しくありません。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
       *
-      *    ���ŵ��أɣ��Խ�
+      *    医療機関ＩＤ編集
            INITIALIZE                  SYS-1001-REC
            INITIALIZE                  ORCSADDSIGNAREA
            MOVE    "1001"          TO  SYS-1001-KANRICD
@@ -410,7 +410,7 @@
                MOVE    MCPDATA-REC     TO  SYS-1001-REC
                MOVE    SYS-1001-HOSPNUM TO  WRK-PARA-HOSPNUM
            ELSE
-               MOVE    "���ŵ��أɣĤ������Ǥ��ޤ���Ǥ�����"
+               MOVE    "医療機関ＩＤが取得できませんでした。"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -420,18 +420,18 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    �¤��ؤ��ե�����򥯥ꥢ����
+      *    並び替えファイルをクリアする
            OPEN    OUTPUT              BD009-FILE
            CLOSE                       BD009-FILE
       *
-      *    �¤��ؤ��ե�����򳫤�
+      *    並び替えファイルを開く
            OPEN    I-O                 BD009-FILE
       *
-      *    �¤��ؤ��ե����륻�åȽ���
+      *    並び替えファイルセット処理
            PERFORM 900-ORDER-SELECT-SEC
            PERFORM UNTIL   FLG-ORDER     =   1
                PERFORM 300-BD009-SET-SEC
@@ -439,19 +439,19 @@
            END-PERFORM
            PERFORM 900-ORDER-CLOSE-SEC
       *
-      *    �¤��ؤ��ե�������Ĥ���
+      *    並び替えファイルを閉じる
            CLOSE                       BD009-FILE
       *
-      *    �¤��ؤ��ե����뤬�ʤ��Ȥ�����ȴ����
+      *    並び替えファイルがないとき処理抜ける
            IF      CNT-ORDER       =   ZERO
                MOVE    1               TO  FLG-END
                GO  TO  200-MAIN-EXT
            END-IF
       *
-      *    �¤��ؤ��ե�����򳫤�
+      *    並び替えファイルを開く
            OPEN    INPUT               BD009-FILE
       *
-      *    Ģɼ���åȽ���
+      *    帳票セット処理
            PERFORM 900-BD009-NEXT-SEC
            PERFORM UNTIL   FLG-BD009   =   1
                PERFORM 300-ORDER-STR-SET-SEC
@@ -466,7 +466,7 @@
                PERFORM 300-ORDER-END-SET-SEC
            END-PERFORM
       *
-      *    �¤��ؤ��ե�������Ĥ���
+      *    並び替えファイルを閉じる
            CLOSE                       BD009-FILE
       *
            MOVE    1               TO  FLG-END
@@ -476,16 +476,16 @@
            EXIT.
       *
       *****************************************************************
-      *    �¤��ؤ��ե����륻�åȽ���
+      *    並び替えファイルセット処理
       *****************************************************************
        300-BD009-SET-SEC            SECTION.
       *
-      *    �����ֹ��ɤ߹���
+      *    患者番号読み込み
            PERFORM 900-PTNUM-READ-SEC
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
            PERFORM 900-PTINF-READ-SEC
       *
-      *    �������å�
+      *    キーセット
            INITIALIZE                  BD009-REC
            MOVE    ORDER-UKEYMD    TO  BD009-UKEYMD
            MOVE    PTINF-KANANAME  TO  BD009-KANANAME
@@ -496,7 +496,7 @@
            MOVE    ORDER-KARTE-KEY TO  BD009-KARTE-KEY
            MOVE    ORDER-ORDERNUM  TO  BD009-ORDERNUM
       *
-      *    �¤��ؤ��ե�����¸�߳�ǧ
+      *    並び替えファイル存在確認
            PERFORM 900-BD009-READ-SEC
            IF      FLG-BD009       =   1
                MOVE    PTINF-NAME      TO  BD009-NAME
@@ -510,11 +510,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        300-ORDER-STR-SET-SEC       SECTION.
       *
-      *    ���������ؤ�
+      *    受付日切替え
            IF      BD009-UKEYMD    NOT =   WRK-UKEYMD
                MOVE    BD009-UKEYMD    TO  WRK-SYMD
                PERFORM 400-YMD-HEN-SEC
@@ -529,11 +529,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        300-ORDER-END-SET-SEC       SECTION.
       *
-      *    ���������ؤ����¤��ؤ��ޥ�����λ
+      *    受付日切替え、並び替えマスタ終了
            IF     ( BD009-UKEYMD   NOT =   WRK-UKEYMD )
                OR ( FLG-BD009          =   1 )
                PERFORM 390-PRINT-OUT-SEC
@@ -544,7 +544,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HEAD-HEN-SEC            SECTION.
       *
@@ -565,11 +565,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
-      *    ���Ծ��󥻥å�
+      *    患者情報セット
            ADD     1               TO  CNT-NUM
            MOVE    CNT-NUM         TO  WRK-Z5
            MOVE    WRK-Z5          TO  HCM45-NUM(CNT-LINE)
@@ -577,12 +577,12 @@
            MOVE    BD009-PTNUM     TO  HCM45-PTNUM(CNT-LINE)
            MOVE    BD009-NAME      TO  HCM45-NAME(CNT-LINE)
       *
-      *    ��ư�����å�
+      *    異動日セット
            MOVE    BD009-SRYYMD    TO  WRK-SYMD
            PERFORM 400-YMD-HEN-SEC
            MOVE    WRK-HENYMDG     TO  HCM45-IDOYMD(CNT-LINE)
       *
-      *    ��ư���ƥ��å�
+      *    異動内容セット
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >   NORDERID-MAX
                IF      NORDERID-ORCAID(IDX)    =   BD009-ORDER-ORDERID
@@ -593,28 +593,28 @@
                END-IF
            END-PERFORM
       *
-      *    ���֥��å�
+      *    状態セット
            EVALUATE    BD009-ORDER-STATUS
                WHEN    1
-                   MOVE    "���顼"    TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "エラー"    TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    2
-                   MOVE    "���顼"    TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "エラー"    TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    3
-                   MOVE    "���"      TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "削除"      TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    4
-                   MOVE    "̤����"    TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "未処理"    TO  HCM45-JYOTAI(CNT-LINE)
                WHEN    5
-                   MOVE    "��α"      TO  HCM45-JYOTAI(CNT-LINE)
+                   MOVE    "保留"      TO  HCM45-JYOTAI(CNT-LINE)
            END-EVALUATE
       *
            IF    ( BD009-ORDER-STATUS  =   1 OR 2 OR 4 OR 5 )
-      *        ���������������顼���֥ץ��ɤ߹���
+      *        入院オーダーエラーサブプロ読み込み
                MOVE    BD009-ORDER-REC TO  LNK-ORDER-REC
                CALL    "ORCBD009S"         USING
                                            ORCSBD009SAREA
                                            LNK-ORDER-REC
                                            SPA-AREA
-      *        ���顼���ƺ���ΰ�˥��å�
+      *        エラー内容作業領域にセット
                MOVE    SPACE           TO  WRK-ITEM
                MOVE    1               TO  IDP
                PERFORM VARYING IDX     FROM    1   BY  1
@@ -628,7 +628,7 @@
                    WITH    POINTER     IDP
                    END-STRING
                    IF      IDX     <   BD009S-ERR-CNT
-                       STRING  "��"            DELIMITED  BY  SIZE
+                       STRING  "／"            DELIMITED  BY  SIZE
                        INTO    WRK-ITEM
                        WITH    POINTER     IDP
                        END-STRING
@@ -656,7 +656,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
@@ -680,10 +680,10 @@
                                    TO  SPRT-PRIORITY
            MOVE    "HCM45.red"     TO  SPRT-PRTID
            IF      WRK-PARA-SYORIKBN   =   "1"
-               MOVE    "��������������ǧ�ꥹ�ȡ����ơ�"
+               MOVE    "入院オーダー確認リスト（全て）"
                                    TO  SPRT-TITLE
            ELSE
-               MOVE    "��������������ǧ�ꥹ�ȡʥ��顼ʬ��"
+               MOVE    "入院オーダー確認リスト（エラー分）"
                                    TO  SPRT-TITLE
            END-IF
            MOVE    HCM45           TO  SPRT-PRTDATA
@@ -700,7 +700,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -712,23 +712,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    BD009PARA       TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
            IF      CNT-ORDER       =   ZERO
-               MOVE    "�оݥǡ���������ޤ���Ǥ���"
+               MOVE    "対象データがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -745,7 +745,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    日付変換処理
       *****************************************************************
        400-YMD-HEN-SEC             SECTION.
       *
@@ -754,14 +754,14 @@
            CALL    "ORCSGDAY"          USING
                                        ORCSGDAYAREA
            MOVE    SGDAY-OTDAY    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
       *
            .
        400-YMD-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -775,7 +775,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -794,7 +794,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ�������
+      *    ジョブ管理サブ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -809,7 +809,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    �¤��ؤ��ե������ɹ�
+      *    並び替えファイル読込
       *****************************************************************
        900-BD009-READ-SEC          SECTION.
       *
@@ -825,7 +825,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �¤��ؤ��ե�������ɹ�
+      *     並び替えファイル順読込
       *****************************************************************
        900-BD009-NEXT-SEC          SECTION.
       *
@@ -841,7 +841,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ޥ������������Ǹ���
+      *    オーダーマスタ　受付日で検索
       *****************************************************************
        900-ORDER-SELECT-SEC        SECTION.
       *
@@ -866,7 +866,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ���������ޥ����򸡺�����
+      *     オーダーマスタを検索処理
       *****************************************************************
        900-ORDER-FETCH-SEC         SECTION.
       *
@@ -901,7 +901,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������ޥ���������������
+      *    オーダーマスタクローズ処理
       *****************************************************************
        900-ORDER-CLOSE-SEC         SECTION.
       *
@@ -914,7 +914,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ɤ߹���
+      *    管理マスタ読み込み
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
       *
@@ -936,7 +936,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ޥ������ɹ�����
+      *    患者番号マスター読込処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -968,7 +968,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԥޥ������ɹ�����
+      *    患者マスター読込処理
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -996,7 +996,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1012,7 +1012,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1027,7 +1027,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1040,7 +1040,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -1054,7 +1054,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1078,7 +1078,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

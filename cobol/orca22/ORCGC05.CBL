@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,49 +18,49 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGC05.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ��̾��Ͽ
-      *  ����ݡ��ͥ��̾  : ��̾�����ʣã�����
-      *  ������            : 
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 病名登録
+      *  コンポーネント名  : 病名検索（Ｃ０５）
+      *  管理者            : 
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     01.04.23  ����̾�Ρ�����̾�Τ�Ʊ�����ɤ߹���    
-      *  01.00.02    MCC-ƣ��     01/09/11  �����ֹ���Խ�    
-      *  01.01.01    MCC-ƣ��     01/09/20  JOIN�ν���      
-      *  01.01.02    MCC-ƣ��     01/11/05  C01�κ��
-      *  01.01.03    MCC-ƣ��     01/11/13  ��̾�����ɤ򣷷���ѹ�     
-      *  01.02.01    MCC-ƣ��     01/11/21  ORCMCPSUB���ѹ�  
-      *  01.02.02    MCC-ƣ��     01/12/18  ������̾����ΤȤ����������򤹤�
-      *  01.02.03    MCC-ƣ��     02/05/08  Ⱦ�ѥ����å��ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     01.04.23  漢字名称・カナ名称を同時に読み込む    
+      *  01.00.02    MCC-藤原     01/09/11  選択番号の編集    
+      *  01.01.01    MCC-藤原     01/09/20  JOINの修正      
+      *  01.01.02    MCC-藤原     01/11/05  C01の削除
+      *  01.01.03    MCC-藤原     01/11/13  病名コードを７桁に変更     
+      *  01.02.01    MCC-藤原     01/11/21  ORCMCPSUBへ変更  
+      *  01.02.02    MCC-藤原     01/12/18  検索病名ありのとき検索処理をする
+      *  01.02.03    MCC-藤原     02/05/08  半角チェック追加
       *
-      *  01.03.01    NACL-ƣ��    02/08/20  ������̾�ޥ����б�
-      *  01.03.02    NACL-ƣ��    02/11/25  ʣ��ü���Ǥ������ν���
-      *                                     �ӣУ��ѥ�᥿�ե������
-      *                                     ü���ɣ��ѹ�
+      *  01.03.01    NACL-藤原    02/08/20  新傷病名マスタ対応
+      *  01.03.02    NACL-藤原    02/11/25  複数端末での戻り先の修正
+      *                                     ＳＰＡパラメタファイルの
+      *                                     端末ＩＤ変更
       *
-      *  ��������̾�ޥ����б�
-      *  01.04.01    NACL-ƣ��    03/12/17  ���������б�
-      *                                     �ܹ���γ�ǧ�����ɲ�
-      *  01.04.02    NACL-ƣ��    04/07/07  ��ʬ���������������ܥ����ɲ�
+      *  新患者病名マスタ対応
+      *  01.04.01    NACL-藤原    03/12/17  前・次頁対応
+      *                                     移行先の確認画面追加
+      *  01.04.02    NACL-藤原    04/07/07  部分検索・後方検索ボタン追加
       *  ver.2.6.0
-      *  01.04.03    NACL-ƣ��    05/04/20  �ܹ���̾�ٹ��å�������ɽ����
-      *                                     �ѻ�ǯ�����ٹ��å�����ɽ��
-      *                                     �򥷥��ɤ�������Ԥ�
+      *  01.04.03    NACL-藤原    05/04/20  移行病名警告メッセージの表示、
+      *                                     廃止年月日警告メッセージ表示
+      *                                     をシス管の設定より行う
       *
-      *  02.07.01    NACL-ƣ��    05/10/31  MONFUNC�б�
+      *  02.07.01    NACL-藤原    05/10/31  MONFUNC対応
       *
-      *  03.00.01    NACL-ƣ��    06/06/19   C06,C07,C08 ���
+      *  03.00.01    NACL-藤原    06/06/19   C06,C07,C08 削除
       *
-      *  03.04.01    NACL-ƣ��    06/11/27   �ӣУ��ǡ����κ��
+      *  03.04.01    NACL-藤原    06/11/27   ＳＰＡデータの削除
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/26  Ʊ�����Ѵ��б�
+      *  04.06.01    NACL-藤原    10/10/26  同義語変換対応
       *
-      *  04.07.01    NACL-ƣ��    11/06/10  ̤�����ɲ���̾�Ȥʤ���̾����
-      *                                     �Ȥ�Ω�ƤؤΰܹԤ��ǽ�ˤ���
+      *  04.07.01    NACL-藤原    11/06/10  未コード化病名となる病名の別
+      *                                     組み立てへの移行を可能にする
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -73,13 +73,13 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ��̾��Ͽ�Ѷ��̥ѥ�᥿
+      *    病名登録用共通パラメタ
            COPY    "C01COMMON-SPA".
       *
-      *    ��̾��Ͽ�Ѳ��̣ӣУ�
+      *    病名登録用画面ＳＰＡ
            COPY    "C02SCR-SPA".
            02  SPA-C02-PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"
@@ -94,7 +94,7 @@
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-KNJBYO          PIC 9(01).
@@ -104,7 +104,7 @@
            03  FLG-SYNONYM         PIC 9(01).
       *
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -112,7 +112,7 @@
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SELNO           PIC 9(04).
            03  WRK-NUM             PIC ZZZZ9.
@@ -124,7 +124,7 @@
            03  WRK-BYOMEI          PIC X(100).
            03  WRK-BYOMEI1         PIC X(800).
       *
-      *    �¤Ӥ����ѥ��
+      *    並びかえ用ワーク
            03  WRK-GMN-BYOMEICD-G.
                05  WRK-GMN-TBYOMEICD1
                                    PIC X(07).
@@ -160,50 +160,50 @@
                05  WRK-HDD         PIC 9(02).
       *
        01  WRK-CONS-AREA.
-      *    ��̾�����ɿ�
+      *    病名コード数
            03  WRK-CONS-BYOMEICD-MAX
                                    PIC 9(02)   VALUE   21.
-      *    ��̾�����Կ�
+      *    病名一覧行数
            03  WRK-CONS-BYOMEI-MAX PIC 9(03)   VALUE   100.
       *
-      *    ��̾�����ƥ�ͽ�󥳡��ɥơ��֥�
+      *    病名システム予約コードテーブル
            COPY    "CMBYOMEICD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��̾�ޥ�����
+      *    病名マスタ−
        01  BYOMEI-REC.
            COPY    "CPBYOMEI.INC".
       *
-      *    Ʊ����ޥ���
+      *    同義語マスタ
        01  SYNONYM-REC.
            COPY    "CPSYNONYM.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ��̾�����ɸ�������
+      *    病名コード検索サブ
            COPY    "CPORCSBYOMEI.INC".
       *
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -221,7 +221,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -238,15 +238,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -258,18 +258,18 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG      =   "CERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -289,16 +289,16 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    TRUE
-      *            ��̾�ܹԳ�ǧ���̤��
+      *            病名移行確認画面より
                WHEN    SPA-MOTOPG(1:4)  =  "CID2"
                    PERFORM 340-CID2-SET-SEC
                    GO      TO      300-SCREEN-EXT
-      *            ��ǧ���̣����
+      *            確認画面６より
                WHEN    SPA-MOTOPG(1:4)  =  "CID6"
                    PERFORM 370-CID6-SET-SEC
                    GO  TO  300-SCREEN-EXT
@@ -310,7 +310,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -326,7 +326,7 @@
                MOVE    IDX             TO  SPA-GMN-C05-BYOMEICD-MAX
            END-PERFORM
       *
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
            PERFORM 410121-HENBYOMEI-SEC 
       *
            MOVE    1               TO  SPA-GMN-C05-CUR
@@ -336,14 +336,14 @@
            EXIT.
       *
       *****************************************************************
-      *     ��̾�ܹԳ�ǧ���̤��ν���
+      *     病名移行確認画面よりの処理
       *****************************************************************
        340-CID2-SET-SEC                  SECTION.
       *
            EVALUATE    SPA-CIDCD2
                WHEN    "0101"
                WHEN    "0102"
-      *            ������̾�ܹԽ���
+      *            選択病名移行処理
                    IF      SPA-CID2-FLG    =   "OK"
                        MOVE    SPA-C05-IKOSAKI-INDEX
                                        TO  IDZ
@@ -352,7 +352,7 @@
                        MOVE    SPA-C05-IKOSAKI-BYOMEI
                                        TO  SPA-GMN-C05-TBYOMEI1  (IDZ)
                    END-IF              
-      *            �Խ���̾�Ѵ�����
+      *            編集病名変換処理
                    PERFORM 410121-HENBYOMEI-SEC
       *
                    PERFORM 420-CLEAR-SEC
@@ -373,16 +373,16 @@
            EXIT.
       *
       *****************************************************************
-      *     ��ǧ���̣������������
+      *     確認画面６からの戻り処理
       *****************************************************************
        370-CID6-SET-SEC            SECTION.
       *
            EVALUATE    SPA-CIDCD6
                WHEN    "0101"
                WHEN    "0102"
-      *            ������̾�ܹ��襳���ɽ���
+      *            選択病名移行先コード処理
                WHEN    "0107"
-      *            ������̾�������ѻߥ����ɽ���
+      *            選択病名コード廃止コード処理
                    IF      SPA-CID6-FLG    =   "OK"
                        MOVE    SPA-C05-IKOSAKI-INDEX
                                        TO  IDZ
@@ -405,7 +405,7 @@
                        MOVE    SPA-C05-CHANGE-MAX
                                            TO  SPA-GMN-C05-BYOMEICD-MAX
                    END-IF
-      *            �Խ���̾�Ѵ�����
+      *            編集病名変換処理
                    PERFORM 410121-HENBYOMEI-SEC
       *
                    PERFORM 420-CLEAR-SEC
@@ -426,45 +426,45 @@
       *
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ���ꥢ
+      *    クリア
                WHEN    "CLICKED"       ALSO    "B02"
                    PERFORM 420-CLEAR-SEC
-      *    �����ֹ棱�ذ�ư
+      *    選択番号１へ移動
                WHEN    "CLICKED"       ALSO    "B03"
                    PERFORM 430-SELNUM1-SET-SEC
-      *    �����ֹ棲�ذ�ư
+      *    選択番号２へ移動
                WHEN    "CLICKED"       ALSO    "B04"
                    PERFORM 440-SELNUM2-SET-SEC
-      *    ������
+      *    前画面
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 460-MAEGMN-SEC
-      *    ������
+      *    次画面
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 470-ATOGMN-SEC
-      *    �����ɾõ�
+      *    コード消去
                WHEN    "CLICKED"       ALSO    "B09"
                    PERFORM 490-BYOMEICD-DELETE-SEC
-      *    ����ư
+      *    ↑移動
                WHEN    "CLICKED"       ALSO    "B10"
                    PERFORM 490-BYOMEICD-DOWN-SEC
-      *    ����ư
+      *    ↓移動
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-BYOMEICD-UP-SEC
-      *    ����
+      *    確定
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 450-KAKUTEI-SEC
-      *    ��ʬ
+      *    部分
                WHEN    "CLICKED"       ALSO    "B22"
                    PERFORM 491-BUBUN-KENSAKU-SEC
-      *    ����
+      *    後方
                WHEN    "CLICKED"       ALSO    "B23"
                    PERFORM 492-ATO-KENSAKU-SEC
            END-EVALUATE
@@ -472,7 +472,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -488,7 +488,7 @@
       *
                WHEN    ANY             ALSO    "BYOMEICDLST"
                    PERFORM 41014-BYOMEICDSEL-SEC
-      *        ��̾������
+      *        病名行選択
                WHEN    ANY             ALSO    "BYOMEILST"
                    PERFORM 41015-BYOMEISEL-SEC
            END-EVALUATE
@@ -496,7 +496,7 @@
        200-ENTRY-EXT.
            EXIT.
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -517,7 +517,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ����
+      *    クリア処理
       *****************************************************************
        420-CLEAR-SEC             SECTION.
       *
@@ -539,7 +539,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ棱�ذ�ư����
+      *    選択番号１へ移動処理
       *****************************************************************
        430-SELNUM1-SET-SEC         SECTION.
       *
@@ -549,7 +549,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ棲�ذ�ư����
+      *    選択番号２へ移動処理
       *****************************************************************
        440-SELNUM2-SET-SEC         SECTION.
       *
@@ -559,7 +559,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ǡ�����
+      *    前頁　処理
       *****************************************************************
        460-MAEGMN-SEC             SECTION.
       *
@@ -577,14 +577,14 @@
            MOVE    ZERO                TO  SPA-GMN-C05-BYOMEI-MAX
                                            SPA-NAI-C05-SELNO1
                                            SPA-GMN-C05-SELNUM1
-      *    ��������
+      *    検索処理
            PERFORM 410112-BYOMEI-LST-SEC
            .
        460-MAEGMN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ǡ�����
+      *    次頁　処理
       *****************************************************************
        470-ATOGMN-SEC             SECTION.
       *
@@ -602,14 +602,14 @@
            MOVE    ZERO                TO  SPA-GMN-C05-BYOMEI-MAX
                                            SPA-NAI-C05-SELNO1
                                            SPA-GMN-C05-SELNUM1
-      *    ��������
+      *    検索処理
            PERFORM 410112-BYOMEI-LST-SEC
            .
        470-ATOGMN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����ɾõ����
+      *    コード消去処理
       *****************************************************************
        490-BYOMEICD-DELETE-SEC         SECTION.
       *
@@ -637,14 +637,14 @@
            MOVE    ZERO            TO  SPA-GMN-C05-SELNUM2
                                        SPA-NAI-C05-SELNO2        
       *
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
            PERFORM 410121-HENBYOMEI-SEC
            .
        490-BYOMEICD-DELETE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����ɢ���ư����
+      *    コード↑移動処理
       *****************************************************************
        490-BYOMEICD-DOWN-SEC             SECTION.
       *
@@ -664,14 +664,14 @@
            MOVE    ZERO            TO  SPA-GMN-C05-SELNUM2
                                        SPA-NAI-C05-SELNO2        
       *
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
            PERFORM 410121-HENBYOMEI-SEC
            .
        490-BYOMEICD-DOWN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �����ɢ���ư����
+      *    コード↓移動処理
       *****************************************************************
        490-BYOMEICD-UP-SEC             SECTION.
       *
@@ -692,18 +692,18 @@
            MOVE    ZERO            TO  SPA-GMN-C05-SELNUM2
                                        SPA-NAI-C05-SELNO2        
       *
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
            PERFORM 410121-HENBYOMEI-SEC
            .
        490-BYOMEICD-UP-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    確定処理
       *****************************************************************
        450-KAKUTEI-SEC             SECTION.
       *
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
            PERFORM 410121-HENBYOMEI-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                MOVE    1                   TO  SPA-GMN-C05-CUR  
@@ -732,17 +732,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʬ���׽���
+      *    部分一致処理
       *****************************************************************
        491-BUBUN-KENSAKU-SEC       SECTION.
       *
-      *    ���ϻ��Τ�
+      *    入力時のみ
            IF      SPA-GMN-C05-BYOKEN      =   SPACE
                MOVE    3                   TO  SPA-GMN-C05-CUR
                GO  TO  491-BUBUN-KENSAKU-EXT
            END-IF
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-C05-BYOKEN      TO  KANACHK-MAE-INPUT
@@ -756,7 +756,7 @@
                GO  TO  491-BUBUN-KENSAKU-EXT
            END-IF
       *
-           INSPECT SPA-GMN-C05-BYOKEN      REPLACING  ALL "��"  BY  "  "
+           INSPECT SPA-GMN-C05-BYOKEN      REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-BYOKEN
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -783,7 +783,7 @@
                                        SPA-GMN-C05-SELNUM1
            PERFORM 410112-BYOMEI-LST-SEC
       *
-      *    �����ֹ�إ���������ư������
+      *    選択番号へカーソルを移動させる
            IF      SPA-GMN-C05-BYOMEI-MAX  >   ZERO
                MOVE    2               TO  SPA-GMN-C05-CUR
            END-IF
@@ -793,17 +793,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʬ���׽���
+      *    後分一致処理
       *****************************************************************
        492-ATO-KENSAKU-SEC             SECTION.
       *
-      *    ���ϻ��Τ�
+      *    入力時のみ
            IF      SPA-GMN-C05-BYOKEN      =   SPACE
                MOVE    3                   TO  SPA-GMN-C05-CUR
                GO  TO  492-ATO-KENSAKU-EXT
            END-IF
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
            MOVE    SPA-GMN-C05-BYOKEN      TO  KANACHK-MAE-INPUT
@@ -817,7 +817,7 @@
                GO  TO  492-ATO-KENSAKU-EXT
            END-IF
       *
-           INSPECT SPA-GMN-C05-BYOKEN      REPLACING  ALL "��"  BY  "  "
+           INSPECT SPA-GMN-C05-BYOKEN      REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-BYOKEN
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -843,7 +843,7 @@
                                        SPA-GMN-C05-SELNUM1
            PERFORM 410112-BYOMEI-LST-SEC
       *
-      *    �����ֹ�إ���������ư������
+      *    選択番号へカーソルを移動させる
            IF      SPA-GMN-C05-BYOMEI-MAX  >   ZERO
                MOVE    2               TO  SPA-GMN-C05-CUR
            END-IF
@@ -853,7 +853,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾��������
+      *    病名検索処理
       *****************************************************************
        41011-BYOKEN-HEN-SEC        SECTION.
       *
@@ -876,7 +876,7 @@
       *
            MOVE    ZERO                TO  IDX
       *
-      *    Ⱦ�ѥ����å�
+      *    半角チェック
       *
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "1"                 TO  KANACHK-SYORI 
@@ -891,7 +891,7 @@
            END-IF
       *
            MOVE    SPA-GMN-C05-BYOKEN      TO  SPA-NAI-C05-BYOKEN
-           INSPECT SPA-NAI-C05-BYOKEN      REPLACING  ALL "��"  BY  "  "
+           INSPECT SPA-NAI-C05-BYOKEN      REPLACING  ALL "＊"  BY  "  "
            MOVE    SPACE               TO  WRK-BYOKEN
            MOVE    ZERO                TO  IDX2
            PERFORM VARYING     IDX1    FROM    1   BY  1
@@ -903,16 +903,16 @@
                END-IF
            END-PERFORM
            MOVE    SPACE               TO  SPA-NAI-C05-BYOKEN
-           IF    ( SPA-GMN-C05-BYOKEN (1:2)    =   "��"  )
+           IF    ( SPA-GMN-C05-BYOKEN (1:2)    =   "＊"  )
            AND   ( SPA-GMN-C05-BYOKEN(KANACHK-MAX - 1:2)
-                                           =   "��"  )
+                                           =   "＊"  )
                STRING  "%"                 DELIMITED  BY  SIZE
                        WRK-BYOKEN          DELIMITED  BY  SPACE
                        "%"                 DELIMITED  BY  SIZE
                                            INTO    SPA-NAI-C05-BYOKEN
                END-STRING
            ELSE
-               IF    ( SPA-GMN-C05-BYOKEN (1:2)    =   "��"  )
+               IF    ( SPA-GMN-C05-BYOKEN (1:2)    =   "＊"  )
                    STRING  "%"             DELIMITED  BY  SIZE
                            WRK-BYOKEN      DELIMITED  BY  SPACE
                                            INTO    SPA-NAI-C05-BYOKEN
@@ -928,7 +928,7 @@
            MOVE    1               TO  SPA-GMN-C05-PAGE
            PERFORM 410112-BYOMEI-LST-SEC
       *
-      *    �����ֹ�إ���������ư������
+      *    選択番号へカーソルを移動させる
            IF      SPA-GMN-C05-BYOMEI-MAX  >   ZERO
                MOVE    2               TO  SPA-GMN-C05-CUR
            END-IF
@@ -937,7 +937,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��̾�����Խ�����
+      *    病名一覧編集処理
       *****************************************************************
        410112-BYOMEI-LST-SEC           SECTION.
       *      
@@ -991,14 +991,14 @@
                MOVE    ZERO                TO  SPA-GMN-C05-NEXT
            END-IF
       *
-      *    �����ֹ�إ���������ư������
+      *    選択番号へカーソルを移動させる
            MOVE    2               TO  SPA-GMN-C05-CUR
            .
        410112-BYOMEI-LST-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ�����
+      *    病名編集処理
       *****************************************************************
        4101121-BYOMEI-HENSYU-SEC            SECTION.
       *
@@ -1011,7 +1011,7 @@
                IF      BYO-IKOSAKICD   =   SPACE
                    CONTINUE
                ELSE
-                   MOVE    "  ��"      TO  SPA-GMN-C05-TIKOSAKICD (IDX)
+                   MOVE    "  ◎"      TO  SPA-GMN-C05-TIKOSAKICD (IDX)
                    MOVE    BYO-IKOSAKICD
                                        TO  SPA-NAI-C05-TIKOSAKICD (IDX)
                END-IF
@@ -1030,13 +1030,13 @@
                IF      BYO-BYOMEICD(1:1)  =  "Z"
                    EVALUATE    BYO-BYOMEICD (4:1)
                        WHEN    "1"   THRU   "7"
-                           MOVE    "��Ƭ��"
+                           MOVE    "接頭語"
                                          TO  SPA-GMN-C05-TSYUBET(IDX)
                        WHEN    "8"
-                           MOVE    "������"
+                           MOVE    "接尾語"
                                          TO  SPA-GMN-C05-TSYUBET(IDX)
                        WHEN    "9"
-                           MOVE    "����"
+                           MOVE    "歯科"
                                          TO  SPA-GMN-C05-TSYUBET(IDX)
                    END-EVALUATE
                END-IF
@@ -1047,7 +1047,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ����򣱽���
+      *    番号選択１処理
       *****************************************************************
        41012-SELNUM1-HEN-SEC        SECTION.
       *
@@ -1065,7 +1065,7 @@
                                    - ( SPA-GMN-C05-PAGE    -   1 )
                                        *   WRK-CONS-BYOMEI-MAX
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF    ( WRK-BANGO       >   WRK-CONS-BYOMEI-MAX )
            OR    ( WRK-BANGO       <   1                   )
                MOVE    "0001"          TO  SPA-ERRCD
@@ -1080,11 +1080,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ棱�����å�����
+      *    選択番号１チェック処理
       *****************************************************************
        410121-SELNUM1-CHK-SEC        SECTION.
       *
-      *    �������ץ����å�
+      *    選択数合計チェック
            IF      SPA-GMN-C05-BYOMEICD-MAX
                                    =   WRK-CONS-BYOMEICD-MAX
                MOVE    "0002"          TO  SPA-ERRCD
@@ -1127,7 +1127,7 @@
                ELSE    
                    IF      SPA-C02-1042-MSG2-DSPKBN
                                        =   "0"
-      *                Ʊ����ޥ��������å�����
+      *                同義語マスタチェック処理
                        INITIALIZE          SYNONYM-REC
                        MOVE    SPA-GMN-C05-TBYOMEI (SPA-NAI-C05-SELNO1)
                                            TO  SYNONYM-BYOMEI
@@ -1151,7 +1151,7 @@
                    IF      SPA-CIDCD2          =   SPACE
                        IF      SPA-C02-1042-MSG3-DSPKBN
                                                    =   "0"
-      *                    �ѻ���̾�����å�����
+      *                    廃止病名チェック処理
                            MOVE    SPACE           TO  WRK-HAISIYMDH
                            MOVE    SPA-NAI-C05-THAISIYMDH
                                                    (SPA-NAI-C05-SELNO1)
@@ -1164,7 +1164,7 @@
       *                            
            IF     ( SPA-CIDCD2      NOT =   SPACE )
            OR     ( WRK-HAISIYMDH   NOT =   SPACE )
-      *        �̤Υ����ɤǤ��Ȥ�Ω�Ƥ򸡺�
+      *        別のコードでの組み立てを検索
                MOVE    SPACE               TO  ORCSBYOMEIAREA
                INITIALIZE                      ORCSBYOMEIAREA
                MOVE    "1"                 TO  LNK-BYO-SYORI
@@ -1223,7 +1223,7 @@
            IF    ( SPA-CIDCD2          =   SPACE )
            AND   ( SPA-CIDCD6          =   SPACE ) 
            AND   ( SPA-ERRCD           =   SPACE ) 
-      *        �Խ���̾�Ѵ�����
+      *        編集病名変換処理
                PERFORM 410121-HENBYOMEI-SEC
       *
                PERFORM 420-CLEAR-SEC
@@ -1238,7 +1238,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ֹ����򣲽���
+      *    番号選択２処理
       *****************************************************************
        41013-SELNUM2-HEN-SEC        SECTION.
       *
@@ -1247,7 +1247,7 @@
            MOVE    C05-SELNUM2          TO  SPA-GMN-C05-SELNUM2
            MOVE    ZERO                 TO  SPA-NAI-C05-SELNO2
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF    ( SPA-GMN-C05-SELNUM2 =   ZERO                     )
            OR    ( SPA-GMN-C05-SELNUM2 >   SPA-GMN-C05-BYOMEICD-MAX )
                MOVE    "0001"          TO  SPA-ERRCD
@@ -1261,7 +1261,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Խ���̾�Ѵ�����
+      *    編集病名変換処理
       *****************************************************************
        410121-HENBYOMEI-SEC        SECTION.
       *
@@ -1277,15 +1277,15 @@
            CALL    "ORCSBYOMEI"     USING    ORCSBYOMEIAREA
 grpsys                                       SPA-AREA
       *
-      *    ��̾�Խ�
+      *    病名編集
            MOVE    LNK-BYO-BYOMEI      TO  SPA-GMN-C05-HENBYO
       *
-      *    �����졦��Ƭ������å�
+      *    接尾語・接頭語チェック
            IF      LNK-BYO-BYOMEICD-ERR    =   2   OR  3
                MOVE    "0003"          TO  SPA-ERRCD
            END-IF
       *
-      *   ������̾�����ɿ��������
+      *   入力病名コード数カウント
            IF      LNK-BYO-BYOMEICD-ERR    =   9
                MOVE    "0056"          TO  SPA-ERRCD
            END-IF
@@ -1298,10 +1298,10 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41014-BYOMEICDSEL-SEC       SECTION.
-      *        ������
+      *        行選択
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1328,10 +1328,10 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        41015-BYOMEISEL-SEC       SECTION.
-      *        ������
+      *        行選択
            MOVE    ZERO                TO  WRK-SELNO
       *     
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1359,7 +1359,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����ޥ��������å�����
+      *    同義語マスタチェック処理
       *****************************************************************
        5001-SYNONYM-CHK-SEC            SECTION.
       *
@@ -1385,7 +1385,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -1410,7 +1410,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1442,7 +1442,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -1505,7 +1505,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1525,7 +1525,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1533,35 +1533,35 @@ grpsys                                       SPA-AREA
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "�����ֹ椬ͭ��ޤ���"  
+                   MOVE    "選択番号が有りません"  
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "��̾���������򤬣����ʾ�Ǥ�"
+                   MOVE    "病名コード選択が２２以上です"
                                        TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "��̾�����ɽ礬���顼�Ǥ�"
+                   MOVE    "病名コード順がエラーです"
                                        TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "��̾��Ĺ�����ޤ�"
+                   MOVE    "病名が長すぎます"
                                        TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "���ڡ����Ϥ���ޤ���"
+                   MOVE    "前ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0006"
-                   MOVE    "���ڡ����Ϥ���ޤ���"
+                   MOVE    "次ページはありません"
                                        TO  SPA-ERRMSG
                WHEN    "0056"
-                   MOVE    "ʣ����̾�����ϤϤǤ��ޤ���"
+                   MOVE    "複数病名の入力はできません"
                                        TO  SPA-ERRMSG
                WHEN    "0071"
-                   MOVE    "�������Ϥ��Ʋ�����"
+                   MOVE    "全角入力して下さい"
                                        TO  SPA-ERRMSG
                WHEN    "0075"
-                   MOVE    "���򤵤줿��̾�ϥޥ��������"
+                   MOVE    "選択された病名はマスター上で"
                                        TO  SPA-ERRMSG
                    MOVE    WRK-HAISIYMDH
                                        TO  SPA-ERRMSG (29:22)
-                   MOVE    "���ѻߤΰ����ȤʤäƤ��ޤ���"
+                   MOVE    "で廃止の扱いとなっています。"
                                        TO  SPA-ERRMSG (51:)
            END-EVALUATE
       *
@@ -1586,7 +1586,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ܹԳ�ǧ����ɽ������
+      *    病名移行確認画面表示処理
       *****************************************************************
        530-CIDSET2-SEC              SECTION.
       *
@@ -1595,16 +1595,16 @@ grpsys                                       SPA-AREA
       *
            EVALUATE    SPA-CIDCD2
                WHEN    "0101"
-                   STRING  "���򤵤줿��̾�ϥޥ�������ǰܹ�"
+                   STRING  "選択された病名はマスター上で移行"
                                        DELIMITED  BY  SIZE
-                           "��̾�ΰ����ȤʤäƤ��ޤ���"
+                           "病名の扱いとなっています。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0102"
-                   STRING  "���Ϥ��줿��̾�ϡֽ���̾�����ɤ������"
+                   STRING  "入力された病名は「傷病名コードの統一の"
                                        DELIMITED  BY  SIZE
-                           "��ʡפˤ��侩��̾������ޤ���"
+                           "推進」による推奨病名があります。"
                                        DELIMITED  BY  SIZE
                                        INTO    WRK-CIDMSG
                    END-STRING
@@ -1638,7 +1638,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ܹԳ�ǧ����ɽ������
+      *    病名移行確認画面表示処理
       *****************************************************************
        560-CIDSET6-SEC              SECTION.
       *
@@ -1650,29 +1650,29 @@ grpsys                                       SPA-AREA
            EVALUATE    SPA-CIDCD6
                WHEN    "0101"
                    STRING
-                       "���򤵤줿��̾��"      DELIMITED   BY  SIZE 
-                       "�ܹ���̾�ΰ����ȤʤäƤ��ޤ�����"
+                       "選択された病名は"      DELIMITED   BY  SIZE 
+                       "移行病名の扱いとなっていますが、"
                                                DELIMITED   BY  SIZE 
-                      "�̤Υ����ɤ���Ͽ����ǽ�Ǥ�"
+                      "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE
                                        INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0102"
                    STRING
-                       "���򤵤줿��̾�ϡֽ���̾�����ɤ�����ο��"
+                       "選択された病名は「傷病名コードの統一の推進"
                                                DELIMITED   BY  SIZE
-                       "�פˤ��侩��̾������ޤ���"
+                       "」による推奨病名がありますが"
                                                DELIMITED   BY  SIZE
-                      "�̤Υ����ɤ���Ͽ����ǽ�Ǥ�"
+                      "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE
                                        INTO    WRK-CIDMSG
                    END-STRING
                WHEN    "0107"
                    STRING
-                       "���򤵤줿��̾��"      DELIMITED   BY  SIZE 
-                       "�ѻߤΰ����ȤʤäƤ��ޤ�����"
+                       "選択された病名は"      DELIMITED   BY  SIZE 
+                       "廃止の扱いとなっていますが、"
                                                DELIMITED   BY  SIZE 
-                       "�̤Υ����ɤ���Ͽ����ǽ�Ǥ�"
+                       "別のコードで登録が可能です"
                                                DELIMITED   BY  SIZE 
                                        INTO    WRK-CIDMSG
                    END-STRING
@@ -1687,9 +1687,9 @@ grpsys                                       SPA-AREA
            EVALUATE    SPA-CIDCD6
                WHEN    "0107"
                    MOVE    WIDGET-INSENSITIVE  TO  CID6-B10-STATE
-                   MOVE    "�̤Υ����ɤǤ���Ͽ��Ԥ��ޤ���"
+                   MOVE    "別のコードでの登録を行いますか"
                                                TO  CID6-MSG1 
-                   MOVE    "�ѻ�ǯ����"        TO  CID6-HAISIYMD-H
+                   MOVE    "廃止年月日"        TO  CID6-HAISIYMD-H
                    MOVE    SPA-C05-IKOMOTO-HAISIYMD
                                                TO  CID6-HAISIYMD
                WHEN    OTHER
@@ -1700,32 +1700,32 @@ grpsys                                       SPA-AREA
                    MOVE    WIDGET-NORMAL       TO  CID6-B10-STATE
                    IF      SPA-C05-IKOMOTO-HAISIYMD
                                                NOT =   SPACE
-                       MOVE    "�ѻ�ǯ����"        TO  CID6-HAISIYMD-H
+                       MOVE    "廃止年月日"        TO  CID6-HAISIYMD-H
                        MOVE    SPA-C05-IKOMOTO-HAISIYMD
                                                    TO  CID6-HAISIYMD
                    END-IF
                    EVALUATE    SPA-CIDCD6
                        WHEN    "0102"
                            STRING
-                               "�侩������̾���ѹ����ޤ�����"
+                               "推奨する病名へ変更しますか、"
                                                    DELIMITED   BY  SIZE  
-                               "�̤Υ����ɤǤ���Ͽ��Ԥ��ޤ���"
+                               "別のコードでの登録を行いますか"
                                                    DELIMITED   BY  SIZE  
                                                    INTO  CID6-MSG1
                            END-STRING 
-                           MOVE    "�侩������̾"  TO  CID6-LABEL1
-                           MOVE    "F10:�侩������̾���ѹ�"
+                           MOVE    "推奨する病名"  TO  CID6-LABEL1
+                           MOVE    "F10:推奨する病名へ変更"
                                                    TO  CID6-B10-LABEL
                        WHEN    OTHER
                            STRING
-                               "�ܹ�����̾���ѹ����ޤ�����"
+                               "移行先病名へ変更しますか、"
                                                    DELIMITED   BY  SIZE  
-                               "�̤Υ����ɤǤ���Ͽ��Ԥ��ޤ���"
+                               "別のコードでの登録を行いますか"
                                                    DELIMITED   BY  SIZE  
                                                    INTO  CID6-MSG1
                            END-STRING 
-                           MOVE    "�ܹ�����̾"    TO  CID6-LABEL1
-                           MOVE    "F10:�ܹ�����̾���ѹ�"
+                           MOVE    "移行先病名"    TO  CID6-LABEL1
+                           MOVE    "F10:移行先病名へ変更"
                                                    TO  CID6-B10-LABEL
                    END-EVALUATE
            END-EVALUATE
@@ -1845,7 +1845,7 @@ grpsys                                       SPA-AREA
       *
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-INV-SEC         SECTION.
       *
@@ -1874,7 +1874,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ��̾�ޥ������ɹ�
+      *    病名マスター読込
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -1894,7 +1894,7 @@ grpsys                                       SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ����ޥ����ɹ�
+      *    同義語マスタ読込
       *****************************************************************
        900-SYNONYM-READ-SEC         SECTION.
       *
@@ -1928,7 +1928,7 @@ grpsys                                       SPA-AREA
       *
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1939,7 +1939,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1951,7 +1951,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1963,7 +1963,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1976,7 +1976,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -15,7 +15,7 @@ PACKAGEFILE=patch@VERSION@.gz
 PRGPATH=$PGUPGRADEPATH/@VERSION@
 PATCHLIST=$PATCHDIR/patch-file-list
 
-#¥ª¥Õ¥é¥¤¥ó¥á¥ó¥Æ¥Ê¥ó¥¹¤Ç¤¢¤ë¤«¥Á¥§¥Ã¥¯
+#ã‚ªãƒ•ãƒ©ã‚¤ãƒ³ãƒ¡ãƒ³ãƒ†ãƒŠãƒ³ã‚¹ã§ã‚ã‚‹ã‹ãƒã‚§ãƒƒã‚¯
 OFFLINEPATH=`echo $PRGPATH | sed -ne 's#file://##p'`
 if [ -z $OFFLINEPATH ]; then
   OFFLINE="online"
@@ -25,7 +25,7 @@ else
 fi
 
 if ! [ -d $PATCHDIR ];	then
-	echo "¥Ñ¥Ã¥Á¥Ç¥£¥ì¥¯¥È¥ê¤¬Â¸ºß¤·¤Þ¤»¤ó"
+	echo "ãƒ‘ãƒƒãƒãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒå­˜åœ¨ã—ã¾ã›ã‚“"
 	exit
 fi
 
@@ -35,7 +35,7 @@ export PRGPATH
 export CACERTFILE
 export PATCHLIST
 
-#¹¹¿·¥×¥í¥°¥é¥à¥À¥¦¥ó¥í¡¼¥É
+#æ›´æ–°ãƒ—ãƒ­ã‚°ãƒ©ãƒ ãƒ€ã‚¦ãƒ³ãƒ­ãƒ¼ãƒ‰
 cachedl.rb 2>&1
 
 exit

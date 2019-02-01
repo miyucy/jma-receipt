@@ -18,32 +18,32 @@ xml_contraindication_checkv2res {
         	Sex				varchar(1);
         };
 	Medical_Information  {
-#---            ÌôºÞ¥³¡¼¥É
+#---            è–¬å‰¤ã‚³ãƒ¼ãƒ‰
 		Medication_Code			varchar(09);
 		Medication_Name			varchar(80);
         	Medical_Result			varchar(2);
         	Medical_Result_Message		varchar(80);
 		Medical_Info  {
-#---            ¶Ø´÷ÌôºÞ¥³¡¼¥É
+#---            ç¦å¿Œè–¬å‰¤ã‚³ãƒ¼ãƒ‰
 			Contra_Code		varchar(09);
 			Contra_Name		varchar(80);
-#---            ¾É¾õ¾Üµ­¶èÊ¬
+#---            ç—‡çŠ¶è©³è¨˜åŒºåˆ†
 			Interact_Code		varchar(7);
-#---            ÅêÍ¿Æü
+#---            æŠ•ä¸Žæ—¥
 			Administer_Date		varchar(10);
-#---            º£²óÅêÍ¿¶èÊ¬
+#---            ä»Šå›žæŠ•ä¸ŽåŒºåˆ†
 			Administer_Class	varchar(1);
-#---            Êý¸þÀ­(-> : before . <-:after)
+#---            æ–¹å‘æ€§(-> : before . <-:after)
 			Context_Class		varchar(6);
 			} [30];
 		} [30];
-#---    ¾É¾õ¾Üµ­ÆâÍÆ
+#---    ç—‡çŠ¶è©³è¨˜å†…å®¹
 	Symptom_Information  {
-#---            ¾É¾õ¾Üµ­¶èÊ¬
+#---            ç—‡çŠ¶è©³è¨˜åŒºåˆ†
 		Symptom_Code		varchar(7);
-#---            ¾É¾õ
+#---            ç—‡çŠ¶
 		Symptom_Content		varchar(2048);
-#---            ºîÍÑµ¡Í¿
+#---            ä½œç”¨æ©Ÿä¸Ž
 		Symptom_Detail		varchar(2048);
 		} [50];
    	};

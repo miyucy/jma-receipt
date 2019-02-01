@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUP0261.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : £Ä£ÂºîÀ®½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ï¼¤ï¼¢ä½œæˆå‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿
       *                    : 
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  14.03.27    NACL-ÂÀÅÄ     ¿·µ¬ºîÀ®
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  14.03.27    NACL-å¤ªç”°     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,17 +35,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ÆþÎÏ¡§ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ¹¹¿·¥Ç¡¼¥¿
+      *    å…¥åŠ›ï¼šé¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿æ›´æ–°ãƒ‡ãƒ¼ã‚¿
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -54,21 +54,21 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ÆþÎÏ¡§ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ¹¹¿·¥Ç¡¼¥¿
+      *    å…¥åŠ›ï¼šé¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿æ›´æ–°ãƒ‡ãƒ¼ã‚¿
        FD  IN-FILE.
        01  SENTEICDCHGWK-REC.
            03  SENTEICDCHGWK-SYORIKBN     PIC  X(01).
            COPY    "CPSENTEICDCHG.INC"    REPLACING //SENCHG-//
                                           BY        //SENCHGWK-//.
       *
-      *    ½ÐÎÏ¡§¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  ERR-FILE.
        01  ERR-SENTEICDCHGWK-REC.
            03  ERR-SENTEICDCHGWK-SYORIKBN PIC  X(01).
            COPY    "CPSENTEICDCHG.INC"    REPLACING //SENCHG-//
                                           BY   //ERR-SENCHGWK-//.
       *
-      *    ½ÐÎÏ¡§¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    å‡ºåŠ›ï¼šãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -76,30 +76,30 @@
 grpsys*
 grpsys     COPY    "COMMON-SPA".
       *
-      *    ¥Õ¥¡¥¤¥ë»ØÄêÎÎ°è
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æŒ‡å®šé ˜åŸŸ
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-SENTEICDCHG         PIC 9(01).
            03  FLG-LF                  PIC 9(01).
       *
-      *    ¥¤¥ó¥Ç¥Ã¥¯¥¹ÎÎ°è
+      *    ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹é ˜åŸŸ
        01  IDX-AREA.
            03  IDX-PNT1                PIC 9(05).
            03  IDX-PNT2                PIC 9(05).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-INS                 PIC 9(06).
@@ -114,7 +114,7 @@ grpsys     COPY    "COMMON-SPA".
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -131,11 +131,11 @@ grpsys     COPY    "COMMON-SPA".
            03  WRK-MEMO-LEN            PIC 9(08).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ëÎÎ°è
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«é ˜åŸŸ
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "¡ÚPGID:ORCMUP0261.CBL¡Û".
+                                       "ã€PGID:ORCMUP0261.CBLã€‘".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -157,27 +157,27 @@ grpsys     COPY    "COMMON-SPA".
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ëÄêµÁ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å®šç¾©
       *****************************************************************
       *
-      *    ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ
+      *    é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¾ðÊó
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†æƒ…å ±
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ¶¦ÄÌ¥Ñ¥é¥á¥¿
+      *    å…±é€šãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
            COPY    "ENUM-VALUE".
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -188,7 +188,7 @@ grpsys     COPY    "COMMON-SPA".
            LNK-AREA.
       *
       ****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -204,7 +204,7 @@ grpsys     COPY    "COMMON-SPA".
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -230,7 +230,7 @@ grpsys     COPY    "COMMON-SPA".
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ÆþÎÏ¡¡½é´ü½èÍý
+      *    å…¥åŠ›ã€€åˆæœŸå‡¦ç†
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
@@ -238,10 +238,10 @@ grpsys     COPY    "COMMON-SPA".
                                        STS-IN "]"
            END-IF
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ¹¹¿·¥Ç¡¼¥¿ÆÉ¹þ¤ß½èÍý
+      *    é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿æ›´æ–°ãƒ‡ãƒ¼ã‚¿èª­è¾¼ã¿å‡¦ç†
            IF      FLG-IN              =   ZERO
                PERFORM 900-IN-KENSAKU-SEC
            END-IF
@@ -249,7 +249,7 @@ grpsys     COPY    "COMMON-SPA".
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¾ðÊó¼èÆÀ
+      *    ãƒ•ã‚¡ã‚¤ãƒ«æƒ…å ±å–å¾—
       *****************************************************************
        101-ASSIN-GET-SEC           SECTION.
       *
@@ -262,7 +262,7 @@ grpsys     COPY    "COMMON-SPA".
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ÆþÎÏ¥Õ¥¡¥¤¥ë
+      *    å…¥åŠ›ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -273,7 +273,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -284,7 +284,7 @@ grpsys     COPY    "COMMON-SPA".
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    ¥×¥ë¡¼¥Õ¥Õ¥¡¥¤¥ë
+      *    ãƒ—ãƒ«ãƒ¼ãƒ•ãƒ•ã‚¡ã‚¤ãƒ«
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -298,34 +298,34 @@ grpsys     COPY    "COMMON-SPA".
        101-ASSIN-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥á¥¤¥ó½èÍý
+      *    ãƒ¡ã‚¤ãƒ³å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            MOVE    ZERO                TO  WRK-ERRCD
       *
            EVALUATE    SENTEICDCHGWK-SYORIKBN
-      *    ÄÉ²Ã
+      *    è¿½åŠ 
            WHEN    "I"
                PERFORM 2010-INSERT-SYORI-SEC
       *
-      *    ºï½ü
+      *    å‰Šé™¤
            WHEN    "D"
                PERFORM 2030-DELETE-SYORI-SEC
            END-EVALUATE
       *
-      *    ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØ¹¹¿·¥Ç¡¼¥¿ÆÉ¹þ¤ß½èÍý
+      *    é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿æ›´æ–°ãƒ‡ãƒ¼ã‚¿èª­è¾¼ã¿å‡¦ç†
            PERFORM 900-IN-KENSAKU-SEC
            .
        200-MAIN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ÄÉ²Ã  ½èÍý
+      *    è¿½åŠ   å‡¦ç†
       *****************************************************************
        2010-INSERT-SYORI-SEC       SECTION.
       *
-      *    £Ä£ÂÄÉ²Ã
+      *    ï¼¤ï¼¢è¿½åŠ 
            PERFORM 20101-SENTEICDCHG-INS-SEC
            IF      WRK-ERRCD       =   ZERO
                ADD     1               TO  CNT-INS
@@ -335,11 +335,11 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ºï½ü  ½èÍý
+      *    å‰Šé™¤  å‡¦ç†
       *****************************************************************
        2030-DELETE-SYORI-SEC       SECTION.
       *
-      *    £Ä£Âºï½ü
+      *    ï¼¤ï¼¢å‰Šé™¤
            PERFORM 20101-SENTEICDCHG-DEL-SEC
            IF      WRK-ERRCD           =   ZERO
                ADD     1               TO  CNT-DEL
@@ -349,7 +349,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    £Ä£ÂÄÉ²Ã  ½èÍý
+      *    ï¼¤ï¼¢è¿½åŠ   å‡¦ç†
       *****************************************************************
        20101-SENTEICDCHG-INS-SEC  SECTION.
       *
@@ -375,7 +375,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Âºï½ü  ½èÍý
+      *    ï¼¤ï¼¢å‰Šé™¤  å‡¦ç†
       *****************************************************************
        20101-SENTEICDCHG-DEL-SEC  SECTION.
       *
@@ -397,23 +397,23 @@ grpsys     COPY    "COMMON-SPA".
        20101-SENTEICDCHG-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥¨¥é¡¼½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡¦ç†
       *****************************************************************
        2040-ERR-SYORI-SEC          SECTION.
       *
-      *    ¥¨¥é¡¼½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›
            MOVE    SENTEICDCHGWK-REC     TO  ERR-SENTEICDCHGWK-REC
            WRITE   ERR-SENTEICDCHGWK-REC
            ADD     1                   TO  CNT-ERR
       *
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›
            PERFORM 20401-PLF-OUT-SEC
            .
        2040-ERR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡ºåŠ›å‡¦ç†
       *****************************************************************
        20401-PLF-OUT-SEC           SECTION.
       *
@@ -424,18 +424,18 @@ grpsys     COPY    "COMMON-SPA".
                                       TO  WRK-SENTEISRYCD
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØÅÐÏ¿ºÑ¤ß"
+                   MOVE  "é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿ç™»éŒ²æ¸ˆã¿"
                                        TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "ÄÉ²Ã¥¨¥é¡¼"  TO  WRK-MSG-01
+                   MOVE  "è¿½åŠ ã‚¨ãƒ©ãƒ¼"  TO  WRK-MSG-01
                WHEN    3
-                   MOVE  "¹¹¿·¥¨¥é¡¼"  TO  WRK-MSG-01
+                   MOVE  "æ›´æ–°ã‚¨ãƒ©ãƒ¼"  TO  WRK-MSG-01
                WHEN    4
-                   MOVE  "ºï½ü¥¨¥é¡¼"  TO  WRK-MSG-01
+                   MOVE  "å‰Šé™¤ã‚¨ãƒ©ãƒ¼"  TO  WRK-MSG-01
                WHEN    5
-                   MOVE  "¹¹¿·ÂÐ¾Ý¤Ê¤·"  TO  WRK-MSG-01
+                   MOVE  "æ›´æ–°å¯¾è±¡ãªã—"  TO  WRK-MSG-01
                WHEN    6
-                   MOVE  "ºï½üÂÐ¾Ý¤Ê¤·"  TO  WRK-MSG-01
+                   MOVE  "å‰Šé™¤å¯¾è±¡ãªã—"  TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    WRK-MSG-AREA        TO  PLF-REC
@@ -446,7 +446,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½é´ü½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€åˆæœŸå‡¦ç†
       *****************************************************************
        2700-OUTLST-INIT-SEC        SECTION.
       *
@@ -456,7 +456,7 @@ grpsys     COPY    "COMMON-SPA".
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ¥¨¥é¡¼¥ì¥³¡¼¥É½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡¥ª¡¼¥×¥ó
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¬ã‚³ãƒ¼ãƒ‰å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€ã‚ªãƒ¼ãƒ—ãƒ³
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUP0261)* PLFFILE OPN STS[" STS-PLF "]"
@@ -473,14 +473,14 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ½ÐÎÏ¥Õ¥¡¥¤¥ë¡¡½ªÎ»½èÍý
+      *    å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã€€çµ‚äº†å‡¦ç†
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -514,7 +514,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *     ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØÊÑ¹¹¥Ç¡¼¥¿ÆÉ¹þ¤ß½èÍý
+      *     é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿å¤‰æ›´ãƒ‡ãƒ¼ã‚¿èª­è¾¼ã¿å‡¦ç†
       *****************************************************************
        900-IN-KENSAKU-SEC          SECTION.
       *
@@ -530,7 +530,7 @@ grpsys     COPY    "COMMON-SPA".
           EXIT.
       *
       *****************************************************************
-      *    ÁªÄêÎÅÍÜÈñ°ìÈÌ¥³¡¼¥É¿¶ÂØÆÉ¹þ
+      *    é¸å®šç™‚é¤Šè²»ä¸€èˆ¬ã‚³ãƒ¼ãƒ‰æŒ¯æ›¿èª­è¾¼
       *****************************************************************
        910-SENTEICDCHG-READ-SEC   SECTION.
       *
@@ -548,7 +548,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -566,7 +566,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -584,7 +584,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-TBL-CLOSE-SEC               SECTION.
       *
@@ -595,7 +595,7 @@ grpsys     COPY    "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

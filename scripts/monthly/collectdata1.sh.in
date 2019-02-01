@@ -10,15 +10,15 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    ¼ı½¸¥Ç¡¼¥¿ºîÀ®
+#    åé›†ãƒ‡ãƒ¼ã‚¿ä½œæˆ
 #        $1  TERMID
 #        $2  HOSPNUM
 #        $3  PREFNUM
 #        $4  SRYYM
-#        $5  BEDFLG (0:ÉÂ¾²¤Ê¤·¡¢1:ÉÂ¾²¤¢¤ê)
+#        $5  BEDFLG (0:ç—…åºŠãªã—ã€1:ç—…åºŠã‚ã‚Š)
 #        $6  JOBID
 #        $7  SHELLID
-#        $8  UPLOAD (0:Á÷¿®¤Ê¤·¡¢1:Á÷¿®¤¢¤ê¡¢Á÷¿®¤Î¤ß)
+#        $8  UPLOAD (0:é€ä¿¡ãªã—ã€1:é€ä¿¡ã‚ã‚Šã€é€ä¿¡ã®ã¿)
 #        $9  HOSPID
 #-------------------------------------------#
 
@@ -31,7 +31,7 @@ ERRFILE=/tmp/$2datacollecterror
 DASUPLOAD=$SCRIPTSDIR/monthly/das-upload.sh
 
 gairai () {
-#³°ÍèÊ¬½èÍı
+#å¤–æ¥åˆ†å‡¦ç†
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,2,$5,$6,$ERRFILE
   if  [ -e $ERRFILE ]; then
     rm -f /tmp/$2COLDT*
@@ -45,7 +45,7 @@ gairai () {
 }
 
 nyuin () {
-#Æş±¡Ê¬½èÍı
+#å…¥é™¢åˆ†å‡¦ç†
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBC010 -parameter $1,$2,$3,$4,1,$5,$6,$ERRFILE
   if  [ -e $ERRFILE ]; then
     rm -f /tmp/$2COLDT*
@@ -59,7 +59,7 @@ nyuin () {
 }
 
 make_upload_file () {
-#¥¢¥Ã¥×¥í¡¼¥É¥Õ¥¡¥¤¥ëºîÀ®
+#ã‚¢ãƒƒãƒ—ãƒ­ãƒ¼ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ä½œæˆ
   if  [ $3 -eq '1' ]; then
     if  [ -e $DASDIR/$1/tmp/$COLLECTG ] && [ -e $DASDIR/$1/tmp/$COLLECTN ]; then
       tar cvfz $DASDIR/$1/collect-$2.tar.gz -C$DASDIR/$1/ tmp/$COLLECTG tmp/$COLLECTN
@@ -90,10 +90,10 @@ make_upload_file () {
   rm -f $DASDIR/$2/tmp/$COLLECTN
   rm -f /tmp/$2COLDT*
 
-# ¥Õ¥¡¥¤¥ëÁ÷¿®¤Î¤ß¡©
+# ãƒ•ã‚¡ã‚¤ãƒ«é€ä¿¡ã®ã¿ï¼Ÿ
   if  [ $8 -ne '2' ]; then
     rm -f $LOG_FILE
-    #Á°Ç¯Æ±·î
+    #å‰å¹´åŒæœˆ
     PREVYM=$(expr $4 - 100)
     rm -f $ERRFILE
     gairai $1 $2 $3 $PREVYM $6 $7
@@ -106,7 +106,7 @@ make_upload_file () {
     rm -f $DASDIR/$2/tmp/$COLLECTN
     rm -f /tmp/$2COLDT*
 
-    #ÅöÇ¯·î
+    #å½“å¹´æœˆ
     rm -f $ERRFILE
     gairai $1 $2 $3 $4 $6 $7
     if  [ $5 -eq '1' ]; then
@@ -119,7 +119,7 @@ make_upload_file () {
   $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBJOB -parameter JBE$6$7,$2
 
   if  [ $8 -ne '0' ]; then
-    echo "¼ı½¸¥Ç¡¼¥¿Á÷¿®½èÍı µ¯Æ°"
+    echo "åé›†ãƒ‡ãƒ¼ã‚¿é€ä¿¡å‡¦ç† èµ·å‹•"
     $DASUPLOAD $2 $9 &
     rm -f $DASDIR/$2/tmp/$COLLECTG
     rm -f $DASDIR/$2/tmp/$COLLECTN

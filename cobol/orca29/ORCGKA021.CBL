@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGKA021.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���������������޾������
-      *  ����ݡ��ͥ��̾  : �������ư����ʣˣ���������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  08/09/08    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院処方せん・薬剤情報印刷
+      *  コンポーネント名  : 選択内容一覧（ＫＡ０２１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  08/09/08    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.00    NACL-¿��Ǽ  09/06/XX  ���̾��������б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.00    NACL-多々納  09/06/XX  数量小数５桁対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �������ƥǡ���
+      *    選択内容データ
       *    SELECT  SPAPRT-FILE     ASSIGN  FILE-NAME1
       *                            ORGANIZATION    IS  SEQUENTIAL
       *                            FILE    STATUS  IS  STS-SPAPRT.
@@ -43,20 +43,20 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ѥ�᥿�ǡ���
+      *    パラメタデータ
       *FD  SPAPRT-FILE.
       *01  SPAPRT-REC              PIC X(10000).
       *
        WORKING-STORAGE             SECTION.
       *
-      * �ӣУ��ǡ���
+      * ＳＰＡデータ
       *01  FILE-NAME1.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(07)   VALUE   "KA02PRT".
       *    03  FILE-HOSPNUM1       PIC 9(02)   VALUE   ZERO.
       *    03  FILE-TERMID1        PIC X(64)   VALUE   SPACE.
       *    03  FILLER              PIC X(04)   VALUE   ".TXT".
-      *    �ѥ�᥿�ե�����̾
+      *    パラメタファイル名
       *01  FILE-NAME2.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(07)   VALUE   "KA02SPA".
@@ -64,25 +64,25 @@
       *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
-      *    ���̿���
+      *    画面色等
            COPY    "ENUM-VALUE".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
            COPY    "KA01COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "KA02SCR-SPA".
       *
-      *    ���̥����ΰ裲
+      *    画面スパ領域２
            COPY    "KA02SCR-SPA2".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
       *01  STS-AREA.
       *    03  STS-SPAPRT          PIC X(02).
       *    03  STS-SPASCR          PIC X(02).
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SPASCR          PIC 9(01).
            03  FLG-SPAPRT          PIC 9(01).
@@ -97,7 +97,7 @@
            03  FLG-ERR             PIC 9(01).
            03  FLG-SP              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -126,7 +126,7 @@
            03  IDX-S2              PIC 9(02).
            03  IDX-STR             PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SELNUM              PIC 9(03).
            03  WRK-SELNUM2             PIC 9(03).
@@ -141,10 +141,10 @@
            03  WRK-TENSU-X.
                05  WRK-TENSU       PIC Z(08).
       *
-      *    ���Ź԰�̾��
+      *    診療行為名称
            03  WRK-SRYSYUMEI       PIC X(40).
            03  WRK-MEISYO          PIC X(40).
-      *    ����ɽ����
+      *    数量表示用
            03  WRK-SURYO           PIC 9(05)V9(05).
            03  WRK-SURYO-R         REDEFINES   WRK-SURYO.
                05  WRK-SURYO-S1    PIC 9(05).
@@ -156,7 +156,7 @@
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-SURYO-J         PIC X(22).
-      *    �޲���������Խ���
+      *    剤回数等画面編集用
            03  WRK-KAISU-H         PIC X(08).
            03  WRK-KAISU-J         PIC X(16).
            03  WRK-IDG             PIC 9(04).
@@ -173,10 +173,10 @@
            03  WRK-TBANGO              PIC 9(03).
       *
            03  WRK-MCP-WIDGET          PIC X(68).
-      *    �����ꥹ�Ȱ���
+      *    コラムリスト位置
            03  WRK-KA02-MEILIST-ROW    PIC S9(09).
            03  FLG-GMN-INIT1           PIC  9(01).
-      *    �����Ϳ���ɽ����
+      *    換算値数量表示用
            03  WRK-TSURYO              PIC X(30).
            03  WRK-G-SURYO             PIC X(30).
            03  IDM2                    PIC 9(04).
@@ -186,7 +186,7 @@
            03  WRK-AMARI               PIC 9(04).
            03  WRK-KANZANTANINAME      PIC X(08).
       *
-      *    ����̾ñ��̾��
+      *    商品名単位名称
            03  WRK-SYO-TANINAME        PIC X(12).
       *
        01  WRK-HENSYU-AREA.
@@ -199,21 +199,21 @@
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
       *TEST
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
@@ -221,32 +221,32 @@
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �����Ѵ�����
+      *    全角変換サブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ɽ��̾���Խ��ѥ�᥿�ΰ�
+      *    表示名称編集パラメタ領域
            COPY    "CPORCSMEIHEN.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -270,7 +270,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -282,7 +282,7 @@
            MOVE    SPA-WORK            TO  SPA-KA01KYOUTU
            MOVE    SPA-FREE            TO  SPA-KA02
       *
-      *    ���̣ӣУ��ɤ߹���
+      *    画面ＳＰＡ読み込み
            PERFORM 1002-KA02SPA-SET-SEC
       *
            MOVE    SPACE               TO  SPA-ERRCD
@@ -290,19 +290,19 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN     "PUTG"           ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
-      *    ���̣ӣУ������
+      *    画面ＳＰＡ書込み
            IF      FLG-END2            =   ZERO
                PERFORM 1003-KA02SPA-OUT-SEC
            END-IF
@@ -316,7 +316,7 @@
            .
       *
       *****************************************************************
-      *    �ӣУ��ǡ����ңţ��Ľ���
+      *    ＳＰＡデータＲＥＡＤ処理
       *****************************************************************
        1002-KA02SPA-SET-SEC             SECTION.
       *
@@ -362,7 +362,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ��ǡ����ףңɣԣŽ���
+      *    ＳＰＡデータＷＲＩＴＥ処理
       *****************************************************************
        1003-KA02SPA-OUT-SEC             SECTION.
       *
@@ -405,18 +405,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "KAERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ��������Խ�
+      *        初期画面編集
                PERFORM 300-SCREEN-SEC
-      *        �����Խ�
+      *        画面編集
                IF      FLG-END             =   ZERO
                    PERFORM 500-GMNHEN-SEC
                END-IF
@@ -436,14 +436,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC             SECTION.
       *
-      *    �������̤��
+      *    内部画面より
            EVALUATE    SPA-MOTOPG
                WHEN    "KAID1"
-      *            ��ǧ���̤��
+      *            確認画面より
                    PERFORM 3002-KAID1-SET-SEC
                WHEN    OTHER
                    PERFORM 3001-SPA-SET-SEC
@@ -454,11 +454,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������Խ�����
+      *    初期画面編集処理
       *****************************************************************
        3001-SPA-SET-SEC             SECTION.
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -472,7 +472,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ���Ź԰������Խ�����
+      *     診療行為内容編集処理
       *****************************************************************
        30011-GMNHENSYU-SEC              SECTION.
       *
@@ -492,13 +492,13 @@
                    PERFORM 3101-SPAPARA-HEN-SEC
                END-IF
            END-PERFORM
-      *    ������
+      *    最大件数
            IF      IDG                 >   200
                MOVE    200                 TO  SPA-KA021MEISAI-MAX
            ELSE
                MOVE    IDG                 TO  SPA-KA021MEISAI-MAX
            END-IF
-      *    ���٤ƤιԤ������ǽ�Ȥ���
+      *    すべての行を選択可能とする
            MOVE    ZERO                TO  WRK-TBANGO
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-KA021MEISAI-MAX
@@ -521,18 +521,18 @@
            EXIT.
       *
       *****************************************************************
-      *     ���Ź԰������Խ�����
+      *     診療行為内容編集処理
       *****************************************************************
        3101-SPAPARA-HEN-SEC              SECTION.
       *
            MOVE    ZERO                TO  IDZ
            MOVE    ZERO                TO  WRK-SRYKAISUKEI
       *
-      *    ���⣱����
+      *    剤内１行目
            ADD     1               TO  IDG
            PERFORM 31011-GYO1-HEN-SEC
       *
-      *    �������Խ�
+      *    剤明細編集
            PERFORM VARYING     IDZ     FROM    1   BY  1
                    UNTIL      (IDZ         >   50  )  OR
                               (IDG         >=  200 )  OR
@@ -540,7 +540,7 @@
                ADD     1                   TO  IDX-W
                PERFORM 31012-ZAIMEI-HEN-SEC
            END-PERFORM
-      *    ���ڡ���̵ͭȽ��
+      *    自ページ有無判定
            IF      IDG                 >=  200
                IF      IDX             <   SPA-PARA-MAX
                    MOVE    1               TO  SPA-KA021-NEXT
@@ -559,17 +559,17 @@
                MOVE    1               TO  FLG-HEN-END
            END-IF
       *
-      *    ���������Խ� �ʺǽ��Ԥ��ɲá�
+      *    ＊日数　編集 （最終行に追加）
            PERFORM 31013-KAISU-HEN-SEC
            MOVE    WRK-ZAIKEIJ         TO  SPA-KA021-TZAIKEI (IDG)
            MOVE    1                   TO  SPA-KA021NAI-KAIFLG  (IDG)
       *
            INSPECT SPA-KA021-TZAIKEI (IDG)   REPLACING
-                                               ALL "  "  BY  "��"
+                                               ALL "  "  BY  "　"
       *
            MOVE    IDX                 TO  SPA-KA021NAI-TBANGO    (IDG)
       *
-      *    �޽�λ�Խ�
+      *    剤終了編集
            ADD     1                   TO  IDG
            IF      IDG                 <=  200
                MOVE    ALL "-"             TO  SPA-KA021-TMEISYO (IDG)
@@ -580,11 +580,11 @@
            EXIT.
       *
       *****************************************************************
-      *   ���⣱����  �Խ�����
+      *   剤内１行目  編集処理
       *****************************************************************
        31011-GYO1-HEN-SEC                  SECTION.
       *
-      *    ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *    診療種別区分名称、診療行為区分セット
            SET     MSYU-IDX            TO  1
            SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
                    AT   END
@@ -595,7 +595,7 @@
                                                 TO  WRK-SRYSYUMEI
            END-SEARCH
       *
-      *    ���ż��̤��ʤ��������Ź԰ٶ�ʬ���
+      *    診療種別がない時、診療行為区分より
            IF      SPA-PARA-SRYSYUKBN (IDX)   =   SPACE
                SET     MSYU-IDX            TO  1
                SEARCH      MSYU-TBL-OCC    VARYING   MSYU-IDX
@@ -619,11 +619,11 @@
            END-IF
       *
            INSPECT SPA-KA021-TMEISYO  (IDG)   REPLACING
-                                            ALL "  "  BY  "��"
+                                            ALL "  "  BY  "　"
            INSPECT SPA-KA021-TYOBI0   (IDG)   REPLACING
-                                            ALL "  "  BY  "��"
+                                            ALL "  "  BY  "　"
       *
-      *    �ֹ�
+      *    番号
            MOVE    IDX                  TO  SPA-KA021-TBANGO     (IDG)
            MOVE    IDX                  TO  SPA-KA021NAI-TBANGO  (IDG)
       *
@@ -632,7 +632,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ��������  �Խ�����
+      *   剤内明細  編集処理
       *****************************************************************
        31012-ZAIMEI-HEN-SEC                  SECTION.
       *
@@ -642,7 +642,7 @@
                                        TO  SPA-KA021NAI-TSRYCD (IDG)
            MOVE    IDX-W               TO  SPA-KA021NAI-TWNUM (IDG)
       *
-      *    ���ť����ɤ����Ź԰�̾�Τ����
+      *    診療コードより診療行為名称を取得
            MOVE    SPA-PARA-SRYCD (IDX IDZ)
                                        TO  TNS-SRYCD
            MOVE    SPA-NAI-KOUFUYMD    TO  TNS-YUKOSTYMD
@@ -651,14 +651,14 @@
            IF      FLG-TENSU           =   1
                MOVE    SPA-PARA-SRYCD (IDX IDZ)    TO  TNS-NAME
            END-IF
-      *    �԰�̾��
+      *    行為名称
            MOVE    TNS-NAME            TO  SPA-KA021-TMEISYO2(IDG)
-      *    �������ѥ����Ȥλ������Խ�
+      *    薬剤服用コメントの時、再編集
            IF      SPA-PARA-SRYCD (IDX IDZ)(1:3)  =   "001"
                 PERFORM 3100121-FUKIYO-MEISYO-SEC
                 MOVE    WRK-MEISYO     TO  SPA-KA021-TMEISYO2(IDG)
            END-IF
-      *    ��ȯ�������ѹ����Խ�
+      *    後発医薬品変更再編集
            IF      SPA-PARA-SRYCD (IDX IDZ)    =   "099209903"
                                                OR  "099209905"
                                                OR  "099209906"
@@ -666,7 +666,7 @@
                 MOVE    WRK-MEISYO     TO  SPA-KA021-TMEISYO2(IDG)
            END-IF
       *
-      *    �����Ȥλ�����������
+      *    コメントの時、内容設定
            IF    ((SPA-PARA-SRYCD   (IDX IDZ)(1:1)  =   "8"   ) OR
                   (SPA-PARA-SRYCD   (IDX IDZ)(1:3)  =   "008" ))  AND
                   (SPA-PARA-INPUTCOMENT(IDX IDZ) NOT =  SPACE )
@@ -680,31 +680,31 @@
                                            TO  SPA-KA021-TMEISYO2(IDG)
            END-IF
       *
-      *    ���̳����Խ�
+      *    用量割合再編集
            IF     (SPA-PARA-SRYCD(IDX IDZ)(1:7)  =   "0992000")  AND
                   (SPA-PARA-SRYSURYO(IDX IDZ) NOT =   ZERO     )
                 PERFORM 3005-INPUT-MEISYO3-SEC
                 MOVE    WRK-MEISYO         TO  SPA-KA021-TMEISYO2(IDG)
            END-IF
-      *    ��ྦ��̾�δ�ॳ����
+      *    器材商品名の器材コード
            IF     (SPA-PARA-SRYCD(IDX IDZ)(1:1)   =   "7"  )  AND
                   (SPA-PARA-AUTOKBN (IDX IDZ)     =   "T"  )
                 PERFORM 3005-INPUT-MEISYO4-SEC
                 MOVE    WRK-MEISYO        TO  SPA-KA021-TMEISYO2(IDG)
       *ver.4.7
-      *        ����̾�����ɤ�ñ�̤�
+      *        商品名コードの単位へ
                IF      WRK-SYO-TANINAME    NOT =   SPACE
                    MOVE    WRK-SYO-TANINAME    TO  TNS-TANINAME
                    MOVE    SPACE               TO  WRK-SYO-TANINAME
                END-IF
            END-IF
-      *    ��ྦ��̾������
+      *    器材商品名コード
            IF     (SPA-PARA-SRYCD(IDX IDZ)(1:3)    =   "058"  )
                MOVE    TNS-TANINAME        TO  WRK-SYO-TANINAME
            END-IF
       *ver.4.7
       *
-      *    ���̡����ޡ����ΤȤ���
+      *    数量（薬剤、器材のとき）
            IF     (SPA-PARA-SRYCD (IDX IDZ)(1:1)   =   "6"  OR  "7" )
                OR (SPA-PARA-SRYCD (IDX IDZ)(1:3)   =   "059"  )
                MOVE    SPA-PARA-SRYSURYO (IDX IDZ)  TO  WRK-SURYO
@@ -717,30 +717,30 @@
            IF     (SPA-PARA-SRYCD (IDX IDZ)(1:1)   =   "6")
              AND  (SPA-PARA-INPUTCOMENT (IDX IDZ)
                                                NOT =   SPACE)
-      *        ����̾ɽ��
+      *        一般名表示
                MOVE    SPA-PARA-INPUTCOMENT(IDX IDZ)
                                            TO  SPA-KA021-TMEISYO2(IDG)
            END-IF
       *
-      *    ���������ֳ��������ޥ���Ƚ��
+      *    交付日期間外の点数マスタ判定
            IF     (FLG-TENSU           =   ZERO  )
                CONTINUE
            ELSE
                MOVE    1               TO  SPA-KA021NAI-ERRFLG  (IDG)
            END-IF
       *
-           INSPECT SPA-KA021-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "��"
-           INSPECT SPA-KA021-TSURYOU (IDG) REPLACING  ALL "  "  BY  "��"
-           INSPECT SPA-KA021-TTANMEI (IDG) REPLACING  ALL "  "  BY  "��"
-           INSPECT SPA-KA021-TTANI1  (IDG) REPLACING  ALL "  "  BY  "��"
-           INSPECT SPA-KA021-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "��"
+           INSPECT SPA-KA021-TMEISYO2(IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-KA021-TSURYOU (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-KA021-TTANMEI (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-KA021-TTANI1  (IDG) REPLACING  ALL "  "  BY  "　"
+           INSPECT SPA-KA021-TYOBI1  (IDG) REPLACING  ALL "  "  BY  "　"
       *ver.4.5
-      *    �����Ϳ������ꤢ��
+      *    換算値数量設定あり
            IF      SPA-PARA-KANZANCHI (IDX IDZ)    >  ZERO
                PERFORM 310129-KANSURYO-HEN-SEC
            END-IF
       *
-      *    �����Ȱʳ��κǽ��ԥ��å�
+      *    コメント以外の最終行セット
            IF      SPA-PARA-SRYCD (IDX IDZ)(1:1)   =   "0"  OR  "8"
                CONTINUE
            ELSE
@@ -752,11 +752,11 @@
            EXIT.
       *ver.4.5
       *****************************************************************
-      *   �����Ϳ����Խ�����
+      *   換算値数量編集処理
       *****************************************************************
        310129-KANSURYO-HEN-SEC                  SECTION.
       *
-      *    ���Ԥ��Խ�
+      *    次行へ編集
            ADD     1                   TO  IDG
            MOVE    IDX                 TO  SPA-KA021NAI-TBANGO    (IDG)
       *
@@ -766,14 +766,14 @@
            PERFORM 3101291-KANSURYO-HENKAN-SEC
       *
            INSPECT SPA-KA021-TMEISYO(IDG) REPLACING
-                                               ALL "  "  BY  "��"
+                                               ALL "  "  BY  "　"
       *
            .
        310129-KANSURYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *   �����Ϳ����Խ�����
+      *   換算値数量編集処理
       *****************************************************************
        3101291-KANSURYO-HENKAN-SEC                  SECTION.
       *
@@ -786,7 +786,7 @@
                IF      WRK-SURYO-J(IDM:1)    =   SPACE
                    ADD     1               TO  IDM
                ELSE
-                   IF      WRK-SURYO-J(IDM:2)    =   "��"
+                   IF      WRK-SURYO-J(IDM:2)    =   "　"
                        ADD     2               TO  IDM
                    ELSE
                        MOVE    WRK-SURYO-J(IDM:2)
@@ -800,12 +800,12 @@
            IF      WRK-SURYO           =   ZERO
                MOVE    SPACE               TO  WRK-TSURYO
            END-IF
-      *    ���̴���ñ��̾��
+      *    数量換算単位名称
            MOVE    WRK-KANZANTANINAME  TO  WRK-TSURYO  (IDM2:)
            MOVE    SPACE               TO  WRK-G-SURYO
-           STRING  "��"
+           STRING  "（"
                    WRK-TSURYO
-                   "��"                DELIMITED  BY  SPACE
+                   "）"                DELIMITED  BY  SPACE
                                        INTO    WRK-G-SURYO
            END-STRING
            MOVE    ZERO                TO  IDM2
@@ -826,24 +826,24 @@
        3101291-KANSURYO-HENKAN-EXT.
            EXIT.
       *****************************************************************
-      *     �������ѥ����Ȥλ������Խ�����
+      *     薬剤服用コメントの時、再編集処理
       *****************************************************************
        3100121-FUKIYO-MEISYO-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-MEISYO
       *
-           STRING     "��"             DELIMITED   BY  SIZE
+           STRING     "【"             DELIMITED   BY  SIZE
                       TNS-NAME         DELIMITED   BY  "    "
-                      "��"             DELIMITED   BY  SIZE
+                      "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
-      *    ������ͭ
+      *    埋め込み有
            IF     (SPA-PARA-INPUTCOMENT(IDX IDZ)   NOT =  SPACE )
                MOVE    SPACE               TO  WRK-MEISYO
-               STRING     "��"             DELIMITED   BY  SIZE
+               STRING     "【"             DELIMITED   BY  SIZE
                           SPA-PARA-INPUTCOMENT(IDX IDZ)
                                            DELIMITED   BY  SPACE
-                          "��"             DELIMITED   BY  SIZE
+                          "】"             DELIMITED   BY  SIZE
                           INTO             WRK-MEISYO
                END-STRING
            END-IF
@@ -851,22 +851,22 @@
        3100121-FUKIYO-MEISYO-EXT.
            EXIT.
       *****************************************************************
-      *     ��ȯ�������ѹ����Խ�����
+      *     後発医薬品変更再編集処理
       *****************************************************************
        3100122-KOUHATU-MEISYO-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-MEISYO
       *
-           STRING     "��"             DELIMITED   BY  SIZE
+           STRING     "【"             DELIMITED   BY  SIZE
                       TNS-NAME         DELIMITED   BY  "    "
-                      "��"             DELIMITED   BY  SIZE
+                      "】"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
            .
        3100122-KOUHATU-MEISYO-EXT.
            EXIT.
       *****************************************************************
-      *     ���̳����Խ�����
+      *     用量割合再編集処理
       *****************************************************************
        3005-INPUT-MEISYO3-SEC        SECTION.
       *
@@ -885,15 +885,15 @@
        3005-INPUT-MEISYO3-EXT.
            EXIT.
       *****************************************************************
-      *    ��ྦ��̾�����ɤδ���Խ�
+      *    器材商品名コードの器材編集
       *****************************************************************
        3005-INPUT-MEISYO4-SEC        SECTION.
       *
            MOVE    SPACE               TO  WRK-MEISYO
       *
-           STRING     "��"             DELIMITED   BY  SIZE
+           STRING     "〔"             DELIMITED   BY  SIZE
                       TNS-NAME         DELIMITED   BY  "    "
-                      "��"             DELIMITED   BY  SIZE
+                      "〕"             DELIMITED   BY  SIZE
                       INTO             WRK-MEISYO
            END-STRING
            .
@@ -901,7 +901,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�����Խ�����
+      *    数量表示用編集処理
       *****************************************************************
        310121-SURYO-HEN-SEC            SECTION.
       *
@@ -924,7 +924,7 @@
                MOVE    WRK-SURYO-S1        TO  WRK-SURYO-Z1-9
            END-IF
       *
-      *    ���ܸ��Ѵ�
+      *    日本語変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-SURYO-X         TO  KANACHK-MAE-INPUT
@@ -938,12 +938,12 @@
            EXIT.
       *
       *****************************************************************
-      *   ������̺��Խ�����
+      *   回数画面再編集処理
       *****************************************************************
        31013-KAISU-HEN-SEC                  SECTION.
       *
            MOVE    SPA-PARA-ZAIKAIKEI (IDX)    TO  WRK-SRYKAISUKEI
-      *    ���
+      *    回数
            MOVE    WRK-SRYKAISUKEI     TO  WRK-KAISU
            MOVE    ZERO                TO  IDK2
            MOVE    SPACE               TO  WRK-KAISU-H 
@@ -957,7 +957,7 @@
                END-IF
            END-PERFORM
       *
-      *    ���ܸ��Ѵ�
+      *    日本語変換
            INITIALIZE                  ORCSKANACHKAREA
            MOVE    "2"                 TO  KANACHK-SYORI
            MOVE    WRK-KAISU-H         TO  KANACHK-MAE-INPUT
@@ -968,7 +968,7 @@
                                            TO  WRK-KAISU-J
       *
            MOVE    SPACE               TO  WRK-ZAIKEIJ
-           STRING  "��"                    DELIMITED   BY  SIZE
+           STRING  "×"                    DELIMITED   BY  SIZE
                    WRK-KAISU-J             DELIMITED   BY  SPACE
                    INTO                    WRK-ZAIKEIJ
            END-STRING
@@ -978,19 +978,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣأģɣģ��ˣϣ˽���
+      *    確認画面（ＸＤＩＤ１）ＯＫ処理
       *****************************************************************
        3002-KAID1-SET-SEC          SECTION.
       *
            EVALUATE    SPA-KAID1CD
-      *        �������
+      *        削除処理
                WHEN    "0101"
                    IF      SPA-KAID1-FLG        =   "OK"
                        PERFORM 4091-DELETE-SYORI-SEC
                    ELSE
                        MOVE    1               TO  SPA-KA021-CUR
                    END-IF
-      *        ���������
+      *        一括削除処理
                WHEN    "0102"
                    IF      SPA-KAID1-FLG        =   "OK"
                        PERFORM 4111-ALLDELETE-SYORI-SEC
@@ -1004,7 +1004,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣˣ��ɣģ��ˣϣ˽���
+      *    確認画面（ＫＡＩＤ２）ＯＫ処理
       *****************************************************************
        3003-KAID2-SET-SEC          SECTION.
       *
@@ -1013,27 +1013,27 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        ���
+      *        戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *        ���ꥢ
+      *        クリア
                WHEN    "CLICKED"       ALSO    "B02"
                     PERFORM 402-CLREA-SEC
-      *        �������
+      *        削除処理
                WHEN    "CLICKED"       ALSO    "B04"
                     PERFORM 409-DELETE-SEC
-      *        ���������
+      *        一括削除処理
                WHEN    "CLICKED"       ALSO    "B11"
                     PERFORM 411-ALLDELETE-SEC
-      *        ����
+      *        前頁
                WHEN    "CLICKED"       ALSO    "B06"
                    PERFORM 406-MAE-PAGE-SEC
-      *        ����
+      *        次頁
                WHEN    "CLICKED"       ALSO    "B07"
                    PERFORM 407-NEXT-PAGE-SEC
            END-EVALUATE
@@ -1042,7 +1042,7 @@
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -1050,10 +1050,10 @@
            MOVE    ZERO                TO  SPA-KA021-CUR
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        �����ֹ�
+      *        選択番号
                WHEN    "ACTIVATE"      ALSO    "SELNUM"
                    PERFORM 4001-SELNUM-CHK-SEC
-      *        ����
+      *        選択
                WHEN    ANY             ALSO    "MEILIST"
                    PERFORM 4005-MEILIST-SEL-SEC
            END-EVALUATE
@@ -1064,7 +1064,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ棱�����å�����
+      *    選択番号１チェック処理
       *****************************************************************
        4001-SELNUM-CHK-SEC          SECTION.
       *
@@ -1094,7 +1094,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���٥ꥹ���������
+      *    明細リスト選択処理
       *****************************************************************
        4005-MEILIST-SEL-SEC          SECTION.
       *
@@ -1130,13 +1130,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC          SECTION.
       *
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
-      *    ���ܥ����å����̲��̽���
+      *    基本チェックと別画面処理
            PERFORM 4102-KIHON-CHK-SEC
       *
            .
@@ -1144,7 +1144,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̣ӣУ��Խ�����
+      *    画面ＳＰＡ編集処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC          SECTION.
            .
@@ -1152,7 +1152,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC          SECTION.
       *
@@ -1161,7 +1161,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
       *
@@ -1180,7 +1180,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ꥢ����
+      *    クリア処理
       *****************************************************************
        402-CLREA-SEC       SECTION.
       *
@@ -1191,7 +1191,7 @@
        402-CLREA-EXT.
            EXIT.
       *****************************************************************
-      *    ���ǽ���
+      *    前頁処理
       *****************************************************************
        406-MAE-PAGE-SEC       SECTION.
       *
@@ -1209,7 +1209,7 @@
        406-MAE-PAGE-EXT.
            EXIT.
       *****************************************************************
-      *    ���ǽ���
+      *    次頁処理
       *****************************************************************
        407-NEXT-PAGE-SEC       SECTION.
       *
@@ -1224,7 +1224,7 @@
        407-NEXT-PAGE-EXT.
            EXIT.
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        409-DELETE-SEC       SECTION.
       *
@@ -1240,7 +1240,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �޺������
+      *    剤削除処理
       *****************************************************************
        4091-DELETE-SYORI-SEC             SECTION.
       *
@@ -1258,7 +1258,7 @@
                MOVE    SPACE               TO  SPA-PARA-ZAI-REC (IDX-W)
                INITIALIZE                      SPA-PARA-ZAI-REC (IDX-W)
       *
-      *        ���
+      *        削除
                COMPUTE SPA-PARA-MAX        =   SPA-PARA-MAX   -   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >=  100
@@ -1277,13 +1277,13 @@
                INITIALIZE                  SPA-PARA-WKSRY-TBL
            END-IF
       *
-      *    ���ɽ��
+      *    初期表示
            PERFORM 3001-SPA-SET-SEC
            .
        4091-DELETE-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���������
+      *    一括削除処理
       *****************************************************************
        411-ALLDELETE-SEC       SECTION.
       *
@@ -1294,13 +1294,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    一括削除処理
       *****************************************************************
        4111-ALLDELETE-SYORI-SEC             SECTION.
       *
            INITIALIZE                  SPA-KA02-DATA
            INITIALIZE                  SPA-PARA-WKSRY-TBL
-      *    ���ɽ��
+      *    初期表示
            PERFORM 3001-SPA-SET-SEC
       *
            .
@@ -1308,7 +1308,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    西暦和暦編集処理
       *****************************************************************
        800-SEIWA-HEN-SEC             SECTION.
       *
@@ -1332,7 +1332,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -1357,7 +1357,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC                  SECTION.
       *
@@ -1368,24 +1368,24 @@
            END-IF
       *
            MOVE    SPACE               TO  KA021
-      *    �����ꥹ�Ȥΰ��ֻ���
+      *    コラムリストの位置指定
            INITIALIZE                      KA021
            MOVE    ZERO                TO  KA021-MEILIST-ROW
            IF      WRK-KA02-MEILIST-ROW NOT =   ZERO
                MOVE    WRK-KA02-MEILIST-ROW TO  KA021-MEILIST-ROW
            END-IF
-      *    ������
-           STRING  "�ڸ�������"
+      *    交付日
+           STRING  "【交付日："
                    SPA-GMN-KOUFUYMD
-                   " ��"               DELIMITED  BY  SIZE
+                   " 】"               DELIMITED  BY  SIZE
                                        INTO  KA021-PRTYMD
            END-STRING
-      *    ����¼�
-           STRING  "�����"
+      *    病棟・病室
+           STRING  "【病棟："
                    SPA-NAI-BTUNAME     DELIMITED  BY  SPACE
-                   "��"                DELIMITED  BY  SIZE
+                   "　"                DELIMITED  BY  SIZE
                    SPA-NAI-ROOMNO      DELIMITED  BY  SIZE
-                   " ��"               DELIMITED  BY  SIZE
+                   " 】"               DELIMITED  BY  SIZE
                                        INTO  KA021-BTUNAME
            END-STRING
       *
@@ -1394,7 +1394,7 @@
                IF      SPA-KA021-TMEISYO(IDX)(1:1)   =   "-"
                    MOVE    ALL "-"             TO  KA021-MNUM  (IDX)
                    MOVE    ALL "-"             TO  KA021-MKBN  (IDX)
-                   MOVE    ALL "��"            TO  KA021-MEISAI(IDX)
+                   MOVE    ALL "−"            TO  KA021-MEISAI(IDX)
                ELSE
                    IF      SPA-KA021-TBANGO (IDX)    NOT =   ZERO
                        MOVE    SPA-KA021-TBANGO (IDX)    TO  WRK-ZZ
@@ -1402,9 +1402,9 @@
                    ELSE
                        MOVE    SPACE               TO  KA021-MNUM (IDX)
                    END-IF
-      *            ���ֳ�
+      *            期間外
                    IF     (SPA-KA021NAI-ERRFLG(IDX) =   1     )
-                       MOVE    "��"            TO  KA021-MKBN (IDX)
+                       MOVE    "外"            TO  KA021-MKBN (IDX)
                    END-IF
                    MOVE    SPA-KA021-TMEISYO(IDX)
                                            TO  KA021-MEISAI (IDX)
@@ -1423,19 +1423,19 @@
       *
            IF      SPA-KA021-NEXT      =   1
                IF      SPA-KA021-PAGE      >   1
-                   MOVE    "�������Ǥ���"      TO  KA021-NEXT-VALUE
+                   MOVE    "前・次頁あり"      TO  KA021-NEXT-VALUE
                    MOVE    "red"               TO  KA021-NEXT-STYLE
                ELSE
-                   MOVE    "���Ǥ���"          TO  KA021-NEXT-VALUE
+                   MOVE    "次頁あり"          TO  KA021-NEXT-VALUE
                    MOVE    "red"               TO  KA021-NEXT-STYLE
                END-IF
            ELSE
                IF      SPA-KA021-PAGE      >   1
-                   MOVE    "���Ǥ���"      TO  KA021-NEXT-VALUE
+                   MOVE    "前頁あり"      TO  KA021-NEXT-VALUE
                    MOVE    "red"           TO  KA021-NEXT-STYLE
                END-IF
            END-IF
-      *    ���������
+      *    非活性処理
            PERFORM 510-GSRAUTH-SEC
       *
            PERFORM 5001-MAPCUR-SEC
@@ -1443,7 +1443,7 @@
        500-GMNHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���������
+      *    非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -1452,7 +1452,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���
+      *    画面カーソルセット処理
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -1474,7 +1474,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
@@ -1482,10 +1482,10 @@
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "����ֹ����ϥ��顼"
+                   MOVE    "削除番号入力エラー"
                                        TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "����ֹ�����򤷤Ʋ�������"
+                   MOVE    "削除番号を選択して下さい。"
                                        TO  SPA-ERRMSG
                WHEN    OTHER
                    MOVE    SPA-ERRCD   TO  SPA-ERRMSG
@@ -1512,7 +1512,7 @@
       *
       *
       *****************************************************************
-      *    ��ǧ��å�����ɽ����
+      *    確認メッセージ表示理
       *****************************************************************
        520-KA02IDSET-SEC              SECTION.
       *
@@ -1520,14 +1520,14 @@
            INITIALIZE                      KAID1
            EVALUATE    SPA-KAID1CD
                WHEN    "0101"
-                   STRING  "���򤷤��ޤ������ޤ���"
-                           "��������Ǥ�����"
+                   STRING  "選択した剤を削除します。"
+                           "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   KAID1-ID1MSG
                    END-STRING
                WHEN    "0102"
-                   STRING  "�������Ƥ򤹤٤ƺ�����ޤ���"
-                           "��������Ǥ�����"
+                   STRING  "選択内容をすべて削除します。"
+                           "よろしいですか？"
                                            DELIMITED  BY  SIZE
                                        INTO   KAID1-ID1MSG
                    END-STRING
@@ -1557,7 +1557,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1591,7 +1591,7 @@
       *
       *TEST
       *****************************************************************
-      *    �����¸�ơ��֥��ɤ߹���
+      *    一時保存テーブル読み込み
       *****************************************************************
        990-SPATMP-READ-SEC        SECTION.
       *
@@ -1609,7 +1609,7 @@
        990-SPATMP-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-SPATMP-DBSELECT-SEC                SECTION.
       *
@@ -1623,7 +1623,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-SPATMP-DBCLOSE-SEC         SECTION.
       *
@@ -1634,7 +1634,7 @@
        990-SPATMP-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        910-SPATMP-CALL-SEC                SECTION.
       *
@@ -1650,7 +1650,7 @@
       *TEST
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1663,7 +1663,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1678,7 +1678,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -1692,7 +1692,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

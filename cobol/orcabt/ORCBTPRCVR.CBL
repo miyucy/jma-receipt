@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBTPRCVR.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ²þÄê½èÍý
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ÅÀ¿ôÉÕ²Ã¾ðÊó°ú¤­·Ñ¤®Ï³¤ì°ì³çºîÀ®
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  14/04/05    NACL¡Ý°ËÆ£  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ”¹å®šå‡¦ç†
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ç‚¹æ•°ä»˜åŠ æƒ…å ±å¼•ãç¶™ãŽæ¼ã‚Œä¸€æ‹¬ä½œæˆ
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  14/04/05    NACLâˆ’ä¼Šè—¤  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,49 +34,49 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ³ÎÇ§°ìÍ÷¡Ê½Ä¡Ë
+      *    ç¢ºèªä¸€è¦§ï¼ˆç¸¦ï¼‰
       **** COPY    "HCMSL80.INC".
-      *    ¥¨¥é¡¼°ìÍ÷¡Ê²£¡Ë
+      *    ã‚¨ãƒ©ãƒ¼ä¸€è¦§ï¼ˆæ¨ªï¼‰
       **** COPY    "HCMSL55.INC".
-      *    Ä¢É¼
+      *    å¸³ç¥¨
            COPY    "HCPOM2.INC".
       *
            COPY    "CPRECEERR.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
        01  STS-AREA.
            03  STS-RECEERR             PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-TENSU               PIC 9(01).
            03  FLG-TENSUPLUS           PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-PAGE1               PIC 9(05).
            03  CNT-OK                  PIC 9(05).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDX-P                   PIC 9(04).
       *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ é ˜åŸŸ
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
@@ -87,7 +87,7 @@
                05  SYS-TMM             PIC 9(02).
                05  SYS-TSS             PIC 9(02).
       *
-      *    ¥Ñ¥é¥á¥¿ÎÎ°è
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -95,7 +95,7 @@
            03  WRK-PARA-HOSPNUM        PIC X(02).
            03  WRK-PARA-SRYYMD         PIC X(08).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -112,16 +112,16 @@
            03  WRK-STR-SRYYMD          PIC X(08).
            03  WRK-HEN-MAX             PIC 9(04).
       *
-      *    ¥ê¥¹¥ÈÎÎ°è
+      *    ãƒªã‚¹ãƒˆé ˜åŸŸ
        01  LST-PRT-AREA.
            03  LST-PRT-HEAD1N.
                05  FILLER              PIC X(05)   VALUE   SPACE.
                05  FILLER              PIC X(24)   VALUE   
-                   "¡ô¡¡ÅÀ¿ôÉÕ²Ã°ú·Ñ¤®ºîÀ®¡¡".
+                   "ï¼ƒã€€ç‚¹æ•°ä»˜åŠ å¼•ç¶™ãŽä½œæˆã€€".
                05  PRT-TAITOL          PIC X(20).
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  FILLER              PIC X(08)   VALUE
-                   "³«»ÏÆü¡§".
+                   "é–‹å§‹æ—¥ï¼š".
                05  PRT-SRYYMD          PIC X(22).
            03  LST-PRT-HEAD1.
                05  FILLER              PIC X(82)   VALUE   SPACE.
@@ -130,20 +130,20 @@
                05  PRT-PAGE            PIC ZZ9.
            03  LST-PRT-HEAD3.
                05  FILLER              PIC X(12)   VALUE
-                   "¥³¡¼¥É".
+                   "ã‚³ãƒ¼ãƒ‰".
                05  FILLER              PIC X(12)   VALUE
-                   "Í­¸ú³«»ÏÆü".
+                   "æœ‰åŠ¹é–‹å§‹æ—¥".
                05  FILLER              PIC X(06)   VALUE   SPACE.
                05  FILLER              PIC X(46)   VALUE
-                   "Ì¾¾Î".
+                   "åç§°".
       *
            03  LST-PRT-TAIL1.
                05  FILLER              PIC X(20)   VALUE   SPACE.
                05  FILLER              PIC X(12)   VALUE
-                   "¹¹¿··ï¿ô¡§".
+                   "æ›´æ–°ä»¶æ•°ï¼š".
                05  PRT-UPDCNT          PIC ZZ,ZZ9.
                05  FILLER              PIC X(04)   VALUE
-                   "¡¡·ï".
+                   "ã€€ä»¶".
       *
        01  LST-PRT-BODY.
            03  PRT-SRYCD               PIC X(09).
@@ -156,11 +156,11 @@
       *
        01  LINE-MAX                    PIC 9(03)   VALUE   69.
       *
-      *    ÆâÍÆ
+      *    å†…å®¹
        01  WRK-PRTHEN-AREA.
-      *    È¾³Ñ
+      *    åŠè§’
            03  WRK-TBL-REC             PIC X(90)   OCCURS   800.
-      *    Á´³Ñ
+      *    å…¨è§’
            03  WRK-TBL-REC2            PIC X(108)  OCCURS   800.
       *
        01  WRK-HEN-AREA.
@@ -180,69 +180,69 @@
                05  FILLER          PIC X(01)   VALUE   ")".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¥³¡¼¥É
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ ã‚³ãƒ¼ãƒ‰
        01  TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¥³¡¼¥É¥ï¡¼¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ ã‚³ãƒ¼ãƒ‰ãƒ¯ãƒ¼ã‚¯
        01  HZN-TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC"    REPLACING
                                        //TNSP-// BY //HZN-TNSP-//.
-      *    ÅÀ¿ô¥Þ¥¹¥¿
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿
            COPY    "CPTENSU.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    °õºþ´ÉÍý
+      *    å°åˆ·ç®¡ç†
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    °õºþÍÑ¥Ç¡¼¥¿
+      *    å°åˆ·ç”¨ãƒ‡ãƒ¼ã‚¿
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSFDEL.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °õºþ£Ä£Â¹¹¿·¥µ¥Ö
+      *    å°åˆ·ï¼¤ï¼¢æ›´æ–°ã‚µãƒ–
            COPY    "CPORCSPRT.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ¥ª¥ó¥é¥¤¥óÄ¢É¼Ì¾¡¦½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾¼èÆÀ¥Ñ¥é
+      *    ã‚ªãƒ³ãƒ©ã‚¤ãƒ³å¸³ç¥¨åãƒ»å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿åå–å¾—ãƒ‘ãƒ©
            COPY    "CPORCSPRTNM.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -256,7 +256,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -270,7 +270,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -306,7 +306,7 @@
                                        WRK-PARA-SRYYMD
            END-UNSTRING
       *
-      *    £Ó£Ð£ÁÀßÄê
+      *    ï¼³ï¼°ï¼¡è¨­å®š
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
            INITIALIZE  SGETTEMP-AREA
@@ -317,31 +317,31 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    "ORCBTPRCVR"        TO  JOB-PGID
-           MOVE    "ÅÀ¿ôÉÕ²Ã°ú¤­·Ñ¤®"  TO  JOB-SHELLMSG
+           MOVE    "ç‚¹æ•°ä»˜åŠ å¼•ãç¶™ãŽ"  TO  JOB-SHELLMSG
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
                                            JOBKANRI-REC
                                            SPA-AREA
       *
-      *    ½é´üÃÍ¥»¥Ã¥È
+      *    åˆæœŸå€¤ã‚»ãƒƒãƒˆ
            PERFORM 110-SYOKI-SET-SEC
            .
        100-INIT-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ½é´üÃÍ¥»¥Ã¥È
+      *    åˆæœŸå€¤ã‚»ãƒƒãƒˆ
       *****************************************************************
        110-SYOKI-SET-SEC           SECTION.
       *
-      *    ¥·¥¹¥Æ¥àÆüÉÕ¥»¥Ã¥È
+      *    ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜ã‚»ãƒƒãƒˆ
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYSYMD
            INITIALIZE                  STS-AREA-DAY
@@ -356,19 +356,19 @@
                MOVE    WRK-SYSYMD          TO  SPA-SYSYMD
            END-IF
       *
-      *    ½èÍýÆü
+      *    å‡¦ç†æ—¥
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  PRT-SYSYMD
       *
-      *    ½èÍý»þ´Ö
+      *    å‡¦ç†æ™‚é–“
            ACCEPT  SYS-TIME            FROM    TIME
            MOVE    SYS-THH             TO  WRK-THH
            MOVE    SYS-TMM             TO  WRK-TMM
       ***  MOVE    WRK-HENTIME         TO  PRT-TIME
       *
-      *£Ó£Ð£ÁÀßÄê
-      *    ²þÀµÆü
+      *ï¼³ï¼°ï¼¡è¨­å®š
+      *    æ”¹æ­£æ—¥
            IF      WRK-PARA-SRYYMD     =   SPACE
               MOVE    "20140401"           TO  WRK-PARA-SRYYMD
            END-IF
@@ -378,7 +378,7 @@
            MOVE    WRK-PARA-SRYYMD     TO  SPA-SRYYMD
            MOVE    WRK-PARA-SRYYMD     TO  WRK-STR-SRYYMD
       *
-      *    ¿ÇÎÅÆü
+      *    è¨ºç™‚æ—¥
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    "21"                TO  LNK-DAY2-IRAI
@@ -388,7 +388,7 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  PRT-SRYYMD
       *
-      *    ¿ÇÎÅÆü¤ÎÁ°Æü
+      *    è¨ºç™‚æ—¥ã®å‰æ—¥
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                      LNK-DAY6-AREA
            MOVE    "61"                TO  LNK-DAY6-IRAI
@@ -401,18 +401,18 @@
            IF      STS-DAY-RC1         =   ZERO
                MOVE    LNK-DAY6-KEISAN     TO  WRK-MAE-SRYYMD
            ELSE
-               MOVE    "³«»ÏÆü¤ÎÁ°Æü¤¬¥¨¥é¡¼¤Ç¤¹¡£½èÍý¤Ç¤­¤Þ¤»¤ó¡£"
+               MOVE    "é–‹å§‹æ—¥ã®å‰æ—¥ãŒã‚¨ãƒ©ãƒ¼ã§ã™ã€‚å‡¦ç†ã§ãã¾ã›ã‚“ã€‚"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO      TO      110-SYOKI-SET-EXT
            END-IF
       *
            MOVE    ALL "*"             TO  SPA-TERMID
-      *    ¥ª¥Ú¥ì¡¼¥¿£É£Ä
+      *    ã‚ªãƒšãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            MOVE    LNK-PRTKANRI-OPID   TO  SPA-OPID
            INSPECT SPA-OPID            REPLACING  ALL " "  BY  "*"
       *
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -421,17 +421,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    ½èÍý³µÍ×
-      *    ²þÀµÆü¤ÎÁ°Æü¤¬´ü¸Â¤ÎÅÀ¿ôÉÕ²Ã¤ò¼èÆÀ¡Ê½ªÎ»Æü¤¬Á°Æü¡Ë
-      *    ¤½¤Î¿ÇÎÅ¥³¡¼¥É¤«¤é²þÀµÆü¤ËÍ­¸ú¤ÊÅÀ¿ôÉÕ²Ã¤ÎÍ­Ìµ¤ò³ÎÇ§
-      *    Ìµ¤¤¾ì¹ç
-      *    ¤½¤Î¿ÇÎÅ¥³¡¼¥É¤«¤é²þÀµÆü¤ËÍ­¸ú¤ÊÅÀ¿ô¤ÎÍ­Ìµ¤ò³ÎÇ§
-      *    ¡Ê³«»ÏÆü¤¬²þÀµÆü¤Ç¤¢¤ë¤³¤È¡Ë
-      *    ÅÀ¿ô¥Þ¥¹¥¿¤ÎÍ­¸ú´ü´Ö¤ÇÅÀ¿ôÉÕ²Ã¤òºîÀ®
+      *    å‡¦ç†æ¦‚è¦
+      *    æ”¹æ­£æ—¥ã®å‰æ—¥ãŒæœŸé™ã®ç‚¹æ•°ä»˜åŠ ã‚’å–å¾—ï¼ˆçµ‚äº†æ—¥ãŒå‰æ—¥ï¼‰
+      *    ãã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰ã‹ã‚‰æ”¹æ­£æ—¥ã«æœ‰åŠ¹ãªç‚¹æ•°ä»˜åŠ ã®æœ‰ç„¡ã‚’ç¢ºèª
+      *    ç„¡ã„å ´åˆ
+      *    ãã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰ã‹ã‚‰æ”¹æ­£æ—¥ã«æœ‰åŠ¹ãªç‚¹æ•°ã®æœ‰ç„¡ã‚’ç¢ºèª
+      *    ï¼ˆé–‹å§‹æ—¥ãŒæ”¹æ­£æ—¥ã§ã‚ã‚‹ã“ã¨ï¼‰
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ã®æœ‰åŠ¹æœŸé–“ã§ç‚¹æ•°ä»˜åŠ ã‚’ä½œæˆ
       *
            INITIALIZE  TENSUPLUS-REC
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
@@ -449,7 +449,7 @@
            END-IF
       *
            PERFORM UNTIL    (FLG-TENSUPLUS =   1)
-      *        ²þÀµÆü¤ÎÁ°Æü¤¬½ªÎ»Æü¤Î¥ì¥³¡¼¥É
+      *        æ”¹æ­£æ—¥ã®å‰æ—¥ãŒçµ‚äº†æ—¥ã®ãƒ¬ã‚³ãƒ¼ãƒ‰
                IF      TNSP-YUKOEDYMD      =   WRK-MAE-SRYYMD
                    MOVE    TENSUPLUS-REC       TO  HZN-TENSUPLUS-REC
                    PERFORM 2001-TENSUPLUS-CHECK-SEC
@@ -471,11 +471,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ôÉÕ²Ã¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ç‚¹æ•°ä»˜åŠ ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        2001-TENSUPLUS-CHECK-SEC    SECTION.
       *
-      *    ²þÀµÆü¤ËÍ­¸ú¤Ê¥ì¥³¡¼¥É¤ÎÂ¸ºß¤ò³ÎÇ§
+      *    æ”¹æ­£æ—¥ã«æœ‰åŠ¹ãªãƒ¬ã‚³ãƒ¼ãƒ‰ã®å­˜åœ¨ã‚’ç¢ºèª
            MOVE    WRK-STR-SRYYMD      TO  TNSP-YUKOSTYMD
            MOVE    WRK-STR-SRYYMD      TO  TNSP-YUKOEDYMD
       *
@@ -506,11 +506,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        20011-TENSU-CHECK-SEC       SECTION.
       *
-      *    ²þÀµÆü¤ËÍ­¸ú¤Ê¥ì¥³¡¼¥É¤ÎÂ¸ºß¤ò³ÎÇ§
+      *    æ”¹æ­£æ—¥ã«æœ‰åŠ¹ãªãƒ¬ã‚³ãƒ¼ãƒ‰ã®å­˜åœ¨ã‚’ç¢ºèª
            INITIALIZE  TNS-TENSU-REC
            MOVE    HZN-TNSP-HOSPNUM    TO  TNS-HOSPNUM
            MOVE    HZN-TNSP-SRYCD      TO  TNS-SRYCD
@@ -544,7 +544,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ôÉÕ²Ã°ú¤­·Ñ¤®ºîÀ®½èÍý
+      *    ç‚¹æ•°ä»˜åŠ å¼•ãç¶™ãŽä½œæˆå‡¦ç†
       *****************************************************************
        20012-TENSUPLUS-COPY-SEC    SECTION.
       *
@@ -567,8 +567,8 @@
                DISPLAY "ORCBTPRCVR TENSUPLUS INS ERR:" MCP-RC
                            ",KEY:" TNSP-KEY
                MOVE    SPACE               TO  WRK-RECEERR
-               STRING  "ÅÀ¿ôÉÕ²ÃÄÉ²Ã¤Ç¥¨¥é¡¼¤È¤Ê¤ê¤Þ¤·¤¿¡£"
-                       "½èÍý¤ò½ªÎ»¤·¤Þ¤¹¡£"
+               STRING  "ç‚¹æ•°ä»˜åŠ è¿½åŠ ã§ã‚¨ãƒ©ãƒ¼ã¨ãªã‚Šã¾ã—ãŸã€‚"
+                       "å‡¦ç†ã‚’çµ‚äº†ã—ã¾ã™ã€‚"
                                    DELIMITED  BY  SIZE
                                    INTO  WRK-RECEERR
                END-STRING
@@ -584,31 +584,31 @@
            EXIT.
       *
       *****************************************************************
-      *    ½èÍý·ï¿ôÊÔ½¸°õºþ½èÍý
+      *    å‡¦ç†ä»¶æ•°ç·¨é›†å°åˆ·å‡¦ç†
       *****************************************************************
        2903-END-HENSYU-SEC         SECTION.
       *
            IF      IDX-P               =   ZERO
                PERFORM 7001-PRT-INIT-SEC
            END-IF
-      *    ³ÎÇ§·ï¿ô
+      *    ç¢ºèªä»¶æ•°
            ADD     3                   TO  IDX-P
            IF      IDX-P               >   LINE-MAX
-      *        °õºþ½èÍý
+      *        å°åˆ·å‡¦ç†
                PERFORM 400-HCPOM2-PRINT-SEC
                MOVE    1               TO  IDX-P
            END-IF
       *
            MOVE    CNT-OK              TO  PRT-UPDCNT
            MOVE    LST-PRT-TAIL1       TO   HCPOM2-MOJI (IDX-P)
-      *    °õºþ½èÍý
+      *    å°åˆ·å‡¦ç†
            PERFORM 400-HCPOM2-PRINT-SEC
            .
        2903-END-HENSYU-EXIT.
            EXIT.
       *
       *****************************************************************
-      *    ÅÐÏ¿³ÎÇ§¥á¥Ã¥»¡¼¥¸½èÍý
+      *    ç™»éŒ²ç¢ºèªãƒ¡ãƒƒã‚»ãƒ¼ã‚¸å‡¦ç†
       *****************************************************************
        700-PTNUM-PRINT-SEC         SECTION.
       *
@@ -622,7 +622,7 @@
            INITIALIZE  LST-PRT-BODYN
       *
            MOVE    HZN-TNSP-SRYCD      TO  PRT-SRYCD
-      *    ³«»ÏÆü
+      *    é–‹å§‹æ—¥
            MOVE    HZN-TNSP-YUKOSTYMD  TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  PRT-EDYMD
@@ -631,13 +631,13 @@
            ADD     1                   TO  WRK-HEN-MAX
            MOVE    LST-PRT-BODY        TO  WRK-TBL-REC  (WRK-HEN-MAX)
            MOVE    LST-PRT-BODYN       TO  WRK-TBL-REC2 (WRK-HEN-MAX)
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   WRK-HEN-MAX
                IF      IDX-P               >=  LINE-MAX
-      *            °õºþ½èÍý
+      *            å°åˆ·å‡¦ç†
                    PERFORM 400-HCPOM2-PRINT-SEC
-      *            ¸«½Ð¤·ÊÔ½¸
+      *            è¦‹å‡ºã—ç·¨é›†
                    PERFORM 7001-PRT-INIT-SEC
                END-IF
                ADD     1                   TO  IDX-P
@@ -652,13 +652,13 @@
            EXIT.
       *
       *****************************************************************
-      *    °õºþ½é´ü½èÍý
+      *    å°åˆ·åˆæœŸå‡¦ç†
       *****************************************************************
        7001-PRT-INIT-SEC           SECTION.
       *
            MOVE    ZERO                TO  IDX-P
            MOVE    SPACE               TO  HCPOM2
-      *    ¸«½Ð¤·ÊÔ½¸
+      *    è¦‹å‡ºã—ç·¨é›†
            ADD     1                   TO  CNT-PAGE1
            MOVE    CNT-PAGE1           TO  PRT-PAGE
            MOVE    LST-PRT-HEAD1N      TO  HCPOM2-MOJI (1)
@@ -670,7 +670,7 @@
            EXIT.
       *
       *****************************************************************
-      *    °õºþ½èÍý
+      *    å°åˆ·å‡¦ç†
       *****************************************************************
        400-HCPOM2-PRINT-SEC        SECTION.
       *
@@ -690,7 +690,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCPOM2.red"        TO  SPRT-PRTID
-           MOVE    "²þÀµÅÀ¿ôÉÕ²Ã°ú¤­·Ñ¤®ºîÀ®³ÎÇ§¥ê¥¹¥È"
+           MOVE    "æ”¹æ­£ç‚¹æ•°ä»˜åŠ å¼•ãç¶™ãŽä½œæˆç¢ºèªãƒªã‚¹ãƒˆ"
                                        TO  SPRT-TITLE
            MOVE    HCPOM2              TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -703,7 +703,7 @@
            IF      SPRT-RETURN         =   ZERO
                CONTINUE
            ELSE
-               MOVE    "°õºþ£Ä£Â¤Ë¹¹¿·¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å°åˆ·ï¼¤ï¼¢ã«æ›´æ–°ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -712,7 +712,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -721,7 +721,7 @@
            DISPLAY "*** ORCBTPRCVR OK :"  CNT-OK   " ***"
            DISPLAY "*** ORCBTPRCVR END ***"
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
            MOVE    "STE"               TO  SJOBKANRI-MODE
            INITIALIZE  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
@@ -739,7 +739,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -753,7 +753,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"               TO  SJOBKANRI-MODE
                INITIALIZE  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
@@ -773,7 +773,7 @@
            EXIT.
       *
       *****************************************************************
-      *    À¾ÎñÏÂÎñÊÔ½¸½èÍý
+      *    è¥¿æš¦å’Œæš¦ç·¨é›†å‡¦ç†
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -798,7 +798,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÉÕ²Ã¾ðÊóÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ä»˜åŠ æƒ…å ±èª­è¾¼
       *****************************************************************
        910-TENSUPLUS-READ-SEC      SECTION.
       *
@@ -815,7 +815,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -832,7 +832,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -846,7 +846,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -860,7 +860,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -874,20 +874,20 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¹¹¿·½èÍý
+      *    ï¼¤ï¼¢ã€€æ›´æ–°å‡¦ç†
       *****************************************************************
        990-DBCOMMIT-SEC                SECTION.
       *
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
            PERFORM 900-DBDISCONNECT-SEC
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
            PERFORM 100-DBOPEN-SEC
            .
        990-DBCOMMIT-SEC-EXT.
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -911,7 +911,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

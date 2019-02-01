@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSCNYUHEN.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¿ÇÎÅ¹Ô°ÙÆþÎÏ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡ÍúÎò¾ðÊóÊÔ½¸½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  08/11/06    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : è¨ºç™‚è¡Œç‚ºå…¥åŠ›
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢å±¥æ­´æƒ…å ±ç·¨é›†å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  08/11/06    NACLâˆ’å¤šã€…ç´  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/10/26  Â¾±¡Âà±¡ÆüÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  11/10/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.05.00    NACL-å¤šã€…ç´  09/10/26  ä»–é™¢é€€é™¢æ—¥å¯¾å¿œ
+      *  04.07.00    NACL-å¤šã€…ç´  11/10/XX  åŒæ—¥å†å…¥é™¢å¯¾å¿œ
       *****************************************************************
       *
       *
@@ -43,7 +43,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PTNYUINRRK      PIC 9(01).
@@ -51,12 +51,12 @@
            03  FLG-SYORI-END       PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX-D2              PIC 9(02).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SRYYMD.
                05  WRK-SRYYM           PIC X(06).
@@ -90,22 +90,22 @@
                05  WRK-HDD         PIC 9(02).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -113,13 +113,13 @@
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    ¿ÇÎÅ¹Ô°ÙÆþ±¡¹¹¿·¥Ñ¥é¥á¥¿ÎÎ°è
+      *    è¨ºç™‚è¡Œç‚ºå…¥é™¢æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
            COPY    "CPORCSCNYUHEN.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -128,7 +128,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -145,7 +145,7 @@
                MOVE    "1"             TO  ORCSCNYUHEN-KBN
            END-IF
       *
-      *    Æþ±¡ÍúÎòÊÔ½¸½èÍý
+      *    å…¥é™¢å±¥æ­´ç·¨é›†å‡¦ç†
            PERFORM 100-MAIN-SYORI-SEC
       *
            .
@@ -155,11 +155,11 @@
            .
       *
       *****************************************************************
-      *    Æþ±¡ÍúÎòÊÔ½¸½èÍý
+      *    å…¥é™¢å±¥æ­´ç·¨é›†å‡¦ç†
       *****************************************************************
        100-MAIN-SYORI-SEC              SECTION.
       *
-      *    Æþ±¡ÍúÎòÈ½Äê
+      *    å…¥é™¢å±¥æ­´åˆ¤å®š
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
@@ -176,7 +176,7 @@
                MOVE    1               TO  FLG-PTNYUINRRK
                INITIALIZE                  PTNYUINRRK-REC
            END-IF
-      *    Æþ±¡¤¬£±·ï¤â¤Ê¤¤¤È¤­
+      *    å…¥é™¢ãŒï¼‘ä»¶ã‚‚ãªã„ã¨ã
            IF      FLG-PTNYUINRRK      =   1
                MOVE    ZERO                TO  ORCSCNYUHEN-RRK-NYUIN
            ELSE
@@ -193,28 +193,28 @@
            PERFORM
                    UNTIL      (FLG-PTNYUINRRK      =   1 )
                           OR  (FLG-SYORI-END       =   1 )
-      *      ³°Íè¤ÎÈ½Äê¤Ï¡¢¼«±¡ÎòÊ¬¤ÏÂÐ¾Ý³°
+      *      å¤–æ¥ã®åˆ¤å®šã¯ã€è‡ªé™¢æ­´åˆ†ã¯å¯¾è±¡å¤–
              IF     ((SPA-NYUGAIKBN        =   "2" )
                  AND (PTNYUINRRK-JTIKBN    =   "6" ))  
-      *              Â¾±¡Æþ±¡¤ÏÂÐ¾Ý³°
+      *              ä»–é™¢å…¥é™¢ã¯å¯¾è±¡å¤–
                OR    (PTNYUINRRK-JTIKBN    =   "5" )
                CONTINUE
              ELSE
                EVALUATE    ORCSCNYUHEN-KBN
-      *            ¿ÇÎÅÆüÉÕ¤Ç¤ÎÈ½Äê
+      *            è¨ºç™‚æ—¥ä»˜ã§ã®åˆ¤å®š
                    WHEN    "1"
                        PERFORM 1001-SRYYMD-SYORI-SEC
-      *            ¿ÇÎÅ·î¤Ç¤ÎÈ½Äê
+      *            è¨ºç™‚æœˆã§ã®åˆ¤å®š
                    WHEN    "2"
                        PERFORM 1002-SRYYM-SYORI-SEC
                END-EVALUATE
-      *        ºÇ½ªÂà±¡Æü
+      *        æœ€çµ‚é€€é™¢æ—¥
                IF     (WRK-LASTTAIINYMD        =   SPACE      )  OR
                       (PTNYUINRRK-TAIINYMD     >   WRK-LASTTAIINYMD)
                    MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-LASTTAIINYMD
                END-IF
       *
-      *        Âà±¡·î¤¬Åö·î°ÊÁ°¤Ç½ªÎ»¤È¤¹¤ë
+      *        é€€é™¢æœˆãŒå½“æœˆä»¥å‰ã§çµ‚äº†ã¨ã™ã‚‹
                IF     (PTNYUINRRK-TAIINYMD(1:6)    <   WRK-SRYYMD(1:6))
                    MOVE    1                   TO  FLG-SYORI-END
                END-IF
@@ -223,7 +223,7 @@
                MOVE    PTNYUINRRK-RRKNUM   TO  WRK-OLD-RRKNUM
            END-IF
       *
-      *       Â¾±¡Âà±¡ÆüÊÔ½¸
+      *       ä»–é™¢é€€é™¢æ—¥ç·¨é›†
                IF      (SPA-NYUGAIKBN       =   "2" )
                 AND    (PTNYUINRRK-JTIKBN   =   "5" )
                    IF     (PTNYUINRRK-TAIINYMD <   WRK-SRYYMD )
@@ -241,13 +241,13 @@
            MOVE    "key3"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ºÇ½ªÂà±¡Æü¤ÎÀßÄê
+      *    æœ€çµ‚é€€é™¢æ—¥ã®è¨­å®š
            MOVE    WRK-TAIINYMD        TO  ORCSCNYUHEN-MAE-TAIINYMD
            MOVE    WRK-LASTTAIINYMD    TO  ORCSCNYUHEN-LAST-TAIINYMD
-      *    Â¾°å±¡Âà±¡Æü
+      *    ä»–åŒ»é™¢é€€é™¢æ—¥
            MOVE    WRK-TAI-TAIINYMD    TO  ORCSCNYUHEN-TAI-TAIINYMD
       *
-      *    ³ºÅö¤ÎÆþ±¡ÍúÎò¤¬·ÑÂ³¤Î»þ
+      *    è©²å½“ã®å…¥é™¢å±¥æ­´ãŒç¶™ç¶šã®æ™‚
            MOVE    SPACE               TO  ORCSCNYUHEN-STR-NYUINYMD
            IF      WRK-SHONUM      NOT =   ZERO
                PERFORM 1003-STR-NYUINYMD-HEN-SEC
@@ -257,14 +257,14 @@
            EXIT.
       *
       *****************************************************************
-      *   ¿ÇÎÅÆüÉÕ¤Ç¤ÎÈ½Äê½èÍý
+      *   è¨ºç™‚æ—¥ä»˜ã§ã®åˆ¤å®šå‡¦ç†
       *****************************************************************
        1001-SRYYMD-SYORI-SEC            SECTION.
       *
-      *    Á°²óÂà±¡Æü¡áÆþ±¡Æü¤Î»þ¡¢ÂÐ¾Ý¤È¤¹¤ë
+      *    å‰å›žé€€é™¢æ—¥ï¼å…¥é™¢æ—¥ã®æ™‚ã€å¯¾è±¡ã¨ã™ã‚‹
            IF    ((PTNYUINRRK-NYUINYMD NOT =   WRK-OLD-NYUINYMD ) AND
                   (PTNYUINRRK-TAIINYMD NOT =   WRK-OLD-TAIINYMD ))
-      *H26.12     Ï¢ÈÖËè¤ËÂÐ¾Ý
+      *H26.12     é€£ç•ªæ¯Žã«å¯¾è±¡
              OR  ( PTNYUINRRK-RRKNUM   NOT =   WRK-OLD-RRKNUM   )
       *
                IF      PTNYUINRRK-TAIINYMD     =   WRK-OLD-NYUINYMD
@@ -276,32 +276,32 @@
                        MOVE    ZERO            TO  FLG-OK
                    END-IF
                END-IF
-      *!!!     Æ±ÆüºÆÆþ±¡Æü¤¢¤êÂÐ¾Ý
+      *!!!     åŒæ—¥å†å…¥é™¢æ—¥ã‚ã‚Šå¯¾è±¡
                IF     (PTNYUINRRK-TAIINYMD     =   WRK-OLD-NYUINYMD )
                  AND  (WRK-OLD-NYUINYMD        =   ORCSCNYUHEN-NYUINYMD)
-      *            Æ±ÆüºÆÆþ±¡Æü
+      *            åŒæ—¥å†å…¥é™¢æ—¥
                    MOVE    PTNYUINRRK-TAIINYMD    TO  WRK-YMD
                    MOVE    WRK-SDD         TO  ORCSCNYUHEN-DOUNYUIN 
                END-IF
            END-IF
       *
       *
-      *    ÅöÆü°ÊÁ°¤ÎÅ¾ÆþÆü
+      *    å½“æ—¥ä»¥å‰ã®è»¢å…¥æ—¥
            IF      PTNYUINRRK-TENNYUYMD    <=  WRK-SRYYMD
-      *        Å¾½ÐÆü
+      *        è»¢å‡ºæ—¥
                IF      PTNYUINRRK-TENSTUYMD    >=  WRK-SRYYMD
-      *            ÅöÆüÆþ±¡Ãæ
+      *            å½“æ—¥å…¥é™¢ä¸­
                    IF    ((PTNYUINRRK-TAIINYMD     =   WRK-SRYYMD)
                      OR   (PTNYUINRRK-TENSTUYMD    >   WRK-SRYYMD))
                      AND  (FLG-OK                  =   ZERO      )
                        PERFORM 1002-PTNYUINRRK-HEN-SEC
                        MOVE    1               TO  FLG-OK
-      *                Æ±ÆüºÆÆþ±¡Æü
+      *                åŒæ—¥å†å…¥é™¢æ—¥
                        MOVE    ZERO            TO  ORCSCNYUHEN-DOUNYUIN
                    END-IF
                END-IF
            END-IF
-      *    Æþ±¡´ü´Ö¤Ç£±²ó
+      *    å…¥é™¢æœŸé–“ã§ï¼‘å›ž
            IF     (PTNYUINRRK-NYUINYMD NOT =   WRK-OLD-NYUINYMD ) AND
       ************(PTNYUINRRK-NYUINYMD     <=  WRK-SRYYMD       )
                   (PTNYUINRRK-NYUINYMD(1:6)    <=  WRK-SRYYM    )
@@ -309,10 +309,10 @@
                                            <=  WRK-SRYYM  ) AND
                       (PTNYUINRRK-TAIINYMD (1:6)
                                            >=  WRK-SRYYM  )
-      *            Åö·î¤ÎÆþ±¡´ü´ÖÀßÄê
+      *            å½“æœˆã®å…¥é™¢æœŸé–“è¨­å®š
                    PERFORM 1003-NYUINDAY-HEN-SEC
                END-IF
-      *        ¿ÇÎÅÆü°ÊÁ°¤ÎºÇ½ªÂà±¡Æü
+      *        è¨ºç™‚æ—¥ä»¥å‰ã®æœ€çµ‚é€€é™¢æ—¥
                IF     (PTNYUINRRK-TAIINYMD     <=  WRK-SRYYMD ) AND
                       (WRK-TAIINYMD            =   SPACE      )
                    MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
@@ -323,21 +323,21 @@
            EXIT.
       *
       *****************************************************************
-      *   ¿ÇÎÅ·î¤Ç¤ÎÈ½Äê½èÍý
+      *   è¨ºç™‚æœˆã§ã®åˆ¤å®šå‡¦ç†
       *****************************************************************
        1002-SRYYM-SYORI-SEC            SECTION.
       *
-      *    ÅöÆü°ÊÁ°¤ÎÅ¾ÆþÆü
+      *    å½“æ—¥ä»¥å‰ã®è»¢å…¥æ—¥
            IF      PTNYUINRRK-TENNYUYMD(1:6)  <=  WRK-SRYYM
-      *        Åö·îÅ¾½ÐÆü
+      *        å½“æœˆè»¢å‡ºæ—¥
                IF     (PTNYUINRRK-TENSTUYMD(1:6)   >=  WRK-SRYYM )
                  AND  (FLG-OK                  =   ZERO      )
                    PERFORM 1002-PTNYUINRRK-HEN-SEC
                    MOVE    1                   TO  FLG-OK
                END-IF
            END-IF
-      *    Åö·î¤ÎÆþ±¡´ü´ÖÀßÄê
-      *    Æþ±¡´ü´Ö¤Ç£±²ó
+      *    å½“æœˆã®å…¥é™¢æœŸé–“è¨­å®š
+      *    å…¥é™¢æœŸé–“ã§ï¼‘å›ž
            IF     (PTNYUINRRK-NYUINYMD     NOT =   WRK-OLD-NYUINYMD) AND
                   (PTNYUINRRK-NYUINYMD(1:6)    <=  WRK-SRYYM   )
                IF     (PTNYUINRRK-NYUINYMD(1:6)
@@ -346,7 +346,7 @@
                                                >=  WRK-SRYYM )
                    PERFORM 1003-NYUINDAY-HEN-SEC
                END-IF
-      *        ¿ÇÎÅÆü°ÊÁ°¤ÎºÇ½ªÂà±¡Æü
+      *        è¨ºç™‚æ—¥ä»¥å‰ã®æœ€çµ‚é€€é™¢æ—¥
                IF     (WRK-TAIINYMD            =   SPACE      )  OR
                       (WRK-TAIINYMD            <   PTNYUINRRK-TAIINYMD )
                    MOVE    PTNYUINRRK-TAIINYMD     TO  WRK-TAIINYMD
@@ -357,38 +357,38 @@
            EXIT.
       *
       *****************************************************************
-      *   Æþ±¡ÆâÍÆÊÔ½¸½èÍý
+      *   å…¥é™¢å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        1002-PTNYUINRRK-HEN-SEC            SECTION.
       *
-      *    Æþ±¡¡¦Âà±¡Æü
+      *    å…¥é™¢ãƒ»é€€é™¢æ—¥
            MOVE    PTNYUINRRK-NYUINYMD     TO  ORCSCNYUHEN-NYUINYMD
            MOVE    PTNYUINRRK-TAIINYMD     TO  ORCSCNYUHEN-TAIINYMD
-      *    Æþ±¡²Ê
+      *    å…¥é™¢ç§‘
            MOVE    PTNYUINRRK-NYUINKA      TO  ORCSCNYUHEN-NYUINKA
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *    ä¿é™ºçµ„åˆã›ç•ªå·
            MOVE    PTNYUINRRK-HKNCOMBINUM  TO  ORCSCNYUHEN-HKNCOMBI
-      *    Ã´Åö°å£±¡Ê¼ç¼£°å¡Ë
+      *    æ‹…å½“åŒ»ï¼‘ï¼ˆä¸»æ²»åŒ»ï¼‰
            MOVE    PTNYUINRRK-DRCD1        TO  ORCSCNYUHEN-DRCD
       *
            IF     (PTNYUINRRK-TAIINYMD     =   WRK-SRYYMD)
                OR (PTNYUINRRK-NYUINYMD     =   WRK-SRYYMD)
-      *           ÅöÆüÆþÂà±¡
+      *           å½“æ—¥å…¥é€€é™¢
                MOVE    2                   TO  ORCSCNYUHEN-NYUIN-KBN
            ELSE
-      *        Æþ±¡Ãæ
+      *        å…¥é™¢ä¸­
                MOVE    1                   TO  ORCSCNYUHEN-NYUIN-KBN
            END-IF
       *ver.4.7
-      *    ·ÑÂ³
+      *    ç¶™ç¶š
            IF      PTNYUINRRK-SHOKAIKBN    =   "2"
-      *        ·ÑÂ³
+      *        ç¶™ç¶š
                MOVE    PTNYUINRRK-SHONUM   TO  WRK-SHONUM
            ELSE
                MOVE    ZERO                TO  WRK-SHONUM
            END-IF
            IF      PTNYUINRRK-TAIINYMD =   WRK-OLD-NYUINYMD
-      *        Âà±¡Æü¡áÁ°²óÆþ±¡Æü¤¢¤ê
+      *        é€€é™¢æ—¥ï¼å‰å›žå…¥é™¢æ—¥ã‚ã‚Š
                MOVE    1               TO  ORCSCNYUHEN-DOUTAIKBN
            END-IF
            .
@@ -396,7 +396,7 @@
            EXIT.
       *
       *****************************************************************
-      *   Åö·îÆþ±¡ÆüÊÔ½¸½èÍý
+      *   å½“æœˆå…¥é™¢æ—¥ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-NYUINDAY-HEN-SEC            SECTION.
       *
@@ -414,7 +414,7 @@
            ELSE
                MOVE    01                  TO  WRK-STDD
            END-IF
-      *    Æþ±¡Ãæ
+      *    å…¥é™¢ä¸­
            PERFORM VARYING IDX-D2      FROM    WRK-STDD BY  1
                    UNTIL   IDX-D2      >   WRK-EDDD
                IF    ((PTNYUINRRK-TENNYUYMD(1:6)
@@ -423,10 +423,10 @@
                OR    ((PTNYUINRRK-TENSTUYMD(1:6)
                                            =   WRK-SRYYM )  AND
                       (IDX-D2              =   WRK-EDDD  ))
-      *            ÆþÂà±¡Æü
+      *            å…¥é€€é™¢æ—¥
                    MOVE    2           TO  ORCSCNYUHEN-NYUDAY (IDX-D2)
                ELSE
-      *            Æþ±¡Ãæ
+      *            å…¥é™¢ä¸­
                    MOVE    1           TO  ORCSCNYUHEN-NYUDAY (IDX-D2)
                END-IF
            END-PERFORM
@@ -434,11 +434,11 @@
        1003-NYUINDAY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¤¬·ÑÂ³³«»ÏÊÔ½¸½èÍý
+      *    å…¥é™¢å±¥æ­´ãŒç¶™ç¶šé–‹å§‹ç·¨é›†å‡¦ç†
       *****************************************************************
        1003-STR-NYUINYMD-HEN-SEC             SECTION.
       *
-      *    ·ÑÂ³¤Î»þ¡¢½é²óÆþ±¡Æü¸¡º÷
+      *    ç¶™ç¶šã®æ™‚ã€åˆå›žå…¥é™¢æ—¥æ¤œç´¢
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
@@ -467,7 +467,7 @@
        1003-STR-NYUINYMD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    À¾ÎñÏÂÎñÊÔ½¸½èÍý
+      *    è¥¿æš¦å’Œæš¦ç·¨é›†å‡¦ç†
       *****************************************************************
        520-SEIWA-HEN-SEC             SECTION.
       *
@@ -491,7 +491,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
@@ -508,7 +508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -521,7 +521,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -535,7 +535,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

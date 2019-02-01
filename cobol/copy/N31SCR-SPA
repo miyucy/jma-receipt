@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,53 +16,53 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ������Ͽ ���̲��̣ӣУ�  
+      *    住所登録 共通画面ＳＰＡ  
       *****************************************************************
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        01  SPA-N31SCRAREA.
       *
            03  SPA-GMN-CUR             PIC 9(04).
       *
-      *    ������Ͽ�ʣΣ�����
+      *    住所登録（Ｎ３１）
            03  SPA-N31-AREA.
                05  SPA-GMN-AREA.
-      *            ͹���ֹ�
+      *            郵便番号
                    07  SPA-GMN-POST           PIC X(07).
-      *            �����ֹ�
+      *            選択番号
                    07  SPA-GMN-SELNUM         PIC 9(03).
       *
                    07  SPA-GMN-INPUT-G.
-      *            ��Į¼̾����
+      *            市町村名カナ
                        09  SPA-GMN-CITYKANA       PIC X(100).
-      *            Į��̾����
+      *            町域名カナ
                        09  SPA-GMN-TOWNKANA       PIC X(100).
-      *            ��Į¼̾
+      *            市町村名
                        09  SPA-GMN-CITYNAME       PIC X(50).
-      *            Į��̾
+      *            町域名
                        09  SPA-GMN-TOWNNAME       PIC X(50).
-      *            �̤�̾
+      *            通り名
                        09  SPA-GMN-TOWNNAME2      PIC X(600).
-      *            �ǡ�����ʬ
+      *            データ区分
                        09  SPA-NAI-DATAKBN        PIC X(01).
-      *            ��ƻ�ܸ��ã�
+      *            都道府県ＣＤ
                    07  SPA-GMN-PREFCD-G.
                        09  SPA-GMN-PREFCD         PIC X(02).
                        09  SPA-GMN-FILLER1        PIC X(01).
                        09  SPA-GMN-PREFMEI        PIC X(10).
-      *            ��ƻ�ܸ�̾����
+      *            都道府県名カナ
                    07  SPA-GMN-PREFKANA       PIC X(20).
-      *            ��ƻ�ܸ�̾
+      *            都道府県名
                    07  SPA-GMN-PREFNAME       PIC X(10).
-      *            ��ƻ�ܸ��ãĥ����
+      *            都道府県ＣＤコンボ
                    07  SPA-GMN-PREFCD-LIST    OCCURS  47.
                        09  SPA-GMN-PREFCDL        PIC X(02).
                        09  SPA-GMN-FILLER2        PIC X(01).
                        09  SPA-GMN-PREFMEIL       PIC X(10).
                    07  SPA-GMN-PREFCD-MAX         PIC 9(03).
-      *            Į��ꥹ��
+      *            町域リスト
                    07  SPA-GMN-CYOIKI-G.
                        09  SPA-GMN-CYOIKI-TBL     OCCURS  200.
                            11  SPA-GMN-CYO-HEN        PIC X(02).
@@ -72,17 +72,17 @@
                            11  SPA-GMN-CYO-TOWNNAME2  PIC X(600).
                            11  SPA-GMN-CYO-LPUBCD     PIC X(05).
                            11  SPA-GMN-CYO-EDANUM     PIC 9(02).
-      *H29.9               �ǡ�����ʬ
+      *H29.9               データ区分
                            11  SPA-NAI-TDATAKBN       PIC X(01).
       *
                        09  SPA-GMN-CYOIKI-MAX         PIC 9(04).
-      *        �����ΰ�
+      *        内部領域
                05  SPA-NAI-AREA.
                    07  SPA-NAI-POST            PIC X(07).
                    07  SPA-NAI-PAGE            PIC 9(05).
                    07  SPA-MAE-PAGE            PIC 9(05).
                    07  SPA-NAI-NEXTKBN         PIC 9(01).
-      *            �����ƥ��������ƻ�ܸ�������
+      *            システム管理　都道府県コード
                    07  SPA-NAI-PREFNUM         PIC X(02).
       *            07  SPA-NAI-BACK            PIC 9(05).
       *            07  SPA-NAI-NEXT            PIC 9(05).

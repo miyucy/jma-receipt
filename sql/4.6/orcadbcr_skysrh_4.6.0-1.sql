@@ -1,6 +1,6 @@
 \set ON_ERROR_STOP
 --
--- ¾È²ñÀÁµá¾ðÊó¥Æ¡¼¥Ö¥ë
+-- ç…§ä¼šè«‹æ±‚æƒ…å ±ãƒ†ãƒ¼ãƒ–ãƒ«
 -- Create Date : 2010/09/29        --
 --
 create	table	tbl_skysrh	(

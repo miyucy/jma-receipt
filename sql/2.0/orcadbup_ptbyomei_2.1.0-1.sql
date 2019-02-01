@@ -1,27 +1,27 @@
 --                                    --
---  ÉÂÌ¾¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                --
+--  ç—…åãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---     ¸ÂÄêÊİ¸±ÈÖ¹æ       HKNNUM      --
---     ¥ì¥»ÅÅ¥¨¥é¡¼¥Õ¥é¥° RECEDENFLG  --
---     ´ğËÜÉô°Ì¥³¡¼¥É     KHNBUICD    --
+-- é …ç›®ã®è¿½åŠ                          --
+--     é™å®šä¿é™ºç•ªå·       HKNNUM      --
+--     ãƒ¬ã‚»é›»ã‚¨ãƒ©ãƒ¼ãƒ•ãƒ©ã‚° RECEDENFLG  --
+--     åŸºæœ¬éƒ¨ä½ã‚³ãƒ¼ãƒ‰     KHNBUICD    --
 --                                    --
--- ¹àÌÜ¤ÎÊÑ¹¹                         --
---     ÉÂÌ¾¥³¡¼¥É   £²£±¤ËÊÑ¹¹        --
---     ÉÂÌ¾¥³¡¼¥É¿ô £¹¡Ê£°£²¡Ë¤ËÊÑ¹¹  --
---     ÆşÎÏ¥³¡¼¥É   £¶¤ËÊÑ¹¹          --
+-- é …ç›®ã®å¤‰æ›´                         --
+--     ç—…åã‚³ãƒ¼ãƒ‰   ï¼’ï¼‘ã«å¤‰æ›´        --
+--     ç—…åã‚³ãƒ¼ãƒ‰æ•° ï¼™ï¼ˆï¼ï¼’ï¼‰ã«å¤‰æ›´  --
+--     å…¥åŠ›ã‚³ãƒ¼ãƒ‰   ï¼–ã«å¤‰æ›´          --
 --                                    --
---    ÆşÎÏ¥³¡¼¥É¤¬Ì¤ÀßÄê¤Ê¤é          --
---         ÉÂÌ¾¥³¡¼¥É¤òÊÔ½¸¤¹¤ë       --
---    ÉÂÌ¾¥³¡¼¥É£±¤¬Ì¤ÀßÄê¤Ê¤é        --
---         Ì¤¥³¡¼¥É²½½ıÉÂÌ¾¥³¡¼¥É¤ò   --
---                     ÊÔ½¸¤¹¤ë       --
+--    å…¥åŠ›ã‚³ãƒ¼ãƒ‰ãŒæœªè¨­å®šãªã‚‰          --
+--         ç—…åã‚³ãƒ¼ãƒ‰ã‚’ç·¨é›†ã™ã‚‹       --
+--    ç—…åã‚³ãƒ¼ãƒ‰ï¼‘ãŒæœªè¨­å®šãªã‚‰        --
+--         æœªã‚³ãƒ¼ãƒ‰åŒ–å‚·ç—…åã‚³ãƒ¼ãƒ‰ã‚’   --
+--                     ç·¨é›†ã™ã‚‹       --
 --                                    --
 --                                    --
 -- Create Date : 2003/12/25           --
 --                                    --
 
--- TBL_PTBYOMEIWK ºîÀ®                --
+-- TBL_PTBYOMEIWK ä½œæˆ                --
 
 CREATE TABLE "tbl_ptbyomeiwk" (
 	"hospid" character(24) NOT NULL,
@@ -61,16 +61,16 @@ CREATE TABLE "tbl_ptbyomeiwk" (
 	Constraint "tbl_ptbyomeiwk_primary_key" Primary Key ("hospid", "ptid", "sryka", "sryymd", "rennum")
 );
 
--- TBL_PTBYOMEI ¢ª TBL_PTBYOMEIWK   --
+-- TBL_PTBYOMEI â†’ TBL_PTBYOMEIWK   --
 
 insert into tbl_ptbyomeiwk
 select * from tbl_ptbyomei;
 
--- TBL_PTBYOMEI ºï½ü               --
+-- TBL_PTBYOMEI å‰Šé™¤               --
 
 drop table tbl_ptbyomei;
 
--- TBL_PTBYOMEI ºîÀ®     --
+-- TBL_PTBYOMEI ä½œæˆ     --
 
 CREATE TABLE "tbl_ptbyomei" (
 	"hospid" character(24) NOT NULL,
@@ -135,7 +135,7 @@ CREATE TABLE "tbl_ptbyomei" (
 	Constraint "tbl_ptbyomei_primary_key" Primary Key ("hospid", "ptid", "sryka", "sryymd", "rennum")
 );
 
--- TBL_PTBYOMEIWK ¢ª TBL_PTBYOMEI   ¡ÊÆşÎÏ¥³¡¼¥ÉÍ­¡Ë--
+-- TBL_PTBYOMEIWK â†’ TBL_PTBYOMEI   ï¼ˆå…¥åŠ›ã‚³ãƒ¼ãƒ‰æœ‰ï¼‰--
 
 insert into tbl_ptbyomei
 (hospid,
@@ -209,7 +209,7 @@ upymd,
 uphms
 from tbl_ptbyomeiwk where byomeiinputcd <> '' and (byomeicd_1 <> '' and byomeicd_1 <> '0000999');
 
--- TBL_PTBYOMEIWK ¢ª TBL_PTBYOMEI   ¡ÊÆşÎÏ¥³¡¼¥ÉÌµ¡Ë--
+-- TBL_PTBYOMEIWK â†’ TBL_PTBYOMEI   ï¼ˆå…¥åŠ›ã‚³ãƒ¼ãƒ‰ç„¡ï¼‰--
 
 insert into tbl_ptbyomei
 (hospid,
@@ -293,7 +293,7 @@ upymd,
 uphms
 from tbl_ptbyomeiwk where byomeiinputcd = '' and (byomeicd_1 <> '' and byomeicd_1 <> '0000999');
 
--- TBL_PTBYOMEIWK ¢ª TBL_PTBYOMEI   ¡ÊÉÂÌ¾¥³¡¼¥É£±Ìµ¡Ë--
+-- TBL_PTBYOMEIWK â†’ TBL_PTBYOMEI   ï¼ˆç—…åã‚³ãƒ¼ãƒ‰ï¼‘ç„¡ï¼‰--
 
 insert into tbl_ptbyomei
 (hospid,
@@ -357,7 +357,7 @@ upymd,
 uphms
 from tbl_ptbyomeiwk where byomeicd_1 = '' or byomeicd_1 = '0000999';
 
--- TBL_PTBYOMEIWK ºï½ü             --
+-- TBL_PTBYOMEIWK å‰Šé™¤             --
 
 drop table tbl_ptbyomeiwk;
 

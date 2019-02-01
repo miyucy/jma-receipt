@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,30 +18,30 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSJOB.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����ִ���
-      *  ����ݡ��ͥ��̾  : ����ִ����ģ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/01/20    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ジョブ管理
+      *  コンポーネント名  : ジョブ管理ＤＢ制御
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/01/20    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/05/15  DELALL���ɲ�  
-      *  01.00.02    NACL-ƣ��    02/08/30  ���ƥå׷�����ɲ�
-      *  01.00.03    NACL-ƣ��    03/02/24  �ǿ��Υ����å�
-      *  01.00.04    NACL-����    03/08/11  ����вṹ���������ɲ�
-      *  01.00.05    NACL-ƣ��    04/09/28  STP,CAN���ɲ�
-      *  01.00.06    NACL-ƣ��    04/12/20  CN2���ɲ�
-      *                                     JBE�ΤȤ�YOBI������ʳ��ΤȤ�
-      *                                     �����Խ���Ԥ�
-      *  01.00.07    NACL-����    05/10/21  MONFUNC�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/05/15  DELALLの追加  
+      *  01.00.02    NACL-藤原    02/08/30  ステップ件数の追加
+      *  01.00.03    NACL-藤原    03/02/24  頁数のチェック
+      *  01.00.04    NACL-太田    03/08/11  途中経過更新処理を追加
+      *  01.00.05    NACL-藤原    04/09/28  STP,CANを追加
+      *  01.00.06    NACL-藤原    04/12/20  CN2を追加
+      *                                     JBEのときYOBIが空白以外のとき
+      *                                     だけ編集を行う
+      *  01.00.07    NACL-太田    05/10/21  MONFUNC対応
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
       *
-      *  04.05.01    NACL-����    10/02/27  �ƻ���������б�
+      *  04.05.01    NACL-竹田    10/02/27  監視ログ出力対応
       *
-      *  04.07.01    NACL-ƣ��    12.09.07  ��������ʸ��̡ˤ��ɲ�
+      *  04.07.01    NACL-藤原    12.09.07  更新件数（個別）の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -51,14 +51,14 @@
        DATA                    DIVISION.
        WORKING-STORAGE         SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
       *
        01  FLG-AREA.
            03  FLG-END                                 PIC 9(01).
            03  FLG-JOBKANRI                            PIC S9(03).
            03  FLG-MONBATCH                            PIC 9(01).
            03  FLG-LOOPEND                             PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                                  PIC 9(06).
       *
@@ -71,13 +71,13 @@
                05  WRK-SYSYY           PIC 9(02).
                05  WRK-SYSYMD          PIC 9(06).  
            03  WRK-SYSTIME             PIC X(08).
-      *������ɣ�
+      *シェルＩＤ
            03  WRK-SHELLID             PIC X(08).
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
        01  WRK-JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC"    REPLACING   //JOB-//
@@ -85,22 +85,22 @@
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
            COPY    "CPORCSLOCK.INC".
@@ -108,7 +108,7 @@
       **************************************************************************
       *
        LINKAGE                 SECTION.
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -124,7 +124,7 @@ grpsys         SPA-AREA
                .
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -147,7 +147,7 @@ grpsys         SPA-AREA
       *???     
            INITIALIZE                  CNT-AREA
                                        WRK-AREA
-      *    �����⡼�ɤΥ����å�
+      *    処理モードのチェック
            EVALUATE    SJOBKANRI-MODE
                WHEN    "JBS"
                        PERFORM 110-JBS-SEC
@@ -213,7 +213,7 @@ grpsys         SPA-AREA
            EXIT PROGRAM
            .
       *****************************************************************
-      *    ����ֳ��ϥ��åȡ�����
+      *    ジョブ開始セット　処理
       *****************************************************************
        110-JBS-SEC                 SECTION.
       *
@@ -234,7 +234,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                MOVE  MCP-RC            TO  SJOBKANRI-RETURN
            END-IF
       *
-      *    �ƻ�������� 
+      *    監視ログ出力 
            CALL    "ORCSAUDIT"         USING
                                       "2"
                                        MCPAREA
@@ -248,23 +248,23 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ����ֽ�λ���åȡ�����
+      *    ジョブ終了セット　処理
       *****************************************************************
        120-JBE-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
                MOVE  FLG-JOBKANRI      TO  SJOBKANRI-RETURN
                GO  TO  120-JBE-EXT
            END-IF
-      *    ���顼������
+      *    エラーコード
            IF      WRK-SHELLID(7:2)    NOT =   SPACE
                MOVE    WRK-SHELLID(7:2)    TO  JOB-ERRCD(1:2)
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            PERFORM 500-SYSYMD-HENSYU-SEC
            MOVE    WRK-SYSYMD-8        TO  WRK-JOB-ENDYMD
       *****ACCEPT  WRK-JOB-ENDTIME     FROM TIME
@@ -294,11 +294,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       * 
       * 
       *****************************************************************
-      *    ���ƥå׳��ϥ��åȡ�����
+      *    ステップ開始セット　処理
       *****************************************************************
        130-STS-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -306,7 +306,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO    TO                130-STS-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            MOVE    ZERO                TO  WRK-JOB-STEPENDTIME
            PERFORM 500-SYSYMD-HENSYU-SEC
       *****ACCEPT  WRK-JOB-STEPSTARTTIME
@@ -333,11 +333,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       * 
       * 
       *****************************************************************
-      *    ���ƥå׽�λ���åȡ�����
+      *    ステップ終了セット　処理
       *****************************************************************
        160-STE-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -345,7 +345,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO    TO                160-STE-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            PERFORM 500-SYSYMD-HENSYU-SEC
       *****ACCEPT  WRK-JOB-STEPENDTIME
       *****                            FROM TIME
@@ -385,11 +385,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        140-DEL-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -397,7 +397,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO    TO                140-DEL-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
@@ -417,11 +417,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ����������оݤΥ�����ɣĤ����ơ�
+      *    削除処理（対象のシェルＩＤを全て）
       *****************************************************************
        170-DELALL-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -429,7 +429,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO    TO                170-DELALL-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            MOVE    "DBDELETE"          TO  MCP-FUNC
            MOVE    "tbl_jobkanri"      TO  MCP-TABLE
@@ -449,11 +449,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        150-CHK-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -478,11 +478,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ƥå׳��ϥ��åȡ�����
+      *    ステップ開始セット　処理
       *****************************************************************
        180-STM-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF       FLG-JOBKANRI       NOT  =  ZERO
@@ -490,7 +490,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO    TO                180-STM-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            IF      JOB-UPDCNT          NOT NUMERIC
                MOVE    ZERO                TO   JOB-UPDCNT
            END-IF
@@ -518,7 +518,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ��ߥե饰���åȽ���
+      *    中止フラグセット処理
       *****************************************************************
        190-STP-SEC                 SECTION.
       *
@@ -529,7 +529,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  190-STP-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            IF      WRK-JOB-STOPFLG     =   2   OR  3
                CONTINUE
            ELSE
@@ -554,11 +554,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       * 
       * 
       *****************************************************************
-      *    �������߽���
+      *    ジョブ中止処理
       *****************************************************************
        200-CANCEL-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
@@ -566,7 +566,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                GO  TO  200-CANCEL-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            PERFORM 500-SYSYMD-HENSYU-SEC
            MOVE    WRK-SYSYMD-8        TO  WRK-JOB-ENDYMD
       *****ACCEPT  WRK-JOB-ENDTIME     FROM TIME
@@ -593,11 +593,11 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �������߽����ʽ�λ������λ���֤�����ʤ���
+      *    ジョブ中止処理（終了日、終了時間の設定なし）
       *****************************************************************
        210-CANCEL2-SEC                 SECTION.
       *
-      *    �쥳����¸�ߥ����å�
+      *    レコード存在チェック
            MOVE    JOBKANRI-REC        TO  MCPDATA-REC
            PERFORM 910-JOBKANRI-INV2-SEC
            IF      FLG-JOBKANRI   NOT  =  ZERO
@@ -605,7 +605,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                GO  TO  210-CANCEL2-EXT
            END-IF
       *
-      *    �쥳���ɹ���
+      *    レコード更新
            MOVE    JOB-YOBI            TO  WRK-JOB-YOBI
            MOVE    JOB-ERRCD           TO  WRK-JOB-ERRCD
            MOVE    JOB-STOPFLG         TO  WRK-JOB-STOPFLG
@@ -627,14 +627,14 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����ƥ������Խ�����
+      *    システム日付編集処理
       *****************************************************************
        500-SYSYMD-HENSYU-SEC       SECTION.
       *
       **** ACCEPT  WRK-SYSYMD          FROM DATE
       **** MOVE    20                  TO  WRK-SYSYY
       *
-      *    �����ƥ����ռ���
+      *    システム日付取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -645,7 +645,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       * 
       *****************************************************************
-      *    ����ִ����ޥ����ɹ�
+      *    ジョブ管理マスタ読込
       *****************************************************************
        910-JOBKANRI-INV-SEC         SECTION.
       *
@@ -675,7 +675,7 @@ grpsys     PERFORM 900-CLOSE-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ޥ����ɹ��ʣˣţ٣���
+      *    ジョブ管理マスタ読込（ＫＥＹ２）
       *****************************************************************
        910-JOBKANRI-INV2-SEC         SECTION.
       *
@@ -705,7 +705,7 @@ grpsys     PERFORM 900-CLOSE-SEC
            EXIT.
       *
       *****************************************************************
-      *    MONBATCH��������
+      *    MONBATCH検索処理
       *****************************************************************
        910-MONBATCH-SEL-SEC            SECTION.
       *
@@ -731,7 +731,7 @@ grpsys     PERFORM 900-CLOSE-SEC
        910-MONBATCH-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    MONBATCH FETCH����
+      *    MONBATCH FETCH処理
       *****************************************************************
        910-MONBATCH-FET-SEC            SECTION.
       *
@@ -768,7 +768,7 @@ grpsys     PERFORM 900-CLOSE-SEC
        910-MONBATCH-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -779,7 +779,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -791,7 +791,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -803,7 +803,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -816,7 +816,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -830,7 +830,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¡��ӣԣ��ңԽ���
+      *    ＤＢ　ＳＴＡＲＴ処理
       *****************************************************************
        900-DBSTART-SEC                SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,8 +16,8 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
        01  SYUPARA01-AREA.
            03  SYUPARA01-NYUGAIKBN         PIC X(01).
@@ -34,23 +34,23 @@
            03  SYUPARA01-GAI-MISYU-M       PIC S9(10).
            03  SYUPARA01-NYU-NYUKIN        PIC S9(10).
            03  SYUPARA01-GAI-NYUKIN        PIC S9(10).
-      *    È¯¹Ô¥Õ¥é¥°¡Ê£°¡§¿·µ¬¡¢£±¡§ºÆÈ¯¹Ô¡¢£²¡§ÄûÀµ¡¢£³¡§Æþ¶â £´¡§·îÊÌ¡Ë
+      *    ç™ºè¡Œãƒ•ãƒ©ã‚°ï¼ˆï¼ï¼šæ–°è¦ã€ï¼‘ï¼šå†ç™ºè¡Œã€ï¼’ï¼šè¨‚æ­£ã€ï¼“ï¼šå…¥é‡‘ ï¼”ï¼šæœˆåˆ¥ï¼‰
            03  SYUPARA01-HAKKOFLG          PIC 9(01).
            03  SYUPARA01-SKYSUMFLG         PIC 9(01).
-      *    ÀÁµá³Û¥¼¥í±ß·îÊÌÀÁµá½ñÈ¯¹Ô¶èÊ¬¡Ê£°¡§È¯¹Ô¤¹¤ë¡¢£±¡§È¯¹Ô¤·¤Ê¤¤¡Ë
+      *    è«‹æ±‚é¡ã‚¼ãƒ­å††æœˆåˆ¥è«‹æ±‚æ›¸ç™ºè¡ŒåŒºåˆ†ï¼ˆï¼ï¼šç™ºè¡Œã™ã‚‹ã€ï¼‘ï¼šç™ºè¡Œã—ãªã„ï¼‰
            03  SYUPARA01-ZEROSKYKBN        PIC X(01).
            03  SYUPARA01-DENPPRTYMD        PIC X(08).
-      *    ·îÊÌÀÁµá½ñÆþ¶âºÑÀÁµá¥Ç¡¼¥¿½¸·×¶èÊ¬
-      *    ¡Ê£°¡§½¸·×¤Ë´Þ¤á¤ë¡¢£±¡§½¸·×¤Ë´Þ¤á¤Ê¤¤¡Ë
+      *    æœˆåˆ¥è«‹æ±‚æ›¸å…¥é‡‘æ¸ˆè«‹æ±‚ãƒ‡ãƒ¼ã‚¿é›†è¨ˆåŒºåˆ†
+      *    ï¼ˆï¼ï¼šé›†è¨ˆã«å«ã‚ã‚‹ã€ï¼‘ï¼šé›†è¨ˆã«å«ã‚ãªã„ï¼‰
            03  SYUPARA01-TUKISUMKBN        PIC X(01).
-      *    ·îÊÌÀÁµá½ñ´ü´Ö¶èÊ¬
-      *    ¡Ê£±¡§´ü´Ö»ØÄê¤¹¤ë¡Ë
+      *    æœˆåˆ¥è«‹æ±‚æ›¸æœŸé–“åŒºåˆ†
+      *    ï¼ˆï¼‘ï¼šæœŸé–“æŒ‡å®šã™ã‚‹ï¼‰
            03  SYUPARA01-TUKIKIKANKBN      PIC X(01).
-      *    ·îÊÌÀÁµá½ñ´ü´Ö³«»ÏÆü
+      *    æœˆåˆ¥è«‹æ±‚æ›¸æœŸé–“é–‹å§‹æ—¥
            03  SYUPARA01-TUKISTYMD         PIC X(08).
-      *    ·îÊÌÀÁµá½ñ´ü´Ö½ªÎ»Æü
+      *    æœˆåˆ¥è«‹æ±‚æ›¸æœŸé–“çµ‚äº†æ—¥
            03  SYUPARA01-TUKIEDYMD         PIC X(08).
-      *    ÀÁµá½ñ·ï¿ô
+      *    è«‹æ±‚æ›¸ä»¶æ•°
            03  SYUPARA01-CNT               PIC 9(05).
-      *    ÀÁµá½ñ¥Ç¡¼¥¿¹¹¿·¥Õ¥é¥°
+      *    è«‹æ±‚æ›¸ãƒ‡ãƒ¼ã‚¿æ›´æ–°ãƒ•ãƒ©ã‚°
            03  SYUPARA01-UPDFLG            PIC 9(01).

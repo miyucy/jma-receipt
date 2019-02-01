@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI021NS5V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �������Ź԰١�����Ĵ�������������ϰ��β���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  18/12/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 入院診療行為　入院調剤料更新（入力一体化）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  18/12/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -38,10 +38,10 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
@@ -66,7 +66,7 @@
            03  FLG-NYUINCHK            PIC 9(01).
            03  FLG-SYORIEND            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
@@ -91,11 +91,11 @@
            03  IDX-CHK             PIC 9(04).
            03  IDX-ERR             PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-SRYCNT              PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -107,7 +107,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -118,7 +118,7 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD-G.
                05  WRK-ERRKBN              PIC X(01).
                05  WRK-ERRCD               PIC X(02).
@@ -142,7 +142,7 @@
       *    MCP-TERMID
            03  WRK-MCP-TERM            PIC X(64).
       *
-      *    �ݸ��ȹ礻����
+      *    保険組合せ内容
            03  WRK-HKNNUM              PIC X(03).
            03  WRK-RSI-HKNKBN          PIC X(01).
       *
@@ -154,7 +154,7 @@
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-SRYSYUKBNMEI        PIC X(40).
            03  WRK-SRYCD               PIC X(09).
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            03  WRK-HKNCOMBI            PIC X(04).
            03  WRK-SRYKA               PIC X(02).
            03  WRK-SRYKA-NAME          PIC X(20).
@@ -163,14 +163,14 @@
                05  WRK-DAY-OCC         OCCURS   3.
                    07  WRK-DAY              PIC 9(03)
                                             OCCURS    31.
-      *    Ʊ����������
+      *    同日再入院日
            03  WRK-SAIDAY              PIC 9(02).
-      *    ��������
+      *    診療日付
            03  WRK-SRYYMD.
                05  WRK-SRYYYMM           PIC X(06).
                05  WRK-SRYDD             PIC 9(02).
       *
-      *    �����Ѵ���
+      *    数値変換用
            03  WRK-SURYO               PIC S9(08)V9(05).
            03  WRK-SURYO-S             PIC 9(08)V9(05).
            03  WRK-SURYO-R             REDEFINES   WRK-SURYO-S.
@@ -201,162 +201,162 @@
            03  WRK-PTNUM               PIC X(20).
            03  WRK-PTID                PIC 9(10).
       *
-      *    ������
+      *    入院日
       *    03  WRK-NYUIN-DATE          PIC X(10).
       *    03  WRK-NYUIN-YMD           PIC X(08).
       *
-      *    Ⱦ�������Ѵ�
+      *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
            03  WRK-MAX                 PIC 9(04).
            03  WRK-LEN                 PIC 9(04).
       *
-      *    ���̥ѥ�᥿����
+      *    共通パラメタ内容
        01  WRK-APIV3DATA-AREA.
-      *    �Żҥ����UID
+      *    電子カルテUID
            03  WRK-KARTE-UID           PIC X(36).
-      *    �����ֹ�
+      *    患者番号
            03  WRK-PARA-PTNUM          PIC X(20).
            03  WRK-APIV3DATA-REC.
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  WRK-RESPONSE-NUMBER     PIC X(02).
-      *        �����У�
+      *        処理ＰＧ
                05  WRK-PARA-SYORIPG        PIC X(02).
-      *        ������ʬ
+      *        処理区分
                05  WRK-PARA-MODE           PIC X(03).
       *
                05  WRK-PARA-SRYYM          PIC X(06).
-      *        ���ֹ�
+      *        剤番号
                05  WRK-PARA-ZAINUM         PIC X(08).
       *
-      *    MCPAREA ��¸
+      *    MCPAREA 保存
        01  WRK-MCPAREA             PIC X(5000).
       *
-      *J02 CALL��
+      *J02 CALL用
        01  WRK-SCRAREA.
            COPY    "ORCA24SCRAREA.INC".
       *
-      *    ������λ�ѥ�᥿
+      *    処理終了パラメタ
            COPY    "CPORAPIV3SUB01.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
       *****COPY    "CPORCSPTNUM.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
-      *    �ӣУ����̥ѥ�᥿
+      *    ＳＰＡ画面パラメタ
        01  SPA-SCR-REC.
            COPY    "CPJ02SPASCR.INC".
       *
-      *    ��׾Ȳ��Ѷ��̥ѥ�᥿
+      *    会計照会用共通パラメタ
            COPY    "J01COMMON-SPA".
       *
-      *    ���̥����ΰ�
+      *    画面スパ領域
            COPY    "J02SCR-SPA".
       *
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPMDCXMLAV3REQ5.INC".
       *
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPMDCXMLAV3RES5.INC".
       *
-      *    �ݸ��ȹ礻���å��ΰ�
+      *    保険組合せセット領域
            COPY    "CPORCSAPIHKN.INC".
       *
-      *    �ݸ�ǯ����ô��绻�ꥵ��
+      *    保険年齢・負担割合算定サブ
       *    COPY    "CPORCSAGECHK.INC".
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
-      *   �������򹹿�����
+      *   算定履歴更新サブ
            COPY    "CPORCSSANTEI.INC".
       *
-      *    ���������Խ����֥ѥ�᥿
+      *    入院履歴編集サブパラメタ
       *    COPY    "CPORCSCNYUHEN.INC".
       *
-      *    ���оݥǡ����Խ��ΰ�
+      *    剤対象データ編集領域
            COPY    "CPORAPI021SUB3V3.INC".
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム管理
            COPY    "CPSYSKANRI.INC".
-      *    ���Ųʾ���
+      *    診療科情報
            COPY    "CPSK1005.INC".
-      *    ��������
+      *    職員情報
            COPY    "CPSK1010.INC".
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ų�����þ���ޥ�����
+      *    診療会計附加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
-      *    �����ޥ����ղå�����
+      *    点数マスタ付加コード
         01 TENSUPLUS-REC.
            COPY    "CPTENSUPLUS.INC".
       *
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
-      *     �ѥ�᥿�ơ��֥�
+      *     パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    API�ѥ�᥿�ơ��֥�
+      *    APIパラメタテーブル
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPDATA2.INC".
       *
@@ -365,7 +365,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
            COPY    "MCPAREA".
@@ -373,7 +373,7 @@
            COPY    "LINKAREA".
        01  SCRAREA.
            COPY    "CPAPILSTV2.INC".
-      *V3  ���β�
+      *V3  一体化
            COPY    "API21V3SCRAREA.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -383,7 +383,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -402,18 +402,18 @@
       *
            MOVE    MCP-TERM            TO  WRK-MCP-TERM
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST17-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-APTXMLMAKE-SEC
            END-IF
       *
@@ -428,7 +428,7 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -436,7 +436,7 @@
            INITIALIZE                      XML-MEDICALAV3RES5
            MOVE    SPACE               TO  WRK-APIV3DATA-AREA
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -449,14 +449,14 @@
            END-STRING
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  MDCRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  MDCRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -466,15 +466,15 @@
                GO  TO         100-INIT-EXT
            END-IF
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTXMLREAD-SEC
       *
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            IF      WRK-ERRCD           =   SPACE
                PERFORM 1001-ORCSCOMMON-SEC
            END-IF
       *
-      *    ���ż��̥ơ��֥륻�å�
+      *    診療種別テーブルセット
            CALL    "ORCSSRYSYU"        USING
                                        MSYU-DATA-REC
       *
@@ -483,19 +483,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ������������
+      *    ＳＰＡ共通設定処理
       *****************************************************************
        1001-ORCSCOMMON-SEC           SECTION.
       *
-      *    �����ƥ����դǸ���
-      ***  �������򥷥��ƥ����դ�
+      *    システム日付で検索
+      ***  診療日をシステム日付へ
       *    IF      MDCREQ-PERFORM-DATE NOT =   SPACE
       *        MOVE    MDCREQ-PERFORM-DATE TO  WRK-HEN-DATE
       *        MOVE    SPACE               TO  WRK-HEN-TIME
       *        PERFORM 802-DAYHEN02-SEC
       *        MOVE    WRK-SYMD            TO  WRK-PERFORM-YMD
       *        PERFORM 20011-PERFORM-CHK-SEC
-      *        �������򥷥��ƥ����դ�
+      *        診療日をシステム日付へ
       *        IF      WRK-ERRCD           =   SPACE
       *            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
       *        END-IF
@@ -504,7 +504,7 @@
       *
       *
            MOVE    "API"               TO  SPA-MOTOPG
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -524,11 +524,11 @@
       *
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        1001-UID-GET-SEC     SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -539,7 +539,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -554,7 +554,7 @@
                                        TO  MDCRES-REQUEST-NUMBER
            MOVE    MDCREQ-REQUEST-NUMBER
                                        TO  MDCRES-RESPONSE-NUMBER
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF     (MDCREQ-ORCA-UID         NOT =   SPACE )
              AND  (MDCREQ-REQUEST-NUMBER   NOT =   "99"  )
                PERFORM 2009-PARA-INIT-SEC
@@ -564,36 +564,36 @@
       *
            EVALUATE    MDCREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        ��������
+      *        検索処理
                MOVE    1                   TO  FLG-SYORI
                IF      MDCREQ-ORCA-UID NOT =   SPACE
                    PERFORM 20019-PARA-ALLDELDEL-SEC
                END-IF
            WHEN    "02"
-      *        ��ǧ����
+      *        確認処理
                MOVE    2                   TO  FLG-SYORI
            WHEN    "03"
-      *        ��������
+      *        更新処理
                MOVE    3                   TO  FLG-SYORI
       *
-      *���å����
+      *ロック解除
            WHEN    "99"
-      *        ����������λ
+      *        強制処理終了
                PERFORM 2099-CANCEL-SEC
                GO      TO      200-MAIN-EXT
            WHEN    OTHER
                MOVE    "91"                TO  WRK-ERRCD
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            ELSE
-      *        �Խ�����
+      *        編集処理
                PERFORM 20010-INPUT-HEN-SEC
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
-      *        API������Ͽ
+      *        API処理登録
                IF     (WRK-ORCA-UID    NOT =   SPACE )
                  AND  (FLG-UIDOK           =   1     )
                    PERFORM 2008-APIPARAINS-SEC
@@ -605,13 +605,13 @@
       *
            EVALUATE    FLG-SYORI
            WHEN    1
-      *        ���������ֵѽ���
+      *        検索内容返却処理
                PERFORM 2002-SYORI-01-SEC
            WHEN    2
-      *        ��ǧ����
+      *        確認処理
                PERFORM 2003-SYORI-02-SEC
            WHEN    3
-      *        ��������
+      *        更新処理
                PERFORM 2004-SYORI-03-SEC
            END-EVALUATE
       *
@@ -620,7 +620,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������λ
+      *    強制処理終了
       *****************************************************************
        2099-CANCEL-SEC   SECTION.
       *
@@ -658,14 +658,14 @@
                MOVE    "81"                TO  WRK-ERRCD
                MOVE    APIV3SUB01-ERRMSG   TO  WRK-ERRMSG
            END-IF
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
            .
        2099-CANCEL-EXT.
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTXMLREAD-SEC   SECTION.
       *
@@ -674,7 +674,7 @@
            END-IF
            INITIALIZE                      XML-MEDICALAV3REQ5
            INITIALIZE                      XML-APIREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_medicalav3req5" TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -716,27 +716,27 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-APTXMLMAKE-SEC   SECTION.
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "����������λ"
+                       MOVE    "検索処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                    WHEN    2
-                       MOVE    "��ǧ������λ"
+                       MOVE    "確認処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                    WHEN    3
-                       MOVE    "����������λ"
+                       MOVE    "更新処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                    WHEN    9
-                       MOVE    "���������λ"
+                       MOVE    "解除処理終了"
                                            TO  MDCRES-API-RESULT-MSG
                END-EVALUATE
-      *        �ٹ𤢤�
+      *        警告あり
                IF      WRK-KEICD (1)   NOT =   SPACE
                 AND    WRK-ERRKBN          =   SPACE
                    MOVE    "W00"           TO  MDCRES-API-RESULT
@@ -744,14 +744,14 @@
                                            TO  WRK-RESULT-MSG
                    MOVE    SPACE           TO  MDCRES-API-RESULT-MSG
                    STRING  WRK-RESULT-MSG
-                           "���ٹ��å�����������ޤ���"
+                           "　警告メッセージがあります。"
                                            DELIMITED  BY  SPACE
                                            INTO  MDCRES-API-RESULT-MSG
                    END-STRING
                END-IF
            ELSE
                IF      WRK-ERRMSG          =   SPACE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
                IF      WRK-ERRKBN          =   SPACE
@@ -769,7 +769,7 @@
                END-IF
            END-IF
       *
-      *    ��˥��Խ�
+      *    ワーニング編集
            PERFORM 3001-WAINGMSG-HEN-SEC
       *
       *
@@ -815,7 +815,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ƥ��顼����˥��Խ�
+      *    各エラー、ワーニング編集
       *****************************************************************
        3001-WAINGMSG-HEN-SEC        SECTION.
       *
@@ -825,7 +825,7 @@
                               (WRK-KEICD (IDK) =   SPACE)
                MOVE    WRK-KEICD (IDK)     TO  WRK-WERRCD
                IF      WRK-KEIMSG(IDK)     =   SPACE
-      *            ���顼���ٹ��å�����
+      *            エラー・警告メッセージ
                    PERFORM 891-WARNING-MSG-SEC
                    MOVE    WRK-ERRMSG          TO  WRK-KEIMSG(IDK)
                END-IF
@@ -841,7 +841,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -851,27 +851,27 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ����������ƥ����å�
+      *    患者基本情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
-      *    ɬ�ܥ����å�
+      *    必須チェック
            PERFORM 20010-INIT-CHECK-SEC
       *
-      *    �����������å�
+      *    診療日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PERFORM-CHK-SEC
            END-IF
-      *    �����ֹ�����å�
+      *    患者番号チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PTNUM-CHK-SEC
-      *        ��¾�������
+      *        排他制御処理
                IF      WRK-ERRCD           =   SPACE
                    PERFORM 20019-LOCK-SYORI-SEC
                    IF      WRK-ERRCD           =   SPACE
-      *                �ѥ�᥿��Ͽ
+      *                パラメタ登録
                        MOVE    1               TO  FLG-UIDOK
                    END-IF
                END-IF
@@ -882,36 +882,36 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ����Ѵ��Խ�����
+      *    入力項目変換編集処理
       *****************************************************************
        20010-INPUT-HEN-SEC     SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    MDCREQ-PATIENTID    TO  MDCRES-PATIENTID
            MOVE    MDCREQ-PATIENTID    TO  WRK-PTNUM
-      *    ����ǯ��
+      *    診療年月
            MOVE    MDCREQ-PERFORM-YM   TO  MDCRES-PERFORM-YM
            MOVE    MDCREQ-PERFORM-YM   TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
            PERFORM 802-DAYHEN02-SEC
            MOVE    WRK-SYMD(1:6)       TO  WRK-PERFORM-YM
-      *    ̤������ϥ����ƥ��������
+      *    未設定時はシステム情報設定
            IF      WRK-PERFORM-YM      =   SPACE
                MOVE    SMCNDATE-YMD(1:6)   TO  WRK-PERFORM-YM
            END-IF
-      *    �����Ȥ���
+      *    １日とする
            MOVE    "01"                TO  WRK-PERFORM-DD
       *
-      *    ��������
+      *    診療日付
            MOVE    WRK-PERFORM-YMD     TO  SPA-SRYYMD
       *
-      *    �������򥷥��ƥ����ա��������դ�
+      *    診療日をシステム日付・診療日付へ
            MOVE    WRK-PERFORM-YMD     TO  SPA-SYSYMD
       *
-      *    ������ʬ��������
+      *    入外区分（入院）
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
-      *    ����UID
+      *    入力UID
            MOVE    MDCREQ-ORCA-UID     TO  MDCRES-ORCA-UID
            MOVE    MDCREQ-KARTE-UID    TO  MDCRES-KARTE-UID
       *
@@ -920,30 +920,30 @@
            EXIT.
       *
       *****************************************************************
-      *    ɬ�����ϥ����å�����
+      *    必須入力チェック処理
       *****************************************************************
        20010-INIT-CHECK-SEC    SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            IF      WRK-PTNUM           =   SPACE
                MOVE    "01"                TO  WRK-ERRCD
            END-IF
       *
-      *    UID���Żҥ���ơ�
+      *    UID（電子カルテ）
            IF      MDCREQ-KARTE-UID    =   SPACE
                MOVE    "04"                TO  WRK-ERRCD
            END-IF
-      *    �Żҥ���ƣգɣĥ����å�
+      *    電子カルテＵＩＤチェック
            IF      WRK-ERRCD           =   SPACE
                IF     (WRK-KARTE-UID       NOT =   SPACE  )
                  AND  (MDCREQ-KARTE-UID    NOT =   WRK-KARTE-UID )
-      *            ¾ü��������
+      *            他端末使用中
                    MOVE    "90"            TO  WRK-ERRCD
                    MOVE    ZERO            TO  FLG-UIDOK
                END-IF
            END-IF
       *
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF      MDCREQ-ORCA-UID   =   SPACE
                IF      MDCREQ-REQUEST-NUMBER NOT =   "01"
                    MOVE    "05"                TO  WRK-ERRCD
@@ -955,11 +955,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ե����å�
+      *    診療日付チェック
       *****************************************************************
        20011-PERFORM-CHK-SEC    SECTION.
       *
-      *    ���ե����å�����
+      *    日付チェックサブ
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -971,7 +971,7 @@
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    "11"                TO  WRK-ERRCD
            END-IF
-      *    H28.4.1����Ȥ���
+      *    H28.4.1からとする
            IF      WRK-PERFORM-YMD     <   "20160401"
                MOVE    "12"                TO  WRK-ERRCD
            END-IF
@@ -981,11 +981,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����å�
+      *    患者番号チェック
       *****************************************************************
        20011-PTNUM-CHK-SEC     SECTION.
       *
-      *    �����ֹ����
+      *    患者番号取得
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-PTNUM           TO  SPTID-PTNUM
@@ -1014,14 +1014,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾�����������
+      *    排他制御処理処理
       *****************************************************************
        20019-LOCK-SYORI-SEC        SECTION.
       *
-      *    �գɣĥ����ɼ�������
+      *    ＵＩＤコード取得処理
            PERFORM 20020-ORCAUID-SYORI-SEC
       *
-      *    ��¾�����å� & ���å�����
+      *    排他チェック & ロック処理
            PERFORM 990-LOCK-IN-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
                MOVE    "90"                TO  WRK-ERRCD
@@ -1035,19 +1035,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �գɣĥ����ɼ�������
+      *    ＵＩＤコード取得処理
       *****************************************************************
        20020-ORCAUID-SYORI-SEC        SECTION.
       *
-      *    UID�����ɽ���
+      *    UIDコード処理
            IF      MDCREQ-ORCA-UID     =   SPACE
-      *        UID�����ɼ�������
+      *        UIDコード取得処理
                PERFORM 1001-UID-GET-SEC
                MOVE    C-UID               TO  WRK-ORCA-UID
            ELSE
                MOVE    MDCREQ-ORCA-UID     TO  WRK-ORCA-UID
            END-IF
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
                    WRK-ORCA-UID        DELIMITED  BY  SPACE
@@ -1058,35 +1058,35 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǻ����ֵѽ���
+      *    診察料返却処理
       *****************************************************************
        2002-SYORI-01-SEC        SECTION.
       *
-      *    ���Ծ��������Խ�
+      *    患者情報内容編集
            PERFORM 20021-MDCRES-HEN-SEC
-      *    ��׾Ȳ�������
+      *    会計照会初期設定
            PERFORM 20022-J02INIT-SEC
       *
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20021-HENSYU-01-SEC
            END-IF
       *
-      *    �ֵѥ쥹�ݥ��ֹ�
+      *    返却レスポンス番号
            IF     (WRK-ERRCD           =   SPACE )
-      *        ���顼�ʤ��ϼ���
+      *        エラーなしは次へ
                MOVE    "02"            TO  MDCRES-RESPONSE-NUMBER
       *
-      *        SPA����Ͽ
+      *        SPAの登録
                PERFORM 2008-SPATMP-INS-SEC
            END-IF
-      *    API������Ͽ
+      *    API処理登録
            PERFORM 2008-APIPARAINS-SEC
       *
            .
        2002-SYORI-01-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ծ�����Ͼ����Խ�����
+      *    患者情報出力情報編集処理
       *****************************************************************
        20021-MDCRES-HEN-SEC     SECTION.
       *
@@ -1107,7 +1107,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��׾Ȳ����������
+      *    会計照会初期設定処理
       *****************************************************************
        20022-J02INIT-SEC     SECTION.
       *
@@ -1145,7 +1145,7 @@
       *
            MOVE    WRK-MCPAREA         TO  MCPAREA
       *
-      *    �������Ƚ��
+      *    入院中の判定
            MOVE    ZERO                TO  FLG-NYUINCHK
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL      (IDD     >   31  )
@@ -1160,7 +1160,7 @@
       *
            IF      (SPA-NAI-HKTERR     =   1   )  AND
                    (SPA-NAI-HKTKEI     =   ZERO)
-      *        �����������ʤ�
+      *        当月入院料なし
       ****     MOVE    "K077"              TO  SPA-ERRCD
                ADD     1                   TO  IDK
                MOVE    "W004"              TO  WRK-KEICD(IDK)
@@ -1170,11 +1170,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰������Խ�����
+      *    診療行為内容編集処理
       *****************************************************************
        20021-HENSYU-01-SEC        SECTION.
       *
-      *    J02PARA ���Խ�
+      *    J02PARA の編集
            INITIALIZE                      ORAPI021SUB3V3AREA
       *    J02CSR
            MOVE    "1"                 TO  ORAPISUB3-SYORIKBN
@@ -1183,7 +1183,7 @@
                                        SPA-AREA
                                        ORAPI021SUB3V3AREA
       *
-      *    �ơ��֥륪���С�
+      *    テーブルオーバー
       *    IF      ORAPISUB3-ERRCD     NOT =   SPACE
       *         ADD     1                  TO  IDK
       *         MOVE    "W001"             TO  WRK-KEICD(IDK)
@@ -1201,7 +1201,7 @@
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX          >   400 )
                          OR  (IDX          >   ORAPISUB3-ZAI-MAX)
-      *        �ݸ��ȹ礻�������
+      *        保険組合せ削除状態
                IF      ORAPISUB3-COMBINATION-MODE (IDX)
                                            =   "1"
                                            OR  "2"
@@ -1213,15 +1213,15 @@
                                             OR  "260" )
                   AND (ORAPISUB3-CHOUZAIAUTO(IDX)
                                             =   "1"   )
-      *            ����Ĵ�����ʼ�ư����ʬ��
+      *            入院調剤料（自動算定分）
                    PERFORM 200211-CHOZAI-HEN-SEC
                ELSE
-      *            ��������
+      *            投薬内容
                    PERFORM 200212-MEDICAL-HEN-SEC
                END-IF
            END-PERFORM
       *
-      *    �ơ��֥륪���С�
+      *    テーブルオーバー
            IF      WRK-WERRCD-1    NOT =   SPACE
                 ADD     1                   TO  IDK
                 MOVE    WRK-WERRCD-1        TO  WRK-KEICD(IDK)
@@ -1235,7 +1235,7 @@
                 MOVE    WRK-WERRCD-3        TO  WRK-KEICD(IDK)
            END-IF
       *
-      *    ����Ĵ�����ʼ�ư����ʬ�ˤʤ�
+      *    入院調剤料（自動算定分）なし
            IF      IDX2                =   ZERO
                 MOVE    "15"                TO  WRK-ERRCD
            END-IF
@@ -1244,7 +1244,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ���������Խ�����
+      *    投薬内容編集処理
       **************************************************************
        200212-MEDICAL-HEN-SEC           SECTION.
       *
@@ -1259,7 +1259,7 @@
            MOVE    ORAPISUB3-SRYKA-NAME (IDX)
                                        TO  MDCRES-MDC-DEP-CODE-NAME
                                                              (IDX1)
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            MOVE    ORAPISUB3-HKNCOMBI(IDX)
                                        TO  MDCRES-MDC-COMBINATION-NUMBER
                                                              (IDX1)
@@ -1269,12 +1269,12 @@
            MOVE    ORAPISUB3-PUBLIC-INS-INFO(IDX)
                                        TO  MDCRES-MDC-PUBLIC-INS-INFO
                                                              (IDX1)
-      *    �ݸ��ȹ礻����
+      *    保険組合せ状態
            MOVE    ORAPISUB3-COMBINATION-MODE (IDX)
                                        TO  MDCRES-MDC-COMBINATION-MODE
                                                              (IDX1)
       *
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    ORAPISUB3-SRYKBN (IDX)
                                        TO  MDCRES-MDC-CLASS-KBN
                                                              (IDX1)
@@ -1283,22 +1283,22 @@
            MOVE    ORAPISUB3-MDC-CLASS-NAME (IDX)
                                        TO  MDCRES-MDC-CLASS-NAME
                                                              (IDX1)
-      *    ������
+      *    剤点数
            MOVE    ORAPISUB3-MDC-POINT (IDX)
                                        TO  MDCRES-MDC-POINT
                                                              (IDX1)
-      *    �޶�ʬ�����ʬ��
+      *    剤区分（包括分）
            IF       ORAPISUB3-MDC-CODE (IDX)  =   "1"
                 MOVE    "True"         TO  MDCRES-INCLUSION-CLASS
                                                                 (IDX)
            END-IF
-      *    ��縡���θ�����
+      *    包括検査の検査数
       *    IF      ORAPISUB3-HKTKNSA-CNT (IDX) >   ZERO
       *         MOVE    ORAPISUB3-HKTKNSA-CNT (IDX)
       *                                   TO  MDCRES-HKTKNSA-CNT
       *                                                         (IDX)
       *    END-IF
-      *    ��������β��
+      *    算定日毎の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    ORAPISUB3-NAI-DAY (IDX 1 IDD)
@@ -1308,7 +1308,7 @@
                                        TO  MDCRES-MDC-CLASS-NUMBER
                                                           (IDX1 IDD)
            END-PERFORM
-      *    Ʊ����������
+      *    同時再入院日
            MOVE    ZERO                TO  IDD2
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
@@ -1325,7 +1325,7 @@
                END-IF
            END-PERFORM
       *
-      *    �������Խ�
+      *    剤内容編集
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   (IDY            >   50    )
                        OR  (ORAPISUB3-SRYCD (IDX IDY)
@@ -1339,7 +1339,7 @@
                MOVE    ORAPISUB3-PRSCRPT-NUMBER (IDX IDY)
                                        TO  MDCRES-PRSCRPT-NUMBER
                                                            (IDX1 IDY)
-      *        ñ�̥�����
+      *        単位コード
                MOVE    ORAPISUB3-PRSCRPT-TANICD (IDX IDY)
                                        TO  MDCRES-PRSCRPT-TANICD
                                                            (IDX1 IDY)
@@ -1352,7 +1352,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ����Ĵ�����ʼ�ư����ʬ�������Խ�����
+      *    入院調剤料（自動算定分）内容編集処理
       **************************************************************
        200211-CHOZAI-HEN-SEC           SECTION.
       *
@@ -1370,7 +1370,7 @@
            MOVE    ORAPISUB3-SRYKA-NAME (IDX)
                                        TO  MDCRES-CHZ-DEP-CODE-NAME
                                                              (IDX2)
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            MOVE    ORAPISUB3-HKNCOMBI(IDX)
                                        TO  MDCRES-CHZ-COMBINATION
                                                              (IDX2)
@@ -1380,11 +1380,11 @@
            MOVE    ORAPISUB3-PUBLIC-INS-INFO(IDX)
                                        TO  MDCRES-CHZ-PUBLIC-INS-INFO
                                                              (IDX2)
-      *    �ݸ��ȹ礻����
+      *    保険組合せ状態
            MOVE    ORAPISUB3-COMBINATION-MODE (IDX)
                                        TO  MDCRES-CHZ-COMBINATION-MODE
                                                              (IDX2)
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    ORAPISUB3-SRYKBN (IDX)
                                        TO  MDCRES-CHZ-CLASS-KBN
                                                              (IDX2)
@@ -1393,15 +1393,15 @@
            MOVE    ORAPISUB3-MDC-CLASS-NAME (IDX)
                                        TO  MDCRES-CHZ-CLASS-NAME
                                                              (IDX2)
-      *    ������
+      *    剤点数
            MOVE    ORAPISUB3-MDC-POINT (IDX)
                                        TO  MDCRES-CHZ-POINT (IDX2)
-      *    �޶�ʬ�����ʬ��
+      *    剤区分（包括分）
            IF       ORAPISUB3-MDC-CODE (IDX)  =   "1"
                 MOVE    "True"         TO  MDCRES-CHZ-INCLUSION-CLASS
                                                             (IDX2)
            END-IF
-      *    ��������β��
+      *    算定日毎の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    ORAPISUB3-NAI-DAY (IDX 1 IDD)
@@ -1411,7 +1411,7 @@
                                        TO  MDCRES-CHZ-CLASS-NUMBER
                                                           (IDX2 IDD)
            END-PERFORM
-      *    Ʊ����������
+      *    同時再入院日
            MOVE    ZERO                TO  IDD2
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
@@ -1428,7 +1428,7 @@
                END-IF
            END-PERFORM
       *
-      *    �������Խ�
+      *    剤内容編集
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   (IDY            >   50    )
                        OR  (ORAPISUB3-SRYCD (IDX IDY)
@@ -1448,17 +1448,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ����
+      *    確認処理
       *****************************************************************
        2003-SYORI-02-SEC        SECTION.
       *
-      *    PARA����SPA����
+      *    PARAからSPA取得
            PERFORM 20031-PARA-SPAHEN-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  2003-SYORI-02-EXT
            END-IF
       *
-      *    �����³���Ǥ��뤳��
+      *    前回の続きであること
            IF     (WRK-PARA-PTNUM      =   WRK-PTNUM  )
               AND (WRK-PARA-PTNUM      =   SPA-PTNUM  )
               AND (WRK-PARA-SRYYM      =   WRK-PERFORM-YM )
@@ -1473,7 +1473,7 @@
                MOVE    "09"                TO  WRK-ERRCD
            END-IF
       *
-      *    ���Ծ��������Խ�
+      *    患者情報内容編集
            PERFORM 20021-MDCRES-HEN-SEC
       *
            IF      WRK-ERRCD           =   SPACE
@@ -1481,11 +1481,11 @@
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        SPA����Ͽ
+      *        SPAの登録
                PERFORM 2008-SPATMP-INS-SEC
                MOVE    "03"            TO  MDCRES-RESPONSE-NUMBER
            END-IF
-      *    API������Ͽ
+      *    API処理登録
            PERFORM 2008-APIPARAINS-SEC
       *
            .
@@ -1493,17 +1493,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        2004-SYORI-03-SEC        SECTION.
       *
-      *    PARA����SPA����
+      *    PARAからSPA取得
            PERFORM 20031-PARA-SPAHEN-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  2004-SYORI-03-EXT
            END-IF
       *
-      *    �����³���Ǥ��뤳��
+      *    前回の続きであること
            IF     (WRK-PARA-PTNUM      =   WRK-PTNUM  )
               AND (WRK-PARA-PTNUM      =   SPA-PTNUM  )
               AND (WRK-PARA-SRYYM      =   WRK-PERFORM-YM )
@@ -1513,13 +1513,13 @@
                MOVE    "09"                TO  WRK-ERRCD
            END-IF
       *
-      *    ���Ծ��������Խ�
+      *    患者情報内容編集
            PERFORM 20021-MDCRES-HEN-SEC
       *
            MOVE    WRK-PARA-ZAINUM     TO  WRK-ZAINUM
       *
            IF      WRK-ERRCD           =   SPACE
-      *        SPA�Ȱ��פ��뤳��
+      *        SPAと一致すること
                MOVE    SPA-NAI-BANGO       TO  IDX
                IF     (IDX                 =   ZERO)
                 OR    (SPA-NAI-ZAINUM(IDX)
@@ -1532,39 +1532,39 @@
                PERFORM 20041-UPDATE-SYORI-SEC
            END-IF
       *
-      *    �ֵѥ쥹�ݥ��ֹ�
+      *    返却レスポンス番号
            IF      WRK-ERRCD           =   SPACE
-      *        ��λ
+      *        終了
                IF      FLG-CONTMODE        =   ZERO
                    PERFORM 2900-SYORI-END-SEC
                    MOVE    "00"            TO  MDCRES-RESPONSE-NUMBER
                ELSE
-      *        ��³
+      *        継続
                    PERFORM 20019-PARA-ALLDELDEL-SEC
       *
                    MOVE    "01"            TO  MDCRES-RESPONSE-NUMBER
-      *            API������Ͽ
+      *            API処理登録
                    PERFORM 2008-APIPARAINS-SEC
                END-IF
            ELSE
                MOVE    "02"                TO  MDCRES-RESPONSE-NUMBER
-      *        API������Ͽ
+      *        API処理登録
                PERFORM 2008-APIPARAINS-SEC
            END-IF
            .
        2004-SYORI-03-EXT.
            EXIT.
       *****************************************************************
-      *    �������ѹ������å�����
+      *    算定日変更チェック処理
       *****************************************************************
        20031-INPUTCHK-SEC        SECTION.
       *
-      *    ���������Խ�
+      *    送信内容編集
            PERFORM 20031-CHO-MDCRES-HEN-SEC
       *
-      *    ��¸�ߥ����å�
+      *    剤存在チェック
            PERFORM 20032-ZAINUM-CHKHEN-SEC
-      *    �����������å�
+      *    算定日チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200312-INPUT-DAY-CHK-SEC
            END-IF
@@ -1573,7 +1573,7 @@
        20031-INPUTCHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    送信内容編集処理
       *****************************************************************
        20031-CHO-MDCRES-HEN-SEC        SECTION.
       *
@@ -1583,29 +1583,29 @@
                                        TO  MDCRES-CHZ-ZAINUM (IDX2)
            MOVE    MDCREQ-CHZ-DEP-CODE
                                        TO  MDCRES-CHZ-DEP-CODE(IDX2)
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            MOVE    MDCREQ-CHZ-COMBINATION
                                        TO  MDCRES-CHZ-COMBINATION
                                                              (IDX2)
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    MDCREQ-CHZ-CLASS
                                        TO  MDCRES-CHZ-CLASS  (IDX2)
            MOVE    MDCREQ-CHZ-CLASS-NAME
                                        TO  MDCRES-CHZ-CLASS-NAME
                                                              (IDX2)
-      *    ��������β��
+      *    算定日毎の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    MDCREQ-CHZ-CLASS-NUMBER (IDD)
                                        TO  MDCRES-CHZ-CLASS-NUMBER
                                                           (IDX2 IDD)
-      *        ����ϥ����ˤ���
+      *        空白はゼロにする
                IF      MDCREQ-CHZ-CLASS-NUMBER (IDD)  =   SPACE
                    MOVE    "0"         TO  MDCRES-CHZ-CLASS-NUMBER
                                                           (IDX2 IDD)
                END-IF
            END-PERFORM
-      *    Ʊ����������
+      *    同時再入院日
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    MDCREQ-CHZ-REDAY  (IDD)
@@ -1615,7 +1615,7 @@
                                        TO  MDCRES-CHZ-RECLASS-NUMBER
                                                           (IDX2 IDD)
            END-PERFORM
-      *    �������Խ�
+      *    剤内容編集
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   (IDY            >   5     )
                        OR  (MDCREQ-CHZ-CODE (IDY)
@@ -1635,27 +1635,27 @@
        20031-CHO-MDCRES-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �������ѹ��������
+      *    算定日変更選択処理
       *****************************************************************
        20032-ZAINUM-CHKHEN-SEC        SECTION.
       *
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            PERFORM 200311-HKNCOMBI-CHK-SEC
-      *    ���ֹ���ͥ����å�
+      *    剤番号数値チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200311-ZAINUM-CHK-SEC
            END-IF
-      *    ���������ͥ����å�
+      *    算定日数値チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200311-DAY-CHK-SEC
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  20032-ZAINUM-CHKHEN-EXT
            END-IF
-      *    ���Ų�
+      *    診療科
            MOVE    MDCREQ-CHZ-DEP-CODE     TO WRK-SRYKA
       *
-      *    �оݺޥ����å�
+      *    対象剤チェック
            MOVE    ZERO                TO  IDX-Z
            PERFORM VARYING    IDX      FROM    1   BY  1
                    UNTIL     (IDX      >   ORAPISUB3-ZAI-MAX)
@@ -1677,7 +1677,7 @@
                        MOVE    IDX              TO  IDX-Z
                    END-IF
                END-IF
-      *        �����Ƥ�����������Х����å�����
+      *        剤内容の送信があればチェックする
                MOVE    ZERO            TO  FLG-CHK
                IF     (IDX-Z               >   ZERO )
                   AND ( MDCREQ-CHZ-CODE (1)    NOT =   SPACE )
@@ -1693,16 +1693,16 @@
            END-PERFORM
       *
            IF    IDX-Z             =   ZERO
-      *        �оݺޤʤ�
+      *        対象剤なし
                MOVE    "21"            TO  WRK-ERRCD
            ELSE
-      *        ���������԰���
+      *        診療内容不一致
                IF      FLG-CHK         =   1
                    MOVE    "22"            TO  WRK-ERRCD
                END-IF
                PERFORM 200311-MDCCHOZAI-HEN-SEC
            END-IF
-      *    SPA�ޥ����å�
+      *    SPA剤チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200311-J02ZAINUM-CHK-SEC
            END-IF
@@ -1710,7 +1710,7 @@
        20032-ZAINUM-CHKHEN-EXT.
            EXIT.
       *****************************************************************
-      *    �����������Խ�����
+      *    更新剤内容編集処理
       *****************************************************************
        200311-MDCCHOZAI-HEN-SEC          SECTION.
       *
@@ -1721,7 +1721,7 @@
            MOVE    ORAPISUB3-SRYKA-NAME (IDX-Z)
                                        TO  MDCRES-CHZ-DEP-CODE-NAME
                                                              (IDX2)
-      *    �ݸ��ȹ礻�ֹ�
+      *    保険組合せ番号
            MOVE    ORAPISUB3-HKNCOMBI(IDX-Z)
                                        TO  MDCRES-CHZ-COMBINATION
                                                              (IDX2)
@@ -1731,11 +1731,11 @@
            MOVE    ORAPISUB3-PUBLIC-INS-INFO(IDX-Z)
                                        TO  MDCRES-CHZ-PUBLIC-INS-INFO
                                                              (IDX2)
-      *    �ݸ��ȹ礻����
+      *    保険組合せ状態
            MOVE    ORAPISUB3-COMBINATION-MODE (IDX-Z)
                                        TO  MDCRES-CHZ-COMBINATION-MODE
                                                              (IDX2)
-      *    ���Ŷ�ʬ
+      *    診療区分
            MOVE    ORAPISUB3-SRYKBN (IDX-Z)
                                        TO  MDCRES-CHZ-CLASS-KBN
                                                              (IDX2)
@@ -1744,15 +1744,15 @@
            MOVE    ORAPISUB3-MDC-CLASS-NAME (IDX-Z)
                                        TO  MDCRES-CHZ-CLASS-NAME
                                                              (IDX2)
-      *    ������
+      *    剤点数
            MOVE    ORAPISUB3-MDC-POINT (IDX-Z)
                                        TO  MDCRES-CHZ-POINT (IDX2)
-      *    �޶�ʬ�����ʬ��
+      *    剤区分（包括分）
            IF       ORAPISUB3-MDC-CODE (IDX-Z)  =   "1"
                 MOVE    "True"         TO  MDCRES-CHZ-INCLUSION-CLASS
                                                             (IDX2)
            END-IF
-      *    �������Խ�
+      *    剤内容編集
            PERFORM VARYING IDY     FROM    1   BY  1
                    UNTIL   (IDY            >   50    )
                        OR  (ORAPISUB3-SRYCD (IDX-Z IDY)
@@ -1768,7 +1768,7 @@
                                                            (IDX2 IDY)
            END-PERFORM
       *
-      *    ��������β��
+      *    算定日毎の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    WRK-DAY  (1 IDD)
@@ -1778,7 +1778,7 @@
                                        TO  MDCRES-CHZ-CLASS-NUMBER
                                                           (IDX2 IDD)
            END-PERFORM
-      *    Ʊ����������
+      *    同時再入院日
            MOVE    ZERO                TO  IDD2
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
@@ -1798,7 +1798,7 @@
        200311-MDCCHOZAI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�ֹ���ͥ����å�
+      *    保険組合せ番号数値チェック
       *****************************************************************
        200311-HKNCOMBI-CHK-SEC          SECTION.
       *
@@ -1821,7 +1821,7 @@
        200311-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ֹ���ͥ����å�
+      *    剤番号数値チェック
       *****************************************************************
        200311-ZAINUM-CHK-SEC          SECTION.
       *
@@ -1842,12 +1842,12 @@
        200311-ZAINUM-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ֹ���ͥ����å�
+      *    剤番号数値チェック
       *****************************************************************
        200311-DAY-CHK-SEC          SECTION.
       *
            INITIALIZE                  WRK-DAY-G
-      *    ��������β��
+      *    算定日毎の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                INITIALIZE                      ORCSNUMAREA
@@ -1864,7 +1864,7 @@
                END-IF
            END-PERFORM
       *
-      *    Ʊ�����������β��
+      *    同日再入院日の回数
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                MOVE    ZERO                TO  IDD2
@@ -1881,13 +1881,13 @@
                    ELSE
                        MOVE    SNUM-OUTNUM         TO  IDD2
                    END-IF
-      *            �����������å�
+      *            算定日チェック
                    IF      IDD2                <   1   OR
                                                >   31
                        MOVE    "24"                TO  WRK-ERRCD
                    END-IF
                END-IF
-      *        ������
+      *        算定回数
                MOVE    ZERO                TO  WRK-SAIDAY
                INITIALIZE                      ORCSNUMAREA
                MOVE    MDCREQ-CHZ-RECLASS-NUMBER (IDD)
@@ -1906,13 +1906,13 @@
                  AND  (IDD2            NOT =   ZERO )
                    MOVE    WRK-SAIDAY      TO  WRK-DAY (3 IDD2)
                END-IF
-      *        Ʊ�����������λ��꤬���뤳��
+      *        同日再入院日の指定があること
                IF     (WRK-ERRCD           =   SPACE)
                  AND  (IDD2                =   ZERO )
                  AND  (WRK-SAIDAY          >   ZERO )
                    MOVE    "24"            TO  WRK-ERRCD
                END-IF
-      *        Ʊ�������������Ǥ��뤳��
+      *        同日再入院の日であること
                IF     (WRK-ERRCD           =   SPACE)
                  AND  (IDD2            NOT =   ZERO )
                    IF     (SPA-NAI-NYUIN (IDD2)    NOT =   3 )
@@ -1921,7 +1921,7 @@
                END-IF
            END-PERFORM
       *
-      *    ����ơ��֥��Խ�
+      *    算定テーブル編集
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200311-DAY-CHK-EXT
            END-IF
@@ -1929,13 +1929,13 @@
            PERFORM VARYING     IDD     FROM   1   BY  1
                    UNTIL       IDD     >   31
                IF      WRK-DAY (3 IDD)     >   ZERO
-      *            ��פ������ϡ�Ʊ�����������λ�����
+      *            合計がゼロは、同日再入院日の算定回数
                    IF      WRK-DAY (1 IDD)     =   ZERO
                        MOVE    WRK-DAY (3 IDD)
                                            TO  WRK-DAY (1 IDD)
                    END-IF
                END-IF
-      *        ��ײ��-Ʊ�������������
+      *        合計回数-同日再入院日回数
                IF      WRK-DAY (1 IDD)     <   WRK-DAY (3 IDD)
                    MOVE    "27"            TO  WRK-ERRCD
                ELSE
@@ -1947,7 +1947,7 @@
        200311-DAY-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �������ѹ������å�����
+      *    算定日変更チェック処理
       *****************************************************************
        200311-J02ZAINUM-CHK-SEC        SECTION.
       *
@@ -1969,7 +1969,7 @@
                                        =   WRK-HKNCOMBI)
               AND (SPA-NAI-SRYKA (IDX-CHK)
                                        =   WRK-SRYKA   )
-      *       SPA�Ȱ��פ��뤳��
+      *       SPAと一致すること
                CONTINUE
            ELSE
                MOVE    "22"            TO  WRK-ERRCD
@@ -2009,7 +2009,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ѹ������å�����
+      *    算定日変更チェック処理
       *****************************************************************
        200312-INPUT-DAY-CHK-SEC        SECTION.
       *
@@ -2068,18 +2068,18 @@
       *
            END-PERFORM
       *
-      *    ��绻�����Υ����å�
+      *    包括算定日のチェック
            IF      SPA-GMN-HKTMSG  NOT =   SPACE
                ADD     1               TO  IDK
                MOVE    "W005"          TO  WRK-KEICD (IDK)
                IF      SPA-JIHOKBN         =   "1"
-                   STRING  "������оݤ���������ޤ���"
+                   STRING  "出来高対象の日があります。"
                            SPA-GMN-HKTMSG
                                        DELIMITED BY  SIZE
                                        INTO    WRK-KEIMSG(IDK)
                    END-STRING
                ELSE
-                   STRING  "����оݤ���������ޤ���"
+                   STRING  "包括対象の日があります。"
                            SPA-GMN-HKTMSG
                                        DELIMITED BY  SIZE
                                        INTO    WRK-KEIMSG(IDK)
@@ -2095,7 +2095,7 @@
       *        MOVE    SPA-ERRCD       TO  MDCRES-MEDI-RESULT
       *        MOVE    SPA-ERRMSG      TO  MDCRES-MEDI-RESULT-MSG1
       **       IF      SPA-ERRCD        =   "0025"
-      *            STRING  "ͭ�����֡�"
+      *            STRING  "有効期間："
       *                    SPA-GMN-HKNCOMBMSG
       *                                DELIMITED  BY  SIZE 
       *                                INTO    MDCRES-MEDI-RESULT-MSG2
@@ -2107,7 +2107,7 @@
            EXIT.
       *
       *****************************************************************
-      *    SPA���ơ���������
+      *    SPA内容　取得処理
       *****************************************************************
        20031-PARA-SPAHEN-SEC        SECTION.
       *
@@ -2151,10 +2151,10 @@
                MOVE    "08"                TO  WRK-ERRCD
            END-IF
       *
-      *    ���̣ӣУ��ɤ߹���
+      *    画面ＳＰＡ読み込み
       *
            INITIALIZE                      SPA-SCR-REC
-      *    tbl_spa_tmp ����Ѥ���
+      *    tbl_spa_tmp を使用する
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
            MOVE    "J02"               TO  SPATMP-GYOUMUID
@@ -2174,13 +2174,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ѹ�����
+      *    算定日変更処理
       *****************************************************************
        20041-UPDATE-SYORI-SEC        SECTION.
       *
            MOVE    SPA-NAI-BANGO       TO  IDX
       *
-      *    ���Ų�ץơ��֥븡��
+      *    診療会計テーブル検索
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  ACCT-NYUGAIKBN
@@ -2207,7 +2207,7 @@
            PERFORM 990-DBCLOSE-SEC
            IF      FLG-SRYACCT          =   ZERO
       *
-      *        ���Ų�ץޥ������ѹ����������Ƴ�ǧ
+      *        診療会計マスター変更・診療内容確認
                PERFORM 200411-SRYACCT-KOUSIN-SEC
       *
                IF      WRK-ERRCD        =   SPACE
@@ -2236,29 +2236,29 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��������������
+      *    算定日更新処理
       *****************************************************************
        200411-SRYACCT-KOUSIN-SEC        SECTION.
       *
-      *    ����ѹ���������������ѹ�����
+      *    回数変更時、算定履歴を変更する
            IF      SPA-NAI-DAY-AREA (IDX)  NOT =   ACCT-DAY-AREA
-      *        �������Ƥ��ǧ���������򹹿�
+      *        診療内容を確認・算定履歴更新
                PERFORM 200411-SRYACT-CHK-SEC
            END-IF
       *
-      *    �޲��
+      *    剤回数
            MOVE    SPA-NAI-ZAIKAISU(IDX)   TO  ACCT-ZAIKAISU
-      *    ����ơ��֥�ʣ������飳������
+      *    回数テーブル（１日から３１日）
            MOVE    SPA-NAI-DAY-AREA (IDX)  TO  ACCT-DAY-AREA
            .
         200411-SRYACCT-KOUSIN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰١���������
+      *    診療行為　検索処理
       *****************************************************************
        200411-SRYACT-CHK-SEC        SECTION.
       *
-      *    ���������������Խ�
+      *    点数検索用日付編集
            MOVE    ACCT-SRYYM          TO  WRK-SRYYYMM
            MOVE    01                  TO  WRK-SRYDD
            PERFORM VARYING     IDX-D   FROM    1   BY  1
@@ -2269,7 +2269,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    ���Ź԰٥ޥ������ɤ߹���
+      *    診療行為マスター読み込み
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
@@ -2303,7 +2303,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                      AND  (SRY-AUTOKBN (IDZ)   =   "3"         )
                        MOVE    1                   TO  FLG-OK
       *
-      *                ������������å�
+      *                算定履歴チェック
                        MOVE    SRY-SRYCD (IDZ)     TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF      TNS-SANTEIRRKKBN    NOT =   ZERO
@@ -2320,7 +2320,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 990-DBCLOSE-SEC
       *
            IF      FLG-OK              =   ZERO
-      *        ����Ĵ�����κޤǤʤ�
+      *        入院調剤料の剤でない
                MOVE    "29"            TO  WRK-ERRCD
            END-IF
            .
@@ -2328,15 +2328,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �������򹹿�����
+      *    算定履歴更新処理
       *****************************************************************
        200411-SANTEI-UPD-SEC           SECTION.
       *
-      *    ������Ϥλ��оݳ�
+      *    包括入力の時対象外
            IF      ACCT-HKNCOMBI       =   "9999"
                GO      TO      200411-SANTEI-UPD-EXT
            END-IF
-      *    ����ʬ����Ͽ
+      *    今回分の登録
            INITIALIZE                  ORCSSANTEIAREA
            MOVE    "1"                 TO  SSANTEI-SYORI
            MOVE    "J02"               TO  SSANTEI-PG
@@ -2348,21 +2348,21 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ACCT-SRYKA          TO  SSANTEI-SRYKA
            MOVE    ZERO                TO  SSANTEI-MSANTEID
            MOVE    ZERO                TO  SSANTEI-MSANTEICNT
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            MOVE    ACCT-HKNCOMBI       TO  SPA-HKNCOMBINUM
-      *    ����
-      *    ������¤�ñ�̤�ʬ�ʳ��λ��������Խ�
+      *    数量
+      *    １日上限で単位が分以外の時、数量編集
            IF     (SRY-SRYSURYO(IDZ)   >   ZERO  )
                AND (TNS-JGNCNT1D       >   ZERO )
                AND (TNS-TANICD     NOT =   "001")
                MOVE    SRY-SRYSURYO(IDZ)   TO  SSANTEI-SRYSURYO
            END-IF
-      *    �ݸ������Խ�
+      *    保険内容編集
            PERFORM VARYING     IDH     FROM    1   BY  1
                    UNTIL       IDH     >   SPA-HKN-MAX
                IF      SPA-GMN-THKNCOMBINUM (IDH)
                                            =   SPA-HKNCOMBINUM
-      *            ϫ��Ƚ��
+      *            労災判定
                    MOVE    SPA-NAI-THKNKBN(IDH)    TO  SPA-HKNKBN
                    MOVE    SPA-NAI-TRSI-HKNKBN (IDH)
                                                    TO  SPA-RSI-HKNKBN
@@ -2371,7 +2371,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    ����ʬ
+      *    今回分
            PERFORM VARYING IDX-D       FROM    1   BY  1
                    UNTIL   IDX-D       >   31
                IF      SPA-NAI-DAY (IDX 1 IDX-D)  >   ZERO
@@ -2382,7 +2382,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                            TO  SSANTEI-DAY (IDX-D)
                END-IF
            END-PERFORM
-      *    ����ʬ
+      *    前回分
            PERFORM VARYING IDX-D       FROM    1   BY  1
                    UNTIL   IDX-D       >   31
                IF      ACCT-DAY (1 IDX-D)  >   ZERO
@@ -2399,11 +2399,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *     SPATMP����Ͽ����
+      *     SPATMPの登録処理
       *****************************************************************
        2008-SPATMP-INS-SEC            SECTION.
       *
-      *    �����¸�ե�������
+      *    一時保存ファイル削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "AP21"              TO  PARA-GYOUMUID
@@ -2425,7 +2425,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            ",KEY:" SPATMP-KEY
            END-IF
       *
-      *    TBL-SPATMP��¸
+      *    TBL-SPATMP保存
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
            MOVE    "AP21"              TO  SPATMP-GYOUMUID
@@ -2462,7 +2462,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        2008-SPATMP-INS-EXT.
            EXIT.
       *****************************************************************
-      *     API������Ͽ����
+      *     API処理登録処理
       *****************************************************************
        2008-APIPARAINS-SEC            SECTION.
       *
@@ -2478,18 +2478,18 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "del2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    ��Ͽ
+      *    登録
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    "AP21"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
            MOVE    "API21NV3"          TO  APIPARA-FILEMEI
            MOVE    1                   TO  APIPARA-EDANUM
-      *    �쥹�ݥ��ֹ桦�Żҥ����UID��¸
+      *    レスポンス番号・電子カルテUID保存
            MOVE    SPACE               TO  WRK-APIV3DATA-REC
            MOVE    MDCRES-RESPONSE-NUMBER
                                        TO  WRK-RESPONSE-NUMBER
-      *    �����У�
+      *    処理ＰＧ
            MOVE    "11"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-PERFORM-YM      TO  WRK-PARA-SRYYM
@@ -2519,7 +2519,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ������¸�ơ��֥��ɲ�
+      *    ＳＰＡ一時保存テーブル追加
       *****************************************************************
        20081-SPATMP-INSERT-SEC                SECTION.
       *
@@ -2539,11 +2539,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        20081-SPATMP-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ORCA-UID �������
+      *    ORCA-UID 初期処理
       *****************************************************************
        2009-PARA-INIT-SEC            SECTION.
       *
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    MDCREQ-ORCA-UID     TO  WRK-ORCA-UID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
@@ -2572,8 +2572,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF     (WRK-ERRCD               =   SPACE )
              AND  (MDCREQ-REQUEST-NUMBER   NOT =   "01"  )
-      *        �ꥯ�����ȣ����ʳ��ϡ�Ʊ��������³���Ǥ��뤳��
-      *        ���Ź԰���Ͽ�ν�����³���Ǥ��뤳��
+      *        リクエスト０１以外は、同じ処理の続きであること
+      *        診療行為登録の処理の続きであること
                IF      WRK-PARA-SYORIPG    NOT =   "11"
                    MOVE    "08"                TO  WRK-ERRCD
                END-IF
@@ -2583,11 +2583,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        2009-PARA-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�������
+      *    パラメタ削除処理
       *****************************************************************
        20019-PARA-ALLDELDEL-SEC        SECTION.
       *
-      *    �����¸�ե�������
+      *    一時保存ファイル削除
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
            MOVE    "AP21"              TO  SPATMP-GYOUMUID
@@ -2616,7 +2616,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                            ",KEY:" SPATMP-KEY
            END-IF
       *
-      *    �����¸�ե�������
+      *    一時保存ファイル削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "AP21"              TO  PARA-GYOUMUID
@@ -2647,16 +2647,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        20019-PARA-ALLDELDEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ������PARA�������¾�����
+      *    終了処理（PARA削除・排他解除）
       *****************************************************************
        2900-SYORI-END-SEC            SECTION.
       *
-      *    PARA���
+      *    PARA削除
            PERFORM 20019-PARA-ALLDELDEL-SEC
-      *    �������¾������
+      *    前回の排他制御解除
            PERFORM 990-LOCK-OUT-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
-               DISPLAY "���å��������"
+               DISPLAY "ロック解除失敗"
                MOVE    "81"            TO  WRK-ERRCD
            END-IF
       *
@@ -2665,7 +2665,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -2694,7 +2694,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -2716,201 +2716,201 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "�����ֹ椬̤����Ǥ�"
+               MOVE    "患者番号が未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "02"
-               MOVE    "������ʬ���顼"
+               MOVE    "処理区分エラー"
                                                TO  WRK-ERRMSG
       *    WHEN    "03"
-      *        MOVE    "�ɥ�������̤����Ǥ�"
+      *        MOVE    "ドクターが未設定です"
       *                                        TO  WRK-ERRMSG
            WHEN    "04"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ�"
+               MOVE    "電子カルテＵＩＤが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "05"
-               MOVE    "���륫�գɣĤ�̤����Ǥ�"
+               MOVE    "オルカＵＩＤが未設定です"
                                                TO  WRK-ERRMSG
            WHEN    "08"
-               STRING  "�����³����λ���Ƥ��ޤ���"
+               STRING  "初回接続が完了していません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "09"
-               STRING  "�����ν��֤��㤤�ޤ���"
-                       "��������ǽ�����ԤäƲ�������"
+               STRING  "処理の順番が違います。"
+                       "正しい順で処理を行って下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "10"
-               MOVE    "�����ֹ�˳������봵�Ԥ�¸�ߤ��ޤ���"
+               MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
            WHEN    "11"
-               MOVE    "�������������ǤϤ���ޤ���"
+               MOVE    "診療日が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "��������ʿ������ǯ������ʹߤǤϤ���ޤ���"
+               MOVE    "診療日が平成２８年４月１日以降ではありません"
                                                TO  WRK-ERRMSG
       **   WHEN    "13"
-      *        MOVE    "���Ųʥ��顼�Ǥ�"
+      *        MOVE    "診療科エラーです"
       *                                        TO  WRK-ERRMSG
            WHEN    "14"
-               STRING  "������ǤϤ���ޤ���"
+               STRING  "入院中ではありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
       *    WHEN    "15"
-      *        STRING  "�ݸ��ȹ礻�ֹ椬���ֳ��λ��꤬����ޤ���"
-      *                "�ݸ��ȹ礻�ֹ��ѹ�������ԤäƲ�������"
+      *        STRING  "保険組合せ番号が期間外の算定があります。"
+      *                "保険組合せ番号変更処理を行って下さい。"
       *                                        DELIMITED  BY  SIZE
       *                                        INTO    WRK-ERRMSG
       *        END-STRING
            WHEN    "15"
-               STRING  "��ư���ꤷ������Ĵ������¸�ߤ��ޤ���"
+               STRING  "自動算定した入院調剤料は存在しません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "17"
-               MOVE    "�ݸ��ȹ礻�ֹ椬���ͤǤϤ���ޤ���"
+               MOVE    "保険組合せ番号が数値ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "18"
-               MOVE    "���ֹ椬���ͤǤϤ���ޤ���"
+               MOVE    "剤番号が数値ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "20"
-               STRING  "�����礬�㤤�ޤ���"
+               STRING  "処理順が違います。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "21"
-               STRING  "�оݤκޤ�¸�ߤ��ޤ���"
+               STRING  "対象の剤が存在しません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "22"
-               MOVE    "�ޤ����Ƥ����פ��ޤ���"
+               MOVE    "剤の内容が一致しません。"
                                                TO  WRK-ERRMSG
            WHEN    "23"
-               MOVE    "�����������ͥ��顼�Ǥ�"
+               MOVE    "算定回数が数値エラーです"
                                                TO  WRK-ERRMSG
            WHEN    "24"
-               MOVE    "Ʊ���������������顼�Ǥ�"
+               MOVE    "同日再入院日がエラーです"
                                                TO  WRK-ERRMSG
            WHEN    "25"
-               MOVE    "Ʊ�����������λ����������ͥ��顼�Ǥ�"
+               MOVE    "同日再入院日の算定回数が数値エラーです"
                                                TO  WRK-ERRMSG
            WHEN    "26"
-               MOVE    "Ʊ�����������ǤϤ���ޤ���"
+               MOVE    "同日再入院日ではありません。"
                                                TO  WRK-ERRMSG
            WHEN    "27"
-               STRING  "��������Ʊ�����������λ������ʲ��Ǥ���"
+               STRING  "算定回数が同日再入院日の算定回数以下です。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "28"
-               MOVE    "���顼������ޤ���"
+               MOVE    "エラーがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "29"
-               MOVE    "�����оݤκޤǤϤ���ޤ���"
+               MOVE    "更新対象の剤ではありません。"
                                                TO  WRK-ERRMSG
       *
       *    WHEN    "30"
-      *        STRING  "������ܤ�����ޤ���"
-      *                "�����̤��ֵѤ��Ƥ���������"
+      *        STRING  "選択項目があります。"
+      *                "選択結果を返却してください。"
       *                                        DELIMITED  BY  SIZE
       *                                        INTO    WRK-ERRMSG
       *        END-STRING
       *
            WHEN    "30"
-               MOVE    "�����������顼�Ǥ���"
+               MOVE    "更新処理エラーです。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "80"
-               STRING  "����ǡ������ϥ��顼�Ǥ���"
-                       "������λ���Ʋ�������"
+               STRING  "一時データ出力エラーです。"
+                       "強制終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "81"
-               STRING  "����оݤ�����ޤ���"
+               STRING  "解除対象がありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
       *
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-      ******** MOVE    "������ʬ̤����"        TO  WRK-ERRMSG
-               MOVE    "�ꥯ�������ֹ�����"    TO  WRK-ERRMSG
+      ******** MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+               MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "�������Ƥ˸��꤬����ޤ���"
+               MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE   "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
        890-ERRCD-MSG-EXT.
            EXIT.
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        891-WARNING-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-WERRCD
-      *�ٹ�
+      *警告
            WHEN    "W001"
-               STRING  "�ݸ��ȹ礻�����ֳ��λ��꤬����ޤ���"
-                       "�ݸ��ȹ礻�ѹ�������ԤäƲ�������"
+               STRING  "保険組合せが期間外の算定があります。"
+                       "保険組合せ変更処理を行って下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "W002"
-               MOVE    "�����κ޿����������ʾ�Ȥʤ�ޤ�"
+               MOVE    "投薬の剤数が最大件数以上となります"
                                                TO  WRK-ERRMSG
            WHEN    "W003"
-               STRING  "����Ĵ�����κ޿����������ʾ�Ȥʤ�ޤ�"
+               STRING  "入院調剤料の剤数が最大件数以上となります"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "W004"
-               STRING  "����������������ꤵ��Ƥ��ޤ���"
-                       "�������������å��ϤǤ��ޤ���"
+               STRING  "当月の入院料が算定されていません。"
+                       "入院料包括チェックはできません。"
                                        DELIMITED   BY  SIZE
                                        INTO   WRK-ERRMSG
                END-STRING
@@ -2922,7 +2922,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    数値変換編集処理
       *****************************************************************
        810-NUMHENKAN-SEC             SECTION.
       *
@@ -2951,7 +2951,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      WRK-SURYO-Z3        NOT =   SPACE
                MOVE    "."                 TO  WRK-SURYO-Z2
            END-IF
-      *    ����
+      *    左詰
            MOVE    SPACE              TO  WRK-SURYO-HX
            MOVE    1                  TO  IDXR
            MOVE    ZERO               TO  WRK-S-MAX
@@ -2961,7 +2961,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    WRK-SURYO-X (IDXM:1)    TO  WRK-SURYO-HX
                                                        (IDXR:1)
                    COMPUTE IDXR            =   IDXR    +   1
-      *            ���
+      *            桁数
                    ADD     1               TO  WRK-S-MAX
                END-IF
            END-PERFORM
@@ -2970,7 +2970,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報取得
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -3001,19 +3001,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��¾�������
+      *    排他制御処理
       *****************************************************************
        990-LOCK-IN-SEC         SECTION.
       *
-      *    ��¾�������
+      *    排他制御処理
            MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "K02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
            MOVE    1                   TO  SLOCK-MODE
            MOVE    PTINF-PTID          TO  SLOCK-PTID
-      *    �Żҥ���ƥ���
+      *    電子カルテキー
            MOVE    MDCREQ-KARTE-UID    TO  SLOCK-KARTE-UID
-      *    API+���륫�գɣ� ��TERMID
+      *    API+オルカＵＩＤ をTERMID
            MOVE    SPA-TERMID          TO  MCP-TERM
       *
            CALL    "ORCSLOCK"          USING
@@ -3030,17 +3030,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��¾����������(���)
+      *    排他制御解除処理(削除)
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
-      *    ��¾����������
+      *    排他制御解除処理
       *    MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "K02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
            MOVE    ZERO                TO  SLOCK-PTID
            MOVE    3                   TO  SLOCK-MODE
-      *    API+���륫�գɣ� ��TERMID
+      *    API+オルカＵＩＤ をTERMID
            MOVE    SPA-TERMID          TO  MCP-TERM
       *
            CALL    "ORCSLOCK"          USING
@@ -3054,7 +3054,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-SEL-SEC         SECTION.
       *
@@ -3072,7 +3072,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -3081,7 +3081,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3098,7 +3098,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        930-SRYACT-RAED-SEC          SECTION.
       *
@@ -3115,7 +3115,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        930-SRYACT-RAED-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץơ��֥��ɹ�
+      *    診療会計テーブル読込
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -3133,7 +3133,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -3164,7 +3164,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_tensu"         TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ���þ���ξ�²������
+      *    附加情報の上限回数設定
            IF     (FLG-TENSU           =   ZERO )  AND
                   (TNS-SRYCD(1:1)      =   "1"  )
                PERFORM 9101-TENSUPLUS-SYORI-SEC
@@ -3173,7 +3173,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ����ղþ������Խ�����
+      *    点数マスタ付加情報より編集処理
       *****************************************************************
        9101-TENSUPLUS-SYORI-SEC          SECTION.
       *
@@ -3206,7 +3206,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "tbl_tensuplus"     TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    ��²��
+      *    上限回数
            IF      TNSP-SANTEIRRKKBN   =   1
                MOVE    TNSP-SANTEIRRKKBN   TO  TNS-SANTEIRRKKBN
                MOVE    TNSP-JGNCNT         TO  TNS-JGNCNT
@@ -3223,7 +3223,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -3241,7 +3241,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �У��ң��ǡ�����������
+      *    ＰＡＲＡデータ検索処理
       *****************************************************************
        9010-APIPARA-KEYREAD-SEC         SECTION.
       *
@@ -3272,7 +3272,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥��ɤ߹���
+      *    一時保存テーブル読み込み
       *****************************************************************
        9100-SPATMP-KEYREAD-SEC        SECTION.
       *
@@ -3295,7 +3295,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        9100-SPATMP-KEYREAD-EXT.
            EXIT.
       *****************************************************************
-      *    �����¸�ơ��֥��ɤ߹���
+      *    一時保存テーブル読み込み
       *****************************************************************
        990-SPATMP-READ-SEC        SECTION.
       *
@@ -3314,7 +3314,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���ơ��֥븡������
+      *    パラメータテーブル検索処理
       *****************************************************************
        900-PARA-CALL-SEC                SECTION.
       *
@@ -3330,7 +3330,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        900-PARA-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        910-SPATMP-CALL-SEC                SECTION.
       *
@@ -3345,7 +3345,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�CALL����
+      *    テーブルCALL処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -3359,7 +3359,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3373,7 +3373,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -3387,7 +3387,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

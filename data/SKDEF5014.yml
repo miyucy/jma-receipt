@@ -1,30 +1,30 @@
 kanri_cd    : "5014"
-name        : "°åÎÅ¶èÊ¬É½¼¨¾ğÊó"
+name        : "åŒ»ç™‚åŒºåˆ†è¡¨ç¤ºæƒ…å ±"
 class_cd    : "*"
 item_max    : 4
 item_list   :
 - item_no   : 1
   item      : "ZAINUM"
-  item_jp   : "ºŞÈÖ¹æ"
+  item_jp   : "å‰¤ç•ªå·"
   type      : "9"
   start     : 1
   length    : 8
   precision : 0
 - item_no   : 2
   item      : "SRYCD"
-  item_jp   : "¿ÇÎÅ¹Ô°Ù¥³¡¼¥É"
+  item_jp   : "è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰"
   type      : "X"
   start     : 9
   length    : 9
 - item_no   : 3
   item      : "DISPKBN"
-  item_jp   : "É½¼¨¶èÊ¬"
+  item_jp   : "è¡¨ç¤ºåŒºåˆ†"
   type      : "X"
   start     : 18
   length    : 1
 - item_no   : 4
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 19
   length    : 482

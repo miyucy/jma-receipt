@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,26 +17,26 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¾ðÊóÀßÄê ¶¦ÄÌ£Ó£Ð£Á(SPA-WORK ¤ÎÆâÍÆ)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æƒ…å ±è¨­å®š å…±é€šï¼³ï¼°ï¼¡(SPA-WORK ã®å†…å®¹)
       *          
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    MCC-Æ£¸¶     02/04/01  ¶èÊ¬¥³¡¼¥É¤ÎÄ¹¤µ¤òÊÑ¹¹ 
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    MCC-è—¤åŽŸ     02/04/01  åŒºåˆ†ã‚³ãƒ¼ãƒ‰ã®é•·ã•ã‚’å¤‰æ›´ 
       *****************************************************************
       *
        01  SPA-N21KYOUTU.
-      *·Ù¹ð¥á¥Ã¥»¡¼¥¸
+      *è­¦å‘Šãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
            05  SPA-N21IDCD                 PIC X(04).
-      *·Ù¹ð²èÌÌ¤è¤ê
+      *è­¦å‘Šç”»é¢ã‚ˆã‚Š
            05  SPA-N21ID1-AREA. 
                07  SPA-N21ID1-FLG          PIC X(02).
                07  SPA-N29-FLG             PIC X(02).
-      *»²¾È²èÌÌ¤è¤ê
+      *å‚ç…§ç”»é¢ã‚ˆã‚Š
            05  SPA-N22-FLG         PIC X(02).
            05  SPA-N22-GAZO        PIC X(01).
            05  SPA-N22-COPY        PIC X(01).
-      *¥¸¥ç¥Ö´ÉÍý
+      *ã‚¸ãƒ§ãƒ–ç®¡ç†
            05  SPA-N23-TBL-GROUP           PIC  X(14).
            05  SPA-N23-JOB-JOBID           PIC  9(07).
       *

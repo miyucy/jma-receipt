@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,25 +18,25 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSORDERPRT.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : �����������������ģº�������
-      *                     �ʣˣ����Ρ��ˣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  05/02/16    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 入院オーダー印刷ＤＢ作成サブ
+      *                     （Ｋ０２Ｎ，Ｋ０８）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  05/02/16    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL��¿��Ǽ 05/05/18  �������󥳥����ɲ�
-      *  01.00.02    NACL-¿��Ǽ  06/01/25  MONFUNC���ѹ�
-      *  03.05.00    NACL-¿��Ǽ  07/05/23  ���롼�׿����б�
-      *  04.01.00    NACL-¿��Ǽ  07/11/22  ��ྦ��̾�������б�
-      *  04.03.00    NACL-¿��Ǽ  08/08/26  ���������б��ɲ�
-      *  04.04.00    NACL-¿��Ǽ  08/12/22  ����⻻�ꥳ�����б�
-      *  04.05.00    NACL-¿��Ǽ  09/10/XX  �����Ϳ����ɲ��б�
-      *  04.07.00    NACL-¿��Ǽ  11/10/XX  Ʊ���������б�
-      *  04.08.00    NACL-¿��Ǽ  14/05/XX  �����¸�ǡ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL−多々納 05/05/18  処方せんコメント追加
+      *  01.00.02    NACL-多々納  06/01/25  MONFUNCへ変更
+      *  03.05.00    NACL-多々納  07/05/23  グループ診療対応
+      *  04.01.00    NACL-多々納  07/11/22  器材商品名コード対応
+      *  04.03.00    NACL-多々納  08/08/26  院外処方対応追加
+      *  04.04.00    NACL-多々納  08/12/22  出来高算定コード対応
+      *  04.05.00    NACL-多々納  09/10/XX  換算値数量追加対応
+      *  04.07.00    NACL-多々納  11/10/XX  同日再入院対応
+      *  04.08.00    NACL-多々納  14/05/XX  一時保存データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -44,7 +44,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᥿�ǡ���
+      *    パラメタデータ
       *    SELECT  PARA-FILE       ASSIGN  FILE-NAME2
       *                            ORGANIZATION    IS  SEQUENTIAL
       *                            FILE    STATUS  IS  STS-PARA.
@@ -52,7 +52,7 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ѥ�᥿�ǡ���
+      *    パラメタデータ
       *FD  PARA-FILE.
       *01  PARA-REC.
       *    03  PARA-KEY.
@@ -62,7 +62,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ѥ�᥿�ե�����̾
+      *    パラメタファイル名
       *01  FILE-NAME2.
       *    03  FILLER              PIC X(09)   VALUE   "/var/tmp/".
       *    03  FILLER              PIC X(07)   VALUE   "K01PARA".
@@ -70,11 +70,11 @@
       *    03  FILE-TERMID2        PIC X(64)   VALUE   SPACE.
       *    03  FILLER              PIC X(06)   VALUE   ".TXT".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
       *01  STS-AREA.
       *    03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-PARA            PIC 9(01).
@@ -90,7 +90,7 @@
            03  FLG-OK              PIC 9(01).
            03  FLG-COMMENT         PIC 9(01).
            03  FLG-SYOHOU-ARI      PIC 9(01).
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDX1                    PIC 9(04).
@@ -104,7 +104,7 @@
            03  IDX-KAI4            PIC 9(04).
            03  IDX-2               PIC 9(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SRYYMD              PIC X(08).
       *
@@ -128,24 +128,24 @@
                05  TBL-KAISU           PIC 9(03).
                05  TBL-DAY             PIC 9(02)
                                        OCCURS   31.
-      *�����¸
+      *回数保存
        01  TBL-ORDER-DAY-AREA.
            03  TBL-ORDER-DAY-G.
                05  TBL-ORDER-DAY       PIC 9(03)
                                        OCCURS   31.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����Ģɼ������
+      *    入院帳票オーダ
        01  ORDERPRT-REC.
            COPY    "CPORDERPRT.INC".
       *
-      *    ������Ź԰٥ޥ�����
+      *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
-      *    �����ޥ�����
+      *    点数マスタ−
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
@@ -156,29 +156,29 @@
        01  LNK-WKSRYACT-MAX           PIC 9(04).
       *
       *v4.8
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC". 
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       **** COPY    "CPORCMCP.INC".
       **** COPY    "ORCA-DBPATH".
@@ -187,24 +187,24 @@
       *
            COPY    "ORCA-SPA".
       *
-      *    ���Ź԰����Ϲ����Ѵ��ѥ�᥿�ʲ��������˻��ѡ�
+      *    診療行為入力項目変換パラメタ（回数の設定に使用）
       *    COPY    "CPORCSC97.INC".
       *
-      *    �ӣУ��ѥ�᥿��ORCSC97.CBL �Ѥ�DAMMY)
+      *    ＳＰＡパラメタ（ORCSC97.CBL 用のDAMMY)
       *01  SPA-SCR-REC.
       *    COPY    "CPK02SPASCR.INC".
-      *H25.12 �ѹ�
-      *    ������Ѵ��ѥ�᥿
+      *H25.12 変更
+      *    一括日変換パラメタ
            COPY    "CPORCSNDAYCHG.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
-      *    �����ؼ����󥪡�����������
+      *    入院指示せんオーダ作成サブ
            COPY    "CPORCSORDERPRT.INC".
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                    DIVISION    USING
@@ -213,7 +213,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                 SECTION.
       *
@@ -222,24 +222,24 @@
            INITIALIZE                  WRK-AREA
       *****INITIALIZE                  STS-AREA
            INITIALIZE                  LNK-ORDERPRT-RCD
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
-      *    �������Խ�ȯ����
+      *    キーの編集発行日
            MOVE    SMCNDATE-YMD        TO  LNK-ORDERPRT-PRINTYMD
-      *    ȯ�Ի���
+      *    発行時間
            MOVE    SMCNDATE-HMS        TO  LNK-ORDERPRT-PRINTHMS
       *
            EVALUATE    LNK-ORDERPRT-KBN
-      *        ������Ź԰٥ޥ���������
+      *        ワーク診療行為マスタより作成
                WHEN    "1"
                    PERFORM 100-WKSRYACT-SYORI-SEC
-      *        �ѥ�᥿������
+      *        パラメタより作成
                WHEN    "2"
                    PERFORM 200-PARA-SYORI-SEC
            END-EVALUATE
-      *    �����ȤΤߤξ�硢���
+      *    コメントのみの場合、削除
            IF      FLG-COMMENT         =   1
                IF      FLG-SYOHOU-ARI      =   ZERO
                    PERFORM 300-COMMENT-DELETE-SEC
@@ -251,7 +251,7 @@
            .
       *
       *****************************************************************
-      *    ������Ź԰٥ޥ�������������
+      *    ワーク診療行為マスタより作成処理
       *****************************************************************
        100-WKSRYACT-SYORI-SEC          SECTION.
       *
@@ -282,7 +282,7 @@
            MOVE    SPACE               TO  LNK-WKSRYACT-AREA
            PERFORM
                UNTIL   FLG-WKSRYACT   =   1
-      *        �������¸����
+      *        剤毎に保存する
                IF     (LNK-WKSRYACT-MAX   >    ZERO  )  AND
                       (LNK-WKSRY-ZAINUM(LNK-WKSRYACT-MAX)
                                       NOT =   WKSRY-ZAINUM)
@@ -313,7 +313,7 @@
            MOVE    "tbl_wksryact"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
-      *    �������¸����
+      *    剤毎に保存する
            IF      LNK-WKSRYACT-MAX   >    ZERO
                PERFORM 1001-ORDERPRT-SYORI-SEC
            END-IF
@@ -322,25 +322,25 @@
        100-WKSRYACT-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *   �����������������ޥ�����Ͽ����
+      *   入院オーダー印刷マスタ登録処理
       *****************************************************************
        1001-ORDERPRT-SYORI-SEC          SECTION.
       *
-      *    �оݤ�Ƚ��
+      *    対象の判定
            MOVE    ZERO                TO  FLG-SYORI
-      *    ���������ȯ��
+      *    入院処方箋発行
            IF      (LNK-ORDERPRT-SYOHOU    =   1   )  AND
                    (LNK-WKSRY-SRYKBN(1)    =   "21"
                                            OR  "22"
                                            OR  "23"
                                            OR  "14" )
-      *        �����������оݳ�
+      *        院外処方は対象外
                IF      (LNK-WKSRY-SRYSYUKBN(1) =   "212"
                                                OR  "222"
                                                OR  "232"
                                                OR  "148"
                                                OR  "149"
-      *H26.4       �׻�
+      *H26.4       臨時
                                                OR  "292"
                                                OR  "298"
                                                OR  "295")
@@ -349,39 +349,39 @@
                    MOVE     1                  TO  FLG-SYORI
                END-IF
            END-IF
-      *    ���ͽ����ȯ��
+      *    注射処方箋発行
            IF      (LNK-ORDERPRT-CHUSYA    =   1   )  AND
                    (LNK-WKSRY-SRYKBN(1)    =   "31"
                                            OR  "32"
                                            OR  "33" )
                MOVE     2                  TO  FLG-SYORI
            END-IF
-      *    �ؼ��ȯ��
+      *    指示箋発行
            IF      (LNK-ORDERPRT-SIJISEN   =   1   )  AND
                    (LNK-WKSRY-SRYKBN(1)    =   "40"
                                            OR  "80" )
                MOVE     3                  TO  FLG-SYORI
            END-IF
-      *    �������󥳥���
+      *    処方せんコメント
            IF      (LNK-ORDERPRT-SYOHOU    =   1   )  AND
                    (LNK-WKSRY-SRYSYUKBN(1) =   "980")
                MOVE     4                  TO  FLG-SYORI
            END-IF
-      *    ��ưȯ��ʬ���оݳ�
+      *    自動発生分は対象外
            IF      LNK-WKSRY-AUTOKBN (1 1) =   "3" 
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
       *
-      *    ��ɾʬ���оݳ�
+      *    薬評分は対象外
            IF      LNK-WKSRY-ZAIKBN  (1)   =   1
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
-      *    �������оݳ�
+      *    減点は対象外
            IF      LNK-WKSRY-ZAIKBN  (1)   =   2
                MOVE    ZERO                TO  FLG-SYORI
            END-IF
       *H28.9
-      *    ���������оݳ�
+      *    持参薬は対象外
            IF      LNK-WKSRY-ZAIKBN  (1)   =   3
                                            OR  4
                MOVE    ZERO                TO  FLG-SYORI
@@ -391,7 +391,7 @@
            IF      FLG-SYORI           =   ZERO
                CONTINUE
            ELSE
-      *        �������������
+      *        回数・日数決定
                PERFORM 1002-KAISU-NISSU-SEC
            END-IF
       *
@@ -400,16 +400,16 @@
            ELSE
                EVALUATE    FLG-SYORI
                    WHEN    1
-      *                ��������
+      *                院内処方箋
                        PERFORM 10031-SYOHOU-SYORI-SEC
                    WHEN    2
-      *                ���ͽ����
+      *                注射処方箋
                        PERFORM 10032-CHUSYA-SYORI-SEC
                    WHEN    3
-      *                �ؼ��
+      *                指示箋
                        PERFORM 10033-SIJISEN-SYORI-SEC
                    WHEN    4
-      *                ������
+      *                コメント
                        PERFORM 10034-COMMENT-SYORI-SEC
                END-EVALUATE
            END-IF
@@ -417,11 +417,11 @@
        1001-ORDERPRT-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ��������շ������
+      *    回数・日付決定処理
       *****************************************************************
        1002-KAISU-NISSU-SEC          SECTION.
       *
-      *    ��������շ���
+      *    回数・日付決定
            INITIALIZE                      TBL-KAISUU-AREA
            INITIALIZE                      TBL-ORDER-DAY-AREA
            MOVE    ZERO                TO  IDX-KAI1
@@ -438,9 +438,9 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    �ǡ��ǤιԤ��ʤ��ä���������ο������Ȥ���
+      *    ’＊’の行がなかった時、１回の診療日とする
            IF      TBL-KAISU (01)          =   ZERO
-      *        �����
+      *        回数計
                MOVE    LNK-WKSRY-ZAIKAIKEI (LNK-WKSRYACT-MAX )
                                            TO  TBL-KAISU (01)
                IF      TBL-KAISU (01)      =   ZERO
@@ -449,7 +449,7 @@
                MOVE    SPA-SRYYMD(7:2)     TO  IDX-KAI2
                MOVE    1                   TO  TBL-DAY   (01 IDX-KAI2)
            END-IF
-      *    ����������ʣ�����������β���Ȥ���
+      *    算定日が重複した時、前の回数とする
            PERFORM VARYING     IDX-KAI1    FROM    1   BY  1
                    UNTIL       IDX-KAI1    >   10
                PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
@@ -463,7 +463,7 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    �ǽ�λ������������ޥ��������ѡ�
+      *    最初の算定日（点数マスタ検索用）
            MOVE    SPA-SRYYMD          TO  WRK-SRYYMD
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
@@ -477,13 +477,13 @@
        1002-SAIHEN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *     ����������
+      *     回数決定処理
       *****************************************************************
        10021-KAISUU-SYORI-SEC              SECTION.
       *
       *    INITIALIZE                  ORCSC97AREA
       *    MOVE    SPACE               TO  SPA-SCR-REC
-      *    �У�̾
+      *    ＰＧ名
       *    MOVE    "K02N"              TO  LNK-SC97-PG
       *    MOVE    LNK-WKSRY-INPUTCD(IDX IDY)
       *                                TO  LNK-SC97-INPUTCD
@@ -502,11 +502,11 @@
                                        ORCSNDAYCHGAREA
            MOVE    ORCSNDAYCHG-ERRCD   TO  SPA-ERRCD
       *
-      *    ���
+      *    回数
            IF      ORCSNDAYCHG-KAISU   =   ZERO
                MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
-      *    �������λ�������ϣ���Ȥ���
+      *    外用薬の時、回数は１回とする
            IF      LNK-WKSRY-SRYKBN (01)   =   "23"
                MOVE    1               TO  ORCSNDAYCHG-KAISU
            END-IF
@@ -526,7 +526,7 @@
                END-IF
            END-PERFORM
       *
-      *    ������
+      *    算定日
            MOVE    ZERO                TO  FLG-DAY
            PERFORM VARYING     IDX-KAI2    FROM    1   BY  1
                    UNTIL       IDX-KAI2    >   31
@@ -545,11 +545,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������ٽ��Ͻ���
+      *    院内処方箋明細出力処理
       *****************************************************************
        10031-SYOHOU-SYORI-SEC              SECTION.
       *
-      *    ������Ƚ��
+      *    麻薬の判定
            MOVE    ZERO                TO  FLG-MAYAKU-ARI
            MOVE    ZERO                TO  FLG-MAYAKU-NASI
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -574,9 +574,9 @@
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    ���֡ʺ���ˣ������Ϣ�֡�
+      *    枝番（剤毎に１からの連番）
            MOVE    ZERO                TO  WRK-RENNUM
-      *    �����ʳ��������ޤʤ��λ�
+      *    麻薬以外か、薬剤なしの時
            IF     (FLG-MAYAKU-NASI     =   1   )  OR
                  ((FLG-MAYAKU-ARI      =   ZERO) AND
                   (FLG-MAYAKU-NASI     =   ZERO))
@@ -598,20 +598,20 @@
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *                ɽ���������оݳ�
+      *                表示コメント対象外
                        IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
                                                    =   "0086"
                            MOVE    ZERO            TO  FLG-OK
                        END-IF
       *!!
-      *                ����⻻�ꥳ�����оݳ�
+      *                出来高算定コード対象外
                        IF       LNK-WKSRY-SRYCD (IDX IDY)
                                                    =   "099999903"
                            MOVE    ZERO            TO  FLG-OK
                        END-IF
       *!!
                        IF       FLG-OK             =   1
-      *                    �׻�����
+      *                    臨時投薬
                            IF      LNK-WKSRY-SRYSYUKBN(IDX)(1:2)
                                                    =   "29"
                                MOVE    "3"             TO  WRK-PRTKBN
@@ -626,7 +626,7 @@
            END-IF
       *
            MOVE    ZERO                TO  WRK-RENNUM
-      *    ����
+      *    麻薬
            IF      FLG-MAYAKU-ARI      =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   LNK-WKSRYACT-MAX 
@@ -645,7 +645,7 @@
                                (FLG-MAYAKU-NASI    =   ZERO )
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *!               ��ྦ��̾
+      *!               器材商品名
                        IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:3)
                                                    =   "058")  AND
                                (FLG-MAYAKU-NASI    =   ZERO )
@@ -656,13 +656,13 @@
                                                    OR  "0"
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *                ɽ���������оݳ�
+      *                表示コメント対象外
                        IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
                                                    =   "0086"
                            MOVE    ZERO            TO  FLG-OK
                        END-IF
       *!!
-      *                ����⻻�ꥳ�����оݳ�
+      *                出来高算定コード対象外
                        IF       LNK-WKSRY-SRYCD (IDX IDY)
                                                    =   "099999903"
                            MOVE    ZERO            TO  FLG-OK
@@ -682,13 +682,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����Ƚ�����
+      *    麻薬判定処理
       *****************************************************************
        10039-MAYAKU-CHK-SEC              SECTION.
       *
            MOVE    LNK-WKSRY-SRYCD (IDX IDY)  TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
-      *    ����Ƚ��
+      *    麻薬判定
            IF      TNS-MADOKUKBN       =   1
                MOVE    1                   TO  FLG-MAYAKU
            END-IF
@@ -698,11 +698,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����˺��������Խ�����
+      *    剤毎に剤点数を編集処理
       *****************************************************************
        10030-ORDERPRT-HEN-SEC              SECTION.
       *
-      *    ���֡����֡ʺ���ˣ������Ϣ�֡�
+      *    剤番、枝番（剤毎に１からの連番）
            EVALUATE    WRK-PRTKBN
                WHEN     "1"
                    IF      WRK-RENNUM      =   ZERO
@@ -710,7 +710,7 @@
                    END-IF
                    MOVE    WRK-ORDERNUM-1  TO  WRK-ORDERNUM
                WHEN     "2"
-      *            ����
+      *            麻薬
                    IF      WRK-RENNUM      =   ZERO
                        ADD     1           TO  WRK-ORDERNUM-2
                    END-IF
@@ -746,17 +746,17 @@
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  ORDERPRT-SRYKA
            MOVE    SPA-HKNCOMBINUM     TO  ORDERPRT-HKNCOMBI
-      *    �����ƥ�����
+      *    システム日付
            MOVE    SPA-SYSYMD          TO  ORDERPRT-SYSYMD
-      *    Ģɼ����
+      *    帳票種類
            MOVE    WRK-PRTKBN          TO  ORDERPRT-PRTKBN
-      *    �ֹ�
+      *    番号
            MOVE    WRK-ORDERNUM        TO  ORDERPRT-ORDERNUM
-      *    ����
+      *    枝番
            MOVE    WRK-RENNUM          TO  ORDERPRT-RENNUM
-      *    ȯ����
+      *    発行日
            MOVE    SMCNDATE-YMD        TO  ORDERPRT-PRINTYMD
-      *    ȯ�Ի���
+      *    発行時間
            MOVE    SMCNDATE-HMS        TO  ORDERPRT-PRINTHMS
       *
            MOVE    LNK-ORDERPRT-DRCD   TO  ORDERPRT-DRCD
@@ -766,7 +766,7 @@
                                        TO  ORDERPRT-SRYSYUKBN
            MOVE    SPA-SRYYMD          TO  ORDERPRT-SRYYMD
            IF      WRK-RENNUM          =   1
-      *        ���
+      *        回数
                MOVE    TBL-ORDER-DAY-G     TO  ORDERPRT-DAY-G
            END-IF
       *
@@ -776,29 +776,29 @@
                                        TO  ORDERPRT-SRYSURYO
            MOVE    LNK-WKSRY-KANSURYO (IDX IDY)
                                        TO  ORDERPRT-KANSURYO
-      *    ���̡ʳ��Ѥθ��̿��̡�
-      *    ���Ѥβ�����Խ�
+      *    数量（外用の個別数量）
+      *    外用の回数を編集
            IF      LNK-WKSRY-SRYKBN (IDX)  =   "23"
-      *        ���̤κƷ׻�
+      *        数量の再計算
                IF      LNK-WKSRY-SRYKAISU (IDX IDY)  >   ZERO
                    COMPUTE ORDERPRT-SRYSURYO2
                                        =   LNK-WKSRY-SRYSURYO (IDX IDY)
                                        /   LNK-WKSRY-SRYKAISU (IDX IDY)
                END-IF
            END-IF
-      *    ���Ʋ�������Ѥθ��̲��
+      *    撮影回数・外用の個別回数
            MOVE    LNK-WKSRY-SRYKAISU (IDX IDY)
                                        TO  ORDERPRT-SRYKAISU
-      *    ���ϥ����ȡʥե꡼����������
+      *    入力コメント（フリーコメント等）
            MOVE    LNK-WKSRY-INPUTCOMENT(IDX IDY)
                                        TO  ORDERPRT-INPUTCOMENT
       *
            MOVE    SPA-TERMID          TO  ORDERPRT-TERMID
            MOVE    SPA-OPID            TO  ORDERPRT-OPID
-      *    ȯ����
+      *    発行日
            MOVE    SMCNDATE-YMD        TO  ORDERPRT-CREYMD
            MOVE    SMCNDATE-YMD        TO  ORDERPRT-UPYMD
-      *    ȯ�Ի���
+      *    発行時間
            MOVE    SMCNDATE-HMS        TO  ORDERPRT-UPHMS
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
@@ -817,11 +817,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        10030-ORDERPRT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   ���ͽ�������ٽ��Ͻ���
+      *   注射処方箋明細出力処理
       *****************************************************************
        10032-CHUSYA-SYORI-SEC              SECTION.
       *
-      *    ������Ƚ��
+      *    麻薬の判定
            MOVE    ZERO                TO  FLG-MAYAKU-ARI
            MOVE    ZERO                TO  FLG-MAYAKU-NASI
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -846,9 +846,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    ���֡ʺ���ˣ������Ϣ�֡�
+      *    枝番（剤毎に１からの連番）
            MOVE    ZERO                TO  WRK-RENNUM
-      *    �����ʳ�
+      *    麻薬以外
            IF      FLG-MAYAKU-NASI     =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   LNK-WKSRYACT-MAX 
@@ -883,7 +883,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "0085"
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *!               ��ྦ��̾
+      *!               器材商品名
                        IF       LNK-WKSRY-SRYCD (IDX IDY)(1:3)
                                                    =   "058"
                            MOVE    1               TO  FLG-OK
@@ -897,7 +897,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            MOVE    ZERO                TO  WRK-RENNUM
-      *    ����
+      *    麻薬
            IF      FLG-MAYAKU-ARI      =   1
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   LNK-WKSRYACT-MAX 
@@ -925,7 +925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                (FLG-MAYAKU-NASI    =   ZERO )
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *!               ��ྦ��̾
+      *!               器材商品名
                        IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:3)
                                                    =   "058")  AND
                                (FLG-MAYAKU-NASI    =   ZERO )
@@ -935,7 +935,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    =   "8"   )
                            MOVE    1               TO  FLG-OK
                        END-IF
-      *                �桼��������
+      *                ユーザコメント
                        IF      (LNK-WKSRY-SRYCD (IDX IDY)(1:4)
                                                    =   "0082"
                                                    OR  "0083"
@@ -955,11 +955,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        10032-CHUSYA-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *   �ؼ�����ٽ��Ͻ���
+      *   指示箋明細出力処理
       *****************************************************************
        10033-SIJISEN-SYORI-SEC              SECTION.
       *
-      *    ���֡ʺ���ˣ������Ϣ�֡�
+      *    枝番（剤毎に１からの連番）
            MOVE    ZERO                TO  WRK-RENNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX 
@@ -988,7 +988,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "8"
                        MOVE    1               TO  FLG-OK
                    END-IF
-      *            �桼��������
+      *            ユーザコメント
                    IF       LNK-WKSRY-SRYCD (IDX IDY)(1:4)
                                                    =   "0082"
                                                    OR  "0083"
@@ -996,7 +996,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    OR  "0085"
                        MOVE    1               TO  FLG-OK
                    END-IF
-      *!           ��ྦ��̾
+      *!           器材商品名
                    IF      LNK-WKSRY-SRYCD (IDX IDY)(1:3)
                                                =   "058"
                        MOVE    1               TO  FLG-OK
@@ -1013,11 +1013,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *   �����Ⱥ�������
+      *   コメント作成処理
       *****************************************************************
        10034-COMMENT-SYORI-SEC          SECTION.
       *
-      *    ���֡ʺ���ˣ������Ϣ�֡�
+      *    枝番（剤毎に１からの連番）
            MOVE    ZERO                TO  WRK-RENNUM
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   LNK-WKSRYACT-MAX 
@@ -1036,7 +1036,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿����������
+      *    パラメタより作成処理
       *****************************************************************
        200-PARA-SYORI-SEC          SECTION.
       *
@@ -1076,7 +1076,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                UNTIL   FLG-PARA            =   1
                IF     (PARA-DATA-REC   NOT =   SPACE      )
                    MOVE    PARA-DATA-REC   TO  WKSRYACT-REC
-      *            �������¸����
+      *            剤毎に保存する
                    IF     (LNK-WKSRYACT-MAX   >    ZERO  )  AND
                           (LNK-WKSRY-ZAINUM(LNK-WKSRYACT-MAX)
                                           NOT =   WKSRY-ZAINUM)
@@ -1102,7 +1102,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key5"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �������¸����
+      *    剤毎に保存する
            IF      LNK-WKSRYACT-MAX   >    ZERO
                PERFORM 1001-ORDERPRT-SYORI-SEC
            END-IF
@@ -1112,10 +1112,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ȤΤߤκ������
+      *    コメントのみの削除処理
       *****************************************************************
        300-COMMENT-DELETE-SEC         SECTION.
-      *    ����Ģɼ������������
+      *    入院帳票オーダー検索
            INITIALIZE                  ORDERPRT-REC
            MOVE    SPA-HOSPNUM         TO  ORDERPRT-HOSPNUM
            MOVE    SPA-PTID            TO  ORDERPRT-PTID
@@ -1123,13 +1123,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPA-NYUGAIKBN       TO  ORDERPRT-NYUGAIKBN
            MOVE    SPA-SRYKA           TO  ORDERPRT-SRYKA
            MOVE    SPA-HKNCOMBINUM     TO  ORDERPRT-HKNCOMBI
-      *    �����ƥ�����
+      *    システム日付
            MOVE    SPA-SYSYMD          TO  ORDERPRT-SYSYMD
-      *    ȯ����
+      *    発行日
            MOVE    SMCNDATE-YMD        TO  ORDERPRT-PRINTYMD
-      *    ȯ�Ի���
+      *    発行時間
            MOVE    SMCNDATE-HMS        TO  ORDERPRT-PRINTHMS
-      *    Ģɼ��ʬ
+      *    帳票区分
            MOVE    "1"                 TO  ORDERPRT-PRTKBN
       *
            MOVE    ORDERPRT-REC        TO  MCPDATA-REC
@@ -1148,7 +1148,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1177,7 +1177,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *v.4.8
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -1195,7 +1195,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1214,7 +1214,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1229,7 +1229,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

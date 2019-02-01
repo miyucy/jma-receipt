@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,102 +16,102 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������(�������)   COPY (CPSKYKOH.INC)              *
+      *    請求管理(公費情報)   COPY (CPSKYKOH.INC)              *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.03    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-ƣ��    13/09/20  �軰�Թ԰��б�
+      *  04.07.01    NACL-藤原    13/09/20  第三者行為対応
       *
-      *  04.08.01    NACL-ƣ��    17/04/10  ����ñ�̤Ǥ�������������
-      *                                     ��ϫ�ҽ�����Ϸ��ݽ����б�
-      *                                     �ݸ���ʬ�����ѹ��ܤ��ɲ�
+      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
+      *                                     保険区分検索用項目の追加
       ************************************************************
        01  SKYKOH-REC.
-      *�ˣţ�
+      *ＫＥＹ
            03  SKYKOH-KEY.
                05  SKYKOH-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  SKYKOH-HOSPNUM          PIC 9(2).
-      *����ǯ��
+      *診療年月
                    07  SKYKOH-SRYYM            PIC  9(06).
-      *������ʬ
+      *入外区分
                    07  SKYKOH-NYUGAIKBN        PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  SKYKOH-PTID             PIC  9(10).
-      *�쥻�ץȲʡʶ���λ������򥻥åȡ�
+      *レセプト科（空白の時ゼロをセット）
                    07  SKYKOH-RECEKA           PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                    07  SKYKOH-TEISYUTUSAKI     PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                    07  SKYKOH-RECESYUBETU      PIC  X(04).
-      *�ݸ����ֹ�
+      *保険者番号
                    07  SKYKOH-HKNJANUM         PIC  X(08).
-      *�����ʬ�������ݸ��ΤȤ��Τߡ�
+      *補助区分（船員保険のときのみ）
                    07  SKYKOH-HOJOKBN-KEY      PIC  X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                    07  SKYKOH-KOHID-KEY        PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  SKYKOH-TEKSTYMD         PIC  X(08).
-      *ʬ���ʬ
+      *分割区分
                    07  SKYKOH-RECEIPT-KBN      PIC  X(10).
-      *Ϣ�ֹ�(1��4)
+      *連番号(1〜4)
                05  SKYKOH-RENNUM           PIC  9(02).
-      *�������
+      *公費情報
            03  SKYKOH-KOHINF.
-      *������ݸ��ֹ�
+      *公費−保険番号
                05  SKYKOH-KOHNUM           PIC  X(03).
-      *�������
+      *公費情報
            03  SKYKOH-KOHIDINF.
-      *����ݸ���ɣ�
+      *公費−公費ＩＤ
                05  SKYKOH-KOHID            PIC  9(10).
-      *����������
+      *実日数情報
            03  SKYKOH-JNISSUINF.
-      *������
+      *実日数
                05  SKYKOH-JNISSU           PIC  9(02).
-      *���Ŷ�ʬ����������
+      *診療区分別点数情報
            03  SKYKOH-SRYKBNINF           OCCURS  45.
-      *������������
+      *明細点数情報
                05  SKYKOH-TENSUINF.
-      *��������
+      *明細点数
                    07  SKYKOH-TENSU       PIC  S9(08).
-      *�����������
+      *合計点数情報
            03  SKYKOH-TOTALTENINF.
-      *�������
+      *合計点数
                05  SKYKOH-TOTALTEN        PIC S9(08).
-      *��ô��۾���
+      *負担金額情報
            03  SKYKOH-FTNMONEYINF.
-      *��ô���
+      *負担金額
                05  SKYKOH-FTNMONEY        PIC S9(09).
-      *��ô��ۡʰ�����ô�ۡ�
+      *負担金額（一部負担額）
                05  SKYKOH-FTNMONEY-FTN    PIC S9(09).
-      *��ô��ۡʹ����ۡ�
+      *負担金額（控除額）
                05  SKYKOH-FTNMONEY-KOJ    PIC S9(09).
       *
-      *�������������
+      *食事療養費情報
            03  SKYKOH-SHOKUJIINF.
-      *��������
+      *食事日数
                05  SKYKOH-SHOKUJINISSU    PIC  9(02).
-      *����������
+      *食事療養費
                05  SKYKOH-SHOKUJIRYOYOHI  PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                05  SKYKOH-SHOKUJIFTN      PIC  9(09).
       *
-      *���ް�����ô�����
+      *薬剤一部負担金情報
            03  SKYKOH-YKZFTNINF.
-      *���ް�����ô��
+      *薬剤一部負担金
                05  SKYKOH-YKZFTN          PIC  9(05).
-      *������ʧ���ظ����ѹ���
+      *審査支払機関検索用項目
            03  SKYKOH-XXTEISYUTUSAKI      PIC 9(01).
-      *�ݸ��ֹ渡���ѹ���
+      *保険番号検索用項目
            03  SKYKOH-XXHKNNUM            PIC X(03).
-      *�ݸ���ʬ�����ѹ���
+      *保険区分検索用項目
            03  SKYKOH-XXHKNKBN-RSI        PIC X(01).

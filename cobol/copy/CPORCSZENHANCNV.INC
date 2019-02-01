@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,44 +15,44 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    Á´³Ñ¢ªÈ¾³ÑÊÑ´¹ÍÑ¥Ñ¥é¥á¥¿      COPY (CPORCSZENHANCNV.INC)
-      *                                  »ÈÍÑ¥×¥í¥°¥é¥à (ORCSZENHANCNV)
-      *    ÀßÄê¹àÌÜ
-      *      ½èÍý¶èÊ¬  £±¡§ÎòÆü  £²¡§¿ô»ú
-      *      ÆþÎÏÊ¸»ú
+      *    å…¨è§’â†’åŠè§’å¤‰æ›ç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿      COPY (CPORCSZENHANCNV.INC)
+      *                                  ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSZENHANCNV)
+      *    è¨­å®šé …ç›®
+      *      å‡¦ç†åŒºåˆ†  ï¼‘ï¼šæ­´æ—¥  ï¼’ï¼šæ•°å­—
+      *      å…¥åŠ›æ–‡å­—
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSZENHANCNVAREA.
-      *    ½èÍý¶èÊ¬    £±¡§ÎòÆü
-      *                £²¡§¿ô»ú
-      *                £³¡§Ê¸»ú
+      *    å‡¦ç†åŒºåˆ†    ï¼‘ï¼šæ­´æ—¥
+      *                ï¼’ï¼šæ•°å­—
+      *                ï¼“ï¼šæ–‡å­—
            03  LNK-ZENHANCNV-SYORI           PIC X(01).
-      *    Éüµ¢¥³¡¼¥É
+      *    å¾©å¸°ã‚³ãƒ¼ãƒ‰
            03  LNK-ZENHANCNV-RC              PIC 9(01).
       *
-      *    ÆþÎÏ¾ðÊó
+      *    å…¥åŠ›æƒ…å ±
            03  LNK-ZENHANCNV-IN.
-      *        ÆþÎÏÊ¸»ú
+      *        å…¥åŠ›æ–‡å­—
                05  LNK-ZENHANCNV-IN-DATA     PIC X(50).
-      *        ÆþÎÏ¥Á¥§¥Ã¥¯Ê¸»ú¿ô
+      *        å…¥åŠ›ãƒã‚§ãƒƒã‚¯æ–‡å­—æ•°
                05  LNK-ZENHANCNV-IN-LEN      PIC 9(02).
-      *        ÆþÎÏÊ¸»ú¿ô 
+      *        å…¥åŠ›æ–‡å­—æ•° 
                05  LNK-ZENHANCNV-IN-LEN1     PIC 9(02).
       *
-      *    ½ÐÎÏ¾ðÊó
+      *    å‡ºåŠ›æƒ…å ±
            03  LNK-ZENHANCNV-OUT.
-      *        ÆüÉÕ¡ÊÀ¾Îñ¡Ë
+      *        æ—¥ä»˜ï¼ˆè¥¿æš¦ï¼‰
                05  LNK-ZENHANCNV-OT-SYMD    PIC X(08).
-      *        ÆüÉÕ¡ÊÏÂÎñ¡Ë
+      *        æ—¥ä»˜ï¼ˆå’Œæš¦ï¼‰
                05  LNK-ZENHANCNV-OT-WYMD    PIC X(07).
-      *        ÆüÉÕ¡ÊÉ½¼¨¡Ë
+      *        æ—¥ä»˜ï¼ˆè¡¨ç¤ºï¼‰
                05  LNK-ZENHANCNV-OT-GYMD    PIC X(09).
-      *        Ê¸»ú
+      *        æ–‡å­—
                05  LNK-ZENHANCNV-OT-DATA    PIC X(25).
       *        
                05  LNK-ZENHANCNV-OT-LEN     PIC 9(02).
-      *        ¿ô»ú
+      *        æ•°å­—
                05  LNK-ZENHANCNV-OT-NUM     PIC 9(18).

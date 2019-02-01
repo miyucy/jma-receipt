@@ -15,50 +15,50 @@ xml_patientmodv3req5 {
 		BirthDate		varchar(10);
 		Sex			varchar(1);
         };
-#---    ¸øÈñÁªÂò¾ğÊó
+#---    å…¬è²»é¸æŠæƒ…å ±
 	PublicInsurance_Information	{
-#---        ¸øÈñ£É£Ä
+#---        å…¬è²»ï¼©ï¼¤
             PublicInsurance_Id			varchar(10);
             PublicInsurance_Class		varchar(03);
-#---        ¼õµë¼ÔÈÖ¹æ
+#---        å—çµ¦è€…ç•ªå·
             PublicInsuredPerson_Number		varchar(20);
-#---        ³«»ÏÆü
+#---        é–‹å§‹æ—¥
             Certificate_IssuedDate		varchar(10);
         };
-#---    ¸øÈñÉéÃ´³Û¾ğÊó¡Ê¥ê¥¯¥¨¥¹¥È¡á£³¡Ë
+#---    å…¬è²»è² æ‹…é¡æƒ…å ±ï¼ˆãƒªã‚¯ã‚¨ã‚¹ãƒˆï¼ï¼“ï¼‰
 	Pi_Money_Information	{
             Pi_Money_Mode			varchar(6);
 	    Pi_Money_Info 	{
-#---            ½èÍı¶èÊ¬
+#---            å‡¦ç†åŒºåˆ†
             	Pi_Money_Line_Mode		varchar(6);
-#---            Ï¢ÈÖ
+#---            é€£ç•ª
             	Pi_Money_Number			varchar(03);
-#---            ³«»ÏÆü
+#---            é–‹å§‹æ—¥
             	Pi_Money_StartDate		varchar(10);
-#---            ½ªÎ»Æü
+#---            çµ‚äº†æ—¥
             	Pi_Money_ExpiredDate		varchar(10);
-#---            ¾å¸Â³Û£±
+#---            ä¸Šé™é¡ï¼‘
             	Pi_Money_Money1			varchar(7);
-#---            ¾å¸Â³Û£²
+#---            ä¸Šé™é¡ï¼’
             	Pi_Money_Money2			varchar(7);
             	} [300];
         };
-#---    ÉéÃ´³ÛÁªÂò¾ğÊó
+#---    è² æ‹…é¡é¸æŠæƒ…å ±
 	Pi_Money_Sel_Information	{
-#---        ÁªÂòÈÖ¹æ
+#---        é¸æŠç•ªå·
             Pi_Money_Sel_Number			varchar(3);
-#---        ³«»ÏÆü
+#---        é–‹å§‹æ—¥
             Pi_Money_Sel_StartDate		varchar(10);
         };
-#---    Â¾°ìÉôÉéÃ´³Û¾ğÊó
+#---    ä»–ä¸€éƒ¨è² æ‹…é¡æƒ…å ±
 	Pi_Etc_Money_Information	{
             Pi_Etc_Money_Mode			varchar(6);
 	    Pi_Etc_Money_Info 	{
-#---            Ç¯·îÆü
+#---            å¹´æœˆæ—¥
             	Pi_Etc_Money_Date		varchar(10);
-#---            Æş³°¶èÊ¬
+#---            å…¥å¤–åŒºåˆ†
 		Pi_Etc_Money_InOut 		varchar(01);
-#---            ÉéÃ´¶â³Û
+#---            è² æ‹…é‡‘é¡
 		Pi_Etc_Money_Money		varchar(7);
             	} [100];
         };

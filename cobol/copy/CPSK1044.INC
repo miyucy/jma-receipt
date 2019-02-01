@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,48 +16,48 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         �����ƥ�����ޥ���     (CPSK1044.INC)  
-      *         �ʣ���������                            
-      *         Ģɼ���ե��åȾ���                  
+      *         システム管理マスタ     (CPSK1044.INC)  
+      *         （１０４４）                            
+      *         帳票オフセット情報                  
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  SYS-1044-REC.
            03  SYS-1044-KEY.
                05  SYS-1044-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-1044-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-1044-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-1044-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-1044-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-1044-TBL.
-      *Ģɼ�ɣġʣ�������
+      *帳票ＩＤ（ｍｏｎｐｅ）
                05  SYS-1044-FORMID      PIC  X(20).
-      *���ϥץ��̾
+      *出力プリンタ名
                05  SYS-1044-PRTNM       PIC  X(16).
-      *���ե��åȡʣ�������
+      *オフセット（ｘ方向）
                05  SYS-1044-OFFSET-X    PIC  X(05).
-      *���ե��åȡʣ�������
+      *オフセット（ｙ方向）
                05  SYS-1044-OFFSET-Y    PIC  X(05).
-      *ͽ��
+      *予備
            03  SYS-1044-YOBI            PIC  X(454).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-1044-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-1044-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-1044-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-1044-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-1044-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-1044-UPD-KEY.
                05  SYS-1044-UPD-HOSPNUM     PIC 9(2).
                05  SYS-1044-UPD-KANRICD     PIC X(04).

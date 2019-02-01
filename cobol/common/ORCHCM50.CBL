@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHCM50.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ´µ¼ÔÅÐÏ¿
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼«ÈñÆâÌõÌÀºÙ½ñ
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  06/12/18    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ‚£è€…ç™»éŒ²
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : è‡ªè²»å†…è¨³æ˜Žç´°æ›¸
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  06/12/18    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      * 03.05.00     NACL-ÂÀÅÄ    07.05.29 ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      * 03.05.00     NACL-å¤ªç”°    07.05.29 ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -35,7 +35,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥Õ¥¡¥¤¥ë
+      *    è¨ºç™‚è¡Œç‚ºãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  HCM50SRY-FILE   ASSIGN   HCM50F01
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
@@ -45,25 +45,25 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥Õ¥¡¥¤¥ë
+      *    è¨ºç™‚è¡Œç‚ºãƒ•ã‚¡ã‚¤ãƒ«
        FD  HCM50SRY-FILE.
            COPY "CPORCHCM50SRY.INC".
       *
        WORKING-STORAGE             SECTION.
       *
-      *    Ä¢É¼
+      *    å¸³ç¥¨
            COPY    "HCM50.INC".
       *
-      *    ½èÍýÂÐ¾Ý´µ¼Ô¥Õ¥¡¥¤¥ë
+      *    å‡¦ç†å¯¾è±¡æ‚£è€…ãƒ•ã‚¡ã‚¤ãƒ«
            COPY    "CPCOMMONDAT3.INC"
                                            REPLACING   //TMPFLPARA//
                                            BY          //HCM50F01//.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-HCM50F01        PIC X(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-HCM50SRY        PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -71,18 +71,18 @@
            03  FLG-PTINF           PIC 9(01).
            03  FLG-END             PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX-LINE            PIC 9(05).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-PAGE            PIC 9(03).
            03  CNT-LINE            PIC 9(03).
            03  CNT-OUT             PIC 9(03).
            03  CNT-MEISAI          PIC 9(03).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SRYYMD          PIC X(08).
            03  WRK-SYMD            PIC X(08).
@@ -107,7 +107,7 @@
            03  KEY-SKYSTYMD        PIC X(08).
            03  KEY-SKYEDYMD        PIC X(08).
       *
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³
        01  PO-AREA.
            03  PO-IN               PIC X(25).
            03  PO-OT               PIC X(100).
@@ -117,65 +117,65 @@
            03  CONST-LINE-MAX      PIC 9(05)   VALUE   69.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
            COPY    "CPSYSKANRI.INC".
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¡Ý´ðËÜ¾ðÊó 
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’åŸºæœ¬æƒ…å ± 
            COPY    "CPSK1001.INC".
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀè
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’æ‰€åœ¨åœ°ã€é€£çµ¡å…ˆ
            COPY    "CPSK1002.INC".
       *
-      *    ½ÐÎÏÀè¥×¥ê¥ó¥¿Ì¾³ä¤êÅö¤Æ¾ðÊó
+      *    å‡ºåŠ›å…ˆãƒ—ãƒªãƒ³ã‚¿åå‰²ã‚Šå½“ã¦æƒ…å ±
            COPY    "CPSK1031.INC".
       *
-      *    °åÎÅµ¡´ØÊÔ½¸¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±
            COPY    "CPSK1900.INC".
       *
-      *    °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢åç§°ç·¨é›†æƒ…å ±
            COPY    "CPSK1901.INC".
       *
-      *    °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢ä½æ‰€ç·¨é›†æƒ…å ±
            COPY    "CPSK1902.INC".
       *
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü¥Ñ¥é¥á¥¿
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSFDEL.INC".
       *
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÊÔ½¸¥Ñ¥é¥á¥¿
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ¥·¥§¥ëÍÑÎÎ°è
+      *    ã‚·ã‚§ãƒ«ç”¨é ˜åŸŸ
            COPY    "CPSHELLTBL.INC".
       *
            COPY    "CPORCHCM50S01.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                    SECTION.
       *
@@ -191,7 +191,7 @@
                                                ORCHCM50AREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -207,7 +207,7 @@
            .
       *
       *****************************************************************
-      *    ½é´ü½èÍý
+      *    åˆæœŸå‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -220,14 +220,14 @@
            INITIALIZE                  KEY-AREA
            INITIALIZE                  PO-AREA
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¡Ý´ðËÜ¾ðÊóÆÉ¤ß¹þ¤ß
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’åŸºæœ¬æƒ…å ±èª­ã¿è¾¼ã¿
            MOVE    "1001"          TO  WRK-KANRICD
            MOVE    "*"             TO  WRK-KBNCD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-1001-REC
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSP-NAME (1)
       *
-      *    °åÎÅµ¡´Ø¾ðÊó¡Ý½êºßÃÏ¡¢Ï¢ÍíÀèÆÉ¤ß¹þ¤ß
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’æ‰€åœ¨åœ°ã€é€£çµ¡å…ˆèª­ã¿è¾¼ã¿
            MOVE    "1002"          TO  WRK-KANRICD
            MOVE    "*"             TO  WRK-KBNCD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
@@ -235,13 +235,13 @@
            MOVE    SYS-1002-ADRS       TO  WRK-HOSP-ADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSP-TEL
       *
-      *    °åÎÅµ¡´ØÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
+      *    åŒ»ç™‚æ©Ÿé–¢ç·¨é›†æƒ…å ±èª­ã¿è¾¼ã¿
            MOVE    "1900"          TO  WRK-KANRICD
            MOVE    "*"             TO  WRK-KBNCD
            PERFORM 900-SYSKANRI-KEY10-SEL-SEC
            MOVE    SYSKANRI-REC    TO  SYS-1900-REC
            IF    ( SYS-1900-PRTKBN (24)    NOT =   SPACE )
-      *        °åÎÅµ¡´ØÌ¾¾ÎÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
+      *        åŒ»ç™‚æ©Ÿé–¢åç§°ç·¨é›†æƒ…å ±èª­ã¿è¾¼ã¿
                MOVE    "1901"      TO  WRK-KANRICD
                MOVE    SYS-1900-PRTKBN (25)
                                    TO  WRK-KBNCD
@@ -251,7 +251,7 @@
                    MOVE    SYS-1901-HOSPNAME1  TO  WRK-HOSP-NAME (1)
                    MOVE    SYS-1901-HOSPNAME2  TO  WRK-HOSP-NAME (2)
                END-IF
-      *        °åÎÅµ¡´Ø½»½êÊÔ½¸¾ðÊóÆÉ¤ß¹þ¤ß
+      *        åŒ»ç™‚æ©Ÿé–¢ä½æ‰€ç·¨é›†æƒ…å ±èª­ã¿è¾¼ã¿
                MOVE    "1902"      TO  WRK-KANRICD
                MOVE    SYS-1900-PRTKBN (25)
                                    TO  WRK-KBNCD
@@ -265,10 +265,10 @@
                END-IF
            END-IF
       *
-      *    ´µ¼Ô¾ðÊóÆÉ¤ß¹þ¤ß
+      *    æ‚£è€…æƒ…å ±èª­ã¿è¾¼ã¿
            PERFORM 900-PTINF-KEY-SEL-SEC
       *
-      *    ´µ¼ÔÈÖ¹æÆÉ¤ß¹þ¤ß
+      *    æ‚£è€…ç•ªå·èª­ã¿è¾¼ã¿
            PERFORM 900-PTNUM-KEY-SEL-SEC
       *
            INITIALIZE                      HCM50F01-BASENAME
@@ -293,7 +293,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÊÔ½¸½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†å‡¦ç†
       *****************************************************************
        1001-PROGRAM-OPTION-SEC     SECTION.
       *
@@ -309,7 +309,7 @@
        1001-PROGRAM-OPTION-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÊÔ½¸½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†å‡¦ç†
       *****************************************************************
        10011-ORCSPRGOPTION-SEC     SECTION.
       *
@@ -329,7 +329,7 @@
        10011-ORCSPRGOPTION-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -373,7 +373,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼«Èñ¹àÌÜÊÔ½¸¥µ¥Ö¸Æ½Ð½èÍý
+      *    è‡ªè²»é …ç›®ç·¨é›†ã‚µãƒ–å‘¼å‡ºå‡¦ç†
       *****************************************************************
        2001-ORCHCM50S01-CALL-SEC   SECTION.
       *
@@ -394,7 +394,7 @@
        2001-ORCHCM50S01-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Ø¥Ã¥À¡Ê¥Õ¥Ã¥¿¡ËÊÔ½¸½èÍý
+      *    ãƒ˜ãƒƒãƒ€ï¼ˆãƒ•ãƒƒã‚¿ï¼‰ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-HEAD-SEC                   SECTION.
       *
@@ -406,9 +406,9 @@
            COMPUTE CNT-PAGE    =   CNT-PAGE    +   1
       *
            IF    ( HCM50SRY-NYUGAIKBN  =   "1" )
-               MOVE    "¡ÊÆþ±¡¡Ë"      TO  HCM50-NYUGAI
+               MOVE    "ï¼ˆå…¥é™¢ï¼‰"      TO  HCM50-NYUGAI
            ELSE
-               MOVE    "¡Ê³°Íè¡Ë"      TO  HCM50-NYUGAI
+               MOVE    "ï¼ˆå¤–æ¥ï¼‰"      TO  HCM50-NYUGAI
            END-IF
       *
            MOVE    ORCHCM50-STRSRYYMD  TO  WRK-SYMD
@@ -439,16 +439,16 @@
            MOVE    HCM50SRY-SKYEDYMD   TO  KEY-SKYEDYMD
       *
            IF    ( ORCHCM50-SUMKBN =   "1" )
-               MOVE    "¿ÇÎÅ·î"        TO  HCM50-LBLSRYYMD
+               MOVE    "è¨ºç™‚æœˆ"        TO  HCM50-LBLSRYYMD
            ELSE
-               MOVE    "¿ÇÎÅÆü"        TO  HCM50-LBLSRYYMD
+               MOVE    "è¨ºç™‚æ—¥"        TO  HCM50-LBLSRYYMD
            END-IF
       *
            .
        2001-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    ÌÀºÙÊÔ½¸½èÍý
+      *    æ˜Žç´°ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-BODY-SEC                   SECTION.
       *
@@ -469,7 +469,7 @@
        2001-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    ÌÀºÙÊÔ½¸½èÍý
+      *    æ˜Žç´°ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-BODY-SEC              SECTION.
       *
@@ -489,17 +489,17 @@
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-EDTYMD1 (5:2)  TO  HCM50-SRYYMD
                                                         (CNT-LINE)(1:2)
-                       MOVE    "·î"               TO  HCM50-SRYYMD
+                       MOVE    "æœˆ"               TO  HCM50-SRYYMD
                                                         (CNT-LINE)(3:2)
                        MOVE    WRK-EDTYMD1 (8:2)  TO  HCM50-SRYYMD
                                                         (CNT-LINE)(5:2)
-                       MOVE    "Æü¡Á"             TO  HCM50-SRYYMD
+                       MOVE    "æ—¥ã€œ"             TO  HCM50-SRYYMD
                                                         (CNT-LINE)(7:4)
                        MOVE    HCM50SRY-SKYEDYMD  TO  WRK-SYMD
                        PERFORM 800-SEIWA-HEN-SEC
                        MOVE    WRK-EDTYMD1 (8:2)  TO  HCM50-SRYYMD
                                                         (CNT-LINE)(11:2)
-                       MOVE    "Æü"               TO  HCM50-SRYYMD
+                       MOVE    "æ—¥"               TO  HCM50-SRYYMD
                                                         (CNT-LINE)(13:2)
                    ELSE
                        MOVE    HCM50SRY-SKYSTYMD  TO  WRK-SYMD
@@ -525,7 +525,7 @@
        20011-BODY-EXT.
            EXIT.
       *****************************************************************
-      *    ºÇ½ª¹Ô¥á¥Ã¥»¡¼¥¸ÊÔ½¸½èÍý
+      *    æœ€çµ‚è¡Œãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-LASTMES-SEC                SECTION.
       *
@@ -537,16 +537,16 @@
                    COMPUTE WRK-LINE    =   CONST-LINE-MAX  +   1
                END-IF
       *
-               STRING  "¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡"  DELIMITED   BY  SIZE
-                       "¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡"  DELIMITED   BY  SIZE
-                       "°Ê²¼Í¾Çò"              DELIMITED   BY  SIZE
+               STRING  "ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€"  DELIMITED   BY  SIZE
+                       "ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€"  DELIMITED   BY  SIZE
+                       "ä»¥ä¸‹ä½™ç™½"              DELIMITED   BY  SIZE
                INTO    HCM50-SRYMEI    (WRK-LINE)
                END-STRING
       *
            ELSE
-               STRING  "¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡"  DELIMITED   BY  SIZE
-                       "¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡¡"  DELIMITED   BY  SIZE
-                       "¼¡¥Ú¡¼¥¸¤ØÂ³¤¯"        DELIMITED   BY  SIZE
+               STRING  "ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€"  DELIMITED   BY  SIZE
+                       "ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€"  DELIMITED   BY  SIZE
+                       "æ¬¡ãƒšãƒ¼ã‚¸ã¸ç¶šã"        DELIMITED   BY  SIZE
                INTO    HCM50-SRYMEI    (CONST-LINE-MAX + 1)
                END-STRING
            END-IF
@@ -555,7 +555,7 @@
        2001-LASTMES-EXT.
            EXIT.
       *****************************************************************
-      *    ¥ì¥¤¥ä¡¼¥ª¥×¥·¥ç¥óÊÔ½¸½èÍý
+      *    ãƒ¬ã‚¤ãƒ¤ãƒ¼ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-LAYLER-OPTION-SEC          SECTION.
       *
@@ -571,7 +571,7 @@
        2001-LAYLER-OPTION-EXT.
            EXIT.
       *****************************************************************
-      *    Ä¢É¼½ÐÎÏ½èÍý
+      *    å¸³ç¥¨å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2001-PRINT-SEC                  SECTION.
       *
@@ -591,13 +591,13 @@
        2001-PRINT-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»¡¡¡¡½èÍý
+      *    çµ‚äº†ã€€ã€€å‡¦ç†
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            MOVE    CNT-OUT         TO  ORCHCM50-OT-CNT
       *
-      *    ¥Õ¥¡¥¤¥ëºï½ü
+      *    ãƒ•ã‚¡ã‚¤ãƒ«å‰Šé™¤
            MOVE    ZERO        TO  IF-RESULT
            MOVE    HCM50F01    TO IF-FILENAME
            CALL    "orcfiledel"    USING
@@ -608,7 +608,7 @@
            EXIT.
       *
       *****************************************************************
-      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *    è¥¿æš¦æ—¥æœ¬èªžå¤‰æ›å‡¦ç†
       *****************************************************************
        800-SEIWA-HEN-SEC         SECTION.
       *
@@ -628,7 +628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÈÖ¹æ¸¡º÷
+      *    æ‚£è€…ç•ªå·æ¤œç´¢
       *****************************************************************
        900-PTNUM-KEY-SEL-SEC          SECTION.
       *
@@ -657,7 +657,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó¸¡º÷
+      *    æ‚£è€…æƒ…å ±æ¤œç´¢
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -686,7 +686,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¸¡º÷½èÍý(KEY10)
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†æ¤œç´¢å‡¦ç†(KEY10)
       *****************************************************************
        900-SYSKANRI-KEY10-SEL-SEC      SECTION.
       *
@@ -719,7 +719,7 @@
        900-SYSKANRI-KEY10-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Õ¥¡¥¤¥ëÆÉ¹þ½èÍý
+      *    è¨ºç™‚è¡Œç‚ºãƒ•ã‚¡ã‚¤ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        900-HCM50SRY-SEQ-READ-SEC       SECTION.
       *
@@ -734,7 +734,7 @@
        900-HCM50SRY-SEQ-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC          SECTION.
       *
@@ -751,7 +751,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC            SECTION.
       *
@@ -765,7 +765,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

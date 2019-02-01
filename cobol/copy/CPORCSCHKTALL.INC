@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥¯¥Ñ¥é¥á¥¿
+      *    å…¥é™¢æ–™åŒ…æ‹¬è¨ºç™‚ãƒã‚§ã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
       *                                      COPY (CPORCSCHKTALL.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *
        01  ORCSCHKTALLAREA.
-      *    ½èÍý¶èÊ¬¡Ê£±¡§Æþ±¡Êñ³ç¥Á¥§¥Ã¥¯¡Ë
+      *    å‡¦ç†åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢åŒ…æ‹¬ãƒã‚§ãƒƒã‚¯ï¼‰
            03  ORCSCHKTALL-KBN             PIC X(01).
-      *    ½èÍýÆüÉÕ
+      *    å‡¦ç†æ—¥ä»˜
            03  ORCSCHKTALL-SRYYMD.
                05  ORCSCHKTALL-SRYYM       PIC X(06).
                05  ORCSCHKTALL-SRYDD       PIC X(02).
-      *    ´µ¼Ô£É£Ä
+      *    æ‚£è€…ï¼©ï¼¤
            03  ORCSCHKTALL-PTID            PIC 9(10).
-      *    ÂÐ¾Ý¤Î¿ÇÎÅ¶èÊ¬
+      *    å¯¾è±¡ã®è¨ºç™‚åŒºåˆ†
            03  ORCSCHKTALL-HKTSRYKBN       PIC X(02).
            03  ORCSCHKTALL-HKTSRYSYUKBN    PIC X(03).
-      *    ÂÐ¾Ý¤Î¿ÇÎÅ¥³¡¼¥É
+      *    å¯¾è±¡ã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  ORCSCHKTALL-HKTSRYCD-G.
                05  ORCSCHKTALL-HKTSRYCD    PIC X(09)
                                            OCCURS   10.
       *
            03  ORCSCHKTALL-OUTAREA.
-      *        £±¡§Æþ±¡ÎÁÊñ³ç¤¢¤ê
+      *        ï¼‘ï¼šå…¥é™¢æ–™åŒ…æ‹¬ã‚ã‚Š
                05  ORCSCHKTALL-NYUHKTKBN       PIC 9(01).
-      *        £±¡§·îÆâ¤ËÊñ³ç¤¢¤ê
+      *        ï¼‘ï¼šæœˆå†…ã«åŒ…æ‹¬ã‚ã‚Š
                05  ORCSCHKTALL-NYUHKTCHK       PIC 9(01).
                05  ORCSCHKTALL-NYUHKT-G.
                    07  ORCSCHKTALL-NYUHKT-OCC  OCCURS   31.
-      *                £°¡§Êñ³ç¤Ê¤·¡¢£±¡§Êñ³ç¤¢¤ê¡¢£¹¡§Êñ³ç¥¨¥é¡¼
+      *                ï¼ï¼šåŒ…æ‹¬ãªã—ã€ï¼‘ï¼šåŒ…æ‹¬ã‚ã‚Šã€ï¼™ï¼šåŒ…æ‹¬ã‚¨ãƒ©ãƒ¼
                        09  ORCSCHKTALL-HKTCHKFLG   PIC 9(01).
-      *                Êñ³ç¶èÊ¬
+      *                åŒ…æ‹¬åŒºåˆ†
                        09  ORCSCHKTALL-NYUHKTCD    PIC X(03).
-      *        Æþ±¡ÎÁ»»ÄêÌµ¤·
+      *        å…¥é™¢æ–™ç®—å®šç„¡ã—
                05   ORCSCHKTALL-NYUERR         PIC 9(01).
       *

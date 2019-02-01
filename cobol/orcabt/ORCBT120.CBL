@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBT120.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æü¼¡Åý·×
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æü¼¡Åý·×¥Ç¡¼¥¿ÍÑ´ðËÜ¾ðÊóºîÀ®¡ÊÆþ±¡¡Ë
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/03/31    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ—¥æ¬¡çµ±è¨ˆ
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ—¥æ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ç”¨åŸºæœ¬æƒ…å ±ä½œæˆï¼ˆå…¥é™¢ï¼‰
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/03/31    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.01    NACL-Æ£¸¶    07/04/19  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.01    NACL-è—¤åŽŸ    07/04/19  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *
-      *  04.05.01    NACL-Æ£¸¶    12/07/02  ½»½êÍó¤ËÈÖÃÏÊý½ñ¤òÄÉ²Ã
+      *  04.05.01    NACL-è—¤åŽŸ    12/07/02  ä½æ‰€æ¬„ã«ç•ªåœ°æ–¹æ›¸ã‚’è¿½åŠ 
       *
-      *  04.08.01    NACL-Æ£¸¶    14/07/07  °ì»þ¥Ç¥£¥ì¥¯¥È¥êÂÐ±þ
+      *  04.08.01    NACL-è—¤åŽŸ    14/07/07  ä¸€æ™‚ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -39,24 +39,24 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    Æü¼¡Åý·×¥Ç¡¼¥¿
+      *    æ—¥æ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿
            SELECT  TOUKEI04-FILE   ASSIGN  TOUKEI04PARA
                                    ACCESS  MODE    IS  SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI04.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  TOUKEIERR-FILE  ASSIGN  TOUKEIERR
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    Æü¼¡Åý·×¥Ç¡¼¥¿
+      *    æ—¥æ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿
        FD  TOUKEI04-FILE.
        01  TOUKEI04-REC. 
            COPY    "CPTCF004.INC".
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  TOUKEIERR-FILE.
        01  TOUKEIERR-REC           PIC X(200). 
       *
@@ -70,7 +70,7 @@
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //TOUKEIERR//.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  STS-AREA.
            03  STS-TOUKEI04                    PIC X(02).
            03  STS-TOUKEIERR                   PIC X(02).
@@ -97,7 +97,7 @@
            03  FLG-SYORI                       PIC 9(01).
            03  FLG-CHK-END                     PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-IN                          PIC 9(06).
            03  CNT-TOUKEI04                    PIC 9(06).
@@ -115,7 +115,7 @@
            03  KOH-IDX                         PIC 9(03).
       *
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -147,7 +147,7 @@
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
-      *    ´µ¼ÔËè
+      *    æ‚£è€…æ¯Ž
            03  WRK-HENSYU-AREA.
                05  WRK-KIHONKBN            PIC 9(01).
                05  WRK-JIKANKBN            PIC 9(01).
@@ -159,115 +159,115 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
-      *    °åÎÅµ¡´Ø¾ðÊó
+      *    åŒ»ç™‚æ©Ÿé–¢æƒ…å ±
            COPY  "CPSK1001.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±
            COPY    "CPSK1009.INC".
       *     
-      *    ¸©Æâ°·¤¤ÊÝ¸±¼Ô¾ðÊó
+      *    çœŒå†…æ‰±ã„ä¿é™ºè€…æƒ…å ±
            COPY    "CPSK1033.INC".
       *
-      *    ¿ÇÎÅ²Ê¾ðÊó
+      *    è¨ºç™‚ç§‘æƒ…å ±
            COPY    "CPSK1005.INC".
       *     
            COPY    "CPSK2005.INC".
       *
-      *    ´µ¼ÔÅÐÏ¿µ¡Ç½À©¸æ¾ðÊó
+      *    æ‚£è€…ç™»éŒ²æ©Ÿèƒ½åˆ¶å¾¡æƒ…å ±
            COPY  "CPSK1017.INC".
       *
-      *    ¼õ¿ÇÍúÎò
+      *    å—è¨ºå±¥æ­´
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ¿ÇÎÅ²ñ·×
+      *    è¨ºç™‚ä¼šè¨ˆ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù
+      *    è¨ºç™‚è¡Œç‚º
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ´µ¼ÔÊÝ¸±¾ðÊó
+      *    æ‚£è€…ä¿é™ºæƒ…å ±
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ´µ¼Ô¸øÈñ¾ðÊó
+      *    æ‚£è€…å…¬è²»æƒ…å ±
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ÊÝ¸±¾ðÊó
+      *    ä¿é™ºæƒ…å ±
        01  HKNNUM-REC.
            COPY    "CPHKNNUM.INC".
       *
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ¼ýÇ¼¾ðÊó
+      *    åŽç´æƒ…å ±
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ÅÀ¿ô
+      *    ç‚¹æ•°
            COPY    "CPTENSU.INC".
       *
-      *    ´µ¼ÔÏ«ºÒÊÝ¸±¾ðÊó
+      *    æ‚£è€…åŠ´ç½ä¿é™ºæƒ…å ±
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ½»½ê¥Þ¥¹¥¿
+      *    ä½æ‰€ãƒžã‚¹ã‚¿
        01  ADRS-REC.
            COPY    "CPADRS.INC".
       *
-      *    Æþ±¡²ñ·×
+      *    å…¥é™¢ä¼šè¨ˆ
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
-      *    Æþ±¡²ñ·×ÊÔ½¸¥µ¥Ö
+      *    å…¥é™¢ä¼šè¨ˆç·¨é›†ã‚µãƒ–
            COPY    "CPORCHCM34S01.INC".
       *
-      *    ¸øÈñÉÕ²Ã¾ðÊó¼èÆÀ¥µ¥Ö
+      *    å…¬è²»ä»˜åŠ æƒ…å ±å–å¾—ã‚µãƒ–
            COPY    "CPORCSKOHPLUS.INC".
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    ¿ô»úÊÑ´¹ÎÎ°è
+      *    æ•°å­—å¤‰æ›é ˜åŸŸ
            COPY    "CPORCSNUM.INC".
-      *   ´µ¼ÔÈÖ¹æÊÑ´¹¥µ¥Ö
+      *   æ‚£è€…ç•ªå·å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSPTID.INC".
-      *   ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *   ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
-      *   ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+      *   ä¿é™ºç®—å®šç”¨å¹´é½¢ãƒ»å‰²åˆè¨ˆç®—ã‚µãƒ–
            COPY    "CPORCSAGECHK.INC".
-      *    Æü¼¡Åý·×ÍÑÆþ±¡¾ðÊó¼èÆÀ¥µ¥Ö
+      *    æ—¥æ¬¡çµ±è¨ˆç”¨å…¥é™¢æƒ…å ±å–å¾—ã‚µãƒ–
            COPY    "CPORCBT120SUB.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -282,7 +282,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -295,7 +295,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -336,18 +336,18 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBT120"      TO  JOB-PGID
-           MOVE    "Æü¼¡Åý·×¥Ç¡¼¥¿ºîÀ®¡ÊÆþ±¡¡Ë"
+           MOVE    "æ—¥æ¬¡çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ä½œæˆï¼ˆå…¥é™¢ï¼‰"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ¿ÇÎÅÇ¯·îÊÔ½¸
+      *    è¨ºç™‚å¹´æœˆç·¨é›†
            MOVE    WRK-PARA-SRYYMD     TO  WRK-SYMD
       *
-      *    °åÎÅµ¡´Ø£É£ÄÊÔ½¸
+      *    åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤ç·¨é›†
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -359,12 +359,12 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
-               MOVE    "°åÎÅµ¡´Ø¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿¡£"
+               MOVE    "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸã€‚"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊóÊÔ½¸
+      *    æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ç·¨é›†
            INITIALIZE                  SYS-1009-REC
            MOVE    "1009"              TO  SYS-1009-KANRICD
            MOVE    "*"                 TO  SYS-1009-KBNCD
@@ -386,7 +386,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  SPA-1009-HJNKSIRENNUMKETA
            ELSE
-               MOVE    "´µ¼ÔÈÖ¹æ¹½À®´ÉÍý¾ðÊó¤¬¼èÆÀ¤Ç¤­¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "æ‚£è€…ç•ªå·æ§‹æˆç®¡ç†æƒ…å ±ãŒå–å¾—ã§ãã¾ã›ã‚“ã§ã—ãŸ"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -400,11 +400,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    Æþ±¡ÍúÎòÆÉ¤ß¹þ¤ß
+      *    å…¥é™¢å±¥æ­´èª­ã¿è¾¼ã¿
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    WRK-PARA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    WRK-PARA-SRYYMD          TO  PTNYUINRRK-TENNYUYMD
@@ -438,11 +438,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
       *****************************************************************
        2001-HENSYU-SEC              SECTION.
       *
-      *    ¥Æ¥¹¥È´µ¼Ô¤Î¤È¤­¤ÏÆÉ¤ßÈô¤Ð¤¹
+      *    ãƒ†ã‚¹ãƒˆæ‚£è€…ã®ã¨ãã¯èª­ã¿é£›ã°ã™
            INITIALIZE                      PTINF-REC
            MOVE    PTNYUINRRK-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    PTNYUINRRK-PTID     TO  PTINF-PTID
@@ -451,7 +451,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            DISPLAY "PTNYUINRRK PTID=" PTNYUINRRK-PTID 
                    " TSTPTNUMKBN=" PTINF-TSTPTNUMKBN
       *
-      *    ¥Æ¥¹¥È´µ¼Ô¤Î»þÆÉ¤ßÈô¤Ð¤·
+      *    ãƒ†ã‚¹ãƒˆæ‚£è€…ã®æ™‚èª­ã¿é£›ã°ã—
            IF     FLG-PTINF           =   ZERO
                IF   PTINF-TSTPTNUMKBN   =   "1"
                    CONTINUE
@@ -483,38 +483,38 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    Åý·×¥Ç¡¼¥¿¤ÎÊÔ½¸½èÍý
+      *    çµ±è¨ˆãƒ‡ãƒ¼ã‚¿ã®ç·¨é›†å‡¦ç†
       *****************************************************************
        20011-MEISAI-HENSYU-SEC              SECTION.
       *
            INITIALIZE                      TOUKEI04-REC
-      *    °åÎÅµ¡´Ø£É£Ä
+      *    åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            MOVE    WRK-PARA-HOSPID     TO  TOUKEI04-HOSPID
-      *    °åÎÅµ¡´Ø¥³¡¼¥É
+      *    åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
            MOVE    SYS-1001-HOSPCD     TO  TOUKEI04-HOSPCD
-      *    ¿ÇÎÅÇ¯·îÆü
+      *    è¨ºç™‚å¹´æœˆæ—¥
            MOVE    WRK-PARA-SRYYMD     TO  TOUKEI04-SRYYMD
-      *    ¥ì¥³¡¼¥É¼±ÊÌ
+      *    ãƒ¬ã‚³ãƒ¼ãƒ‰è­˜åˆ¥
            IF     IDX      =      1
                MOVE   1                TO  TOUKEI04-RECSKB
            ELSE
                MOVE   2                TO  TOUKEI04-RECSKB
            END-IF
-      *    ¥ì¥»¥×¥È¼ïÊÌ
+      *    ãƒ¬ã‚»ãƒ—ãƒˆç¨®åˆ¥
            MOVE    LNK-ORCBT120SUB-RECESYUBETU(IDX)
                                        TO  TOUKEI04-RECESYUBETU
-      *    Æþ³°¶èÊ¬
+      *    å…¥å¤–åŒºåˆ†
            MOVE       1                TO  TOUKEI04-NYUGAIKBN
-      *    ¿ÇÎÅ²Ê
+      *    è¨ºç™‚ç§‘
            MOVE       LNK-ORCBT120SUB-NYUINKA
                                        TO  TOUKEI04-SRYKA
-      *    ¥ì¥»ÅÅ¿ÇÎÅ²Ê
+      *    ãƒ¬ã‚»é›»è¨ºç™‚ç§‘
            MOVE       LNK-ORCBT120SUB-RECENYUINKA
                                        TO  TOUKEI04-RECEKA
-      *    ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *    ä¿é™ºçµ„åˆã›ç•ªå·
            MOVE       LNK-ORCBT120SUB-HKNCOMBINUM(IDX)
                                        TO  TOUKEI04-HKNCOMBINUM
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
            INITIALIZE                      ORCSPTIDAREA
            MOVE    PTNYUINRRK-HOSPNUM  TO  SPTID-HOSPNUM
            MOVE    PTNYUINRRK-PTID     TO  SPTID-PTID
@@ -523,7 +523,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1009-HOSPNUM
            MOVE    SPTID-PTNUM         TO  TOUKEI04-PTNUM
            MOVE    PTNYUINRRK-PTID     TO  TOUKEI04-PTID
       *
-      *´µ¼Ô¾ðÊó
+      *æ‚£è€…æƒ…å ±
            MOVE    PTINF-KANANAME      TO  TOUKEI04-KANANAME
            MOVE    PTINF-NAME          TO  TOUKEI04-NAME
            MOVE    PTINF-SEX           TO  TOUKEI04-SEX
@@ -541,120 +541,120 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            PERFORM 900-ADRS-INV-SEC
            MOVE    ADRS-LPUBCD         TO  TOUKEI04-LPUBCD
       *
-      *    °å»Õ¥³¡¼¥É
+      *    åŒ»å¸«ã‚³ãƒ¼ãƒ‰
            MOVE    LNK-ORCBT120SUB-DRCD
                                        TO  TOUKEI04-DRCD
-      *Æþ±¡¾ðÊó
-      *    ÆþÂà±¡¶èÊ¬
+      *å…¥é™¢æƒ…å ±
+      *    å…¥é€€é™¢åŒºåˆ†
            MOVE    LNK-ORCBT120SUB-NYUIN-KBN
                                        TO  TOUKEI04-NYUIN-KBN
-      *    ÉÂÅïÈÖ¹æ
+      *    ç—…æ£Ÿç•ªå·
            MOVE    LNK-ORCBT120SUB-BTUNUM
                                        TO  TOUKEI04-BTUNUM
-      *    ÉÂ¼¼ÈÖ¹æ
+      *    ç—…å®¤ç•ªå·
            MOVE    LNK-ORCBT120SUB-BRMNUM
                                        TO  TOUKEI04-BRMNUM
-      *    ³°Çñ¶èÊ¬
+      *    å¤–æ³ŠåŒºåˆ†
            MOVE    LNK-ORCBT120SUB-GAIHAKU-KBN
                                        TO  TOUKEI04-GAIHAKU-KBN
-      *    ¿©»ö¶èÊ¬
+      *    é£Ÿäº‹åŒºåˆ†
            MOVE    LNK-ORCBT120SUB-SKJ-KBN
                                        TO  TOUKEI04-SKJ-KBN
-      *    Âà±¡»öÍ³
+      *    é€€é™¢äº‹ç”±
            MOVE    LNK-ORCBT120SUB-TAIINCD
                                        TO  TOUKEI04-TAIINCD
-      *    Á°Æü¿ÇÎÅ²Ê
+      *    å‰æ—¥è¨ºç™‚ç§‘
            MOVE       LNK-ORCBT120SUB-MAE-NYUINKA
                                        TO  TOUKEI04-MAE-SRYKA
-      *    Á°Æü¥ì¥»ÅÅ¿ÇÎÅ²Ê
+      *    å‰æ—¥ãƒ¬ã‚»é›»è¨ºç™‚ç§‘
            MOVE       LNK-ORCBT120SUB-MAE-RECENYUINKA
                                        TO  TOUKEI04-MAE-RECEKA
-      *    Á°ÆüÉÂÅïÈÖ¹æ
+      *    å‰æ—¥ç—…æ£Ÿç•ªå·
            MOVE    LNK-ORCBT120SUB-MAE-BTUNUM
                                        TO  TOUKEI04-MAE-BTUNUM
-      *    Á°ÆüÉÂ¼¼ÈÖ¹æ
+      *    å‰æ—¥ç—…å®¤ç•ªå·
            MOVE    LNK-ORCBT120SUB-MAE-BRMNUM
                                        TO  TOUKEI04-MAE-BRMNUM
-      *¼ýÇ¼¾ðÊó
-      *    ÅÁÉ¼ÈÖ¹æ
+      *åŽç´æƒ…å ±
+      *    ä¼ç¥¨ç•ªå·
            MOVE    LNK-ORCBT120SUB-DENPNUM(IDX)
                                        TO  TOUKEI04-DENPNUM
-      *    ÅÁÉ¼¾õÂÖ¶èÊ¬
+      *    ä¼ç¥¨çŠ¶æ…‹åŒºåˆ†
            MOVE    LNK-ORCBT120SUB-DENPJTIKBN(IDX)
                                        TO  TOUKEI04-DENPJTIKBN
-      *    ÅÁÉ¼ºîÀ®¶èÊ¬
+      *    ä¼ç¥¨ä½œæˆåŒºåˆ†
            MOVE    LNK-ORCBT120SUB-CREATEKBN(IDX)
                                        TO  TOUKEI04-CREATEKBN
-      *    ÊÝ¸±ÅÀ¿ô
+      *    ä¿é™ºç‚¹æ•°
            MOVE    LNK-ORCBT120SUB-HKNTEN(IDX)
                                        TO  TOUKEI04-HKNTEN
-      *    ÊÝ¸±ÉéÃ´¶â³Û
+      *    ä¿é™ºè² æ‹…é‡‘é¡
            MOVE    LNK-ORCBT120SUB-HKNMONEY(IDX)
                                        TO  TOUKEI04-HKNMONEY
-      *    ÊÝ¸±Å¬ÍÑ³°¶â³Û
+      *    ä¿é™ºé©ç”¨å¤–é‡‘é¡
            MOVE    LNK-ORCBT120SUB-TGMONEY(IDX)         
                                        TO  TOUKEI04-TGMONEY
-      *    ÊÝ¸±Å¬ÍÑ³°¶âÀÇ³Û
+      *    ä¿é™ºé©ç”¨å¤–é‡‘ç¨Žé¡
            MOVE    LNK-ORCBT120SUB-TGMONEY-TAX(IDX)
                                        TO  TOUKEI04-TGMONEY-TAX
-      *    ¼«Èñ¶â³Û
+      *    è‡ªè²»é‡‘é¡
            MOVE    LNK-ORCBT120SUB-JIHI(IDX)
                                        TO  TOUKEI04-JIHI
-      *    ¼«ÈñÀÇ³Û
+      *    è‡ªè²»ç¨Žé¡
            MOVE    LNK-ORCBT120SUB-JIHI-TAX(IDX)
                                        TO  TOUKEI04-JIHI-TAX
-      *    ¿©»öÉéÃ´¶â³Û
+      *    é£Ÿäº‹è² æ‹…é‡‘é¡
            MOVE    LNK-ORCBT120SUB-SKJ(IDX)
                                        TO  TOUKEI04-SKJ
-      *    ¾ÃÈñÀÇ³Û
+      *    æ¶ˆè²»ç¨Žé¡
            MOVE    LNK-ORCBT120SUB-SKJ-TAX(IDX)
                                        TO  TOUKEI04-SKJ-TAX
-      *    ¼¼ÎÁº¹³Û
+      *    å®¤æ–™å·®é¡
            MOVE    LNK-ORCBT120SUB-RMSAGAKU(IDX)
                                        TO  TOUKEI04-RMSAGAKU
-      *    ¼¼ÎÁº¹³ÛÀÇ³Û
+      *    å®¤æ–™å·®é¡ç¨Žé¡
            MOVE    LNK-ORCBT120SUB-RMSAGAKU-TAX(IDX)
                                        TO  TOUKEI04-RMSAGAKU-TAX
-      *    ÀÁµá¶â³Û
+      *    è«‹æ±‚é‡‘é¡
            MOVE    LNK-ORCBT120SUB-SKYMONEY(IDX)
                                        TO  TOUKEI04-SKYMONEY
-      *ÊÝ¸±¾ðÊó
-      *    ÊÝ¸±ÈÖ¹æ
+      *ä¿é™ºæƒ…å ±
+      *    ä¿é™ºç•ªå·
            MOVE    LNK-ORCBT120SUB-HKNNUM(IDX)
                                        TO  TOUKEI04-HKNNUM
-      *    ÊÝ¸±£É£Ä
+      *    ä¿é™ºï¼©ï¼¤
            MOVE    LNK-ORCBT120SUB-HKNID(IDX)
                                        TO  TOUKEI04-HKNID
-      *    ÊÝ¸±¼ÔÈÖ¹æ
+      *    ä¿é™ºè€…ç•ªå·
            MOVE    LNK-ORCBT120SUB-HKNJANUM(IDX)
                                        TO  TOUKEI04-HKNJANUM
-      *    ËÜ¿Í²ÈÂ²¶èÊ¬
+      *    æœ¬äººå®¶æ—åŒºåˆ†
            MOVE    LNK-ORCBT120SUB-HONKZKKBN(IDX)
                                        TO  TOUKEI04-HONKZKKBN
-      *    Êä½õ¶èÊ¬
+      *    è£œåŠ©åŒºåˆ†
            MOVE    LNK-ORCBT120SUB-HOJOKBN(IDX)
                                        TO  TOUKEI04-HOJOKBN
-      *    ·ÑÂ³¶èÊ¬
+      *    ç¶™ç¶šåŒºåˆ†
            MOVE    LNK-ORCBT120SUB-CONTKBN(IDX)
                                        TO  TOUKEI04-CONTKBN
-      *¸øÈñ¾ðÊó
+      *å…¬è²»æƒ…å ±
            PERFORM    VARYING   KOH-IDX   FROM  1  BY  1
              UNTIL    (KOH-IDX   >   4)       OR
                       (LNK-ORCBT120SUB-KOH-HKNNUM(IDX KOH-IDX) = SPACE)
-      *        ¸øÈñ¡Ý¸øÈñÈÖ¹æ
+      *        å…¬è²»âˆ’å…¬è²»ç•ªå·
                MOVE    LNK-ORCBT120SUB-KOH-HKNNUM(IDX KOH-IDX)
                                        TO  TOUKEI04-KOH-HKNNUM(KOH-IDX)
-      *        ¸øÈñ¡Ý¸øÈñ£É£Ä
+      *        å…¬è²»âˆ’å…¬è²»ï¼©ï¼¤
                MOVE    LNK-ORCBT120SUB-KOH-ID(IDX KOH-IDX)
                                        TO  TOUKEI04-KOH-ID(KOH-IDX)
-      *        ¸øÈñ¡Ý»ÙÊ§¶èÊ¬
+      *        å…¬è²»âˆ’æ”¯æ‰•åŒºåˆ†
                MOVE    LNK-ORCBT120SUB-KOH-PAYKBN(IDX KOH-IDX)
                                        TO  TOUKEI04-KOH-PAYKBN(KOH-IDX)
            END-PERFORM
-      *Ï«ºÒÊÝ¸±¶èÊ¬
+      *åŠ´ç½ä¿é™ºåŒºåˆ†
            MOVE    LNK-ORCBT120SUB-RSIHKNKBN(IDX)
                                        TO  TOUKEI04-RSIHKNKBN
-      *¼«ÇåÀÕÀÁµá
+      *è‡ªè³ è²¬è«‹æ±‚
            MOVE    LNK-ORCBT120SUB-JIBAIKBN(IDX)
                                        TO  TOUKEI04-JIBAISEIKBN
       *
@@ -663,7 +663,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    ½ÐÎÏ½èÍý
+      *    å‡ºåŠ›å‡¦ç†
       *****************************************************************
        2002-OUT-SYORI-SEC              SECTION.
       *
@@ -674,7 +674,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -688,7 +688,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  ADRS-HOSPNUM
                WRITE   TOUKEIERR-REC
                CLOSE   TOUKEIERR-FILE
       *         
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-TOUKEIERR     TO  JOB-YOBI
@@ -702,19 +702,19 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            CLOSE   TOUKEI04-FILE
       *
            IF      CNT-TOUKEI04           =   ZERO  
-               MOVE    "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
@@ -728,7 +728,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¡£Ò£Å£Á£Ä
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ã€€ï¼²ï¼¥ï¼¡ï¼¤
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -743,7 +743,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿èª­è¾¼
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -772,7 +772,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -807,7 +807,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
       *
       *
       *****************************************************************
-      *    ½»½ê¥Þ¥¹¥¿¸¡º÷
+      *    ä½æ‰€ãƒžã‚¹ã‚¿æ¤œç´¢
       *****************************************************************
        900-ADRS-INV-SEC            SECTION.
       *
@@ -839,7 +839,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿èª­è¾¼
       *****************************************************************
        900-PTNYUINRRK-SELECT-SEC         SECTION.
       *
@@ -855,7 +855,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTNYUINRRK-READ-SEC        SECTION.
       *
@@ -873,7 +873,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ½èÍý
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡å‡¦ç†
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -890,7 +890,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼¥ï¼¬ï¼¥ï¼£ï¼´å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -907,7 +907,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *    ï¼¤ï¼¢ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -919,7 +919,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -931,7 +931,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -944,7 +944,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    £Ä£Â¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -962,7 +962,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

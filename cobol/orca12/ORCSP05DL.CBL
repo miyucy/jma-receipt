@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,21 +18,21 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCSP05DL.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : �����ֹ�����������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  11/03/24    NACL-¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 患者登録
+      *  コンポーネント名  : 患者番号削除処理サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  11/03/24    NACL-多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 04.07.00     NACL-¿��Ǽ  12/11/22  �����ϰ�Ϣ���б�
-      * 04.07.00     NACL-¿��Ǽ  12/12/19  ���ԥ쥻�ץ�ʬ���б�
-      * 04.07.00     NACL-¿��Ǽ  13/07/XX  ���Ը��������б�
-      * 04.07.00     NACL-¿��Ǽ  14/02/XX  ���Բ������ɲ��б�
-      * 05.00.00     NACL-¿��Ǽ  16/12/15  ���ԸĿ��ֹ�
-      *                                     ������Ģ�������ǡ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 04.07.00     NACL-多々納  12/11/22  患者地域連携対応
+      * 04.07.00     NACL-多々納  12/12/19  患者レセプト分割対応
+      * 04.07.00     NACL-多々納  13/07/XX  患者個別設定対応
+      * 04.07.00     NACL-多々納  14/02/XX  患者介護情報追加対応
+      * 05.00.00     NACL-多々納  16/12/15  患者個人番号
+      *                                     お薬手帳管理・データ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -46,299 +46,299 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-YYK             PIC 9(01).
            03  FLG-PTSAME          PIC 9(01).
            03  FLG-OKUKAN          PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PTSAME-CNT          PIC 9(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����
+      *    受付
        01  UKETUKE-REC.
            COPY    "CPUKETUKE.INC".
       *
-      *    �����ֹ��Ѵ��ޥ���
+      *    患者番号変換マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �ݸ��ޥ���
+      *    保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ����ޥ���
+      *    公費マスタ
        01  PTKOHINF-REC.
            COPY    "CPPTKOHINF.INC".
       *
-      *    ��������
+      *    旧姓履歴
        01  KYUSEIRRK-REC.
            COPY    "CPKYUSEIRRK.INC".
       *
-      *    �����
+      *    低所得
        01  TSYRRK-REC.
            COPY    "CPTSYRRK.INC".
       *
-      *    ǯ��
+      *    年金
        01  TNKRRK-REC.
            COPY    "CPTNKRRK.INC".
       *
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ������Ź԰٥ޥ�����
+      *    ワーク診療行為マスタ−
        01  WKSRYACT-REC.
            COPY    "CPWKSRYACT.INC".
       *
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ���Ų�����þ���ޥ�����
+      *    診療会計附加情報マスタ−
        01  SRYACCTPLUS-REC.
            COPY    "CPSRYACCTPLUS.INC".
       *
-      *    ���ԥ�����
+      *    患者コメント
        01  PTCOM-REC.
            COPY    "CPPTCOM.INC".
       *
-      *    ��������
+      *    受診履歴
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    ���Ų�����
+      *    診療科履歴
        01  SRYKARRK-REC.
            COPY    "CPSRYKARRK.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEI-REC.
            COPY    "CPSANTEI.INC".
       *
-      *    ��������
+      *    算定履歴
        01  SANTEIPLUS-REC.
            COPY    "CPSANTEIPLUS.INC".
       *
-      *    ��Ǽ�ޥ������
+      *    収納マスタワーク
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    ��Ǽ����
+      *    収納明細
        01  SYUMEI-REC.
            COPY    "CPSYUMEI.INC".
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    ͽ��ޥ�����
+      *    予約マスター
        01  YYK-REC.
            COPY    "CPYYK.INC".
       *
-      *    ͽ��ޥ�������¸
+      *    予約マスター保存
        01  WRK-YYK-REC.
            COPY    "CPYYK.INC"       REPLACING
                                      //YYK-// BY //WRK-YYK-//.
-      *    ͽ����ޥ�����
+      *    予約メモマスター
        01  YYKCOM-REC.
            COPY    "CPYYKCOM.INC".
       *
-      *    �쥻�ץȥ�����
+      *    レセプトコメント
        01  RECECOM-REC.
            COPY    "CPRECECOM.INC".
       *
       *
-      *    �������
+      *    請求管理
            COPY    "CPRCF010.INC".
       *
-      *    ����ϫ���ݸ�����
+      *    患者労災保険情報
        01  PTRSIINF-REC.
            COPY    "CPPTRSIINF.INC".
       *
-      *    ����������ֹ�
+      *    月代り受給者番号
        01  MONTHLYNUM-REC.
            COPY    "CPMONTHLYNUM.INC".
       *
-      *    ������������
+      *    患者入院履歴
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ����¾�����ղþ���
+      *    患者他院歴付加情報
        01  PTTAINFUKA-REC.
            COPY    "CPPTTAINFUKA.INC".
       *
-      *    �������Ź԰٥ޥ�����
+      *    入院診療行為マスター
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    �������Ų�ץޥ�����
+      *    入院診療会計マスタ−
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ���������������
+      *    患者定期請求履歴
        01  PTTEIKIRRK-REC.
            COPY    "CPPTTEIKIRRK.INC".
       *
-      *    �������������
+      *    地方公費請求書
            COPY    "CPKOHSKY.INC".
       *
-      *    ���Զش����ޥޥ���
+      *    患者禁忌薬剤マスタ
        01  PTKINKI-REC.
            COPY    "CPPTKINKI.INC".
       *
-      *    �����õ�����ޥ���
+      *    患者特記事項マスタ
        01  PTTOKKI-REC.
            COPY    "CPPTTOKKI.INC".
       *
-      *    ���Ը�����ô��
+      *    患者公費負担額
        01  PTKOHFTNETC-REC.
            COPY    "CPPTKOHFTNETC.INC".
       *
-      *    ������ô��
+      *    公費負担額
        01  PTKOHFTN-REC.
            COPY    "CPPTKOHFTN.INC".
       *
-      *    ���̼�Ǽ�ޥ���
+      *    日別収納マスタ
        01  SYUDAY-REC.
            COPY    "CPSYUDAY.INC".
       *
-      *    �쥻�ץ��Ż��ޥ����� 
+      *    レセプト電算マスター 
            COPY    "CPRECEDEN.INC".
       *
-      *    �����쥻�ץȥ����ȥޥ�����
+      *    手術歴レセプトコメントマスター
        01  OPECOM-REC.
            COPY    "CPOPECOM.INC".
       *
-      *    ��Ǽ��ץޥ�����
+      *    収納合計マスタ−
        01  SYUTTL-REC.
            COPY    "CPSYUTOTAL.INC".
       *
-      *    ��ʥơ��֥�
+      *    主科テーブル
        01  SYUKA-REC.
            COPY    "CPSYUKA.INC".
       *
-      *    ���ܥ쥻�ץȥ����ȥޥ���
+      *    療養レセプトコメントマスタ
        01  RYOCOM-REC.
            COPY    "CPRYOCOM.INC".
       *
-      *    ��Ǽ����ޥ���
+      *    収納履歴マスタ
        01  SYURRK-REC.
            COPY    "CPSYURRK.INC".
       *
-      *    ���ԥ��
+      *    患者メモ
        01  PTMEMOINF-REC.
            COPY    "CPPTMEMOINF.INC".
       *
-      *    �������Ź԰پȲ�ơ��֥�
+      *    入院診療行為照会テーブル
        01  NSRYSRH-REC.
            COPY    "CPNSRYSRH.INC".
       *
-      *    ��������Ȳ�ơ��֥�
+      *    入院履歴照会テーブル
        01  NRRKSRH-REC.
            COPY    "CPNRRKSRH.INC".
       *
-      *    ʬ�ڴ����ơ��֥�
+      *    分娩管理テーブル
        01  BUNBEN-REC.
            COPY    "CPBUNBEN.INC".
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
        01  PTSAME-REC.
            COPY    "CPPTSAME.INC".
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
        01  HZN-PTSAME-REC.
            COPY    "CPPTSAME.INC"      REPLACING
                                        //PTSAME-// BY //HZN-PTSAME-//.
       *
-      *    �����å��㳰�ơ��֥�
+      *    チェック例外テーブル
            COPY    "CPCHKREIGAI.INC".
       *
-      *    �ݸ���ǧǯ��������ޥ���
+      *    保険確認年月日履歴マスタ
        01  PTHKNRRK-REC.
            COPY    "CPPTHKNRRK.INC".
       *
-      *    ����������
+      *    入院オーダ
        01  ORDER-REC.
            COPY    "CPORDER.INC".
       *
-      *    ����������
+      *    定期請求印刷
        01  TEIKIPRT-REC.
            COPY    "CPTEIKIPRT.INC".
       *
-      *    �����ϰ�Ϣ�ȥơ��֥�
+      *    患者地域連携テーブル
        01  PTPUBLIC-REC.
            COPY    "CPPTNUM-PUBLIC.INC".
       *
-      *    ���ԥ쥻�ץ�ʬ��ơ��֥�
+      *    患者レセプト分割テーブル
        01  PT-HDIST-DAY-REC.
            COPY    "CPPT-HDIST-DAY.INC".
       *
-      *    ���Ը�������ơ��֥�
+      *    患者個別設定テーブル
        01  PTCONF-REC.
            COPY    "CPPTCONF.INC".
       *
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
        01  PTCARE-HKNINF-REC.
            COPY    "CPPTCARE-HKNINF.INC".
       *
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
       *H28.12
-      *    ���ԸĿ��ֹ�ơ��֥�
+      *    患者個人番号テーブル
        01  PTMYNUMBER-REC.
            COPY    "CPPTMYNUMBER.INC".
       *
-      *    ������Ģ�����ǡ���
+      *    お薬手帳管理データ
        01  OKUSURIKANRI-REC.
            COPY    "CPOKUSURIKANRI.INC".
       *
-      *    ������Ģ���ޥǡ���
+      *    お薬手帳薬剤データ
        01  OKUSURIDATA-REC.
            COPY    "CPOKUSURIDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
       *    COPY    "CPORCSDAY.INC".
       *    COPY    "CPORCSLNK.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -346,7 +346,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -354,21 +354,21 @@
            INITIALIZE                  IDX-AREA
            INITIALIZE                  FLG-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SYORI-SEC
       *
-      *    �����
+      *    主処理
            PERFORM 200-MAIN-SYORI-SEC
       *
            .
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SYORI-SEC               SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -377,11 +377,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�������
+      *    患者番号削除処理
       *****************************************************************
        200-MAIN-SYORI-SEC               SECTION.
       *
-      *    ���Ծ�����
+      *    患者情報削除
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
@@ -397,7 +397,7 @@
                GO      TO    200-MAIN-SYORI-EXT
            END-IF
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
            INITIALIZE                      PTNUM-REC
            MOVE    SPA-HOSPNUM         TO  PTNUM-HOSPNUM
            MOVE    SPA-PTID            TO  PTNUM-PTID
@@ -409,7 +409,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            INITIALIZE                      HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
            MOVE    SPA-PTID            TO  COMB-PTID
@@ -421,7 +421,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��������
+      *    受診履歴
            INITIALIZE                      JYURRK-REC
            MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  JYURRK-PTID
@@ -433,7 +433,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ų�����
+      *    診療科履歴
            INITIALIZE                      SRYKARRK-REC
            MOVE    SPA-HOSPNUM         TO  KARRK-HOSPNUM
            MOVE    SPA-PTID            TO  KARRK-PTID
@@ -444,7 +444,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ������̾
+      *    患者病名
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    SPA-PTID            TO  PTBYO-PTID
@@ -456,7 +456,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���ԥ�����
+      *    患者コメント
            INITIALIZE                      PTCOM-REC
            MOVE    SPA-HOSPNUM         TO  PTCOM-HOSPNUM
            MOVE    SPA-PTID            TO  PTCOM-PTID
@@ -468,7 +468,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����ݸ�����
+      *    患者保険情報
            INITIALIZE                      PTHKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTHKN-HOSPNUM
            MOVE    SPA-PTID            TO  PTHKN-PTID
@@ -480,7 +480,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ը������
+      *    患者公費情報
            INITIALIZE                      PTKOHINF-REC
            MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
            MOVE    SPA-PTID            TO  PTKOH-PTID
@@ -491,7 +491,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ��������
+      *    旧姓履歴
            INITIALIZE                      KYUSEIRRK-REC
            MOVE    SPA-HOSPNUM         TO  KYUSEI-HOSPNUM
            MOVE    SPA-PTID            TO  KYUSEI-PTID
@@ -503,7 +503,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ų�סʳ����
+      *    診療会計（外来）
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-PTID            TO  ACCT-PTID
@@ -516,7 +516,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ų�ס�������
+      *    診療会計（入院）
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
            MOVE    SPA-PTID            TO  ACCT-PTID
@@ -529,7 +529,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ź԰١�������
+      *    診療行為（入院）
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-PTID            TO  SRY-PTID
@@ -541,7 +541,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���Ź԰١ʳ����
+      *    診療行為（外来）
            INITIALIZE                      SRYACT-REC
            MOVE    SPA-HOSPNUM         TO  SRY-HOSPNUM
            MOVE    SPA-PTID            TO  SRY-PTID
@@ -554,7 +554,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��Ǽ
+      *    収納
            INITIALIZE                      SYUNOU-REC
            MOVE    SPA-HOSPNUM         TO  SYU-HOSPNUM
            MOVE    SPA-PTID            TO  SYU-PTID
@@ -566,7 +566,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��Ǽ����
+      *    収納明細
            INITIALIZE                      SYUMEI-REC
            MOVE    SPA-HOSPNUM         TO  SMEI-HOSPNUM
            MOVE    SPA-PTID            TO  SMEI-PTID
@@ -578,7 +578,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��Ǽ���
+      *    収納合計
            INITIALIZE                      SYUTTL-REC
            MOVE    SPA-HOSPNUM         TO  SYUTTL-HOSPNUM
            MOVE    SPA-PTID            TO  SYUTTL-PTID
@@ -590,7 +590,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������
+      *    低所得者
            INITIALIZE                      TSYRRK-REC
            MOVE    SPA-HOSPNUM         TO  TSYRRK-HOSPNUM
            MOVE    SPA-PTID            TO  TSYRRK-PTID
@@ -602,7 +602,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ����
+      *    受付
            INITIALIZE                      UKETUKE-REC
            MOVE    SPA-HOSPNUM         TO  UKE-HOSPNUM
            MOVE    SPA-PTID            TO  UKE-PTID
@@ -614,7 +614,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ǯ������
+      *    年金履歴
            INITIALIZE                      TNKRRK-REC
            MOVE    SPA-HOSPNUM         TO  TNKRRK-HOSPNUM
            MOVE    SPA-PTID            TO  TNKRRK-PTID
@@ -626,7 +626,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��������
+      *    算定履歴
            INITIALIZE                      SANTEI-REC
            MOVE    SPA-HOSPNUM         TO  SANTEI-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEI-PTID
@@ -638,7 +638,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���������ղ�
+      *    算定履歴付加
            INITIALIZE                      SANTEIPLUS-REC
            MOVE    SPA-HOSPNUM         TO  SANTEIPLUS-HOSPNUM
            MOVE    SPA-PTID            TO  SANTEIPLUS-PTID
@@ -650,7 +650,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ������Ź԰�
+      *    ワーク診療行為
            INITIALIZE                      WKSRYACT-REC
            MOVE    SPA-HOSPNUM         TO  WKSRY-HOSPNUM
            MOVE    SPA-PTID            TO  WKSRY-PTID
@@ -662,7 +662,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������
+      *    請求管理
            INITIALIZE                      RECE10-REC
            MOVE    SPA-HOSPNUM         TO  RECE10-HOSPNUM
            MOVE    SPA-PTID            TO  RECE10-PTID
@@ -674,7 +674,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �쥻�ץȥ�����
+      *    レセプトコメント
            INITIALIZE                      RECECOM-REC
            MOVE    SPA-HOSPNUM         TO  RECECOM-HOSPNUM
            MOVE    SPA-PTID            TO  RECECOM-PTID
@@ -686,7 +686,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ϫ���ݸ�����
+      *    労災保険情報
            INITIALIZE                      PTRSIINF-REC
            MOVE    SPA-HOSPNUM         TO  PTRSI-HOSPNUM
            MOVE    SPA-PTID            TO  PTRSI-PTID
@@ -698,7 +698,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ����������ֹ�
+      *    月代り受給者番号
            INITIALIZE                      MONTHLYNUM-REC
            MOVE    SPA-HOSPNUM         TO  MONTHLYNUM-HOSPNUM
            MOVE    SPA-PTID            TO  MONTHLYNUM-PTID
@@ -710,7 +710,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������Ź԰٥ޥ�����
+      *    入院診療行為マスター
            INITIALIZE                      NYUINACT-REC
            MOVE    SPA-HOSPNUM         TO  NSRY-HOSPNUM
            MOVE    SPA-PTID            TO  NSRY-PTID
@@ -722,7 +722,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������Ų�ץޥ�����
+      *    入院診療会計マスター
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-PTID            TO  NACCT-PTID
@@ -734,7 +734,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ������������
+      *    患者入院履歴
            INITIALIZE                      PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTNYUINRRK-PTID
@@ -746,7 +746,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ����¾�����ղþ���
+      *    患者他院歴付加情報
            INITIALIZE                      PTTAINFUKA-REC
            MOVE    SPA-HOSPNUM         TO  PTTAINFUKA-HOSPNUM
            MOVE    SPA-PTID            TO  PTTAINFUKA-PTID
@@ -758,7 +758,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���������������
+      *    患者定期請求履歴
            INITIALIZE                      PTTEIKIRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTTEIKIRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTTEIKIRRK-PTID
@@ -770,7 +770,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������������
+      *    地方公費請求書
            INITIALIZE                      KOHSKY-REC
            MOVE    SPA-HOSPNUM         TO  KOHSKY-HOSPNUM
            MOVE    SPA-PTID            TO  KOHSKY-PTID
@@ -782,7 +782,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ������ô��
+      *    公費負担額
            INITIALIZE                      PTKOHFTN-REC
            MOVE    SPA-HOSPNUM         TO  PTKOHFTN-HOSPNUM
            MOVE    SPA-PTID            TO  PTKOHFTN-PTID
@@ -794,7 +794,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���̼�Ǽ�ޥ�����������
+      *    日別収納マスタ（入院）
            INITIALIZE                      SYUDAY-REC
            MOVE    SPA-HOSPNUM         TO  SDAY-HOSPNUM
            MOVE    SPA-PTID            TO  SDAY-PTID
@@ -806,7 +806,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���̼�Ǽ�ޥ����ʳ����
+      *    日別収納マスタ（外来）
            INITIALIZE                      SYUDAY-REC
            MOVE    SPA-HOSPNUM         TO  SDAY-HOSPNUM
            MOVE    SPA-PTID            TO  SDAY-PTID
@@ -819,7 +819,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����쥻�ץȥ����ȥޥ���
+      *    手術歴レセプトコメントマスタ
            INITIALIZE                      OPECOM-REC
            MOVE    SPA-HOSPNUM         TO  OPECOM-HOSPNUM
            MOVE    SPA-PTID            TO  OPECOM-PTID
@@ -831,7 +831,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �쥻�ץ��Ż��ޥ���
+      *    レセプト電算マスタ
            INITIALIZE                      RECEDEN-REC
            MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
            MOVE    SPA-PTID            TO  RECEDEN-PTID
@@ -842,7 +842,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���þ�������������
+      *    附加情報削除（入院）
            INITIALIZE                  SRYACCTPLUS-REC
            MOVE    SPA-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    "1"                 TO  ACCTP-NYUGAIKBN
@@ -855,7 +855,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���þ������ʳ����
+      *    附加情報削除（外来）
            INITIALIZE                  SRYACCTPLUS-REC
            MOVE    SPA-HOSPNUM         TO  ACCTP-HOSPNUM
            MOVE    "2"                 TO  ACCTP-NYUGAIKBN
@@ -869,7 +869,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��ʥơ��֥�
+      *    主科テーブル
            INITIALIZE                  SYUKA-REC
            MOVE    SPA-HOSPNUM         TO  SYUKA-HOSPNUM
            MOVE    SPA-PTID            TO  SYUKA-PTID
@@ -882,7 +882,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���ܥ쥻�ץȥ�����
+      *    療養レセプトコメント
            INITIALIZE                  RYOCOM-REC
            MOVE    SPA-HOSPNUM         TO  RYOCOM-HOSPNUM
            MOVE    SPA-PTID            TO  RYOCOM-PTID
@@ -894,7 +894,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ��Ǽ����ޥ���
+      *    収納履歴マスタ
            INITIALIZE                  SYURRK-REC
            MOVE    SPA-HOSPNUM         TO  SYURRK-HOSPNUM
            MOVE    SPA-PTID            TO  SYURRK-PTID
@@ -907,7 +907,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���ԥ��
+      *    患者メモ
            INITIALIZE                  PTMEMOINF-REC
            MOVE    SPA-HOSPNUM         TO  PTMEMOINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTMEMOINF-PTID
@@ -920,7 +920,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Զش����ޥޥ���
+      *    患者禁忌薬剤マスタ
            INITIALIZE                      PTKINKI-REC
            MOVE    SPA-HOSPNUM         TO  PTKINKI-HOSPNUM
            MOVE    SPA-PTID            TO  PTKINKI-PTID
@@ -932,7 +932,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����õ�����ޥ���
+      *    患者特記事項マスタ
            INITIALIZE                      PTTOKKI-REC
            MOVE    SPA-HOSPNUM         TO  PTTOKKI-HOSPNUM
            MOVE    SPA-PTID            TO  PTTOKKI-PTID
@@ -945,7 +945,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                SPA-AREA
       *
       *
-      *    ���ԥ쥻�ץ�ʬ��ơ��֥�
+      *    患者レセプト分割テーブル
            INITIALIZE                      PT-HDIST-DAY-REC
            MOVE    SPA-HOSPNUM         TO  PT-HDIST-DAY-HOSPNUM
            MOVE    SPA-PTID            TO  PT-HDIST-DAY-PTID
@@ -957,7 +957,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ը�����ô�ۥޥ���
+      *    患者公費負担額マスタ
            INITIALIZE                      PTKOHFTNETC-REC
            MOVE    SPA-HOSPNUM         TO  PTKOHFTNETC-HOSPNUM
            MOVE    SPA-PTID            TO  PTKOHFTNETC-PTID
@@ -969,7 +969,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��������Ȳ�ơ��֥�
+      *    入院履歴照会テーブル
            INITIALIZE                      NRRKSRH-REC
            MOVE    SPA-HOSPNUM         TO  NRRKSRH-HOSPNUM
            MOVE    SPA-PTID            TO  NRRKSRH-PTID
@@ -981,7 +981,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �������Ź԰پȲ�ơ��֥�
+      *    入院診療行為照会テーブル
            INITIALIZE                      NSRYSRH-REC
            MOVE    SPA-HOSPNUM         TO  NSRYSRH-HOSPNUM
            MOVE    SPA-PTID            TO  NSRYSRH-PTID
@@ -993,7 +993,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����å��㳰�ޥ����ơ��֥�
+      *    チェック例外マスタテーブル
            INITIALIZE                      CHKREIGAI-REC
            MOVE    SPA-HOSPNUM         TO  CHKREIGAI-HOSPNUM
            MOVE    SPA-PTID            TO  CHKREIGAI-PTID
@@ -1005,7 +1005,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ʬ�ڴ����ơ��֥�
+      *    分娩管理テーブル
            INITIALIZE                      BUNBEN-REC
            MOVE    SPA-HOSPNUM         TO  BUNBEN-HOSPNUM
            MOVE    SPA-PTID            TO  BUNBEN-PTID
@@ -1017,7 +1017,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����ݸ���ǧǯ��������
+      *    患者保険確認年月日履歴
            INITIALIZE                      PTHKNRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTHKNRRK-HOSPNUM
            MOVE    SPA-PTID            TO  PTHKNRRK-PTID
@@ -1029,7 +1029,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ����������
+      *    入院オーダ
            INITIALIZE                      ORDER-REC
            MOVE    SPA-HOSPNUM         TO  ORDER-HOSPNUM
            MOVE    SPA-PTID            TO  ORDER-PTID
@@ -1041,7 +1041,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ��������������
+      *    定期請求印刷情報
            INITIALIZE                      TEIKIPRT-REC
            MOVE    SPA-HOSPNUM         TO  TEIKIPRT-HOSPNUM
            MOVE    SPA-PTID            TO  TEIKIPRT-PTID
@@ -1053,7 +1053,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    �����ϰ�Ϣ��
+      *    患者地域連携
            INITIALIZE                      PTPUBLIC-REC
            MOVE    SPA-HOSPNUM         TO  PTPUBLIC-HOSPNUM
            MOVE    SPA-PTID            TO  PTPUBLIC-PTID
@@ -1065,7 +1065,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Ը�������
+      *    患者個別設定
            INITIALIZE                      PTCONF-REC
            MOVE    SPA-HOSPNUM         TO  PTCONF-HOSPNUM
            MOVE    SPA-PTID            TO  PTCONF-PTID
@@ -1077,7 +1077,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            INITIALIZE                      PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
            MOVE    SPA-PTID            TO  PTCRHKN-PTID
@@ -1089,7 +1089,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ���Բ��ǧ��Ծ���
+      *    患者介護認定者情報
            INITIALIZE                      PTCARE-NINTEI-REC
            MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
            MOVE    SPA-PTID            TO  PTCRNIN-PTID
@@ -1100,7 +1100,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    ���ԸĿ��ֹ����
+      *    患者個人番号情報
            INITIALIZE                      PTMYNUMBER-REC
            MOVE    SPA-HOSPNUM         TO  PTMYNUM-HOSPNUM
            MOVE    SPA-PTID            TO  PTMYNUM-PTID
@@ -1112,7 +1112,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *H26.5
-      *    ���ž���Ϣ�ȴ��ץǡ���(�쥻�ץ��Ż�)
+      *    医療情報連携基盤データ(レセプト電算)
            INITIALIZE                      RECEDEN-REC
            MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
            MOVE    SPA-PTID            TO  RECEDEN-PTID
@@ -1123,7 +1123,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
-      *    �ţƽ��ϥǡ���(�쥻�ץ��Ż�)
+      *    ＥＦ出力データ(レセプト電算)
            INITIALIZE                      RECEDEN-REC
            MOVE    SPA-HOSPNUM         TO  RECEDEN-HOSPNUM
            MOVE    SPA-PTID            TO  RECEDEN-PTID
@@ -1135,13 +1135,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                MCPDATA-REC
                                                SPA-AREA
       *
-      *    ͽ��
+      *    予約
            PERFORM 2001-YYK-DELETE-SEC
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
            PERFORM 2002-PTSAME-DELETE-SEC
       *H28.12
-      *    �ŻҤ�����ĢϢ�ȥơ��֥�
+      *    電子お薬手帳連携テーブル
            PERFORM 2003-OKUSURIKANRI-DELETE-SEC
       *
       *
@@ -1150,11 +1150,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ͽ��ơ��֥�������
+      *    予約テーブル削除処理
       *****************************************************************
        2001-YYK-DELETE-SEC                SECTION.
       *
-      *    ͽ��
+      *    予約
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-PTID            TO  YYK-PTID
@@ -1171,7 +1171,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
             END-IF
             PERFORM UNTIL    FLG-YYK   =   1
       *
-      *        ͽ�����θ���
+      *        予約件数の減算
                MOVE    YYK-REC             TO  WRK-YYK-REC
                MOVE    ZERO                TO  YYK-YYKID
                MOVE    YYK-REC             TO  MCPDATA-REC
@@ -1187,7 +1187,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    SMCNDATE-YMD        TO  YYK-UPYMD
                    MOVE    SMCNDATE-HMS        TO  YYK-UPHMS
                    MOVE    SPA-OPID            TO  YYK-OPID
-      *            ����
+      *            更新
                    MOVE    YYK-REC             TO  MCPDATA-REC
                    MOVE    "DBUPDATE"          TO  MCP-FUNC
                    MOVE    "tbl_yyk"           TO  MCP-TABLE
@@ -1199,7 +1199,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "tbl_yyk"           TO  MCP-TABLE
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
-      *        ���
+      *        削除
                MOVE    WRK-YYK-REC         TO  YYK-REC
                MOVE    YYK-REC             TO  MCPDATA-REC
                MOVE    "DBDELETE"          TO  MCP-FUNC
@@ -1208,7 +1208,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
 grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
-      *        ͽ�󥳥���
+      *        予約コメント
                INITIALIZE                      YYKCOM-REC
                MOVE    YYK-HOSPNUM         TO  YYKCOM-HOSPNUM
                MOVE    YYK-SRYNAIYO        TO  YYKCOM-SRYNAIYO
@@ -1237,11 +1237,11 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�촵�Լ��̥ơ��֥�������
+      *    同一患者識別テーブル削除処理
       *****************************************************************
        2002-PTSAME-DELETE-SEC                SECTION.
       *
-      *    Ʊ�촵�Լ��̥ơ��֥�
+      *    同一患者識別テーブル
            INITIALIZE                      PTSAME-REC
            MOVE    SPA-HOSPNUM         TO  PTSAME-HOSPNUM
            MOVE    SPA-PTID            TO  PTSAME-PTID
@@ -1267,7 +1267,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    MCPDATA-REC
                                                    SPA-AREA
-      *        Ʊ�촵�Ԥ��ʤ��ʤä����
+      *        同一患者がなくなった場合
                MOVE    PTSAME-REC          TO  MCPDATA-REC
                MOVE    "tbl_ptsame"        TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
@@ -1307,7 +1307,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *H28.12
       *
       *****************************************************************
-      *    �ŻҤ�����ĢϢ�ȥơ��֥�������
+      *    電子お薬手帳連携テーブル削除処理
       *****************************************************************
        2003-OKUSURIKANRI-DELETE-SEC    SECTION.
       *
@@ -1330,7 +1330,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM
                UNTIL   (FLG-OKUKAN     =   1   )
       *
-      *        ������Ģ�ǡ������
+      *        お薬手帳データ削除
                INITIALIZE                  OKUSURIDATA-REC
                MOVE    OKUKAN-DATA-KEY     TO  OKUDAT-DATA-KEY
                MOVE    OKUSURIDATA-REC     TO  MCPDATA-REC
@@ -1349,7 +1349,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ������Ģ�����ǡ������
+      *    お薬手帳管理データ削除
            INITIALIZE                  OKUSURIKANRI-REC
            MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
            MOVE    SPA-PTID            TO  OKUKAN-PTID
@@ -1365,7 +1365,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ͽ��ޥ������ɹ�����
+      *    予約マスター読込処理
       *****************************************************************
        900-YOYAKU-READ-SEC         SECTION.
       *
@@ -1384,7 +1384,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�촵�Լ��̥ޥ������ɹ�����
+      *    同一患者識別マスター読込処理
       *****************************************************************
        900-PTSAME-READ-SEC         SECTION.
       *
@@ -1401,7 +1401,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������Ģ�ǡ���Ϣ�ȡ������ޥ������ɹ�
+      *    お薬手帳データ連携　管理マスター読込
       *****************************************************************
        910-OKUSURIKANRI-READ-SEC         SECTION.
       *
@@ -1419,7 +1419,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1431,7 +1431,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1444,7 +1444,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

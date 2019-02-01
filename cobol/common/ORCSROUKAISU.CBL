@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -20,15 +20,15 @@
       ****************************************************************
       *    OS           LINUX                                         
       *                                                               
-      *    PROGRAM      ORCSROUKAISU  /  Ï«ºÒ¥ì¥»¥×¥È²ó¿ô¼èÆÀ¥µ¥Ö     
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  05/11/22    NACL¡ÝÌçÏÆ    ¿·µ¬ºîÀ®
+      *    PROGRAM      ORCSROUKAISU  /  åŠ´ç½ãƒ¬ã‚»ãƒ—ãƒˆå›žæ•°å–å¾—ã‚µãƒ–     
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  05/11/22    NACLâˆ’é–€è„‡    æ–°è¦ä½œæˆ
       ****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.04.01    NACL-ÌçÏÆ    07/03/12  Êñ³ç¿ÇÎÅÂÐ±þ
-      *  03.05.00    NACL-ÌçÏÆ    07/05/08  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.04.01    NACL-é–€è„‡    07/03/12  åŒ…æ‹¬è¨ºç™‚å¯¾å¿œ
+      *  03.05.00    NACL-é–€è„‡    07/05/08  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -41,7 +41,7 @@
       *
        WORKING-STORAGE SECTION.
       *
-      *    Åº¤¨»úÎÎ°è
+      *    æ·»ãˆå­—é ˜åŸŸ
        01  IDX-AREA.
          03  IDX                        PIC 9(02).
          03  IDY                        PIC 9(02).
@@ -49,7 +49,7 @@
          03  IDW                        PIC 9(02).
          03  IDV                        PIC 9(02).
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
          03  FLG-SYSKANRI               PIC 9(01).
          03  FLG-NYUINACCT              PIC 9(01).
@@ -58,7 +58,7 @@
          03  FLG-NG                     PIC 9(01).
          03  FLG-TAIHI                  PIC 9(01).
       *
-      *    ¥ï¡¼¥¯ÎÎ°è
+      *    ãƒ¯ãƒ¼ã‚¯é ˜åŸŸ
        01  WRK-AREA.
          03  WRK-RYOSTYMD.
            05  WRK-RYOSTYM              PIC 9(06).
@@ -89,29 +89,29 @@
          03  WRK-RECESRYKA              PIC X(02).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    Æþ±¡²ñ·×
+      *    å…¥é™¢ä¼šè¨ˆ
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ¿ÇÎÅ²ñ·×
+      *    è¨ºç™‚ä¼šè¨ˆ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSK1001.INC".
            COPY    "CPSK1005.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       ***  COPY    "CPORCMCP.INC".
@@ -127,7 +127,7 @@ grpsys     COPY  "COMMON-SPA".
                                      LNK-ORCSROUKAISU-REC
                                      SPA-AREA.
       ******************************************************************
-      *        °ÍÍêÀ©¸æ½èÍý
+      *        ä¾é ¼åˆ¶å¾¡å‡¦ç†
       ******************************************************************
        MAIN-RTN            SECTION.
        MAIN-000.
@@ -139,7 +139,7 @@ grpsys     COPY  "COMMON-SPA".
                                        FLG-AREA
                                        WRK-AREA
       *
-      *    ½èÍý³«»ÏÇ¯·î¤ÎÀßÄê
+      *    å‡¦ç†é–‹å§‹å¹´æœˆã®è¨­å®š
            IF      LNK-ORCSROUKAISU-KIJYUNYM-KSI  =  SPACE
               MOVE   LNK-ORCSROUKAISU-RYOSTYMD(1:6)
                                     TO   WRK-KIJYUNYM-KSI
@@ -150,23 +150,23 @@ grpsys     COPY  "COMMON-SPA".
            IF      LNK-ORCSROUKAISU-SRYYM  <  WRK-KIJYUNYM-KSI-9
               MOVE   LNK-ORCSROUKAISU-RYOSTYMD  TO   WRK-RYOSTYMD
               MOVE   "01"                       TO   WRK-RYOSTYMD(7:2)
-      *       ¥«¥¦¥ó¥È³«»Ï²ó¿ô¤ÎÀßÄê
+      *       ã‚«ã‚¦ãƒ³ãƒˆé–‹å§‹å›žæ•°ã®è¨­å®š
               MOVE   ZERO                       TO   WRK-COUNT
            ELSE
               MOVE   WRK-KIJYUNYM-KSI           TO   WRK-RYOSTYMD(1:6)
               MOVE   "01"                       TO   WRK-RYOSTYMD(7:2)
-      *       ¥«¥¦¥ó¥È³«»Ï²ó¿ô¤ÎÀßÄê
+      *       ã‚«ã‚¦ãƒ³ãƒˆé–‹å§‹å›žæ•°ã®è¨­å®š
               IF      LNK-ORCSROUKAISU-KAISU-KSI     =  ZERO
                  MOVE      1     TO    LNK-ORCSROUKAISU-KAISU-KSI
               END-IF
               COMPUTE    WRK-COUNT  =  LNK-ORCSROUKAISU-KAISU-KSI  -   1
            END-IF
       *
-      *    ²ó¿ô¼èÆÀ
+      *    å›žæ•°å–å¾—
            PERFORM   UNTIL  (WRK-RYOSTYM  >  LNK-ORCSROUKAISU-SRYYM)
                       OR    (LNK-ORCSROUKAISU-RC   NOT =   ZERO    )
       *
-      *      µìÁí¹çÉÂ±¡¥Õ¥é¥°¼èÆÀ
+      *      æ—§ç·åˆç—…é™¢ãƒ•ãƒ©ã‚°å–å¾—
              PERFORM    100-SYSKANRI-1001-GET-SEC
       *
              IF    LNK-ORCSROUKAISU-RC   =   ZERO
@@ -174,7 +174,7 @@ grpsys     COPY  "COMMON-SPA".
              END-IF
       *
              IF    LNK-ORCSROUKAISU-RC   =   ZERO
-      *        ¼¡·î¤òµá¤á¤ë
+      *        æ¬¡æœˆã‚’æ±‚ã‚ã‚‹
                INITIALIZE                   STS-AREA-DAY
                INITIALIZE                   LNK-DAY6-AREA
                MOVE    "61"             TO  LNK-DAY6-IRAI
@@ -203,7 +203,7 @@ grpsys     COPY  "COMMON-SPA".
            STOP RUN.
       *
       *****************************************************************
-      *    µìÁí¹çÉÂ±¡¥Õ¥é¥°¼èÆÀ
+      *    æ—§ç·åˆç—…é™¢ãƒ•ãƒ©ã‚°å–å¾—
       *****************************************************************
        100-SYSKANRI-1001-GET-SEC         SECTION.
       *
@@ -245,14 +245,14 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ²ó¿ô¼èÆÀ
+      *    å›žæ•°å–å¾—
       *****************************************************************
        200-KEISAN-SEC         SECTION.
       *
-      *    ¡ã³ºÅö¿ÇÎÅ·î°ÊÁ°¡ä
+      *    ï¼œè©²å½“è¨ºç™‚æœˆä»¥å‰ï¼ž
            IF    WRK-RYOSTYM   <    LNK-ORCSROUKAISU-SRYYM
       *
-      *******Æþ±¡Ê¬
+      *******å…¥é™¢åˆ†
              MOVE    ZERO          TO   FLG-ARI
              PERFORM      2001-NACCT-KENSAKU-SEC
              IF      FLG-ARI   =   ZERO
@@ -263,8 +263,8 @@ grpsys     COPY  "COMMON-SPA".
                   ADD      1       TO   WRK-COUNT
              END-IF
       *
-      *******³°ÍèÊ¬
-      *      µìÁí¹çÉÂ±¡¤Î¾ì¹ç
+      *******å¤–æ¥åˆ†
+      *      æ—§ç·åˆç—…é™¢ã®å ´åˆ
              IF   WRK-1001-HOSPSBT1   =   1
                INITIALIZE               WRK-SRYKAINF
                MOVE       "2"      TO   WRK-NYUGAIKBN
@@ -276,7 +276,7 @@ grpsys     COPY  "COMMON-SPA".
                     ADD      1     TO   WRK-COUNT
                END-PERFORM
              ELSE
-      *        µìÁí¹çÉÂ±¡¤Ç¤Ê¤¤¾ì¹ç
+      *        æ—§ç·åˆç—…é™¢ã§ãªã„å ´åˆ
                MOVE    ZERO        TO   FLG-ARI
                MOVE       "2"      TO   WRK-NYUGAIKBN
                PERFORM    2002-ACCT-KENSAKU-SEC
@@ -287,10 +287,10 @@ grpsys     COPY  "COMMON-SPA".
       *
            END-IF
       *
-      *    ¡ã³ºÅö¿ÇÎÅ·î¡ä
+      *    ï¼œè©²å½“è¨ºç™‚æœˆï¼ž
            IF    WRK-RYOSTYM   =    LNK-ORCSROUKAISU-SRYYM
       *
-      *******Æþ±¡»þ¡§³°ÍèÊÔ½¸½èÍý
+      *******å…¥é™¢æ™‚ï¼šå¤–æ¥ç·¨é›†å‡¦ç†
              IF    LNK-ORCSROUKAISU-NYUGAIKBN  =  "1"
       *
                INITIALIZE               WRK-SRYKAINF
@@ -338,7 +338,7 @@ grpsys     COPY  "COMMON-SPA".
       *
              ELSE
       *
-      *******  ³°Íè»þ¡§Æþ±¡ÊÔ½¸½èÍý
+      *******  å¤–æ¥æ™‚ï¼šå…¥é™¢ç·¨é›†å‡¦ç†
                INITIALIZE                 WRK-DAYINF
                MOVE    ZERO          TO   WRK-NYUGAI-DAY
       *
@@ -364,7 +364,7 @@ grpsys     COPY  "COMMON-SPA".
                      ADD      1      TO   WRK-COUNT
                END-IF
       *
-      *        µìÁí¹çÉÂ±¡¤Î¾ì¹ç
+      *        æ—§ç·åˆç—…é™¢ã®å ´åˆ
                IF   WRK-1001-HOSPSBT1   =   1
       *
                   INITIALIZE               WRK-SRYKAINF
@@ -425,7 +425,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢
       *****************************************************************
        2001-NACCT-KENSAKU-SEC         SECTION.
       *
@@ -472,7 +472,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¸¡º÷
+      *    è¨ºç™‚ä¼šè¨ˆæ¤œç´¢
       *****************************************************************
        2002-ACCT-KENSAKU-SEC         SECTION.
       *
@@ -522,7 +522,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¸¡º÷£²
+      *    è¨ºç™‚ä¼šè¨ˆæ¤œç´¢ï¼’
       *****************************************************************
        2003-ACCT-KENSAKU2-SEC         SECTION.
       *
@@ -571,7 +571,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×ÊÔ½¸
+      *    è¨ºç™‚ä¼šè¨ˆç·¨é›†
       *****************************************************************
        20031-ACCT-HENSYU-SEC         SECTION.
       *
@@ -677,7 +677,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷£²
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢ï¼’
       *****************************************************************
        2004-NACCT-KENSAKU2-SEC         SECTION.
       *
@@ -722,7 +722,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¸¡º÷£³
+      *    å…¥é™¢ä¼šè¨ˆæ¤œç´¢ï¼“
       *****************************************************************
        2005-NACCT-KENSAKU3-SEC         SECTION.
       *
@@ -780,7 +780,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥ì¥»ÅÅ»»¿ÇÎÅ²Ê¡Ê¥³¡¼¥É¡Ë¼èÆÀ
+      *    ãƒ¬ã‚»é›»ç®—è¨ºç™‚ç§‘ï¼ˆã‚³ãƒ¼ãƒ‰ï¼‰å–å¾—
       *****************************************************************
        2006-SYSKANRI-1005-GET-SEC         SECTION.
       *
@@ -822,7 +822,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†èª­è¾¼
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -846,7 +846,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-NYUINACCT-READ-SEC         SECTION.
       *
@@ -868,7 +868,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-SRYACCT-READ-SEC         SECTION.
       *
@@ -890,7 +890,7 @@ grpsys     COPY  "COMMON-SPA".
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

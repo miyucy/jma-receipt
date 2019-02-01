@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCGI0SUB02.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ������Ͽ
-      *  ����ݡ��ͥ��̾  : ��Ǽ�����Խ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/11/20    NACL������    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 入院登録
+      *  コンポーネント名  : 収納情報編集サブ
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/11/20    NACL−太田    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.00    NACL-����    07.05.15  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.00    NACL-太田    07.05.15  グループ診療対応
       *****************************************************************
        ENVIRONMENT                     DIVISION.
        CONFIGURATION                   SECTION.
@@ -39,7 +39,7 @@
       *
        WORKING-STORAGE                 SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-SYUNOU              PIC 9(01).
       *
@@ -47,7 +47,7 @@
            03  CNT-TUKISU              PIC 9(03).
            03  CNT-SYU                 PIC 9(03).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX0                    PIC 9(05).
            03  IDX1                    PIC 9(05).
@@ -115,13 +115,13 @@
       *
            COPY    "COMMON-SPA"        REPLACING
                                        //SPA-//    BY  //WRK-SPA-//.
-      *    ��Ǽ��ץ��
+      *    収納合計ワーク
        01  TTLSYUNOU-REC.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //TTLSYU-//.
            03  TTLSYU-UPD-SKYMONEY     PIC S9(08).
            03  TTLSYU-UPD-TAX-SAI      PIC S9(08).
       *
-      *    ��Ǽ���ץ��
+      *    収納集計ワーク
        01  SUMSYUNOU-REC.
          02  SUMSYU-OCC                OCCURS  23.
            COPY  "CPSYUNOU.INC"    REPLACING  //SYU-// BY //SUMSYU-//.
@@ -130,22 +130,22 @@
            03  SUMSYU-UPD-TAX-SAI      PIC S9(08).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ�ޥ�����
+      *    収納マスター
        01  SYUNOU-REC.
            COPY    "CPSYUNOU.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ��ô��׻�����
+      *    負担金計算サブ
        01  LNK-ORCS02-REC.
            COPY  "CPORCS02.INC".
        01  LNK-SYUNOU-REC-T.
@@ -155,23 +155,23 @@
          02 LNK-SYUDAY-REC     OCCURS 10.
            COPY  "CPSYUDAY.INC"  REPLACING  //SDAY-// BY //LNK-SDAY-//.
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
            COPY    "CPORCSHKNSET.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ʬ�����������å�����
+      *    分娩入院チェックサブ
            COPY  "CPORCSBUNBENCHK.INC".
       *
-      *    ����������ּ�������
+      *    入院請求期間取得サブ
            COPY    "CPORCSS006.INC".
       *
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -182,7 +182,7 @@
            SPA-AREA
            I0SUB02-LNK.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -198,7 +198,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -214,7 +214,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -242,7 +242,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ô��׻�����
+      *    負担金計算処理
       *****************************************************************
        2001-ORCSNYUFTN-CALL-SEC        SECTION.
       *
@@ -272,8 +272,8 @@
            MOVE    SPA-PTID        TO  LNK-S02-PTID
            MOVE    I0SUB02-NISSU   TO  LNK-S02-NYUIN-TSUSAN-NISSU
       *
-      *    ���ᳫ��������������Ʊ���������ξ��������������ˤޤ���
-      *    ����������Ὢλ���������ˤ�����
+      *    請求開始日（入院日（同日再入院の場合は入院日翌日）または
+      *    前回定期請求終了日の翌日）を設定
            MOVE    I0SUB02-SKYSTYMD TO LNK-S02-SKYSTYMD
            MOVE    I0SUB02-SKYEDYMD TO LNK-S02-SKYEDYMD
            IF    ( I0SUB02-SKYSTYMD <  CONST-H180401 )
@@ -321,7 +321,7 @@
        2001-ORCSNYUFTN-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ��������Ǽ��������
+      *    訂正元収納更新処理
       *****************************************************************
        2001-MOTSYU-SEL-SEC             SECTION.
       *
@@ -350,7 +350,7 @@
        2001-MOTSYU-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ǽ�Խ�����
+      *    今回収納編集処理
       *****************************************************************
        2001-KONSYU-HEN-SEC             SECTION.
       *
@@ -542,7 +542,7 @@
        2001-KONSYU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ֵѼ�Ǽ�Խ�����
+      *    返却収納編集処理
       *****************************************************************
        2001-I0SUB02-SYUNOU-HEN-SEC     SECTION.
       *
@@ -609,7 +609,7 @@
                                        TO  I0SUB02-SYUNOU-YM-S
                                                  (CNT-SYU)
       *
-      *            �ݸ��Ȥ߹�碌̾�μ���
+      *            保険組み合わせ名称取得
                    MOVE    KONSYU-HKNCOMBINUM (IDX-KON)
                                        TO  WRK-HKNCOMBINUM
                    PERFORM 20011-HKNCOMBI-EDIT-SEC
@@ -641,7 +641,7 @@
       *
            END-PERFORM
       *
-      *    ������ξ��ϥ��顼�Ȥ���
+      *    ゼロ件の場合はエラーとする
            IF    ( CNT-SYU         <=  ZERO )
                MOVE    4           TO  I0SUB02-RC
            END-IF
@@ -649,7 +649,7 @@
            IF    ( I0SUB02-RC      =   ZERO )
                COMPUTE CNT-SYU     =   CNT-SYU +   1
       *
-      *        �ơ��֥�����������С����ϥ��顼�Ȥ���
+      *        テーブル最大件数オーバー時はエラーとする
                IF    ( CNT-SYU     >   CONST-SYUNOU-MAX )
                    MOVE    5       TO  I0SUB02-RC
                END-IF
@@ -691,12 +691,12 @@
        2001-I0SUB02-SYUNOU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ֵѼ�Ǽ�Խ�����
+      *    返却収納編集処理
       *****************************************************************
        20011-I0SUB02-SYUNOU-HEN-SEC    SECTION.
       *
 
-      *    �ݸ���
+      *    保険料
            PERFORM VARYING     IDX-HKN   FROM    1   BY  1
                    UNTIL     ( IDX-HKN   >   CONST-HKNTEN-MAX )
       *
@@ -722,7 +722,7 @@
                    +   KONSYU-TGMONEY-TAX(IDX-KON IDX-HKN)
            END-PERFORM
       *
-      *    �ݸ�Ŭ�Ѷ��
+      *    保険適用金額
            COMPUTE SUMSYU-HKNTEKMONEY (IDX-SUM)
                =   SUMSYU-HKNTEKMONEY (IDX-SUM)
                +   KONSYU-HKNTEKMONEY (IDX-KON)
@@ -739,7 +739,7 @@
                    +   KONSYU-KOH-FTN  (IDX-KON)
            END-IF
       *
-      *    Ϸ�Ͱ�����ô��
+      *    老人一部負担金
            COMPUTE SUMSYU-RJN-FTN  (IDX-SUM)
                =   SUMSYU-RJN-FTN  (IDX-SUM)
                +   KONSYU-RJN-FTN  (IDX-KON)
@@ -747,7 +747,7 @@
                =   TTLSYU-RJN-FTN
                +   KONSYU-RJN-FTN  (IDX-KON)
       *
-      *    ���������ô��
+      *    公費一部負担金
            IF    ( KONSYU-HKNTEKKBN  (IDX-KON) =   SPACE )
                COMPUTE SUMSYU-KOH-FTN  (IDX-SUM)
                    =   SUMSYU-KOH-FTN  (IDX-SUM)
@@ -757,7 +757,7 @@
                    +   KONSYU-KOH-FTN  (IDX-KON)
            END-IF
       *
-      *    ����
+      *    自費
            PERFORM VARYING IDX-JIHI    FROM    1   BY  1
                    UNTIL ( IDX-JIHI    >   CONST-JIHI-MAX )
       *
@@ -776,7 +776,7 @@
                    +   KONSYU-JIHI-TAXARI (IDX-KON IDX-JIHI)
            END-PERFORM
       *
-      *    �����
+      *    自費計
            COMPUTE SUMSYU-JIHI-TOTAL (IDX-SUM)
                =   SUMSYU-JIHI-TOTAL (IDX-SUM)
                +   KONSYU-JIHI-TOTAL (IDX-KON)
@@ -785,7 +785,7 @@
                +   KONSYU-JIHI-TOTAL (IDX-KON)
       *
       *
-      *    ����סʾ����Ǥ����
+      *    自費計（消費税あり）
            COMPUTE SUMSYU-JIHI-TOTAL-TAX (IDX-SUM)
                =   SUMSYU-JIHI-TOTAL-TAX (IDX-SUM)
                +   KONSYU-JIHI-TOTAL-TAX (IDX-KON)
@@ -793,7 +793,7 @@
                =   TTLSYU-JIHI-TOTAL-TAX
                +   KONSYU-JIHI-TOTAL-TAX (IDX-KON)
       *
-      *    ���������
+      *    自費消費税
            COMPUTE SUMSYU-JIHI-TAX  (IDX-SUM)
                =   SUMSYU-JIHI-TAX  (IDX-SUM)
                +   KONSYU-JIHI-TAX  (IDX-KON)
@@ -801,7 +801,7 @@
                =   TTLSYU-JIHI-TAX
                +   KONSYU-JIHI-TAX  (IDX-KON)
       *
-      *    ϫ�ҽ��
+      *    労災初診
            COMPUTE SUMSYU-RSISHOSHIN-MONEY (IDX-SUM)
                =   SUMSYU-RSISHOSHIN-MONEY (IDX-SUM)
                +   KONSYU-RSISHOSHIN-MONEY (IDX-KON)
@@ -809,7 +809,7 @@
                =   TTLSYU-RSISHOSHIN-MONEY
                +   KONSYU-RSISHOSHIN-MONEY (IDX-KON)
       *
-      *    ϫ�Һƿ�
+      *    労災再診
            COMPUTE SUMSYU-RSISAISHIN-MONEY (IDX-SUM)
                =   SUMSYU-RSISAISHIN-MONEY (IDX-SUM)
                +   KONSYU-RSISAISHIN-MONEY (IDX-KON)
@@ -817,7 +817,7 @@
                =   TTLSYU-RSISAISHIN-MONEY
                +   KONSYU-RSISAISHIN-MONEY (IDX-KON)
       *
-      *    ϫ�һ�Ƴ
+      *    労災指導
            COMPUTE SUMSYU-RSISDO-MONEY  (IDX-SUM)
                =   SUMSYU-RSISDO-MONEY  (IDX-SUM)
                +   KONSYU-RSISDO-MONEY (IDX-KON)
@@ -825,7 +825,7 @@
                =   TTLSYU-RSISDO-MONEY
                +   KONSYU-RSISDO-MONEY (IDX-KON)
       *
-      *    ϫ�Ҥ���¾
+      *    労災その他
            COMPUTE SUMSYU-RSIETC-MONEY (IDX-SUM)
                =   SUMSYU-RSIETC-MONEY (IDX-SUM)
                +   KONSYU-RSIETC-MONEY (IDX-KON)
@@ -833,7 +833,7 @@
                =   TTLSYU-RSIETC-MONEY
                +   KONSYU-RSIETC-MONEY (IDX-KON)
       *
-      *    ������������ݸ���
+      *    食事療養費（保険）
            COMPUTE SUMSYU-RYOYOHI-SKJ (IDX-SUM)
                =   SUMSYU-RYOYOHI-SKJ (IDX-SUM)
                +   KONSYU-RYOYOHI-SKJ (IDX-KON)
@@ -841,7 +841,7 @@
                =   TTLSYU-RYOYOHI-SKJ
                +   KONSYU-RYOYOHI-SKJ (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô��
+      *    食事負担額（保険：自己負担）
            COMPUTE SUMSYU-SKYMONEY-SKJ (IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ (IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ (IDX-KON)
@@ -849,7 +849,7 @@
                =   TTLSYU-SKYMONEY-SKJ
                +   KONSYU-SKYMONEY-SKJ (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô�����ǡ�
+      *    食事負担額（保険：自己負担消費税）
            COMPUTE SUMSYU-SKYMONEY-SKJ-TAX (IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ-TAX (IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ-TAX (IDX-KON)
@@ -857,7 +857,7 @@
                =   TTLSYU-SKYMONEY-SKJ-TAX
                +   KONSYU-SKYMONEY-SKJ-TAX (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô��ס�
+      *    食事負担額（保険：自己負担合計）
            COMPUTE SUMSYU-SKYMONEY-SKJ-KEI (IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ-KEI (IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ-KEI (IDX-KON)
@@ -865,7 +865,7 @@
                =   TTLSYU-SKYMONEY-SKJ-KEI
                +   KONSYU-SKYMONEY-SKJ-KEI (IDX-KON)
       *
-      *    ����������ʼ����
+      *    食事療養費（自費）
            COMPUTE SUMSYU-RYOYOHI-SKJ-JIHI (IDX-SUM)
                =   SUMSYU-RYOYOHI-SKJ-JIHI (IDX-SUM)
                +   KONSYU-RYOYOHI-SKJ-JIHI (IDX-KON)
@@ -873,7 +873,7 @@
                =   TTLSYU-RYOYOHI-SKJ-JIHI
                +   KONSYU-RYOYOHI-SKJ-JIHI (IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô��
+      *    食事負担額（自費：自己負担）
            COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI (IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ-JIHI (IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ-JIHI (IDX-KON)
@@ -881,7 +881,7 @@
                =   TTLSYU-SKYMONEY-SKJ-JIHI
                +   KONSYU-SKYMONEY-SKJ-JIHI (IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô�����ǡ�
+      *    食事負担額（自費：自己負担消費税）
            COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-TAX(IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ-JIHI-TAX(IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ-JIHI-TAX(IDX-KON)
@@ -889,7 +889,7 @@
                =   TTLSYU-SKYMONEY-SKJ-JIHI-TAX
                +   KONSYU-SKYMONEY-SKJ-JIHI-TAX(IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô��ס�
+      *    食事負担額（自費：自己負担合計）
            COMPUTE SUMSYU-SKYMONEY-SKJ-JIHI-KEI(IDX-SUM)
                =   SUMSYU-SKYMONEY-SKJ-JIHI-KEI(IDX-SUM)
                +   KONSYU-SKYMONEY-SKJ-JIHI-KEI(IDX-KON)
@@ -897,7 +897,7 @@
                =   TTLSYU-SKYMONEY-SKJ-JIHI-KEI
                +   KONSYU-SKYMONEY-SKJ-JIHI-KEI(IDX-KON)
       *
-      *    ������������ݸ���
+      *    生活療養費（保険）
            COMPUTE SUMSYU-RYOYOHI-LIFE (IDX-SUM)
                =   SUMSYU-RYOYOHI-LIFE (IDX-SUM)
                +   KONSYU-RYOYOHI-LIFE (IDX-KON)
@@ -905,7 +905,7 @@
                =   TTLSYU-RYOYOHI-LIFE
                +   KONSYU-RYOYOHI-LIFE (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô��
+      *    生活負担額（保険：自己負担）
            COMPUTE SUMSYU-SKYMONEY-LIFE (IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE (IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE (IDX-KON)
@@ -913,7 +913,7 @@
                =   TTLSYU-SKYMONEY-LIFE
                +   KONSYU-SKYMONEY-LIFE (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô�����ǡ�
+      *    生活負担額（保険：自己負担消費税）
            COMPUTE SUMSYU-SKYMONEY-LIFE-TAX (IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE-TAX (IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE-TAX (IDX-KON)
@@ -921,7 +921,7 @@
                =   TTLSYU-SKYMONEY-LIFE-TAX
                +   KONSYU-SKYMONEY-LIFE-TAX (IDX-KON)
       *
-      *    ������ô�ۡ��ݸ���������ô��ס�
+      *    生活負担額（保険：自己負担合計）
            COMPUTE SUMSYU-SKYMONEY-LIFE-KEI (IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE-KEI (IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE-KEI (IDX-KON)
@@ -929,7 +929,7 @@
                =   TTLSYU-SKYMONEY-LIFE-KEI
                +   KONSYU-SKYMONEY-LIFE-KEI (IDX-KON)
       *
-      *    ����������ʼ����
+      *    生活療養費（自費）
            COMPUTE SUMSYU-RYOYOHI-LIFE-JIHI (IDX-SUM)
                =   SUMSYU-RYOYOHI-LIFE-JIHI (IDX-SUM)
                +   KONSYU-RYOYOHI-LIFE-JIHI (IDX-KON)
@@ -937,7 +937,7 @@
                =   TTLSYU-RYOYOHI-LIFE-JIHI
                +   KONSYU-RYOYOHI-LIFE-JIHI (IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô��
+      *    生活負担額（自費：自己負担）
            COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI (IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE-JIHI (IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE-JIHI (IDX-KON)
@@ -945,7 +945,7 @@
                =   TTLSYU-SKYMONEY-LIFE-JIHI
                +   KONSYU-SKYMONEY-LIFE-JIHI (IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô�����ǡ�
+      *    生活負担額（自費：自己負担消費税）
            COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-TAX(IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE-JIHI-TAX(IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE-JIHI-TAX(IDX-KON)
@@ -953,7 +953,7 @@
                =   TTLSYU-SKYMONEY-LIFE-JIHI-TAX
                +   KONSYU-SKYMONEY-LIFE-JIHI-TAX(IDX-KON)
       *
-      *    ������ô�ۡʼ��񡧼�����ô��ס�
+      *    生活負担額（自費：自己負担合計）
            COMPUTE SUMSYU-SKYMONEY-LIFE-JIHI-KEI(IDX-SUM)
                =   SUMSYU-SKYMONEY-LIFE-JIHI-KEI(IDX-SUM)
                +   KONSYU-SKYMONEY-LIFE-JIHI-KEI (IDX-KON)
@@ -961,7 +961,7 @@
                =   TTLSYU-SKYMONEY-LIFE-JIHI-KEI
                +   KONSYU-SKYMONEY-LIFE-JIHI-KEI (IDX-KON)
       *
-      *    ��������
+      *    室料差額
            COMPUTE SUMSYU-RMSAGAKU (IDX-SUM)
                =   SUMSYU-RMSAGAKU (IDX-SUM)
                +   KONSYU-RMSAGAKU (IDX-KON)
@@ -969,7 +969,7 @@
                =   TTLSYU-RMSAGAKU
                +   KONSYU-RMSAGAKU (IDX-KON)
       *
-      *    Ĵ����
+      *    調整金
            COMPUTE SUMSYU-CHOSEI   (IDX-SUM)
                =   SUMSYU-CHOSEI   (IDX-SUM)
                +   KONSYU-CHOSEI   (IDX-KON)
@@ -991,7 +991,7 @@
                =   TTLSYU-CHOSEI2
                +   KONSYU-CHOSEI2   (IDX-KON)
       *
-      *    ������
+      *    請求金額
            COMPUTE SUMSYU-SKYMONEY (IDX-SUM)
                =   SUMSYU-SKYMONEY (IDX-SUM)
                +   KONSYU-SKYMONEY (IDX-KON)
@@ -999,7 +999,7 @@
                =   TTLSYU-SKYMONEY
                +   KONSYU-SKYMONEY (IDX-KON)
       *
-      *    ������
+      *    請求金額
            COMPUTE SUMSYU-UPD-SKYMONEY (IDX-SUM)
                =   SUMSYU-UPD-SKYMONEY (IDX-SUM)
                +   KONSYU-UPD-SKYMONEY (IDX-KON)
@@ -1007,7 +1007,7 @@
                =   TTLSYU-UPD-SKYMONEY
                +   KONSYU-UPD-SKYMONEY (IDX-KON)
       *
-      *    �����ǺƷ�
+      *    消費税再掲
            COMPUTE SUMSYU-UPD-TAX-SAI (IDX-SUM)
                =   SUMSYU-UPD-TAX-SAI (IDX-SUM)
                +   KONSYU-UPD-TAX-SAI (IDX-KON)
@@ -1015,7 +1015,7 @@
                =   TTLSYU-UPD-TAX-SAI
                +   KONSYU-UPD-TAX-SAI (IDX-KON)
       *
-      *    ���Ⱦ���
+      *    減免情報
            IF    ( KONSYU-DISCOUNT-TEIRITU (IDX-KON)   =   "1" OR "2" )
                MOVE    KONSYU-DISCOUNT-KBN     (IDX-KON)
                                    TO  SUMSYU-DISCOUNT-KBN     (IDX-SUM)
@@ -1043,7 +1043,7 @@
        20011-I0SUB02-SYUNOU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻�Խ�����
+      *    保険組合せ編集処理
       *****************************************************************
        20011-HKNCOMBI-EDIT-SEC         SECTION.
       *
@@ -1085,7 +1085,7 @@
        20011-HKNCOMBI-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻��������
+      *    保険組合せ取得処理
       *****************************************************************
        2001-ORCSHKNSET-CALL-SEC        SECTION.
       *
@@ -1103,7 +1103,7 @@
        2001-ORCSHKNSET-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ
+      *    終了
       *****************************************************************
        300-END-SEC                     SECTION.
       *
@@ -1115,7 +1115,7 @@
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    �ֵ���ɽ��
+      *    返却値表示
       *****************************************************************
        800-DISPLAY-SEC                 SECTION.
       *
@@ -1155,7 +1155,7 @@
        800-DISPLAY-EXT.
            EXIT.
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC               SECTION.
       *
@@ -1171,14 +1171,14 @@
                                            LNK-DAY2-AREA
                MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
                MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-               INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "��"
+               INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "　"
            END-IF
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ޥ�����������
+      *    収納マスタ検索処理
       *****************************************************************
        900-SYUNOU-KEY57-SEL-SEC        SECTION.
       *
@@ -1205,7 +1205,7 @@
        900-SYUNOU-KEY57-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ޥ���FETCH����
+      *    収納マスタFETCH処理
       *****************************************************************
        900-SYUNOU-KEY57-FET-SEC        SECTION.
       *
@@ -1223,7 +1223,7 @@
        900-SYUNOU-KEY57-FET-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH��Ԥ�)
+      *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1240,7 +1240,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¸���������FHETCH�ϹԤ�ʤ�)
+      *    ＤＢ検索処理（FHETCHは行わない)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1254,7 +1254,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1268,7 +1268,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC           SECTION.
       *

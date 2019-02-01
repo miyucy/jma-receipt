@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -24,7 +24,7 @@
            03  SDTCHK05-OT.
                05  SDTCHK05-OT-MAX         PIC 9(05).
                05  SDTCHK05-OT-OCC         OCCURS 50.
-      *        ºÁ ›∏±:0/∏¯»Ò:1
+      *        ‰∏ª‰øùÈô∫:0/ÂÖ¨Ë≤ª:1
                    07  SDTCHK05-HKNKOHKBN  PIC X(01).
                    07  SDTCHK05-HKNNUM     PIC X(03).
                    07  SDTCHK05-HKNNUMMEI  PIC X(20).

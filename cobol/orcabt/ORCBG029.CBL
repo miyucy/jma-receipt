@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBG029.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : ∑Óº°ƒ¢…º
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘øÙƒ¥§Ÿ
-      *  ¥…Õ˝º‘            : 
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  16/08/18    NACL-øπœ∆     ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : ÊúàÊ¨°Â∏≥Á•®
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞Ë™ø„Åπ
+      *  ÁÆ°ÁêÜËÄÖ            : 
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  16/08/18    NACL-Ê£ÆËÑá     Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -34,21 +34,21 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ≈˝∑◊Õ—•’•°•§•Î
+      *    Áµ±Ë®àÁî®„Éï„Ç°„Ç§„É´
            SELECT  TOKEI-FILE          ASSIGN    TOKEIPARA
                                        ORGANIZATION    IS  INDEXED
                                        ACCESS  MODE    IS  DYNAMIC
                                        RECORD  KEY     IS  TOKEI-KEY
                                        FILE    STATUS  IS  STS-TOKEI.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  RECEERR-FILE        ASSIGN  RECEERR
                                        FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ≈˝∑◊Õ—•’•°•§•Î
+      *    Áµ±Ë®àÁî®„Éï„Ç°„Ç§„É´
        FD  TOKEI-FILE.
        01  TOKEI-REC. 
            03  TOKEI-KEY.
@@ -63,7 +63,7 @@
            03  TOKEI-NAME              PIC X(20).
            03  TOKEI-NAIYO             PIC X(56).
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200).
       *
@@ -77,12 +77,12 @@
            COPY    "HCMSL80.INC".
            COPY    "HCMSL55.INC".
       *
-      *    •π•—ŒŒ∞Ë
+      *    „Çπ„ÉëÈ†òÂüü
        01  STS-AREA.
            03  STS-TOKEI               PIC X(02).
            03  STS-RECEERR             PIC X(02).
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SRYACCT             PIC 9(01).
@@ -94,21 +94,21 @@
            03  FLG-TOKEI               PIC 9(01).
            03  FLG-OK                  PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-PAGE                PIC 9(03).
            03  CNT-LINE                PIC 9(02).
            03  CNT-TOKEI               PIC 9(05).
            03  CNT-NAIYO               PIC 9(05).
       *
-      *    •∑•π•∆•‡ŒŒ∞Ë
+      *    „Ç∑„Çπ„ÉÜ„É†È†òÂüü
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY              PIC 9(02).
                05  SYS-MM              PIC 9(02).
                05  SYS-DD              PIC 9(02).
       *
-      *    ≈∫ª˙ŒŒ∞Ë
+      *    Ê∑ªÂ≠óÈ†òÂüü
        01  IDX-AREA.
            03  IDX                     PIC 9(05).
            03  IDX-D                   PIC 9(02).
@@ -117,7 +117,7 @@
            03  IDX-Z                   PIC 9(02).
            03  IDX-G                   PIC 9(01).
       *
-      *    •—•È•·•øŒŒ∞Ë
+      *    „Éë„É©„É°„ÇøÈ†òÂüü
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID          PIC 9(07).
@@ -132,7 +132,7 @@
            03  WRK-PARA-SRYKBN-G       OCCURS 3.
                05  WRK-PARA-SRYKBN     PIC X(02).
       *
-      *    ∞Ïª˛ŒŒ∞Ë
+      *    ‰∏ÄÊôÇÈ†òÂüü
        01  WRK-AREA.
            03  WRK-RECEERR             PIC X(200).
       *
@@ -182,34 +182,34 @@
       *
        01  WRK-PRT-AREA.
       *
-      *    Ã¿∫Ÿ «•⁄°º•∏∏´Ω–§∑
+      *    ÊòéÁ¥∞È†Å„Éö„Éº„Ç∏Ë¶ãÂá∫„Åó
            03  WRK-PRT-LINE1.
                05  FILLER              PIC X(60)   VALUE   SPACE.
                05  FILLER              PIC X(30)   VALUE
-                   "ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘∞ÏÕ˜".
+                   "Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖ‰∏ÄË¶ß".
                05  WRK-PRT-NYUGAIKBN   PIC X(08)   VALUE   SPACE.
            03  WRK-PRT-LINE2.
-               05  FILLER              PIC X(10)   VALUE   "ø«Œ≈∂Ë ¨°ß".
+               05  FILLER              PIC X(10)   VALUE   "Ë®∫ÁôÇÂå∫ÂàÜÔºö".
                05  WRK-PRT-SRYKBN      PIC X(10)   VALUE   SPACE.
            03  WRK-PRT-LINE3.
-               05  FILLER              PIC X(10)   VALUE   "ªÿƒÍæÚ∑Ô°ß".
+               05  FILLER              PIC X(10)   VALUE   "ÊåáÂÆöÊù°‰ª∂Ôºö".
                05  WRK-PRT-JYOKEN      PIC X(30)   VALUE   SPACE.
                05  FILLER              PIC X(112)  VALUE   SPACE.
                05  WRK-PRT-PAGE        PIC X(04)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   " «".
+               05  FILLER              PIC X(02)   VALUE   "È†Å".
            03  WRK-PRT-LINE4.
-               05  FILLER              PIC X(10)   VALUE   "ø«Œ≈«Ø∑Ó°ß".
+               05  FILLER              PIC X(10)   VALUE   "Ë®∫ÁôÇÂπ¥ÊúàÔºö".
                05  WRK-PRT-KIKAN       PIC X(36)   VALUE   SPACE.
                05  FILLER              PIC X(82)   VALUE   SPACE.
-               05  FILLER              PIC X(08)   VALUE   "∫Ó¿Æ∆¸°ß".
+               05  FILLER              PIC X(08)   VALUE   "‰ΩúÊàêÊó•Ôºö".
                05  WRK-PRT-PRTYMD      PIC X(22)   VALUE   SPACE.
            03  WRK-PRT-LINE5.
-               05  FILLER              PIC X(10)   VALUE   "¥µº‘»÷πÊ".
-               05  FILLER              PIC X(20)   VALUE   "¥µº‘ª·Ãæ".
-               05  FILLER              PIC X(44)   VALUE   "ø«Œ≈∆‚Õ∆".
+               05  FILLER              PIC X(10)   VALUE   "ÊÇ£ËÄÖÁï™Âè∑".
+               05  FILLER              PIC X(20)   VALUE   "ÊÇ£ËÄÖÊ∞èÂêç".
+               05  FILLER              PIC X(44)   VALUE   "Ë®∫ÁôÇÂÜÖÂÆπ".
                05  FILLER              PIC X(06)   VALUE   SPACE.
-               05  FILLER              PIC X(08)   VALUE   "∫ﬁ≈¿øÙ".
-               05  FILLER              PIC X(08)   VALUE   "ø«Œ≈∑Ó".
+               05  FILLER              PIC X(08)   VALUE   "Ââ§ÁÇπÊï∞".
+               05  FILLER              PIC X(08)   VALUE   "Ë®∫ÁôÇÊúà".
                05  FILLER              PIC X(48)   VALUE
                    "01      05        10        15        20        ".
                05  FILLER              PIC X(14)   VALUE
@@ -228,40 +228,40 @@
                05  WRK-PRT-NAME        PIC X(20)   VALUE   SPACE.
                05  WRK-PRT-NAIYO       PIC X(44)   VALUE   SPACE.
                05  WRK-PRT-TEN         PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "≈¿".
+               05  FILLER              PIC X(02)   VALUE   "ÁÇπ".
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  WRK-PRT-SRYYM       PIC X(06)   VALUE   SPACE.
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  WRK-PRT-SRYYM-G     PIC X(62)   VALUE   SPACE.
            03  WRK-PRT-GOKEI.
                05  FILLER              PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(10)   VALUE   "≥∫≈ˆ¥µº‘øÙ".
+               05  FILLER              PIC X(10)   VALUE   "Ë©≤ÂΩìÊÇ£ËÄÖÊï∞".
                05  FILLER              PIC X(06)   VALUE   SPACE.
                05  WRK-PRT-NINZU       PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "øÕ".
-      *    πÁ∑◊•⁄°º•∏∏´Ω–§∑
+               05  FILLER              PIC X(02)   VALUE   "‰∫∫".
+      *    ÂêàË®à„Éö„Éº„Ç∏Ë¶ãÂá∫„Åó
            03  WRK-PRT-G-LINE1.
                05  FILLER              PIC X(38)   VALUE   SPACE.
                05  FILLER              PIC X(32)   VALUE
-                   "ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘øÙƒ¥§Ÿ".
+                   "Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞Ë™ø„Åπ".
            03  WRK-PRT-G-LINE3.
-               05  FILLER              PIC X(10)   VALUE   "ªÿƒÍæÚ∑Ô°ß".
+               05  FILLER              PIC X(10)   VALUE   "ÊåáÂÆöÊù°‰ª∂Ôºö".
                05  WRK-PRT-G-JYOKEN    PIC X(30)   VALUE   SPACE.
                05  FILLER              PIC X(64)   VALUE   SPACE.
                05  WRK-PRT-G-PAGE      PIC X(04)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   " «".
+               05  FILLER              PIC X(02)   VALUE   "È†Å".
            03  WRK-PRT-G-LINE4.
-               05  FILLER              PIC X(10)   VALUE   "ø«Œ≈«Ø∑Ó°ß".
+               05  FILLER              PIC X(10)   VALUE   "Ë®∫ÁôÇÂπ¥ÊúàÔºö".
                05  WRK-PRT-G-KIKAN     PIC X(36)   VALUE   SPACE.
                05  FILLER              PIC X(34)   VALUE   SPACE.
-               05  FILLER              PIC X(08)   VALUE   "∫Ó¿Æ∆¸°ß".
+               05  FILLER              PIC X(08)   VALUE   "‰ΩúÊàêÊó•Ôºö".
                05  WRK-PRT-G-PRTYMD    PIC X(22)   VALUE   SPACE.
            03  WRK-PRT-G-LINE5.
-               05  FILLER              PIC X(10)   VALUE   "∆˛≥∞∂Ë ¨".
-               05  FILLER              PIC X(10)   VALUE   "ø«Œ≈∂Ë ¨".
+               05  FILLER              PIC X(10)   VALUE   "ÂÖ•Â§ñÂå∫ÂàÜ".
+               05  FILLER              PIC X(10)   VALUE   "Ë®∫ÁôÇÂå∫ÂàÜ".
                05  FILLER              PIC X(02)   VALUE   SPACE.
                05  FILLER              PIC X(16)   VALUE
-                   "∫ﬁ≈¿øÙ≥∫≈ˆ¥µº‘øÙ".
+                   "Ââ§ÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞".
            03  WRK-PRT-G-SEN.
                05  FILLER              PIC X(38)   VALUE
                    "--------------------------------------".
@@ -270,75 +270,75 @@
                05  WRK-PRT-G-SRYKBN    PIC X(10)   VALUE   SPACE.
                05  FILLER              PIC X(06)   VALUE   SPACE.
                05  WRK-PRT-G-NINZU     PIC X(10)   VALUE   SPACE.
-               05  FILLER              PIC X(02)   VALUE   "øÕ".
+               05  FILLER              PIC X(02)   VALUE   "‰∫∫".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ∆˛±°ø«Œ≈≤Ò∑◊•ﬁ•π•ø°º
+      *    ÂÖ•Èô¢Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„Çø„Éº
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„Çø
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ≈¿øÙ•ﬁ•π•ø
+      *    ÁÇπÊï∞„Éû„Çπ„Çø
            COPY    "CPTENSU.INC".
       *
-      *    ¥µº‘
+      *    ÊÇ£ËÄÖ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ¥µº‘»÷πÊ
+      *    ÊÇ£ËÄÖÁï™Âè∑
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *     ›∏±¡»πÁ§ª
+      *    ‰øùÈô∫ÁµÑÂêà„Åõ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ∞ı∫˛¥…Õ˝
+      *    Âç∞Âà∑ÁÆ°ÁêÜ
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    ∞ı∫˛Õ—•«°º•ø
+      *    Âç∞Âà∑Áî®„Éá„Éº„Çø
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—°°ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®„ÄÄÈ†òÂüü
       *****************************************************************
       *
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ∞ı∫˛£ƒ£¬ππø∑•µ•÷
+      *    Âç∞Âà∑Ôº§Ôº¢Êõ¥Êñ∞„Çµ„Éñ
            COPY    "CPORCSPRT.INC".
       *
-      *    ∆¸…’ —¥π•µ•÷
+      *    Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    •’•°•§•Î∫ÔΩ¸•—•È•·•ø
+      *    „Éï„Ç°„Ç§„É´ÂâäÈô§„Éë„É©„É°„Çø
            COPY    "CPORCSFDEL.INC".
       *
-      *    ªÿƒÍø«Œ≈π‘∞Ÿ∑ÔøÙƒ¥•µ•÷£≤
+      *    ÊåáÂÆöË®∫ÁôÇË°åÁÇ∫‰ª∂Êï∞Ë™ø„Çµ„ÉñÔºí
            COPY    "CPORCSS009.INC".
       *
-      *    ∞Ïª˛•’•°•§•ÎÃæ ‘Ω∏
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÁ∑®ÈõÜ
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -347,7 +347,7 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    œ¢ÕÌ°°ŒŒ∞Ë
+      *    ÈÄ£Áµ°„ÄÄÈ†òÂüü
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -359,7 +359,7 @@
                                        USING
                                        COMMAND-PARAM.
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -374,7 +374,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -416,14 +416,14 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
            MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
            MOVE    SPA-HOSPNUM         TO  JOB-HOSPNUM
            MOVE    "ORCBG029"          TO  JOB-PGID
-           MOVE    "ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘øÙƒ¥§Ÿ"
+           MOVE    "Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞Ë™ø„Åπ"
                                        TO  JOB-SHELLMSG
            CALL    "ORCSJOB"               USING
                                            ORCSJOBKANRIAREA
@@ -444,38 +444,38 @@
            MOVE    SGETTEMP-FULLNAMES(2)
                                        TO  RECEERR
       *
-      *    •—•È•·•ø ‘Ω∏ΩËÕ˝
+      *    „Éë„É©„É°„ÇøÁ∑®ÈõÜÂá¶ÁêÜ
            PERFORM 110-PARA-HENSYU-SEC
            .
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    •—•È•·•ø ‘Ω∏ΩËÕ˝
+      *    „Éë„É©„É°„ÇøÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    ¥¸¥÷•¡•ß•√•Ø
+      *    ÊúüÈñì„ÉÅ„Çß„ÉÉ„ÇØ
            IF      WRK-PARA-ENDYM      =   SPACE
                MOVE    WRK-PARA-STRYM      TO  WRK-PARA-ENDYM
            ELSE
                IF      WRK-PARA-STRYM  >   WRK-PARA-ENDYM
-                   MOVE    "∆¸…’§Œ»œ∞œ§¨¿µ§∑§Ø§¢§Í§ﬁ§ª§Û"
+                   MOVE    "Êó•‰ªò„ÅÆÁØÑÂõ≤„ÅåÊ≠£„Åó„Åè„ÅÇ„Çä„Åæ„Åõ„Çì"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  110-PARA-HENSYU-EXT
                END-IF
            END-IF
       *
-      *    ≈¿øÙ•¡•ß•√•Ø
+      *    ÁÇπÊï∞„ÉÅ„Çß„ÉÉ„ÇØ
            IF    ( WRK-PARA-IJYOU  =   ZERO )  AND
                  ( WRK-PARA-IKA    =   ZERO )
-               MOVE    "≈¿øÙ§Ú∆˛Œœ§∑§∆§Ø§¿§µ§§"
+               MOVE    "ÁÇπÊï∞„ÇíÂÖ•Âäõ„Åó„Å¶„Åè„Å†„Åï„ÅÑ"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                GO  TO  110-PARA-HENSYU-EXT
            END-IF
       *
-      *    ø«Œ≈∂Ë ¨•¡•ß•√•Ø
+      *    Ë®∫ÁôÇÂå∫ÂàÜ„ÉÅ„Çß„ÉÉ„ÇØ
            PERFORM VARYING IDX FROM 1 BY 1
                    UNTIL   IDX >   3
                IF    ( WRK-PARA-SRYKBN(IDX)  NOT =   SPACE ) AND
@@ -493,30 +493,30 @@
                      ( WRK-PARA-SRYKBN(IDX)  NOT =   "80" )  AND
                      ( WRK-PARA-SRYKBN(IDX)  NOT =   "90" )
                    MOVE    3               TO  IDX
-                   MOVE    "¿µ§∑§§ø«Œ≈∂Ë ¨§Ú∆˛Œœ§∑§∆§Ø§¿§µ§§"
+                   MOVE    "Ê≠£„Åó„ÅÑË®∫ÁôÇÂå∫ÂàÜ„ÇíÂÖ•Âäõ„Åó„Å¶„Åè„Å†„Åï„ÅÑ"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    GO  TO  110-PARA-HENSYU-EXT
                END-IF
            END-PERFORM
       *
-      *    •∑•π•∆•‡∆¸…’•ª•√•»
+      *    „Ç∑„Çπ„ÉÜ„É†Êó•‰ªò„Çª„ÉÉ„Éà
            MOVE    LNK-PRTKANRI-SKYYMD TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  WRK-PRT-PRTYMD
       *
-      *    ∆˛≥∞∂Ë ¨•ª•√•»
+      *    ÂÖ•Â§ñÂå∫ÂàÜ„Çª„ÉÉ„Éà
            IF    ( WRK-PARA-NYUGAIKBN  NOT =   "1" )   AND
                  ( WRK-PARA-NYUGAIKBN  NOT =   "2" )
                MOVE    "%"             TO  WRK-PARA-NYUGAIKBN
            END-IF
       *
-      *    ∞ı∫˛∂Ë ¨•ª•√•»
+      *    Âç∞Âà∑Âå∫ÂàÜ„Çª„ÉÉ„Éà
            IF    ( WRK-PARA-SYORIKBN   NOT =   "1" )
                MOVE    "0"             TO  WRK-PARA-SYORIKBN
            END-IF
       *
-      *    ≤º∏¬≈¿øÙ•ª•√•»
+      *    ‰∏ãÈôêÁÇπÊï∞„Çª„ÉÉ„Éà
            IF      WRK-PARA-IJYOU  NOT =   ZERO
                MOVE    WRK-PARA-IJYOU  TO  WRK-Z10
                MOVE    WRK-Z10         TO  WRK-HEN-TEN-IN
@@ -524,7 +524,7 @@
                MOVE    WRK-HEN-TEN-OUT TO  WRK-IJYOU
            END-IF
       *
-      *    æÂ∏¬≈¿øÙ•ª•√•»
+      *    ‰∏äÈôêÁÇπÊï∞„Çª„ÉÉ„Éà
            IF      WRK-PARA-IKA    NOT =   ZERO
                MOVE    WRK-PARA-IKA    TO  WRK-Z10
                MOVE    WRK-Z10         TO  WRK-HEN-TEN-IN
@@ -532,46 +532,46 @@
                MOVE    WRK-HEN-TEN-OUT TO  WRK-IKA
            END-IF
       *
-      *    ≈¿øÙæÚ∑Ô•ª•√•»
+      *    ÁÇπÊï∞Êù°‰ª∂„Çª„ÉÉ„Éà
            IF    ( WRK-IJYOU       NOT =   SPACE ) AND
                  ( WRK-IKA         NOT =   SPACE )
                STRING  WRK-IJYOU           DELIMITED BY SPACE
-                       "≈¿∞ æÂ°¡"          DELIMITED BY SIZE
+                       "ÁÇπ‰ª•‰∏ä„Äú"          DELIMITED BY SIZE
                        WRK-IKA             DELIMITED BY SPACE
-                       "≈¿∞ ≤º"            DELIMITED BY SIZE
+                       "ÁÇπ‰ª•‰∏ã"            DELIMITED BY SIZE
                                            INTO    WRK-PRT-JYOKEN
                END-STRING
            ELSE
                IF    ( WRK-IJYOU       NOT =   SPACE )
                    STRING  WRK-IJYOU           DELIMITED BY SPACE
-                           "≈¿∞ æÂ"            DELIMITED BY SIZE
+                           "ÁÇπ‰ª•‰∏ä"            DELIMITED BY SIZE
                                                INTO    WRK-PRT-JYOKEN
                    END-STRING
                END-IF
                IF    ( WRK-IKA         NOT =   SPACE )
                    STRING  WRK-IKA             DELIMITED BY SPACE
-                           "≈¿∞ ≤º"            DELIMITED BY SIZE
+                           "ÁÇπ‰ª•‰∏ã"            DELIMITED BY SIZE
                                                INTO    WRK-PRT-JYOKEN
                    END-STRING
                END-IF
            END-IF
       *
-      *    ≥´ªœ∑Ó•ª•√•»
+      *    ÈñãÂßãÊúà„Çª„ÉÉ„Éà
            MOVE    WRK-PARA-STRYM      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-STRYM
       *
-      *    Ω™Œª∑Ó•ª•√•»
+      *    ÁµÇ‰∫ÜÊúà„Çª„ÉÉ„Éà
            MOVE    WRK-PARA-ENDYM      TO  WRK-SYMD(1:6)
            MOVE    "01"                TO  WRK-SYMD(7:2)
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG(1:16)   TO  WRK-ENDYM
       *
-      *    ¬–æ›¥¸¥÷•ª•√•»
+      *    ÂØæË±°ÊúüÈñì„Çª„ÉÉ„Éà
            IF    ( WRK-STRYM       NOT =   WRK-ENDYM )
                STRING  WRK-STRYM           DELIMITED BY SPACE
-                       "°¡"                DELIMITED BY SIZE
+                       "„Äú"                DELIMITED BY SIZE
                        WRK-ENDYM           DELIMITED BY SPACE
                                            INTO    WRK-PRT-KIKAN
                END-STRING
@@ -579,7 +579,7 @@
                MOVE    WRK-STRYM           TO  WRK-PRT-KIKAN
            END-IF
       *
-      *    πÁ∑◊•⁄°º•∏π‡Ã‹•ª•√•»
+      *    ÂêàË®à„Éö„Éº„Ç∏È†ÖÁõÆ„Çª„ÉÉ„Éà
            IF    ( WRK-PARA-NYUGAIKBN NOT =   "2" )
                MOVE    "1"                TO  WRK-GOKEI-NYUGAIKBN(1)
                                               WRK-GOKEI-NYUGAIKBN(2)
@@ -605,17 +605,17 @@
        110-PARA-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ºÁ°°°°ΩËÕ˝
+      *    ‰∏ª„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    •«°º•ø§Ú•Ø•Í•¢§π§Î
+      *    „Éá„Éº„Çø„Çí„ÇØ„É™„Ç¢„Åô„Çã
            OPEN    OUTPUT              TOKEI-FILE
            CLOSE                       TOKEI-FILE
       *
            OPEN    I-O                 TOKEI-FILE
       *
-      *    ø«Œ≈≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *    Ë®∫ÁôÇ‰ºöË®àÈõÜË®àÂá¶ÁêÜ
            PERFORM 210-MAIN-SRYACCT-SEC
       *
            IF    ( WRK-PARA-NYUGAIKBN  NOT =   "2")
@@ -627,7 +627,7 @@
                CLOSE                       TOKEI-FILE
                OPEN    INPUT               TOKEI-FILE
       *
-      *        ≈˝∑◊Ω–ŒœΩËÕ˝
+      *        Áµ±Ë®àÂá∫ÂäõÂá¶ÁêÜ
                IF      WRK-PARA-SYORIKBN   =   "1"
                    PERFORM 260-TOKEI-OUT-SEC
                ELSE
@@ -642,11 +642,11 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *   ø«Œ≈≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *   Ë®∫ÁôÇ‰ºöË®àÈõÜË®àÂá¶ÁêÜ
       *****************************************************************
        210-MAIN-SRYACCT-SEC        SECTION.
       *
-      *    ø«Œ≈≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *    Ë®∫ÁôÇ‰ºöË®àË™≠„ÅøËæº„Åø
            PERFORM 900-SRYACCT-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-SRYACCT =   1
@@ -656,28 +656,28 @@
                    MOVE    ACCT-PTID       TO  WRK-PTID
                    MOVE    ACCT-SRYKBN     TO  WRK-SRYKBN
                    MOVE    ACCT-NYUGAIKBN  TO  WRK-NYUGAIKBN
-      *            •¡•ß•√•ØΩËÕ˝
+      *            „ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
                    PERFORM 230-MAIN-CHK-SYORI-SEC
                    IF      FLG-OK          =   1
-      *                ø«Œ≈≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *                Ë®∫ÁôÇ‰ºöË®àÈõÜË®àÂá¶ÁêÜ
                        PERFORM 220-MAIN-SRYACCT-CHK-SEC
                    END-IF
                END-IF
-      *        ø«Œ≈≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *        Ë®∫ÁôÇ‰ºöË®àË™≠„ÅøËæº„Åø
                PERFORM 900-SRYACCT-DBFETCH-SEC
            END-PERFORM
       *
-      *    ø«Œ≈≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *    Ë®∫ÁôÇ‰ºöË®àË™≠„ÅøËæº„Åø
            PERFORM 900-SRYACCT-DBCLOSE-SEC
            .
        210-MAIN-SRYACCT-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *    ÂÖ•Èô¢‰ºöË®àÈõÜË®àÂá¶ÁêÜ
       *****************************************************************
        210-MAIN-NYUINACCT-SEC      SECTION.
       *
-      *    ∆˛±°≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *    ÂÖ•Èô¢‰ºöË®àË™≠„ÅøËæº„Åø
            PERFORM 900-NYUINACCT-DBSELECT-SEC
       *
            PERFORM UNTIL   FLG-NYUINACCT   =   1
@@ -696,26 +696,26 @@
                            MOVE    NACCT-PTID          TO  WRK-PTID
                            MOVE    SS009-SRYKBN(IDX-K) TO  WRK-SRYKBN
                            MOVE    NACCT-NYUGAIKBN     TO  WRK-NYUGAIKBN
-      *                    •¡•ß•√•ØΩËÕ˝
+      *                    „ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
                            PERFORM 230-MAIN-CHK-SYORI-SEC
                            IF      FLG-OK          =   1
-      *                        ∆˛±°≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *                        ÂÖ•Èô¢‰ºöË®àÈõÜË®àÂá¶ÁêÜ
                                PERFORM 220-MAIN-NYUINACCT-CHK-SEC
                            END-IF
                        END-IF
                    END-PERFORM
                END-IF
-      *        ∆˛±°≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *        ÂÖ•Èô¢‰ºöË®àË™≠„ÅøËæº„Åø
                PERFORM 900-NYUINACCT-DBFETCH-SEC
            END-PERFORM
       *
-      *    ∆˛±°≤Ò∑◊∆…§ﬂπ˛§ﬂ
+      *    ÂÖ•Èô¢‰ºöË®àË™≠„ÅøËæº„Åø
            PERFORM 900-NYUINACCT-DBCLOSE-SEC
            .
        210-MAIN-NYUINACCT-EXT.
            EXIT.
       *****************************************************************
-      *   ø«Œ≈≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *   Ë®∫ÁôÇ‰ºöË®àÈõÜË®àÂá¶ÁêÜ
       *****************************************************************
        220-MAIN-SRYACCT-CHK-SEC    SECTION.
       *
@@ -758,7 +758,7 @@
                PERFORM VARYING IDX-D FROM  1   BY  1
                        UNTIL   IDX-D >     31
                    IF      ACCT-DAY(IDX-K IDX-D)   NOT =   ZERO
-      *                Ω∏∑◊ΩËÕ˝
+      *                ÈõÜË®àÂá¶ÁêÜ
                        PERFORM 240-TOKEI-SET-SEC
                    END-IF
                END-PERFORM
@@ -767,7 +767,7 @@
        220-MAIN-SRYACCT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊Ω∏∑◊ΩËÕ˝
+      *    ÂÖ•Èô¢‰ºöË®àÈõÜË®àÂá¶ÁêÜ
       *****************************************************************
        220-MAIN-NYUINACCT-CHK-SEC  SECTION.
       *
@@ -786,7 +786,7 @@
            PERFORM VARYING IDX-D FROM  1   BY  1
                    UNTIL   IDX-D >     31
                IF      SS009-DAY(IDX-K IDX-D)  NOT =   ZERO
-      *            Ω∏∑◊ΩËÕ˝
+      *            ÈõÜË®àÂá¶ÁêÜ
                    PERFORM 240-TOKEI-SET-SEC
                END-IF
            END-PERFORM
@@ -794,26 +794,26 @@
        220-MAIN-NYUINACCT-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    •¡•ß•√•ØΩËÕ˝
+      *    „ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        230-MAIN-CHK-SYORI-SEC      SECTION.
       *
            MOVE    ZERO            TO  FLG-OK
       *
-      *    •∆•π•»¥µº‘§Œ§»§≠§œ∆…§ﬂ»Ù§–§π
+      *    „ÉÜ„Çπ„ÉàÊÇ£ËÄÖ„ÅÆ„Å®„Åç„ÅØË™≠„ÅøÈ£õ„Å∞„Åô
            PERFORM 900-PTINF-READ-SEC
            IF    ( FLG-PTINF           =   ZERO )  AND
                  ( PTINF-TSTPTNUMKBN   =   "1"  )
                GO  TO  230-MAIN-CHK-SYORI-EXT
            END-IF
       *
-      *    ¥µº‘»÷πÊ∆…§ﬂπ˛§ﬂ
+      *    ÊÇ£ËÄÖÁï™Âè∑Ë™≠„ÅøËæº„Åø
            PERFORM 900-PTNUM-READ-SEC
            IF      FLG-PTNUM       =   1
                GO  TO  230-MAIN-CHK-SYORI-EXT
            END-IF
       *
-      *    ø«Œ≈∂Ë ¨•¡•ß•√•Ø
+      *    Ë®∫ÁôÇÂå∫ÂàÜ„ÉÅ„Çß„ÉÉ„ÇØ
            EVALUATE    TRUE
                WHEN  ( WRK-SRYKBN  =   "90" OR "92" )
                    MOVE    "90"        TO  WRK-SRYKBN
@@ -837,7 +837,7 @@
       *
            MOVE    ZERO            TO  FLG-OK
       *
-      *    ∫ﬂ≈¿øÙ•¡•ß•√•Ø
+      *    Âú®ÁÇπÊï∞„ÉÅ„Çß„ÉÉ„ÇØ
            IF    ( WRK-PARA-IJYOU  NOT =   ZERO )  AND
                  ( WRK-PARA-IKA    NOT =   ZERO )
                IF    ( WRK-ZAITEN      >=  WRK-PARA-IJYOU ) AND
@@ -860,7 +860,7 @@
        230-MAIN-CHK-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    •¡•ß•√•ØΩËÕ˝
+      *    „ÉÅ„Çß„ÉÉ„ÇØÂá¶ÁêÜ
       *****************************************************************
        230-SRYCD-CHK-SYORI-SEC     SECTION.
       *
@@ -877,7 +877,7 @@
                GO  TO  230-SRYCD-CHK-SYORI-EXT
            END-IF
       *
-      *    Õ•¿ËΩÁ∞Ã£±
+      *    ÂÑ™ÂÖàÈ†Ü‰ΩçÔºë
            IF    ( TNS-TENSIKIBETU =   1   OR  3   OR  5 ) AND
                  ( TNS-SRYCD(1:1)  =   "1" )
                IF      WRK-NAIYO-SRYCD(1)  =   SPACE
@@ -886,7 +886,7 @@
                END-IF
                COMPUTE CNT-NAIYO   =   CNT-NAIYO   +   1
            ELSE
-      *        Õ•¿ËΩÁ∞Ã£≤
+      *        ÂÑ™ÂÖàÈ†Ü‰ΩçÔºí
                IF    ( TNS-TENSIKIBETU =   9 )
                    IF      WRK-NAIYO-SRYCD(2)  =   SPACE
                        MOVE    TNS-SRYCD   TO  WRK-NAIYO-SRYCD(2)
@@ -894,7 +894,7 @@
                    END-IF
                    COMPUTE CNT-NAIYO   =   CNT-NAIYO   +   1
                ELSE
-      *            Õ•¿ËΩÁ∞Ã£≥
+      *            ÂÑ™ÂÖàÈ†Ü‰ΩçÔºì
                    IF      WRK-NAIYO-SRYCD(3)  =   SPACE
                        MOVE    TNS-SRYCD   TO  WRK-NAIYO-SRYCD(3)
                        MOVE    TNS-NAME    TO  WRK-NAIYO-NAME(3)
@@ -906,11 +906,11 @@
        230-SRYCD-CHK-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ≈˝∑◊•ª•√•»ΩËÕ˝
+      *    Áµ±Ë®à„Çª„ÉÉ„ÉàÂá¶ÁêÜ
       *****************************************************************
        240-TOKEI-SET-SEC           SECTION.
       *
-      *    ≈˝∑◊•«°º•ø∏°∫˜
+      *    Áµ±Ë®à„Éá„Éº„ÇøÊ§úÁ¥¢
            INITIALIZE                  TOKEI-REC
            MOVE    WRK-NYUGAIKBN   TO  TOKEI-NYUGAIKBN
            MOVE    WRK-SRYKBN      TO  TOKEI-SRYKBN
@@ -935,7 +935,7 @@
            END-IF
            IF      CNT-NAIYO   >   1
                STRING  TOKEI-NAIYO     DELIMITED BY SPACE
-                       "°°¬æ"          DELIMITED BY SIZE
+                       "„ÄÄ‰ªñ"          DELIMITED BY SIZE
                                        INTO    TOKEI-NAIYO
                END-STRING
            END-IF
@@ -959,7 +959,7 @@
        240-TOKEI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ≈˝∑◊Ω–ŒœΩËÕ˝
+      *    Áµ±Ë®àÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        260-TOKEI-OUT-SEC           SECTION.
       *
@@ -967,7 +967,7 @@
            MOVE    ZERO            TO  CNT-LINE
       *
            INITIALIZE                  TOKEI-REC
-      *    ≈˝∑◊•’•°•§•Î∆…§ﬂπ˛§ﬂ
+      *    Áµ±Ë®à„Éï„Ç°„Ç§„É´Ë™≠„ÅøËæº„Åø
            PERFORM 900-TOKEI-NEXT-SEC
       *
            PERFORM UNTIL ( FLG-TOKEI       =   1  )
@@ -975,31 +975,31 @@
                MOVE    TOKEI-SRYKBN    TO  WRK-SRYKBN
                MOVE    ZERO            TO  WRK-PTCNT
                MOVE    SPACE           TO  WRK-PTNUM
-      *        ø«Œ≈∂Ë ¨∏´Ω–§∑
+      *        Ë®∫ÁôÇÂå∫ÂàÜË¶ãÂá∫„Åó
                PERFORM 310-PRT-HEAD-SEC
                PERFORM UNTIL ( FLG-TOKEI       =   1  )
                        OR    ( TOKEI-NYUGAIKBN NOT =   WRK-NYUGAIKBN )
                        OR    ( TOKEI-SRYKBN    NOT =   WRK-SRYKBN )
-      *            Ã¿∫Ÿ
+      *            ÊòéÁ¥∞
                    PERFORM 320-PRT-MEISAI-SEC
-      *            ≈˝∑◊•’•°•§•Î∆…§ﬂπ˛§ﬂ
+      *            Áµ±Ë®à„Éï„Ç°„Ç§„É´Ë™≠„ÅøËæº„Åø
                    PERFORM 900-TOKEI-NEXT-SEC
                END-PERFORM
-      *        πÁ∑◊
+      *        ÂêàË®à
                PERFORM 330-PRT-GOKEI-SEC
            END-PERFORM
-      *    πÁ∑◊•⁄°º•∏∞ı∫˛
+      *    ÂêàË®à„Éö„Éº„Ç∏Âç∞Âà∑
            PERFORM 340-PRT-OUT-GOUKEI-SEC
              .
        260-TOKEI-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ≈˝∑◊Ω–ŒœΩËÕ˝
+      *    Áµ±Ë®àÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        270-TOKEI-OUT-GOUKEI-SEC    SECTION.
       *
            INITIALIZE                  TOKEI-REC
-      *    ≈˝∑◊•’•°•§•Î∆…§ﬂπ˛§ﬂ
+      *    Áµ±Ë®à„Éï„Ç°„Ç§„É´Ë™≠„ÅøËæº„Åø
            PERFORM 900-TOKEI-NEXT-SEC
       *
            PERFORM UNTIL ( FLG-TOKEI       =   1  )
@@ -1014,7 +1014,7 @@
                        MOVE    TOKEI-PTNUM     TO  WRK-PTNUM
                        COMPUTE WRK-PTCNT   =   WRK-PTCNT   +   1
                    END-IF
-      *            ≈˝∑◊•’•°•§•Î∆…§ﬂπ˛§ﬂ
+      *            Áµ±Ë®à„Éï„Ç°„Ç§„É´Ë™≠„ÅøËæº„Åø
                    PERFORM 900-TOKEI-NEXT-SEC
                END-PERFORM
       *
@@ -1028,50 +1028,50 @@
                END-PERFORM
            END-PERFORM
       *
-      *    πÁ∑◊•⁄°º•∏∞ı∫˛
+      *    ÂêàË®à„Éö„Éº„Ç∏Âç∞Âà∑
            PERFORM 340-PRT-OUT-GOUKEI-SEC
            .
        270-TOKEI-OUT-GOUKEI-EXT.
            EXIT.
       *****************************************************************
-      *    ∏´Ω–§∑
+      *    Ë¶ãÂá∫„Åó
       *****************************************************************
        310-PRT-HEAD-SEC            SECTION.
       *
            EVALUATE    TOKEI-NYUGAIKBN
                WHEN    "1"
-                   MOVE    "° ∆˛±°°À"      TO  WRK-PRT-NYUGAIKBN
+                   MOVE    "ÔºàÂÖ•Èô¢Ôºâ"      TO  WRK-PRT-NYUGAIKBN
                WHEN    "2"
-                   MOVE    "° ≥∞ÕË°À"      TO  WRK-PRT-NYUGAIKBN
+                   MOVE    "ÔºàÂ§ñÊù•Ôºâ"      TO  WRK-PRT-NYUGAIKBN
            END-EVALUATE
       *
            EVALUATE    WRK-SRYKBN
                WHEN    "11"
-                   MOVE    "ΩÈ°°°°ø«"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Âàù„ÄÄ„ÄÄË®∫"      TO  WRK-PRT-SRYKBN
                WHEN    "12"
-                   MOVE    "∫∆°°°°ø«"      TO  WRK-PRT-SRYKBN
+                   MOVE    "ÂÜç„ÄÄ„ÄÄË®∫"      TO  WRK-PRT-SRYKBN
                WHEN    "13"
-                   MOVE    "∞Â≥ÿ¥…Õ˝"      TO  WRK-PRT-SRYKBN
+                   MOVE    "ÂåªÂ≠¶ÁÆ°ÁêÜ"      TO  WRK-PRT-SRYKBN
                WHEN    "14"
-                   MOVE    "∫ﬂ°°°°¬"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Âú®„ÄÄ„ÄÄÂÆÖ"      TO  WRK-PRT-SRYKBN
                WHEN    "20"
-                   MOVE    "≈Í°°°°ÃÙ"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Êäï„ÄÄ„ÄÄËñ¨"      TO  WRK-PRT-SRYKBN
                WHEN    "30"
-                   MOVE    "√Ì°°°°ºÕ"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Ê≥®„ÄÄ„ÄÄÂ∞Ñ"      TO  WRK-PRT-SRYKBN
                WHEN    "40"
-                   MOVE    "ΩË°°°°√÷"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Âá¶„ÄÄ„ÄÄÁΩÆ"      TO  WRK-PRT-SRYKBN
                WHEN    "50"
-                   MOVE    "ºÍ°°°°Ω—"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Êâã„ÄÄ„ÄÄË°ì"      TO  WRK-PRT-SRYKBN
                WHEN    "54"
-                   MOVE    "À„°°°°øÏ"      TO  WRK-PRT-SRYKBN
+                   MOVE    "È∫ª„ÄÄ„ÄÄÈÖî"      TO  WRK-PRT-SRYKBN
                WHEN    "60"
-                   MOVE    "∏°°°°°∫∫"      TO  WRK-PRT-SRYKBN
+                   MOVE    "Ê§ú„ÄÄ„ÄÄÊüª"      TO  WRK-PRT-SRYKBN
                WHEN    "70"
-                   MOVE    "≤Ë¡¸ø«√«"      TO  WRK-PRT-SRYKBN
+                   MOVE    "ÁîªÂÉèË®∫Êñ≠"      TO  WRK-PRT-SRYKBN
                WHEN    "80"
-                   MOVE    "§Ω §Œ ¬æ"      TO  WRK-PRT-SRYKBN
+                   MOVE    "„Åù „ÅÆ ‰ªñ"      TO  WRK-PRT-SRYKBN
                WHEN    "90"
-                   MOVE    "∆˛°°°°±°"      TO  WRK-PRT-SRYKBN
+                   MOVE    "ÂÖ•„ÄÄ„ÄÄÈô¢"      TO  WRK-PRT-SRYKBN
            END-EVALUATE
       *
            MOVE    SPACE           TO  HCMSL55
@@ -1094,14 +1094,14 @@
        310-PRT-HEAD-EXT.
            EXIT.
       *****************************************************************
-      *    Ã¿∫Ÿ
+      *    ÊòéÁ¥∞
       *****************************************************************
        320-PRT-MEISAI-SEC          SECTION.
       *
            IF      CNT-LINE        >=  55
-      *        ƒ¢…º ‘Ω∏ΩËÕ˝
+      *        Â∏≥Á•®Á∑®ÈõÜÂá¶ÁêÜ
                PERFORM 390-PRINT-MEISAI-OUT-SEC
-      *        ∏´Ω–§∑
+      *        Ë¶ãÂá∫„Åó
                PERFORM 310-PRT-HEAD-SEC
            END-IF
       *
@@ -1154,14 +1154,14 @@
        320-PRT-MEISAI-EXT.
            EXIT.
       *****************************************************************
-      *    πÁ∑◊
+      *    ÂêàË®à
       *****************************************************************
        330-PRT-GOKEI-SEC           SECTION.
       *
            IF      CNT-LINE        >=  55
-      *        ƒ¢…º ‘Ω∏ΩËÕ˝
+      *        Â∏≥Á•®Á∑®ÈõÜÂá¶ÁêÜ
                PERFORM 390-PRINT-MEISAI-OUT-SEC
-      *        ∏´Ω–§∑
+      *        Ë¶ãÂá∫„Åó
                PERFORM 310-PRT-HEAD-SEC
            END-IF
       *
@@ -1171,10 +1171,10 @@
            MOVE    WRK-Z10         TO  WRK-PRT-NINZU
            MOVE    WRK-PRT-GOKEI   TO  HCMSL55-MOJI(CNT-LINE)
       *
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
            PERFORM 390-PRINT-MEISAI-OUT-SEC
       *
-      *    πÁ∑◊Ω∏∑◊
+      *    ÂêàË®àÈõÜË®à
            PERFORM VARYING IDX-G   FROM 1 BY 1
                    UNTIL ( IDX-G   >   6 )
                IF    ( WRK-GOKEI-NYUGAIKBN(IDX-G) =  WRK-NYUGAIKBN)
@@ -1187,7 +1187,7 @@
        330-PRT-GOKEI-EXT.
            EXIT.
       *****************************************************************
-      *    πÁ∑◊•⁄°º•∏∞ı∫˛
+      *    ÂêàË®à„Éö„Éº„Ç∏Âç∞Âà∑
       *****************************************************************
        340-PRT-OUT-GOUKEI-SEC      SECTION.
       *
@@ -1213,38 +1213,38 @@
       *
                    EVALUATE    WRK-GOKEI-NYUGAIKBN(IDX-G)
                        WHEN    "1"
-                           MOVE    "∆˛±°"      TO  WRK-PRT-G-NYUGAIKBN
+                           MOVE    "ÂÖ•Èô¢"      TO  WRK-PRT-G-NYUGAIKBN
                        WHEN    "2"
-                           MOVE    "≥∞ÕË"      TO  WRK-PRT-G-NYUGAIKBN
+                           MOVE    "Â§ñÊù•"      TO  WRK-PRT-G-NYUGAIKBN
                    END-EVALUATE
       *
                    EVALUATE    WRK-GOKEI-SRYKBN(IDX-G)
                        WHEN    "11"
-                           MOVE    "ΩÈ°°°°ø«"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Âàù„ÄÄ„ÄÄË®∫"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "12"
-                           MOVE    "∫∆°°°°ø«"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "ÂÜç„ÄÄ„ÄÄË®∫"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "13"
-                           MOVE    "∞Â≥ÿ¥…Õ˝"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "ÂåªÂ≠¶ÁÆ°ÁêÜ"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "14"
-                           MOVE    "∫ﬂ°°°°¬"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Âú®„ÄÄ„ÄÄÂÆÖ"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "20"
-                           MOVE    "≈Í°°°°ÃÙ"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Êäï„ÄÄ„ÄÄËñ¨"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "30"
-                           MOVE    "√Ì°°°°ºÕ"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Ê≥®„ÄÄ„ÄÄÂ∞Ñ"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "40"
-                           MOVE    "ΩË°°°°√÷"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Âá¶„ÄÄ„ÄÄÁΩÆ"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "50"
-                           MOVE    "ºÍ°°°°Ω—"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Êâã„ÄÄ„ÄÄË°ì"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "54"
-                           MOVE    "À„°°°°øÏ"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "È∫ª„ÄÄ„ÄÄÈÖî"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "60"
-                           MOVE    "∏°°°°°∫∫"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "Ê§ú„ÄÄ„ÄÄÊüª"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "70"
-                           MOVE    "≤Ë¡¸ø«√«"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "ÁîªÂÉèË®∫Êñ≠"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "80"
-                           MOVE    "§Ω §Œ ¬æ"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "„Åù „ÅÆ ‰ªñ"      TO  WRK-PRT-G-SRYKBN
                        WHEN    "90"
-                           MOVE    "∆˛°°°°±°"      TO  WRK-PRT-G-SRYKBN
+                           MOVE    "ÂÖ•„ÄÄ„ÄÄÈô¢"      TO  WRK-PRT-G-SRYKBN
                    END-EVALUATE
       *
                    MOVE    WRK-GOKEI-PTCNT(IDX-G)  TO  WRK-Z10
@@ -1255,13 +1255,13 @@
                END-IF
            END-PERFORM
       *
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
            PERFORM 390-PRINT-GOUKEI-OUT-SEC
            .
        340-PRT-OUT-GOUKEI-EXT.
            EXIT.
       *****************************************************************
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        390-PRINT-MEISAI-OUT-SEC    SECTION.
       *
@@ -1281,7 +1281,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMSL55.red"       TO  SPRT-PRTID
-           MOVE    "ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘øÙƒ¥§Ÿ"
+           MOVE    "Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞Ë™ø„Åπ"
                                        TO  SPRT-TITLE
            MOVE    HCMSL55             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1300,7 +1300,7 @@
        390-PRINT-MEISAI-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ∞ı∫˛ΩËÕ˝
+      *    Âç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        390-PRINT-GOUKEI-OUT-SEC    SECTION.
       *
@@ -1320,7 +1320,7 @@
            MOVE    LNK-PRTKANRI-PRIORITY
                                        TO  SPRT-PRIORITY
            MOVE    "HCMSL80.red"       TO  SPRT-PRTID
-           MOVE    "ø«Œ≈∂Ë ¨ ÃªÿƒÍ≈¿øÙ≥∫≈ˆ¥µº‘øÙƒ¥§Ÿ"
+           MOVE    "Ë®∫ÁôÇÂå∫ÂàÜÂà•ÊåáÂÆöÁÇπÊï∞Ë©≤ÂΩìÊÇ£ËÄÖÊï∞Ë™ø„Åπ"
                                        TO  SPRT-TITLE
            MOVE    HCMSL80             TO  SPRT-PRTDATA
            MOVE    LNK-PRTKANRI-TERMID TO  SPRT-TERMID
@@ -1339,7 +1339,7 @@
        390-PRINT-GOUKEI-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    ¡∞•º•Ì ‘Ω∏ΩËÕ˝
+      *    Ââç„Çº„É≠Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        800-TENSU-HEN-SEC           SECTION.
       *
@@ -1358,7 +1358,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿æŒÒ∆¸À‹∏Ï —¥πΩËÕ˝
+      *    Ë•øÊö¶Êó•Êú¨Ë™ûÂ§âÊèõÂá¶ÁêÜ
       *****************************************************************
        800-SEIWA-HEN-SEC           SECTION.
       *
@@ -1371,13 +1371,13 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-HENYMD
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "°°"
+           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "„ÄÄ"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1391,7 +1391,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
+      *        „Ç∏„Éß„ÉñÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1413,18 +1413,18 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    Ω™Œª°°°°ΩËÕ˝
+      *    ÁµÇ‰∫Ü„ÄÄ„ÄÄÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    •’•°•§•Î∫ÔΩ¸
+      *    „Éï„Ç°„Ç§„É´ÂâäÈô§
            MOVE    ZERO            TO  IF-RESULT
            MOVE    TOKEIPARA       TO  IF-FILENAME
            CALL    "orcfiledel"        USING
                                        ORCSFDELAREA
       *
            IF      CNT-TOKEI       =   ZERO
-               MOVE    "ΩËÕ˝¬–æ›§Œ•«°º•ø§¨§¢§Í§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Âá¶ÁêÜÂØæË±°„ÅÆ„Éá„Éº„Çø„Åå„ÅÇ„Çä„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                    TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1432,7 +1432,7 @@ grpsys                                     SPA-AREA
            DISPLAY "*** ORCBG029 IN "      CNT-TOKEI
            DISPLAY "*** ORCBG029 END ***"
       *     
-      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1452,7 +1452,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
      *****************************************************************
-      *    ≈˝∑◊•’•°•§•Î∆…π˛
+      *    Áµ±Ë®à„Éï„Ç°„Ç§„É´Ë™≠Ëæº
       *****************************************************************
        900-TOKEI-READ-SEC          SECTION.
       *
@@ -1468,7 +1468,7 @@ grpsys                                     SPA-AREA
            EXIT.
       *
       *****************************************************************
-      *    ≈˝∑◊•’•°•§•ÎΩÁ∆…π˛
+      *    Áµ±Ë®à„Éï„Ç°„Ç§„É´È†ÜË™≠Ëæº
       *****************************************************************
        900-TOKEI-NEXT-SEC          SECTION.
       *
@@ -1482,7 +1482,7 @@ grpsys                                     SPA-AREA
        900-TOKEI-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACCT-DBSELECT-SEC    SECTION.
       *
@@ -1510,7 +1510,7 @@ grpsys                                     SPA-AREA
        900-SRYACCT-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACCT-DBFETCH-SEC     SECTION.
       *
@@ -1529,7 +1529,7 @@ grpsys                                     SPA-AREA
        900-SRYACCT-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈≤Ò∑◊•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇ‰ºöË®à„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACCT-DBCLOSE-SEC     SECTION.
       *
@@ -1539,7 +1539,7 @@ grpsys                                     SPA-AREA
            .
        900-SRYACCT-DBCLOSE-EXT.
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊∏°∫˜ΩËÕ˝
+      *    ÂÖ•Èô¢‰ºöË®àÊ§úÁ¥¢Âá¶ÁêÜ
       *****************************************************************
        900-NYUINACCT-DBSELECT-SEC  SECTION.
       *
@@ -1566,7 +1566,7 @@ grpsys                                     SPA-AREA
        900-NYUINACCT-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊FETCHΩËÕ˝
+      *    ÂÖ•Èô¢‰ºöË®àFETCHÂá¶ÁêÜ
       *****************************************************************
        900-NYUINACCT-DBFETCH-SEC   SECTION.
       *
@@ -1585,7 +1585,7 @@ grpsys                                     SPA-AREA
        900-NYUINACCT-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ∆˛±°≤Ò∑◊•ﬁ•π•ø∏°∫˜
+      *    ÂÖ•Èô¢‰ºöË®à„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-NYUINACCT-DBCLOSE-SEC   SECTION.
       *
@@ -1595,7 +1595,7 @@ grpsys                                     SPA-AREA
            .
        900-NYUINACCT-DBCLOSE-EXT.
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACT-DBSELECT-SEC     SECTION.
       *
@@ -1624,7 +1624,7 @@ grpsys                                     SPA-AREA
        900-SRYACT-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACT-DBFETCH-SEC      SECTION.
       *
@@ -1643,7 +1643,7 @@ grpsys                                     SPA-AREA
        900-SRYACT-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈π‘∞Ÿ•ﬁ•π•ø∏°∫˜
+      *    Ë®∫ÁôÇË°åÁÇ∫„Éû„Çπ„ÇøÊ§úÁ¥¢
       *****************************************************************
        900-SRYACT-DBCLOSE-SEC      SECTION.
       *
@@ -1653,7 +1653,7 @@ grpsys                                     SPA-AREA
            .
        900-SRYACT-DBCLOSE-EXT.
       *****************************************************************
-      *    ¥µº‘æ Û•ﬁ•π•ø∆…π˛
+      *    ÊÇ£ËÄÖÊÉÖÂ†±„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1682,7 +1682,7 @@ grpsys                                     SPA-AREA
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘»÷πÊ•ﬁ•π•ø∆…π˛
+      *    ÊÇ£ËÄÖÁï™Âè∑„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -1709,7 +1709,7 @@ grpsys                                     SPA-AREA
        900-PTNUM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ≈¿øÙ•ﬁ•π•ø∆…π˛
+      *    ÁÇπÊï∞„Éû„Çπ„ÇøË™≠Ëæº
       *****************************************************************
        900-TENSU-READ-SEC          SECTION.
       *
@@ -1741,7 +1741,7 @@ grpsys                                     SPA-AREA
        900-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬£”£≈£Ã£≈£√£‘ΩËÕ˝
+      *    Ôº§Ôº¢Ôº≥Ôº•Ôº¨Ôº•Ôº£Ôº¥Âá¶ÁêÜ
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
       *
@@ -1757,7 +1757,7 @@ grpsys                                     SPA-AREA
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬£∆£≈£‘£√£»ΩËÕ˝
+      *    Ôº§Ôº¢Ôº¶Ôº•Ôº¥Ôº£Ôº®Âá¶ÁêÜ
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
       *
@@ -1770,7 +1770,7 @@ grpsys                                     SPA-AREA
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬£√£Ã£œ£”£≈ΩËÕ˝
+      *    Ôº§Ôº¢Ôº£Ôº¨ÔºØÔº≥Ôº•Âá¶ÁêÜ
       *****************************************************************
        900-DBCLOSECURSOR-SEC       SECTION.
       *
@@ -1783,7 +1783,7 @@ grpsys                                     SPA-AREA
        900-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬°°•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -1806,7 +1806,7 @@ grpsys                                     SPA-AREA
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

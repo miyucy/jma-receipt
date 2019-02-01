@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  �ѥ�᥿       (CPBTPARA.INC)
+      *  パラメタ       (CPBTPARA.INC)
       *****************************************************************
-      *  ��������
-      * Maj/Min/Rev  ������       ����      ����
+      *  修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
       *01  BTPARA-REC.
            03  BTPARA-KEY.
                05  BTPARA-HOSPNUM      PIC 9(2).
-      *������ɣ�
+      *シェルＩＤ
                05  BTPARA-SHELLID       PIC X(08).
-      *���ڥ졼���ɣ�
+      *オペレータＩＤ
                05  BTPARA-RUN-OPID      PIC X(16).
       *
                05  BTPARA-DSP-RENNUM    PIC 9(03).
-      *Ϣ�ֹ�
+      *連番号
                05  BTPARA-RENNUM        PIC 9(04).
-      *����֣ɣ�
+      *ジョブＩＤ
                05  BTPARA-JOBID         PIC 9(03).
       *scriptID
            03  BTPARA-SCRIPTID          PIC X(20).
-      *�ѥ�᥿��ʬ
+      *パラメタ区分
            03  BTPARA-INFO-KBN          PIC X(02).
-      *�ѥ�᥿
+      *パラメタ
            03  BTPARA-INFO-PARA         PIC X(500).
            03  BRPARA-INFO-PARA-X       REDEFINES    BTPARA-INFO-PARA.
                05  BTPARA-INFO-PTID     PIC 9(10).
                05  BTPARA-INFO-PTNUM    PIC X(20).
                05  BTPARA-FILLER        PIC X(470).
-      *ü���ɣ�
+      *端末ＩＤ
            03  BTPARA-TERMID            PIC X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  BTPARA-OPID              PIC X(16).
-      *����ǯ����
+      *作成年月日
            03  BTPARA-CREYMD            PIC X(08).
-      *����ǯ����
+      *更新年月日
            03  BTPARA-UPYMD             PIC X(08).
-      *��������
+      *更新時間
            03  BTPARA-UPHMS             PIC X(06).
       *LIMIT
            03  BTPARA-SELLIMIT          PIC 9(08).

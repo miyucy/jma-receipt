@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����Ų�ץޥ����ʽ���     COPY (CPSRYACCTS.INC)      *
+      *    新診療会計マスタ（従）     COPY (CPSRYACCTS.INC)      *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SRYACCTS-REC.
            03  ACCTS-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  ACCTS-HOSPNUM           PIC  9(02).
-      *���ԣɣ�
+      *患者ＩＤ
                05  ACCTS-PTID              PIC  9(10).
-      *���ֹ�
+      *剤番号
                05  ACCTS-ZAINUM            PIC  9(08).
-      *Ϣ��
+      *連番
                05  ACCTS-RENNUM            PIC  9(03).
-      *����
+      *日付
                05  ACCTS-DATE-HI           PIC  9(02).
-      *���
+      *回数
            03  ACCTS-DAY-CNT               PIC  9(03).
-      *----    �ʲ������ѹ���
-      *������ʬ
+      *----    以下検索用項目
+      *入外区分
            03  ACCTS-VNYUGAIKBN            PIC  X(01).
-      *����ǯ��
+      *診療年月
            03  ACCTS-VSRYYM                PIC  X(06).
-      *�ϰϻ��곫��
+      *範囲指定開始
            03  ACCTS-VFROM                 PIC  9(02).
-      *�ϰϻ��꽪λ
+      *範囲指定終了
            03  ACCTS-VTO                   PIC  9(02).

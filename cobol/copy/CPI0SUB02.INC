@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,31 +16,31 @@
       * 113-8621, Japan.
       ********************************************************************
        01  I0SUB02-LNK.
-      *  ��������:0/��������:1
+      *  新規更新:0/訂正更新:1
          03  I0SUB02-SYORIFLG                      PIC 9(01).
          03  I0SUB02-RRKNUM                        PIC 9(03).
          03  I0SUB02-NISSU                         PIC 9(05).
          03  I0SUB02-SKYSTYMD                      PIC X(08).
          03  I0SUB02-SKYEDYMD                      PIC X(08).
-      *  ��Ǽ�ǡ���
+      *  収納データ
          03  I0SUB02-SYUNOU-TBL.
            05  I0SUB02-SYUNOU-CNT                  PIC 9(05).
            05  I0SUB02-SYUNOU-OCC                  OCCURS  23.
-      *      ��Ǽ��ץե饰  0:��Ǽ�ǡ���
-      *                      1:���̹�ץǡ���
-      *                      2:��ץǡ���
+      *      収納合計フラグ  0:収納データ
+      *                      1:月別合計データ
+      *                      2:合計データ
              07  I0SUB02-SYUNOU-TTLDAT-FLG         PIC 9(01).
-      *      ��Ǽ�����ե饰(��Ǽ��ץե饰=0�Τ�Τ������
-      *                      0:��������
-      *                      1:�ɲù���
-      *                      2:�����ù���
+      *      収納更新フラグ(収納合計フラグ=0のものに設定）
+      *                      0:訂正更新
+      *                      1:追加更新
+      *                      2:請求取消更新
              07  I0SUB02-SYUNOU-UPDFLG             PIC 9(01).
              07  I0SUB02-SYUNOU-YM-S               PIC X(06).
              07  I0SUB02-SYUNOU-YM-W               PIC X(06).
              07  I0SUB02-SYUNOU-HKNCOMBI           PIC X(50).
-      *      �����ݸ��ȹ礻���ʷ��̹�ץǡ����Τ������
+      *      月別保険組合せ数（月別合計データのみ設定）
              07  I0SUB02-SYUNOU-HKNCOMBI-SU        PIC 9(02).
-      *      �оݷ���ʹ�ץǡ����Τ������
+      *      対象月数（合計データのみ設定）
              07  I0SUB02-SYUNOU-TUKI-SU            PIC 9(02).
              07  I0SUB02-SYUNOU-DAT                PIC X(3000).
              07  I0SUB02-SYUDAY-DAT                PIC X(4000).

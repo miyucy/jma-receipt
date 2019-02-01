@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,23 +16,23 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Äê´üÀÁµá°õºþ¾ðÊó                   (CPTEIKIPRT.INC)   *
+      *    å®šæœŸè«‹æ±‚å°åˆ·æƒ…å ±                   (CPTEIKIPRT.INC)   *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TEIKIPRT-REC.
            03  TEIKIPRT-KEY.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  TEIKIPRT-HOSPNUM    PIC  9(02).
-      *ÉÂÅïÈÖ¹æ
+      *ç—…æ£Ÿç•ªå·
                05  TEIKIPRT-BTUNUM     PIC  X(02).
-      *ÅÁÉ¼ÈÖ¹æ
+      *ä¼ç¥¨ç•ªå·
                05  TEIKIPRT-DENPNUM    PIC  9(07).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  TEIKIPRT-PTID           PIC  9(10).
-      *´µ¼ÔÈÖ¹æ
+      *æ‚£è€…ç•ªå·
            03  TEIKIPRT-PTNUM          PIC  X(20).
-      *´µ¼Ô¥«¥Ê»áÌ¾
+      *æ‚£è€…ã‚«ãƒŠæ°å
            03  TEIKIPRT-NAME           PIC  X(100).

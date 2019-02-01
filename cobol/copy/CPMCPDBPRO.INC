@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * фЭ╟Еи╦╫Ю╔Л╔╩╔в╔х╔╫╔у╔х║йJMA standard receipt software║к
+      * Ф≈╔Е▄╩Ф╗≥Ф╨√Ц┐╛Ц┌╩Ц┐≈Ц┐┬Ц┌╫Ц┐∙Ц┐┬О╪┬JMA standard receipt softwareО╪┴
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -17,378 +17,378 @@
       ********************************************************************
       *****************************************************************
       *
-      *    ёдёб╔╣╔ж   ╫ХмЩнн╟Х     CPMCPDBPRO.INC
+      *    О╪╓О╪╒Ц┌╣Ц┐√   Е┤╕Г░├И═≤Е÷÷     CPMCPDBPRO.INC
       *
       *****************************************************************
-      *  ╔Ё╔т║╪╤Г╫╓ю╣мЗнР
-      * Maj/Min/Rev  ╫╓ю╣╪т       фЭиу      фБмф
+      *  Ц┌ЁЦ┐■Ц┐╪Е▐╔Д©╝Ф╜ёЕ╠╔Ф╜╢
+      * Maj/Min/Rev  Д©╝Ф╜ёХ─┘       Ф≈╔Д╩≤      Е├┘Е╝╧
       *****************************************************************
-      *  ╔в╔М╔╟╔И╔Ю╫╓ю╣мЗнР
-      * Maj/Min/Rev  ╫╓ю╣╪т       фЭиу      фБмф
-      *  01.00.01    MCC-бюед     01/04/11  PTINF-KEY4 ди╡ц
-      *  01.00.02    MCC-б©║╧г╪   01/05/21  INPUTCD-KEY3 ди╡ц
-      *  01.00.03    MCC-б©║╧г╪   01/06/04  TENSU-KEY41
+      *  Ц┐≈Ц┐╜Ц┌╟Ц┐╘Ц┐═Д©╝Ф╜ёЕ╠╔Ф╜╢
+      * Maj/Min/Rev  Д©╝Ф╜ёХ─┘       Ф≈╔Д╩≤      Е├┘Е╝╧
+      *  01.00.01    MCC-Е╓╙Г■╟     01/04/11  PTINF-KEY4 Х©╫Е┼═
+      *  01.00.02    MCC-Е╓ Ц─┘Г╢█   01/05/21  INPUTCD-KEY3 Х©╫Е┼═
+      *  01.00.03    MCC-Е╓ Ц─┘Г╢█   01/06/04  TENSU-KEY41
       *                                     TENSU-KEY42 
       *                                     TENSU-KEY51 
       *                                     TENSU-KEY52 
-      *                                     TENSU-KEY53  ди╡ц
-      *  01.00.04    MCC-фё╦╤     01/05/22  PTHKNINF-KEY3 ди╡ц
-      *  01.00.05    MCC-фё╦╤     01/06/15  PostgreSQL бп╠Ч  
-      *  01.00.06    MCC-б©║╧г╪   01/08/07  TENSU-KEY DELETE ди╡ц
-      *  01.00.07    MCC-фё╦╤     01/08/07  PTKOHINF-KEY3      
-      *  01.00.08    MCC-фё╦╤     01/08/08  SEIKYU-KEY UPHKNJANUM ди╡ц      
-      *                                     RECEPRT-KEY  ди╡ц      
-      *  01.00.09    MCC-б©║╧г╪   01/08/20  PTINF-KEY5   ди╡ц
-      *  01.00.10    MCC-фё╦╤     01/08/21  SEIKYU-KEY UPHKNJANUM ╨О╫Э      
-      *  01.00.11    MCC-фё╦╤     01/09/03  HKNJAINF-KEY ди╡ц      
-      *  01.00.12    MCC-фё╦╤     01/09/04  HKNNUM-KEY3  ди╡ц      
-      *  01.00.13    MCC-фё╦╤     01/09/05  HKNNUM-KEY4  ди╡ц 
-      *                                     HKNNUM-KEY5  ди╡ц
-      *                                     BD001-KEY    ди╡ц
-      *                                     BD002-KEY    ди╡ц      
-      *  01.00.14    MCC-фё╦╤     01/09/11  SYSKANRI-KEY╓н╫╓ю╣
-      *  01.00.15    ╓р╓╣╓й╓╛     01/09/12  PTBYOMEI-KEY4
+      *                                     TENSU-KEY53  Х©╫Е┼═
+      *  01.00.04    MCC-Х≈╓Е▌÷     01/05/22  PTHKNINF-KEY3 Х©╫Е┼═
+      *  01.00.05    MCC-Х≈╓Е▌÷     01/06/15  PostgreSQL Е╞╬Е©°  
+      *  01.00.06    MCC-Е╓ Ц─┘Г╢█   01/08/07  TENSU-KEY DELETE Х©╫Е┼═
+      *  01.00.07    MCC-Х≈╓Е▌÷     01/08/07  PTKOHINF-KEY3      
+      *  01.00.08    MCC-Х≈╓Е▌÷     01/08/08  SEIKYU-KEY UPHKNJANUM Х©╫Е┼═      
+      *                                     RECEPRT-KEY  Х©╫Е┼═      
+      *  01.00.09    MCC-Е╓ Ц─┘Г╢█   01/08/20  PTINF-KEY5   Х©╫Е┼═
+      *  01.00.10    MCC-Х≈╓Е▌÷     01/08/21  SEIKYU-KEY UPHKNJANUM Е┴┼И≥╓      
+      *  01.00.11    MCC-Х≈╓Е▌÷     01/09/03  HKNJAINF-KEY Х©╫Е┼═      
+      *  01.00.12    MCC-Х≈╓Е▌÷     01/09/04  HKNNUM-KEY3  Х©╫Е┼═      
+      *  01.00.13    MCC-Х≈╓Е▌÷     01/09/05  HKNNUM-KEY4  Х©╫Е┼═ 
+      *                                     HKNNUM-KEY5  Х©╫Е┼═
+      *                                     BD001-KEY    Х©╫Е┼═
+      *                                     BD002-KEY    Х©╫Е┼═      
+      *  01.00.14    MCC-Х≈╓Е▌÷     01/09/11  SYSKANRI-KEYЦ│╝Д©╝Ф╜ё
+      *  01.00.15    Ц│╡Ц│∙Ц│╙Ц│▄     01/09/12  PTBYOMEI-KEY4
       *                                     CHK-KEY5
-      *                                     SRYACT-KEY6 ди╡ц
-      *  01.00.16    MCC-╬╝ф╕бТ   01/09/17  JYURRK-UPD1  ди╡ц
-      *  01.00.17    MCC-фё╦╤     01/10/01  RECEPRT-KEY2 ди╡ц
-      *  01.00.18    ╓р╓╣╓й╓╛     01/09/15  а╢╓ф╓н╔ф║╪╔ж╔К╓к ALL ╬Р╥Оди╡ц
-      *  01.00.19    MCC-б©║╧г╪   01/11/12  ╢╣╪тёиёд╓к╓Х╓К╨О╫Э╓Рбп╬щ╓н
-      *                                     ╔ф║╪╔ж╔К╓╧╓ы╓ф╓кди╡ц
-      *  01.00.20    MCC-фё╦╤     01/11/15  BYOMEI-KEY╓н╓╚╓й╦║╨В╓н╓х╓╜
-      *                                     х╬Ёя╓н╓х╓╜╓н╔а╔╖╔ц╔╞╫╓ю╣ 
-      *  01.00.21    MCC-б©║╧г╪   01/11/15  юа╣А╢имЩ╓н╢╣╪тёиёд╓к╓Х╓К╨О╫Э
-      *                                     ╓Рди╡ц
-      *  01.00.22    MCC-б©║╧г╪   01/11/29  ╪У©гмЗнР╓нKEY8 ╓Рди╡ц
-      *  01.00.23    MCC-фё╦╤     01/12/05  TENSU-KEY10K,KEY10S,KEY11K,
-      *                                     KEY11S╓Рди╡ц
-      *  01.00.24    MCC-фё╦╤     01/12/06  ╪╚╠║ибл╬╔ч╔╧╔©╓нди╡ц
-      *  01.00.25    MCC-фё╦╤     01/12/26  BYOMEI-KEY4,KEY5╓нди╡ц
-      *  01.00.26    MCC-б©║╧г╪   01/12/27  ╪У©гмЗнР╓нKEY9 ╓Рди╡ц
-      *  01.00.27    MCC-б©║╧г╪   02/01/10  JYURRK-KEY10,JYURRK-KEY11
-      *                                     ди╡ц
-      *  01.00.28    MCC-б©║╧г╪   02/01/30  WKSRYACT-KEY4,KEY5   ди╡ц
-      *  01.00.29    MCC-фё╦╤     02/01/30  RECEPRT-KEY3,KEY4╓нди╡ц
-      *  01.00.30    MCC-б©║╧г╪   02/02/05  JYURRK-KEY12ди╡ц
-      *  01.00.31    MCC-фё╦╤     02/02/06  ╔Л╔╩╔в╔х╔Ё╔А╔С╔х╔ч╔╧╔©╓нди╡ц
-      *                                     ©В╥а╔ч╔╧╔©╓нди╡ц
-      *  01.00.32    MCC-б©║╧г╪   02/02/06  RECECOM-KEY2 ди╡ц
-      *                                     EXAMPLE-KEY2 ди╡ц
-      *  01.00.33    MCC-б©║╧г╪   02/02/07  JYURRK-KEY13 ди╡ц
-      *  01.00.34    MCC-фё╦╤     02/02/08  KYUSEIRRK-KEY3 ди╡ц
-      *  01.00.35    MCC-фё╦╤     02/02/08  KYUSEIRRK-UPD1 ╓ьйя╧╧
-      *  01.00.36    MCC-фё╦╤     02/02/12  TENSU-KEY10K║аKEY12K1╓нди╡ц║╒
-      *                                     йя╧╧
-      *  01.00.37    MCC-б©║╧г╪   02/02/15  RECECOM-DEL1 ди╡ц
-      *  01.00.38    MCC-фё╦╤     02/02/15  PTKOHINF-KEY4╓нди╡ц
-      *  01.00.39    MCC-б©║╧г╪   02/02/22  DBKANRI-KEY╓нди╡ц
-      *  01.00.40    MCC-фё╦╤     02/02/25  RECEPRT-KEY5,KEY6╓нди╡ц
-      *  01.00.41    MCC-фё╦╤     02/02/26  RECEKANRI-KEY╓нди╡ц
-      *  01.00.42    MCC-╬╝ф╕бТ   02/03/04  SRYACT-KEY7╓нди╡ц
-      *  01.00.43    MCC-фё╦╤     02/03/05  SEIKYU-KEY5╓нди╡ц
-      *  01.00.44    MCC-б©║╧г╪   02/03/08  SANTEI-KEY4╓нди╡ц
-      *  01.00.45    MCC-фё╦╤     02/03/13  PTHKNINF-KEY4╓нди╡ц
-      *  01.00.46    MCC-╟кфё     02/03/14  CHK-UPD1╓нди╡ц
-      *  01.00.47    MCC-фё╦╤     02/03/15  SEIKYU-KEY6,KEY7╓нди╡ц
-      *  01.00.48    MCC-б©║╧г╪   02/03/17  JYURRK-KEY14╓нди╡ц
-      *  01.00.49    ╓р╓╣╓й╓╛     02/03/19  PTBYOMEI-KEY5╓нди╡ц
-      *  01.00.50    MCC-фё╦╤     02/03/22  HKNJAINF-KEY2╓нди╡ц
-      *  01.00.51    MCC-фё╦╤     02/04/02  SYSKANRI-KEY6╓нди╡ц
-      *  01.00.52    MCC-фё╦╤     02/04/04  USERBYOMEI-KEY6╓нди╡ц
-      *  01.00.53    MCC-б©║╧г╪   02/04/04  ADRS-KEY3,KEY4,KEY5╓нди╡ц
-      *  01.00.54    MCC-╬╝ф╕бТ   02/04/08  PTRSIINF-KEY,KEY2,ALL,DEL1╓нди╡ц
-      *  01.00.55    MCC-фё╦╤     02/04/08  USERBYOMEI-KEY7,KEY8╓нди╡ц
-      *  01.00.56    MCC-фё╦╤     02/04/10  SRYACCT-KEY8,KEY9╓нди╡ц
-      *  01.00.57    MCC-б©║╧г╪   02/04/10  JYURRK-KEY15,KEY16╓нди╡ц
-      *  01.00.58    MCC-б©║╧г╪   02/04/18  INPUTSET-KEY3╓нди╡ц
-      *  01.00.59    MCC-б©║╧г╪   02/04/23  INPUTSET-KEY4╓нди╡ц
-      *  01.00.60    MCC-б©║╧г╪   02/04/23  CHK-KEY6╓нди╡ц
-      *  01.00.61    MCC-╬╝ф╕бТ   02/04/25  SRYACT-KEY8╓нди╡ц
-      *  01.00.62    MCC-фё╦╤     02/04/30  RECEPRT-KEY7,KEY8╓нди╡ц
-      *                                     RECEKANRI-KEY3╓нди╡ц
-      *  01.00.63    MCC-бюед     02/05/15  USERBYOMEI-KEY9╓нди╡ц
-      *  01.00.64    MCC-фё╦╤     02/05/21  SEIKYU-DEL2,DEL3,DEL4╓нди╡ц
-      *  01.00.65    ╓р╓╣╓й╓╛     02/05/22  JOBKANRI-ALL02╓нди╡ц
-      *  01.00.66    MCC-б©║╧г╪   02/05/23  SANTEI-KEY5╓нди╡ц
-      *  01.00.67    MCC-б©║╧г╪   02/05/27  SSKIJYO,INTERACT╓нди╡ц
-      *  01.00.68    MCC-б©║╧г╪   02/05/29  SRYACCT-KEY10╓нди╡ц
-      *  01.00.69    MCC-бюед     02/05/31  JINMEI╓нди╡ц
-      *  01.00.70    MCC-б©║╧г╪   02/06/06  CHK-KEY╓н╧╧©╥║╕╨О╫Э╓н╫╓ю╣
-      *  01.00.71    MCC-б©║╧г╪   02/06/17  MONTHLYNUM╓нди╡ц
-      *  01.00.72    MCC-©╧оф     02/06/19  JINMEI-KEY3╓нди╡ц
-      *  01.00.73    MCC-фё╦╤     02/07/03  RECEPRT-KEY9╓нди╡ц
-      *  01.00.74    MCC-фё╦╤     02/07/11  PTKOHINF-KEY5╓нди╡ц
-      *  01.00.75    NACL-©╧оф    02/07/19  YAKUJYO-KEY,ALL╓нди╡ц
-      *  01.00.76    NACL-б©║╧г╪  02/07/31  PARA-DEL2,PARA-KEY3 ╓нди╡ц
-      *  01.00.77    NACL-б©║╧г╪  02/08/06  PARA-KEY ╓нUPDATE╫╓ю╣
-      *  01.00.78    NACL-б©║╧г╪  02/08/08  JYURRK-KEY17,KEY-18ди╡ц
-      *  01.00.79    NACL-бюед    02/08/09  SYSKANRI-KEY7ди╡ц
-      *  01.00.80    NACL-бюед    02/08/19  SYSKANRI-KEY8ди╡ц
-      *  01.00.81    NACL-фё╦╤    02/08/19  RECECOM-KEY3ди╡ц
-      *  01.00.82    NACL-б©║╧г╪  02/08/20  TENSU-KEY42K,KEY-42JK8ди╡ц
-      *  01.00.83    NACL-бюед    02/08/22  SYSKANRI-KEY9,KEY10ди╡ц
-      *  01.00.84    NACL-фё╦╤    02/08/27  BD002-KEY2ди╡ц
-      *  01.00.85    NACL-бюед    02/09/03  TENSU-KEY13,14ди╡ц
-      *  01.00.86    NACL-б©║╧г╪  02/09/12  HKNNUM-KEY6,KEY7  ди╡ц
-      *  01.00.87    NACL-бюед    02/09/19  PTBYOMEI-KEY6ди╡ц
-      *  01.00.88    NACL-б©║╧г╪  02/09/25  SRYACCT-KEY11
+      *                                     SRYACT-KEY6 Х©╫Е┼═
+      *  01.00.16    MCC-Е╟▐Х╠├Ф╡╒   01/09/17  JYURRK-UPD1  Х©╫Е┼═
+      *  01.00.17    MCC-Х≈╓Е▌÷     01/10/01  RECEPRT-KEY2 Х©╫Е┼═
+      *  01.00.18    Ц│╡Ц│∙Ц│╙Ц│▄     01/09/15  Е┘╗Ц│╕Ц│╝Ц┐├Ц┐╪Ц┐√Ц┐╚Ц│╚ ALL Ф²║Д╩╤Х©╫Е┼═
+      *  01.00.19    MCC-Е╓ Ц─┘Г╢█   01/11/12  Ф┌ёХ─┘О╪╘О╪╓Ц│╚Ц┌┬Ц┌▀Е┴┼И≥╓Ц┌▓Е╞╬Х╠║Ц│╝
+      *                                     Ц┐├Ц┐╪Ц┐√Ц┐╚Ц│≥Ц│╧Ц│╕Ц│╚Х©╫Е┼═
+      *  01.00.20    MCC-Х≈╓Е▌÷     01/11/15  BYOMEI-KEYЦ│╝Ц│▀Ц│╙Ф╓°Г╢╒Ц│╝Ц│╗Ц│█
+      *                                     Е█┼Х╖▓Ц│╝Ц│╗Ц│█Ц│╝Ц┐│Ц┌╖Ц┐┐Ц┌╞Д©╝Ф╜ё 
+      *  01.00.21    MCC-Е╓ Ц─┘Г╢█   01/11/15  Х╚▀Ф╠┌Г╝║Г░├Ц│╝Ф┌ёХ─┘О╪╘О╪╓Ц│╚Ц┌┬Ц┌▀Е┴┼И≥╓
+      *                                     Ц┌▓Х©╫Е┼═
+      *  01.00.22    MCC-Е╓ Ц─┘Г╢█   01/11/29  Е▐≈Х╗╨Е╠╔Ф╜╢Ц│╝KEY8 Ц┌▓Х©╫Е┼═
+      *  01.00.23    MCC-Х≈╓Е▌÷     01/12/05  TENSU-KEY10K,KEY10S,KEY11K,
+      *                                     KEY11SЦ┌▓Х©╫Е┼═
+      *  01.00.24    MCC-Х≈╓Е▌÷     01/12/06  Х┤╙И≥╒Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Ц│╝Х©╫Е┼═
+      *  01.00.25    MCC-Х≈╓Е▌÷     01/12/26  BYOMEI-KEY4,KEY5Ц│╝Х©╫Е┼═
+      *  01.00.26    MCC-Е╓ Ц─┘Г╢█   01/12/27  Е▐≈Х╗╨Е╠╔Ф╜╢Ц│╝KEY9 Ц┌▓Х©╫Е┼═
+      *  01.00.27    MCC-Е╓ Ц─┘Г╢█   02/01/10  JYURRK-KEY10,JYURRK-KEY11
+      *                                     Х©╫Е┼═
+      *  01.00.28    MCC-Е╓ Ц─┘Г╢█   02/01/30  WKSRYACT-KEY4,KEY5   Х©╫Е┼═
+      *  01.00.29    MCC-Х≈╓Е▌÷     02/01/30  RECEPRT-KEY3,KEY4Ц│╝Х©╫Е┼═
+      *  01.00.30    MCC-Е╓ Ц─┘Г╢█   02/02/05  JYURRK-KEY12Х©╫Е┼═
+      *  01.00.31    MCC-Х≈╓Е▌÷     02/02/06  Ц┐╛Ц┌╩Ц┐≈Ц┐┬Ц┌ЁЦ┐║Ц┐ЁЦ┐┬Ц┐·Ц┌╧Ц┌©Ц│╝Х©╫Е┼═
+      *                                     И⌡⌡Е╫╒Ц┐·Ц┌╧Ц┌©Ц│╝Х©╫Е┼═
+      *  01.00.32    MCC-Е╓ Ц─┘Г╢█   02/02/06  RECECOM-KEY2 Х©╫Е┼═
+      *                                     EXAMPLE-KEY2 Х©╫Е┼═
+      *  01.00.33    MCC-Е╓ Ц─┘Г╢█   02/02/07  JYURRK-KEY13 Х©╫Е┼═
+      *  01.00.34    MCC-Х≈╓Е▌÷     02/02/08  KYUSEIRRK-KEY3 Х©╫Е┼═
+      *  01.00.35    MCC-Х≈╓Е▌÷     02/02/08  KYUSEIRRK-UPD1 Ц│╦Е╓┴Ф⌡╢
+      *  01.00.36    MCC-Х≈╓Е▌÷     02/02/12  TENSU-KEY10KЦ─°KEY12K1Ц│╝Х©╫Е┼═Ц─│
+      *                                     Е╓┴Ф⌡╢
+      *  01.00.37    MCC-Е╓ Ц─┘Г╢█   02/02/15  RECECOM-DEL1 Х©╫Е┼═
+      *  01.00.38    MCC-Х≈╓Е▌÷     02/02/15  PTKOHINF-KEY4Ц│╝Х©╫Е┼═
+      *  01.00.39    MCC-Е╓ Ц─┘Г╢█   02/02/22  DBKANRI-KEYЦ│╝Х©╫Е┼═
+      *  01.00.40    MCC-Х≈╓Е▌÷     02/02/25  RECEPRT-KEY5,KEY6Ц│╝Х©╫Е┼═
+      *  01.00.41    MCC-Х≈╓Е▌÷     02/02/26  RECEKANRI-KEYЦ│╝Х©╫Е┼═
+      *  01.00.42    MCC-Е╟▐Х╠├Ф╡╒   02/03/04  SRYACT-KEY7Ц│╝Х©╫Е┼═
+      *  01.00.43    MCC-Х≈╓Е▌÷     02/03/05  SEIKYU-KEY5Ц│╝Х©╫Е┼═
+      *  01.00.44    MCC-Е╓ Ц─┘Г╢█   02/03/08  SANTEI-KEY4Ц│╝Х©╫Е┼═
+      *  01.00.45    MCC-Х≈╓Е▌÷     02/03/13  PTHKNINF-KEY4Ц│╝Х©╫Е┼═
+      *  01.00.46    MCC-Д╪┼Х≈╓     02/03/14  CHK-UPD1Ц│╝Х©╫Е┼═
+      *  01.00.47    MCC-Х≈╓Е▌÷     02/03/15  SEIKYU-KEY6,KEY7Ц│╝Х©╫Е┼═
+      *  01.00.48    MCC-Е╓ Ц─┘Г╢█   02/03/17  JYURRK-KEY14Ц│╝Х©╫Е┼═
+      *  01.00.49    Ц│╡Ц│∙Ц│╙Ц│▄     02/03/19  PTBYOMEI-KEY5Ц│╝Х©╫Е┼═
+      *  01.00.50    MCC-Х≈╓Е▌÷     02/03/22  HKNJAINF-KEY2Ц│╝Х©╫Е┼═
+      *  01.00.51    MCC-Х≈╓Е▌÷     02/04/02  SYSKANRI-KEY6Ц│╝Х©╫Е┼═
+      *  01.00.52    MCC-Х≈╓Е▌÷     02/04/04  USERBYOMEI-KEY6Ц│╝Х©╫Е┼═
+      *  01.00.53    MCC-Е╓ Ц─┘Г╢█   02/04/04  ADRS-KEY3,KEY4,KEY5Ц│╝Х©╫Е┼═
+      *  01.00.54    MCC-Е╟▐Х╠├Ф╡╒   02/04/08  PTRSIINF-KEY,KEY2,ALL,DEL1Ц│╝Х©╫Е┼═
+      *  01.00.55    MCC-Х≈╓Е▌÷     02/04/08  USERBYOMEI-KEY7,KEY8Ц│╝Х©╫Е┼═
+      *  01.00.56    MCC-Х≈╓Е▌÷     02/04/10  SRYACCT-KEY8,KEY9Ц│╝Х©╫Е┼═
+      *  01.00.57    MCC-Е╓ Ц─┘Г╢█   02/04/10  JYURRK-KEY15,KEY16Ц│╝Х©╫Е┼═
+      *  01.00.58    MCC-Е╓ Ц─┘Г╢█   02/04/18  INPUTSET-KEY3Ц│╝Х©╫Е┼═
+      *  01.00.59    MCC-Е╓ Ц─┘Г╢█   02/04/23  INPUTSET-KEY4Ц│╝Х©╫Е┼═
+      *  01.00.60    MCC-Е╓ Ц─┘Г╢█   02/04/23  CHK-KEY6Ц│╝Х©╫Е┼═
+      *  01.00.61    MCC-Е╟▐Х╠├Ф╡╒   02/04/25  SRYACT-KEY8Ц│╝Х©╫Е┼═
+      *  01.00.62    MCC-Х≈╓Е▌÷     02/04/30  RECEPRT-KEY7,KEY8Ц│╝Х©╫Е┼═
+      *                                     RECEKANRI-KEY3Ц│╝Х©╫Е┼═
+      *  01.00.63    MCC-Е╓╙Г■╟     02/05/15  USERBYOMEI-KEY9Ц│╝Х©╫Е┼═
+      *  01.00.64    MCC-Х≈╓Е▌÷     02/05/21  SEIKYU-DEL2,DEL3,DEL4Ц│╝Х©╫Е┼═
+      *  01.00.65    Ц│╡Ц│∙Ц│╙Ц│▄     02/05/22  JOBKANRI-ALL02Ц│╝Х©╫Е┼═
+      *  01.00.66    MCC-Е╓ Ц─┘Г╢█   02/05/23  SANTEI-KEY5Ц│╝Х©╫Е┼═
+      *  01.00.67    MCC-Е╓ Ц─┘Г╢█   02/05/27  SSKIJYO,INTERACTЦ│╝Х©╫Е┼═
+      *  01.00.68    MCC-Е╓ Ц─┘Г╢█   02/05/29  SRYACCT-KEY10Ц│╝Х©╫Е┼═
+      *  01.00.69    MCC-Е╓╙Г■╟     02/05/31  JINMEIЦ│╝Х©╫Е┼═
+      *  01.00.70    MCC-Е╓ Ц─┘Г╢█   02/06/06  CHK-KEYЦ│╝Ф⌡╢Ф√╟Ц┐╩Е┴┼И≥╓Ц│╝Д©╝Ф╜ё
+      *  01.00.71    MCC-Е╓ Ц─┘Г╢█   02/06/17  MONTHLYNUMЦ│╝Х©╫Е┼═
+      *  01.00.72    MCC-Фё╝Х└┤     02/06/19  JINMEI-KEY3Ц│╝Х©╫Е┼═
+      *  01.00.73    MCC-Х≈╓Е▌÷     02/07/03  RECEPRT-KEY9Ц│╝Х©╫Е┼═
+      *  01.00.74    MCC-Х≈╓Е▌÷     02/07/11  PTKOHINF-KEY5Ц│╝Х©╫Е┼═
+      *  01.00.75    NACL-Фё╝Х└┤    02/07/19  YAKUJYO-KEY,ALLЦ│╝Х©╫Е┼═
+      *  01.00.76    NACL-Е╓ Ц─┘Г╢█  02/07/31  PARA-DEL2,PARA-KEY3 Ц│╝Х©╫Е┼═
+      *  01.00.77    NACL-Е╓ Ц─┘Г╢█  02/08/06  PARA-KEY Ц│╝UPDATEД©╝Ф╜ё
+      *  01.00.78    NACL-Е╓ Ц─┘Г╢█  02/08/08  JYURRK-KEY17,KEY-18Х©╫Е┼═
+      *  01.00.79    NACL-Е╓╙Г■╟    02/08/09  SYSKANRI-KEY7Х©╫Е┼═
+      *  01.00.80    NACL-Е╓╙Г■╟    02/08/19  SYSKANRI-KEY8Х©╫Е┼═
+      *  01.00.81    NACL-Х≈╓Е▌÷    02/08/19  RECECOM-KEY3Х©╫Е┼═
+      *  01.00.82    NACL-Е╓ Ц─┘Г╢█  02/08/20  TENSU-KEY42K,KEY-42JK8Х©╫Е┼═
+      *  01.00.83    NACL-Е╓╙Г■╟    02/08/22  SYSKANRI-KEY9,KEY10Х©╫Е┼═
+      *  01.00.84    NACL-Х≈╓Е▌÷    02/08/27  BD002-KEY2Х©╫Е┼═
+      *  01.00.85    NACL-Е╓╙Г■╟    02/09/03  TENSU-KEY13,14Х©╫Е┼═
+      *  01.00.86    NACL-Е╓ Ц─┘Г╢█  02/09/12  HKNNUM-KEY6,KEY7  Х©╫Е┼═
+      *  01.00.87    NACL-Е╓╙Г■╟    02/09/19  PTBYOMEI-KEY6Х©╫Е┼═
+      *  01.00.88    NACL-Е╓ Ц─┘Г╢█  02/09/25  SRYACCT-KEY11
       *                                     SANTEI-KEY6
-      *  01.00.89    NACL-фё╦╤    02/09/30  RECEKANRI-KEY4║аKEY7
-      *                                     RECEPRT-KEY10║аKEY17
-      *  01.00.90    NACL-фё╦╤    02/10/09  SEIKYU-KEY8║аKEY13
-      *  01.00.91    NACL-фё╦╤    02/10/17  SEIKYU-KEY14
-      *                                     RECEPRT-KEY10║аKEY17
-      *  01.01.01    NACL-бюед    02/08/05  NYUINKHN-KEY,ALL╓нди╡ц
-      *  01.01.02    NACL-бюед    02/09/02  NYUINKHN-KEY2╓нди╡ц
-      *  01.01.03    NACL-бюед    02/09/10  PTNYUINRRK-KEY,KEY2,KEY3ди╡ц
-      *  01.01.04    NACL-бюед    02/09/13  PTNYUINRRK-DEL1ди╡ц
-      *  01.01.04    NACL-бюед    02/09/18  PTNYUINRRK-KEY4ди╡ц
-      *  01.01.05    NACL-бюед    02/09/19  PTNYUINRRK-KEY5ди╡ц
-      *  01.01.06    NACL-бюед    02/09/24  PTTAINFUKA-KEY,ALLди╡ц
-      *  01.01.07    NACL-бюед    02/09/13  PTTAINFUKA-DEL1ди╡ц
-      *  01.01.08    NACL-╬╝ф╕бТ  02/10/07  NYUINACCTди╡ц
-      *                                     NYUINACTди╡ц
-      *  01.01.09    NACL-бюед    02/10/16  PTNYUINRRK-KEY6,7,8ди╡ц
-      *  01.01.10    NACL-бюед    02/10/21  I001-KEY,ALLди╡ц
-      *  01.01.11    NACL-бюед    02/10/23  PTTAINFUKA-DEL2ди╡ц
-      *                                     PTNYUINRRK-DEL2ди╡ц
-      *  01.01.12    NACL-бюед    02/10/25  JYURRK-KEY19ди╡ц
-      *  01.01.13    NACL-бюед    02/10/30  JYURRK-KEY19ди╡ц
-      *  01.01.14    NACL-бюед    02/10/31  PTNYUINRRK-KEY9ди╡ц
-      *              NACL-бюед    02/11/01  SYUNOU-DEL2ди╡ц
-      *  01.01.15    NACL-бюед    02/11/18  NYUKSNCHK-KEYди╡ц
-      *  01.01.16    NACL-бюед    02/11/27  TENSU-KEY15ди╡ц
-      *  01.01.17    NACL-бюед    02/12/10  SYUNOU-DEL2╨О╫Э
-      *                                     SYUNOU-KEY5ди╡ц
-      *                                     SYUMEI-KEY3ди╡ц
-      *                                     PTNYUINRRK-KEY10ди╡ц
-      *  01.01.18    NACL-фё╦╤    02/12/10  SEIKYU-DEL5,DEL6ди╡ц
-      *  01.01.19    NACL-бюед    02/12/13  PTNYUINRRK-KEY11ди╡ц
-      *  01.01.20    NACL-бюед    02/12/13  SYUNOU-KEY6ди╡ц
-      *  01.01.21    NACL-фё╦╤    02/12/17  PTNYUINRRK-KEY12,KEY13ди╡ц
-      *  01.01.22    NACL-б©║╧г╪  02/12/18  PTINF-KEY6,KEY7,KEY8,KEY9
-      *  01.01.23    NACL-бюед    02/12/18  NYUINRYAKUSHO-KEY,ALLди╡ц
-      *                                     SRYACT-KEY9ди╡ц
-      *                                     NYUINACT-KEY9ди╡ц
-      *                                     PTNYUINRRK-KEY14ди╡ц
-      *                                     SYUNOU-DEL2,3,4,5ди╡ц
-      *  01.01.24    NACL-бюед    02/12/19  TEIKIKANRI-KEY,ALLди╡ц
-      *                                     TEIKIKANRI-DEL1ди╡ц
-      *                                     TEIKIPRT-KEY,2,3,4,5,ALLди╡ц
-      *                                     TEIKIPRT-DEL1ди╡ц
-      *  01.01.25    NACL-бюед    02/12/20  SYUNOU-KEY7,8ди╡ц
-      *                                     SYUMEI-DEL2ди╡ц
-      *                                     SYUNOU-DEL6ди╡ц  
-      *  01.01.26    NACL-бюед    02/12/20  BD002-KEY3ди╡ц
-      *  01.01.27    NACL-фё╦╤    02/12/24  NYUINACCT-KEY13,KEY14ди╡ц
-      *  01.01.28    NACL-©╧оф    03/01/06  SYUNOU-KEY9ди╡ц
-      *  01.01.29    NACL-б©║╧г╪  03/01/08  SRYACCT-KEY14 ди╡ц
-      *  01.01.30    NACL-бюед    03/01/17  TEIKIRRK-KEY,ALLди╡ц        
-      *                                     PTTEIKIRRK-KEY║аKEY3,ALLди╡ц
-      *  01.01.31    NACL-бюед    03/01/20  PTTEIKIRRK-KEY4ди╡ц
-      *                                     PTTEIKIRRK-DEL1,DEL2ди╡ц
-      *  01.01.32    NACL-бюед    03/01/23  SYUNOU-DEL4,5,6╨О╫Э
-      *  01.01.32    NACL-бюед    03/01/23  SYUNOU-KEY10ди╡ц
-      *  01.01.32    NACL-бюед    03/01/29  PTNYUINRRK-KEY15ди╡ц
-      *  01.01.33    ╓р╓╣╓й╓╛     03/01/30  NYUINACCT-KEY15,16╓нди╡ц
-      *  01.01.34    NACL-бюед    03/01/31  TEIKIRRK-KEY2ди╡ц
-      *  01.01.35    NACL-бюед    03/02/03  SRYACCT-KEY15ди╡ц
-      *  01.01.36    NACL-б©║╧г╪  03/02/06  NYUINACCT-KEY17ди╡ц
-      *  01.01.37    NACL-бюед    03/02/07  PTNYUINRRK-KEY16,KEY17ди╡ц
-      *  01.01.38    NACL-©╧оф    03/02/10  SRYACCT-KEY16ди╡ц
-      *  01.01.39    NACL-б©║╧г╪  03/02/17  SRYACCT-KEY17ди╡ц
-      *  01.01.39    NACL-бюед    03/02/22  PTNYUINRRK-ALLди╡ц
-      *  01.01.40    ╓р╓╣╓й╓╛     03/02/25  PTNYUINRRK-KEY18╓нди╡ц
-      *  01.01.41    NACL-фё╦╤    03/02/28  KOHSKY-KEY,KEY2,KEY3,KEY4,
-      *                                     DEL1,DEL2,DEL3ди╡ц
-      *                                     SEIKYU-KEY15ди╡ц 
-      *                                     RECEKANRI-DEL1,DEL2ди╡ц 
-      *                                     RECEPRT-DEL1,DEL2ди╡ц 
-      *  01.01.42    NACL-╟кфё    03/03/03  KENSASORT-KEYди╡ц
-      *                                     KENSASORT-ALLди╡ц 
-      *  01.01.43    NACL-б©║╧г╪║║03/03/04  SYUNOU-KEY11,KEY12ди╡ц
-      *  01.01.44    ╓р╓╣╓й╓╛     03/03/05  PTNYUINRRK-KEY19╓нди╡ц
-      *  01.01.45    NACL-©╧оф    03/03/05  SYUMEI-KEY4,KEY5╓нди╡ц
-      *  01.01.46    NACL-бюед    03/03/10  SENTEICDCHG-KEY,2,3,ALLди╡ц
-      *  01.01.47    NACL-╟кфё    03/03/11  INTERACT-KEY3╓нди╡ц
-      *                                     INTERACT-UPD1,DEL1ди╡ц 
-      *  01.01.48    NACL-фё╦╤    03/03/14  PTBYO-KEY7ди╡ц
-      *  01.01.49    NACL-фё╦╤    03/03/16  KOHSKY-KEY5,KEY6ди╡ц
-      *                                     SEIKYU-KEY16,KEY17,KEY18ди╡ц
-      *  01.01.50    NACL-бюед    03/03/19  PTKOHFTN-KEY,KEY2,KEY3,DEL1
-      *                                     UPD1,ALLди╡ц
-      *  01.01.51    NACL-б©║╧г╪║║03/03/19  PTHKNINF-KEY5ди╡ц
-      *  01.01.52    NACL-бюед    03/03/20  PTKOHFTN-KEY4ди╡ц
-      *  01.01.53    NACL-бюед    03/03/20  PTKOHFTN-KEY5ди╡ц
-      *                                     PTKOHFTN-UPD1╨О╫Э
-      *  01.01.54    NACL-╬╝ф╕бТ  03/04/04  SRYACCT-KEY18ди╡ц
-      *                                     SRYACCT-KEY19ди╡ц
-      *  01.01.55    NACL-фё╦╤    03/04/09  SEIKYU-KEY19ди╡ц
-      *  01.01.56    NACL-фё╦╤    03/04/14  SEIKYU-KEY20ди╡ц
-      *  01.01.57    NACL-б©║╧г╪║║03/04/17  SYUNOU-KEY13ди╡ц
-      *  01.01.58    ╓р╓╣╓й╓╛     03/04/17  NYUINACCT-KEY18╓нди╡ц
-      *  01.01.59    NACL-б©║╧г╪║║03/04/18  JYURRK-KEY20ди╡ц
-      *  01.01.60    NACL-фё╦╤    03/04/09  SEIKYU-KEY21,JEY22ди╡ц
-      *  01.01.61    NACL-бюед    03/04/22  SYUNOU-KEY14ди╡ц
-      *  01.01.62    NACL-бюед    03/04/28  SYUMEI-KEY6ди╡ц
-      *  01.01.63    NACL-бюед    03/04/28  PTTEIKIRRK-KEY5ди╡ц
-      *  01.01.64    NACL-бюед    03/04/28  SYUNOU-KEY15ди╡ц
-      *  01.01.65    NACL-бюед    03/04/30  SYUNOU-KEY16,17ди╡ц
-      *  01.01.66    NACL-б©║╧г╪║║03/05/01  JYURRK-KEY21ди╡ц
-      *  01.01.67    NACL-б©║╧г╪║║03/05/01  JYURRK-KEY22ди╡ц
-      *  01.01.68    NACL-б©║╧г╪║║03/05/06  PTBYOMEI-KEY8ди╡ц
-      *                                     JYURRK-KEY23ди╡ц
-      *  01.01.69    NACL-бюед    03/05/06  SYUNOU-KEY18ди╡ц
-      *  01.01.70    NACL-бюед    03/05/09  I001-KEY2ди╡ц
-      *  01.01.71    NACL-бюед    03/05/15  I001-KEY3ди╡ц
-      *  01.01.72    NACL-бюед    03/05/17  NYUINACCT-KEY19ди╡ц
-      *  01.01.73    ╓р╓╣╓й╓╛     03/05/19  NYUKSNCHK-ALL╓нди╡ц
-      *  01.01.74    ╓р╓╣╓й╓╛     03/05/21  ALL2╓нди╡ц
-      *  01.01.75    NACL-фё╦╤    03/05/21  SEIKYU-KEY4,KEY11,KEY12,KEY13,
-      *                                     KEY14,KEY21,KEY22╓н╓х╓╜йщ╦╠╪тхж╧Ф
-      *                                     ╓к╫И╢Эцм╓Рйт╫╦
-      *  01.01.76    NACL-╬╝ф╕бТ║║03/05/28  JYURRK-KEY24ди╡ц
-      *  01.01.77    NACL-бюед    03/06/05  PTNYUINRRK-KEY20ди╡ц
-      *  01.01.78    NACL-б©║╧г╪║║03/06/16  TENSU-KEY20ди╡ц
-      *  01.01.79    NACL-╬╝ф╕бТ║║03/06/20  BYOMEI-KEY6ди╡ц
-      *  01.01.80    NACL-б©║╧г╪║║03/06/24  TENSU-KEY21ди╡ц
-      *                                     PTNUM-KEY3 ди╡ц
-      *  01.01.81    NACL-б©║╧г╪║║03/07/10  PTINF-KEY10 ди╡ц
-      *  01.01.82    NACL-б©║╧г╪║║03/07/15  YYK-KEY7   ди╡ц 
-      *  01.01.83    NACL-б©║╧г╪║║03/07/17  PTBYOMEI-KEY9,KEY10 ди╡ц 
-      *  01.01.84    NACL-б©║╧г╪║║03/07/25  SANTEI-KEY7,KEY8ди╡ц
-      *                                     TENSU-KEY22ди╡ц
-      *  01.01.85    NACL-бюед  ║║03/07/24  PTBYOMEI-KEY11ди╡ц 
-      *  01.01.86    NACL-фё╦╤    03/07/25  PTNYUINRRK-KEY21,KEY22,KEY23
-      *                                     ди╡ц
-      *  01.01.87    NACL-бюед  ║║03/07/25  SRYACCT-KEY20ди╡ц 
-      *  01.01.88    NACL-бюед  ║║03/07/31  SRYACCT-KEY21ди╡ц 
-      *  01.01.89    NACL-лГоф  ║║03/08/01  SRYACCT-KEY22ди╡ц 
-      *                                     SYUNOU-KEY19ди╡ц
-      *                                     PTBYOMEI-KEY12ди╡ц
-      *  01.01.90    NACL-фё╦╤    03/08/06  RECEDEN╓нди╡ц
-      *  01.01.91    NACL-б©║╧г╪║║03/08/11  CHK-KEY7ди╡ц 
-      *  01.01.92    NACL-бюед  ║║03/08/12  SRYACCT-KEY23ди╡ц 
-      *  01.01.93    NACL-фё╦╤    03/08/18  SEIKYU-KEY23,KEY24ди╡ц
-      *  01.01.94    NACL-©╧оф    03/08/25  TENSU-KEY23S,KEY23M,KEY23K
-      *  01.01.95    NACL-бюед    03/08/26  PTNYUINRRK-KEY24ди╡ц
-      *  01.01.96    NACL-бюед    03/08/26  PTNYUINRRK-KEY25ди╡ц
-      *  01.01.97    NACL-╬╝ф╕бТ║║03/08/29  PTHKNINF-KEY6ди╡ц
-      *  01.01.98    NACL-╬╝ф╕бТ  03/08/29  KOHPLUS╓нди╡ц
-      *  01.01.99    NACL-фё╦╤    03/08/29  RECEPRT-KEY18║аKEY29ди╡ц
-      *  01.01.100   NACL-бюед    03/08/29  KOHPLUS-UPD1╓нди╡ц
-      *  01.01.101   NACL-бюед    03/09/02  PTNYUINRRK-KEY26ди╡ц
-      *  01.01.102   NACL-бюед    03/09/08  PTCOM-KEY2ди╡ц
-      *  01.01.103   NACL-лГоф    03/09/24  SRYACCT-KEY24ди╡ц
-      *                                     SRYACCT-KEY25ди╡ц
-      *  01.01.104   NACL-бюед    03/09/30  SYUNOU-KEY20ди╡ц
-      *  01.01.105   NACL-фё╦╤    03/10/03  PTBYOMEI-KEY13ди╡ц
-      *  01.01.106   NACL-фё╦╤    03/10/07  PTBYOMEI-KEYKEY14,KEY15ди╡ц
-      *  01.01.107   NACL-©╧оф    03/10/09  BD003-KEY,KEY2,KEY3ди╡ц
-      *  01.01.108   NACL-бюед    03/10/10  I001-KEY4ди╡ц
-      *  01.01.109   NACL-фё╦╤    03/10/16  SYUNOU-KEY21ди╡ц
-      *  01.01.110   NACL-б©║╧г╪║║03/11/11  RECECOM-KEY4
-      *                                     PTKOHINF-KEY6ди╡ц 
-      *  01.01.111   NACL-бюед  ║║03/11/19  PTNYUINRRK-KEY27,KEY28ди╡ц
-      *  01.01.112   NACL-©╧оф  ║║03/11/27  SRYACCT-KEY26ди╡ц
-      *  01.01.113   NACL-бюед  ║║03/12/10  SRYACCT-KEY27,KEY28ди╡ц
-      *  01.01.114   NACL-бюед  ║║03/12/10  NYUINACCT-KEY20ди╡ц
-      *  01.01.115   NACL-бюед  ║║03/12/11  PTBYOMEI-KEY16,KEY17ди╡ц
-      *  01.01.116   NACL-лГоф  ║║04/01/06  SYUDAY-KEY,DEL1ди╡ц
-      *  01.01.117   NACL-╬╝ф╕бТ  04/01/14  SYUNOU-KEY22ди╡ц
-      *                                     SYUNOU-KEY23ди╡ц
-      *  01.01.118   NACL-лГоф  ║║04/01/14  SRYACCT-KEY29,30,31,32,33ди╡ц
-      *  01.01.119   NACL-бюед    04/01/19  SYUNOU-KEY24ди╡ц
-      *  01.01.120   NACL-бюед    04/01/23  PTNYUINRRK-KEY29ди╡ц
-      *  01.01.121   NACL-фё╦╤    04/01/30  USERBYOMEI-DEL1,DEL2ди╡ц
-      *  01.01.122   NACL-бюед    04/02/05  JYURRK-KEY25ди╡ц
-      *  01.01.123   NACL-©╧оф    04/02/05  PGKANRI-KEY,KEY2,ALLди╡ц
-      *  01.01.124   NACL-╬╝ф╕бТ  04/02/07  SYUNOU-KEY25ди╡ц
-      *  01.01.125   NACL-фё╦╤    04/02/24  PTBYOMEI-KEY20ди╡ц
-      *  01.01.126   NACL-б©║╧г╪║║04/02/24  TENSYU-KEY90,KEY91,KEY92ди╡ц
-      *  01.01.127   NACL-╬╝ф╕бТ  04/02/24  SYSKANRI-KEY11ди╡ц
-      *  01.01.128   NACL-фё╦╤    04/02/25  PTBYOMEI-KEY21,KEY22,KEY23ди╡ц
-      *  01.01.129   NACL-бюед    04/03/01  CHK-KEY8,CHK-KEY9,CHK-KEY10ди╡ц
-      *  01.01.130   NACL-бюед    04/03/02  TENSU-KEY24ди╡ц
-      *  01.01.131   NACL-б©║╧г╪║║04/03/02  TENSUPLUS-KEY2ди╡ц
-      *  01.01.132   NACL-бюед    04/03/05  NYUINACCT-KEY21ди╡ц
-      *  01.01.133   NACL-фё╦╤    04/03/11  SRYACCT-KEY34,KEY35ди╡ц
-      *                                     tbl_opecom.db ди╡ц
-      *  01.01.134   NACL-фё╦╤    04/03/26  OPECOM-KEY4,KEY5ди╡ц
-      *  01.01.135   NACL-бюед    04/03/26  CHK-KEY11ди╡ц
-      *  01.01.136   NACL-б©║╧г╪  04/04/02  SRYACCT-DEL2
+      *  01.00.89    NACL-Х≈╓Е▌÷    02/09/30  RECEKANRI-KEY4Ц─°KEY7
+      *                                     RECEPRT-KEY10Ц─°KEY17
+      *  01.00.90    NACL-Х≈╓Е▌÷    02/10/09  SEIKYU-KEY8Ц─°KEY13
+      *  01.00.91    NACL-Х≈╓Е▌÷    02/10/17  SEIKYU-KEY14
+      *                                     RECEPRT-KEY10Ц─°KEY17
+      *  01.01.01    NACL-Е╓╙Г■╟    02/08/05  NYUINKHN-KEY,ALLЦ│╝Х©╫Е┼═
+      *  01.01.02    NACL-Е╓╙Г■╟    02/09/02  NYUINKHN-KEY2Ц│╝Х©╫Е┼═
+      *  01.01.03    NACL-Е╓╙Г■╟    02/09/10  PTNYUINRRK-KEY,KEY2,KEY3Х©╫Е┼═
+      *  01.01.04    NACL-Е╓╙Г■╟    02/09/13  PTNYUINRRK-DEL1Х©╫Е┼═
+      *  01.01.04    NACL-Е╓╙Г■╟    02/09/18  PTNYUINRRK-KEY4Х©╫Е┼═
+      *  01.01.05    NACL-Е╓╙Г■╟    02/09/19  PTNYUINRRK-KEY5Х©╫Е┼═
+      *  01.01.06    NACL-Е╓╙Г■╟    02/09/24  PTTAINFUKA-KEY,ALLХ©╫Е┼═
+      *  01.01.07    NACL-Е╓╙Г■╟    02/09/13  PTTAINFUKA-DEL1Х©╫Е┼═
+      *  01.01.08    NACL-Е╟▐Х╠├Ф╡╒  02/10/07  NYUINACCTХ©╫Е┼═
+      *                                     NYUINACTХ©╫Е┼═
+      *  01.01.09    NACL-Е╓╙Г■╟    02/10/16  PTNYUINRRK-KEY6,7,8Х©╫Е┼═
+      *  01.01.10    NACL-Е╓╙Г■╟    02/10/21  I001-KEY,ALLХ©╫Е┼═
+      *  01.01.11    NACL-Е╓╙Г■╟    02/10/23  PTTAINFUKA-DEL2Х©╫Е┼═
+      *                                     PTNYUINRRK-DEL2Х©╫Е┼═
+      *  01.01.12    NACL-Е╓╙Г■╟    02/10/25  JYURRK-KEY19Х©╫Е┼═
+      *  01.01.13    NACL-Е╓╙Г■╟    02/10/30  JYURRK-KEY19Х©╫Е┼═
+      *  01.01.14    NACL-Е╓╙Г■╟    02/10/31  PTNYUINRRK-KEY9Х©╫Е┼═
+      *              NACL-Е╓╙Г■╟    02/11/01  SYUNOU-DEL2Х©╫Е┼═
+      *  01.01.15    NACL-Е╓╙Г■╟    02/11/18  NYUKSNCHK-KEYХ©╫Е┼═
+      *  01.01.16    NACL-Е╓╙Г■╟    02/11/27  TENSU-KEY15Х©╫Е┼═
+      *  01.01.17    NACL-Е╓╙Г■╟    02/12/10  SYUNOU-DEL2Е┴┼И≥╓
+      *                                     SYUNOU-KEY5Х©╫Е┼═
+      *                                     SYUMEI-KEY3Х©╫Е┼═
+      *                                     PTNYUINRRK-KEY10Х©╫Е┼═
+      *  01.01.18    NACL-Х≈╓Е▌÷    02/12/10  SEIKYU-DEL5,DEL6Х©╫Е┼═
+      *  01.01.19    NACL-Е╓╙Г■╟    02/12/13  PTNYUINRRK-KEY11Х©╫Е┼═
+      *  01.01.20    NACL-Е╓╙Г■╟    02/12/13  SYUNOU-KEY6Х©╫Е┼═
+      *  01.01.21    NACL-Х≈╓Е▌÷    02/12/17  PTNYUINRRK-KEY12,KEY13Х©╫Е┼═
+      *  01.01.22    NACL-Е╓ Ц─┘Г╢█  02/12/18  PTINF-KEY6,KEY7,KEY8,KEY9
+      *  01.01.23    NACL-Е╓╙Г■╟    02/12/18  NYUINRYAKUSHO-KEY,ALLХ©╫Е┼═
+      *                                     SRYACT-KEY9Х©╫Е┼═
+      *                                     NYUINACT-KEY9Х©╫Е┼═
+      *                                     PTNYUINRRK-KEY14Х©╫Е┼═
+      *                                     SYUNOU-DEL2,3,4,5Х©╫Е┼═
+      *  01.01.24    NACL-Е╓╙Г■╟    02/12/19  TEIKIKANRI-KEY,ALLХ©╫Е┼═
+      *                                     TEIKIKANRI-DEL1Х©╫Е┼═
+      *                                     TEIKIPRT-KEY,2,3,4,5,ALLХ©╫Е┼═
+      *                                     TEIKIPRT-DEL1Х©╫Е┼═
+      *  01.01.25    NACL-Е╓╙Г■╟    02/12/20  SYUNOU-KEY7,8Х©╫Е┼═
+      *                                     SYUMEI-DEL2Х©╫Е┼═
+      *                                     SYUNOU-DEL6Х©╫Е┼═  
+      *  01.01.26    NACL-Е╓╙Г■╟    02/12/20  BD002-KEY3Х©╫Е┼═
+      *  01.01.27    NACL-Х≈╓Е▌÷    02/12/24  NYUINACCT-KEY13,KEY14Х©╫Е┼═
+      *  01.01.28    NACL-Фё╝Х└┤    03/01/06  SYUNOU-KEY9Х©╫Е┼═
+      *  01.01.29    NACL-Е╓ Ц─┘Г╢█  03/01/08  SRYACCT-KEY14 Х©╫Е┼═
+      *  01.01.30    NACL-Е╓╙Г■╟    03/01/17  TEIKIRRK-KEY,ALLХ©╫Е┼═        
+      *                                     PTTEIKIRRK-KEYЦ─°KEY3,ALLХ©╫Е┼═
+      *  01.01.31    NACL-Е╓╙Г■╟    03/01/20  PTTEIKIRRK-KEY4Х©╫Е┼═
+      *                                     PTTEIKIRRK-DEL1,DEL2Х©╫Е┼═
+      *  01.01.32    NACL-Е╓╙Г■╟    03/01/23  SYUNOU-DEL4,5,6Е┴┼И≥╓
+      *  01.01.32    NACL-Е╓╙Г■╟    03/01/23  SYUNOU-KEY10Х©╫Е┼═
+      *  01.01.32    NACL-Е╓╙Г■╟    03/01/29  PTNYUINRRK-KEY15Х©╫Е┼═
+      *  01.01.33    Ц│╡Ц│∙Ц│╙Ц│▄     03/01/30  NYUINACCT-KEY15,16Ц│╝Х©╫Е┼═
+      *  01.01.34    NACL-Е╓╙Г■╟    03/01/31  TEIKIRRK-KEY2Х©╫Е┼═
+      *  01.01.35    NACL-Е╓╙Г■╟    03/02/03  SRYACCT-KEY15Х©╫Е┼═
+      *  01.01.36    NACL-Е╓ Ц─┘Г╢█  03/02/06  NYUINACCT-KEY17Х©╫Е┼═
+      *  01.01.37    NACL-Е╓╙Г■╟    03/02/07  PTNYUINRRK-KEY16,KEY17Х©╫Е┼═
+      *  01.01.38    NACL-Фё╝Х└┤    03/02/10  SRYACCT-KEY16Х©╫Е┼═
+      *  01.01.39    NACL-Е╓ Ц─┘Г╢█  03/02/17  SRYACCT-KEY17Х©╫Е┼═
+      *  01.01.39    NACL-Е╓╙Г■╟    03/02/22  PTNYUINRRK-ALLХ©╫Е┼═
+      *  01.01.40    Ц│╡Ц│∙Ц│╙Ц│▄     03/02/25  PTNYUINRRK-KEY18Ц│╝Х©╫Е┼═
+      *  01.01.41    NACL-Х≈╓Е▌÷    03/02/28  KOHSKY-KEY,KEY2,KEY3,KEY4,
+      *                                     DEL1,DEL2,DEL3Х©╫Е┼═
+      *                                     SEIKYU-KEY15Х©╫Е┼═ 
+      *                                     RECEKANRI-DEL1,DEL2Х©╫Е┼═ 
+      *                                     RECEPRT-DEL1,DEL2Х©╫Е┼═ 
+      *  01.01.42    NACL-Д╪┼Х≈╓    03/03/03  KENSASORT-KEYХ©╫Е┼═
+      *                                     KENSASORT-ALLХ©╫Е┼═ 
+      *  01.01.43    NACL-Е╓ Ц─┘Г╢█Ц──03/03/04  SYUNOU-KEY11,KEY12Х©╫Е┼═
+      *  01.01.44    Ц│╡Ц│∙Ц│╙Ц│▄     03/03/05  PTNYUINRRK-KEY19Ц│╝Х©╫Е┼═
+      *  01.01.45    NACL-Фё╝Х└┤    03/03/05  SYUMEI-KEY4,KEY5Ц│╝Х©╫Е┼═
+      *  01.01.46    NACL-Е╓╙Г■╟    03/03/10  SENTEICDCHG-KEY,2,3,ALLХ©╫Е┼═
+      *  01.01.47    NACL-Д╪┼Х≈╓    03/03/11  INTERACT-KEY3Ц│╝Х©╫Е┼═
+      *                                     INTERACT-UPD1,DEL1Х©╫Е┼═ 
+      *  01.01.48    NACL-Х≈╓Е▌÷    03/03/14  PTBYO-KEY7Х©╫Е┼═
+      *  01.01.49    NACL-Х≈╓Е▌÷    03/03/16  KOHSKY-KEY5,KEY6Х©╫Е┼═
+      *                                     SEIKYU-KEY16,KEY17,KEY18Х©╫Е┼═
+      *  01.01.50    NACL-Е╓╙Г■╟    03/03/19  PTKOHFTN-KEY,KEY2,KEY3,DEL1
+      *                                     UPD1,ALLХ©╫Е┼═
+      *  01.01.51    NACL-Е╓ Ц─┘Г╢█Ц──03/03/19  PTHKNINF-KEY5Х©╫Е┼═
+      *  01.01.52    NACL-Е╓╙Г■╟    03/03/20  PTKOHFTN-KEY4Х©╫Е┼═
+      *  01.01.53    NACL-Е╓╙Г■╟    03/03/20  PTKOHFTN-KEY5Х©╫Е┼═
+      *                                     PTKOHFTN-UPD1Е┴┼И≥╓
+      *  01.01.54    NACL-Е╟▐Х╠├Ф╡╒  03/04/04  SRYACCT-KEY18Х©╫Е┼═
+      *                                     SRYACCT-KEY19Х©╫Е┼═
+      *  01.01.55    NACL-Х≈╓Е▌÷    03/04/09  SEIKYU-KEY19Х©╫Е┼═
+      *  01.01.56    NACL-Х≈╓Е▌÷    03/04/14  SEIKYU-KEY20Х©╫Е┼═
+      *  01.01.57    NACL-Е╓ Ц─┘Г╢█Ц──03/04/17  SYUNOU-KEY13Х©╫Е┼═
+      *  01.01.58    Ц│╡Ц│∙Ц│╙Ц│▄     03/04/17  NYUINACCT-KEY18Ц│╝Х©╫Е┼═
+      *  01.01.59    NACL-Е╓ Ц─┘Г╢█Ц──03/04/18  JYURRK-KEY20Х©╫Е┼═
+      *  01.01.60    NACL-Х≈╓Е▌÷    03/04/09  SEIKYU-KEY21,JEY22Х©╫Е┼═
+      *  01.01.61    NACL-Е╓╙Г■╟    03/04/22  SYUNOU-KEY14Х©╫Е┼═
+      *  01.01.62    NACL-Е╓╙Г■╟    03/04/28  SYUMEI-KEY6Х©╫Е┼═
+      *  01.01.63    NACL-Е╓╙Г■╟    03/04/28  PTTEIKIRRK-KEY5Х©╫Е┼═
+      *  01.01.64    NACL-Е╓╙Г■╟    03/04/28  SYUNOU-KEY15Х©╫Е┼═
+      *  01.01.65    NACL-Е╓╙Г■╟    03/04/30  SYUNOU-KEY16,17Х©╫Е┼═
+      *  01.01.66    NACL-Е╓ Ц─┘Г╢█Ц──03/05/01  JYURRK-KEY21Х©╫Е┼═
+      *  01.01.67    NACL-Е╓ Ц─┘Г╢█Ц──03/05/01  JYURRK-KEY22Х©╫Е┼═
+      *  01.01.68    NACL-Е╓ Ц─┘Г╢█Ц──03/05/06  PTBYOMEI-KEY8Х©╫Е┼═
+      *                                     JYURRK-KEY23Х©╫Е┼═
+      *  01.01.69    NACL-Е╓╙Г■╟    03/05/06  SYUNOU-KEY18Х©╫Е┼═
+      *  01.01.70    NACL-Е╓╙Г■╟    03/05/09  I001-KEY2Х©╫Е┼═
+      *  01.01.71    NACL-Е╓╙Г■╟    03/05/15  I001-KEY3Х©╫Е┼═
+      *  01.01.72    NACL-Е╓╙Г■╟    03/05/17  NYUINACCT-KEY19Х©╫Е┼═
+      *  01.01.73    Ц│╡Ц│∙Ц│╙Ц│▄     03/05/19  NYUKSNCHK-ALLЦ│╝Х©╫Е┼═
+      *  01.01.74    Ц│╡Ц│∙Ц│╙Ц│▄     03/05/21  ALL2Ц│╝Х©╫Е┼═
+      *  01.01.75    NACL-Х≈╓Е▌÷    03/05/21  SEIKYU-KEY4,KEY11,KEY12,KEY13,
+      *                                     KEY14,KEY21,KEY22Ц│╝Ц│╗Ц│█Д©²И≥╨Х─┘Г∙╙Е▐╥
+      *                                     Ц│╚Е┬²Ф°÷Е─╓Ц┌▓Г╥╗И⌡├
+      *  01.01.76    NACL-Е╟▐Х╠├Ф╡╒Ц──03/05/28  JYURRK-KEY24Х©╫Е┼═
+      *  01.01.77    NACL-Е╓╙Г■╟    03/06/05  PTNYUINRRK-KEY20Х©╫Е┼═
+      *  01.01.78    NACL-Е╓ Ц─┘Г╢█Ц──03/06/16  TENSU-KEY20Х©╫Е┼═
+      *  01.01.79    NACL-Е╟▐Х╠├Ф╡╒Ц──03/06/20  BYOMEI-KEY6Х©╫Е┼═
+      *  01.01.80    NACL-Е╓ Ц─┘Г╢█Ц──03/06/24  TENSU-KEY21Х©╫Е┼═
+      *                                     PTNUM-KEY3 Х©╫Е┼═
+      *  01.01.81    NACL-Е╓ Ц─┘Г╢█Ц──03/07/10  PTINF-KEY10 Х©╫Е┼═
+      *  01.01.82    NACL-Е╓ Ц─┘Г╢█Ц──03/07/15  YYK-KEY7   Х©╫Е┼═ 
+      *  01.01.83    NACL-Е╓ Ц─┘Г╢█Ц──03/07/17  PTBYOMEI-KEY9,KEY10 Х©╫Е┼═ 
+      *  01.01.84    NACL-Е╓ Ц─┘Г╢█Ц──03/07/25  SANTEI-KEY7,KEY8Х©╫Е┼═
+      *                                     TENSU-KEY22Х©╫Е┼═
+      *  01.01.85    NACL-Е╓╙Г■╟  Ц──03/07/24  PTBYOMEI-KEY11Х©╫Е┼═ 
+      *  01.01.86    NACL-Х≈╓Е▌÷    03/07/25  PTNYUINRRK-KEY21,KEY22,KEY23
+      *                                     Х©╫Е┼═
+      *  01.01.87    NACL-Е╓╙Г■╟  Ц──03/07/25  SRYACCT-KEY20Х©╫Е┼═ 
+      *  01.01.88    NACL-Е╓╙Г■╟  Ц──03/07/31  SRYACCT-KEY21Х©╫Е┼═ 
+      *  01.01.89    NACL-И√─Х└┤  Ц──03/08/01  SRYACCT-KEY22Х©╫Е┼═ 
+      *                                     SYUNOU-KEY19Х©╫Е┼═
+      *                                     PTBYOMEI-KEY12Х©╫Е┼═
+      *  01.01.90    NACL-Х≈╓Е▌÷    03/08/06  RECEDENЦ│╝Х©╫Е┼═
+      *  01.01.91    NACL-Е╓ Ц─┘Г╢█Ц──03/08/11  CHK-KEY7Х©╫Е┼═ 
+      *  01.01.92    NACL-Е╓╙Г■╟  Ц──03/08/12  SRYACCT-KEY23Х©╫Е┼═ 
+      *  01.01.93    NACL-Х≈╓Е▌÷    03/08/18  SEIKYU-KEY23,KEY24Х©╫Е┼═
+      *  01.01.94    NACL-Фё╝Х└┤    03/08/25  TENSU-KEY23S,KEY23M,KEY23K
+      *  01.01.95    NACL-Е╓╙Г■╟    03/08/26  PTNYUINRRK-KEY24Х©╫Е┼═
+      *  01.01.96    NACL-Е╓╙Г■╟    03/08/26  PTNYUINRRK-KEY25Х©╫Е┼═
+      *  01.01.97    NACL-Е╟▐Х╠├Ф╡╒Ц──03/08/29  PTHKNINF-KEY6Х©╫Е┼═
+      *  01.01.98    NACL-Е╟▐Х╠├Ф╡╒  03/08/29  KOHPLUSЦ│╝Х©╫Е┼═
+      *  01.01.99    NACL-Х≈╓Е▌÷    03/08/29  RECEPRT-KEY18Ц─°KEY29Х©╫Е┼═
+      *  01.01.100   NACL-Е╓╙Г■╟    03/08/29  KOHPLUS-UPD1Ц│╝Х©╫Е┼═
+      *  01.01.101   NACL-Е╓╙Г■╟    03/09/02  PTNYUINRRK-KEY26Х©╫Е┼═
+      *  01.01.102   NACL-Е╓╙Г■╟    03/09/08  PTCOM-KEY2Х©╫Е┼═
+      *  01.01.103   NACL-И√─Х└┤    03/09/24  SRYACCT-KEY24Х©╫Е┼═
+      *                                     SRYACCT-KEY25Х©╫Е┼═
+      *  01.01.104   NACL-Е╓╙Г■╟    03/09/30  SYUNOU-KEY20Х©╫Е┼═
+      *  01.01.105   NACL-Х≈╓Е▌÷    03/10/03  PTBYOMEI-KEY13Х©╫Е┼═
+      *  01.01.106   NACL-Х≈╓Е▌÷    03/10/07  PTBYOMEI-KEYKEY14,KEY15Х©╫Е┼═
+      *  01.01.107   NACL-Фё╝Х└┤    03/10/09  BD003-KEY,KEY2,KEY3Х©╫Е┼═
+      *  01.01.108   NACL-Е╓╙Г■╟    03/10/10  I001-KEY4Х©╫Е┼═
+      *  01.01.109   NACL-Х≈╓Е▌÷    03/10/16  SYUNOU-KEY21Х©╫Е┼═
+      *  01.01.110   NACL-Е╓ Ц─┘Г╢█Ц──03/11/11  RECECOM-KEY4
+      *                                     PTKOHINF-KEY6Х©╫Е┼═ 
+      *  01.01.111   NACL-Е╓╙Г■╟  Ц──03/11/19  PTNYUINRRK-KEY27,KEY28Х©╫Е┼═
+      *  01.01.112   NACL-Фё╝Х└┤  Ц──03/11/27  SRYACCT-KEY26Х©╫Е┼═
+      *  01.01.113   NACL-Е╓╙Г■╟  Ц──03/12/10  SRYACCT-KEY27,KEY28Х©╫Е┼═
+      *  01.01.114   NACL-Е╓╙Г■╟  Ц──03/12/10  NYUINACCT-KEY20Х©╫Е┼═
+      *  01.01.115   NACL-Е╓╙Г■╟  Ц──03/12/11  PTBYOMEI-KEY16,KEY17Х©╫Е┼═
+      *  01.01.116   NACL-И√─Х└┤  Ц──04/01/06  SYUDAY-KEY,DEL1Х©╫Е┼═
+      *  01.01.117   NACL-Е╟▐Х╠├Ф╡╒  04/01/14  SYUNOU-KEY22Х©╫Е┼═
+      *                                     SYUNOU-KEY23Х©╫Е┼═
+      *  01.01.118   NACL-И√─Х└┤  Ц──04/01/14  SRYACCT-KEY29,30,31,32,33Х©╫Е┼═
+      *  01.01.119   NACL-Е╓╙Г■╟    04/01/19  SYUNOU-KEY24Х©╫Е┼═
+      *  01.01.120   NACL-Е╓╙Г■╟    04/01/23  PTNYUINRRK-KEY29Х©╫Е┼═
+      *  01.01.121   NACL-Х≈╓Е▌÷    04/01/30  USERBYOMEI-DEL1,DEL2Х©╫Е┼═
+      *  01.01.122   NACL-Е╓╙Г■╟    04/02/05  JYURRK-KEY25Х©╫Е┼═
+      *  01.01.123   NACL-Фё╝Х└┤    04/02/05  PGKANRI-KEY,KEY2,ALLХ©╫Е┼═
+      *  01.01.124   NACL-Е╟▐Х╠├Ф╡╒  04/02/07  SYUNOU-KEY25Х©╫Е┼═
+      *  01.01.125   NACL-Х≈╓Е▌÷    04/02/24  PTBYOMEI-KEY20Х©╫Е┼═
+      *  01.01.126   NACL-Е╓ Ц─┘Г╢█Ц──04/02/24  TENSYU-KEY90,KEY91,KEY92Х©╫Е┼═
+      *  01.01.127   NACL-Е╟▐Х╠├Ф╡╒  04/02/24  SYSKANRI-KEY11Х©╫Е┼═
+      *  01.01.128   NACL-Х≈╓Е▌÷    04/02/25  PTBYOMEI-KEY21,KEY22,KEY23Х©╫Е┼═
+      *  01.01.129   NACL-Е╓╙Г■╟    04/03/01  CHK-KEY8,CHK-KEY9,CHK-KEY10Х©╫Е┼═
+      *  01.01.130   NACL-Е╓╙Г■╟    04/03/02  TENSU-KEY24Х©╫Е┼═
+      *  01.01.131   NACL-Е╓ Ц─┘Г╢█Ц──04/03/02  TENSUPLUS-KEY2Х©╫Е┼═
+      *  01.01.132   NACL-Е╓╙Г■╟    04/03/05  NYUINACCT-KEY21Х©╫Е┼═
+      *  01.01.133   NACL-Х≈╓Е▌÷    04/03/11  SRYACCT-KEY34,KEY35Х©╫Е┼═
+      *                                     tbl_opecom.db Х©╫Е┼═
+      *  01.01.134   NACL-Х≈╓Е▌÷    04/03/26  OPECOM-KEY4,KEY5Х©╫Е┼═
+      *  01.01.135   NACL-Е╓╙Г■╟    04/03/26  CHK-KEY11Х©╫Е┼═
+      *  01.01.136   NACL-Е╓ Ц─┘Г╢█  04/04/02  SRYACCT-DEL2
       *                                     SRYACT-DEL3
       *                                     RECEDEN-DEL3
       *                                     OPECOM-DEL2
-      *                                     SYUDAY-DEL2 ди╡ц
-      *  01.01.137   NACL-бюед    04/03/29  PTTEIKIRRK-KEY6ди╡ц
-      *  01.01.138   NACL-бюед    04/04/08  SYUMEI-KEY7ди╡ц
-      *  01.01.139   NACL-бюед    04/05/06  PTNYUINRRK-KEY30,KEY31ди╡ц
-      *  01.01.140   NACL-бюед    04/05/17  PTTEIKIRRK-KEY7ди╡ц
-      *  01.01.141   NACL-╬╝ф╕бТ  04/05/28  DBOPEN,DBDISCONNECT╨О╫Э
-      *  01.01.142   NACL-бюед    04/05/28  PTNYUINRRK-KEY32ди╡ц
-      *  01.01.143   NACL-фё╦╤    04/06/26  RECEPRT-KEY30ди╡ц
-      *  01.01.144   NACL-фё╦╤    04/07/07  PTKOHINF-KEY7ди╡ц
-      *  01.01.145   NACL-╬╝ф╕бТ  04/07/23  NYUINACCT-KEY22ди╡ц
-      *  01.01.146   NACL-╬╝ф╕бТ  04/07/26  NYUINACCT-KEY23ди╡ц
-      *  01.01.147   NACL-╬╝ф╕бТ  04/08/05  HKNCOMBI-KEY4ди╡ц
-      *  01.01.148   NACL-бюед    04/08/05  SRYKARRK-KEY3ди╡ц
-      *  01.01.149   NACL-б©║╧г╪  04/08/06  JYURRK-KEY26ди╡ц
-      *                                     SYUTOTAL-KEYди╡ц
-      *                                     SYUTOTAL-DEL1ди╡ц
-      *                                     SYUNOU-KEY26,KEY27,KEY28ди╡ц
-      *  01.01.150   NACL-б©║╧г╪  04/09/07  PTNYUINRRK-KEY33,KEY34ди╡ц
-      *  01.01.151   NACL-©╧оф    04/09/08  ADRS-KEY6,KEY7ди╡ц
-      *  01.01.152   NACL-лГоф    04/09/08  SYUNOU-KEY29,KEY30ди╡ц
-      *  01.01.153   NACL-фё╦╤    04/09/10  SYSKANRI-KEY12ди╡ц
-      *  01.01.154   NACL-б©║╧г╪  04/10/12  WKSRYACT-KEY6,KEY7ди╡ц
-      *  01.01.155   NACL-фё╦╤    04/11/10  KOHSKY-KEY7ди╡ц
-      *  01.01.156   NACL-б©║╧г╪  04/11/19  PTBYOMEI-KEY24ди╡ц
-      *  01.01.157   NACL-лГоф    04/11/30  SYUNOU-KEY33ди╡ц
-      *  01.01.158   NACL-╬╝ф╕бТ  04/12/10  NYUINACCT-KEY26ди╡ц
-      *  01.01.159   NACL-б©║╧г╪  04/12/20  TENSU-KEY93ди╡ц
-      *  01.01.160   NACL-лГоф    04/12/22  SYUNOU-KEY35ди╡ц
-      *  01.01.161   NACL-б©║╧г╪  05/01/26  PTBYOMEI-KEY25ди╡ц
-      *                                     HELP  ди╡ц
-      *  01.01.162   NACL-©╧оф    05/01/28  SRYACT-KEY11ди╡ц
-      *  01.01.163   NACL-лГоф    05/01/29  SYUNOU-DEL4,5ди╡ц
-      *                                     SYUNOU-KEY39ди╡ц
-      *                                     SYUDAY-DEL3,4ди╡ц
-      *  01.01.164   NACL-лГоф    05/02/09  SYUNOU-KEY40ди╡ц
-      *                                     SYUDAY-DEL5ди╡ц
-      *  01.01.165   NACL-лГоф    05/02/10  HKNCOMBI-KEY5ди╡ц
-      *                                     SYUNOU-KEY41ди╡ц
-      *  01.01.166   NACL-бюед    05/02/18  PTTEIKIRRK-DEL3ди╡ц
-      *  01.01.167   NACL-б©║╧г╪  05/03/09  SRYACCT-KEY39ди╡ц
-      *  01.01.168   NACL-б©║╧г╪  05/04/15  SRYACCT-KEY40ди╡ц
-      *  01.01.169   NACL-лГоф    05/05/10  SRYACT-KEY12ди╡ц
-      *  01.01.170   NACL-бюед    05/06/02  BTPARA-ALLди╡ц
-      *                                     CHKSND-ALLди╡ц
-      *                                     JYURRK-PRV-ALL3ди╡ц
-      *                                     MEDYAKKO-ALLди╡ц
-      *                                     ORDER-ALLди╡ц
-      *                                     ORDERPRT-ALLди╡ц
-      *                                     PRVKANRI-ALLди╡ц
-      *                                     PTCOM-PRV-ALLди╡ц
-      *                                     RECEUPD-ALLди╡ц
-      *                                     SANTEI-PRV-ALLди╡ц
-      *                                     SRYACCT-PRV-ALLди╡ц
-      *                                     SRYACCTPLUS-ALLди╡ц
-      *                                     SRYACT-PRV-ALLди╡ц
-      *                                     SRYKARRK-PRV-ALLди╡ц
-      *                                     SYUDAY-ALLди╡ц
-      *                                     SYUMEI-PRV-ALLди╡ц
-      *                                     SYUNOU-PRV-ALLди╡ц
-      *                                     SYUTOTAL-PRV-ALLди╡ц
-      *                                     TOUKEIMEMO-ALLди╡ц
-      *                                     Q002-ALLди╡ц
-      *                                     BD003-ALLди╡ц
-      *  01.01.171   NACL-бюед    05/09/30  HOURS-ALLди╡ц
-      *  01.01.172   NACL-╬╝ф╕бТ  05/12/12  NYUINACCT-KEY28ди╡ц
-      *  01.01.173   NACL-бюед    05/12/21  MEDYAKKO-ALL╨О╫Э
-      *  01.01.174   NACL-бюед    06/01/19  PTTEIKIRRK-DEL2,DEL3╓Р╨О╫Э
-      *  01.01.175   NACL-бюед    06/02/15  TEKIOUBYOMEI-ALL╓Р╨О╫Э
-      *  01.01.176   NACL-бюед    06/05/22  MONFUNCбп╠Ч
+      *                                     SYUDAY-DEL2 Х©╫Е┼═
+      *  01.01.137   NACL-Е╓╙Г■╟    04/03/29  PTTEIKIRRK-KEY6Х©╫Е┼═
+      *  01.01.138   NACL-Е╓╙Г■╟    04/04/08  SYUMEI-KEY7Х©╫Е┼═
+      *  01.01.139   NACL-Е╓╙Г■╟    04/05/06  PTNYUINRRK-KEY30,KEY31Х©╫Е┼═
+      *  01.01.140   NACL-Е╓╙Г■╟    04/05/17  PTTEIKIRRK-KEY7Х©╫Е┼═
+      *  01.01.141   NACL-Е╟▐Х╠├Ф╡╒  04/05/28  DBOPEN,DBDISCONNECTЕ┴┼И≥╓
+      *  01.01.142   NACL-Е╓╙Г■╟    04/05/28  PTNYUINRRK-KEY32Х©╫Е┼═
+      *  01.01.143   NACL-Х≈╓Е▌÷    04/06/26  RECEPRT-KEY30Х©╫Е┼═
+      *  01.01.144   NACL-Х≈╓Е▌÷    04/07/07  PTKOHINF-KEY7Х©╫Е┼═
+      *  01.01.145   NACL-Е╟▐Х╠├Ф╡╒  04/07/23  NYUINACCT-KEY22Х©╫Е┼═
+      *  01.01.146   NACL-Е╟▐Х╠├Ф╡╒  04/07/26  NYUINACCT-KEY23Х©╫Е┼═
+      *  01.01.147   NACL-Е╟▐Х╠├Ф╡╒  04/08/05  HKNCOMBI-KEY4Х©╫Е┼═
+      *  01.01.148   NACL-Е╓╙Г■╟    04/08/05  SRYKARRK-KEY3Х©╫Е┼═
+      *  01.01.149   NACL-Е╓ Ц─┘Г╢█  04/08/06  JYURRK-KEY26Х©╫Е┼═
+      *                                     SYUTOTAL-KEYХ©╫Е┼═
+      *                                     SYUTOTAL-DEL1Х©╫Е┼═
+      *                                     SYUNOU-KEY26,KEY27,KEY28Х©╫Е┼═
+      *  01.01.150   NACL-Е╓ Ц─┘Г╢█  04/09/07  PTNYUINRRK-KEY33,KEY34Х©╫Е┼═
+      *  01.01.151   NACL-Фё╝Х└┤    04/09/08  ADRS-KEY6,KEY7Х©╫Е┼═
+      *  01.01.152   NACL-И√─Х└┤    04/09/08  SYUNOU-KEY29,KEY30Х©╫Е┼═
+      *  01.01.153   NACL-Х≈╓Е▌÷    04/09/10  SYSKANRI-KEY12Х©╫Е┼═
+      *  01.01.154   NACL-Е╓ Ц─┘Г╢█  04/10/12  WKSRYACT-KEY6,KEY7Х©╫Е┼═
+      *  01.01.155   NACL-Х≈╓Е▌÷    04/11/10  KOHSKY-KEY7Х©╫Е┼═
+      *  01.01.156   NACL-Е╓ Ц─┘Г╢█  04/11/19  PTBYOMEI-KEY24Х©╫Е┼═
+      *  01.01.157   NACL-И√─Х└┤    04/11/30  SYUNOU-KEY33Х©╫Е┼═
+      *  01.01.158   NACL-Е╟▐Х╠├Ф╡╒  04/12/10  NYUINACCT-KEY26Х©╫Е┼═
+      *  01.01.159   NACL-Е╓ Ц─┘Г╢█  04/12/20  TENSU-KEY93Х©╫Е┼═
+      *  01.01.160   NACL-И√─Х└┤    04/12/22  SYUNOU-KEY35Х©╫Е┼═
+      *  01.01.161   NACL-Е╓ Ц─┘Г╢█  05/01/26  PTBYOMEI-KEY25Х©╫Е┼═
+      *                                     HELP  Х©╫Е┼═
+      *  01.01.162   NACL-Фё╝Х└┤    05/01/28  SRYACT-KEY11Х©╫Е┼═
+      *  01.01.163   NACL-И√─Х└┤    05/01/29  SYUNOU-DEL4,5Х©╫Е┼═
+      *                                     SYUNOU-KEY39Х©╫Е┼═
+      *                                     SYUDAY-DEL3,4Х©╫Е┼═
+      *  01.01.164   NACL-И√─Х└┤    05/02/09  SYUNOU-KEY40Х©╫Е┼═
+      *                                     SYUDAY-DEL5Х©╫Е┼═
+      *  01.01.165   NACL-И√─Х└┤    05/02/10  HKNCOMBI-KEY5Х©╫Е┼═
+      *                                     SYUNOU-KEY41Х©╫Е┼═
+      *  01.01.166   NACL-Е╓╙Г■╟    05/02/18  PTTEIKIRRK-DEL3Х©╫Е┼═
+      *  01.01.167   NACL-Е╓ Ц─┘Г╢█  05/03/09  SRYACCT-KEY39Х©╫Е┼═
+      *  01.01.168   NACL-Е╓ Ц─┘Г╢█  05/04/15  SRYACCT-KEY40Х©╫Е┼═
+      *  01.01.169   NACL-И√─Х└┤    05/05/10  SRYACT-KEY12Х©╫Е┼═
+      *  01.01.170   NACL-Е╓╙Г■╟    05/06/02  BTPARA-ALLХ©╫Е┼═
+      *                                     CHKSND-ALLХ©╫Е┼═
+      *                                     JYURRK-PRV-ALL3Х©╫Е┼═
+      *                                     MEDYAKKO-ALLХ©╫Е┼═
+      *                                     ORDER-ALLХ©╫Е┼═
+      *                                     ORDERPRT-ALLХ©╫Е┼═
+      *                                     PRVKANRI-ALLХ©╫Е┼═
+      *                                     PTCOM-PRV-ALLХ©╫Е┼═
+      *                                     RECEUPD-ALLХ©╫Е┼═
+      *                                     SANTEI-PRV-ALLХ©╫Е┼═
+      *                                     SRYACCT-PRV-ALLХ©╫Е┼═
+      *                                     SRYACCTPLUS-ALLХ©╫Е┼═
+      *                                     SRYACT-PRV-ALLХ©╫Е┼═
+      *                                     SRYKARRK-PRV-ALLХ©╫Е┼═
+      *                                     SYUDAY-ALLХ©╫Е┼═
+      *                                     SYUMEI-PRV-ALLХ©╫Е┼═
+      *                                     SYUNOU-PRV-ALLХ©╫Е┼═
+      *                                     SYUTOTAL-PRV-ALLХ©╫Е┼═
+      *                                     TOUKEIMEMO-ALLХ©╫Е┼═
+      *                                     Q002-ALLХ©╫Е┼═
+      *                                     BD003-ALLХ©╫Е┼═
+      *  01.01.171   NACL-Е╓╙Г■╟    05/09/30  HOURS-ALLХ©╫Е┼═
+      *  01.01.172   NACL-Е╟▐Х╠├Ф╡╒  05/12/12  NYUINACCT-KEY28Х©╫Е┼═
+      *  01.01.173   NACL-Е╓╙Г■╟    05/12/21  MEDYAKKO-ALLЕ┴┼И≥╓
+      *  01.01.174   NACL-Е╓╙Г■╟    06/01/19  PTTEIKIRRK-DEL2,DEL3Ц┌▓Е┴┼И≥╓
+      *  01.01.175   NACL-Е╓╙Г■╟    06/02/15  TEKIOUBYOMEI-ALLЦ┌▓Е┴┼И≥╓
+      *  01.01.176   NACL-Е╓╙Г■╟    06/05/22  MONFUNCЕ╞╬Е©°
       *****************************************************************
       *
        PROCEDURE                   DIVISION
@@ -827,7 +827,7 @@
       *        WHEN    "DBDELETE"      ALSO   "SYUNOU-DEL6"
       *            MOVE "tbl_syunou" TO WRK-TABLE
       *            MOVE "del6" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.01.45********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.01.45********************************************
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY2"
                WHEN    "DBUPDATE"      ALSO   "SYUMEI-KEY3"
@@ -843,7 +843,7 @@
                WHEN    "DBDELETE"      ALSO   "SYUMEI-KEY7"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.01.45********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.01.45********************************************
                WHEN    "DBDELETE"      ALSO   "SYUMEI-DEL1"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "del1" TO WRK-PATHNAME
@@ -1308,12 +1308,12 @@
                WHEN    ANY             ALSO   "SYSKANRI-KEY12"
                    MOVE "tbl_syskanri" TO WRK-TABLE
                    MOVE "key12" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SYSKANRI-ALL"
                    MOVE "tbl_syskanri" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-SYSKANRI-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "BYOMEI-KEY"
                    MOVE "tbl_byomei" TO WRK-TABLE
                    MOVE "key " TO WRK-PATHNAME
@@ -1334,12 +1334,12 @@
                WHEN    ANY             ALSO   "BYOMEI-KEY6"
                    MOVE "tbl_byomei" TO WRK-TABLE
                    MOVE "key6" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "BYOMEI-ALL"
                    MOVE "tbl_byomei" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-BYOKEY-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "CHK-KEY"
                    MOVE "tbl_chk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1356,7 +1356,7 @@
                    MOVE "tbl_chk" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
                    PERFORM 2001-SEL-CHK-SEC
-      *ди╡ц/*Ё╚╩о*01.09.12********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.12********************************************
                WHEN    ANY             ALSO   "CHK-KEY5"
                    MOVE "tbl_chk" TO WRK-TABLE
                    MOVE "key5" TO WRK-PATHNAME
@@ -1385,13 +1385,13 @@
                    MOVE "tbl_chk" TO WRK-TABLE
                    MOVE "key11" TO WRK-PATHNAME
                    PERFORM 2001-SEL-CHK-SEC
-      *ди╡ц/*╫╙н╩*01.09.12********************************************
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.12********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "CHK-ALL"
                    MOVE "tbl_chk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-CHK-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "INPUTCD-KEY"
                    MOVE "tbl_inputcd" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1408,12 +1408,12 @@
                    MOVE "tbl_inputcd" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
                    PERFORM 2001-SEL-INPUTCD-SEC
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "INPUTCD-ALL"
                    MOVE "tbl_inputcd" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-INPUTCD-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNCOMBI-KEY"
                    MOVE "tbl_hkncombi" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1429,11 +1429,11 @@
                WHEN    ANY             ALSO   "HKNCOMBI-KEY5"
                    MOVE "tbl_hkncombi" TO WRK-TABLE
                    MOVE "key5" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNCOMBI-ALL"
                    MOVE "tbl_hkncombi" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNNUM-KEY"
                    MOVE "tbl_hknnum" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1455,11 +1455,11 @@
                WHEN    ANY             ALSO   "HKNNUM-KEY7"
                    MOVE "tbl_hknnum" TO WRK-TABLE
                    MOVE "key7" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNNUM-ALL"
                    MOVE "tbl_hknnum" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "INPUTSET-KEY"
                    MOVE "tbl_inputset" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1472,11 +1472,11 @@
                WHEN    ANY             ALSO   "INPUTSET-KEY4"
                    MOVE "tbl_inputset" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "INPUTSET-ALL"
                    MOVE "tbl_inputset" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "ADRS-KEY"
                    MOVE "tbl_adrs" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1504,11 +1504,11 @@
                    MOVE "tbl_adrs" TO WRK-TABLE
                    MOVE "key7" TO WRK-PATHNAME
       *----(01.01.151)-ADD-END-----
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "ADRS-ALL"
                    MOVE "tbl_adrs" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "JYURRK-KEY"
                    MOVE "tbl_jyurrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1602,11 +1602,11 @@
                WHEN    ANY             ALSO   "SRYKARRK-KEY3"
                    MOVE "tbl_srykarrk" TO WRK-TABLE
                    MOVE "key3 " TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYKARRK-ALL"
                    MOVE "tbl_srykarrk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "PTBYOMEI-KEY"
                    MOVE "tbl_ptbyomei" TO WRK-TABLE
                    MOVE "key " TO WRK-PATHNAME
@@ -1694,11 +1694,11 @@
                WHEN    ANY             ALSO   "PTCOM-KEY2"
                    MOVE "tbl_ptcom" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PTCOM-ALL"
                    MOVE "tbl_ptcom" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "PTNUM-KEY"
                    MOVE "tbl_ptnum" TO WRK-TABLE
                    MOVE "key " TO WRK-PATHNAME
@@ -1710,12 +1710,12 @@
                WHEN    ANY             ALSO   "PTNUM-KEY3"
                    MOVE "tbl_ptnum" TO WRK-TABLE
                    MOVE "key3 " TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PTNUM-ALL"
                    MOVE "tbl_ptnum" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PTNUM-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "PTHKNINF-KEY"
                    MOVE "tbl_pthkninf" TO WRK-TABLE
                    MOVE "key " TO WRK-PATHNAME
@@ -1735,12 +1735,12 @@
                WHEN    ANY             ALSO   "PTHKNINF-KEY6"
                    MOVE "tbl_pthkninf" TO WRK-TABLE
                    MOVE "key6" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PTHKNINF-ALL"
                    MOVE "tbl_pthkninf" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PTHKNINF-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "PTKOHINF-KEY"
                    MOVE "tbl_ptkohinf" TO WRK-TABLE
                    MOVE "key " TO WRK-PATHNAME
@@ -1763,12 +1763,12 @@
                WHEN    ANY             ALSO   "PTKOHINF-KEY7"
                    MOVE "tbl_ptkohinf" TO WRK-TABLE
                    MOVE "key7 " TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PTKOHINF-ALL"
                    MOVE "tbl_ptkohinf" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PTKOHINF-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "PTINF-KEY"
                    MOVE "tbl_ptinf" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1803,12 +1803,12 @@
                WHEN    ANY             ALSO   "PTINF-KEY10"
                    MOVE "tbl_ptinf" TO WRK-TABLE
                    MOVE "key10" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PTINF-ALL"
                    MOVE "tbl_ptinf" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PTINF-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "KYUSEIRRK-KEY"
                    MOVE "tbl_kyuseirrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -1821,11 +1821,11 @@
                WHEN    ANY             ALSO   "KYUSEIRRK-UPD1"
                    MOVE "tbl_kyuseirrk" TO WRK-TABLE
                    MOVE "upd1" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "KYUSEIRRK-ALL"
                    MOVE "tbl_kyuseirrk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN     "DBDELETE"     ALSO   "KYUSEIRRK-DEL1"
                    MOVE "tbl_kyuseirrk" TO WRK-TABLE
                    MOVE "del1" TO WRK-PATHNAME
@@ -2012,12 +2012,12 @@
                WHEN    ANY             ALSO   "SYUMEI-KEY3"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "key3" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.01.45********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.01.45********************************************
                WHEN    ANY             ALSO   "SYUMEI-ALL"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUMEI-KEY4"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
@@ -2030,7 +2030,7 @@
                WHEN    ANY             ALSO   "SYUMEI-KEY7"
                    MOVE "tbl_syumei" TO WRK-TABLE
                    MOVE "key7" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-KEY"
                    MOVE "tbl_syunou" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2136,11 +2136,11 @@
                WHEN    ANY             ALSO   "SYUNOU-KEY41"
                    MOVE "tbl_syunou" TO WRK-TABLE
                    MOVE "key41" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SYUNOU-ALL"
                    MOVE "tbl_syunou" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "TSYRRK-KEY"
                    MOVE "tbl_tsyrrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2153,11 +2153,11 @@
                WHEN    ANY             ALSO   "TSYRRK-UPD1"
                    MOVE "tbl_tsyrrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "TSYRRK-ALL"
                    MOVE "tbl_tsyrrk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSU-KEY"
                    MOVE "tbl_tensu" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2381,12 +2381,12 @@
                    MOVE "key24" TO WRK-PATHNAME
                    PERFORM 2001-SEL-TENSU-REC
       ************ PERFORM 2001-SEL-TENSU-REC
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSU-ALL"
                    MOVE "tbl_tensu" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
                    PERFORM 2001-SEL-TENSU-REC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "UKETUKE-KEY"
                    MOVE "tbl_uketuke" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2399,11 +2399,11 @@
                WHEN    ANY             ALSO   "UKETUKE-KEY4"
                    MOVE "tbl_uketuke" TO WRK-TABLE
                    MOVE "key4" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "UKETUKE-ALL"
                    MOVE "tbl_uketuke" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "YYK-KEY"
                    MOVE "tbl_yyk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2425,22 +2425,22 @@
                WHEN    ANY             ALSO   "YYK-KEY7"
                    MOVE "tbl_yyk" TO WRK-TABLE
                    MOVE "key7" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "YYK-ALL"
                    MOVE "tbl_yyk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "SYKRRK-KEY"
                    MOVE "tbl_sykrrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
                WHEN    ANY             ALSO   "SYKRRK-KEY2"
                    MOVE "tbl_sykrrk" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SYKRRK-ALL"
                    MOVE "tbl_sykrrk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "TNKRRK-KEY"
                    MOVE "tbl_tnkrrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2453,11 +2453,11 @@
                WHEN    ANY             ALSO   "TNKRRK-UPD1"
                    MOVE "tbl_tnkrrk" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "TNKRRK-ALL"
                    MOVE "tbl_tnkrrk" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
       *------------------------------------
                WHEN    ANY             ALSO   "WKSRYACT-KEY"
                    MOVE "tbl_wksryact" TO WRK-TABLE
@@ -2494,7 +2494,7 @@
                    MOVE "tbl_para" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PARA-SEC
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "PARA-ALL"
                    MOVE "tbl_para" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
@@ -2503,7 +2503,7 @@
                    MOVE "tbl_para" TO WRK-TABLE
                    MOVE "key3" TO WRK-PATHNAME
                    PERFORM 2001-SEL-PARA-SEC
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "SANTEI-KEY"
                    MOVE "tbl_santei" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2540,11 +2540,11 @@
                WHEN    ANY             ALSO   "TENSUPLUS-KEY2"
                    MOVE "tbl_tensuplus" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "TENSUPLUS-ALL"
                    MOVE "tbl_tensuplus" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYCDCHG-KEY"
                    MOVE "tbl_srycdchg" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2554,11 +2554,11 @@
                WHEN    ANY             ALSO   "SRYCDCHG-KEY3"
                    MOVE "tbl_srycdchg" TO WRK-TABLE
                    MOVE "key3" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SRYCDCHG-ALL"
                    MOVE "tbl_srycdchg" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                 WHEN    ANY             ALSO   "RECEPRT-KEY"
                    MOVE "tbl_receprt" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2649,11 +2649,11 @@
                 WHEN    ANY             ALSO   "RECEPRT-KEY30"
                    MOVE "tbl_receprt" TO WRK-TABLE
                    MOVE "key30" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "RECEPRT-ALL"
                    MOVE "tbl_receprt" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                 WHEN    ANY             ALSO   "SEIKYU-KEY"
                    MOVE "tbl_seikyu" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2733,7 +2733,7 @@
                 WHEN    ANY             ALSO   "SEIKYU-KEY24"
                    MOVE "tbl_seikyu" TO WRK-TABLE
                    MOVE "key24" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "SEIKYU-ALL"
                    MOVE "tbl_seikyu" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
@@ -2746,19 +2746,19 @@
                 WHEN    ANY             ALSO   "HKNJAINF-KEY2"
                    MOVE "tbl_hknjainf" TO WRK-TABLE
                    MOVE "key2" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "HKNJAINF-ALL"
                    MOVE "tbl_hknjainf" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                 WHEN    ANY             ALSO   "BD001-KEY"
                    MOVE "view_bd001" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*01.09.15********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*01.09.15********************************************
                WHEN    ANY             ALSO   "BD001-ALL"
                    MOVE "view_bd001" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.09.15********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.09.15********************************************
                 WHEN    ANY             ALSO   "BD002-KEY"
                    MOVE "view_bd002" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -2835,16 +2835,16 @@
                WHEN    ANY             ALSO   "EXAMPLE-ALL"
                    MOVE "tbl_example" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*Ё╚╩о*02.02.04********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*02.02.04********************************************
                WHEN    ANY             ALSO   "JOBKANRI-ALL"
                    MOVE "tbl_jobkanri" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*02.02.04********************************************
-      *ди╡ц/*Ё╚╩о*02.05.01********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*02.02.04********************************************
+      *Х©╫Е┼═/*И√▀Е╖▀*02.05.01********************************************
                WHEN    ANY             ALSO   "JOBKANRI-ALL02"
                    MOVE "tbl_jobkanri" TO WRK-TABLE
                    MOVE "all02" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*02.05.01********************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*02.05.01********************************************
       *
                WHEN    ANY             ALSO   "DBKANRI-KEY"
                    MOVE "tbl_dbkanri" TO WRK-TABLE
@@ -3398,7 +3398,7 @@
                WHEN    ANY             ALSO   "KOHPLUS-ALL"
                    MOVE "tbl_kohplus" TO WRK-TABLE
                    MOVE "all" TO WRK-PATHNAME
-      *ди╡ц/*╫╙н╩*01.01.107*******************************************
+      *Х©╫Е┼═/*Г╣┌Д╨├*01.01.107*******************************************
                WHEN    ANY             ALSO   "BD003-KEY"
                    MOVE "view_bd003" TO WRK-TABLE
                    MOVE "key" TO WRK-PATHNAME
@@ -3566,7 +3566,7 @@
       *     PERFORM 210-SEND-SQL.
       *     PERFORM 220-RECV-ANS.
       *****************************************************************
-      *     ║║║║║║╔╥╔╧╔ф╔Ю╢имЩйт╫╦╦║╨В╫ХмЩ
+      *     Ц──Ц──Ц──Ц┌╥Ц┌╧Ц┐├Ц┐═Г╝║Г░├Г╥╗И⌡├Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-SYSKANRI-SEC          SECTION.
       *
@@ -3581,7 +3581,7 @@
            MOVE    MCPDATA-REC         TO  SYSKANRI-REC
            MOVE    ORC-DBYMD             TO  SYS-STYUKYMD
                                            SYS-EDYUKYMD 
-      *    ╤Хй╛╔Ё║╪╔и╓нй╦╩З©Т╓РЁндЙ
+      *    Е▄╨Е┬├Ц┌ЁЦ┐╪Ц┐┴Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            MOVE    ZERO                TO  WRK-MOJISU
            IF      ORC-DBPATH            =   "SYSKANRI-KEY"
                                        OR  "SYSKANRI-KEY4"
@@ -3603,7 +3603,7 @@
              END-IF 
            END-IF
       *
-      *    ╔Ф║╪╔╤║╪ёиёд╓нй╦╩З©Т╓РЁндЙ
+      *    Ц┐╕Ц┐╪Ц┌╤Ц┐╪О╪╘О╪╓Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            IF      ORC-DBPATH            =   "SYSKANRI-KEY3"
              IF    SYS-KANRITBL(1:16)  NOT =   SPACE
                MOVE    SYS-KANRITBL(1:16)  TO  WRK-OPID
@@ -3632,7 +3632,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ║║║║║║╔╥╔╧╔ф╔Ю╢имЩйт╫╦╦║╨В╫ХмЩ
+      *     Ц──Ц──Ц──Ц┌╥Ц┌╧Ц┐├Ц┐═Г╝║Г░├Г╥╗И⌡├Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2002-SEL-SYSKANRI-SEC          SECTION.
       *
@@ -3643,7 +3643,7 @@
            END-IF
       *
            MOVE    MCPDATA-REC         TO  SYSKANRI-REC
-      *    ╤Хй╛╔Ё║╪╔и╓нй╦╩З©Т╓РЁндЙ
+      *    Е▄╨Е┬├Ц┌ЁЦ┐╪Ц┐┴Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            MOVE    ZERO                TO  WRK-MOJISU
            IF    SYSUP-KBNCD           NOT =   SPACE
                PERFORM VARYING     IDX     FROM    8   BY  -1
@@ -3669,7 +3669,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ║║║║║║╢╣╪тйщ╦╠╬ПйСйт╫╦╫ХмЩ
+      *     Ц──Ц──Ц──Ф┌ёХ─┘Д©²И≥╨Ф┐┘Е═╠Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001-SEL-PTHKNINF-SEC          SECTION.
       *
@@ -3692,7 +3692,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ║║║║║║╢╣╪тйщ╦╠╬ПйСйт╫╦╫ХмЩ
+      *     Ц──Ц──Ц──Ф┌ёХ─┘Д©²И≥╨Ф┐┘Е═╠Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001-SEL-PTKOHINF-SEC          SECTION.
       *
@@ -3715,7 +3715,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ибл╬╔ч╔╧╔©║╪╓Р╢а╩Зибл╬╓Х╓Й╦║╨В╫ХмЩ
+      *     Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Ц┐╪Ц┌▓Ф╪╒Е╜≈Г≈┘Е░█Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-BYOKEY-SEC             SECTION.
       *
@@ -3736,7 +3736,7 @@
                    END-IF  
                END-PERFORM
       *
-      *    ╦║╨Вл╬╬нйт╫╦
+      *    Ф╓°Г╢╒Е░█Г╖╟Г╥╗И⌡├
                PERFORM 2001B-NAME-SET-SEC
            END-IF
       *
@@ -3766,7 +3766,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *----(01.00.01) LINE ADD START ----------------------------------
       *
       *****************************************************************
-      *     ╦║╨Вл╬╬нйт╫╦╫ХмЩ
+      *     Ф╓°Г╢╒Е░█Г╖╟Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001B-NAME-SET-SEC          SECTION.
       *
@@ -3778,17 +3778,17 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            IF      WRK-MOJISU          <   2
                CONTINUE
            ELSE                
-               IF      BYO-BYOMEI(1:2)       =   "║Ж"
+               IF      BYO-BYOMEI(1:2)       =   "О╪┼"
                    MOVE    1                   TO  WRK-ICHI1
                END-IF
                COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
-               IF      BYO-BYOMEI(WRK-MOJISU2:2)     =   "║Ж"
+               IF      BYO-BYOMEI(WRK-MOJISU2:2)     =   "О╪┼"
                    MOVE    1                   TO  WRK-ICHI2
                END-IF
            END-IF    
       *
            EVALUATE    TRUE
-      *        иТй╛╟Лцв
+      *        И┐╗Е┬├Д╦─Х┤╢
                WHEN    (WRK-ICHI1           =   1    )  AND
                      (WRK-ICHI2           =   1    )
                    COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   4
@@ -3797,14 +3797,14 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                                           TO  WRK-BYOMEI(2:WRK-MOJISU2)
                    COMPUTE IDX                 =   WRK-MOJISU2   +  2
                    MOVE    "%"                 TO  WRK-BYOMEI(IDX:1)
-      *        ╦ЕйЩ╟Лцв
+      *        Е╬▄Ф√╧Д╦─Х┤╢
                WHEN    (WRK-ICHI1           =   1    )  AND
                        (WRK-ICHI2           =   ZERO )
                    COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   2
                    MOVE    "%"                 TO  WRK-BYOMEI(1:1)
                    MOVE    BYO-BYOMEI(3:WRK-MOJISU2)
                                           TO  WRK-BYOMEI(2:WRK-MOJISU2)
-      *        а╟йЩ╟Лцв
+      *        Е┴█Ф√╧Д╦─Х┤╢
                WHEN    OTHER
                    IF      WRK-ICHI1           =   ZERO
                    AND     WRK-ICHI2           =   ZERO
@@ -3825,7 +3825,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ╔а╔╖╔ц╔╞╔ч╔╧╔©╓Р╪Г╔╜║╪╓Х╓Й╦║╨В╫ХмЩ
+      *     Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Ц┌▓Д╦╩Ц┌╜Ц┐╪Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-CHK-SEC          SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -3847,7 +3847,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *
       *---- (NYUIN.15) LINE ADD START    -----------------------------
       *****************************************************************
-      *     фЧ╠║на╡ц╩╩╔а╔╖╔ц╔╞╔ч╔╧╔©╓Р╪Г╔╜║╪╓Х╓Й╦║╨В╫ХмЩ
+      *     Е┘╔И≥╒Ф√≥Е┼═Г╝≈Ц┐│Ц┌╖Ц┐┐Ц┌╞Ц┐·Ц┌╧Ц┌©Ц┌▓Д╦╩Ц┌╜Ц┐╪Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-NYUKSNCHK-SEC    SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -3869,7 +3869,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *---- (NYUIN.15) LINE ADD END      -----------------------------
       *
       *****************************************************************
-      *     фЧ╠║н╛╬н╔ч╔╧╔©╓Р╪Г╔╜║╪╓Х╓Й╦║╨В╫ХмЩ
+      *     Е┘╔И≥╒Г∙╔Г╖╟Ц┐·Ц┌╧Ц┌©Ц┌▓Д╦╩Ц┌╜Ц┐╪Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-NYUINRYAKUSHO-SEC    SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -3889,7 +3889,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ║║║║║║фЧно╔╩╔ц╔хйт╫╦╦║╨В╫ХмЩ
+      *     Ц──Ц──Ц──Е┘╔Е┼⌡Ц┌╩Ц┐┐Ц┐┬Г╥╗И⌡├Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-INPUTCD-SEC      SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -3899,7 +3899,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            MOVE    MCPDATA-REC         TO  INPUTCD-REC
-      *    фЧно╔Ё║╪╔и╓нй╦╩З©Т╓РЁндЙ
+      *    Е┘╔Е┼⌡Ц┌ЁЦ┐╪Ц┐┴Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
       *  1.
            IF      ORC-DBPATH            =   "INPUTCD-KEY"
              MOVE    ICD-INPUTCD         TO  WRK-INPUTCD
@@ -3941,7 +3941,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ╢╣╪тхж╧Фйт╫╦╫ХмЩ
+      *     Ф┌ёХ─┘Г∙╙Е▐╥Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001-SEL-PTNUM-SEC             SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -3972,7 +3972,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ╢╣╪т╔ч╔╧╔©║╪╓Р╢а╩З╩Ал╬╓Х╓Й╦║╨В╫ХмЩ
+      *     Ф┌ёХ─┘Ц┐·Ц┌╧Ц┌©Ц┐╪Ц┌▓Ф╪╒Е╜≈Ф╟▐Е░█Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-PTINF-SEC             SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -4030,7 +4030,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
        2001-SEL-PTINF-EXT.
            EXIT.
       *****************************************************************
-      *     ║║║║║║╫╩╫Ййт╫╦╦║╨В╫ХмЩ
+      *     Ц──Ц──Ц──Д╫▐Ф┴─Г╥╗И⌡├Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-ADRS-SEC         SECTION.
       *
@@ -4041,7 +4041,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            END-IF
       *
            MOVE    MCPDATA-REC         TO  ADRS-REC
-      *    цойЩ╦Ь╤╕цдбнй╦╩З©Т╓РЁндЙ
+      *    Е°╟Ф√╧Е┘╛Е┘╠Е⌡ёД╫⌠Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            MOVE    ZERO                TO  WRK-MOJISU
            IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
                                            "ADRS-KEY4"   OR
@@ -4065,7 +4065,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    MOVE    "%"             TO  ADRS-LPUBCD(IDX:1)
                 END-IF
            END-IF
-      *    м╧йьхж╧Ф╓нй╦╩З©Т╓РЁндЙ
+      *    И┐╣Д╬©Г∙╙Е▐╥Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            MOVE    ZERO                TO  WRK-MOJISU
            IF      ORC-DBPATH          =   "ADRS-KEY3"   OR
                                            "ADRS-KEY4"   OR
@@ -4097,7 +4097,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ею©Т╔ч╔╧╔©╓Рл╬╬неЫ╓к╓Х╓Й╦║╨В╫ХмЩ
+      *     Г┌╧Ф∙╟Ц┐·Ц┌╧Ц┌©Ц┌▓Е░█Г╖╟Г╜┴Ц│╚Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-TENSU-REC          SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -4118,7 +4118,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF  
            END-PERFORM
       *
-      *    ╦║╨Вл╬╬нйт╫╦
+      *    Ф╓°Г╢╒Е░█Г╖╟Г╥╗И⌡├
            IF      TNS-NAME            NOT =   SPACE
                    PERFORM 20011-NAME-SET-SEC
            END-IF
@@ -4130,7 +4130,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ╦║╨Вл╬╬нйт╫╦╫ХмЩ
+      *     Ф╓°Г╢╒Е░█Г╖╟Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        20011-NAME-SET-SEC          SECTION.
       *
@@ -4138,20 +4138,20 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            MOVE    ZERO                TO  WRK-ICHI2
            MOVE    ZERO                TO  WRK-MOJISU2
       *
-           IF      TNS-NAME(1:2)       =   "║Ж"
+           IF      TNS-NAME(1:2)       =   "О╪┼"
                MOVE    1                   TO  WRK-ICHI1
            END-IF
            IF      WRK-MOJISU          =   1
                CONTINUE
            ELSE
                COMPUTE WRK-MOJISU2         =   WRK-MOJISU      -   1
-               IF      TNS-NAME(WRK-MOJISU2:2)     =   "║Ж"
+               IF      TNS-NAME(WRK-MOJISU2:2)     =   "О╪┼"
                    MOVE    1                   TO  WRK-ICHI2
                END-IF
            END-IF
       *
            EVALUATE    TRUE
-      *        иТй╛╟Лцв
+      *        И┐╗Е┬├Д╦─Х┤╢
                WHEN    (WRK-ICHI1           =   1    )  AND
                        (WRK-ICHI2           =   1    )
                    COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   4
@@ -4165,7 +4165,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    COMPUTE IDX                 =   IDX  +  1 
                    MOVE    SPACE               TO  TNS-NAME(IDX:2)
       *--- TAKE ADD ED 
-      *        ╦ЕйЩ╟Лцв
+      *        Е╬▄Ф√╧Д╦─Х┤╢
                WHEN    (WRK-ICHI1           =   1    )  AND
                        (WRK-ICHI2           =   ZERO )
                    COMPUTE WRK-MOJISU2         =   WRK-MOJISU    -   2
@@ -4178,7 +4178,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
       *            MOVE    SPACE           TO TNS-NAME(WRK-MOJISU2:IDX)
                    MOVE    SPACE           TO  TNS-NAME(WRK-MOJISU2:2)
       *--- TAKE ADD ED 
-      *        а╟йЩ╟Лцв
+      *        Е┴█Ф√╧Д╦─Х┤╢
                WHEN    OTHER
                    MOVE    TNS-NAME(1:WRK-MOJISU)
                                               TO TNS-NAME(1:WRK-MOJISU)
@@ -4195,7 +4195,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     ╔я╔И╔А╔©╔ф║╪╔ж╔Кйт╫╦╫ХмЩ
+      *     Ц┐▒Ц┐╘Ц┐║Ц┌©Ц┐├Ц┐╪Ц┐√Ц┐╚Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001-SEL-PARA-SEC            SECTION.
            IF      MCP-FUNC            =   "DBFETCH" OR
@@ -4204,7 +4204,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                    GO                  TO  2001-SEL-PARA-EXT
            END-IF
       *
-      *    ╔у╔║╔╓╔Кл╬╓нй╦╩З©Т╓РЁндЙ
+      *    Ц┐∙Ц┌║Ц┌╓Ц┐╚Е░█Ц│╝Ф√┤Е╜≈Ф∙╟Ц┌▓Г╒╨Е╝ 
            MOVE    MCPDATA-REC         TO  PARA-REC
            MOVE    PARA-FILEMEI        TO  WRK-FILEMEI
            MOVE    ZERO                TO  WRK-MOJISU
@@ -4227,7 +4227,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *     ╪╚╠║ибл╬╔ч╔╧╔©╓Рибл╬╓Х╓Й╦║╨В╫ХмЩ
+      *     Х┤╙И≥╒Г≈┘Е░█Ц┐·Ц┌╧Ц┌©Ц┌▓Г≈┘Е░█Ц┌┬Ц┌┼Ф╓°Г╢╒Е┤╕Г░├
       *****************************************************************
        2001-SEL-USERBYOMEI-SEC         SECTION.
       *
@@ -4247,7 +4247,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
                END-IF  
            END-PERFORM
       *
-      *    ╦║╨Вл╬╬нйт╫╦
+      *    Ф╓°Г╢╒Е░█Г╖╟Г╥╗И⌡├
            MOVE    SPACE               TO  WRK-BYOMEI
            MOVE    "%"                 TO  WRK-BYOMEI(1:1)
            MOVE    USBYO-BYOMEI(1:WRK-MOJISU)
@@ -4265,7 +4265,7 @@ grpsys*    MOVE SPA-HOSPNUM TO -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *     юа╣А╢имЩ╔ч╔╧╔©╓нйщ╦╠╪тхж╧Ф╓╛╫И╢Эцм╓н╓х╓╜╓нйт╫╦╫ХмЩ
+      *     Х╚▀Ф╠┌Г╝║Г░├Ц┐·Ц┌╧Ц┌©Ц│╝Д©²И≥╨Х─┘Г∙╙Е▐╥Ц│▄Е┬²Ф°÷Е─╓Ц│╝Ц│╗Ц│█Ц│╝Г╥╗И⌡├Е┤╕Г░├
       *****************************************************************
        2001-SEL-SEIKYU-SEC             SECTION.
       *

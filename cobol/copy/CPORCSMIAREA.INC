@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,21 +16,21 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÌôºÞ¾ðÊó²èÁüÊÔ½¸¥Ñ¥é¥á¥¿¡¡¡¡   COPY (CPORCSMIAREA.INC)
+      *    è–¬å‰¤æƒ…å ±ç”»åƒç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€   COPY (CPORCSMIAREA.INC)
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSMIAREA.
-      *¿ÇÎÅ¥³¡¼¥É
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰
            03  ORCSMI-SRYCD        PIC X(09).
-      *²èÁü¶èÊ¬¡Ê1:ÍçÂÎ¡¢2:£Ð£Ô£ÐÊñÁõ¡¢3:¤½¤ÎÂ¾¡Ë
+      *ç”»åƒåŒºåˆ†ï¼ˆ1:è£¸ä½“ã€2:ï¼°ï¼´ï¼°åŒ…è£…ã€3:ãã®ä»–ï¼‰
            03  ORCSMI-IMAGEKBN     PIC 9(01).
-      *²èÁü¥Õ¥¡¥¤¥ë°ì»þÎÎ°è¤Î¥«¥ì¥ó¥È
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ä¸€æ™‚é ˜åŸŸã®ã‚«ãƒ¬ãƒ³ãƒˆ
            03  ORCSMI-TEMPDIR      PIC X(1024).
-      *²èÁü¥Õ¥¡¥¤¥ëÌ¾
+      *ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«å
            03  ORCSMI-FILENAME     PIC X(128).
-      *·ë²Ì¥³¡¼¥É¡Ê0:À®¸ù¡¢0°Ê³°:¥¨¥é¡¼¡Ë
+      *çµæžœã‚³ãƒ¼ãƒ‰ï¼ˆ0:æˆåŠŸã€0ä»¥å¤–:ã‚¨ãƒ©ãƒ¼ï¼‰
            03  ORCSMI-RETCD        PIC 9(01).
       *

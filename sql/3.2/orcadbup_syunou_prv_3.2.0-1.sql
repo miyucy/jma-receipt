@@ -1,14 +1,14 @@
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¤Ş¤È¤áÈ¯¹ÔÊıË¡¥Õ¥é¥°             --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ã¾ã¨ã‚ç™ºè¡Œæ–¹æ³•ãƒ•ãƒ©ã‚°             --
 --                                    --
 -- Create Date : 2006/08/18           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table TBL_SYUNOU_PRV
    add column GRP_HAKHOUFLG  numeric(01);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYUNOU_PRV
    alter GRP_HAKHOUFLG set default 0;

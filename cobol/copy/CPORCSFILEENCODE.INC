@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,20 +16,20 @@
       * 113-8621, Japan.
       ********************************************************************
       *--------------------------------------------------------*
-      *    �ե����륨�󥳡��ǥ��󥰥ѥ�᥿ COPY (CPORCSFILEENCODE.INC)  *
-      *    EUC-JP ���� Shift-JIS
+      *    ファイルエンコーディングパラメタ COPY (CPORCSFILEENCODE.INC)  *
+      *    EUC-JP から Shift-JIS
       *--------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCSFILEENCODEAREA.
-      *      ���ϥե�����̾
+      *      入力ファイル名
            03  FLEN-INFILENAME         PIC X(256).
-      *      ���ϥե�����̾
+      *      出力ファイル名
            03  FLEN-OUTFILENAME        PIC X(256).
-      *      ��������QR�㳰���ץ����(1:��������,3:����¾)
+      *      処方せんQR例外オプション　(1:処方せん,3:その他)
            03  FLEN-OPTION             PIC X(01).
-      *      �꥿���󥳡���
+      *      リターンコード
            03  FLEN-RET                PIC X(01).

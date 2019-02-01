@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,72 +16,72 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����ǡ������±������         COPY (CPCDF901.INC)    *
+      *    収集データ（病院情報）         COPY (CPCDF901.INC)    *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  COLDAT91-REC.
            03  COLDAT91-KEY.
-      *        �쥳���ɶ�ʬ
+      *        レコード区分
                05  COLDAT91-RECKBN         PIC  X(01).
                05  COLDAT91-RECSEQ         PIC  9(03).
            03  COLDAT91-BODY-1.
-      *        ���ŵ��أɣ�
+      *        医療機関ＩＤ
                05  COLDAT91-HOSPID         PIC  X(24).
-      *        ��ƻ�ܸ�
+      *        都道府県
                05  COLDAT91-PREFNUM        PIC  9(02).
-      *        ���ŵ��ؼ���
+      *        医療機関種別
                05  COLDAT91-HOSPSBT        PIC  9(01).
-      *        �������±�
+      *        旧総合病院
                05  COLDAT91-HOSPSBT1       PIC  9(01).
-      *        �¾����ʵ��ġ�
+      *        病床数（許可）
                05  COLDAT91-BEDSU          PIC  9(04).
-      *        �¾����ʰ��̡�
+      *        病床数（一般）
                05  COLDAT91-BEDSUIPN       PIC  9(04).
-      *        ������ʬ
+      *        入外区分
                05  COLDAT91-NYUGAIKBN      PIC  X(01).
-      *        �ǡ���ǯ��
+      *        データ年月
                05  COLDAT91-DATAYM         PIC  X(06).
-      *        �ץ�����༱���ֹ�
+      *        プログラム識別番号
                05  COLDAT91-PRGSKBNO       PIC  X(08).
       *
                05  COLDAT91-YOBI1          PIC  X(68).
            03  COLDAT91-BODY-2             REDEFINES
                                            COLDAT91-BODY-1.
-      *        ���Ųʥ�����
+      *        診療科コード
                05  COLDAT91-SRYKA          PIC  X(02).
-      *        �쥻�ſ��Ųʥ�����
+      *        レセ電診療科コード
                05  COLDAT91-RECEKA         PIC  X(02).
-      *        ���Ų�̾
+      *        診療科名
                05  COLDAT91-SRYKANAME      PIC  X(40).
       *
                05  COLDAT91-YOBI2          PIC  X(75).
            03  COLDAT91-BODY-3             REDEFINES
                                            COLDAT91-BODY-1.
-      *        ���ߴ�ॳ����
+      *        施設基準コード
                05  COLDAT91-SSTKIJUNCD     PIC  9(03).
       *
                05  COLDAT91-YOBI3          PIC  X(116).
            03  COLDAT91-BODY-4             REDEFINES
                                            COLDAT91-BODY-1.
-      *        �ݸ��ֹ�
+      *        保険番号
                05 COLDAT91-HKNNUM          PIC  X(03).
-      *        ��ʧ��ʬ
+      *        支払区分
                05 COLDAT91-PAYKBN          PIC  X(02).
-      *        ˡ���ֹ�
+      *        法別番号
                05 COLDAT91-HBTNUM          PIC  X(02).
-      *        ����̾
+      *        制度名
                05 COLDAT91-SEIDONAME       PIC  X(100).
-      *        �ݸ�������̶�ʬ
+      *        保険公費種別区分
                05 COLDAT91-HKNKOHSBTKBN    PIC  X(01).
-      *        ������ݶ�ʬ
+      *        公費主保区分
                05 COLDAT91-HKNKOHKBN       PIC  X(01).
-      *        ����ǯ�𳫻�
+      *        条件−年齢開始
                05 COLDAT91-JOKEN-STYEAR    PIC  9(03).
-      *        ����ǯ��λ
+      *        条件−年齢終了
                05 COLDAT91-JOKEN-EDYEAR    PIC  9(03).
-      *        ����ñ��
+      *        点数単価
                05 COLDAT91-TENTNK          PIC  9(03).
-      *        �쥻�ץ������ʬ
+      *        レセプト請求区分
                05 COLDAT91-RECESKYKBN      PIC  X(01).

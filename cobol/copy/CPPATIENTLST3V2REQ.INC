@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥È´µ¼Ô¾ðÊó°ìÍ÷¼èÆÀ¡Ê»áÌ¾¸¡º÷¡Ë(xml2)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆæ‚£è€…æƒ…å ±ä¸€è¦§å–å¾—ï¼ˆæ°åæ¤œç´¢ï¼‰(xml2)
       *                                 COPY (CPPATIENTLST3V2SEQ.INC)
       ******************************************************************
         01  XML-PATIENTLST3REQ.
@@ -24,16 +24,16 @@
             03  PATLSTREQ-OBJECT           PIC X(36).
             03  PATLSTREQ-MODE             PIC S9(9)   BINARY.
             03  PATLSTREQ-RECORDNAME       PIC X(128).
-      *     ´µ¼Ô¾ðÊó
+      *     æ‚£è€…æƒ…å ±
             03  PATLSTREQ-PTINF-INFO.
-      *         ´µ¼Ô»áÌ¾
+      *         æ‚£è€…æ°å
                 05  PATLSTREQ-NAME             PIC X(100).
-      *         ³«»ÏÀ¸Ç¯·îÆü
+      *         é–‹å§‹ç”Ÿå¹´æœˆæ—¥
                 05  PATLSTREQ-BIRTHDAY-START   PIC X(10).
-      *         ½ªÎ»À¸Ç¯·îÆü
+      *         çµ‚äº†ç”Ÿå¹´æœˆæ—¥
                 05  PATLSTREQ-BIRTHDAY-END     PIC X(10).
-      *         À­ÊÌ
+      *         æ€§åˆ¥
                 05  PATLSTREQ-SEX              PIC X(01).
-      *         Æþ³°¶èÊ¬¡Ê0:Æþ±¡¡¦³°Íè¡¢1:Æþ±¡¡¢2¡§³°Íè¡Ë
+      *         å…¥å¤–åŒºåˆ†ï¼ˆ0:å…¥é™¢ãƒ»å¤–æ¥ã€1:å…¥é™¢ã€2ï¼šå¤–æ¥ï¼‰
                 05  PATLSTREQ-INOUTKBN         PIC X(01).
       *

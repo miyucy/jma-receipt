@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,567 +16,567 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�     COPY (CPRCF02.INC)        *
+      *    レセプト明細書     COPY (CPRCF02.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.01.01    MCC-ƣ��     02.02.01  ��­��ʬ���ɲ�
-      *  01.01.04    MCC-ƣ��     02.02.13  �ݸ��ȹ礻�򣳤��飱�����ѹ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.01.01    MCC-藤原     02.02.01  補足区分の追加
+      *  01.01.04    MCC-藤原     02.02.13  保険組合せを３から１０に変更
       *
-      *  ��������ǯ��������б�
-      *  01.02.01    MCC-��Ʀ��   02.04.22  �쥻�ץ�Ŧ����ΰ�����ʬ���ɲ�
-      *                                     �ƿ�������������û��ˤĤ���
-      *  ��������ǯ����������б�
-      *  01.02.02    NACL-��Ʀ��  02.09.24  ǯ����ܤ��ɲ�
-      *  01.02.03    NACL-����    02.10.07  �������硦�����ե饰���ɲ�
-      *                                     ������ե饰���ɲ�
-      *                                     ������ô��ƷǤ��ɲ�
+      *  ２００２年４月改正対応
+      *  01.02.01    MCC-小豆沢   02.04.22  レセプト摘要欄の印刷区分を追加
+      *                                     再診料、外来管理加算について
+      *  ２００２年１０月改正対応
+      *  01.02.02    NACL-小豆沢  02.09.24  年齢項目の追加
+      *  01.02.03    NACL-門脇    02.10.07  在宅総合・末期フラグの追加
+      *                                     低所得フラグの追加
+      *                                     一部負担金再掲の追加
       *
-      *  01.02.04    NACL-����    03.02.06  �����ȥ�����ȥե饰���ɲ�
-      *  01.02.05    NACL-ƣ��    03/02/12  �ƥ��ȴ����ֹ��ʬ�������ʬ���ɲ�
-      *  01.02.06    NACL-ƣ��    03/03/07  �쥻�ץȵ��ܳ���������ɲ�
-      *                                     ���Ųʿ��������飲�����ѹ�
-      *  01.02.07    NACL-ƣ��    03.03.11  �쥻�ץȼ�������������ɲ�
-      *  01.02.08    NACL-����    03.04.16  �����ݸ������ݸ��ԡˡ��̶кҳ�
-      *                                     �ե饰���ɲ�
-      *  01.02.09    NACL-����    03.06.19  �������ơ��֥���ɲ�
-      *  01.02.10    NACL-ƣ��    03.10.27  ���ֹ���ɲ�
-      *  01.02.11    NACL-����    04.01.16  ����ʬΥ��ʬ�Ǿ��ͤ��ɲ�
-      *  01.02.12    NACL-����    04.01.19  �¾����Խ��ե饰���ɲ�
-      *  01.02.13    NACL-����    04.01.20  ����쥻Ŧ�����Խ��쥳���ɥե饰
-      *                                     ���ɲ�
-      *  01.02.14    NACL-����    04.03.17  ʡ���Խ��ե饰���ɲ�
-      *                                     �����������ʤ֤���������ʬΥ
-      *                                     ��ʬ�Խ��ѡˤ��ɲ�
-      *  01.02.15    NACL-ƣ��    04.06.08  Ŭ�ѽ�λ�����ɲ�
-      *  01.02.16    NACL-ƣ��    04.06.15  ��������ɲáʸ��̺������Τߡ�
-      *  01.02.17    NACL-ƣ��    04.07.06  �ȹ礻�����ݸ��ɣĤ��ɲ�
+      *  01.02.04    NACL-門脇    03.02.06  コメントカウントフラグの追加
+      *  01.02.05    NACL-藤原    03/02/12  テスト患者番号区分・補助区分の追加
+      *  01.02.06    NACL-藤原    03/03/07  レセプト記載外公費情報追加
+      *                                     診療科数１０から２０へ変更
+      *  01.02.07    NACL-藤原    03.03.11  レセプト種別不明情報の追加
+      *  01.02.08    NACL-門脇    03.04.16  船員保険（被保険者）＋通勤災害
+      *                                     フラグの追加
+      *  01.02.09    NACL-門脇    03.06.19  実日数テーブルの追加
+      *  01.02.10    NACL-藤原    03.10.27  県番号の追加
+      *  01.02.11    NACL-門脇    04.01.16  公費分離区分最小値の追加
+      *  01.02.12    NACL-門脇    04.01.19  病床数編集フラグの追加
+      *  01.02.13    NACL-門脇    04.01.20  自費レセ摘要欄編集レコードフラグ
+      *                                     の追加
+      *  01.02.14    NACL-門脇    04.03.17  福祉編集フラグの追加
+      *                                     合計点数情報（ぶん点・公費分離
+      *                                     区分編集用）の追加
+      *  01.02.15    NACL-藤原    04.06.08  適用終了日の追加
+      *  01.02.16    NACL-藤原    04.06.15  印刷順の追加（個別作成時のみ）
+      *  01.02.17    NACL-藤原    04.07.06  組合せ公費保険ＩＤの追加
       *
       *  ver.2.5.0 
-      *  01.03.01    NACL-����    04.12.15  ���������ô��쥻���ܥե饰���ɲ�
-      *                                     ���������ô�⣰�ߵ��ܥե饰���ɲ�
-      *  01.03.02    NACL-����    05.03.11  ��ô��۾���˹����ɲ�
-      *                                     �쥻�ץȵ��ܳ��������˹����ɲ�
-      *  01.03.03    NACL-ƣ��    05.03.14  �쥻�ץ��õ������Խ�������ɲ�
+      *  01.03.01    NACL-門脇    04.12.15  公費一部負担金レセ記載フラグの追加
+      *                                     公費一部負担金０円記載フラグの追加
+      *  01.03.02    NACL-門脇    05.03.11  負担金額情報に項目追加
+      *                                     レセプト記載外公費情報に項目追加
+      *  01.03.03    NACL-藤原    05.03.14  レセプト特記事項編集情報の追加
       *
       *  ver.2.6.0 
-      *  02.06.01    NACL-ƣ��    05.07.13  Ϸ���ݸ��ݻ�ʧ��ʬ
-      *                                     �ܿ͡ݳ��������
-      *                                     �ݸ��ȹ礻����ե饰���ɲ�
-      *  02.06.02    NACL-ƣ��    05.07.28  �쥻�ץ����ᤷ�ʤ�������ɲ�
-      *  02.06.03    NACL-ƣ��    05.08.05  ���ܳ��������ô���ֹ���ɲ�
+      *  02.06.01    NACL-藤原    05.07.13  老人保険−支払区分
+      *                                     本人−外来−内容
+      *                                     保険組合せ公費フラグの追加
+      *  02.06.02    NACL-藤原    05.07.28  レセプト請求しない公費の追加
+      *  02.06.03    NACL-藤原    05.08.05  記載外公費−負担者番号の追加
       *
-      *  02.07.01    NACL-ƣ��    05/08/20  �����������б�
-      *                                     �쥻�ץȵ����ѥ쥻�ץȼ��̤��ɲ�
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *                                     レセプト記載用レセプト種別の追加
       *
-      *  02.08.01    NACL-ƣ��    06/02/20  ����б�
-      *                                     ����ɲ�
+      *  02.08.01    NACL-藤原    06/02/20  主科対応
+      *                                     主科追加
       *
-      *  02.09.01    NACL-ƣ��    06/04/14  ��������ǯ��������б�
-      *                                     �����®���θ����û��ե饰�ɲ�
+      *  02.09.01    NACL-藤原    06/04/14  ２００６年４月改正対応
+      *                                     外来迅速検体検査加算フラグ追加
       *  3.0.0
-      *  03.00.01    NACL-ƣ��    06/05/15  ���ౡ���򵭺��б�
-      *                                     ���ౡ���򵭺ܥե饰���ɲ�
+      *  03.00.01    NACL-藤原    06/05/15  入退院履歴記載対応
+      *                                     入退院履歴記載フラグの追加
       *
-      *  03.04.01    NACL-ƣ��    06/12/05  ̤����쥻�б�
-      *  03.04.02    NACL-����    07/02/19  ����ΰ�����ô��Ʒ��ɲ�
-      *                                     ����ΰ�����ô��Ʒǥե饰�ɲ�
-      *                                     ������ܿ͡ݳ���ݲ�ݾ�³��ɲ�
-      *  03.04.03    NACL-����    07/03/27  �������硦��������������ô��
-      *                                     �Ʒǣ��ɲ�
+      *  03.04.01    NACL-藤原    06/12/05  未請求レセ対応
+      *  03.04.02    NACL-門脇    07/02/19  公費の一部負担金再掲追加
+      *                                     公費の一部負担金再掲フラグ追加
+      *                                     公費−本人−外来−回−上限額追加
+      *  03.04.03    NACL-門脇    07/03/27  在宅総合・在宅末期一部負担金
+      *                                     再掲２追加
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-����    07/08/01  ��������谷����ǽ�����б�
-      *  03.05.03    NACL-����    07/08/01  ������ν��������ѹ��б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-門脇    07/08/01  所得情報取扱い機能強化対応
+      *  03.05.03    NACL-門脇    07/08/01  月途中の所得情報変更対応
       *
-      *  04.01.01    NACL-ƣ��    08/01/10  �쥻�ץ��õ������Խ�����
-      *                                     Ŭ���󥳥����б�
+      *  04.01.01    NACL-藤原    08/01/10  レセプト特記事項編集情報
+      *                                     適用欄コメント対応
       *
-      *  04.02.01    NACL-ƣ��    08/03/25  ʿ������ǯ��������б�
-      *                                     ��������ʬ���ɲ�
+      *  04.02.01    NACL-藤原    08/03/25  平成２０年４月改正対応
+      *                                     就学前区分の追加
       *
-      *  04.03.01    NACL-ƣ��    08/06/19  ����̽����б�
-      *  04.03.02    NACL-����    08/07/07  �����������������ܥե饰�ɲ�
-      *  04.03.03    NACL-ƣ��    08/08/05  ������Ͽ�õ����������б�
-      *                                     �����õ������ɲ�
-      *  04.03.04    NACL-����    08/09/05  �쥻������ô��ʬ�Խ��ե饰�ɲ�
-      *                                     ͽ���ɲ�
-      *  04.03.05    NACL-����    08/10/16  ������㣲���㣱�����ɲ�
+      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.02    NACL-門脇    08/07/07  実日数・請求点記載フラグ追加
+      *  04.03.03    NACL-藤原    08/08/05  患者登録特記事項入力対応
+      *                                     患者特記事項追加
+      *  04.03.04    NACL-門脇    08/09/05  レセ電用負担区分編集フラグ追加
+      *                                     予備追加
+      *  04.03.05    NACL-門脇    08/10/16  公費−低２・低１項目追加
       *
-      *  04.04.01    NACL-����    09/02/16  ��������Υ쥻�����б�
-      *  04.04.02    NACL-ƣ��    09/03/25  ���ݤޤȤ�ե饰�ɲ�
+      *  04.04.01    NACL-門脇    09/02/16  地方公費のレセ記載対応
+      *  04.04.02    NACL-藤原    09/03/25  生保まとめフラグ追加
       *
-      *  04.05.01    NACL-����    10/02/08  �������ʻ��ʬ�����������ɲ�
-      *                                     ʡ���Խ��ե饰�˥���ǥå����ɲ�
+      *  04.05.01    NACL-門脇    10/02/08  全国公費併用分請求点集計追加
+      *                                     福祉編集フラグにインデックス追加
       *
-      *  04.05.02    NACL-ƣ��    10/04/14  ʿ������ǯ��������б�
-      *                                     ����˷���뵭Ͽ�����ͤ�
-      *                                     �ѹ���ȼ������
-      *                                     ���Ųʣ��������ɲ�
-      *  04.05.03    NACL-ƣ��    11/02/22  �쥻�ťǡ����ε����ֹ���ڤ�
-      *                                     ʸ�������б�
-      *  04.05.04    NACL-ƣ��    11/03/25  �ҳ��б�
-      *                                     Ϣ��������ɲ�
-      *  04.05.05    NACL-����    12/04/10  �����б�
-      *                                     �߰�������ե饰
-      *                                     ��ʿ������ǯ������š����ɲ�
+      *  04.05.02    NACL-藤原    10/04/14  平成２２年４月改正対応
+      *                                     請求に係わる記録条件仕様の
+      *                                     変更に伴う修正
+      *                                     診療科２、３を追加
+      *  04.05.03    NACL-藤原    11/02/22  レセ電データの記号番号区切り
+      *                                     文字設定対応
+      *  04.05.04    NACL-藤原    11/03/25  災害対応
+      *                                     連絡先情報追加
+      *  04.05.05    NACL-門脇    12/04/10  改正対応
+      *                                     在医総算定フラグ
+      *                                     （平成２４年４月診療〜）追加
       *
-      *  04.06.01    NACL-����    10/07/02  ����������������󥻥����
-      *                                     �ʣ����ܡ˻���ե饰�ɲ�
-      *  04.06.02    NACL-ƣ��    10/06/23  �쥻��������μ��ե��顼ʬ��
-      *                                     ���������쥻�б�
-      *                                     �쥻�ץȼ����������顼�����ѹ�
-      *  04.06.03    NACL-����    10/12/13  ����۾�����ɲ�
-      *  04.06.04    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.05    NACL-ƣ��    11/12/12  �����쥻������������б�
-      *  04.06.05    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-門脇    10/07/02  小児特定疾患カウンセリング料
+      *                                     （１回目）算定フラグ追加
+      *  04.06.02    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *                                     レセプト種別不明エラー情報変更
+      *  04.06.03    NACL-門脇    10/12/13  請求額情報の追加
+      *  04.06.04    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.05    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.05    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-����    11/09/01  �����ƥ��������������ǽ�ɲ��б�
-      *                                     ������ô���۽��ץե饰�ɲ�
-      *                                     �ݸ���ݰ�����ô�⵭��
-      *                                     �ʹ���ԡˡ�70��̤���˥ե饰�ɲ�
-      *  04.07.02    NACL-ƣ��    12/01/06  ͽ���򣲣����ѹ�
-      *  04.07.03    NACL-����    12/08/27  �����ƥ��������������ǽ�ɲ��б�
-      *  04.07.04    NACL-����    12/10/02  �����Ƚ��ե饰�ɲ�
-      *  04.07.05    NACL-����    13/07/10  �����ա��軰�Թ԰١��б�
-      *  04.07.06    NACL-����    14/01/08  �����������ʤ��ݸ��Ȥ߹�碌ͭ��
-      *                                     �ե饰�ɲ�
-      *  04.07.07    NACL-����    14/07/31  �軰�Թ԰٤˴ؤ���ե饰�ɲ�
-      *  04.07.08    NACL-����    15/04/27  �õ����ࣰ���ܤ��������
-      *                                     ���ۡ۲�������б�
-      *  04.08.01    NACL-����    15/10/08  �����ƥ��������������ǽ�ɲ��б�
-      *  04.08.02    NACL-����    15/12/02  ���л����İ����̩�򹯿Ǻ�
-      *                                     ���ϰ������б�
-      *  04.08.03    NACL-����    16/02/08  ͽ�����ܻ���ʬ�ˤĤ��ơ�
-      *                                     �ġ��˹��ܤ��ߤ��롣
-      *                                     �裳�裴����γ�̺Ʒǵ����б�
-      *  04.08.04    NACL-����    16/03/15  ���ݤޤȤ��ѹ����ɲ�
-      *  04.08.05    NACL-����    16/03/31  ʿ������ǯ��������б�
-      *  04.08.06    NACL-����    16/05/30  �����������̤��ü�׻��б�
-      *  04.08.07    NACL-����    17/03/17  �ݸ�����������å�ɽ�ε�ǽ�ɲ�
-      *                                     �ʸ��������˴ؤ���б���
-      *  04.08.08    NACL-����    17/03/27  �����ۣ��ߥ쥻�ץȺ����б�
-      *  04.08.09    NACL-����    18/04/06  ʿ������ǯ��������б�
-      *  04.08.10    NACL-����    18/05/22  ʿ������ǯ��������б�
-      *  04.08.11    NACL-����    18/06/11  �����������פΥ������б�
+      *  04.07.01    NACL-門脇    11/09/01  システム管理２０１０機能追加対応
+      *                                     一部負担金金額集計フラグ追加
+      *                                     保険欄−一部負担金記載
+      *                                     （高齢者）（70歳未満）フラグ追加
+      *  04.07.02    NACL-藤原    12/01/06  予備を２０に変更
+      *  04.07.03    NACL-門脇    12/08/27  システム管理２０１０機能追加対応
+      *  04.07.04    NACL-門脇    12/10/02  高齢者判定フラグ追加
+      *  04.07.05    NACL-門脇    13/07/10  自賠責（第三者行為）対応
+      *  04.07.06    NACL-門脇    14/01/08  請求点数がない保険組み合わせ有り
+      *                                     フラグ追加
+      *  04.07.07    NACL-門脇    14/07/31  第三者行為に関するフラグ追加
+      *  04.07.08    NACL-門脇    15/04/27  特記事項０９施がある場合の
+      *                                     【配】回数記載対応
+      *  04.08.01    NACL-門脇    15/10/08  システム管理２０１０機能追加対応
+      *  04.08.02    NACL-門脇    15/12/02  ３歳児視覚聴覚精密健康診査
+      *                                     （地域公費）対応
+      *  04.08.03    NACL-門脇    16/02/08  予備項目使用分について、
+      *                                     個々に項目を設ける。
+      *                                     第３第４公費の括弧再掲記載対応
+      *  04.08.04    NACL-門脇    16/03/15  生保まとめ用項目追加
+      *  04.08.05    NACL-門脇    16/03/31  平成２８年４月改正対応
+      *  04.08.06    NACL-門脇    16/05/30  １９原爆一般の特殊計算対応
+      *  04.08.07    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
+      *                                     （公費請求書に関わる対応）
+      *  04.08.08    NACL-門脇    17/03/27  請求金額０円レセプト作成対応
+      *  04.08.09    NACL-門脇    18/04/06  平成３０年４月改正対応
+      *  04.08.10    NACL-門脇    18/05/22  平成３０年４月改正対応
+      *  04.08.11    NACL-門脇    18/06/11  逓減点数集計のサイン対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  RECE02-HOSPNUM         PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  RECE02-SRYYM           PIC  9(06).
-      *������ʬ
+      *入外区分
                05  RECE02-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  RECE02-PTID            PIC  9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                05  RECE02-RECEKA          PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                05  RECE02-TEISYUTUSAKI    PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  RECE02-RECESYUBETU     PIC  9(04).
-      *�ݸ����ֹ�        
+      *保険者番号        
                05  RECE02-HKNJANUM-KEY    PIC  X(08).
-      *�����ʬ
+      *補助区分
                05  RECE02-HOJOKBN-KEY     PIC  X(01).
-      *����ɣ�
+      *公費ＩＤ
                05  RECE02-KOHID-KEY       PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE02-TEKSTYMD        PIC  X(08). 
-      *ʬ���ʬ
+      *分割区分
                05  RECE02-RECEIPT-KBN     PIC  X(10).
-      *�����ֹ�
+      *患者番号
            03  RECE02-PTNUM               PIC  X(20).
-      *���Ųʾ���
+      *診療科情報
            03  RECE02-SRYKAINF            OCCURS  20.
-      *���Ų�
+      *診療科
                05  RECE02-SRYKA           PIC  X(02).
-      *���ʻ�̾
+      *カナ氏名
            03  RECE02-KANANAME            PIC  X(50).
-      *������̾
+      *漢字氏名
            03  RECE02-NAME                PIC  X(100).
-      *����
+      *性別
            03  RECE02-SEX                 PIC  X(01).
-      *��ǯ����
+      *生年月日
            03  RECE02-BIRTHDAY            PIC  9(08).
-      *ǯ��
+      *年齢
            03  RECE02-AGE                 PIC  9(03).
-      *��������ʬ
+      *就学前区分
            03  RECE02-SYUGAKUKBN          PIC 9(01).
-      *��˴��ʬ
+      *死亡区分
            03  RECE02-DEATHKBN            PIC  X(01).
-      *�����͹���ֹ�
+      *自宅−郵便番号
            03  RECE02-HOME-POST           PIC X(07).
-      *����ݽ���
+      *自宅−住所
            03  RECE02-HOME-ADRS           PIC X(200).
-      *�������������
+      *自宅−番地方書
            03  RECE02-HOME-BANTI          PIC X(200).
-      *Ϣ�����̾��
+      *連絡先−名称
            03  RECE02-RENRAKU-NAME.
                05  RECE02-RENRAKU-NAME-R  PIC X(50)
                                               OCCURS  2.
-      *Ϣ�����͹���ֹ�
+      *連絡先−郵便番号
            03  RECE02-RENRAKU-POST        PIC X(07).
-      *Ϣ����ݽ���
+      *連絡先−住所
            03  RECE02-RENRAKU-ADRS        PIC X(200).
-      *Ϣ�������������
+      *連絡先−番地方書
            03  RECE02-RENRAKU-BANTI       PIC X(200).
-      *Ϣ������������ֹ�
+      *連絡先−昼電話番号
            03  RECE02-RENRAKU-TEL1        PIC X(15).
-      *Ϣ������������ֹ�
+      *連絡先−夜電話番号
            03  RECE02-RENRAKU-TEL2        PIC X(15).
-      *������Խ�͹���ֹ�
+      *自宅−編集郵便番号
            03  RECE02-HOME-POST1          PIC X(14).
-      *������Խ�����ʽ�������ϡ�
+      *自宅−編集住所（住所＋番地）
            03  RECE02-HOME-ADRS1.
                05  RECE02-HOME-ADRS-R     PIC X(50)
                                               OCCURS  4.
-      *Ϣ������Խ�͹���ֹ�
+      *連絡先−編集郵便番号
            03  RECE02-RENRAKU-POST1       PIC X(14).
-      *Ϣ������Խ�����ʽ�������ϡ�
+      *連絡先−編集住所（住所＋番地）
            03  RECE02-RENRAKU-ADRS1.
                05  RECE02-RENRAKU-ADRS-R  PIC X(50)
                                               OCCURS  4.
-      *Ϣ������Խ������ֹ���������ֹ����ѡ�
+      *連絡先−編集電話番号（昼電話番号全角）
            03  RECE02-TEL                 PIC X(30).
-      *�쥻�ץ��о�ǯ��������
+      *レセプト対象年月日情報
            03  RECE02-TEKYMD.
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  RECE02-TEKSTYMD-X      PIC  X(08). 
-      *Ŭ�ѽ�λǯ����
+      *適用終了年月日
                05  RECE02-TEKEDYMD-X      PIC  X(08). 
-      *�����ѥ쥻�ץȼ��̡������������
+      *記載用レセプト種別（特別療養費）
            03  RECE02-RECESYUBETU-X       PIC  X(04).
-      *�����ѥ쥻�ץȼ��̡ʻ�쥻�ץȡ�
+      *記載用レセプト種別（紙レセプト）
            03  RECE02-RECESYUBETU-Y       PIC  X(04).
-      *��ʾ���
+      *主科情報
            03  RECE02-SYUKA-AREA.
-      *��ʣ�
+      *主科１
                05  RECE02-SYUKA           PIC  X(02).
-      *��ʣ��ʥ쥻�Ż����Ųʡ�
+      *主科１（レセ電算診療科）
                05  RECE02-RECESYUKA       PIC  X(02).
-      *��ʣ����Ų�̾
+      *主科１診療科名
                05  RECE02-SYUKANAME       PIC  X(80).
-      *��ʣ�
+      *主科２
                05  RECE02-SYUKA2          PIC  X(02).
-      *��ʣ��ʥ쥻�Ż����Ųʡ�
+      *主科２（レセ電算診療科）
                05  RECE02-RECESYUKA2      PIC  X(02).
-      *��ʣ�
+      *主科３
                05  RECE02-SYUKA3          PIC  X(02).
-      *��ʣ��ʥ쥻�Ż����Ųʡ�
+      *主科３（レセ電算診療科）
                05  RECE02-RECESYUKA3      PIC  X(02).
-      *����̽��Ͼ���
+      *医師別出力情報
            03  RECE02-DRCD-AREA.
-      *��ե�����
+      *医師コード
                05  RECE02-DRCD            PIC  X(05).
-      *����̿��Ų�
+      *医師別診療科
                05  RECE02-DRCD-SRYKA      PIC  X(02).
       *
-      *���ݸ�����
+      *主保険情報
            03  RECE02-HKN.
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
                05  RECE02-HKNID           PIC  9(10).
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
                05  RECE02-HKNNUM          PIC  X(03).
-      *���ݸ���ˡ���ֹ�
+      *主保険−法別番号
                05  RECE02-HKNHBTNUM       PIC  X(02).
-      *���ݸ����ݸ����ֹ�
+      *主保険−保険者番号
                05  RECE02-HKNJANUM        PIC  X(08).
-      *���ݸ����ܿͲ�²��ʬ
+      *主保険−本人家族区分
                05  RECE02-HONKZKKBN       PIC  X(01).
-      *���ݸ��������ʬ
+      *主保険−補助区分
                05  RECE02-HOJOKBN         PIC  X(01).
-      *���ݸ��ݷ�³��ʬ
+      *主保険−継続区分
                05  RECE02-CONTKBN         PIC  X(01).
-      *���ݸ��ݵ���
+      *主保険−記号
                05  RECE02-KIGO            PIC  X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
                05  RECE02-NUM             PIC  X(80).
-      *���ݸ��ݵ��ճ��
+      *主保険−給付割合
                05  RECE02-KYURATE         PIC  9(03).
-      *���ݸ��ݾ������ֹ�
+      *主保険−証明書番号
                05  RECE02-CERTNUM         PIC  X(03).
-      *Ϸ���ݷ����
+      *老人保健情報
            03  RECE02-RJNHKN.
-      *Ϸ���ݸ����ݸ��ɣ�
+      *老人保険−保険ＩＤ
                05  RECE02-RJNHKNID        PIC  9(10).
-      *Ϸ���ݸ����ݸ��ֹ�
+      *老人保険−保険番号
                05  RECE02-RJNHKNNUM       PIC  X(03).
-      *Ϸ���ݸ���ˡ���ֹ�
+      *老人保険−法別番号
                05  RECE02-RJNHBTNUM       PIC  X(02).
-      *Ϸ���ݸ��ݻ�Į¼�ֹ�
+      *老人保険−市町村番号
                05  RECE02-RJNFTNJANUM     PIC  X(08).
-      *Ϸ���ݸ��ݼ�����ֹ�
+      *老人保険−受給者番号
                05  RECE02-RJNJKYSNUM      PIC  X(07).
-      *Ϸ���ݸ��ݻ�ʧ��ʬ
+      *老人保険−支払区分
                05  RECE02-RJNPAYKBN       PIC  X(02).
       *
-      *�������
+      *公費情報
            03  RECE02-KOHINF-AREA.
                05  RECE02-KOHINF          OCCURS  4.
-      *������ݸ��ɣ�
+      *公費−保険ＩＤ
                    07  RECE02-KOHID       PIC  9(10).
-      *������ݸ��ֹ�
+      *公費−保険番号
                    07  RECE02-KOHNUM      PIC  X(03).
-      *�����ˡ���ֹ�
+      *公費−法別番号
                    07  RECE02-KOHHBTNUM   PIC  X(02).
-      *�������ô���ֹ�
+      *公費−負担者番号
                    07  RECE02-KOHFTNJANUM PIC  X(08).
-      *����ݼ�����ֹ�
+      *公費−受給者番号
                    07  RECE02-KOHJKYSNUM  PIC  X(20).
-      *�����Ǥ�յ��ն�ʬ
+      *公費−任意給付区分
                    07  RECE02-KOHNINIKYUKBN
                                           PIC  X(01).
-      *����ݷ��
+      *公費−件数
                    07  RECE02-KOHKENSU    PIC  9(03).
-      *����ݥ쥻�ץ������ʬ
+      *公費−レセプト請求区分
                    07  RECE02-RECESKYKBN  PIC  X(01).
-      *�����Ŭ�ѳ���ǯ����
+      *公費−適用開始年月日
                    07  RECE02-KOHTEKSTYMD PIC  X(08).
-      *�����Ŭ�ѽ�λǯ����
+      *公費−適用終了年月日
                    07  RECE02-KOHTEKEDYMD PIC  X(08).
       *
-      *������ܿ͡ݳ������ô��ʬ
+      *公費−本人−外来−負担区分
                    07  RECE02-HON-GAIFTNKBN      PIC  X(01).
-      *������ܿ͡ݳ���ݲ����ô���
+      *公費−本人−外来−回−負担割合
                    07  RECE02-HON-GAIKFTNRATE    PIC  9(03).
-      *������ܿ͡ݳ���ݲ�ݾ�³�
+      *公費−本人−外来−回−上限額
                    07  RECE02-HON-GAIKJGNGAK     PIC  9(06).
-      *������ܿ͡ݳ�������ݾ�³�
+      *公費−本人−外来−日−上限額
                    07  RECE02-HON-GAIDJGNGAK     PIC  9(06).
-      *������ܿ͡ݳ�������ݾ�²��
+      *公費−本人−外来−日−上限回数
                    07  RECE02-HON-GAIDJGNCNT     PIC  9(02).
-      *������ܿ͡ݳ���ݷ�ݱ���ݾ�³�
+      *公費−本人−外来−月−院内−上限額
                    07  RECE02-HON-GAIMNAIJGNGAK  PIC  9(06).
-      *������ܿ͡ݳ���ݷ�ݱ����ݾ�³�
+      *公費−本人−外来−月−院外−上限額
                    07  RECE02-HON-GAIMGAIJGNGAK  PIC  9(06).
-      *������ܿ͡ݳ���ݷ�ݾ�²��
+      *公費−本人−外来−月−上限回数
                    07  RECE02-HON-GAIMJGNCNT     PIC  9(02).
       *
-      *������㣲�ݳ������ô��ʬ
+      *公費−低２−外来−負担区分
                    07  RECE02-TSY-GAIFTNKBN      PIC  X(01).
-      *������㣲�ݳ���ݲ����ô���
+      *公費−低２−外来−回−負担割合
                    07  RECE02-TSY-GAIKFTNRATE    PIC  9(03).
-      *������㣲�ݳ���ݲ�ݾ�³�
+      *公費−低２−外来−回−上限額
                    07  RECE02-TSY-GAIKJGNGAK     PIC  9(06).
-      *������㣲�ݳ�������ݾ�³�
+      *公費−低２−外来−日−上限額
                    07  RECE02-TSY-GAIDJGNGAK     PIC  9(06).
-      *������㣲�ݳ�������ݾ�²��
+      *公費−低２−外来−日−上限回数
                    07  RECE02-TSY-GAIDJGNCNT     PIC  9(02).
-      *������㣲�ݳ���ݷ�ݱ���ݾ�³�
+      *公費−低２−外来−月−院内−上限額
                    07  RECE02-TSY-GAIMNAIJGNGAK  PIC  9(06).
-      *������㣲�ݳ���ݷ�ݱ����ݾ�³�
+      *公費−低２−外来−月−院外−上限額
                    07  RECE02-TSY-GAIMGAIJGNGAK  PIC  9(06).
-      *������㣲�ݳ���ݷ�ݾ�²��
+      *公費−低２−外来−月−上限回数
                    07  RECE02-TSY-GAIMJGNCNT     PIC  9(02).
       *
-      *������㣱�ݳ������ô��ʬ
+      *公費−低１−外来−負担区分
                    07  RECE02-TNK-GAIFTNKBN      PIC  X(01).
-      *������㣱�ݳ���ݲ����ô���
+      *公費−低１−外来−回−負担割合
                    07  RECE02-TNK-GAIKFTNRATE    PIC  9(03).
-      *������㣱�ݳ���ݲ�ݾ�³�
+      *公費−低１−外来−回−上限額
                    07  RECE02-TNK-GAIKJGNGAK     PIC  9(06).
-      *������㣱�ݳ�������ݾ�³�
+      *公費−低１−外来−日−上限額
                    07  RECE02-TNK-GAIDJGNGAK     PIC  9(06).
-      *������㣱�ݳ�������ݾ�²��
+      *公費−低１−外来−日−上限回数
                    07  RECE02-TNK-GAIDJGNCNT     PIC  9(02).
-      *������㣱�ݳ���ݷ�ݱ���ݾ�³�
+      *公費−低１−外来−月−院内−上限額
                    07  RECE02-TNK-GAIMNAIJGNGAK  PIC  9(06).
-      *������㣱�ݳ���ݷ�ݱ����ݾ�³�
+      *公費−低１−外来−月−院外−上限額
                    07  RECE02-TNK-GAIMGAIJGNGAK  PIC  9(06).
-      *������㣱�ݳ���ݷ�ݾ�²��
+      *公費−低１−外来−月−上限回数
                    07  RECE02-TNK-GAIMJGNCNT     PIC  9(02).
       *
-      *�ݸ��ȹ礻�ֹ����
+      *保険組合せ番号情報
            03  RECE02-HKNCOMBIINF-AREA.
                05  RECE02-HKNCOMBIINF     OCCURS  10.
-      *�ݸ��ȹ礻�ֹ�
+      *保険組合せ番号
                    07  RECE02-HKNCOMBI    PIC  9(04).
-      *���ݸ��ֹ�
+      *主保険番号
                    07  RECE02-HKNNUMHC    PIC  X(03).
-      *�ȹ礻�����ݸ��ֹ����
+      *組合せ公費保険番号情報
                    07  RECE02-KOHNUMHCINF OCCURS  4.
-      *�ȹ礻�����ݸ��ֹ�
+      *組合せ公費保険番号
                        09  RECE02-KOHNUMHC
                                           PIC  X(03).
-      *�ȹ礻�����ݸ��ɣ�
+      *組合せ公費保険ＩＤ
                        09  RECE02-KOHIDHC PIC  9(10).
-      *�������ʻ��ʬ���������׶�ʬ
+      *全国公費併用分請求点集計区分
                        09  RECE02-SYUKEIKBN
                                           PIC  X(01).
-      *�������ʻ��ʬ�����������оݶ�ʬ
+      *全国公費併用分請求点集計対象区分
                        09  RECE02-SYUKEI-TAIKBN
                                           PIC  X(01).
-      *�쥻������ô��ʬ�Խ��ե饰
+      *レセ電用負担区分編集フラグ
                        09  RECE02-FTNKBNFLG
                                           PIC  9(01).
-      *�ݸ��ȹ礻����ե饰�ʣ���������񤢤��
+      *保険組合せ公費フラグ（１：全国公費あり）
                    07  RECE02-HKNCOMBIFLG PIC  9(01).
       *
-      *�õ��������
+      *特記事項情報
            03  RECE02-TOKKIINF            OCCURS  5.
-      *�õ�����
+      *特記事項
                05  RECE02-TOKKI           PIC  X(02).
       *
-      *���Ŷ�ʬ����������
+      *診療区分別点数情報
            03  RECE02-SRYKBNINF           OCCURS  50.
-      *��������
+      *基本点数
                05  RECE02-KHNTEN          PIC  9(08).
-      *���
+      *回数
                05  RECE02-KAISU           PIC  9(05).
-      *������������
+      *明細点数情報
                05  RECE02-TENSUINF-AREA.
                    07  RECE02-TENSUINF    OCCURS  5.
-      *��������
+      *明細点数
                        09  RECE02-TENSU   PIC S9(08).
       *
-      *����������
+      *実日数情報
            03  RECE02-JNISSUINF-AREA.
                05  RECE02-JNISSUINF       OCCURS  5.
-      *������
+      *実日数
                    07  RECE02-JNISSU      PIC  9(02).
       *
-      *�����������
+      *合計点数情報
            03  RECE02-TOTALTENINF-AREA.
                05  RECE02-TOTALTENINF     OCCURS  5.
-      *�������
+      *合計点数
                    07  RECE02-TOTALTEN    PIC S9(08).
       *
-      *��ô��۾���
+      *負担金額情報
            03  RECE02-FTNMONEYINF-AREA.
                05  RECE02-FTNMONEYINF     OCCURS  5.
-      *��ô���
+      *負担金額
                    07  RECE02-FTNMONEY    PIC  9(09).
-      *��ô��ۡʰ�����ô�ۡ�
+      *負担金額（一部負担額）
                    07  RECE02-FTNMONEY-FTN    PIC  9(09).
-      *��ô��ۡʹ����ۡ�
+      *負担金額（控除額）
                    07  RECE02-FTNMONEY-KOJ    PIC  9(09).
       *
-      *Ϸ�͸��ȶ�ʬ�ʹ���Էв����֥ե饰�Ȥ��ƻ��ѡ�
+      *老人減免区分（高齢者経過措置フラグとして使用）
            03  RECE02-RJNGENMENKBN        PIC  X(01).
-      *Ϸ�ͳ����ۡ�����������פȤ��ƻ��ѡ�
+      *老人外来金額（請求点数合計として使用）
            03  RECE02-RJNGAIFTN           PIC  9(09).
-      *Ϸ��������ۡ�Ϸ�͸��Ȱ�����ô�⵭�ܥե饰�Ȥ��ƻ��ѡ�
+      *老人入院金額（老人減免一部負担金記載フラグとして使用）
            03  RECE02-RJNNYUFTN           PIC  9(09).
-      *���ȶ�ʬ
+      *減免区分
            03  RECE02-GENMENKBN           PIC  9(01).
-      *���۳��
+      *減額割合
            03  RECE02-GENGAKURATE         PIC  9(03).
-      *���۶��
+      *減額金額
            03  RECE02-GENGAKU             PIC  9(07).
       *
-      *�������ñ���ʣ�����̤����ʪ���դν�����ʬ�Ȥ��ƻ��ѡ�
+      *割引点数単価（７０歳未満現物給付の所得区分として使用）
            03  RECE02-DISCOUNTTENTNK      PIC  X(02).
-      *�������������
+      *食事療養費情報
            03  RECE02-SHOKUJIINF          OCCURS  5.
-      *��������
+      *食事日数
                05  RECE02-SHOKUJINISSU    PIC  9(02).
-      *����������
+      *食事療養費
                05  RECE02-SHOKUJIRYOYOHI  PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                05  RECE02-SHOKUJIFTN      PIC  9(09).
       *
-      *������ô�⡦����������ɸ����ô�۶�ʬ
+      *一部負担金・食事療養費標準負担額区分
            03  RECE02-SHOKUJIFTNKBN       PIC  X(01).
-      *������ô�⡦����������ɸ����ô�۶�ʬ������������Ƚ���ѡ�
+      *一部負担金・食事療養費標準負担額区分２（地方公費判定用）
            03  RECE02-SHOKUJIFTNKBN2-INF.
                05  RECE02-SHOKUJIFTNKBN2  PIC  X(01)
                                           OCCURS  4.
       *
-      *Ϸ�͸�����ô��۾���
+      *老人公費負担金額情報
            03  RECE02-RJNKOHFTNINF        OCCURS  3.
-      *Ϸ�ͳ��������ô�ۡʡʣ��ˡʣ��ˡʣ��˻��ѡ�
+      *老人外来公費負担額（（１）（２）（３）使用）
                05  RECE02-RJNGAIKOHFTN    PIC  9(09).
-      *Ϸ������������ô�ۡʡʣ��ˡʣ��ˡʣ��˻��ѡ�
+      *老人入院公費負担額（（１）（２）（３）使用）
                05  RECE02-RJNNYUKOHFTN    PIC  9(09).
       *
-      *���ް�����ô�����
+      *薬剤一部負担金情報
            03  RECE02-YKZFTNINF-AREA.
                05  RECE02-YKZFTNINF       OCCURS  5.
-      *���ް�����ô��
+      *薬剤一部負担金
                    07  RECE02-YKZFTN      PIC  9(05).
-      *�쥻�ץȣϣãң�
+      *レセプトＯＣＲ１
            03  RECE02-OCR1                PIC  X(67).
-      *�쥻�ץȣϣãң�
+      *レセプトＯＣＲ２
            03  RECE02-OCR2                PIC  X(67).
-      *�쥻�ץȣϣãң�
+      *レセプトＯＣＲ３
            03  RECE02-OCR3                PIC  X(67).
       *
-      *�쥻�ץȵ��ܳ��������
+      *レセプト記載外公費情報
            03  RECE02-ETC-KOH-G.
                05  RECE02-ETC-KOHINF      OCCURS  4.
-      *���ܳ�������ݸ��ֹ�
+      *記載外公費−保険番号
                    07  RECE02-ETC-KOHNUM  PIC  X(03).
-      *���ܳ��������ô���ֹ�
+      *記載外公費−負担者番号
                    07  RECE02-ETC-KOHFTNJANUM
                                           PIC  X(08).
-      *���ܳ�����ݼ�����
+      *記載外公費−実日数
                    07  RECE02-ETC-JNISSU  PIC  9(02).
-      *���ܳ�����ݹ������
+      *記載外公費−合計点数
                    07  RECE02-ETC-TOTALTEN
                                           PIC  9(08).
-      *���ܳ��������ô���
+      *記載外公費−負担金額
                    07  RECE02-ETC-FTNMONEY
                                           PIC  9(09).
-      *���ܳ��������ô��ۡʰ�����ô�ۡ�
+      *記載外公費−負担金額（一部負担額）
                    07  RECE02-ETC-FTNMONEY-FTN
                                           PIC  9(09).
-      *���ܳ��������ô��ۡʹ����ۡ�
+      *記載外公費−負担金額（控除額）
                    07  RECE02-ETC-FTNMONEY-KOJ
                                           PIC  9(09).
-      *���ܳ���������ް�����ô�����
+      *記載外公費−薬剤一部負担金情報
                    07  RECE02-ETC-YKZFTN  PIC  9(05).
       *
-      *�쥻�ץ����ᤷ�ʤ������ΰ�
+      *レセプト請求しない公費領域
            03 RECE02-KOHSKY-KOHI-AREA.
                05  RECE02-KOHSKY-KOHI-TBL OCCURS  4.
-      *    ����ɣ�
+      *    公費ＩＤ
                    07  RECE02-KOHSKY-KOHID
                                           PIC  9(10).
-      *    �����ݸ��ֹ�
+      *    公費保険番号
                    07  RECE02-KOHSKY-KOHNUM
                                           PIC  X(03).
-      *    ������ô���ֹ�
+      *    公費負担者番号
                    07  RECE02-KOHSKY-KOHFTNJANUM
                                           PIC  X(08).
       *
-      *��ǻ��ֶ�ʬ
+      *初診時間区分
            03  RECE02-SHOSHINTIME         PIC  X(01).
-      *�ƿ�Ŧ�װ�����ʬ
+      *再診摘要印刷区分
            03  RECE02-SAISHIN-PRTKBN      PIC  X(01).
-      *��������û�Ŧ�װ�����ʬ
+      *外来管理加算摘要印刷区分
            03  RECE02-GAIRAIKSN-PRTKBN    PIC  X(01).
-      *������ե饰
+      *低所得フラグ
            03  RECE02-TEISYOTOKU          PIC  X(01).
-      *������ե饰������������Ƚ���ѡ�
+      *低所得フラグ２（地方公費判定用）
            03  RECE02-TEISYOTOKU2-INF.
                05  RECE02-TEISYOTOKU2     PIC  X(01)
                                           OCCURS  4.
-      *�������硦���������ե饰
+      *在宅総合・在宅末期フラグ
            03  RECE02-ZAITAKU             PIC  X(01).
-      *�������硦��������������ô��Ʒ�
+      *在宅総合・在宅末期一部負担金再掲
            03  RECE02-ZAITAKU-SAIKEI      PIC  9(09).
-      *�������硦��������������ô��Ʒǣ�
+      *在宅総合・在宅末期一部負担金再掲２
            03  RECE02-ZAITAKU-SAIKEI2     PIC  9(09).
-      *�Ʒǣ�
+      *再掲３
            03  RECE02-ZAITAKU-SAIKEI3     PIC  9(09).
-      *�Ʒǣ�
+      *再掲４
            03  RECE02-ZAITAKU-SAIKEI4     PIC  9(09).
-      *����ΰ�����ô��Ʒ�
+      *公費の一部負担金再掲
            03  RECE02-KOH-SAIKEI          PIC  9(09).
-      *����ΰ�����ô��Ʒǥե饰
+      *公費の一部負担金再掲フラグ
            03  RECE02-KOH-SAIKEIFLG       PIC  9(01).
-      *�����ݸ������ݸ��ԡˡ��̶кҳ��ե饰
+      *船員保険（被保険者）＋通勤災害フラグ
            03  RECE02-SENIN-TUUSAI        PIC  X(01).
-      *�����ȥ�����ȥե饰
+      *コメントカウントフラグ
            03  RECE02-COMCNTFLG           PIC  X(01).
-      *�ƥ��ȴ����ֹ��ʬ
+      *テスト患者番号区分
            03  RECE02-TSTPTNUMKBN         PIC  X(01).
-      *�쥻�ץȼ����������顼����
+      *レセプト種別不明エラー情報
            03  RECE02-ERR-AREA.
                05  RECE02-ERR-ERRKBN      PIC 9(02).
                05  RECE02-ERR-DAY         PIC 9(02).
@@ -584,64 +584,64 @@
                05  RECE02-ERR-TEKSTYMD    PIC 9(08).
                05  RECE02-ERR-TEKEDYMD    PIC 9(08).
       *
-      *�������ơ��֥����
+      *実日数テーブル情報
            03  RECE02-JNISSUTBLINF        OCCURS 31.
-      *�������ơ��֥�
+      *実日数テーブル
                05  RECE02-JNISSUTBL       PIC  X(01).
-      *���Ļ����Ļ��Υ����ȥե饰
+      *乳幼児・幼児のコメントフラグ
            03  RECE02-NYUYOJIFLG          PIC  X(01).
-      *����������������󥻥�����ʣ����ܡ˻���ե饰
+      *小児特定疾患カウンセリング料（１回目）算定フラグ
            03  RECE02-SYOUNIFLG           PIC  X(01).
-      *������žɲ�ͽ�ɥ�������Ƴ���ʣ����ܤ���
-      *�����ܤޤǡ˻���ե饰
+      *乳腺炎重症化予防ケア・指導料（２回目から
+      *４回目まで）算定フラグ
            03  RECE02-NYUSENFLG           PIC  X(01).
       *
-      *����������ơ��֥����
+      *公費実日数テーブル情報
            03  RECE02-KOHJNISSUTBLINF.
-      *����������ơ��֥�
+      *公費実日数テーブル
                05  RECE02-KOHJNISSUTBL    PIC  X(01)
                                           OCCURS 31.
-      *���ֹ�
+      *県番号
            03  RECE02-PREFNUM             PIC  9(02).
-      *���⡦������ʬ�ʣ������⡡������������
+      *県内・県外区分（１：県内　２：県外　）
            03  RECE02-PREFKBN             PIC  X(01).
-      *���ֹ���ݸ��ԡ�
+      *県番号（保険者）
            03  RECE02-HKNJANUM-PREFNUM    PIC  X(02).
-      *����ʬΥ��ʬ�Ǿ���
+      *公費分離区分最小値
            03  RECE02-KOHBUNRI-MIN        PIC  9(01).
-      *����ʬΥ��ʬ������
+      *公費分離区分最大値
            03  RECE02-KOHBUNRI-MAX        PIC  9(01).
-      *�¾����Խ��ե饰������������ܻ�Ƴ������
+      *病床数編集フラグ（特定疾患療養指導料等）
            03  RECE02-BEDSUFLG            PIC  X(01).
-      *����쥻Ŧ�����Խ��쥳���ɥե饰
+      *自費レセ摘要欄編集レコードフラグ
            03  RECE02-JIHTEKFLG           PIC  X(01).
-      *�����®���θ����û��ե饰
+      *外来迅速検体検査加算フラグ
            03  RECE02-KENTAIKASANFLG      PIC  X(01).
-      *ʡ���Խ��ե饰
+      *福祉編集フラグ
            03  RECE02-FUKUSHIFLGINF-AREA.
                05  RECE02-FUKUSHIFLG      PIC  X(01)   OCCURS 5.
-      *���ౡ���򵭺ܥե饰
+      *入退院履歴記載フラグ
            03  RECE02-NYUINRRK-FLG        PIC  X(01).
-      *���ݤޤȤ�ե饰
+      *生保まとめフラグ
            03  RECE02-SEIHOFLG            PIC  X(01).
-      *�����������ʤ֤���������ʬΥ��ʬ�Խ��ѡ�
+      *合計点数情報（ぶん点・公費分離区分編集用）
            03  RECE02-HENTOTALTENINF-AREA.
                05  RECE02-HENTOTALTENINF  OCCURS  5.
-      *��������ʤ֤���������ʬΥ��ʬ�Խ��ѡ�
+      *合計点数（ぶん点・公費分離区分編集用）
                    09  RECE02-HENTOTALTEN PIC S9(08).
-      *������
+      *印刷順
            03  RECE02-PRTSEQ              PIC  9(03).
       *
-      *���������ô��쥻���ܥե饰
+      *公費一部負担金レセ記載フラグ
            03  RECE02-KISAIFLGINF-AREA.
                05  RECE02-KISAIFLGINF     OCCURS  5.
                    09  RECE02-KISAIFLG    PIC  X(01).
-      *���������ô�⣰�ߵ��ܥե饰
+      *公費一部負担金０円記載フラグ
            03  RECE02-ZEROKISAIFLGINF-AREA.
                05  RECE02-ZEROKISAIFLGINF OCCURS  5.
                    09  RECE02-ZEROKISAIFLG
                                           PIC  X(01).
-      *����¾���ܥե饰
+      *その他記載フラグ
            03  RECE02-ETCKISAIFLGINF-AREA.
                05  RECE02-ETCKISAIFLGINF  OCCURS  5.
                    09  RECE02-EKF-JNISSUFLG    PIC  X(01).
@@ -676,121 +676,121 @@
       *
                    09  RECE02-GNBKEIKBN-K-G    PIC  X(01).
       *
-      *�����������������ܥե饰
+      *実日数・請求点記載フラグ
            03  RECE02-JSKISAIFLG          PIC  X(01).
-      *̤����ե饰
+      *未請求フラグ
            03  RECE02-MISEIKYU-FLG        PIC X(02).
-      *�쥻�ץ��õ������Խ�����
+      *レセプト特記事項編集情報
            03  RECE02-2006-AREA.
-      *        �õ�����
+      *        特記事項
                05  RECE02-2006-TOKKIINF.
                    07  RECE02-2006-TOKKI  PIC  X(12)
                                                OCCURS  4.
-      *        ���ճ��
+      *        給付割合
                05  RECE02-2006-KYURATE    PIC  9(03).
-      *        �쥻�š��õ�����
+      *        レセ電：特記事項
                05  RECE02-2006-RECEDEN-TOKKIINF.
                    07  RECE02-2006-RECEDEN-TOKKI
                                           PIC  X(02)
                                                OCCURS  5.
-      *        �쥻�š����ճ��
+      *        レセ電：給付割合
                05  RECE02-2006-RECEDEN-KYURATE
                                           PIC  9(03).
-      *        �������
+      *        公費情報
                05  RECE02-2006-KOHINF.
                    07  RECE02-2006-KOH-OCC     OCCURS  4. 
-      *                ��ô���ֹ浭�ܶ�ʬ
+      *                負担者番号記載区分
                        09  RECE02-2006-FTNJANUMKBN
                                           PIC  X(02).
-      *                ��ô���ֹ�
+      *                負担者番号
                        09  RECE02-2006-FTNJANUM
                                           PIC  X(08).
-      *                ������ֹ浭�ܶ�ʬ
+      *                受給者番号記載区分
                        09  RECE02-2006-JKYSNUMKBN
                                           PIC  X(02).
-      *                ������ֹ�
+      *                受給者番号
                        09  RECE02-2006-JKYSNUM
                                           PIC  X(07).
-      *                �쥻�š�����쥳���ɶ�ʬ
+      *                レセ電：公費レコード区分
                        09  RECE02-2006-RECEDEN-KORECKBN
                                           PIC  X(01).
-      *                �쥻�š���ô���ֹ浭�ܶ�ʬ
+      *                レセ電：負担者番号記載区分
                        09  RECE02-2006-RECEDEN-FTNJANUMKBN
                                           PIC  X(02).
-      *                �쥻�š���ô���ֹ�
+      *                レセ電：負担者番号
                        09  RECE02-2006-RECEDEN-FTNJANUM
                                           PIC  X(08).
-      *                �쥻�š�������ֹ浭�ܶ�ʬ
+      *                レセ電：受給者番号記載区分
                        09  RECE02-2006-RECEDEN-JKYSNUMKBN
                                           PIC  X(02).
-      *                �쥻�š�������ֹ�
+      *                レセ電：受給者番号
                        09  RECE02-2006-RECEDEN-JKYSNUM
                                           PIC  X(07).
-      *        Ŭ���󥳥��Ⱦ���
+      *        適用欄コメント情報
                05  RECE02-2006-TEKIYOU-COMMENTINF.
                    07  RECE02-2006-TEKIYOU-COMMENT-OCC OCCURS  5. 
-      *                Ŭ������ʥ�����
+      *                適用欄上段コメント
                        09  RECE02-2006-TEKIYOU-COMMENT1
                                           PIC  X(52).
-      *                Ŭ�����ʥ�����
+      *                適用欄下段コメント
                        09  RECE02-2006-TEKIYOU-COMMENT2
                                           PIC  X(52).
-      *                Ŭ������ʥ����ȥ쥻���Խ���ʬ
+      *                適用欄上段コメントレセ電編集区分
                        09  RECE02-2006-TEKIYOU-COMMENT1KBN
                                           PIC  X(01).
-      *                Ŭ�����ʥ����ȥ쥻���Խ���ʬ
+      *                適用欄下段コメントレセ電編集区分
                        09  RECE02-2006-TEKIYOU-COMMENT2KBN
                                           PIC  X(01).
       *
-      *�����õ��������
+      *患者特記事項情報
            03  RECE02-PTTOKKI-AREA.
                05  RECE02-PTTOKKINF           OCCURS  5.
                    07  RECE02-PTTOKKI-NAIYO
                                           PIC  X(12).
                    07  RECE02-PTTOKKI-CD  PIC  X(02).
       *
-      *����۾���ʷ׻��ѡ�
+      *請求額情報（計算用）
            03  RECE02-FTNMONEY-SKY             PIC 9(09).
       *
-      *����۾���ʰ������
+      *請求額情報（医療費）
            03  RECE02-SKYIRYO-INF.
-      *������
+      *実日数
                05  RECE02-SKYIRYO-NISSU        PIC 9(02).
-      *������
+      *請求点
                05  RECE02-SKYIRYO-TOTALTEN     PIC 9(08).
-      *������ô
+      *患者負担
                05  RECE02-SKYIRYO-ICHIBUFTN    PIC 9(09).
-      *�ݸ�����ô
+      *保険者負担
                05  RECE02-SKYIRYO-HOKENJA      PIC 9(09).
-      *������ô
+      *公費負担
                05  RECE02-SKYIRYO-KOHFTN       PIC 9(09).
       *
-      *����۾���ʸ�����ô�Τ����쥻�ץ����ᤷ�ʤ���������ʬ��
+      *請求額情報（公費負担のうちレセプト請求しない地方公費分）
            03  RECE02-SKYIRYO-KOHFTN-KOHSKY    PIC 9(09).
       *
-      *�����쥻��������ե饰
+      *点検レセ０点公費フラグ
            03  RECE02-TENKEN-FLG               PIC X(01).
       *
-      *�߰�������ե饰��ʿ������ǯ������š���
+      *在医総算定フラグ（平成２４年４月診療〜）
            03  RECE02-ZAITAKU-SANTEI-FLG       PIC X(01).
       *
-      *�����Ƚ��ե饰
+      *高齢者判定フラグ
            03  RECE02-KOUREI-HANTEIFLG         PIC X(01).
       *
-      *�軰�Թ԰پ���ʥ���ǥå����ξ�����ݸ��ȹ礻�ֹ����ȥ�󥯡�
+      *第三者行為情報（インデックスの情報は保険組合せ番号情報とリンク）
            03  RECE02-DAISANINF-AREA.
              04  RECE02-DAISANINF               OCCURS 10.
-      *�軰�Թ԰��ݸ��ȹ礻�ե饰
+      *第三者行為保険組合せフラグ
                05  RECE02-DAISANFLG             PIC 9(01).
-      *�軰�Թ԰ٸ���ɣ�
+      *第三者行為公費ＩＤ
                05  RECE02-DAISAN-KOHID          PIC 9(10).
-      *�軰�Թ԰��ݸ��ȹ礻��ʪ���եե饰
+      *第三者行為保険組合せ現物給付フラグ
                05  RECE02-DAISAN-GENBUTUFLG     PIC 9(01).
-      *�軰�Թ԰�������������
+      *第三者行為請求点数あり
                05  RECE02-DAISAN-SKYFLG         PIC 9(01).
-      *��ϥӥ곫�����Խ��Ѹ���ʬΥ��ʬ
+      *リハビリ開始日編集用公費分離区分
                05  RECE02-RIHA-KOHBUNRI         PIC 9(01).
-      *��ϥӥ껻��ơ��֥�
+      *リハビリ算定テーブル
                05  RECE02-RIHA-DAY-AREA.
                  06  RECE02-RIHA-DAY-OCC        OCCURS 31.
                    07  RECE02-RIHA-SINDAI       PIC 9(01).
@@ -801,126 +801,126 @@
                    07  RECE02-RIHA-SYOGAI       PIC 9(01).
                    07  RECE02-RIHA-SESSYOKU     PIC 9(01).
                    07  RECE02-RIHA-HAIYO        PIC 9(01).
-      *��ϥӥ�û�����ơ��֥�
+      *リハビリ加算算定テーブル
                05  RECE02-RIHA-DAY9-AREA.
                  06  RECE02-RIHA-DAY9-OCC       OCCURS 31.
                    07  RECE02-RIHA-SINDAI9      PIC 9(01).
                    07  RECE02-RIHA-KOKYUKI9     PIC 9(01).
                    07  RECE02-RIHA-HAIYO9       PIC 9(01).
       *
-      *�軰�Թ԰٥쥻�ץȳ����ե饰
-      *�ʣ����軰�Թ԰٤��������ʤ���
-      *�ʣ����軰�Թ԰٤Τ������������
-      *�ʣ����軰�Թ԰ٰʳ����軰�Թ԰٤�ξ���������������
-      *�ʣ����軰�Թ԰٤��������ʤ������軰�Թ԰٤˱�����������ˡ�
-      *�ʣ����軰�Թ԰٤Τ�������������軰�Թ԰ٰʳ��˱�����������ˡ�
-      *�ʣ����軰�Թ԰٤��������ʤ����ʴ�����Ͽ���軰�Թ԰٤���Ͽ�ʤ��ˡ�
+      *第三者行為レセプト該当フラグ
+      *（０：第三者行為の請求点なし）
+      *（１：第三者行為のみ請求点あり）
+      *（２：第三者行為以外と第三者行為の両方に請求点あり）
+      *（３：第三者行為の請求点なし　（第三者行為に院外処方あり））
+      *（４：第三者行為のみ請求点あり（第三者行為以外に院外処方あり））
+      *（９：第三者行為の請求点なし　（患者登録で第三者行為の登録なし））
            03  RECE02-DAISAN-GAITO              PIC 9(01).
-      *�軰�Թ԰������������
+      *第三者行為請求点数合計
            03  RECE02-DAISAN-TOTALTEN           PIC S9(08).
-      *�軰�Թ԰ٰ�����ô�������۹��
+      *第三者行為一部負担金相当額合計
            03  RECE02-DAISAN-FTNMONEY           PIC 9(09).
-      *�軰�Թ԰٥쥻�ץȸ�ʪ���ճ����ե饰
+      *第三者行為レセプト現物給付該当フラグ
            03  RECE02-DAISAN-GENBUTU-GAITO      PIC 9(01).
-      *�軰�Թ԰ٰ�����ô�����ִ��ե饰
+      *第三者行為一部負担金金額置換フラグ
            03  RECE02-DAISAN-CHIKAN             PIC 9(01).
-      *�軰�Թ԰��õ�����̵ͭ�ե饰
+      *第三者行為特記事項有無フラグ
            03  RECE02-DAISAN-TOKKI              PIC 9(01).
       *
-      *�����������ʤ��ݸ��Ȥ߹�碌ͭ��ե饰
+      *請求点数がない保険組み合わせ有りフラグ
            03  RECE02-SKYTENFLG                 PIC 9(01).
       *
-      *�õ����ࣰ����ͭ��ե饰
+      *特記事項０９施有りフラグ
            03  RECE02-TOKKI09FLG                PIC 9(01).
-      *���ۡۥ�����ͭ��ե饰
+      *【配】コメント有りフラグ
            03  RECE02-HAICOMFLG                 PIC 9(01).
-      *��ǥ��ߡ����ƿǥ��ߡ��κ޲��
+      *初診ダミー・再診ダミーの剤回数
            03  RECE02-DUMMYKAISU                PIC 9(03).
       *
-      *���л����İ����̩�򹯿Ǻ����ϰ�����
+      *３歳児視覚聴覚精密健康診査（地域公費）
            03  RECE02-SEIKENFLG                 PIC 9(01).
            03  RECE02-SEIKENTEN                 PIC 9(07).
       *
-      *���������ե饰
+      *高齢非該当フラグ
            03  RECE02-KOREIHIGAITO              PIC 9(01).
-      *����ʬΥ��ʬ�ִ��ե饰
+      *公費分離区分置換フラグ
            03  RECE02-KOHBUNRICHIKAN            PIC 9(01).
-      *�����о�ʬ����������ô��
+      *非減免対象分扱い一部負担金
            03  RECE02-GENMEN-NASI-KIN           PIC 9(09).
-      *��̺ƷǾ�Σ��ߵ��ܥե饰
+      *括弧再掲上の０円記載フラグ
            03  RECE02-SAIKEIZEROKSI1            PIC 9(01).
-      *��̺Ʒǲ��Σ��ߵ��ܥե饰
+      *括弧再掲下の０円記載フラグ
            03  RECE02-SAIKEIZEROKSI2            PIC 9(01).
-      *��̺Ʒǣ��Σ��ߵ��ܥե饰
+      *括弧再掲３の０円記載フラグ
            03  RECE02-SAIKEIZEROKSI3            PIC 9(01).
-      *��̺Ʒǣ��Σ��ߵ��ܥե饰
+      *括弧再掲４の０円記載フラグ
            03  RECE02-SAIKEIZEROKSI4            PIC 9(01).
-      *�����Ը��ȥ����ȥե饰
+      *東大阪市減免コメントフラグ
            03  RECE02-GENMEN-COM                PIC 9(01).
-      *�ڥ쥻�ץȡ��ݸ���ݰ�����ô�⵭�ܤʤ��ե饰
+      *【レセプト】保険欄−一部負担金記載なしフラグ
            03  RECE02-ICBKINKSI-NASI            PIC 9(01).
-      *�ڥ쥻�ץȡ��ݸ���ݰ�����ô�⵭�ܤ���ե饰
+      *【レセプト】保険欄−一部負担金記載ありフラグ
            03  RECE02-ICBKINKSI-ARI             PIC 9(01).
-      *�ڥ쥻�ץȡ۸�����ݰ�����ô�����ִ��ե饰
+      *【レセプト】公費欄−一部負担金金額置換フラグ
            03  RECE02-KOHCHIKAN                 PIC 9(01).
-      *�֡ʺƷǾ�ˡ����ִ����
+      *「（再掲上）：」置換金額
            03  RECE02-SAIKEI-CHIKAN-KIN1        PIC 9(09).
-      *�֡ʺƷǲ��ˡ����ִ����
+      *「（再掲下）：」置換金額
            03  RECE02-SAIKEI-CHIKAN-KIN2        PIC 9(09).
-      *�֡ʺƷǣ��ˡ����ִ����
+      *「（再掲３）：」置換金額
            03  RECE02-SAIKEI-CHIKAN-KIN3        PIC 9(09).
-      *�֡ʺƷǣ��ˡ����ִ����
+      *「（再掲４）：」置換金額
            03  RECE02-SAIKEI-CHIKAN-KIN4        PIC 9(09).
-      *���ݸ���ô�⡧���ִ����
+      *「保険負担金：」置換金額
            03  RECE02-HKN-CHIKAN-KIN            PIC 9(09).
-      *�ָ�����ô�⡧���ִ����
+      *「公１負担金：」置換金額
            03  RECE02-KOH-CHIKAN-KIN1           PIC 9(09).
-      *�ָ�����ô�⡧���ִ����
+      *「公２負担金：」置換金額
            03  RECE02-KOH-CHIKAN-KIN2           PIC 9(09).
-      *�ָ�����ô�⡧���ִ����
+      *「公３負担金：」置換金額
            03  RECE02-KOH-CHIKAN-KIN3           PIC 9(09).
-      *�ָ�����ô�⡧���ִ����
+      *「公４負担金：」置換金額
            03  RECE02-KOH-CHIKAN-KIN4           PIC 9(09).
-      *�ָ�������������ô�⡧���ִ����
+      *「公費請求書公１負担金：」置換金額
            03  RECE02-SEI-CHIKAN-KIN1           PIC 9(09).
-      *�ָ�������������ô�⡧���ִ����
+      *「公費請求書公２負担金：」置換金額
            03  RECE02-SEI-CHIKAN-KIN2           PIC 9(09).
-      *�ָ�������������ô�⡧���ִ����
+      *「公費請求書公３負担金：」置換金額
            03  RECE02-SEI-CHIKAN-KIN3           PIC 9(09).
-      *�ָ�������������ô�⡧���ִ����
+      *「公費請求書公４負担金：」置換金額
            03  RECE02-SEI-CHIKAN-KIN4           PIC 9(09).
       *
-      *���ݤޤȤ��ѡʼ��ݸ�ñ��ʬ�Ƕ���������
+      *生保まとめ用（主保険単独分診区別点数）
            03  RECE02-SYUTANTEN-AREA.
                05  RECE02-SYUTANTEN             PIC S9(08)  OCCURS 50.
            03  RECE02-SYUTANARIFLG              PIC 9(01).
       *
-      *�����������������ڤӱ���������������Ķ��ͳ�����Ⱦ���
+      *湿布薬制限枚数解除及び院外湿布薬７０枚超理由コメント情報
            03  RECE02-SIPPUCHKFLG               PIC 9(01).
            03  RECE02-SIPPUCHKINF.
              04  RECE02-SIPPUCHK-OCC            OCCURS  10.
                05  RECE02-SIPPUCHK-OCC2         OCCURS  31.
                    07  RECE02-SIPPUCHK          PIC 9(03).
       *
-      *�������������ü�׻��ե饰�ʴ��ԣ�����ô��
+      *１９原爆一般特殊計算フラグ（患者７割負担）
            03  RECE02-GENBAKUINF.
                05  RECE02-GENBAKU-TOKFLG        PIC 9(01).
                05  RECE02-GENBAKU-OCC           OCCURS 10.
                    07  RECE02-GENBAKU-FTNKIN    PIC 9(07)V9(01).
                    07  RECE02-GENBAKU-IDX       PIC 9(01).
       *
-      *�����������ߥ쥻�ץȺ����ե饰
+      *請求点数０円レセプト作成フラグ
            03  RECE02-SKYZEROFLG                PIC 9(01).
       *
-      *ǥ�إե饰
+      *妊婦フラグ
            03  RECE02-NINPUFLG                  PIC 9(01).
       *
-      *�����ե饰
+      *検査フラグ
            03  RECE02-KENSA-BNPFLG              PIC 9(01).
            03  RECE02-KENSA-NTPROFLG            PIC 9(01).
            03  RECE02-KENSA-ANPFLG              PIC 9(01).
       *
-      *ͽ��
+      *予備
            03  RECE02-YOBIETC-AREA.
                05  RECE02-YOBIETCINF          OCCURS 20.
                    07  RECE02-YOBIETC     PIC  9(09).

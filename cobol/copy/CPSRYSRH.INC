@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,77 +16,77 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���Ź԰پȲ�ơ��֥�      COPY (CPSRYSRH.INC)         *
+      *    診療行為照会テーブル      COPY (CPSRYSRH.INC)         *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  SRYSRH-REC.
-      *���ŵ����ֹ�
+      *医療機関番号
            03  SRYSRH-HOSPNUM      PIC 9(2).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SRYSRH-TERMID       PIC X(64).
-      *���ԣɣ�
+      *患者ＩＤ
            03  SRYSRH-PTID         PIC 9(10).
-      *���ֹ�
+      *剤番号
            03  SRYSRH-ZAINUM       PIC 9(09).
-      *������ʬ
+      *入外区分
            03  SRYSRH-NYUGAIKBN    PIC X(1).
-      *���Ų�
+      *診療科
            03  SRYSRH-SRYKA        PIC X(2).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  SRYSRH-HKNCOMBINUM  PIC 9(4).
-      *���Ŷ�ʬ
+      *診療区分
            03  SRYSRH-SRYKBN       PIC X(2).
-      *���ż��̶�ʬ
+      *診療種別区分
            03  SRYSRH-SRYSYUKBN    PIC X(3).
-      *������
+      *診療日
            03  SRYSRH-SRYYMD       PIC X(8).
-      *�޲��
+      *剤回数
            03  SRYSRH-ZAIKAISU     PIC 9(5).
-      *���̥ȡ�����
+      *数量トータル
            03  SRYSRH-SURYOTOTAL   PIC 9(7)V9(05).
-      *Ϣ��
+      *連番
            03  SRYSRH-RENNUM       PIC 9(02).
-      *���ť�����
+      *診療コード
            03  SRYSRH-SRYCD-G.
                05  SRYSRH-SRYCD-OCC    OCCURS 5.
                    07  SRYSRH-SRYCD    PIC X(9).
                    07  SRYSRH-SRYSURYO PIC 9(05)V9(05).
-      *����ʬ
+      *包括区分
            03  SRYSRH-HOKATSUKBN   PIC X(01).
-      *��׶�ʬ��1:���Ų�׺� 2:������׺ޡ�
+      *会計区分（1:診療会計剤 2:入院会計剤）
            03  SRYSRH-ACCTKBN      PIC X(01).
       *
-      *������
+      *作成日
            03  SRYSRH-CREYMD       PIC X(8).
-      *������
+      *更新日
            03  SRYSRH-UPYMD        PIC X(8).
-      *��������
+      *更新時間
            03  SRYSRH-UPHMS        PIC X(6).
       *
-      *    �ʲ�virtual����
-      *�����ֹ�
+      *    以下virtual項目
+      *患者番号
            03  SRYSRH-PTNUM        PIC X(20).
-      *���ʻ�̾
+      *カナ氏名
            03  SRYSRH-KANANAME     PIC X(100).
-      *����
+      *性別
            03  SRYSRH-SEX          PIC X(1).
-      *������
+      *誕生日
            03  SRYSRH-BIRTHDAY     PIC X(8).
-      *���Ͽ�����
+      *開始診療日
            03  SRYSRH-STSRYYMD     PIC X(8).
-      *��λ������
+      *終了診療日
            03  SRYSRH-EDSRYYMD     PIC X(8).
-      *���Ͽ��ŷ�
+      *開始診療月
            03  SRYSRH-STSRYYM      PIC X(6).
-      *��λ���ŷ�
+      *終了診療月
            03  SRYSRH-EDSRYYM      PIC X(6).
-      *�ɥ�����
+      *ドクター
            03  SRYSRH-DRCD         PIC X(5).
       *SQL
            03  SRYSRH-SQL          PIC X(15000).
-      *���աܻ���
+      *日付＋時刻
            03  SRYSRH-YMDHMS       PIC X(14).
 

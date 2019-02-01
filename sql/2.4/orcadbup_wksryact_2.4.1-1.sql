@@ -1,19 +1,19 @@
 --                                    --
--- ╔О║╪╔╞©гне╧т╟ы╔ч╔╧╔©               --
---    ╔и╔╞╔©║╪╔Ё║╪╔и                  --
---    ╧╧©╥цФ╔у╔И╔╟                    --
---    ее╩р╔╚╔К╔ф╔у╔И╔╟                --
---    ее╩р╔╚╔К╔ф╔╜║╪ ╓нди╡ц           --
+-- Ц┐╞Ц┐╪Ц┌╞Х╗╨Г≥┌Х║▄Г┌╨Ц┐·Ц┌╧Ц┌©               --
+--    Ц┐┴Ц┌╞Ц┌©Ц┐╪Ц┌ЁЦ┐╪Ц┐┴                  --
+--    Ф⌡╢Ф√╟Д╦╜Ц┐∙Ц┐╘Ц┌╟                    --
+--    И⌡╩Е╜░Ц┌╚Ц┐╚Ц┐├Ц┐∙Ц┐╘Ц┌╟                --
+--    И⌡╩Е╜░Ц┌╚Ц┐╚Ц┐├Ц┌╜Ц┐╪ Ц│╝Х©╫Е┼═           --
 --                                    --
---   ╔и╔╞╔©║╪╔Ё║╪╔и(DRCD)             --
---   ╧╧©╥цФ╔у╔И╔╟(MOD_FLG)            --
---   ее╩р╔╚╔К╔ф╔у╔И╔╟(KARTE_FLG)      --
---   ее╩р╔╚╔К╔ф╔╜║╪(KARTE_KEY) ╓нди╡ц --
+--   Ц┐┴Ц┌╞Ц┌©Ц┐╪Ц┌ЁЦ┐╪Ц┐┴(DRCD)             --
+--   Ф⌡╢Ф√╟Д╦╜Ц┐∙Ц┐╘Ц┌╟(MOD_FLG)            --
+--   И⌡╩Е╜░Ц┌╚Ц┐╚Ц┐├Ц┐∙Ц┐╘Ц┌╟(KARTE_FLG)      --
+--   И⌡╩Е╜░Ц┌╚Ц┐╚Ц┐├Ц┌╜Ц┐╪(KARTE_KEY) Ц│╝Х©╫Е┼═ --
 --                                    --
 -- Create Date : 2003/08/05           --
 --                                    --
 
--- TBL_WKSRYACTWK  ╨Ню╝               --
+-- TBL_WKSRYACTWK  Д╫°Ф┬░               --
 
 create table TBL_WKSRYACTWK (
 hospid			 character(24) NOT NULL,
@@ -108,16 +108,16 @@ upymd			 character(8),
 uphms			 character(6),
 Constraint "tbl_wksryactwk_primary_key" Primary Key ("hospid", "nyugaikbn", "ptid", "sryka", "sryymd", "hkncombi", "zainum", "rennum")
 );
--- TBL_WKSRYACT ╒╙ TBL_WKSRYACTWK   --
+-- TBL_WKSRYACT Б├▓ TBL_WKSRYACTWK   --
 
 insert into TBL_WKSRYACTWK
 select * from TBL_WKSRYACT;
 
--- TBL_WKSRYACT ╨О╫Э                --
+-- TBL_WKSRYACT Е┴┼И≥╓                --
 
 drop table TBL_WKSRYACT;
 
--- TBL_WKSRYACT ╨Ню╝                --
+-- TBL_WKSRYACT Д╫°Ф┬░                --
 
 create table TBL_WKSRYACT (
 hospid			 character(24) NOT NULL,
@@ -217,7 +217,7 @@ uphms			 character(6),
 Constraint "tbl_wksryact_primary_key" Primary Key ("hospid", "nyugaikbn", "ptid", "sryka", "sryymd", "hkncombi", "zainum", "rennum")
 );
 
--- TBL_WKSRYACTWK ╒╙ TBL_WKSRYACT   --
+-- TBL_WKSRYACTWK Б├▓ TBL_WKSRYACT   --
 
 insert into TBL_WKSRYACT
 (hospid,
@@ -413,6 +413,6 @@ uphms
 from TBL_WKSRYACTWK;
 
 
--- TBL_WKSRYACTWK ╨О╫Э             --
+-- TBL_WKSRYACTWK Е┴┼И≥╓             --
 
 drop table TBL_WKSRYACTWK;

@@ -13,7 +13,7 @@ CREATE TABLE tbl_chk004 (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_chk004 IS '•¡•ß•√•Ø•ﬁ•π•ø£¥';
+COMMENT ON TABLE tbl_chk004 IS '„ÉÅ„Çß„ÉÉ„ÇØ„Éû„Çπ„ÇøÔºî';
 
 ALTER TABLE ONLY tbl_chk004
     ADD CONSTRAINT tbl_chk004_primary_key PRIMARY KEY (hospnum, kanricd, kbncd, styukymd, edyukymd);

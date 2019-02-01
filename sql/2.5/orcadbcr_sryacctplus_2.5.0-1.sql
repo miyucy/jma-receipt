@@ -1,12 +1,12 @@
 --                                    --
--- ©гне╡Я╥виМ╡ц╔ф║╪╔ж╔К╓н╨Ню╝         --
+-- Х╗╨Г≥┌Д╪ Х╗┬И≥└Е┼═Ц┐├Ц┐╪Ц┐√Ц┐╚Ц│╝Д╫°Ф┬░         --
 --                                    --
 --                                    --
 -- Create Date : 2004/07/05           --
 --                                    --
 
 
--- TBL_SRYACCTPLUS ╨Ню╝               --
+-- TBL_SRYACCTPLUS Д╫°Ф┬░               --
 
 create table TBL_SRYACCTPLUS (
 HOSPID				char(24)	not null,

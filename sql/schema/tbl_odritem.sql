@@ -15,7 +15,7 @@ CREATE TABLE tbl_odritem (
     hospnum numeric(2,0) NOT NULL
 );
 
-COMMENT ON TABLE tbl_odritem IS 'Æþ±¡¥ª¡¼¥À¹àÌÜ';
+COMMENT ON TABLE tbl_odritem IS 'å…¥é™¢ã‚ªãƒ¼ãƒ€é …ç›®';
 
 ALTER TABLE ONLY tbl_odritem
     ADD CONSTRAINT tbl_odritem_primary_key PRIMARY KEY (hospnum, karte_key, ordernum, itemnum);

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,25 +16,25 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    CSV¥ì¥³¡¼¥ÉÊ¬³ä            COPY (CPORCSDIVCSV.INC)    *
+      *    CSVãƒ¬ã‚³ãƒ¼ãƒ‰åˆ†å‰²            COPY (CPORCSDIVCSV.INC)    *
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSDIVCSV-AREA.
-      *    CSV¥ì¥³¡¼¥É
+      *    CSVãƒ¬ã‚³ãƒ¼ãƒ‰
            03  ORCSDIVCSV-REC              PIC X(3000).
            03  ORCSDIVCSV-REC-R        REDEFINES   ORCSDIVCSV-REC.
                05  ORCSDIVCSV-CHAR         PIC X(01)   OCCURS  3000.
-      *    Í×ÁÇ¿ô
+      *    è¦ç´ æ•°
            03  ORCSDIVCSV-ELE-C            PIC 9(03).
-      *    ¥Ç¥ê¥ß¥¿(1¥Ð¥¤¥È)
+      *    ãƒ‡ãƒªãƒŸã‚¿(1ãƒã‚¤ãƒˆ)
            03  ORCSDIVCSV-DELI             PIC X(01).
-      *    ¥À¥Ö¥ë¥³¡¼¥Æ¡¼¥·¥ç¥óÍ­Ìµ(0:¤Ê¤·,1:¤¢¤ê)
+      *    ãƒ€ãƒ–ãƒ«ã‚³ãƒ¼ãƒ†ãƒ¼ã‚·ãƒ§ãƒ³æœ‰ç„¡(0:ãªã—,1:ã‚ã‚Š)
            03  ORCSDIVCSV-DQ               PIC 9(01).
-      *    Í×ÁÇ¾ðÊó
+      *    è¦ç´ æƒ…å ±
            03  ORCSDIVCSV-TABLE.
                05  ORCSDIVCSV-ELE          OCCURS 100.
                    07  ORCSDIVCSV-D        PIC X(300).
-      *    ·ë²Ì¥³¡¼¥É¡Ê0:À®¸ù¡¢1:°ú¿ôÉÔÀµ¡Ë
+      *    çµæžœã‚³ãƒ¼ãƒ‰ï¼ˆ0:æˆåŠŸã€1:å¼•æ•°ä¸æ­£ï¼‰
            03  ORCSDIVCSV-RC               PIC 9(01).

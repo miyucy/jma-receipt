@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,7 +16,7 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    ADL∂Ë ¨æ Û          COPY (CPADLKBN.INC)                  *
+      *    ADLÂå∫ÂàÜÊÉÖÂ†±          COPY (CPADLKBN.INC)                  *
       *****************************************************************
        01  ADL-AREA.
            03  ADL-VAL.
@@ -26,7 +26,7 @@
                05  ADL-01FL02    PIC 9(04)    VALUE  1001.
                05  ADL-01FL03    PIC X(01)    VALUE  "a".
                05  ADL-01FL04    PIC X(100)   VALUE
-                   "°°£·°°•Ÿ•√•…§Œ≤ƒ∆∞¿≠".
+                   "„ÄÄÔΩÅ„ÄÄ„Éô„ÉÉ„Éâ„ÅÆÂèØÂãïÊÄß".
       *
                05  ADL-02FLS     PIC X(08)    VALUE  "00000000".
                05  ADL-02FLE     PIC X(08)    VALUE  "99999999".
@@ -34,7 +34,7 @@
                05  ADL-02FL02    PIC 9(04)    VALUE  1002.
                05  ADL-02FL03    PIC X(01)    VALUE  "b".
                05  ADL-02FL04    PIC X(100)   VALUE
-                   "°°£‚°°∞‹æË".
+                   "„ÄÄÔΩÇ„ÄÄÁßª‰πó".
       *
                05  ADL-03FLS     PIC X(08)    VALUE  "00000000".
                05  ADL-03FLE     PIC X(08)    VALUE  "99999999".
@@ -42,7 +42,7 @@
                05  ADL-03FL02    PIC 9(04)    VALUE  1003.
                05  ADL-03FL03    PIC X(01)    VALUE  "c".
                05  ADL-03FL04    PIC X(100)   VALUE
-                   "°°£„°°ø©ªˆ".
+                   "„ÄÄÔΩÉ„ÄÄÈ£ü‰∫ã".
       *
                05  ADL-04FLS     PIC X(08)    VALUE  "00000000".
                05  ADL-04FLE     PIC X(08)    VALUE  "99999999".
@@ -50,7 +50,7 @@
                05  ADL-04FL02    PIC 9(04)    VALUE  1004.
                05  ADL-04FL03    PIC X(01)    VALUE  "d".
                05  ADL-04FL04    PIC X(100)   VALUE
-                   "°°£‰°°•»•§•Ï§Œª»Õ—".
+                   "„ÄÄÔΩÑ„ÄÄ„Éà„Ç§„É¨„ÅÆ‰ΩøÁî®".
       *
            03  ADL-R    REDEFINES      ADL-VAL.
                05  ADL-OCC             OCCURS  4.

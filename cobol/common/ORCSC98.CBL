@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC98.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : �����׻��嶦�̥����å�����
-      *                      �����������Υ����å���
-      *                      �ʣˣ������ʣ����Τ߶��̻��ѡ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  06/12/12    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 点数計算後共通チェック処理
+      *                      （投薬量等のチェック）
+      *                      （Ｋ０２、Ｊ０４のみ共通使用）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  06/12/12    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.01.00    NACL-¿��Ǽ  07/12/XX  ���Զش������б�
-      *  04.08.00    NACL-¿��Ǽ  16/11/XX  ������Ϳ�̥����å���ʬ�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.01.00    NACL-多々納  07/12/XX  患者禁忌薬剤対応
+      *  04.08.00    NACL-多々納  16/11/XX  投薬投与量チェック区分対応
       *****************************************************************
       *
       *
@@ -45,7 +45,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-SP                  PIC 9(01).
@@ -59,7 +59,7 @@
            03  FLG-SRYACT              PIC 9(01).
            03  FLG-YAKU-TBL            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -76,7 +76,7 @@
            03  IDY-TBL             PIC 9(04).
            03  IDX-C               PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-NEN                 PIC 9(03).
            03  WRK-TOURYO              PIC 9(05)V9(05).
@@ -93,7 +93,7 @@
                05  WRK-SURYO-Z2    PIC X(01).
                05  WRK-SURYO-Z3    PIC ZZZZZ.
            03  WRK-SURYO-H         PIC X(11).
-      *    ǯ������å�
+      *    年令チェック
            03  WRK-NENCD               PIC X(02).
            03  WRK-NENREI.
                05  WRK-NEN-YY          PIC 9(03).
@@ -104,7 +104,7 @@
                05  WRK-SRYYM           PIC X(06).
                05  WRK-SRYDD           PIC 9(02).
            03  WRK-ERRMSG              PIC X(100).
-      *    �����̡���²�������å�
+      *    月総量・上限回数チェック
            03  WRK-SRYCD               PIC X(09).
            03  WRK-KAISU               PIC S9(03).
            03  WRK-TUKIKAISU           PIC S9(03).
@@ -114,25 +114,25 @@
            03  WRK-SOURYO-H1           PIC X(11).
            03  WRK-SOURYO-H2           PIC X(11).
       *
-      *    ǯ��ñ�̥ơ��֥�
+      *    年令単位テーブル
            COPY    "CMNENREICD.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
-      *    ���Ź԰٥ޥ�����
+      *    診療行為マスタ−
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
-      *    ���Ų�ץޥ�����
+      *    診療会計マスタ−
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
@@ -141,15 +141,15 @@
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ��Ϳ���������å��ѥ�᥿
+      *    投与量等チェックパラメタ
            COPY    "CPORCSC98.INC".
-      *    �ӣУ��ѥ�᥿
+      *    ＳＰＡパラメタ
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
@@ -160,7 +160,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -182,7 +182,7 @@
            .
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        100-MAIN-SYORI-SEC            SECTION.
       *
@@ -193,18 +193,18 @@
                              ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
                            OR (SPA-ERRCD   NOT =   SPACE   )
-      *        ���åȤι԰���
+      *        セットの行位置
                IF      SPA-GMN-INPUTCD(IDX-Z)(1:1) =   "S"
                    MOVE    IDX-Z               TO  IDX-SET
                END-IF
       *
-      *        ���Զش����ޥ����å�
+      *        患者禁忌薬剤チェック
                IF     (SPA-COM-INPUTCD (IDX-Z) (1:1)
                                                    =   "6" )
                    PERFORM 300-PTKINKI-CHK-SEC
                END-IF
       *
-      *        �������������ͤΤ�
+      *        在宅・投薬・注射のみ
                IF    ((SPA-COM-SRYKBN (01)     =   "14"
                                                OR  "21"
                                                OR  "22"
@@ -212,10 +212,10 @@
                                                OR  "31"
                                                OR  "32"
                                                OR  "33" )
-      *H28.11    ���٤Ƥο��Ŷ�ʬ
+      *H28.11    すべての診療区分
                  OR   (LNK-SC98-TOUYOCHK-FLG   =   "1" ))
                AND   ( SPA-ERRCD               =   SPACE )
-      *            �������þ���Υ����å�
+      *            点数附加情報のチェック
                    PERFORM 200-TENSUPLUS-CHK-SEC
                END-IF
            END-PERFORM
@@ -225,11 +225,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �������þ���Υ����å�����
+      *    点数附加情報のチェック処理
       *****************************************************************
        200-TENSUPLUS-CHK-SEC            SECTION.
       *
-      *    Ĺ����������
+      *    長期投薬期間
            IF     LNK-SC98-PG              =   "J04"
                CONTINUE
            ELSE
@@ -237,7 +237,7 @@
                      (SPA-COM-CHOKINISSU (IDX-Z)   >   ZERO) AND
                      (SPA-COM-CHOKINISSU (IDX-Z)   <   SPA-COM-KAISU
                                                           (IDX-Z))
-      *H28.11      �����Τ�
+      *H28.11      投薬のみ
                    IF    ( SPA-COM-SRYKBN (01) =   "21"
                                                OR  "22"
                                                OR  "23"
@@ -248,7 +248,7 @@
                    END-IF
                END-IF
            END-IF
-      *    ��Ϳ��
+      *    投与量
            IF    (SPA-COM-INPUTCD(IDX-Z)(1:1)  =   "6" ) AND
                  (SPA-ERRCD                    =   SPACE)
                IF     (SPA-COM-SURFLG (IDX-Z)  =   "1" )  OR
@@ -270,7 +270,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ĺ���������顼����
+      *    長期日数エラー処理
       *****************************************************************
        10012-CHOKI-ERR-SEC            SECTION.
       *
@@ -304,16 +304,16 @@
            PERFORM 10021-SURYO-HEN-SEC
       *
            MOVE    SPACE               TO  LNK-SC98-ERRMSG
-           STRING  "Ĺ�������ξ�¤� " DELIMITED  BY  SIZE
+           STRING  "長期日数の上限は " DELIMITED  BY  SIZE
                    WRK-SURYO-H         DELIMITED  BY  SPACE
-                   "���Ǥ���"          DELIMITED  BY  SIZE
+                   "日です。"          DELIMITED  BY  SIZE
                                        INTO    LNK-SC98-ERRMSG
            END-STRING
            .
        10012-CHOKI-ERR-EXT.
       *
       *****************************************************************
-      *    ��Ϳ�̥����å�����
+      *    投与量チェック処理
       *****************************************************************
        1001-TOUYO-CHK-SEC            SECTION.
       *
@@ -323,17 +323,17 @@
                MOVE    ZERO                TO  FLG-TOUYO-CHK
                IF     (SPA-COM-TOUYORYO1 (IDX-Z IDX) =   ZERO ) AND
                       (SPA-COM-TOUYORYO2 (IDX-Z IDX) =   ZERO )
-      *            �����å��ʤ�
+      *            チェックなし
                    CONTINUE
                ELSE
                    EVALUATE    TRUE
-      *                ���¡��������ʤ�
+      *                下限・上限設定なし
                        WHEN    (SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
                                                    =   ZERO )  AND
                                (SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
                                                    =   ZERO )
                            MOVE    1               TO  FLG-TOUYO-CHK
-      *                ���¤Τ�����
+      *                下限のみ設定
                        WHEN    (SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
                                                NOT =   ZERO )  AND
                                (SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
@@ -342,7 +342,7 @@
                            IF      FLG-TOUYO-CHK1      =   1
                                MOVE    1               TO  FLG-TOUYO-CHK
                            END-IF
-      *                ��¤Τ�����
+      *                上限のみ設定
                        WHEN    (SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
                                                    =   ZERO )  AND
                                (SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
@@ -351,7 +351,7 @@
                            IF      FLG-TOUYO-CHK2      =   1
                                MOVE    1               TO  FLG-TOUYO-CHK
                            END-IF
-      *                �������ꤢ��
+      *                共に設定あり
                        WHEN    (SPA-COM-TOUYOKGNAGE (IDX-Z IDX)
                                                NOT =   ZERO )  AND
                                (SPA-COM-TOUYOJGNAGE (IDX-Z IDX)
@@ -366,9 +366,9 @@
                END-IF
       *
                IF      FLG-TOUYO-CHK       =   1
-      *             ��Ϳ�̥����å�
+      *             投与量チェック
                    IF      SPA-COM-SRYKBN (IDX-Z)  =   "22"
-      *                ����Ƚ��
+      *                頓服判定
                        IF      (SPA-COM-TOUYORYO2 (IDX-Z IDX)  =   ZERO)
                            MOVE    SPA-COM-TOUYORYO1 (IDX-Z IDX)
                                                    TO  WRK-TOURYO
@@ -399,7 +399,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ǯ������å�����
+      *    下限年齢チェック処理
       *****************************************************************
        10011-KGNAGE-CHK-SEC            SECTION.
       *
@@ -422,7 +422,7 @@
        10011-KGNAGE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ǯ������å�����
+      *    上限年齢チェック処理
       *****************************************************************
        10012-JGNAGE-CHK-SEC            SECTION.
       *
@@ -443,7 +443,7 @@
        10012-JGNAGE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ǯ�𥳡��ɥ����å�����
+      *    年齢コードチェック処理
       *****************************************************************
        10013-NENREICD-CHK-SEC             SECTION.
       *
@@ -467,7 +467,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ϳ�̥����å�����
+      *    投与量チェック処理
       *****************************************************************
        1002-TOUYO-ERR-SEC            SECTION.
       *
@@ -499,16 +499,16 @@
       *
            MOVE    SPACE               TO  LNK-SC98-ERRMSG
            IF      SPA-COM-SRYKBN (IDX-Z)  =   "22"
-               STRING  "��������Ϳ�̤ξ�¿��̤� "
+               STRING  "頓服の投与量の上限数量は "
                                                DELIMITED  BY  SIZE
                        WRK-SURYO-H             DELIMITED  BY  SPACE
-                       " �Ǥ���"               DELIMITED  BY  SIZE
+                       " です。"               DELIMITED  BY  SIZE
                                            INTO    LNK-SC98-ERRMSG
                END-STRING
            ELSE
-               STRING  "��Ϳ�̤ξ�¿��̤� "   DELIMITED  BY  SIZE
+               STRING  "投与量の上限数量は "   DELIMITED  BY  SIZE
                        WRK-SURYO-H             DELIMITED  BY  SPACE
-                       " �Ǥ���"               DELIMITED  BY  SIZE
+                       " です。"               DELIMITED  BY  SIZE
                                            INTO    LNK-SC98-ERRMSG
                END-STRING
            END-IF
@@ -516,7 +516,7 @@
        1002-TOUYO-ERR-EXT.
       *
       *****************************************************************
-      *    ����ɽ�����Խ�����
+      *    数量表示用編集処理
       *****************************************************************
        10021-SURYO-HEN-SEC              SECTION.
       *
@@ -553,7 +553,7 @@
        2001-SURYO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Զش����ޥ����å�����
+      *    患者禁忌薬剤チェック処理
       *****************************************************************
        300-PTKINKI-CHK-SEC              SECTION.
       *
@@ -599,7 +599,7 @@
        300-PTKINKI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Զش����ޥ����å�����
+      *    患者禁忌薬剤チェック処理
       *****************************************************************
        3001-KINKSTYMD-CHK-SEC              SECTION.
       *
@@ -621,7 +621,7 @@
        3001-KINKSTYMD-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���Զش����ޥ��顼��å������Խ�
+      *    患者禁忌薬剤エラーメッセージ編集
       *****************************************************************
        3001-KINKIERR-HEN-SEC              SECTION.
       *
@@ -633,9 +633,9 @@
                                            TO  LNK-DAY2-YMD
                CALL    "ORCSDAY"           USING   STS-AREA-DAY
                                                    LNK-DAY2-AREA
-               STRING  "��Ϳ��������"         DELIMITED  BY  SIZE
+               STRING  "投与開始日："         DELIMITED  BY  SIZE
                        LNK-DAY2-EDTYMD3       DELIMITED  BY  SPACE
-                       "��"                   DELIMITED  BY  SIZE
+                       "　"                   DELIMITED  BY  SIZE
                                            INTO    LNK-SC98-ERRMSG
                END-STRING
            END-IF
@@ -651,7 +651,7 @@
                MOVE    SPACE               TO  LNK-SC98-ERRMSG
       *
                STRING  WRK-ERRMSG             DELIMITED  BY  SPACE
-                       "�ش���������"         DELIMITED  BY  SIZE
+                       "禁忌開始日："         DELIMITED  BY  SIZE
                        LNK-DAY2-EDTYMD3       DELIMITED  BY  SPACE
                                            INTO    LNK-SC98-ERRMSG
                END-STRING
@@ -660,7 +660,7 @@
        3001-KINKIERR-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���²����������Ϳ�̥����å�����
+      *    月上限回数・月総投与量チェック処理
       *****************************************************************
        200-TUKI-SYORI-SEC             SECTION.
       *
@@ -671,11 +671,11 @@
                              ((SPA-GMN-INPUTCD (IDX-Z) =   SPACE ) AND
                               (SPA-COM-INPUTCD (IDX-Z) =   SPACE ))
                            OR (SPA-ERRCD   NOT =   SPACE   )
-      *        ���åȤι԰���
+      *        セットの行位置
                IF      SPA-GMN-INPUTCD(IDX-Z)(1:1) =   "S"
                    MOVE    IDX-Z               TO  IDX-SET
                END-IF
-      *        ����Ϳ�̡���������å�
+      *        月投与量・回数チェック
                IF     (SPA-ERRCD               =   SPACE )
                AND    (SPA-COM-INPUTCD (IDX-Z) (1:1)
                                                =   "6" )
@@ -692,22 +692,22 @@
        200-TUKI-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ���²����������Ϳ�̥����å�����
+      *    月上限回数・月総投与量チェック処理
       *****************************************************************
        400-TUJIJGEN-CHK-SEC             SECTION.
       *
            MOVE    SPA-COM-INPUTCD (IDX-Z) TO  WRK-SRYCD
-      *    ���ץơ��֥븡��
+      *    月合計テーブル検索
            PERFORM 4001-YAKU-TBL-CHK-SEC
-      *    ��������ʬ����
+      *    今回入力分集計
            PERFORM 4003-TUJI-SUM-SEC
-      *    ���åȤλ������åȹԤ˥��������ư
+      *    セットの時、セット行にカーソル移動
            IF      SPA-COM-SET (IDX-Z) =   "1"
                MOVE    IDX-SET             TO  IDX-C
            ELSE
                MOVE    IDX-Z               TO  IDX-C
            END-IF
-      *    ������Ϳ�̥����å�
+      *    月総投与量チェック
            IF     (SPA-ERRCD                     =   SPACE)  AND
                   (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)  >   ZERO )  AND
                   (SPA-COM-TUKIJGNTOUYORYO (IDX-Z)  <   WRK-TUKISURYO)
@@ -715,11 +715,11 @@
                    PERFORM 4003-TUKISYORO-ERR-SEC
                END-IF
            END-IF
-      *    ���²�������å�
+      *    月上限回数チェック
            IF     (SPA-ERRCD                     =   SPACE)
            AND    (SPA-COM-TUKIJGNKAISU (IDX-Z)  >   ZERO )
            AND    (SPA-COM-TUKIJGNKAISU (IDX-Z)  <   WRK-TUKIKAISU )
-      *        ���(���������ͤΤߡ�
+      *        回数(投薬・注射のみ）
            AND    (SPA-COM-SRYKBN      (IDX-Z) =   "21"
                                                OR  "22"
                                                OR  "23"
@@ -734,7 +734,7 @@
        400-TUJIJGEN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ������Ϳ�̥��顼�Խ�����
+      *    月総投与量エラー編集処理
       *****************************************************************
        4003-TUKISYORO-ERR-SEC             SECTION.
       *
@@ -750,9 +750,9 @@
            PERFORM 10021-SURYO-HEN-SEC
            MOVE    WRK-SURYO-H         TO  WRK-SOURYO-H2
            MOVE    SPACE               TO  LNK-SC98-ERRMSG
-           STRING  "������Ϳ�̡�"          DELIMITED  BY  SIZE
+           STRING  "月総投与量："          DELIMITED  BY  SIZE
                    WRK-SOURYO-H1           DELIMITED  BY  SPACE
-                   "���߷�����Ϳ�̡�"      DELIMITED  BY  SIZE
+                   "　累計総投与量："      DELIMITED  BY  SIZE
                    WRK-SOURYO-H2           DELIMITED  BY  SPACE
                                        INTO    LNK-SC98-ERRMSG
            END-STRING
@@ -760,7 +760,7 @@
        4003-TUKISYORO-ERR-EXT.
            EXIT.
       *****************************************************************
-      *    ���²�����顼�Խ�����
+      *    月上限回数エラー編集処理
       *****************************************************************
        4003-TUKIKAISU-ERR-SEC             SECTION.
       *
@@ -771,9 +771,9 @@
                                        TO  WRK-KAISU-H
            MOVE    WRK-TUKIKAISU       TO  WRK-KAISU-H2
            MOVE    SPACE               TO  LNK-SC98-ERRMSG
-           STRING  "���²����"          DELIMITED  BY  SIZE
+           STRING  "月上限回数："          DELIMITED  BY  SIZE
                    WRK-KAISU-H             DELIMITED  BY  SIZE
-                   "���߷ײ����"          DELIMITED  BY  SIZE
+                   "　累計回数："          DELIMITED  BY  SIZE
                    WRK-KAISU-H2            DELIMITED  BY  SIZE
                                        INTO    LNK-SC98-ERRMSG
            END-STRING
@@ -781,7 +781,7 @@
        4003-TUKIKAISU-ERR-EXT.
            EXIT.
       *****************************************************************
-      *    ���²����������Ϳ�̥ơ��֥�����å�����
+      *    月上限回数・月総投与量テーブルチェック処理
       *****************************************************************
        4001-YAKU-TBL-CHK-SEC             SECTION.
       *
@@ -802,7 +802,7 @@
            END-PERFORM
            IF      IDY-TBL             >   ZERO
                IF      LNK-SC98-YAKUZAI-CHKFLG (IDY-TBL)   =   ZERO
-      *            ���Ź԰٥ơ��֥뤫��ν���
+      *            診療行為テーブルからの集計
                    PERFORM 4002-SRYACT-HEN-SEC
                    MOVE    1               TO  LNK-SC98-YAKUZAI-CHKFLG
                                                              (IDY-TBL)
@@ -821,7 +821,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ʬ���׽���
+      *    今回入力分集計処理
       *****************************************************************
        4003-TUJI-SUM-SEC             SECTION.
       *
@@ -841,11 +841,11 @@
                    ELSE
                        MOVE    SPA-COM-KAISU (IDX-Y)   TO  WRK-KAISU
                    END-IF
-      *            ������
+      *            総数量
                    COMPUTE WRK-TUKISURYO   =   WRK-TUKISURYO
                                            +  (SPA-COM-SURYO (IDX-Y)
                                            *   WRK-KAISU        )
-      *            ���(���������ͤΤߡ�
+      *            回数(投薬・注射のみ）
                    IF      SPA-COM-SRYKBN  (IDX-Y) =   "21"
                                                    OR  "22"
                                                    OR  "23"
@@ -862,7 +862,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���²����������Ϳ�̥ǡ������׽���
+      *    月上限回数・月総投与量データ集計処理
       *****************************************************************
        4002-SRYACT-HEN-SEC             SECTION.
       *
@@ -894,12 +894,12 @@
            PERFORM
                    UNTIL   FLG-SRYACT      =   1
                IF      SRY-RENNUM          =   1
-      *            ���Ų�׸���
+      *            診療会計検索
                    PERFORM 40021-SRYACCT-SEL-SEC
                    IF      ACCT-ZAIKBN         =   1
                        MOVE    ZERO                TO  ACCT-ZAIKAISU
                    END-IF
-      *            ���������ͤΤ߲������
+      *            投薬・注射のみ回数集計
                    IF      SRY-SRYKBN          =   "21"
                                                OR  "22"
                                                OR  "23"
@@ -939,7 +939,7 @@
        4002-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰٥ޥ����������� 
+      *    診療行為マスタ検索処理 
       *****************************************************************
        40021-SRYACCT-SEL-SEC           SECTION.
       *
@@ -980,7 +980,7 @@
        40021-SRYACCT-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ź԰٥ޥ������ɹ�
+      *    診療行為マスター読込
       *****************************************************************
        930-SRYACT-READ-SEC         SECTION.
       *
@@ -998,7 +998,7 @@
        930-SRYACT-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1011,7 +1011,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1026,7 +1026,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *

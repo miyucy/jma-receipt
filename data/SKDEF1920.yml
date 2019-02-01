@@ -1,36 +1,36 @@
 kanri_cd    : "1920"
-name        : "´µ¼Ô¾ğÊóÄÌÃÎ¾ğÊó"
+name        : "æ‚£è€…æƒ…å ±é€šçŸ¥æƒ…å ±"
 class_cd    : "*"
 item_max    : 5
 item_list   :
 - item_no   : 1
   item      : "POPUP-TIMEOUT"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "9"
   start     : 1
   length    : 3
   precision : 0
 - item_no   : 2
   item      : "POPUP-HKNCHK"
-  item_jp   : "Êİ¸±ºÇ½ª³ÎÇ§Æü"
+  item_jp   : "ä¿é™ºæœ€çµ‚ç¢ºèªæ—¥"
   type      : "X"
   start     : 4
   length    : 1
 - item_no   : 3
   item      : "POPUP-MEMO1"
-  item_jp   : "¥á¥â£±"
+  item_jp   : "ãƒ¡ãƒ¢ï¼‘"
   type      : "X"
   start     : 5
   length    : 1
 - item_no   : 4
   item      : "POPUP-MEMO2"
-  item_jp   : "¥á¥â£²"
+  item_jp   : "ãƒ¡ãƒ¢ï¼’"
   type      : "X"
   start     : 6
   length    : 1
 - item_no   : 5
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 7
   length    : 494

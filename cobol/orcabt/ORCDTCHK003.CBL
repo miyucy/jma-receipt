@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCDTCHK003.
       *****************************************************************
-      *  •∑•π•∆•‡Ãæ        : £œ£“£√£¡
-      *  •µ•÷•∑•π•∆•‡Ãæ    : •«°º•ø•¡•ß•√•Ø
-      *  •≥•Û•›°º•Õ•Û•»Ãæ  : •¡•ß•√•Ø•Í•π•»∫Ó¿Æ
-      *  ¥…Õ˝º‘            :
-      *  ∫Ó¿Æ∆¸…’    ∫Ó∂»º‘        µ≠Ω“
-      *  03/11/21    NACL°›¬¿≈ƒ    ø∑µ¨∫Ó¿Æ
+      *  „Ç∑„Çπ„ÉÜ„É†Âêç        : ÔºØÔº≤Ôº£Ôº°
+      *  „Çµ„Éñ„Ç∑„Çπ„ÉÜ„É†Âêç    : „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ
+      *  „Ç≥„É≥„Éù„Éº„Éç„É≥„ÉàÂêç  : „ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„Éà‰ΩúÊàê
+      *  ÁÆ°ÁêÜËÄÖ            :
+      *  ‰ΩúÊàêÊó•‰ªò    ‰ΩúÊ•≠ËÄÖ        Ë®òËø∞
+      *  03/11/21    NACL‚àíÂ§™Áî∞    Êñ∞Ë¶è‰ΩúÊàê
       *****************************************************************
-      *  •◊•Ì•∞•È•‡Ω§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
-      *  03.05.00    NACL-¬¿≈ƒ    07/06/04  •∞•Î°º•◊ø«Œ≈¬–±˛
+      *  „Éó„É≠„Ç∞„É©„É†‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
+      *  03.05.00    NACL-Â§™Áî∞    07/06/04  „Ç∞„É´„Éº„ÉóË®∫ÁôÇÂØæÂøú
       *****************************************************************
       *
        ENVIRONMENT                     DIVISION.
@@ -36,7 +36,7 @@
        FILE-CONTROL.
       *
       *
-      *    •«°º•ø•¡•ß•√•Ø√Ê¥÷•’•°•§•Î° •¡•ß•√•Ø∑Î≤Ã°À
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ‰∏≠Èñì„Éï„Ç°„Ç§„É´Ôºà„ÉÅ„Çß„ÉÉ„ÇØÁµêÊûúÔºâ
            SELECT  DTCHK004-FILE
                                    ASSIGN  DTCHK004PARA
                                    ORGANIZATION    IS  INDEXED
@@ -44,18 +44,18 @@
                                    RECORD  KEY     IS  DTCHK004-KEY
                                    FILE    STATUS  IS  STS-COMMON.
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
            SELECT  DTCHKERR-FILE   ASSIGN  DTCHKERRPARA
                                    FILE    STATUS  IS  STS-DTCHKERR.
       *
        DATA                            DIVISION.
        FILE                            SECTION.
       *
-      *    •«°º•ø•¡•ß•√•Ø√Ê¥÷•’•°•§•Î° •¡•ß•√•Ø∑Î≤Ã°À
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ‰∏≠Èñì„Éï„Ç°„Ç§„É´Ôºà„ÉÅ„Çß„ÉÉ„ÇØÁµêÊûúÔºâ
        FD  DTCHK004-FILE.
            COPY    "CPDTCHK004.INC".
       *
-      *    •®•È°º•’•°•§•Î
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´
        FD  DTCHKERR-FILE.
        01  DTCHKERR-REC                PIC X(200). 
       *
@@ -67,16 +67,16 @@
                                    REPLACING  //HCM401V05//
                                    BY         //HCM401//.
       *
-      *    •®•È°º•’•°•§•Î•’•°•§•ÎÃææŒŒŒ∞Ë 
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´„Éï„Ç°„Ç§„É´ÂêçÁß∞È†òÂüü 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //DTCHKERRPARA//.
       *
-      *    √Ê¥÷•’•°•§•Î•’•°•§•ÎÃææŒŒŒ∞Ë 
+      *    ‰∏≠Èñì„Éï„Ç°„Ç§„É´„Éï„Ç°„Ç§„É´ÂêçÁß∞È†òÂüü 
            COPY    "CPCOMMONDAT3.INC"
                                    REPLACING  //TMPFLPARA//
                                    BY         //DTCHK004PARA//.
       *
-      *    •’•È•∞ŒŒ∞Ë
+      *    „Éï„É©„Ç∞È†òÂüü
        01  STS-AREA.
            03  STS-COMMON                              PIC X(02).
            03  STS-DTCHKERR                            PIC X(02).
@@ -89,7 +89,7 @@
            03  FLG-FIL                                 PIC 9(01).
            03  FLG-LOOPEND                             PIC 9(01).
       *
-      *    •´•¶•Û•»ŒŒ∞Ë
+      *    „Ç´„Ç¶„É≥„ÉàÈ†òÂüü
        01  CNT-AREA.
            03  CNT-DTCHK004                            PIC 9(06).
            03  CNT-LINE                                PIC 9(06).
@@ -186,10 +186,10 @@
                05  KEY-O-HKNKBN                        PIC X(01).
            03  KEY-PTID                                PIC 9(10).
       *
-      *    •«°º•ø•¡•ß•√•Ø≥Œ«ßπ‡Ã‹
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØÁ¢∫Ë™çÈ†ÖÁõÆ
            COPY    "CPDTCHKKOMOKU.INC".
       *
-      *    ∏«ƒÍ√ÕŒŒ∞Ë
+      *    Âõ∫ÂÆöÂÄ§È†òÂüü
        01  CONST-AREA.
            03  CONST-LINE-MAX                          PIC 9(05)
                                                        VALUE   20.
@@ -199,42 +199,42 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    •’•°•§•Î•Ï•§•¢•¶•»
+      *    „Éï„Ç°„Ç§„É´„É¨„Ç§„Ç¢„Ç¶„Éà
       *****************************************************************
       *
-      *    •«°º•ø•¡•ß•√•Øµ°«Ωæ Û£≤
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØÊ©üËÉΩÊÉÖÂ†±Ôºí
            COPY    "CPSK1101.INC".
       *
-      *    •∏•Á•÷¥…Õ˝•ﬁ•π•ø
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Éû„Çπ„Çø
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    •µ•÷•◊•ÌÕ—ŒŒ∞Ë
+      *    „Çµ„Éñ„Éó„É≠Áî®È†òÂüü
       *****************************************************************
       *
            COPY    "CPORCSDTCHK05.INC".
       *
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    •∏•Á•÷¥…Õ˝£ƒ£¬¿©∏Ê•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜÔº§Ôº¢Âà∂Âæ°„Çµ„Éñ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ∞ı∫˛£ƒ£¬ππø∑•µ•÷
+      *    Âç∞Âà∑Ôº§Ôº¢Êõ¥Êñ∞„Çµ„Éñ
            COPY    "CPORCSPRT.INC".
       *
-      *    »æ≥—•¡•ß•√•Ø
+      *    ÂçäËßí„ÉÅ„Çß„ÉÉ„ÇØ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ∆¸…’ —¥π•µ•÷
+      *    Êó•‰ªòÂ§âÊèõ„Çµ„Éñ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ∞Ïª˛•’•°•§•ÎÃæ ‘Ω∏
+      *    ‰∏ÄÊôÇ„Éï„Ç°„Ç§„É´ÂêçÁ∑®ÈõÜ
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    £ƒ£¬∏°∫˜
+      *    Ôº§Ôº¢Ê§úÁ¥¢
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
            COPY    "ORCA-BLOB".
@@ -243,18 +243,18 @@
       ****************************************************************
        LINKAGE                         SECTION.
        01  DTCHK-RC        PIC S9(09).
-      *    •—•È•·•øŒŒ∞Ë
+      *    „Éë„É©„É°„ÇøÈ†òÂüü
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
            03  WRK-PARA-SHELLID    PIC X(08).
            03  WRK-PARA-HOSPNUM    PIC 9(02).
       *
-      *    •®•È°º•’•°•§•Î•’•°•§•ÎÃææŒŒŒ∞Ë 
+      *    „Ç®„É©„Éº„Éï„Ç°„Ç§„É´„Éï„Ç°„Ç§„É´ÂêçÁß∞È†òÂüü 
            COPY    "CPRECEERR.INC"   REPLACING  //RECEERR//
                                    BY         //LNKDTCHKERRPARA//.
       *
-      *    •«°º•ø•¡•ß•√•Ø∞Ï≥ÁΩËÕ˝•—•È•·°º•ø
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ‰∏ÄÊã¨Âá¶ÁêÜ„Éë„É©„É°„Éº„Çø
            COPY    "CPORCBSD01PARA.INC".
       ****************************************************************
        PROCEDURE                       DIVISION
@@ -265,7 +265,7 @@
                                                ORCBSD01PARA.
       *
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -281,7 +281,7 @@
       *
            .
       *****************************************************************
-      *    ΩÈ¥¸°°ΩËÕ˝
+      *    ÂàùÊúü„ÄÄÂá¶ÁêÜ
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -301,13 +301,13 @@
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
                PERFORM 900-DBSTART-SEC
       *
-      *    •π•∆•√•◊¥…Õ˝≥´ªœΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "STS"               TO  SJOBKANRI-MODE
                INITIALIZE                      JOBKANRI-REC
                MOVE    WRK-PARA-JOBID      TO  JOB-JOBID
                MOVE    WRK-PARA-SHELLID    TO  JOB-SHELLID
                MOVE    "ORCDTCHK003"       TO  JOB-PGID
-               MOVE    "•¡•ß•√•Ø•Í•π•»∫Ó¿Æ"
+               MOVE    "„ÉÅ„Çß„ÉÉ„ÇØ„É™„Çπ„Éà‰ΩúÊàê"
                                            TO  JOB-SHELLMSG
                MOVE    WRK-PARA-HOSPNUM    TO  JOB-HOSPNUM
                PERFORM 800-ORCSJOB-SEC
@@ -316,7 +316,7 @@
            MOVE    ZERO                TO  FLG-END
                                            FLG-ERR
       *
-      *    •«°º•ø•¡•ß•√•Ø√Ê¥÷•’•°•§•ÎÃæ
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØ‰∏≠Èñì„Éï„Ç°„Ç§„É´Âêç
            MOVE    WRK-PARA-HOSPNUM    TO  DTCHK004PARA-HOSPNUM
            MOVE    "DTCHK004"          TO  DTCHK004PARA-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID TO  DTCHK004PARA-TERMID
@@ -328,10 +328,10 @@
            MOVE    SGETTEMP-FULLNAMES (1)
                                        TO  DTCHK004PARA-FULLNAME
       *
-      *    •«°º•ø•¡•ß•√•Ø£≤µ°«Ωæ Û
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØÔºíÊ©üËÉΩÊÉÖÂ†±
            PERFORM 1001-SYS1101-GET-SEC
       *
-      *    ΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *    ÂàùÊúüÂÄ§Ë®≠ÂÆöÂá¶ÁêÜ
            PERFORM 1001-INIT-VAL-SET-SEC
       *
            OPEN    INPUT               DTCHK004-FILE
@@ -340,7 +340,7 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    •«°º•ø•¡•ß•√•Ø£≤µ°«Ωæ Û
+      *    „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØÔºíÊ©üËÉΩÊÉÖÂ†±
       *****************************************************************
        1001-SYS1101-GET-SEC            SECTION.
       *
@@ -369,7 +369,7 @@
        1001-SYS1101-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ΩÈ¥¸√Õ¿ﬂƒÍΩËÕ˝
+      *    ÂàùÊúüÂÄ§Ë®≠ÂÆöÂá¶ÁêÜ
       *****************************************************************
        1001-INIT-VAL-SET-SEC           SECTION.
       *
@@ -384,9 +384,9 @@
            MOVE    WRK-EDTYMD3         TO  WRK-SRYYMD
       *
            IF    ( ORCBSD01-NYUGAIKBN  =   "1" )
-               MOVE    "∆˛±°"          TO  WRK-NYUGAIMES
+               MOVE    "ÂÖ•Èô¢"          TO  WRK-NYUGAIMES
            ELSE
-               MOVE    "≥∞ÕË"          TO  WRK-NYUGAIMES
+               MOVE    "Â§ñÊù•"          TO  WRK-NYUGAIMES
            END-IF
       *
            IF    ( ORCBSD01-SRYYMDKBN  =   "1" )
@@ -403,14 +403,14 @@
       *
                IF    ( WRK-STDAYMES    =   WRK-EDDAYMES )
                    STRING    WRK-STDAYMES      DELIMITED   BY  SIZE
-                             "∆¸"              DELIMITED   BY  SIZE
+                             "Êó•"              DELIMITED   BY  SIZE
                    INTO      WRK-KIKANMES
                    END-STRING
                ELSE
                    STRING    WRK-STDAYMES      DELIMITED   BY  SIZE
-                             "∆¸°¡"            DELIMITED   BY  SIZE
+                             "Êó•„Äú"            DELIMITED   BY  SIZE
                              WRK-EDDAYMES      DELIMITED   BY  SIZE
-                             "∆¸"              DELIMITED   BY  SIZE
+                             "Êó•"              DELIMITED   BY  SIZE
                    INTO      WRK-KIKANMES
                    END-STRING
                END-IF
@@ -421,9 +421,9 @@
       *
            MOVE    SPACE               TO  WRK-SPRT-TITLE
            STRING  WRK-KIKANMES        DELIMITED   BY  SPACE
-                   " ¨° "              DELIMITED   BY  SIZE
+                   "ÂàÜÔºà"              DELIMITED   BY  SIZE
                    WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                   "°À"                DELIMITED   BY  SIZE
+                   "Ôºâ"                DELIMITED   BY  SIZE
            INTO    WRK-SPRT-TITLE
            END-STRING
       *
@@ -433,7 +433,7 @@
        1001-INIT-VAL-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ºÁΩËÕ˝
+      *    ‰∏ªÂá¶ÁêÜ
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -442,7 +442,7 @@
                                        CNT-TTL-PAGE
            MOVE    ZERO            TO  CNT-RENBAN
       *
-      *    •¡•ß•√•Ø∑Î≤Ã•’•°•§•Î∆…π˛
+      *    „ÉÅ„Çß„ÉÉ„ÇØÁµêÊûú„Éï„Ç°„Ç§„É´Ë™≠Ëæº
            PERFORM 900-DTCHK004-READ-SEC
       *
            PERFORM UNTIL ( FLG-DTCHK004    =   1 )
@@ -451,7 +451,7 @@
                MOVE    KEY-NEW     TO  KEY-OLD
                MOVE    ZERO        TO  FLG-HKNOTHERS
       *
-      *        ƒ¢…º ‘Ω∏<∏´Ω–§∑>ΩËÕ˝
+      *        Â∏≥Á•®Á∑®ÈõÜ<Ë¶ãÂá∫„Åó>Âá¶ÁêÜ
                PERFORM 210-HEAD-HEN-SEC
       *
                PERFORM UNTIL ( FLG-DTCHK004    =   1 )
@@ -459,7 +459,7 @@
                         OR   ( KEY-NEW     NOT =   KEY-OLD )
                         OR   ( CNT-LINE       >=   CONST-LINE-MAX )
       *
-      *            ƒ¢…º ‘Ω∏<Ã¿∫Ÿ>ΩËÕ˝
+      *            Â∏≥Á•®Á∑®ÈõÜ<ÊòéÁ¥∞>Âá¶ÁêÜ
                    IF    ( DTCHK004-ERRSBT     =   "0" )
                        PERFORM 220-BODY-HEN-SEC
                    ELSE
@@ -470,15 +470,15 @@
                        PERFORM 2201-API-DATA-EDIT-SEC
                    END-IF
       *
-      *            •¡•ß•√•Ø∑Î≤Ã•’•°•§•Î∆…π˛
+      *            „ÉÅ„Çß„ÉÉ„ÇØÁµêÊûú„Éï„Ç°„Ç§„É´Ë™≠Ëæº
                    PERFORM 900-DTCHK004-READ-SEC
       *
                END-PERFORM
       *
-      *        ƒ¢…º ‘Ω∏<√Ìº·>ΩËÕ˝
+      *        Â∏≥Á•®Á∑®ÈõÜ<Ê≥®Èáà>Âá¶ÁêÜ
                PERFORM 230-BIKOMARK-HEN-SEC
       *
-      *        ƒ¢…º∞ı∫˛ΩËÕ˝
+      *        Â∏≥Á•®Âç∞Âà∑Âá¶ÁêÜ
                PERFORM 290-PRINT-OUT-SEC
       *
                IF    ( KEY-NEW     NOT =   KEY-OLD )
@@ -513,7 +513,7 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<∏´Ω–§∑>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<Ë¶ãÂá∫„Åó>Âá¶ÁêÜ
       *****************************************************************
        210-HEAD-HEN-SEC                SECTION.
       *
@@ -528,26 +528,26 @@
                IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
                    MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
                    PERFORM 2201-HKNNAME-GET-SEC
-                   STRING  "° "                DELIMITED   BY  SIZE
+                   STRING  "Ôºà"                DELIMITED   BY  SIZE
                            WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                           "°°"                DELIMITED   BY  SIZE
+                           "„ÄÄ"                DELIMITED   BY  SIZE
                            WRK-HKNMES          DELIMITED   BY  SPACE
-                            "°À"               DELIMITED   BY  SIZE
+                            "Ôºâ"               DELIMITED   BY  SIZE
                    INTO    HCM401-NYUGAIKBN
                    END-STRING
                ELSE
-                   STRING  "° "                DELIMITED   BY  SIZE
+                   STRING  "Ôºà"                DELIMITED   BY  SIZE
                            WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                            "°À"               DELIMITED   BY  SIZE
+                            "Ôºâ"               DELIMITED   BY  SIZE
                    INTO    HCM401-NYUGAIKBN
                    END-STRING
                END-IF
            ELSE
-                   STRING  "° "                DELIMITED   BY  SIZE
+                   STRING  "Ôºà"                DELIMITED   BY  SIZE
                            WRK-NYUGAIMES       DELIMITED   BY  SPACE
-                           "°°"                DELIMITED   BY  SIZE
-                           "§Ω§Œ¬æ"            DELIMITED   BY  SPACE
-                            "°À"               DELIMITED   BY  SIZE
+                           "„ÄÄ"                DELIMITED   BY  SIZE
+                           "„Åù„ÅÆ‰ªñ"            DELIMITED   BY  SPACE
+                            "Ôºâ"               DELIMITED   BY  SIZE
                    INTO    HCM401-NYUGAIKBN
                    END-STRING
            END-IF
@@ -572,11 +572,11 @@
            MOVE    WRK-OUT-INPUT       TO  WRK-SAKHM
       *
            STRING  WRK-SAKYMD          DELIMITED   BY  SIZE
-                   "°°"                DELIMITED   BY  SIZE
+                   "„ÄÄ"                DELIMITED   BY  SIZE
                    WRK-SAKHM (1:4)     DELIMITED   BY  SIZE
-                   "ª˛"                DELIMITED   BY  SIZE
+                   "ÊôÇ"                DELIMITED   BY  SIZE
                    WRK-SAKHM (5:4)     DELIMITED   BY  SIZE
-                   " ¨"                DELIMITED   BY  SIZE
+                   "ÂàÜ"                DELIMITED   BY  SIZE
            INTO    HCM401-SAKYMD
            END-STRING
       *
@@ -590,7 +590,7 @@
        210-HEAD-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ø«Œ≈∆¸ªÿƒÍ ‘Ω∏ΩËÕ˝
+      *    Ë®∫ÁôÇÊó•ÊåáÂÆöÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2101-KIKANMSG-HEN-SEC           SECTION.
       *
@@ -599,17 +599,17 @@
                MOVE    ORCBSD01-STSRYYMD   TO  WRK-STDD-Z9
                MOVE    ORCBSD01-EDSRYYMD   TO  WRK-EDDD-Z9
                IF    ( ORCBSD01-STSRYYMD   =   ORCBSD01-EDSRYYMD )
-                   STRING  "ø«Œ≈∆¸ªÿƒÍ°ß"      DELIMITED BY SIZE
+                   STRING  "Ë®∫ÁôÇÊó•ÊåáÂÆöÔºö"      DELIMITED BY SIZE
                            WRK-STDD-Z9         DELIMITED BY SIZE
-                           "∆¸"                DELIMITED BY SIZE
+                           "Êó•"                DELIMITED BY SIZE
                    INTO    WRK-MAE-INPUT
                    END-STRING
                ELSE
-                   STRING  "ø«Œ≈∆¸ªÿƒÍ°ß"      DELIMITED BY SIZE
+                   STRING  "Ë®∫ÁôÇÊó•ÊåáÂÆöÔºö"      DELIMITED BY SIZE
                            WRK-STDD-Z9         DELIMITED BY SIZE
-                           "∆¸°¡"              DELIMITED BY SIZE
+                           "Êó•„Äú"              DELIMITED BY SIZE
                            WRK-EDDD-Z9         DELIMITED BY SIZE
-                           "∆¸"                DELIMITED BY SIZE
+                           "Êó•"                DELIMITED BY SIZE
                    INTO    WRK-MAE-INPUT
                    END-STRING
                END-IF
@@ -621,19 +621,19 @@
        2101-KIKANMSG-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ±°≥∞ΩË ˝§ŒΩËÕ˝ ‘Ω∏ΩËÕ˝
+      *    Èô¢Â§ñÂá¶Êñπ„ÅÆÂá¶ÁêÜÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2101-INGAIMSG-HEN-SEC           SECTION.
       *
            EVALUATE    ORCBSD01-INGAIPROCKBN
            WHEN    "0"
-               MOVE    "±°≥∞ΩË ˝§ŒΩËÕ˝°ß¥ﬁ§ﬁ§ §§"
+               MOVE    "Èô¢Â§ñÂá¶Êñπ„ÅÆÂá¶ÁêÜÔºöÂê´„Åæ„Å™„ÅÑ"
                                        TO  HCM401-INGAIMSG
            WHEN    "1"
-               MOVE    "±°≥∞ΩË ˝§ŒΩËÕ˝°ß±°≥∞ΩË ˝§Ú¥ﬁ§‡"
+               MOVE    "Èô¢Â§ñÂá¶Êñπ„ÅÆÂá¶ÁêÜÔºöÈô¢Â§ñÂá¶Êñπ„ÇíÂê´„ÇÄ"
                                        TO  HCM401-INGAIMSG
            WHEN    "2"
-               MOVE    "±°≥∞ΩË ˝§ŒΩËÕ˝°ß±°≥∞ΩË ˝§Œ§ﬂ"
+               MOVE    "Èô¢Â§ñÂá¶Êñπ„ÅÆÂá¶ÁêÜÔºöÈô¢Â§ñÂá¶Êñπ„ÅÆ„Åø"
                                        TO  HCM401-INGAIMSG
            END-EVALUATE
       *
@@ -641,7 +641,7 @@
        2101-INGAIMSG-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ≥Œ«ßπ‡Ã‹ ‘Ω∏ΩËÕ˝
+      *    Á¢∫Ë™çÈ†ÖÁõÆÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2101-CHKKOMOKU-HEN-SEC          SECTION.
       *
@@ -667,18 +667,18 @@
                                            TO  HCM401-CHKKOMOKU   (2)
                        MOVE    SPACE       TO  HCM401-CHKKOMOKU   (1)
                        MOVE    1           TO  IDX-MESG
-                       STRING  "°°°°°°°°°°"    DELIMITED   BY  SIZE
+                       STRING  "„ÄÄ„ÄÄ„ÄÄ„ÄÄ„ÄÄ"    DELIMITED   BY  SIZE
                        INTO    HCM401-CHKKOMOKU   (1)
                        WITH    POINTER IDX-MESG
                        END-STRING
                    ELSE
                        IF    ( IDX-MESG    =   1   )
-                           STRING  "≥Œ«ßπ‡Ã‹°ß"    DELIMITED   BY  SIZE
+                           STRING  "Á¢∫Ë™çÈ†ÖÁõÆÔºö"    DELIMITED   BY  SIZE
                            INTO    HCM401-CHKKOMOKU   (1)
                            WITH    POINTER IDX-MESG
                            END-STRING
                        ELSE
-                           STRING  "°¢"    DELIMITED   BY  SIZE
+                           STRING  "„ÄÅ"    DELIMITED   BY  SIZE
                            INTO    HCM401-CHKKOMOKU   (1)
                            WITH    POINTER IDX-MESG
                            END-STRING
@@ -698,7 +698,7 @@
        2101-CHKKOMOKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<Ã¿∫Ÿ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÊòéÁ¥∞>Âá¶ÁêÜ
       *****************************************************************
        220-BODY-HEN-SEC                SECTION.
       *
@@ -720,16 +720,16 @@
                PERFORM 2201-PTHKN-HEN-SEC
                MOVE    WRK-MESG        TO  HCM401-HKNINF(CNT-LINE)
       *
-      *        »÷πÊ
+      *        Áï™Âè∑
                MOVE    CNT-RENBAN      TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
                MOVE    WRK-OUT-INPUT   TO  HCM401-RENBAN(CNT-LINE)
       *
-      *        ¥µº‘»÷πÊ
+      *        ÊÇ£ËÄÖÁï™Âè∑
                IF    ( DTCHK004-PTNUM      =   SPACE )
                    MOVE   SPACE            TO  WRK-MAE-INPUT
-                   STRING "¥µº‘£…£ƒ"       DELIMITED   BY  SIZE
+                   STRING "ÊÇ£ËÄÖÔº©Ôº§"       DELIMITED   BY  SIZE
                           DTCHK004-PTID    DELIMITED   BY  SIZE
                    INTO   WRK-MAE-INPUT
                    END-STRING
@@ -743,10 +743,10 @@
                    MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM2(CNT-LINE)
                END-IF
       *
-      *        ¥µº‘ª·Ãæ
+      *        ÊÇ£ËÄÖÊ∞èÂêç
                MOVE    DTCHK004-NAME   TO  HCM401-NAME  (CNT-LINE)
       *
-      *        «ØŒ
+      *        Âπ¥ÈΩ¢
                IF    ( DTCHK004-BIRTHDAY   NOT =   SPACE )
                    PERFORM 2201-NENREI-HEN-SEC
                    MOVE    WRK-NENREI  TO  WRK-ZZ9
@@ -755,11 +755,11 @@
                    MOVE    WRK-OUT-INPUT   TO  HCM401-NENREI(CNT-LINE)
                END-IF
       *
-      *        ¬æ ›∏±§¢§Í
+      *        ‰ªñ‰øùÈô∫„ÅÇ„Çä
                IF    ( ORCBSD01-PRTSRTKBN  =   "3" OR  "4" )
                    IF    ( DTCHK004-HKNOTHERS  =   "1" )
                        MOVE    1       TO  FLG-HKNOTHERS
-                       MOVE    "°ˆ"    TO  HCM401-MARK (CNT-LINE)
+                       MOVE    "Ôºä"    TO  HCM401-MARK (CNT-LINE)
                    END-IF
                END-IF
       *
@@ -767,12 +767,12 @@
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            IF    ( ORCBSD01-PRTSRTKBN  =   "1" OR  "2" )
-      *        •«°º•ø•¡•ß•√•Ø∆‚Õ∆
+      *        „Éá„Éº„Çø„ÉÅ„Çß„ÉÉ„ÇØÂÜÖÂÆπ
                IF    ( DTCHK004-MULHKNKBN  =   "1" )
                    MOVE    DTCHK004-HKNKBN TO  WRK-HKNKBN
                    PERFORM 2201-HKNNAME-GET-SEC
                    STRING  WRK-HKNMES      DELIMITED   BY  SPACE
-                           "°ß"            DELIMITED   BY  SIZE
+                           "Ôºö"            DELIMITED   BY  SIZE
                            DTCHK004-ERRMSG DELIMITED   BY  SIZE
                    INTO    WRK-ERRMSG
                    END-STRING
@@ -793,7 +793,7 @@
        220-BODY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º ‘Ω∏<Ã¿∫Ÿ>ΩËÕ˝
+      *    Â∏≥Á•®Á∑®ÈõÜ<ÊòéÁ¥∞>Âá¶ÁêÜ
       *****************************************************************
        221-BODY-HEN-SEC                SECTION.
       *
@@ -806,19 +806,19 @@
                    COMPUTE CNT-RENBAN  =   CNT-RENBAN  +   1
                END-IF
       *
-      *        »÷πÊ
+      *        Áï™Âè∑
                MOVE    CNT-RENBAN      TO  WRK-ZZZZ9
                MOVE    WRK-ZZZZ9       TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
                MOVE    WRK-OUT-INPUT   TO  HCM401-RENBAN(CNT-LINE)
       *
-      *        ¥µº‘»÷πÊ
+      *        ÊÇ£ËÄÖÁï™Âè∑
                MOVE    DTCHK004-PTNUM  TO  WRK-MAE-INPUT
                PERFORM 800-ZENKAKU-HEN-SEC
                MOVE    WRK-OUT-INPUT   TO  HCM401-PTNUM (CNT-LINE)
       *
-      *        ¥µº‘ª·Ãæ
-               MOVE    "§Ω§Œ¬æ"        TO  HCM401-NAME  (CNT-LINE)
+      *        ÊÇ£ËÄÖÊ∞èÂêç
+               MOVE    "„Åù„ÅÆ‰ªñ"        TO  HCM401-NAME  (CNT-LINE)
            END-IF
       *
            IF    ( DTCHK004-ERRMSG  (111:)  =   SPACE )
@@ -831,7 +831,7 @@
        221-BODY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘ ›∏±æ Û ‘Ω∏ΩËÕ˝
+      *    ÊÇ£ËÄÖ‰øùÈô∫ÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2201-PTHKN-HEN-SEC              SECTION.
       *
@@ -859,7 +859,7 @@
        2201-PTHKN-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘ ›∏±æ Û ‘Ω∏ΩËÕ˝° Ã¿∫Ÿπ‘§À ‘Ω∏°À
+      *    ÊÇ£ËÄÖ‰øùÈô∫ÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜÔºàÊòéÁ¥∞Ë°å„Å´Á∑®ÈõÜÔºâ
       *****************************************************************
        22011-BODY-HKNINF-HEN-SEC       SECTION.
       *
@@ -870,7 +870,7 @@
       *
            IF    ( SDTCHK05-HKNKOHKBN (IDX-HKN)    =   "0" )
       *
-               STRING  "°⁄"            DELIMITED   BY  SIZE
+               STRING  "„Äê"            DELIMITED   BY  SIZE
                INTO    WRK-MESG
                WITH    POINTER               IDX-MESG
                END-STRING
@@ -893,22 +893,22 @@
                MOVE    SPACE           TO  WRK-OUT-INPUT
                EVALUATE    SDTCHK05-HONKZKKBN (IDX-HKN)
                WHEN    "1"
-                   MOVE    "À‹øÕ"      TO  WRK-OUT-INPUT
+                   MOVE    "Êú¨‰∫∫"      TO  WRK-OUT-INPUT
                WHEN    "2"
-                   MOVE    "≤»¬≤"      TO  WRK-OUT-INPUT
+                   MOVE    "ÂÆ∂Êóè"      TO  WRK-OUT-INPUT
                END-EVALUATE
                IF    ( WRK-OUT-INPUT   NOT =   SPACE )
                    PERFORM 220111-BODY-HKNINF-HEN-SEC
                END-IF
       *
-               STRING  "°€"                DELIMITED   BY  SIZE
+               STRING  "„Äë"                DELIMITED   BY  SIZE
                INTO    WRK-MESG
                WITH    POINTER             IDX-MESG
                END-STRING
       *
            ELSE
       *
-               STRING  "° "            DELIMITED   BY  SIZE
+               STRING  "Ôºà"            DELIMITED   BY  SIZE
                INTO    WRK-MESG
                WITH    POINTER               IDX-MESG
                END-STRING
@@ -919,7 +919,7 @@
                                        TO  WRK-OUT-INPUT
                PERFORM 220111-BODY-HKNINF-HEN-SEC
       *
-               STRING  "°À"                DELIMITED   BY  SIZE
+               STRING  "Ôºâ"                DELIMITED   BY  SIZE
                INTO    WRK-MESG
                WITH    POINTER             IDX-MESG
                END-STRING
@@ -929,7 +929,7 @@
        22011-BODY-HKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¥µº‘ ›∏±æ Û ‘Ω∏ΩËÕ˝° Ã¿∫Ÿπ‘§À ‘Ω∏°À
+      *    ÊÇ£ËÄÖ‰øùÈô∫ÊÉÖÂ†±Á∑®ÈõÜÂá¶ÁêÜÔºàÊòéÁ¥∞Ë°å„Å´Á∑®ÈõÜÔºâ
       *****************************************************************
        220111-BODY-HKNINF-HEN-SEC      SECTION.
       *
@@ -938,11 +938,11 @@
            WHEN    ( CNT-HKNINFEDIT    =   ZERO )
                CONTINUE
            WHEN    ( FLG-FIL           =   ZERO )
-               MOVE    "°¢"        TO  WRK-FIL
+               MOVE    "„ÄÅ"        TO  WRK-FIL
            WHEN    ( FLG-FIL           =   1 )
                CONTINUE
            WHEN    OTHER
-               MOVE    "°°"        TO  WRK-FIL
+               MOVE    "„ÄÄ"        TO  WRK-FIL
            END-EVALUATE
       *
            STRING  WRK-FIL         DELIMITED   BY  SPACE
@@ -957,7 +957,7 @@
        220111-BODY-HKNINF-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    «ØŒ ‘Ω∏ΩËÕ˝
+      *    Âπ¥ÈΩ¢Á∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2201-NENREI-HEN-SEC             SECTION.
       *
@@ -976,41 +976,41 @@
        2201-NENREI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *     ›∏±ÃææŒºË∆¿ΩËÕ˝
+      *    ‰øùÈô∫ÂêçÁß∞ÂèñÂæóÂá¶ÁêÜ
       *****************************************************************
        2201-HKNNAME-GET-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-HKNMES
            EVALUATE    WRK-HKNKBN
            WHEN    "1"
-               MOVE    "º“ ›"          TO  WRK-HKNMES
+               MOVE    "Á§æ‰øù"          TO  WRK-HKNMES
            WHEN    "2"
-               MOVE    "πÒ ›"          TO  WRK-HKNMES
+               MOVE    "ÂõΩ‰øù"          TO  WRK-HKNMES
            WHEN    "3"
-               MOVE    "œ´∫“"          TO  WRK-HKNMES
+               MOVE    "Âä¥ÁÅΩ"          TO  WRK-HKNMES
            WHEN    "4"
-               MOVE    "º´«Â¿’"        TO  WRK-HKNMES
+               MOVE    "Ëá™Ë≥†Ë≤¨"        TO  WRK-HKNMES
            WHEN    "5"
-               MOVE    "º´»Ò"          TO  WRK-HKNMES
+               MOVE    "Ëá™Ë≤ª"          TO  WRK-HKNMES
            WHEN    "6"
-               MOVE    "∏¯≥≤"          TO  WRK-HKNMES
+               MOVE    "ÂÖ¨ÂÆ≥"          TO  WRK-HKNMES
            WHEN    "7"
-               MOVE    "∏Â¥¸π‚Œº‘"    TO  WRK-HKNMES
+               MOVE    "ÂæåÊúüÈ´òÈΩ¢ËÄÖ"    TO  WRK-HKNMES
            WHEN    "8"
-               MOVE    "º£∏≥"          TO  WRK-HKNMES
+               MOVE    "Ê≤ªÈ®ì"          TO  WRK-HKNMES
            WHEN    "9"
-               MOVE    "¬Ëª∞º‘π‘∞Ÿ"    TO  WRK-HKNMES
+               MOVE    "Á¨¨‰∏âËÄÖË°åÁÇ∫"    TO  WRK-HKNMES
            WHEN    "H"
-               MOVE    " Ò≥Á"          TO  WRK-HKNMES
+               MOVE    "ÂåÖÊã¨"          TO  WRK-HKNMES
            WHEN    "Z"
-               MOVE    "§Ω§Œ¬æ"        TO  WRK-HKNMES
+               MOVE    "„Åù„ÅÆ‰ªñ"        TO  WRK-HKNMES
            END-EVALUATE
       *
            .
        2201-HKNNAME-GET-EXT.
            EXIT.
       *****************************************************************
-      *    APIÕ—•«°º•ø ‘Ω∏ΩËÕ˝
+      *    APIÁî®„Éá„Éº„ÇøÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        2201-API-DATA-EDIT-SEC          SECTION.
       *
@@ -1052,7 +1052,7 @@
        2201-API-DATA-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    APIÕ—•«°º•ø ‘Ω∏ΩËÕ˝
+      *    APIÁî®„Éá„Éº„ÇøÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        22011-API-DATA-EXPORT-SEC       SECTION.
       *
@@ -1089,20 +1089,20 @@
        22011-API-DATA-EXPORT-EXT.
            EXIT.
       *****************************************************************
-      *    √Ìº· ‘Ω∏ΩËÕ˝
+      *    Ê≥®ÈáàÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        230-BIKOMARK-HEN-SEC            SECTION.
       *
            IF    ( FLG-HKNOTHERS       =   1 )
-               MOVE    "°ˆ"            TO  HCM401-BIKOMARK
-               MOVE    "¬æ ›∏±§¢§Í"    TO  HCM401-BIKO
+               MOVE    "Ôºä"            TO  HCM401-BIKOMARK
+               MOVE    "‰ªñ‰øùÈô∫„ÅÇ„Çä"    TO  HCM401-BIKO
            END-IF
       *
            .
        230-BIKOMARK-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ƒ¢…º∞ı∫˛ΩËÕ˝
+      *    Â∏≥Á•®Âç∞Âà∑Âá¶ÁêÜ
       *****************************************************************
        290-PRINT-OUT-SEC               SECTION.
       *
@@ -1129,9 +1129,9 @@
            MOVE   "HCM401V05.red"      TO  SPRT-PRTID
            IF    ( WRK-HKNMES      NOT =   SPACE )
                STRING  WRK-SPRT-TITLE      DELIMITED   BY  SPACE
-                       "° "                DELIMITED   BY  SIZE
+                       "Ôºà"                DELIMITED   BY  SIZE
                        WRK-HKNMES          DELIMITED   BY  SPACE
-                       "°À"                DELIMITED   BY  SIZE
+                       "Ôºâ"                DELIMITED   BY  SIZE
                INTO    SPRT-TITLE
                END-STRING
            ELSE
@@ -1148,7 +1148,7 @@
            IF     ( SPRT-RETURN        =   ZERO )
                CONTINUE
            ELSE
-               MOVE    "∞ı∫˛£ƒ£¬§Àππø∑§«§≠§ﬁ§ª§Û§«§∑§ø"
+               MOVE    "Âç∞Âà∑Ôº§Ôº¢„Å´Êõ¥Êñ∞„Åß„Åç„Åæ„Åõ„Çì„Åß„Åó„Åü"
                                        TO  WRK-DTCHKERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1157,7 +1157,7 @@
        290-PRINT-OUT-EXT.
            EXIT.
       *****************************************************************
-      *    •®•È°ºΩ–ŒœΩËÕ˝
+      *    „Ç®„É©„ÉºÂá∫ÂäõÂá¶ÁêÜ
       *****************************************************************
        500-ERR-HENSYU-SEC              SECTION.
       *
@@ -1172,7 +1172,7 @@
                CLOSE   DTCHKERR-FILE
              IF    LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
       *
-      *        •∏•Á•÷¥…Õ˝≥´ªœΩËÕ˝
+      *        „Ç∏„Éß„ÉñÁÆ°ÁêÜÈñãÂßãÂá¶ÁêÜ
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1192,14 +1192,14 @@
            EXIT.
       *
       *****************************************************************
-      *    Ω™ŒªΩËÕ˝
+      *    ÁµÇ‰∫ÜÂá¶ÁêÜ
       *****************************************************************
        300-END-SEC                     SECTION.
       *
            CLOSE                       DTCHK004-FILE
       *
            IF      LNK-PRTKANRI-TBL-KEY  NOT =  "RECEPTX"
-      *    •π•∆•√•◊¥…Õ˝Ω™ŒªΩËÕ˝
+      *    „Çπ„ÉÜ„ÉÉ„ÉóÁÆ°ÁêÜÁµÇ‰∫ÜÂá¶ÁêÜ
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-JOBID  TO  JOB-JOBID
@@ -1218,7 +1218,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¡¥≥— —¥πΩËÕ˝
+      *    ÂÖ®ËßíÂ§âÊèõÂá¶ÁêÜ
       *****************************************************************
        800-ZENKAKU-HEN-SEC         SECTION.
       *
@@ -1239,7 +1239,7 @@
        800-ZENKAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *     ∏ª˙ŒÛƒπ•¡•ß•√•Ø
+      *    ÊñáÂ≠óÂàóÈï∑„ÉÅ„Çß„ÉÉ„ÇØ
       *****************************************************************
        800-LENGTH-CHK-SEC              SECTION.
       *
@@ -1256,7 +1256,7 @@
        800-LENGTH-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿æŒÒ∆¸À‹∏Ï —¥πΩËÕ˝
+      *    Ë•øÊö¶Êó•Êú¨Ë™ûÂ§âÊèõÂá¶ÁêÜ
       *****************************************************************
        800-SEIWA-HEN-SEC         SECTION.
       *
@@ -1275,13 +1275,13 @@
                                            LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD1    TO  WRK-EDTYMD1
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-EDTYMD3
-           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "°°"
+           INSPECT WRK-EDTYMD3     REPLACING  ALL "  "  BY  "„ÄÄ"
       *
            .
        800-SEIWA-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ∆¸…’ ‘Ω∏ΩËÕ˝
+      *    Êó•‰ªòÁ∑®ÈõÜÂá¶ÁêÜ
       *****************************************************************
        800-DATE-SEC                    SECTION.
       *
@@ -1310,7 +1310,7 @@
        800-DATE-EXT.
            EXIT.
       *****************************************************************
-      *    •∏•Á•÷¥…Õ˝•µ•÷
+      *    „Ç∏„Éß„ÉñÁÆ°ÁêÜ„Çµ„Éñ
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -1325,7 +1325,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    •ﬁ•∑•Û∆¸…’ºË∆¿•µ•÷
+      *    „Éû„Ç∑„É≥Êó•‰ªòÂèñÂæó„Çµ„Éñ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -1336,7 +1336,7 @@
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    •¡•ß•√•Ø∑Î≤Ã•’•°•§•Î∆…π˛ΩËÕ˝
+      *    „ÉÅ„Çß„ÉÉ„ÇØÁµêÊûú„Éï„Ç°„Ç§„É´Ë™≠ËæºÂá¶ÁêÜ
       *****************************************************************
        900-DTCHK004-READ-SEC           SECTION.
       *
@@ -1363,7 +1363,7 @@
        900-DTCHK004-READ-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∏°∫˜ΩËÕ˝° FHETCH§‚π‘§¶)
+      *    Ôº§Ôº¢Ê§úÁ¥¢Âá¶ÁêÜÔºàFHETCH„ÇÇË°å„ÅÜ)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1381,7 +1381,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∏°∫˜ΩËÕ˝° FHETCH§œπ‘§Ô§ §§)
+      *    Ôº§Ôº¢Ê§úÁ¥¢Âá¶ÁêÜÔºàFHETCH„ÅØË°å„Çè„Å™„ÅÑ)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1396,7 +1396,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬∆…§ﬂπ˛§ﬂΩËÕ˝
+      *    Ôº§Ôº¢Ë™≠„ÅøËæº„ÅøÂá¶ÁêÜ
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -1411,7 +1411,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *
@@ -1426,7 +1426,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    £ƒ£¬°°•™°º•◊•ÛΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„Ç™„Éº„Éó„É≥Âá¶ÁêÜ
       *****************************************************************
        900-DBSTART-SEC                 SECTION.
       *
@@ -1442,7 +1442,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £ƒ£¬°°•Ø•Ì°º•∫ΩËÕ˝
+      *    Ôº§Ôº¢„ÄÄ„ÇØ„É≠„Éº„Ç∫Âá¶ÁêÜ
       *****************************************************************
        900-DBCOMMIT-SEC                SECTION.
       *
@@ -1457,7 +1457,7 @@
        900-DBCOMMIT-EXT.
            EXIT.
       *****************************************************************
-      *    XMLWRITEΩËÕ˝
+      *    XMLWRITEÂá¶ÁêÜ
       *****************************************************************
        910-XMLWRITE-SEC                 SECTION.
       *
@@ -1470,7 +1470,7 @@
        910-XMLWRITE-EXT.
            EXIT.
       *****************************************************************
-      *    BLOBEXPORTΩËÕ˝
+      *    BLOBEXPORTÂá¶ÁêÜ
       *****************************************************************
        910-BLOBEXPORT-SEC              SECTION.
       *

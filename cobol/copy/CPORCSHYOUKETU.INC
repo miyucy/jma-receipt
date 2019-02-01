@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ɸ���������ѥ�᥿��COPY (CPORCSHYOUKETU.INC)
-      *                                ���ѥץ������ (ORCSHYOUKETU.CBL)
-      *    �������
-      *      ����ǯ��
+      *    標欠情報取得パラメタ　COPY (CPORCSHYOUKETU.INC)
+      *                                使用プログラム (ORCSHYOUKETU.CBL)
+      *    設定項目
+      *      算定年月
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSHYOUKETU-AREA.
       *
-      *����ǯ��
+      *算定年月
            03  LNK-HYOUKETU-SANTEIYM                 PIC  X(06).
-      *�ֵѹ���
+      *返却項目
            03  LNK-HYOUKETU-HENKYAKU-AREA.
-      *ɸ���ֵѥơ��֥�
+      *標欠返却テーブル
              04  LNK-HYOUKETU-HENKYAKU-TBL           OCCURS 2.
-      *ɸ�祳����
+      *標欠コード
                05  LNK-HYOUKETU-SRYCD                PIC  X(09).
-      *ɸ�糫��ǯ��
+      *標欠開始年月
                05  LNK-HYOUKETU-STARTYM              PIC  X(06).
-      *ɸ�罪λǯ��
+      *標欠終了年月
                05  LNK-HYOUKETU-ENDYM                PIC  X(06).
-      *���������ɡʣ�������ǯ��顼�����������ƥ��������̵��
-      *            ����ɸ���оݳ���
+      *復帰コード（１：算定年月エラー　２：システム管理情報無し
+      *            ３：標欠対象外）
            03  LNK-HYOUKETU-RC                    PIC S9(9) BINARY.
       *

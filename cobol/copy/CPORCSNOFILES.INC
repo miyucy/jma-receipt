@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,15 +15,15 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    Ã§«€√÷•’•°•§•Î•¡•ß•√•Ø•µ•÷(COBOL)
+      *    Êú™ÈÖçÁΩÆ„Éï„Ç°„Ç§„É´„ÉÅ„Çß„ÉÉ„ÇØ„Çµ„Éñ(COBOL)
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
        01  SNOFILES-AREA.
            03  SNOFILES-MAX                    PIC 9(05).
            03  SNOFILES-OCC                    OCCURS  200.
-      *    01  01:1031° ≥∞ÕË)°ø02:1031° ∆˛±°)/03:∆¸ Û/04:∑Ó Û
+      *    01  01:1031ÔºàÂ§ñÊù•)Ôºè02:1031ÔºàÂÖ•Èô¢)/03:Êó•Â†±/04:ÊúàÂ†±
                05  SNOFILES-TYPE               PIC X(02).
                05  SNOFILES-ID-G.
                    07  SNOFILES-ID             PIC 9(08).
@@ -31,7 +31,7 @@
                                                PIC X(08).
                05  SNOFILES-PGID               PIC X(50).
                05  SNOFILES-PGNAME             PIC X(100).
-      *    ONPG-GAI§´§ÈΩÁ§À01,02,03,04...
+      *    ONPG-GAI„Åã„ÇâÈ†Ü„Å´01,02,03,04...
            03  SNOFILES-ONPG-GAI               PIC X(02).
            03  SNOFILES-ONPG-NYU               PIC X(02).
            03  SNOFILES-NIPPOU                 PIC X(02).

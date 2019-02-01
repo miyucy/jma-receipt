@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       ******************************************************************
-      *    £Á£Ð£É¥ê¥¯¥¨¥¹¥ÈÃæÅÓ½ªÎ»¾ðÊó (xml2)  COPY (CPMDCXMLV2REQ.INC)
+      *    ï¼¡ï¼°ï¼©ãƒªã‚¯ã‚¨ã‚¹ãƒˆä¸­é€”çµ‚äº†æƒ…å ± (xml2)  COPY (CPMDCXMLV2REQ.INC)
       ******************************************************************
         01  XML-MEDICALREQ.
             02  MDCREQ-CONTEXT          PIC S9(9)   BINARY.
@@ -28,92 +28,92 @@
             02  MDCREQ-MODE             PIC S9(9)   BINARY.
             02  MDCREQ-RECORDNAME       PIC X(128).
             02  MDCREQ-MEDICALREQ.
-      *       Æþ³°¶èÊ¬¡Ê£±¡§Æþ±¡¡Ë
+      *       å…¥å¤–åŒºåˆ†ï¼ˆï¼‘ï¼šå…¥é™¢ï¼‰
               03  MDCREQ-OUTPATIENT-CLASS  PIC X(1).
-      *       ´µ¼ÔÈÖ¹æ
+      *       æ‚£è€…ç•ªå·
               03  MDCREQ-PATIENTID         PIC X(20).
-      *       ¿ÇÎÅÆüÉÕ
+      *       è¨ºç™‚æ—¥ä»˜
               03  MDCREQ-PERFORM-DATE      PIC X(10).
-      *       ¿ÇÎÅ»þ´Ö
+      *       è¨ºç™‚æ™‚é–“
               03  MDCREQ-PERFORM-TIME      PIC X(8).
       *       UID
               03  MDCREQ-MEDICAL-UID       PIC X(36).
-      *       Æþ±¡Æü
+      *       å…¥é™¢æ—¥
               03  MDCREQ-ADMISSION-DATE    PIC X(10).
       *
               03  MDCREQ-MEDICAL-INFO.
-      *         ¿ÇÎÅ²Ê
+      *         è¨ºç™‚ç§‘
                 04  MDCREQ-APPOINT-DEP-CODE PIC X(2).
-      *         ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *         ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
                 04  MDCREQ-APPOINT-DR-CODE  PIC X(5).
-      *         ÊÝ¸±¾ðÊó
+      *         ä¿é™ºæƒ…å ±
                 04  MDCREQ-INSURANCE-INFO.
-      *           ÊÝ¸±ÁÈ¹ç¤»ÈÖ¹æ
+      *           ä¿é™ºçµ„åˆã›ç•ªå·
                   05  MDCREQ-COMBINATION-NUMBER      PIC X(04).
-      *           ÊÝ¸±¤Î¼ïÎà
+      *           ä¿é™ºã®ç¨®é¡ž
                   05  MDCREQ-MAIN-INSURANCE-CLASS    PIC X(03).
-      *           ÊÝ¸±¼ÔÈÖ¹æ
+      *           ä¿é™ºè€…ç•ªå·
                   05  MDCREQ-MAIN-INSURANCE-NUMBER   PIC X(08).
-      *           ÊÝ¸±¤Î¼ïÎàÌ¾¾Î
+      *           ä¿é™ºã®ç¨®é¡žåç§°
                   05  MDCREQ-MAIN-INSURANCE-NAME     PIC X(20).
-      *           µ­¹æ
+      *           è¨˜å·
                   05  MDCREQ-MAIN-MARK               PIC X(80).
-      *           ÈÖ¹æ
+      *           ç•ªå·
                   05  MDCREQ-MAIN-NUMBER             PIC X(80).
-      *           ·ÑÂ³¶èÊ¬
+      *           ç¶™ç¶šåŒºåˆ†
                   05  MDCREQ-MAIN-CONTINUATION       PIC X(01).
-      *           Êä½õ¶èÊ¬
+      *           è£œåŠ©åŒºåˆ†
                   05  MDCREQ-MAIN-ASSISTANCE         PIC X(01).
-      *           ËÜ¿Í²ÈÂ²¶èÊ¬
+      *           æœ¬äººå®¶æ—åŒºåˆ†
                   05  MDCREQ-MAIN-FAMILY             PIC X(01).
-      *           ÈïÊÝ¸±¼ÔÌ¾
+      *           è¢«ä¿é™ºè€…å
                   05  MDCREQ-MAIN-POLICYHOLDER       PIC X(100).
-      *           Í­¸ú³«»ÏÆü
+      *           æœ‰åŠ¹é–‹å§‹æ—¥
                   05  MDCREQ-MAIN-START-DATE         PIC X(10).
-      *           Í­¸ú½ªÎ»Æü
+      *           æœ‰åŠ¹çµ‚äº†æ—¥
                   05  MDCREQ-MAIN-END-DATE           PIC X(10).
-      *           ¸øÈñ¾ðÊó
+      *           å…¬è²»æƒ…å ±
                   05  MDCREQ-PUBLIC-INSURANCE-INF  OCCURS  4 TIMES.
-      *             ¸øÈñ¤Î¼ïÎà
+      *             å…¬è²»ã®ç¨®é¡ž
                     06  MDCREQ-INSURANCE-CLASS       PIC X(03).
-      *             ¸øÈñ¤Î¼ïÎàÌ¾¾Î
+      *             å…¬è²»ã®ç¨®é¡žåç§°
                     06  MDCREQ-INSURANCE-NAME        PIC X(20).
-      *             ÉéÃ´¼ÔÈÖ¹æ
+      *             è² æ‹…è€…ç•ªå·
                     06  MDCREQ-PROVIDER-NUMBER       PIC X(08).
-      *             ¼õµë¼ÔÈÖ¹æ
+      *             å—çµ¦è€…ç•ªå·
                     06  MDCREQ-RECIPIENT-NUMBER      PIC X(20).
-      *             Í­¸ú³«»ÏÆü
+      *             æœ‰åŠ¹é–‹å§‹æ—¥
                     06  MDCREQ-INSURANCE-START-DATE  PIC X(10).
-      *             Í­¸ú½ªÎ»Æü
+      *             æœ‰åŠ¹çµ‚äº†æ—¥
                     06  MDCREQ-INSURANCE-END-DATE    PIC X(10).
-      *         ¿ÇÎÅÆâÍÆ
+      *         è¨ºç™‚å†…å®¹
                 04  MDCREQ-MDC-INFO         OCCURS  40 TIMES.
-      *           ¿ÇÎÅ¼ïÊÌ¶èÊ¬
+      *           è¨ºç™‚ç¨®åˆ¥åŒºåˆ†
                   05  MDCREQ-MDC-CLASS               PIC X(3).
       *??
                   05  MDCREQ-MDC-CLASS-NAME          PIC X(50).
-      *           ²ó¿ô
+      *           å›žæ•°
                   05  MDCREQ-MDC-CLASS-NUMBER        PIC X(50).
-      *           ºÞÆâÍÆ
+      *           å‰¤å†…å®¹
                   05  MDCREQ-PRESCRIPTION-INFO     OCCURS  40 TIMES.
-      *             ¿ÇÎÅ¥³¡¼¥É
+      *             è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                     06  MDCREQ-PRSCRPT-CODE          PIC X(9).
-      *             ¿ÇÎÅÌ¾¾Î¡Ê¥³¥á¥ó¥È¡Ë
+      *             è¨ºç™‚åç§°ï¼ˆã‚³ãƒ¡ãƒ³ãƒˆï¼‰
                     06  MDCREQ-PRSCRPT-NAME          PIC X(80).
-      *             ¿ôÎÌ
+      *             æ•°é‡
                     06  MDCREQ-PRSCRPT-NUMBER        PIC X(40).
-      *             ½èÊý¤»¤ó°ìÈÌÌ¾µ­ºÜ
+      *             å‡¦æ–¹ã›ã‚“ä¸€èˆ¬åè¨˜è¼‰
                     06  MDCREQ-GENERIC-FLG           PIC X(03).
       *H29.4
-      *             ·ÑÂ³¥³¥á¥ó¥È»Ø¼¨¶èÊ¬
+      *             ç¶™ç¶šã‚³ãƒ¡ãƒ³ãƒˆæŒ‡ç¤ºåŒºåˆ†
                     06  MDCREQ-CONTKBN               PIC X(01).
-      *             ÆâÉþ£±¼ïÎà¶èÊ¬
+      *             å†…æœï¼‘ç¨®é¡žåŒºåˆ†
                     06  MDCREQ-NAIFKBN               PIC X(01).
       *
-      *         ÉÂÌ¾
+      *         ç—…å
                 04  MDCREQ-DIAGNOSIS-INFO          OCCURS  50 TIMES.
                   05  MDCREQ-DIAGNOSIS-NUMBER        PIC X(50).
-      *ver.4.7    Æþ³°¶èÊ¬
+      *ver.4.7    å…¥å¤–åŒºåˆ†
                   05  MDCREQ-DIAGNOSIS-INOUT         PIC X(01).
                   05  MDCREQ-DIAGNOSIS-NAME          PIC X(80).
                   05  MDCREQ-DIAGNOSIS-SINGLE      OCCURS  6  TIMES.
@@ -121,7 +121,7 @@
                                                      PIC X(10). 
                     07 MDCREQ-DIAGNOSIS-SINGLE-NAME
                                                      PIC X(20). 
-      *           ÊäÂ­¥³¥á¥ó¥È
+      *           è£œè¶³ã‚³ãƒ¡ãƒ³ãƒˆ
                   05  MDCREQ-DIAGNOSIS-SUPPLEMENT.
                       07  MDCREQ-DIAGNOSIS-SCODE1        PIC X(10).
                       07  MDCREQ-DIAGNOSIS-SCODE2        PIC X(10).

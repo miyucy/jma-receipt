@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,223 +16,223 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �������(����       COPY (CPSKYMAIN.INC)              *
+      *    請求管理(新）       COPY (CPSKYMAIN.INC)              *
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.01    NACL-ƣ��    09/11/13  �õ�����Ȳ��б�
-      *                                     �õ�����ά���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    09/11/13  特記事項照会対応
+      *                                     特記事項略称追加
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *                                     Ĵ���Ѥ�crehms,updhms �ɲ�
-      *  04.06.02    NACL-ƣ��    10/11/30  ����Ģɼ�Ѥι����ɲ�
-      *                                     ����۾���ʰ����񡢿�����
-      *                                     �ݸ��ȹ礻����
-      *  04.06.03    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *                                     調査用にcrehms,updhms 追加
+      *  04.06.02    NACL-藤原    10/11/30  統計帳票用の項目追加
+      *                                     請求額情報（医療費、食事）
+      *                                     保険組合せ情報
+      *  04.06.03    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       *
-      *  04.07.01    NACL-ƣ��    12/02/13  �����ȹ�ؤ�ľ������ȿ���
-      *                                     ��ʧ���������б�
-      *                                     ľ������ե饰���ɲ�
+      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *                                     直接請求フラグの追加
       *
-      *  04.08.01    NACL-ƣ��    17/04/10  ����ñ�̤Ǥ�������������
-      *                                     ��ϫ�ҽ�����Ϸ��ݽ����б�
-      *                                     �ݸ���ʬ�ʼ������ѡˤ��ɲ�
+      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
+      *                                     保険区分（自賠責用）の追加
       ************************************************************
        01  SKYMAIN-REC.
-      *�ˣţ�
+      *ＫＥＹ
            03  SKYMAIN-KEY.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  SKYMAIN-HOSPNUM          PIC 9(2).
-      *����ǯ��
+      *診療年月
                05  SKYMAIN-SRYYM            PIC  9(06).
-      *������ʬ
+      *入外区分
                05  SKYMAIN-NYUGAIKBN        PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  SKYMAIN-PTID             PIC  9(10).
-      *�쥻�ץȲʡʶ���λ������򥻥åȡ�
+      *レセプト科（空白の時ゼロをセット）
                05  SKYMAIN-RECEKA           PIC  X(02).
-      *������ʧ����
+      *審査支払機関
                05  SKYMAIN-TEISYUTUSAKI     PIC  9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                05  SKYMAIN-RECESYUBETU      PIC  X(04).
-      *�ݸ����ֹ�
+      *保険者番号
                05  SKYMAIN-HKNJANUM         PIC  X(08).
-      *�����ʬ�������ݸ��ΤȤ��Τߡ�
+      *補助区分（船員保険のときのみ）
                05  SKYMAIN-HOJOKBN-KEY      PIC  X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                05  SKYMAIN-KOHID-KEY        PIC  9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                05  SKYMAIN-TEKSTYMD         PIC  X(08).
-      *ʬ���ʬ
+      *分割区分
                05  SKYMAIN-RECEIPT-KBN      PIC  X(10).
-      *�����ֹ�
+      *患者番号
            03  SKYMAIN-PTNUM                PIC  X(20).
-      *���⡦������ʬ�ʣ������⡡������������
+      *県内・県外区分（１：県内　２：県外　）
            03  SKYMAIN-PREFKBN              PIC  X(01).
-      *���ֹ�
+      *県番号
            03  SKYMAIN-PREFNUM              PIC  X(02).
-      *ǯ��
+      *年齢
            03  SKYMAIN-AGE                  PIC  9(03).
-      *���ճ��
+      *給付割合
            03  SKYMAIN-KYURATE              PIC  9(03).
-      *�����Ƕ�ʬ
+      *在総診区分
            03  SKYMAIN-ZAITAKU              PIC  X(01).
-      *����ǯ��
+      *請求年月
            03  SKYMAIN-SKYYM                PIC  X(06).
-      *����ǯ��
+      *返戻年月
            03  SKYMAIN-HENREIYM             PIC  X(06).
-      *�����ʬ
+      *請求区分
            03  SKYMAIN-SKYKBN               PIC  X(01).
-      *�����ʬ�ʥ쥻���оݡ�
+      *請求区分（レセ電対象）
            03  SKYMAIN-SKYKBN-RECEDEN       PIC  X(01).
-      *������ʬ
+      *訂正区分
            03  SKYMAIN-TEISEIKBN            PIC  X(01).
-      *���ݸ����ݸ��ֹ�
+      *主保険−保険番号
            03  SKYMAIN-HKNNUM               PIC  X(03).
-      *���ݸ����ݸ��ɣ�
+      *主保険−保険ＩＤ
            03  SKYMAIN-HKNID                PIC  9(10).
-      *���ݸ����ܿͲ�²��ʬ
+      *主保険−本人家族区分
            03  SKYMAIN-HONKZKKBN            PIC  X(01).
-      *���ݸ��������ʬ
+      *主保険−補助区分
            03  SKYMAIN-HOJOKBN              PIC  X(01).
-      *���ݸ��ݷ�³��ʬ
+      *主保険−継続区分
            03  SKYMAIN-CONTKBN              PIC  X(01).
-      *���ݸ��ݵ���
+      *主保険−記号
            03  SKYMAIN-KIGO                 PIC  X(80).
-      *���ݸ����ֹ�
+      *主保険−番号
            03  SKYMAIN-NUM                  PIC  X(80).
-      *Ϸ���ݸ����ݸ��ֹ�
+      *老人保険−保険番号
            03  SKYMAIN-RJNHKNNUM            PIC  X(03).
-      *Ϸ���ݸ����ݸ��ɣ�
+      *老人保険−保険ＩＤ
            03  SKYMAIN-RJNHKNID             PIC  9(10).
-      *�������
+      *公費情報
            03  SKYMAIN-KOHINF               OCCURS 4.
-      *������ݸ��ֹ�
+      *公費−保険番号
                05  SKYMAIN-KOHNUM           PIC  X(03).
-      *����������
+      *実日数情報
            03  SKYMAIN-JNISSUINF.
-      *������
+      *実日数
                05  SKYMAIN-JNISSU           PIC  9(02).
-      *���Ŷ�ʬ����������
+      *診療区分別点数情報
            03  SKYMAIN-SRYKBNINF           OCCURS  45.
-      *��������
+      *基本点数
                05  SKYMAIN-KHNTEN          PIC  9(08).
-      *���
+      *回数
                05  SKYMAIN-KAISU           PIC  9(05).
-      *������������
+      *明細点数情報
                05  SKYMAIN-TENSUINF.
-      *��������
+      *明細点数
                    07  SKYMAIN-TENSU       PIC  S9(08).
-      *�����������
+      *合計点数情報
            03  SKYMAIN-TOTALTENINF.
-      *�������
+      *合計点数
                05  SKYMAIN-TOTALTEN        PIC S9(08).
-      *��ô��۾���
+      *負担金額情報
            03  SKYMAIN-FTNMONEYINF.
-      *��ô���
+      *負担金額
                05  SKYMAIN-FTNMONEY        PIC S9(09).
-      *��ô��ۡʰ�����ô�ۡ�
+      *負担金額（一部負担額）
                05  SKYMAIN-FTNMONEY-FTN    PIC S9(09).
-      *��ô��ۡʹ����ۡ�
+      *負担金額（控除額）
                05  SKYMAIN-FTNMONEY-KOJ    PIC S9(09).
       *
-      *�������������
+      *食事療養費情報
            03  SKYMAIN-SHOKUJIINF.
-      *��������
+      *食事日数
                05  SKYMAIN-SHOKUJINISSU    PIC  9(02).
-      *����������
+      *食事療養費
                05  SKYMAIN-SHOKUJIRYOYOHI  PIC  9(09).
-      *ɸ����ô��
+      *標準負担額
                05  SKYMAIN-SHOKUJIFTN      PIC  9(09).
       *
-      *������ô�⡦����������ɸ����ô�۶�ʬ
+      *一部負担金・食事療養費標準負担額区分
            03  SKYMAIN-SHOKUJIFTNKBN       PIC  X(01).
       *
-      *���ް�����ô�����
+      *薬剤一部負担金情報
            03  SKYMAIN-YKZFTNINF.
-      *���ް�����ô��
+      *薬剤一部負担金
                05  SKYMAIN-YKZFTN          PIC  9(05).
       *
-      *����۾���ʰ������
+      *請求額情報（医療費）
            03  SKYMAIN-SKYIRYO-INF.
-      *������
+      *実日数
                05  SKYMAIN-SKYIRYO-NISSU   PIC 9(02).
-      *������
+      *請求点
                05  SKYMAIN-SKYIRYO-TOTALTEN
                                            PIC S9(08).
-      *������ô
+      *患者負担
                05  SKYMAIN-SKYIRYO-ICHIBUFTN
                                            PIC S9(09).
-      *�ݸ�����ô
+      *保険者負担
                05  SKYMAIN-SKYIRYO-HOKENJA PIC S9(09).
-      *������ô
+      *公費負担
                05  SKYMAIN-SKYIRYO-KOHFTN  PIC S9(09).
       *
-      *����۾���ʿ�����
+      *請求額情報（食事）
            03  SKYMAIN-SKYSKJ-INF.
-      *���
+      *回数
                05  SKYMAIN-SKYSKJ-KAISU     PIC 9(02).
-      *�����
+      *請求円
                05  SKYMAIN-SKYSKJ-RYOYOHI   PIC 9(09).
-      *������ô
+      *患者負担
                05  SKYMAIN-SKYSKJ-ICHIBUFTN PIC 9(09).
-      *�ݸ�����ô
+      *保険者負担
                05  SKYMAIN-SKYSKJ-HOKENJA   PIC 9(09).
-      *������ô
+      *公費負担
                05  SKYMAIN-SKYSKJ-KOHFTN    PIC 9(09).
-      *�ݸ��ȹ礻����
+      *保険組合せ情報
            03  SKYMAIN-HKNCOMBI-INF.
                05  SKYMAIN-HKNCOMBI         PIC 9(04)   OCCURS 10.
       *
-      *�õ�����
+      *特記事項
            03  SKYMAIN-TOKKIINF.
                05  SKYMAIN-TOKKI          PIC  X(02)   OCCURS  5.
       *
-      *�õ�����ά��
+      *特記事項略称
            03  SKYMAIN-TOKKINMINF.
                05  SKYMAIN-TOKKINM        PIC  X(12)   OCCURS  5.
       *
-      *�ե饰
+      *フラグ
            03  SKYMAIN-FLGINF.
                05  SKYMAIN-FLG            PIC  9(01)   OCCURS  5.
       *
-      *�ǡ������ꥢ
+      *データエリア
            03  SKYMAIN-RESERVE-AREA       PIC  X(50).
       *
-      *����ؼ��ե饰
+      *返戻指示フラグ
            03  SKYMAIN-HENREI-SIJI-FLG    PIC  9(01).
-      *ľ������ե饰
+      *直接請求フラグ
            03  SKYMAIN-DIRECT-FLG         PIC X(01).
       *
-      *�쥻�ץȵ��ܳ������������ե饰��1:���ܳ�������������
+      *レセプト記載外公費情報作成フラグ（1:記載外公費情報作成）
            03  SKYMAIN-ETCCREATEFLG        PIC  9(01).
-      *�ݸ���ʬ�ʣ��������ա�ϫ�ҽ��ˡ����������աʷ��ݽ��ˡ�
+      *保険区分（５：自賠責（労災準拠）、６：自賠責（健保準拠））
            03  SKYMAIN-HKNKBN-RSI          PIC X(01).
-      *(����ɽ��)
-      *���ݸ����ݸ��ֹ�
+      *(総括表用)
+      *主保険−保険番号
            03  SKYMAIN-HKNNUM-S            PIC  X(03).
-      *�ݸ����ֹ� 
+      *保険者番号 
            03  SKYMAIN-HKNJANUM-S          PIC  X(08).
-      *��Ͽǯ����
+      *登録年月日
            03  SKYMAIN-CREYMD              PIC  X(08).
-      *��Ͽ����
+      *登録時間
            03  SKYMAIN-CREHMS              PIC  X(06).
-      *����ǯ����
+      *更新年月日
            03  SKYMAIN-UPDYMD              PIC  X(08).
-      *��������
+      *更新時間
            03  SKYMAIN-UPDHMS              PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SKYMAIN-UPHKNJANUM          PIC X(10).
-      *�ݸ����ֹ渡���ѹ���
+      *保険者番号検索用項目
            03  SKYMAIN-XXPREFNUM           PIC X(02).
-      *����ǯ����ѹ���
+      *診療年月検索用項目
            03  SKYMAIN-XXSRYYM             PIC 9(06).
-      *�о��ݸ����ֹ渡���ѹ��� 
+      *対象保険者番号検索用項目 
            03  SKYMAIN-XXSTHKNJANUM        PIC X(08).
            03  SKYMAIN-XXEDHKNJANUM        PIC X(08).
-      *������ʧ���ظ����ѹ���
+      *審査支払機関検索用項目
            03  SKYMAIN-XXTEISYUTUSAKI      PIC 9(01).
 
 

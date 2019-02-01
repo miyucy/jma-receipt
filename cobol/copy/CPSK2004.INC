@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,40 +16,40 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *         �����ƥ�����ޥ���     (CPSK2004.INC)   *
-      *         �ʣ���������                            *
-      *         �쥻�ץȺ����ؼ��ʥ쥻�ץȼ��̡�        *
+      *         システム管理マスタ     (CPSK2004.INC)   *
+      *         （２００４）                            *
+      *         レセプト作成指示（レセプト種別）        *
       *-------------------------------------------------*
        01  SYS-2004-REC.
            03  SYS-2004-KEY.
                05  SYS-2004-HOSPNUM     PIC 9(2).
-      *����������
+      *管理コード
                05  SYS-2004-KANRICD     PIC  X(04).
-      *��ʬ������
+      *区分コード
                05  SYS-2004-KBNCD       PIC  X(08).
-      *ͭ������ǯ����
+      *有効開始年月日
                05  SYS-2004-STYUKYMD    PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                05  SYS-2004-EDYUKYMD    PIC  X(08).
-      *�����ơ��֥�
+      *管理テーブル
            03  SYS-2004-TBL.
-      *�쥻�ץȼ���̾��
+      *レセプト種別名称
                05  SYS-2004-SYUBETUNAME PIC  X(40).
-      *�쥻�ץȽ��Ͻ�
+      *レセプト出力順
                05  SYS-2004-PRTJYUNI    PIC  X(02).
-      *ͽ��
+      *予備
            03  SYS-2004-YOBI            PIC  X(458).
-      *ü���ɣ�
+      *端末ＩＤ
            03  SYS-2004-TERMID          PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  SYS-2004-OPID            PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  SYS-2004-CREYMD          PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  SYS-2004-UPYMD           PIC  X(08).
-      *��������
+      *更新時間
            03  SYS-2004-UPHMS           PIC  X(06).
-      *�祭�������ѹ���
+      *主キー更新用項目
            03  SYS-2004-UPD-KEY.
                05  SYS-2004-UPD-HOSPNUM     PIC 9(2).
                05  SYS-2004-UPD-KANRICD     PIC X(04).

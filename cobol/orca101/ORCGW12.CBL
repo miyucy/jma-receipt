@@ -1,6 +1,6 @@
       ********************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -19,187 +19,187 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCGW12.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ƥ������������
-      *  ����ݡ��ͥ��̾  : �쥻�ץȰ�������ʣף�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : システム管理情報設定
+      *  コンポーネント名  : レセプト印刷情報（Ｗ１２）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    MCC-ƣ��     02/02/26  �쥻�Ŷ�ʬ���쥻�Ž�������ɲ�
-      *  01.00.02    MCC-ƣ��     02/03/28  ���ݣϣãҶ�ʬ�����ݿ����������
-      *                                     ��ʬ���ɲ�
-      *  01.00.03    MCC-ƣ��     02/04/03  ��ñ�ѹ����Խ��ץ������̾���ɲ�
-      *  01.00.04    MCC-ƣ��     02/05/13  ��̾�Խ���ʬ���ʿ��Ų��̡ˤ��ɲ�
-      *  01.00.05    MCC-ƣ��     02/06/04  ž�����Խ���ʬ���ɲ�
-      *  01.00.06    MCC-ƣ��     02/07/04  ������ץ�󥿾�����ɲ�
-      *  02.00.01    NACL-¿��Ǽ  02/11/13  ������� 
-      *  02.00.02    NACL-ƣ��    03/01/08  �̤��ֹ��Խ���ʬ���ɲ� 
-      *  02.00.03    NACL-ƣ��    03/02/27  �����Ѹ�ñ�ѹ����Խ��ץ������̾���ɲ�
-      *  02.00.04    NACL-ƣ��    03/03/07  ̤���ϻ��Υ����å�
-      *  02.00.05    NACL-ƣ��    03/04/09  ³���ʬ�������ˤ��ɲ�
-      *  02.00.06    NACL-ƣ��    03/07/02  ����̾�Խ��ե饰���ɲ�
-      *  02.00.07    NACL-ƣ��    03/08/06  �쥻�Ť�����ν���
-      *  02.00.08    NACL-ƣ��    03/08/21  ³���ʬ����������
-      *                                     ��³���������ɲ�
-      *  02.00.09    NACL-����    03/11/18  Ϸ�ͤȸ�����ʬ���ɲ�
-      *  02.00.10    NACL-����    04/01/15  ����쥻�ץ�Ŧ���󵭺ܶ�ʬ�ɲ�
-      *  02.00.11    NACL-ƣ��    04/02/18  ���ݣϣãҶ�ʬ���ɲ�
-      *  02.00.12    NACL-ƣ��    04/03/05  ����̾�Խ��ե饰�˶�ʬ���ɲ�
-      *  02.00.13    NACL-ƣ��    04/03/29  ³���ʬ�˽ķ�����Ĺ���ɲ�
-      *  02.00.14    NACL-ƣ��    04/04/09  �쥻�ץȥ����ȡʾɾ��ܵ��˵�Ͽ��ʬ
-      *                                     �����Ų��Խ���ʬ���ɲ�
-      *  02.00.15    NACL-����    04/04/15  �ץ��̾�λ����������ʬ����
-      *  02.00.16    NACL-ƣ��    04/07/02  ���Ͻ硦��ư���ܶ�ʬ���ɲ�
-      *  02.00.17    NACL-ƣ��    04/09/29  �쥻�š��ϣãҶ�ʬ��������ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    MCC-藤原     02/02/26  レセ電区分、レセ電出力先の追加
+      *  01.00.02    MCC-藤原     02/03/28  国保ＯＣＲ区分、国保診療報酬請求書
+      *                                     区分の追加
+      *  01.00.03    MCC-藤原     02/04/03  県単用項目編集プログラム名の追加
+      *  01.00.04    MCC-藤原     02/05/13  病名編集区分１（診療科別）の追加
+      *  01.00.05    MCC-藤原     02/06/04  転帰日編集区分の追加
+      *  01.00.06    MCC-藤原     02/07/04  出力先プリンタ情報の追加
+      *  02.00.01    NACL-多々納  02/11/13  一括入力 
+      *  02.00.02    NACL-藤原    03/01/08  通し番号編集区分の追加 
+      *  02.00.03    NACL-藤原    03/02/27  入院用県単用項目編集プログラム名の追加
+      *  02.00.04    NACL-藤原    03/03/07  未入力時のチェック
+      *  02.00.05    NACL-藤原    03/04/09  続紙区分（入院）の追加
+      *  02.00.06    NACL-藤原    03/07/02  主病名編集フラグの追加
+      *  02.00.07    NACL-藤原    03/08/06  レセ電の設定の修正
+      *  02.00.08    NACL-藤原    03/08/21  続紙区分（入院外）
+      *                                     ・続紙出力先の追加
+      *  02.00.09    NACL-太田    03/11/18  老人と原爆区分の追加
+      *  02.00.10    NACL-太田    04/01/15  自費レセプト摘要欄記載区分追加
+      *  02.00.11    NACL-藤原    04/02/18  社保ＯＣＲ区分の追加
+      *  02.00.12    NACL-藤原    04/03/05  主病名編集フラグに区分を追加
+      *  02.00.13    NACL-藤原    04/03/29  続紙区分に縦形式（長）追加
+      *  02.00.14    NACL-藤原    04/04/09  レセプトコメント（症状詳記）記録区分
+      *                                     ・診療科編集区分の追加
+      *  02.00.15    NACL-太田    04/04/15  プリンタ名の指定を入／外分ける
+      *  02.00.16    NACL-藤原    04/07/02  出力順・自動遷移区分を追加
+      *  02.00.17    NACL-藤原    04/09/29  レセ電・ＯＣＲ区分の設定に追加
       *
-      *  02.07.01    NACL-ƣ��    05/08/20  �����������б�
-      *                                     �������������ʸ�����ܰ���
-      *                                     ���ճ���󵭺ܶ�ʬ
-      *                                     �쥻�ץȼ����󵭺ܶ�ʬ
-      *                                     ���ɲ� 
+      *  02.07.01    NACL-藤原    05/08/20  特別療養費対応
+      *                                     「特別療養費」文字記載位置
+      *                                     給付割合欄記載区分
+      *                                     レセプト種別欄記載区分
+      *                                     を追加 
       *
-      *  02.07.02    NACL-ƣ��    05/12/12  ���ݥ쥻�ץ����ֽ��б�
-      *                                     MONFUNC�б�
-      *  02.07.03    NACL-ƣ��    06/02/01  ����б�
+      *  02.07.02    NACL-藤原    05/12/12  国保レセプト編綴順対応
+      *                                     MONFUNC対応
+      *  02.07.03    NACL-藤原    06/02/01  主科対応
       *  
-      *  02.09.01    NACL-ƣ��    06/05/12  �����̿��壱����������
-      *                                     �쥻������ɽ�쥳���ɵ�Ͽ���
-      *                                     ���ɲ�
+      *  02.09.01    NACL-藤原    06/05/12  改定通信医１６０４９号
+      *                                     レセ電日計表レコード記録条件
+      *                                     の追加
       *  3.0.0
-      *  03.00.01    NACL-ƣ��    06/05/15  ���ౡ����ε��ܶ�ʬ���ɲ�
-      *                                     ���������쥻�ץȤΤߡ�
+      *  03.00.01    NACL-藤原    06/05/15  入退院履歴の記載区分の追加
+      *                                     （入院外レセプトのみ）
       *
-      *  03.02.01    NACL-ƣ��    06/07/11  ϫ�ҡ������դΥץ�󥿻����б�
-      *                                     ���������������̡�
-      *  03.02.02    NACL-ƣ��    06/07/24  �ޥ�Ĺ���������б�
-      *  03.02.03    NACL-ƣ��    06/07/26  �����դ��Ȱ�������ǽ�б�
-      *  03.02.04    NACL-ƣ��    06/08/01  ���ݼ���б�
+      *  03.02.01    NACL-藤原    06/07/11  労災・自賠責のプリンタ指定対応
+      *                                     （入院外・入院別）
+      *  03.02.02    NACL-藤原    06/07/24  マル長の別総括対応
+      *  03.02.03    NACL-藤原    06/07/26  自賠責の枠印刷選択機能対応
+      *  03.02.04    NACL-藤原    06/08/01  国保主科対応
       *
-      *  03.04.01    NACL-ƣ��    07/01/16  �쥻�ץȰ��������Ͻ��ʬ
-      *                                     �����Ρˤ��ɲ�
-      *  03.04.05    NACL-ƣ��    07/01/24  �쥻�ץȺ������Ͻ��ʬ
-      *                                     ���̡����ʻ�̾�硢���̡�����
-      *                                     �ֹ����ɲ�
-      *  03.04.06    NACL-ƣ��    07/02/07  ���־ܺ�������̤��ɲ�
+      *  03.04.01    NACL-藤原    07/01/16  レセプト一括作成出力順区分
+      *                                     （全体）の追加
+      *  03.04.05    NACL-藤原    07/01/24  レセプト作成出力順区分
+      *                                     種別・カナ氏名順、種別・患者
+      *                                     番号順の追加
+      *  03.04.06    NACL-藤原    07/02/07  編綴詳細設定画面の追加
       *
-      *  03.05.01    NACL-¿��Ǽ  07/05/02  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/06/19  �����դ��ͼ�����
-      *                                     ��ʿ������ǯ��������ͼ���
-      *                                     ������Υ����å��������
-      *                                     �����ֹ浭�ܶ�ʬ
-      *                                     ���ɲ�
+      *  03.05.01    NACL-多々納  07/05/02  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/19  自賠責の様式選択
+      *                                     （平成１９年４月改正様式）
+      *                                     印刷後のチェック解除選択
+      *                                     病棟番号記載区分
+      *                                     の追加
       *
-      *  04.02.01    NACL-ƣ��    08/03/04  ʿ������ǯ��������б�
-      *  04.02.02    NACL-ƣ��    08/04/21  ����Ϣ�������������ʬ
-      *                                     ���ɲ�
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *  04.02.02    NACL-藤原    08/04/21  広域連合診療報酬請求書区分
+      *                                     の追加
       *
-      *  04.03.00    NACL-����    08/06/17  �������إܥ����ɲ�
-      *  04.03.01    NACL-ƣ��    08/06/19  ����̽����б�
-      *  04.03.02    NACL-ƣ��    08/08/07  ϫ�ҥ����ȵ��ܶ�ʬ
-      *                                     ������̤����������ȵ��ܶ�ʬ
-      *                                     ϫ���ȵ��ܶ�ʬ���ɲ�
+      *  04.03.00    NACL-太田    08/06/17  タブ切替ボタン追加
+      *  04.03.01    NACL-藤原    08/06/19  医師別出力対応
+      *  04.03.02    NACL-藤原    08/08/07  労災コメント記載区分
+      *                                     入院料未算定時コメント記載区分
+      *                                     労災枠記載区分の追加
       *
-      *  04.04.01    NACL-ƣ��    08/11/19  �쥻�ţãġݣҽ����б�
-      *  04.04.02    NACL-ƣ��    08/11/20  �쥻�Ž���������å��ɲ�
-      *  04.04.03    NACL-ƣ��    08/11/25  ���ǥ����������ս������ʬ��
-      *                                     �ɾ��ܵ�������ʬ�ɲ�
-      *  04.04.04    NACL-ƣ��    09/04/02  �쥻�Ž���������å�����Ͽ��
-      *                                     �γ�ǧ�������������ѹ�
+      *  04.04.01    NACL-藤原    08/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    08/11/20  レセ電出力先チェック追加
+      *  04.04.03    NACL-藤原    08/11/25  光ディスク等送付書作成区分、
+      *                                     症状詳記作成区分追加
+      *  04.04.04    NACL-藤原    09/04/02  レセ電出力先チェックを登録時
+      *                                     の確認ダイアログに変更
       *
-      *  04.05.01    NACL-ƣ��    09/06/11  �����̽����б�
-      *  04.05.02    NACL-ƣ��    09/08/17  �������ޤȤ����ϲ���ɽ����
-      *                                     �����б�
-      *  04.05.03    NACL-ƣ��    09/08/19  ����������μ���쥻�ץȤ�
-      *                                     ���������б�
-      *  04.05.04    NACL-ƣ��    09/08/21  �쥻�ťǡ�����Ǽ�ե��������
-      *                                     �б�
-      *                                     �ե����������Υǥե������
-      *                                     ��������ǽ�ˤ���
-      *  04.05.05    NACL-ƣ��    11/02/22  �쥻�ťǡ����ε����ֹ���ڤ�
-      *                                     ʸ�������б�
-      *  04.05.06    NACL-ƣ��    11/03/25  �ҳ��б�
-      *                                     �ҳ������쥻�ץȤΥ쥻�ź���
-      *                                     ��ʬ���ɲ�
-      *  04.05.07    NACL-ƣ��    11/04/18  �ҳ��б�
-      *                                     �ݸ��Ԥ�����Ǥ��ʤ��ҳ�����
-      *                                     �쥻�ץȤΥ쥻�ŵ�Ͽ�Υǥե�
-      *                                     ��Ȥ��1 ��Ͽ����פȤ���
-      *  04.05.08    NACL-ƣ��    11/08/02  ϫ�ҿ��ͼ��б�
-      *                                     �����쥻���������ѹ��б�
-      *  04.05.09    NACL-ƣ��    12/05/10  ϫ���ͼ���ɽ���ѹ�
+      *  04.05.01    NACL-藤原    09/06/11  病棟別出力対応
+      *  04.05.02    NACL-藤原    09/08/17  生保等まとめ入力画面表示順
+      *                                     設定対応
+      *  04.05.03    NACL-藤原    09/08/19  全件印刷時の自費レセプトの
+      *                                     印刷指定対応
+      *  04.05.04    NACL-藤原    09/08/21  レセ電データ格納フォルダ設定
+      *                                     対応
+      *                                     ファイル出力先のデフォルト値
+      *                                     の設定も可能にする
+      *  04.05.05    NACL-藤原    11/02/22  レセ電データの記号番号区切り
+      *                                     文字設定対応
+      *  04.05.06    NACL-藤原    11/03/25  災害対応
+      *                                     災害該当レセプトのレセ電作成
+      *                                     区分の追加
+      *  04.05.07    NACL-藤原    11/04/18  災害対応
+      *                                     保険者が特定できない災害該当
+      *                                     レセプトのレセ電記録のデフォ
+      *                                     ルトを「1 記録する」とする
+      *  04.05.08    NACL-藤原    11/08/02  労災新様式対応
+      *                                     点検レセ印字位置変更対応
+      *  04.05.09    NACL-藤原    12/05/10  労災様式の表示変更
       *
-      *  04.06.01    NACL-ƣ��    10/06/23  �쥻��������μ��ե��顼ʬ��
-      *                                     ���������쥻�б�
-      *  04.06.02    NACL-ƣ��    10/07/10  ��̾���ܽ������б�
-      *  04.06.03    NACL-ƣ��    11/12/12  �����쥻������������б�
-      *  04.06.04    NACL-ƣ��    12/07/04  ɽ�����֤ˤ��쥻�ץȵ����б�
-      *                                     ž���ѽ���̾���ܶ�ʬ���ɲ�
-      *  04.06.05    NACL-ƣ��    12/09/22  �����ѡ�����ѽ��ɽ�������б�
-      *  04.06.06    NACL-ƣ��    12/12/21  �������λ��꤬�ʤ����ౡ����
-      *                                     �ε����б�
-      *                                     ���ౡ����ε��ܶ�ʬ��������
-      *                                     ���ɲ�
+      *  04.06.01    NACL-藤原    10/06/23  レセ電請求時の受付エラー分の
+      *                                     種別不明レセ対応
+      *  04.06.02    NACL-藤原    10/07/10  病名記載順設定対応
+      *  04.06.03    NACL-藤原    11/12/12  点検レセ０点公費印字対応
+      *  04.06.04    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
+      *                                     転帰済傷病名記載区分の追加
+      *  04.06.05    NACL-藤原    12/09/22  点検用・提出用初期表示設定対応
+      *  04.06.06    NACL-藤原    12/12/21  入院料の算定がない入退院履歴
+      *                                     の記載対応
+      *                                     入退院履歴の記載区分（入院）
+      *                                     の追加
       *
-      *  04.07.01    NACL-ƣ��    11/06/02  ���ౡ����ε��ܶ�ʬ��
-      *                                     ��������ʬ�ε���������ɲ�
-      *  04.07.02    NACL-ƣ��    11/06/08  �쥻�ź���������ι���Ϣ���
-      *                                     ����ʬ�Ȥδ�Ϣ�����å����ɲ�
-      *                                     ����Ϣ�������ʬ�Υǥե����
-      *                                     ɽ�������ʬ�ȤޤȤ����ѹ�
-      *  04.07.03    NACL-ƣ��    12/02/13  �����ȹ�ؤ�ľ������ȿ���
-      *                                     ��ʧ���������б�
-      *  04.07.04    NACL-ƣ��    12/03/25  ���񵭺ܽ������б�
-      *  04.07.05    NACL-ƣ��    12/05/28  ���֥�٥��б�
-      *  04.07.06    NACL-ƣ��    12/08/01  �쥻�ťǡ��������å���ǽ�б�
-      *  04.07.07    NACL-ƣ��    12/09/24  �����ѥ쥻�ץȤΰ��̾�����б�
-      *  04.07.08    NACL-ƣ��    12/10/31  �ե��������������Υǥե����
-      *                                     �ѹ�
-      *  04.07.09    NACL-ƣ��    12/12/03  �����ߥʥ�ǥ��åȤˤ������б�
-      *  04.07.10    NACL-ƣ��    13/02/07  ϫ�ҥ쥻�ź����б�
-      *  04.07.11    NACL-ƣ��    13/06/25  �쥻��������μ��ե��顼ʬ��
-      *                                     ����쥻�ץ��оݤ�̵ͭ����
-      *  04.07.12    NACL-ƣ��    13/06/26  ������¾�ݸ�����������ȵ���
-      *                                     �б�
-      *  04.07.13    NACL-ƣ��    13/12/04  �����ա�ϫ�ҽ��ˤΥ쥻�ץ�
-      *                                     �ͼ��ɲ��б�
-      *  04.07.14    NACL-ƣ��    14/03/20  ��£��߻��ο����󵭺��б�
-      *                                    ��ˡ�̣�����������
-      *  04.07.15    NACL-ƣ��    15/05/14  �����������쥻�ץȵ��ܶ�ʬ
-      *                                    ������ѥ쥻�ץȡ��б�
-      *  04.07.16    NACL-ƣ��    15/06/15  �ּ����ա��ͼ�����פν��ɽ
-      *                                     ���ѹ��б�
-      *  04.07.17    NACL-ƣ��    15/06/18  ���ǥ����������ս�����μ���
-      *                                     �����б�
-      *  04.07.18    NACL-ƣ��    15/07/17  ϫ�ҿ����������ڤӥ��ե���
-      *                                     ���������������Σϣã��ͼ�
-      *                                     �б�
+      *  04.07.01    NACL-藤原    11/06/02  入退院履歴の記載区分に
+      *                                     自費入院分の記載設定を追加
+      *  04.07.02    NACL-藤原    11/06/08  レセ電作成設定時の広域連合作
+      *                                     成区分との関連チェックを追加
+      *                                     広域連合作成区分のデフォルト
+      *                                     表示を国保分とまとめるに変更
+      *  04.07.03    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *  04.07.04    NACL-藤原    12/03/25  公費記載順設定対応
+      *  04.07.05    NACL-藤原    12/05/28  タブラベル対応
+      *  04.07.06    NACL-藤原    12/08/01  レセ電データチェック機能対応
+      *  04.07.07    NACL-藤原    12/09/24  点検用レセプトの医師名記載対応
+      *  04.07.08    NACL-藤原    12/10/31  ファイル出力先設定のデフォルト
+      *                                     変更
+      *  04.07.09    NACL-藤原    12/12/03  ターミナルデジットによる出力対応
+      *  04.07.10    NACL-藤原    13/02/07  労災レセ電作成対応
+      *  04.07.11    NACL-藤原    13/06/25  レセ電請求時の受付エラー分の
+      *                                     自費レセプト対象の有無設定
+      *  04.07.12    NACL-藤原    13/06/26  入院料他保険算定時コメント記載
+      *                                     対応
+      *  04.07.13    NACL-藤原    13/12/04  自賠責（労災準拠）のレセプト
+      *                                     様式追加対応
+      *  04.07.14    NACL-藤原    14/03/20  上限０円時の食事欄記載対応
+      *                                    （法別２４・７９）
+      *  04.07.15    NACL-藤原    15/05/14  ０点全国公費レセプト記載区分
+      *                                    （提出用レセプト）対応
+      *  04.07.16    NACL-藤原    15/06/15  「自賠責・様式選択」の初期表
+      *                                     示変更対応
+      *  04.07.17    NACL-藤原    15/06/18  光ディスク等送付書の媒体種類
+      *                                     設定対応
+      *  04.07.18    NACL-藤原    15/07/17  労災診療費請求書及びアフター
+      *                                     ケア委託費請求書のＯＣＲ様式
+      *                                     対応
       *
-      *  04.08.01    NACL-ƣ��    12/01/08  ������ʬ�������ѥ쥻�ץȵ�
-      *                                     ���б�
-      *  04.08.02    NACL-ƣ��    14/08/26  fdd �ѻߤ�ȼ���б�
-      *  04.08.03    NACL-ƣ��    14/08/28  �������ߥɥ��б�
-      *  04.08.04    NACL-ƣ��    15/08/17  �����ե쥻�ץȤ���������ü
-      *                                     �������б�
-      *  04.08.05    NACL-ƣ��    15/09/01  �ݸ�����ε����б�
-      *  04.08.06    NACL-ƣ��    15/11/30  ��ʪ���հ�����ô�⵭���б�
-      *                                    ��ˡ�̣�����������
-      *  04.08.07    NACL-ƣ��    16/01/18  �����ѥ쥻�ץȰ���̾��������
-      *                                     �б�
-      *  04.08.06    NACL-ƣ��    16/04/20  ��������ˡ�쥻�ץȵ����б�
-      *  04.08.07    NACL-ƣ��    16/06/13  ���ݿ����������κҳ�����
-      *                                     ʬ�ΤޤȤ��б�
-      *  04.08.08    NACL-ƣ��    16/08/08  �ҳ�����ʬ�������оݤȸ����оݡ�
-      *                                     �쥻�ץȤ�ʬ���б�
-      *  04.08.09    NACL-ƣ��    16/08/24  �������б�
-      *  04.08.10    NACL-ƣ��    16/09/21  �����߰ʲ����ޤΥ쥻�ץȵ����б�
-      *  04.08.11    NACL-ƣ��    16/10/07  �����գУģƥե���������б�
-      *  04.08.12    NACL-ƣ��    17/05/26  ľ�����᤹���ݸ��Ԥ���������
-      *                                     �����ȹ���ɲ�
-      *  04.08.13    NACL-ƣ��    18/01/26  ������������ô�⵭���б�
-      *                                    �ʸ���ΤߤΥ쥻�ץȡ�
+      *  04.08.01    NACL-藤原    12/01/08  包括診療分の点検用レセプト記
+      *                                     載対応
+      *  04.08.02    NACL-藤原    14/08/26  fdd 廃止に伴う対応
+      *  04.08.03    NACL-藤原    14/08/28  ４．８ミドル対応
+      *  04.08.04    NACL-藤原    15/08/17  自賠責レセプトの請求金額欄端
+      *                                     数処理対応
+      *  04.08.05    NACL-藤原    15/09/01  保険履歴の記載対応
+      *  04.08.06    NACL-藤原    15/11/30  現物給付一部負担金記載対応
+      *                                    （法別２４・７９）
+      *  04.08.07    NACL-藤原    16/01/18  点検用レセプト一般名処方記載
+      *                                     対応
+      *  04.08.06    NACL-藤原    16/04/20  湿布薬用法レセプト記載対応
+      *  04.08.07    NACL-藤原    16/06/13  社保診療報酬請求書の災害該当
+      *                                     分のまとめ対応
+      *  04.08.08    NACL-藤原    16/08/08  災害該当分（非減免対象と減免対象）
+      *                                     レセプトの分割対応
+      *  04.08.09    NACL-藤原    16/08/24  持参薬対応
+      *  04.08.10    NACL-藤原    16/09/21  １５円以下薬剤のレセプト記載対応
+      *  04.08.11    NACL-藤原    16/10/07  自賠責ＰＤＦファイル作成対応
+      *  04.08.12    NACL-藤原    17/05/26  直接請求する保険者に地方職員
+      *                                     共済組合を追加
+      *  04.08.13    NACL-藤原    18/01/26  全国公費一部負担金記載対応
+      *                                    （公費のみのレセプト）
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -207,26 +207,26 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *    
-      *    �쥻�ťǡ�������������å��ѥ���ե�����
+      *    レセ電データ出力先チェック用ワークファイル
            SELECT  WRK-FILE        ASSIGN  WRKPARA
                                    FILE    STATUS  IS  STS-WRK.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
-      *    �쥻�ťǡ�������������å��ѥ���ե�����
+      *    レセ電データ出力先チェック用ワークファイル
        FD  WRK-FILE.
        01  WRK-R                       PIC X(10).
       *
        WORKING-STORAGE         SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    �����ƥ�������������Ѷ��̥ѥ�᥿
+      *    システム管理情報設定用共通パラメタ
            COPY    "W01COMMON-SPA".
       *
-      *    �����ѣӣУ�
+      *    画面用ＳＰＡ
        01  SPA-W12.
            03  SPA-W12-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
@@ -1893,7 +1893,7 @@
                                    PIC 9(01).
            03  FLG-CHK             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
       *
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
@@ -1901,7 +1901,7 @@
       *
            03  IDXX                PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-GMN-CUR         PIC 9(02).
@@ -1946,61 +1946,61 @@
        01  WRK-CONST-AREA.
            03  WRK-CONS-JYOKEN-TENSU
                                    PIC 9(08)   VALUE   350000.
-      *    ľ�����᤹���ݸ����ֹ�κ����
+      *    直接請求する保険者番号の最大数
            03  WRK-CONS-200505-HKNJANUM-MAX
                                    PIC 9(02)   VALUE   5.
       *         
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY  "CPSYSKANRI.INC".
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSK1001.INC".
       *
-      *    �쥻�ץȰ�������
+      *    レセプト印刷情報
            COPY  "CPSK2005.INC".
            COPY  "CPSK200501.INC".
            COPY  "CPSK200505.INC".
       *
-      *    �쥻�ץȰ�����������ֽ��
+      *    レセプト印刷情報（編綴順）
            COPY  "CPSK2008.INC".
       *
-      *    �쥻�ץȰ�������ʼ�������
+      *    レセプト印刷情報（主科設定）
            COPY  "CPSK2009.INC".
       *
-      *    �쥻�ŵ����ֹ���ڤ�ʸ���������
+      *    レセ電記号番号区切り文字設定情報
            COPY    "CPSK2011.INC".
       *
            COPY    "CPSK4001.INC".
       *
-      *    �ݸ����ֹ�
+      *    保険者番号
        01  HKNJAINF-REC.
            COPY    "CPHKNJAINF.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
       *
            COPY  "CPORCSDAY.INC".
       *
            COPY  "CPORCSLNK.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -2019,7 +2019,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -2037,15 +2037,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *    ��������
+      *    画面遷移
                WHEN    "PUTG"          ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *    ����
+      *    入力
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    �������ܤ��ʤ���������ɽ����
+      *    画面遷移がない時、画面表示へ
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -2058,21 +2058,21 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���顼���̤��
+      *    エラー画面より
            IF      SPA-MOTOPG          =   "WERR"
                MOVE    SPACE               TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ������̥��å�
+      *        初期画面セット
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        �����Խ�
+      *        画面編集
                PERFORM 500-GMNHEN-SEC
                PERFORM 510-GSRAUTH-SEC
                IF      SPA-ERRCD       NOT =   SPACE
@@ -2100,11 +2100,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̽���
+      *    初期画面処理
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
-      *    ¾�Σ̣Ĥ��
+      *    他のＬＤより
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU          TO  SPA-KYOUTU
            END-IF
@@ -2129,7 +2129,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ１）ＯＫ処理
       *****************************************************************
        330-WID1-SET-SEC            SECTION.
       *
@@ -2156,7 +2156,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ǧ���̡ʣףɣģ��ˣϣ˽���
+      *    確認画面（ＷＩＤ２）ＯＫ処理
       *****************************************************************
        330-WID2-SET-SEC            SECTION.
       *
@@ -2169,14 +2169,14 @@
            ELSE
                EVALUATE    SPA-WIDCD2
                    WHEN    "1005"
-      *                ������ݸ��ȹ���оݤȤ��ʤ�
+      *                特定健康保険組合は対象としない
                        MOVE    SPACE       TO   SPA-GMN-HKNJANUM1-63
                END-EVALUATE
            END-IF
       *
            EVALUATE    SPA-WIDCD2
                WHEN    "1005"
-      *            ľ�����᤹���ݸ��Ԥι�������
+      *            直接請求する保険者の更新処理
                    PERFORM 4901-HKNJANUM-UPDATE-01-SEC
            END-EVALUATE
       *
@@ -2188,7 +2188,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѽ���Խ�����
+      *    スパ初期編集処理
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -2200,141 +2200,141 @@
            MOVE    SPA-W01-EDYUKYMDH   TO  SPA-GMN-HEDYUKYMD
       *     
            MOVE    "0"                 TO  SPA-GMN-BYOMEIHENKBNL    (1)
-           MOVE    "Ϣ�뵭��"          TO  SPA-GMN-BYOMEIHENKBNMEIL (1)
+           MOVE    "連結記載"          TO  SPA-GMN-BYOMEIHENKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-BYOMEIHENKBNL    (2)
-           MOVE    "ñ�ȵ���"          TO  SPA-GMN-BYOMEIHENKBNMEIL (2)
+           MOVE    "単独記載"          TO  SPA-GMN-BYOMEIHENKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-BYOMEIHENKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-BYOMEIHENKBN1L   (1)
-           MOVE    "���ǲʤΤߵ���"    TO  SPA-GMN-BYOMEIHENKBN1MEIL(1)
+           MOVE    "受診科のみ記載"    TO  SPA-GMN-BYOMEIHENKBN1MEIL(1)
            MOVE    "1"                 TO  SPA-GMN-BYOMEIHENKBN1L   (2)
-           MOVE    "���Ƥο��Ų�ʬ�򵭺�"
+           MOVE    "全ての診療科分を記載"
                                        TO  SPA-GMN-BYOMEIHENKBN1MEIL(2)
            MOVE    2                   TO  SPA-GMN-BYOMEIHENKBN1-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYUBYOHENFLGL   (1)
-           MOVE    "����̾���Խ���Ԥ�ʤ�"
+           MOVE    "主病名の編集を行わない"
                                        TO  SPA-GMN-SYUBYOHENFLGMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-SYUBYOHENFLGL   (2)
-           MOVE    "����̾���Խ���Ԥ��ʶ��ڤ�ͭ��"
+           MOVE    "主病名の編集を行う（区切り有）"
                                        TO  SPA-GMN-SYUBYOHENFLGMEIL(2)
            MOVE    "2"                 TO  SPA-GMN-SYUBYOHENFLGL   (3)
-           MOVE    "����̾���Խ���Ԥ��ʶ��ڤ�̵��"
+           MOVE    "主病名の編集を行う（区切り無）"
                                        TO  SPA-GMN-SYUBYOHENFLGMEIL(3)
            MOVE    "3"                 TO  SPA-GMN-SYUBYOHENFLGL   (4)
-           MOVE    "����̾���Խ���Ԥ��ʶ��ڤ�ͭ����ñ��"
+           MOVE    "主病名の編集を行う（区切り有・主単）"
                                        TO  SPA-GMN-SYUBYOHENFLGMEIL(4)
            MOVE    4                   TO  SPA-GMN-SYUBYOHENFLG-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-TENKIHENKBNL     (1)
-           MOVE    "ž�����򵭺ܤ��ʤ�"
+           MOVE    "転帰日を記載しない"
                                        TO  SPA-GMN-TENKIHENKBNMEIL  (1)
            MOVE    "1"                 TO  SPA-GMN-TENKIHENKBNL     (2)
-           MOVE    "ž�����򵭺ܤ���"  TO  SPA-GMN-TENKIHENKBNMEIL  (2)
+           MOVE    "転帰日を記載する"  TO  SPA-GMN-TENKIHENKBNMEIL  (2)
            MOVE    2                   TO  SPA-GMN-TENKIHENKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (1)
-           MOVE    "ž������ͥ�褷�Ƶ��ܡ�ž����������ɽ�����֤�ͥ���"
+           MOVE    "転帰日を優先して記載（転帰日以前は表示期間を優先）"
                                        TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
                                                                      (1)
            MOVE    "1"                 TO  SPA-GMN-TENKIBYOMEI-KBNL  (2)
-           MOVE    "ɽ�����֤�ͥ�褷�Ƶ���"
+           MOVE    "表示期間を優先して記載"
                                        TO  SPA-GMN-TENKIBYOMEI-KBNMEIL
                                                                      (2)
            MOVE    2                   TO  SPA-GMN-TENKIBYOMEI-KBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHRECEKBNL      (1)
-           MOVE    "���Ϥʤ�"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
+           MOVE    "出力なし"          TO  SPA-GMN-KKHRECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-KKHRECEKBNL      (2)
-           MOVE    "�������Τ�"        TO  SPA-GMN-KKHRECEKBNMEIL   (2)
+           MOVE    "入院外のみ"        TO  SPA-GMN-KKHRECEKBNMEIL   (2)
            MOVE    "2"                 TO  SPA-GMN-KKHRECEKBNL      (3)
-           MOVE    "�����Τ�"          TO  SPA-GMN-KKHRECEKBNMEIL   (3)
+           MOVE    "入院のみ"          TO  SPA-GMN-KKHRECEKBNMEIL   (3)
            MOVE    "3"                 TO  SPA-GMN-KKHRECEKBNL      (4)
-           MOVE    "������������"
+           MOVE    "入院・入院外"
                                        TO  SPA-GMN-KKHRECEKBNMEIL   (4)
            MOVE    4                   TO  SPA-GMN-KKHRECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYARECEKBNL      (1)
-           MOVE    "���Ϥʤ�"          TO  SPA-GMN-SYARECEKBNMEIL   (1)
+           MOVE    "出力なし"          TO  SPA-GMN-SYARECEKBNMEIL   (1)
            MOVE    "1"                 TO  SPA-GMN-SYARECEKBNL      (2)
-           MOVE    "�������Τ�"        TO  SPA-GMN-SYARECEKBNMEIL   (2)
+           MOVE    "入院外のみ"        TO  SPA-GMN-SYARECEKBNMEIL   (2)
            MOVE    "2"                 TO  SPA-GMN-SYARECEKBNL      (3)
-           MOVE    "�����Τ�"          TO  SPA-GMN-SYARECEKBNMEIL   (3)
+           MOVE    "入院のみ"          TO  SPA-GMN-SYARECEKBNMEIL   (3)
            MOVE    "3"                 TO  SPA-GMN-SYARECEKBNL      (4)
-           MOVE    "������������"      TO  SPA-GMN-SYARECEKBNMEIL   (4)
+           MOVE    "入院・入院外"      TO  SPA-GMN-SYARECEKBNMEIL   (4)
            MOVE    4                   TO  SPA-GMN-SYARECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KOUIKIRECEKBNL    (1)
-           MOVE    "���Ϥʤ�"          TO  SPA-GMN-KOUIKIRECEKBNMEIL (1)
+           MOVE    "出力なし"          TO  SPA-GMN-KOUIKIRECEKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUIKIRECEKBNL    (2)
-           MOVE    "�������Τ�"        TO  SPA-GMN-KOUIKIRECEKBNMEIL (2)
+           MOVE    "入院外のみ"        TO  SPA-GMN-KOUIKIRECEKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-KOUIKIRECEKBNL    (3)
-           MOVE    "�����Τ�"          TO  SPA-GMN-KOUIKIRECEKBNMEIL (3)
+           MOVE    "入院のみ"          TO  SPA-GMN-KOUIKIRECEKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-KOUIKIRECEKBNL    (4)
-           MOVE    "������������"
+           MOVE    "入院・入院外"
                                        TO  SPA-GMN-KOUIKIRECEKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUIKIRECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-ROURECEKBNL    (1)
-           MOVE    "���Ϥʤ�"          TO  SPA-GMN-ROURECEKBNMEIL (1)
+           MOVE    "出力なし"          TO  SPA-GMN-ROURECEKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-ROURECEKBNL    (2)
-           MOVE    "�������Τ�"        TO  SPA-GMN-ROURECEKBNMEIL (2)
+           MOVE    "入院外のみ"        TO  SPA-GMN-ROURECEKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-ROURECEKBNL    (3)
-           MOVE    "�����Τ�"          TO  SPA-GMN-ROURECEKBNMEIL (3)
+           MOVE    "入院のみ"          TO  SPA-GMN-ROURECEKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-ROURECEKBNL    (4)
-           MOVE    "������������"
+           MOVE    "入院・入院外"
                                        TO  SPA-GMN-ROURECEKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-ROURECEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHOCRKBNL    (1)
-           MOVE    "�ϣãҤʤ�"        TO  SPA-GMN-KKHOCRKBNMEIL (1)
+           MOVE    "ＯＣＲなし"        TO  SPA-GMN-KKHOCRKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KKHOCRKBNL    (2)
-           MOVE    "�ϣãҡ��������Τߡ�"
+           MOVE    "ＯＣＲ（入院外のみ）"
                                        TO  SPA-GMN-KKHOCRKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-KKHOCRKBNL    (3)
-           MOVE    "�ϣãҡ������Τߡ�"
+           MOVE    "ＯＣＲ（入院のみ）"
                                        TO  SPA-GMN-KKHOCRKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-KKHOCRKBNL    (4)
-           MOVE    "�ϣãҡ���������������"
+           MOVE    "ＯＣＲ（入院・入院外）"
                                        TO  SPA-GMN-KKHOCRKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KKHOCRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KOUIKIOCRKBNL    (1)
-           MOVE    "�ϣãҤʤ�"        TO  SPA-GMN-KOUIKIOCRKBNMEIL (1)
+           MOVE    "ＯＣＲなし"        TO  SPA-GMN-KOUIKIOCRKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUIKIOCRKBNL    (2)
-           MOVE    "�ϣãҡ��������Τߡ�"
+           MOVE    "ＯＣＲ（入院外のみ）"
                                        TO  SPA-GMN-KOUIKIOCRKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-KOUIKIOCRKBNL    (3)
-           MOVE    "�ϣãҡ������Τߡ�"
+           MOVE    "ＯＣＲ（入院のみ）"
                                        TO  SPA-GMN-KOUIKIOCRKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-KOUIKIOCRKBNL    (4)
-           MOVE    "�ϣãҡ���������������"
+           MOVE    "ＯＣＲ（入院・入院外）"
                                        TO  SPA-GMN-KOUIKIOCRKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUIKIOCRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYAOCRKBNL    (1)
-           MOVE    "�ϣãҡ��������Τߡ�"
+           MOVE    "ＯＣＲ（入院外のみ）"
                                        TO  SPA-GMN-SYAOCRKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SYAOCRKBNL    (2)
-           MOVE    "�ϣãҤʤ�"        TO  SPA-GMN-SYAOCRKBNMEIL (2)
+           MOVE    "ＯＣＲなし"        TO  SPA-GMN-SYAOCRKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-SYAOCRKBNL    (3)
-           MOVE    "�ϣãҡ���������������"
+           MOVE    "ＯＣＲ（入院・入院外）"
                                        TO  SPA-GMN-SYAOCRKBNMEIL (3)
            MOVE    3                   TO  SPA-GMN-SYAOCRKBN-MAX 
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-NYUTAIIN-KSIKBNL    (1)
-           MOVE    "���ౡ����򵭺ܤ��ʤ�"
+           MOVE    "入退院履歴を記載しない"
                                        TO
                                    SPA-GMN-NYUTAIIN-KSIKBNMEIL (1)
            MOVE    "1"                 TO
                                    SPA-GMN-NYUTAIIN-KSIKBNL    (2)
-           MOVE    "���ౡ����򵭺ܤ���"
+           MOVE    "入退院履歴を記載する"
                                        TO
                                    SPA-GMN-NYUTAIIN-KSIKBNMEIL (2)
            MOVE    "2"                 TO
                                    SPA-GMN-NYUTAIIN-KSIKBNL    (3)
-           MOVE    "���ౡ����򵭺ܤ���ʼ�������ʬ�Ͻ�����"
+           MOVE    "入退院履歴を記載する（自費入院分は除く）"
                                        TO
                                    SPA-GMN-NYUTAIIN-KSIKBNMEIL (3)
            MOVE    3                   TO
@@ -2342,174 +2342,174 @@
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-NYUTAIIN-NYU-KSIKBNL (1)
-           MOVE    "�������λ��꤬�ʤ����ౡ����򵭺ܤ��ʤ�"
+           MOVE    "入院料の算定がない入退院履歴を記載しない"
                                        TO
                                    SPA-GMN-NYUTAIIN-NYU-KSIKBNMEIL (1)
            MOVE    "1"                 TO
                                    SPA-GMN-NYUTAIIN-NYU-KSIKBNL  (2)
-           MOVE    "�������λ��꤬�ʤ����ౡ����򵭺ܤ���"
+           MOVE    "入院料の算定がない入退院履歴を記載する"
                                        TO
                                    SPA-GMN-NYUTAIIN-NYU-KSIKBNMEIL (2)
            MOVE    2                   TO
                                    SPA-GMN-NYUTAIIN-NYU-KSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KKHPRTKBNL    (1)
-           MOVE    "���ճ��ʤ����ͼ�"
+           MOVE    "給付割合なしの様式"
                                        TO  SPA-GMN-KKHPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KKHPRTKBNL    (2)
-           MOVE    "���ճ�礢����ͼ�"
+           MOVE    "給付割合ありの様式"
                                        TO  SPA-GMN-KKHPRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-KKHPRTKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-SYAPRTKBNL    (1)
-           MOVE    "�ޥ�Ĺʬ���̺������ʤ�"
+           MOVE    "マル長分を別作成しない"
                                        TO  SPA-GMN-SYAPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SYAPRTKBNL    (2)
-           MOVE    "�ޥ�Ĺʬ���̺�������"
+           MOVE    "マル長分を別作成する"
                                        TO  SPA-GMN-SYAPRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-SYAPRTKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-DISASTER-SYAPRTKBNL
                                                                    (1)
-           MOVE    "�ҳ�����̤����ʬ���̺�������"
+           MOVE    "災害該当未確定分を別作成する"
                                        TO SPA-GMN-DISASTER-SYAPRTKBNMEIL
                                                                    (1)
            MOVE    "1"                 TO  SPA-GMN-DISASTER-SYAPRTKBNL
                                                                    (2)
-           MOVE    "�ҳ�����̤����ʬ���̺������ʤ�"
+           MOVE    "災害該当未確定分を別作成しない"
                                        TO SPA-GMN-DISASTER-SYAPRTKBNMEIL
                                                                    (2)
            MOVE    2                   TO SPA-GMN-DISASTER-SYAPRTKBN-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-KOUIKIPRTKBNL    (1)
-           MOVE    "���ƹ���Ϣ��ñ�̤Ǻ���"
+           MOVE    "全て広域連合単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUIKIPRTKBNL    (2)
-           MOVE    "�����ݸ����ֹ�ñ�̤Ǻ���"
+           MOVE    "全て保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-KOUIKIPRTKBNL    (3)
-           MOVE    "����ʬ���ݸ����ֹ�ñ�̤Ǻ���"
+           MOVE    "県内分は保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-KOUIKIPRTKBNL    (4)
-           MOVE    "����ʬ���ݸ����ֹ�ñ�̤Ǻ���"
+           MOVE    "県外分は保険者番号単位で作成"
                                        TO  SPA-GMN-KOUIKIPRTKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-KOUIKIPRTKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-ROUSAIPRTKBNL    (1)
-           MOVE    "�ϣã������ͼ�"    TO  SPA-GMN-ROUSAIPRTKBNMEIL (1)
+           MOVE    "ＯＣＲ専用様式"    TO  SPA-GMN-ROUSAIPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-ROUSAIPRTKBNL    (2)
-           MOVE    "��ǧ�ͼ�"          TO  SPA-GMN-ROUSAIPRTKBNMEIL (2)
+           MOVE    "確認様式"          TO  SPA-GMN-ROUSAIPRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-ROUSAIPRTKBN-MAX 
       *
            MOVE    "0"                 TO
                                        SPA-GMN-FRAME-ROUSAIPRTKBNL   (1)
-           MOVE    "�Ȥ򵭺ܤ��ʤ�"    TO
+           MOVE    "枠を記載しない"    TO
                                        SPA-GMN-FRAME-ROUSAIPRTKBNMEIL(1)
            MOVE    "1"                 TO
                                        SPA-GMN-FRAME-ROUSAIPRTKBNL   (2)
-           MOVE    "�Ȥ򵭺ܤ���"      TO
+           MOVE    "枠を記載する"      TO
                                        SPA-GMN-FRAME-ROUSAIPRTKBNMEIL(2)
            MOVE    2                   TO
                                        SPA-GMN-FRAME-ROUSAIPRTKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-RENNUMHENKBNL    (1)
-           MOVE    "�̤��ֹ�򵭺ܤ��ʤ�"
+           MOVE    "通し番号を記載しない"
                                        TO  SPA-GMN-RENNUMHENKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-RENNUMHENKBNL    (2)
-           MOVE    "�̤��ֹ�򵭺ܤ���"
+           MOVE    "通し番号を記載する"
                                        TO  SPA-GMN-RENNUMHENKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-RENNUMHENKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-NEXTPRTKBNL    (1)
-           MOVE    "��������"          TO  SPA-GMN-NEXTPRTKBNMEIL (1)
+           MOVE    "横タイプ"          TO  SPA-GMN-NEXTPRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-NEXTPRTKBNL    (2)
-           MOVE    "�ĥ�����"          TO  SPA-GMN-NEXTPRTKBNMEIL (2)
+           MOVE    "縦タイプ"          TO  SPA-GMN-NEXTPRTKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-NEXTPRTKBNL    (3)
-           MOVE    "�ĥ����ס�Ĺ��"    TO  SPA-GMN-NEXTPRTKBNMEIL (3)
+           MOVE    "縦タイプ（長）"    TO  SPA-GMN-NEXTPRTKBNMEIL (3)
            MOVE    3                   TO  SPA-GMN-NEXTPRTKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-NEXTPRTKBN1L    (1)
-           MOVE    "����ʤ�"          TO  SPA-GMN-NEXTPRTKBN1MEIL (1)
+           MOVE    "指定なし"          TO  SPA-GMN-NEXTPRTKBN1MEIL (1)
            MOVE    "1"                 TO  SPA-GMN-NEXTPRTKBN1L    (2)
-           MOVE    "��������"          TO  SPA-GMN-NEXTPRTKBN1MEIL (2)
+           MOVE    "横タイプ"          TO  SPA-GMN-NEXTPRTKBN1MEIL (2)
            MOVE    "2"                 TO  SPA-GMN-NEXTPRTKBN1L    (3)
-           MOVE    "�ĥ�����"          TO  SPA-GMN-NEXTPRTKBN1MEIL (3)
+           MOVE    "縦タイプ"          TO  SPA-GMN-NEXTPRTKBN1MEIL (3)
            MOVE    "3"                 TO  SPA-GMN-NEXTPRTKBN1L    (4)
-           MOVE    "�ĥ����ס�Ĺ��"    TO  SPA-GMN-NEXTPRTKBN1MEIL (4)
+           MOVE    "縦タイプ（長）"    TO  SPA-GMN-NEXTPRTKBN1MEIL (4)
            MOVE    4                   TO  SPA-GMN-NEXTPRTKBN1-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RJNGNBKKBNL    (1)
-           MOVE    "���ݡ����ݤȤ�����Բ�"
+           MOVE    "社保、国保とも印刷不可"
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-RJNGNBKKBNL    (2)
-           MOVE    "���ݤ�ʻ�Ѥ˸¤����" 
+           MOVE    "社保の併用に限り印刷" 
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-RJNGNBKKBNL    (3)
-           MOVE    "���ݤ�ʻ�Ѥ˸¤����"
+           MOVE    "国保の併用に限り印刷"
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (3)
            MOVE    "3"                 TO  SPA-GMN-RJNGNBKKBNL    (4)
-           MOVE    "���ݡ����ݤȤ����"
+           MOVE    "社保、国保とも印刷"
                                        TO  SPA-GMN-RJNGNBKKBNMEIL (4)
            MOVE    4                   TO  SPA-GMN-RJNGNBKKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RECECOMKBNL    (1)
-           MOVE    "�쥻�ťǡ����˵�Ͽ����"
+           MOVE    "レセ電データに記録する"
                                        TO  SPA-GMN-RECECOMKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-RECECOMKBNL    (2)
-           MOVE    "�쥻�ťǡ����˵�Ͽ���ʤ�"
+           MOVE    "レセ電データに記録しない"
                                        TO  SPA-GMN-RECECOMKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-RECECOMKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-CDRKBNL   (1)
-           MOVE    "���ʤ�"            TO  SPA-GMN-RECEDEN-CDRKBNMEIL(1)
+           MOVE    "しない"            TO  SPA-GMN-RECEDEN-CDRKBNMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-CDRKBNL   (2)
-           MOVE    "����"              TO  SPA-GMN-RECEDEN-CDRKBNMEIL(2)
+           MOVE    "する"              TO  SPA-GMN-RECEDEN-CDRKBNMEIL(2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-CDRKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-LST1KBNL (1)
-           MOVE    "�������ʤ�"        TO  SPA-GMN-RECEDEN-LST1KBNMEIL
+           MOVE    "作成しない"        TO  SPA-GMN-RECEDEN-LST1KBNMEIL
                                                                     (1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-LST1KBNL (2)
-           MOVE    "��������"          TO  SPA-GMN-RECEDEN-LST1KBNMEIL
+           MOVE    "作成する"          TO  SPA-GMN-RECEDEN-LST1KBNMEIL
                                                                     (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-LST1KBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-LST2KBNL (1)
-           MOVE    "�������ʤ�"        TO  SPA-GMN-RECEDEN-LST2KBNMEIL
+           MOVE    "作成しない"        TO  SPA-GMN-RECEDEN-LST2KBNMEIL
                                                                     (1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-LST2KBNL (2)
-           MOVE    "��������"          TO  SPA-GMN-RECEDEN-LST2KBNMEIL
+           MOVE    "作成する"          TO  SPA-GMN-RECEDEN-LST2KBNMEIL
                                                                     (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-LST2KBN-MAX 
       *
            MOVE    "0"                 TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAL  (1)
-           MOVE    "����ʤ�"          TO
+           MOVE    "設定なし"          TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAMEIL
                                                                     (1)
            MOVE    "1"                 TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAL  (2)
-           MOVE    "�ե��åԥ�"        TO
+           MOVE    "フロッピィ"        TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAMEIL
                                                                     (2)
            MOVE    "2"                 TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAL  (3)
-           MOVE    "�ͣ�"              TO
+           MOVE    "ＭＯ"              TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAMEIL
                                                                     (3)
            MOVE    "3"                 TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAL  (4)
-           MOVE    "�ãġݣ�"          TO
+           MOVE    "ＣＤ−Ｒ"          TO
                                        SPA-GMN-RECEDEN-LST2-MEDIAMEIL
                                                                     (4)
            MOVE    4                   TO
                                        SPA-GMN-RECEDEN-LST2-MEDIA-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-RIREKIKBNL(1)
-           MOVE    "�Ԥʤ�ʤ�"        TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
+           MOVE    "行なわない"        TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
                                                                      (1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-RIREKIKBNL(2)
-           MOVE    "�Ԥʤ�"            TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
+           MOVE    "行なう"            TO  SPA-GMN-RECEDEN-RIREKIKBNMEIL
                                                                      (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-RIREKIKBN-MAX 
       *     
@@ -2518,65 +2518,65 @@
                ADD     1                   TO  IDXX
                MOVE    "3"                 TO  SPA-GMN-RECEDEN-DATAKBNL
                                                                  (IDXX)
-               MOVE    "�����ƥ����������ʥե��åԥ��ѡ�"
+               MOVE    "システム管理設定場所（フロッピィ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
                                                                  (IDXX)
                ADD     1                   TO  IDXX
                MOVE    "4"                 TO  SPA-GMN-RECEDEN-DATAKBNL
                                                                  (IDXX)
-               MOVE    "�����ƥ����������ʣͣ��ѡ�"
+               MOVE    "システム管理設定場所（ＭＯ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
                                                                  (IDXX)
            END-IF
            ADD     1                   TO  IDXX
            MOVE    "5"                 TO  SPA-GMN-RECEDEN-DATAKBNL
                                                                  (IDXX)
-           MOVE    "���饤�������¸"  TO  SPA-GMN-RECEDEN-DATAKBNMEIL
+           MOVE    "クライアント保存"  TO  SPA-GMN-RECEDEN-DATAKBNMEIL
                                                                  (IDXX)
            ADD     1                   TO  IDXX
            MOVE    "6"                 TO  SPA-GMN-RECEDEN-DATAKBNL
                                                                  (IDXX)
-           MOVE    "���饤�������¸�ʣãġݣ��ѡ�"
+           MOVE    "クライアント保存（ＣＤ−Ｒ用）"
                                        TO  SPA-GMN-RECEDEN-DATAKBNMEIL
                                                                  (IDXX)
            MOVE    IDXX                TO  SPA-GMN-RECEDEN-DATAKBN-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-DISASTERL (1)
-           MOVE    "��Ͽ���ʤ�"        TO  SPA-GMN-RECEDEN-DISASTERMEIL
+           MOVE    "記録しない"        TO  SPA-GMN-RECEDEN-DISASTERMEIL
                                                                      (1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-DISASTERL (2)
-           MOVE    "��Ͽ����"          TO  SPA-GMN-RECEDEN-DISASTERMEIL
+           MOVE    "記録する"          TO  SPA-GMN-RECEDEN-DISASTERMEIL
                                                                      (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-DISASTER-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-RECEDEN-CHKL (1)
-           MOVE    "�����å����ʤ�"    TO  SPA-GMN-RECEDEN-CHKMEIL
+           MOVE    "チェックしない"    TO  SPA-GMN-RECEDEN-CHKMEIL
                                                                 (1)
            MOVE    "1"                 TO  SPA-GMN-RECEDEN-CHKL (2)
-           MOVE    "�����å�����"      TO  SPA-GMN-RECEDEN-CHKMEIL
+           MOVE    "チェックする"      TO  SPA-GMN-RECEDEN-CHKMEIL
                                                                 (2)
            MOVE    2                   TO  SPA-GMN-RECEDEN-CHK-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-KIGO-DELI-FLGL
                                                                    (1)
-           MOVE    "�Խ��ʤ�"          TO
+           MOVE    "編集なし"          TO
                                        SPA-GMN-KIGO-DELI-FLGMEIL
                                                                    (1)
            MOVE    "1"                 TO  SPA-GMN-KIGO-DELI-FLGL
                                                                    (2)
-           MOVE    "�֡ݡפ����ѥϥ��ե���Ѵ�" 
+           MOVE    "「−」を全角ハイフンに変換" 
                                        TO
                                        SPA-GMN-KIGO-DELI-FLGMEIL
                                                                    (2)
            MOVE    "2"                 TO  SPA-GMN-KIGO-DELI-FLGL
                                                                    (3)
-           MOVE    "�֡ݡפ����ѥޥ��ʥ����Ѵ�"
+           MOVE    "「−」を全角マイナスに変換"
                                        TO
                                        SPA-GMN-KIGO-DELI-FLGMEIL
                                                                    (3)
            MOVE    "9"                 TO  SPA-GMN-KIGO-DELI-FLGL
                                                                    (4)
-           MOVE    "�֡ݡפ���"      TO
+           MOVE    "「−」を削除"      TO
                                        SPA-GMN-KIGO-DELI-FLGMEIL
                                                                    (4)
            MOVE    4                   TO
@@ -2585,19 +2585,19 @@
            MOVE    "0"                 TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGL
                                                                    (1)
-           MOVE    "����ʤ�"          TO
+           MOVE    "設定なし"          TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGMEIL
                                                                    (1)
            MOVE    "1"                 TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGL
                                                                    (2)
-           MOVE    "�����ݸ���"        TO
+           MOVE    "県内保険者"        TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGMEIL
                                                                    (2)
            MOVE    "2"                 TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGL
                                                                    (3)
-           MOVE    "�����ݸ��Ԥȸ��ⰷ���ݸ���"
+           MOVE    "県内保険者と県内扱い保険者"
                                        TO
                                SPA-GMN-KIGO-DELI-HKNJA-FLGMEIL
                                                                    (3)
@@ -2606,24 +2606,24 @@
       *     
            MOVE    "0"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
                                                                    (1)
-           MOVE    "�Խ��ʤ�"          TO
+           MOVE    "編集なし"          TO
                                        SPA-GMN-NUM-DELIMITER-FLGMEIL
                                                                    (1)
            MOVE    "1"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
                                                                    (2)
-           MOVE    "�֡ݡפ����ѥϥ��ե���Ѵ�" 
+           MOVE    "「−」を全角ハイフンに変換" 
                                        TO
                                        SPA-GMN-NUM-DELIMITER-FLGMEIL
                                                                    (2)
            MOVE    "2"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
                                                                    (3)
-           MOVE    "�֡ݡפ����ѥޥ��ʥ����Ѵ�"
+           MOVE    "「−」を全角マイナスに変換"
                                        TO
                                        SPA-GMN-NUM-DELIMITER-FLGMEIL
                                                                    (3)
            MOVE    "9"                 TO  SPA-GMN-NUM-DELIMITER-FLGL
                                                                    (4)
-           MOVE    "�֡ݡפ���"      TO
+           MOVE    "「−」を削除"      TO
                                        SPA-GMN-NUM-DELIMITER-FLGMEIL
                                                                    (4)
            MOVE    4                   TO
@@ -2631,17 +2631,17 @@
       *     
            MOVE    "0"                 TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGL (1)
-           MOVE    "����ʤ�"          TO
+           MOVE    "設定なし"          TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGMEIL
                                                                    (1)
            MOVE    "1"                 TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGL (2)
-           MOVE    "�����ݸ���"        TO
+           MOVE    "県内保険者"        TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGMEIL
                                                                    (2)
            MOVE    "2"                 TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGL (3)
-           MOVE    "�����ݸ��Ԥȸ��ⰷ���ݸ���"
+           MOVE    "県内保険者と県内扱い保険者"
                                        TO
                                SPA-GMN-NUM-DELI-HKNJA-FLGMEIL
                                                                    (3)
@@ -2649,124 +2649,124 @@
                                SPA-GMN-NUM-DELI-HKNJA-FLG-MAX
       *       
            MOVE    "0"                 TO  SPA-GMN-SRYKAHENKBNL    (1)
-           MOVE    "���Ųʤ򵭺ܤ���"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
+           MOVE    "診療科を記載する"  TO  SPA-GMN-SRYKAHENKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-SRYKAHENKBNL    (2)
-           MOVE    "���Ųʤ򵭺ܤ��ʤ�"
+           MOVE    "診療科を記載しない"
                                        TO  SPA-GMN-SRYKAHENKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-SRYKAHENKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-BTUNUM-KSIKBNL    (1)
-           MOVE    "�����ֹ�򵭺ܤ��ʤ�"
+           MOVE    "病棟番号を記載しない"
                                        TO  SPA-GMN-BTUNUM-KSIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-BTUNUM-KSIKBNL    (2)
-           MOVE    "�����ֹ�򵭺ܤ���"
+           MOVE    "病棟番号を記載する"
                                        TO  SPA-GMN-BTUNUM-KSIKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-BTUNUM-KSIKBNL    (3)
-           MOVE    "����¼��ֹ�򵭺ܤ���"
+           MOVE    "病棟・病室番号を記載する"
                                        TO  SPA-GMN-BTUNUM-KSIKBNMEIL (3)
            MOVE    3                   TO  SPA-GMN-BTUNUM-KSIKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-DRNAME-KSIKBNL    (1)
-           MOVE    "���̾�򵭺ܤ��ʤ�"
+           MOVE    "医師名を記載しない"
                                        TO  SPA-GMN-DRNAME-KSIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-DRNAME-KSIKBNL    (2)
-           MOVE    "���̾�򵭺ܤ���"  TO  SPA-GMN-DRNAME-KSIKBNMEIL (2)
+           MOVE    "医師名を記載する"  TO  SPA-GMN-DRNAME-KSIKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-DRNAME-KSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-JIHITEKKSIKBNL    (1)
-           MOVE    "�ʤ�"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (1)
+           MOVE    "なし"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-JIHITEKKSIKBNL    (2)
-           MOVE    "����"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (2)
+           MOVE    "あり"              TO  SPA-GMN-JIHITEKKSIKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-JIHITEKKSIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-KOUIKIKBNL    (1)
-           MOVE    "����Ϣ��ʬ�ΤߤǺ���"
+           MOVE    "広域連合分のみで作成"
                                        TO  SPA-GMN-KOUIKIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-KOUIKIKBNL    (2)
-           MOVE    "����ʬ�ȹ���Ϣ��ʬ��ޤȤ�ƺ���"
+           MOVE    "国保分と広域連合分をまとめて作成"
                                        TO  SPA-GMN-KOUIKIKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-KOUIKIKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-COMMENT-NYUINRYOL(1)
-           MOVE    "��ư���ܤ��ʤ�"
+           MOVE    "自動記載しない"
                                        TO  SPA-GMN-COMMENT-NYUINRYOMEIL
                                                                     (1)
            MOVE    "1"                 TO  SPA-GMN-COMMENT-NYUINRYOL(2)
-           MOVE    "�ּ���ˤ�����������ѡפȵ���"
+           MOVE    "「自費にて入院料算定済」と記載"
                                        TO  SPA-GMN-COMMENT-NYUINRYOMEIL
                                                                     (2)
            MOVE    "2"                 TO  SPA-GMN-COMMENT-NYUINRYOL(3)
-           MOVE    "��¾�ݸ��ˤ�����������ѡפȵ���"
+           MOVE    "「他保険にて入院料算定済」と記載"
                                        TO  SPA-GMN-COMMENT-NYUINRYOMEIL
                                                                     (3)
            MOVE    "3"                 TO  SPA-GMN-COMMENT-NYUINRYOL(4)
-           MOVE    "�ݸ��ȹ礻�˽ऺ�뼫ư����"
+           MOVE    "保険組合せに準ずる自動記載"
                                        TO  SPA-GMN-COMMENT-NYUINRYOMEIL
                                                                     (4)
            MOVE    4                   TO  SPA-GMN-COMMENT-NYUINRYO-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-COMMENT-NYUINRYO1L(1)
-           MOVE    "��ư���ܤ��ʤ�"
+           MOVE    "自動記載しない"
                                        TO  SPA-GMN-COMMENT-NYUINRYO1MEIL
                                                                      (1)
            MOVE    "1"                 TO  SPA-GMN-COMMENT-NYUINRYO1L(2)
-           MOVE    "��¾�ݸ��ˤ�����������ѡפȵ���"
+           MOVE    "「他保険にて入院料算定済」と記載"
                                        TO  SPA-GMN-COMMENT-NYUINRYO1MEIL
                                                                      (2)
            MOVE    "2"                 TO  SPA-GMN-COMMENT-NYUINRYO1L(3)
-           MOVE    "�ݸ��ȹ礻�˽ऺ�뼫ư����"
+           MOVE    "保険組合せに準ずる自動記載"
                                        TO  SPA-GMN-COMMENT-NYUINRYO1MEIL
                                                                      (3)
            MOVE    3                   TO  SPA-GMN-COMMENT-NYUINRYO1-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-CHKKBNL    (1)
-           MOVE    "�����å����ʤ�"    TO  SPA-GMN-CHKKBNMEIL (1)
+           MOVE    "チェックしない"    TO  SPA-GMN-CHKKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-CHKKBNL    (2)
-           MOVE    "�����å�����"      TO  SPA-GMN-CHKKBNMEIL (2)
+           MOVE    "チェックする"      TO  SPA-GMN-CHKKBNMEIL (2)
            MOVE    "2"                 TO  SPA-GMN-CHKKBNL    (3)
-           MOVE    "�����å�����(����쥻�ץȤϽ���)" 
+           MOVE    "チェックする(自費レセプトは除く)" 
                                        TO  SPA-GMN-CHKKBNMEIL (3)
            MOVE    3                   TO  SPA-GMN-CHKKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (1)
-           MOVE    "ž��ʬ��Ʊ�쳫�����������˵��ܤ���"
+           MOVE    "転帰分を同一開始日の末尾に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (2)
-           MOVE    "ž��ʬ��Ʊ�쳫��������Ƭ�˵��ܤ���"
+           MOVE    "転帰分を同一開始日の先頭に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(2)
            MOVE    "2"                 TO  SPA-GMN-BYOMEI-PRTJYUNL   (3)
-           MOVE    "���Ͻ�˵��ܤ���"
+           MOVE    "入力順に記載する"
                                        TO  SPA-GMN-BYOMEI-PRTJYUNMEIL(3)
            MOVE    3                   TO  SPA-GMN-BYOMEI-PRTJYUN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-SHOKUJI-PRTKBNL   (1)
-           MOVE    "������£��߻��ϡ֣��פ򵭺ܤ���"
+           MOVE    "食事上限０円時は「０」を記載する"
                                        TO  SPA-GMN-SHOKUJI-PRTKBNMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-SHOKUJI-PRTKBNL   (2)
-           MOVE    "������£��߻��ϡ֣��פ򵭺ܤ��ʤ�"
+           MOVE    "食事上限０円時は「０」を記載しない"
                                        TO  SPA-GMN-SHOKUJI-PRTKBNMEIL(2)
            MOVE    2                   TO  SPA-GMN-SHOKUJI-PRTKBN-MAX
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-CHARA-KBNL   (1)
-           MOVE    "�������ѥ쥻�ץȡפ�ʸ���򵭺ܤ���"
+           MOVE    "「点検用レセプト」の文字を記載する"
                                        TO
                                    SPA-GMN-INSPECT-CHARA-KBNMEIL(1)
            MOVE    "1"                 TO
                                    SPA-GMN-INSPECT-CHARA-KBNL   (2)
-           MOVE    "�����򵭺ܤ���"    TO
+           MOVE    "斜線を記載する"    TO
                                    SPA-GMN-INSPECT-CHARA-KBNMEIL(2)
            MOVE    2                   TO
                                    SPA-GMN-INSPECT-CHARA-KBN-MAX 
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-ZERO-KBNL   (1)
-           MOVE    "��������򵭺ܤ��ʤ�"
+           MOVE    "０点公費を記載しない"
                                        TO
                                    SPA-GMN-INSPECT-ZERO-KBNMEIL(1)
            MOVE    "1"                 TO
                                    SPA-GMN-INSPECT-ZERO-KBNL   (2)
-           MOVE    "��������򵭺ܤ���"
+           MOVE    "０点公費を記載する"
                                        TO
                                    SPA-GMN-INSPECT-ZERO-KBNMEIL(2)
            MOVE    2                   TO
@@ -2774,12 +2774,12 @@
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNL   (1)
-           MOVE    "������ʬ���������򵭺ܤ��ʤ�"
+           MOVE    "包括診療分・持参薬を記載しない"
                                        TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNMEIL(1)
            MOVE    "1"                 TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNL   (2)
-           MOVE    "������ʬ���������򵭺ܤ���"
+           MOVE    "包括診療分・持参薬を記載する"
                                        TO
                                    SPA-GMN-INSPECT-INCLUDE-KBNMEIL(2)
            MOVE    2                   TO
@@ -2787,571 +2787,571 @@
       *
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-GENERAL-KBNL   (1)
-           MOVE    "����̾����������̾�ǵ��ܤ���"
+           MOVE    "一般名処方を銘柄名で記載する"
                                        TO
                                    SPA-GMN-INSPECT-GENERAL-KBNMEIL(1)
            MOVE    "1"                 TO
                                    SPA-GMN-INSPECT-GENERAL-KBNL   (2)
-           MOVE    "����̾���������̾�ǵ��ܤ���"
+           MOVE    "一般名処方を一般名で記載する"
                                        TO
                                    SPA-GMN-INSPECT-GENERAL-KBNMEIL(2)
            MOVE    2                   TO
                                    SPA-GMN-INSPECT-GENERAL-KBN-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-SEIHO-DSPKBNL(1)
-           MOVE    "�����ֹ��"        TO  SPA-GMN-SEIHO-DSPKBNMEIL
+           MOVE    "患者番号順"        TO  SPA-GMN-SEIHO-DSPKBNMEIL
                                                                 (1)
            MOVE    "1"                 TO  SPA-GMN-SEIHO-DSPKBNL(2)
-           MOVE    "��ô���ֹ��"      TO  SPA-GMN-SEIHO-DSPKBNMEIL
+           MOVE    "負担者番号順"      TO  SPA-GMN-SEIHO-DSPKBNMEIL
                                                                 (2)
            MOVE    "2"                 TO  SPA-GMN-SEIHO-DSPKBNL(3)
-           MOVE    "���ʻ�̾��"        TO  SPA-GMN-SEIHO-DSPKBNMEIL
+           MOVE    "カナ氏名順"        TO  SPA-GMN-SEIHO-DSPKBNMEIL
                                                                 (3)
            MOVE    3                   TO  SPA-GMN-SEIHO-DSPKBN-MAX 
       *     
            MOVE    "1"                 TO  SPA-GMN-RECEIPT-MAKEKBNL(1)
-           MOVE    "����ѥ쥻�ץ�"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
+           MOVE    "提出用レセプト"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
                                                                    (1)
            MOVE    "2"                 TO  SPA-GMN-RECEIPT-MAKEKBNL(2)
-           MOVE    "�����ѥ쥻�ץ�"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
+           MOVE    "点検用レセプト"    TO  SPA-GMN-RECEIPT-MAKEKBNMEIL
                                                                    (2)
            MOVE    2                   TO  SPA-GMN-RECEIPT-MAKEKBN-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-ZERO-KOH-PRTKBNL
                                                                    (1)
-           MOVE    "���ܤ��ʤ�"        TO
+           MOVE    "記載しない"        TO
                                        SPA-GMN-ZERO-KOH-PRTKBNMEIL
                                                                    (1)
            MOVE    "1"                 TO  SPA-GMN-ZERO-KOH-PRTKBNL
                                                                    (2)
-           MOVE    "���ܤ���"          TO
+           MOVE    "記載する"          TO
                                        SPA-GMN-ZERO-KOH-PRTKBNMEIL
                                                                    (2)
            MOVE    2                   TO
                                        SPA-GMN-ZERO-KOH-PRTKBN-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN1L    (1)
-           MOVE    "���̡��ݸ����ֹ桦���ʻ�̾��"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN1L    (2)
-           MOVE    "���̡��ݸ����ֹ桦�����ֹ��"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN1MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN1L    (3)
-           MOVE    "���ʻ�̾��"        TO  SPA-GMN-PRTJYUN1MEIL (3)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN1MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN1L    (4)
-           MOVE    "�����ֹ��"        TO  SPA-GMN-PRTJYUN1MEIL (4)
+           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN1MEIL (4)
            MOVE    "06"                TO  SPA-GMN-PRTJYUN1L    (5)
-           MOVE    "���ֽ�"            TO  SPA-GMN-PRTJYUN1MEIL (5)
+           MOVE    "編綴順"            TO  SPA-GMN-PRTJYUN1MEIL (5)
            MOVE    "09"                TO  SPA-GMN-PRTJYUN1L    (6)
-           MOVE    "���̡����ʻ�̾��"  TO  SPA-GMN-PRTJYUN1MEIL (6)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN1MEIL (6)
            MOVE    "10"                TO  SPA-GMN-PRTJYUN1L    (7)
-           MOVE    "���̡������ֹ��"  TO  SPA-GMN-PRTJYUN1MEIL (7)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN1MEIL (7)
            MOVE    7                   TO  SPA-GMN-PRTJYUN1-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN3L    (1)
-           MOVE    "���̡��ݸ����ֹ桦���ʻ�̾��"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN3L    (2)
-           MOVE    "���̡��ݸ����ֹ桦�����ֹ��"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN3MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN3L    (3)
-           MOVE    "���ʻ�̾��"        TO  SPA-GMN-PRTJYUN3MEIL (3)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN3MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN3L    (4)
-           MOVE    "�����ֹ��"        TO  SPA-GMN-PRTJYUN3MEIL (4)
+           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN3MEIL (4)
            MOVE    "06"                TO  SPA-GMN-PRTJYUN3L    (5)
-           MOVE    "���ֽ�"            TO  SPA-GMN-PRTJYUN3MEIL (5)
+           MOVE    "編綴順"            TO  SPA-GMN-PRTJYUN3MEIL (5)
            MOVE    "09"                TO  SPA-GMN-PRTJYUN3L    (6)
-           MOVE    "���̡����ʻ�̾��"  TO  SPA-GMN-PRTJYUN3MEIL (6)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN3MEIL (6)
            MOVE    "10"                TO  SPA-GMN-PRTJYUN3L    (7)
-           MOVE    "���̡������ֹ��"  TO  SPA-GMN-PRTJYUN3MEIL (7)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN3MEIL (7)
            MOVE    7                   TO  SPA-GMN-PRTJYUN3-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN2L    (1)
-           MOVE    "���̡��ݸ����ֹ桦���ʻ�̾��"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN2L    (2)
-           MOVE    "���̡��ݸ����ֹ桦�����ֹ��"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN2MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN2L    (3)
-           MOVE    "���ʻ�̾��"        TO  SPA-GMN-PRTJYUN2MEIL (3)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN2MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN2L    (4)
-           MOVE    "�����ֹ��"        TO  SPA-GMN-PRTJYUN2MEIL (4)
+           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN2MEIL (4)
            MOVE    "05"                TO  SPA-GMN-PRTJYUN2L    (5)
-           MOVE    "���Ͻ�"            TO  SPA-GMN-PRTJYUN2MEIL (5)
+           MOVE    "入力順"            TO  SPA-GMN-PRTJYUN2MEIL (5)
            MOVE    "07"                TO  SPA-GMN-PRTJYUN2L    (6)
-           MOVE    "���ʻ�̾������Ρ�"
+           MOVE    "カナ氏名順（全体）"
                                        TO  SPA-GMN-PRTJYUN2MEIL (6)
            MOVE    "08"                TO  SPA-GMN-PRTJYUN2L    (7)
-           MOVE    "�����ֹ������Ρ�"
+           MOVE    "患者番号順（全体）"
                                        TO  SPA-GMN-PRTJYUN2MEIL (7)
            MOVE    "09"                TO  SPA-GMN-PRTJYUN2L    (8)
-           MOVE    "���̡����ʻ�̾��"  TO  SPA-GMN-PRTJYUN2MEIL (8)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN2MEIL (8)
            MOVE    "10"                TO  SPA-GMN-PRTJYUN2L    (9)
-           MOVE    "���̡������ֹ��"  TO  SPA-GMN-PRTJYUN2MEIL (9)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN2MEIL (9)
            MOVE    9                   TO  SPA-GMN-PRTJYUN2-MAX 
       *
            MOVE    "07"                TO  SPA-GMN-PRTJYUN4L    (1)
-           MOVE    "���ʻ�̾������Ρ�"
+           MOVE    "カナ氏名順（全体）"
                                        TO  SPA-GMN-PRTJYUN4MEIL (1)
            MOVE    "08"                TO  SPA-GMN-PRTJYUN4L    (2)
-           MOVE    "�����ֹ������Ρ�"
+           MOVE    "患者番号順（全体）"
                                        TO  SPA-GMN-PRTJYUN4MEIL (2)
            MOVE    "11"                TO  SPA-GMN-PRTJYUN4L    (3)
-           MOVE    "����̽�"          TO  SPA-GMN-PRTJYUN4MEIL (3)
+           MOVE    "医師別順"          TO  SPA-GMN-PRTJYUN4MEIL (3)
            MOVE    "13"                TO  SPA-GMN-PRTJYUN4L    (4)
-           MOVE    "�����ߥʥ�ǥ��å�"
+           MOVE    "ターミナルデジット"
                                        TO  SPA-GMN-PRTJYUN4MEIL (4)
            MOVE    4                   TO  SPA-GMN-PRTJYUN4-MAX 
       *
            MOVE    "01"                TO  SPA-GMN-PRTJYUN5L    (1)
-           MOVE    "���̡��ݸ����ֹ桦���ʻ�̾��"
+           MOVE    "種別・保険者番号・カナ氏名順"
                                        TO  SPA-GMN-PRTJYUN5MEIL (1)
            MOVE    "02"                TO  SPA-GMN-PRTJYUN5L    (2)
-           MOVE    "���̡��ݸ����ֹ桦�����ֹ��"
+           MOVE    "種別・保険者番号・患者番号順"
                                        TO  SPA-GMN-PRTJYUN5MEIL (2)
            MOVE    "03"                TO  SPA-GMN-PRTJYUN5L    (3)
-           MOVE    "���ʻ�̾��"        TO  SPA-GMN-PRTJYUN5MEIL (3)
+           MOVE    "カナ氏名順"        TO  SPA-GMN-PRTJYUN5MEIL (3)
            MOVE    "04"                TO  SPA-GMN-PRTJYUN5L    (4)
-           MOVE    "�����ֹ��"        TO  SPA-GMN-PRTJYUN5MEIL (4)
+           MOVE    "患者番号順"        TO  SPA-GMN-PRTJYUN5MEIL (4)
            MOVE    "09"                TO  SPA-GMN-PRTJYUN5L    (5)
-           MOVE    "���̡����ʻ�̾��"  TO  SPA-GMN-PRTJYUN5MEIL (5)
+           MOVE    "種別・カナ氏名順"  TO  SPA-GMN-PRTJYUN5MEIL (5)
            MOVE    "10"                TO  SPA-GMN-PRTJYUN5L    (6)
-           MOVE    "���̡������ֹ��"  TO  SPA-GMN-PRTJYUN5MEIL (6)
+           MOVE    "種別・患者番号順"  TO  SPA-GMN-PRTJYUN5MEIL (6)
            MOVE    6                   TO  SPA-GMN-PRTJYUN5-MAX 
       *
            MOVE    "07"                TO  SPA-GMN-PRTJYUN6L    (1)
-           MOVE    "���ʻ�̾������Ρ�"
+           MOVE    "カナ氏名順（全体）"
                                        TO  SPA-GMN-PRTJYUN6MEIL (1)
            MOVE    "08"                TO  SPA-GMN-PRTJYUN6L    (2)
-           MOVE    "�����ֹ������Ρ�"
+           MOVE    "患者番号順（全体）"
                                        TO  SPA-GMN-PRTJYUN6MEIL (2)
            MOVE    "11"                TO  SPA-GMN-PRTJYUN6L    (3)
-           MOVE    "����̽�"          TO  SPA-GMN-PRTJYUN6MEIL (3)
+           MOVE    "医師別順"          TO  SPA-GMN-PRTJYUN6MEIL (3)
            MOVE    "12"                TO  SPA-GMN-PRTJYUN6L    (4)
-           MOVE    "�����̽�"          TO  SPA-GMN-PRTJYUN6MEIL (4)
+           MOVE    "病棟別順"          TO  SPA-GMN-PRTJYUN6MEIL (4)
            MOVE    "13"                TO  SPA-GMN-PRTJYUN6L    (5)
-           MOVE    "�����ߥʥ�ǥ��å�"
+           MOVE    "ターミナルデジット"
                                        TO  SPA-GMN-PRTJYUN6MEIL (5)
            MOVE    5                   TO  SPA-GMN-PRTJYUN6-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-AUTODSPKBNL    (1)
-           MOVE    "��ư���ܤ��ʤ�"    TO  SPA-GMN-AUTODSPKBNMEIL (1)
+           MOVE    "自動遷移しない"    TO  SPA-GMN-AUTODSPKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-AUTODSPKBNL    (2)
-           MOVE    "��ư���ܤ���"      TO  SPA-GMN-AUTODSPKBNMEIL (2)
+           MOVE    "自動遷移する"      TO  SPA-GMN-AUTODSPKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-AUTODSPKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-PRT-CHECKKBNL    (1)
-           MOVE    "�����å��������ʤ�"
+           MOVE    "チェックを解除しない"
                                        TO  SPA-GMN-PRT-CHECKKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-PRT-CHECKKBNL    (2)
-           MOVE    "�����å���������"
+           MOVE    "チェックを解除する"
                                        TO  SPA-GMN-PRT-CHECKKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-PRT-CHECKKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-JIHI-PRTKBNL    (1)
-           MOVE    "����쥻�ץȤ��������"
+           MOVE    "自費レセプトを印刷する"
                                        TO  SPA-GMN-JIHI-PRTKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-JIHI-PRTKBNL    (2)
-           MOVE    "����쥻�ץȤ�������ʤ�"
+           MOVE    "自費レセプトを印刷しない"
                                        TO  SPA-GMN-JIHI-PRTKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-JIHI-PRTKBN-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-MOJI-KISAIKBNL    (1)
-           MOVE    "�쥻�ץȾ������"  TO  SPA-GMN-MOJI-KISAIKBNMEIL (1)
+           MOVE    "レセプト上部中央"  TO  SPA-GMN-MOJI-KISAIKBNMEIL (1)
            MOVE    "1"                 TO  SPA-GMN-MOJI-KISAIKBNL    (2)
-           MOVE    "�쥻�ץȾ�����"    TO  SPA-GMN-MOJI-KISAIKBNMEIL (2)
+           MOVE    "レセプト上部右"    TO  SPA-GMN-MOJI-KISAIKBNMEIL (2)
            MOVE    2                   TO  SPA-GMN-MOJI-KISAIKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-KYURATE-KISAIKBNL    (1)
-           MOVE    "������"        TO  SPA-GMN-KYURATE-KISAIKBNMEIL (1)
+           MOVE    "１０割"        TO  SPA-GMN-KYURATE-KISAIKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-KYURATE-KISAIKBNL    (2)
-           MOVE    "����"          TO  SPA-GMN-KYURATE-KISAIKBNMEIL (2)
+           MOVE    "０割"          TO  SPA-GMN-KYURATE-KISAIKBNMEIL (2)
            MOVE    "2"             TO  SPA-GMN-KYURATE-KISAIKBNL    (3)
-           MOVE    "���ܤʤ�"      TO  SPA-GMN-KYURATE-KISAIKBNMEIL (3)
+           MOVE    "記載なし"      TO  SPA-GMN-KYURATE-KISAIKBNMEIL (3)
            MOVE    "3"             TO  SPA-GMN-KYURATE-KISAIKBNL    (4)
-           MOVE    "�̾�ε��ճ��򵭺�"
+           MOVE    "通常の給付割合を記載"
                                    TO  SPA-GMN-KYURATE-KISAIKBNMEIL (4)
            MOVE    4               TO  SPA-GMN-KYURATE-KISAIKBN-MAX 
       *
            MOVE    "0"             TO
                                    SPA-GMN-RECESYUBET-KISAIKBNL    (1)
-           MOVE    "�̾�Υ쥻�ץȼ��̤򵭺�"
+           MOVE    "通常のレセプト種別を記載"
                                    TO
                                    SPA-GMN-RECESYUBET-KISAIKBNMEIL (1)
            MOVE    "1"             TO
                                    SPA-GMN-RECESYUBET-KISAIKBNL    (2)
-           MOVE    "���ܤʤ�"      TO
+           MOVE    "記載なし"      TO
                                    SPA-GMN-RECESYUBET-KISAIKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-RECESYUBET-KISAIKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (1)
-           MOVE    "���⡦����"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (1)
+           MOVE    "県内・県外"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-PREFKBN-PRTJYUNL    (2)
-           MOVE    "����������"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (2)
+           MOVE    "県外・県内"    TO  SPA-GMN-PREFKBN-PRTJYUNMEIL (2)
            MOVE    2               TO  SPA-GMN-PREFKBN-PRTJYUN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (1)
-           MOVE    "��Į¼���ݡ������ȹ硦���ⰷ���θ��������ȹ�"
+           MOVE    "市町村国保・国保組合・県内扱いの県外国保組合"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (2)
-           MOVE    "��Į¼���ݡ����ⰷ���θ��������ȹ硦�����ȹ�"
+           MOVE    "市町村国保・県内扱いの県外国保組合・国保組合"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (2)
            MOVE    "3"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (3)
-           MOVE    "�����ȹ硦��Į¼���ݡ����ⰷ���θ��������ȹ�"
+           MOVE    "国保組合・市町村国保・県内扱いの県外国保組合"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (3)
            MOVE    "4"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (4)
-           MOVE    "�����ȹ硦���ⰷ���θ��������ȹ硦��Į¼����"
+           MOVE    "国保組合・県内扱いの県外国保組合・市町村国保"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (4)
            MOVE    "5"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (5)
-           MOVE    "���ⰷ���θ��������ȹ硦��Į¼���ݡ������ȹ�"
+           MOVE    "県内扱いの県外国保組合・市町村国保・国保組合"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (5)
            MOVE    "6"             TO  SPA-GMN-HKNJANUM-PRTJYUNL    (6)
            MOVE
-               "���ⰷ���θ��������ȹ硦�����ȹ硦��Į¼����"
+               "県内扱いの県外国保組合・国保組合・市町村国保"
                                    TO  SPA-GMN-HKNJANUM-PRTJYUNMEIL (6)
            MOVE    6               TO  SPA-GMN-HKNJANUM-PRTJYUN-MAX 
       *
            MOVE    "1"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (1)
-           MOVE    "���ݰ��̡�Ϸ���ݷ��࿦����"
+           MOVE    "国保一般・老人保健・退職国保"
                                    TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (1)
            MOVE    "2"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (2)
-           MOVE    "���ݰ��̡��࿦���ݡ�Ϸ���ݷ�"      TO
+           MOVE    "国保一般・退職国保・老人保健"      TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (2)
            MOVE    "3"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (3)
-           MOVE    "Ϸ���ݷ򡦹��ݰ��̡��࿦����"
+           MOVE    "老人保健・国保一般・退職国保"
                                    TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (3)
            MOVE    "4"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (4)
-           MOVE    "Ϸ���ݷ��࿦���ݡ����ݰ���"      TO
+           MOVE    "老人保健・退職国保・国保一般"      TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (4)
            MOVE    "5"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (5)
-           MOVE    "�࿦���ݡ����ݰ��̡�Ϸ���ݷ�"
+           MOVE    "退職国保・国保一般・老人保健"
                                    TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (5)
            MOVE    "6"             TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNL    (6)
-           MOVE    "�࿦���ݡ�Ϸ���ݷ򡦹��ݰ���"      TO
+           MOVE    "退職国保・老人保健・国保一般"      TO
                                    SPA-GMN-RECESYUBETU-PRTJYUNMEIL (6)
            MOVE    6               TO  SPA-GMN-RECESYUBETU-PRTJYUN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-ZAITAKUL    (1)
-           MOVE    "���⡦��������Ƭ�˰���" 
+           MOVE    "県内・県外の先頭に印刷" 
                                    TO  SPA-GMN-ZAITAKUMEIL (1)
            MOVE    "2"             TO  SPA-GMN-ZAITAKUL    (2)
-           MOVE    "�ݸ��Ԥ���Ƭ�˰���"
+           MOVE    "保険者の先頭に印刷"
                                    TO  SPA-GMN-ZAITAKUMEIL (2)
            MOVE    2               TO  SPA-GMN-ZAITAKU-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-CHOUKIL    (1)
-           MOVE    "���⡦��������Ƭ�˰���" 
+           MOVE    "県内・県外の先頭に印刷" 
                                    TO  SPA-GMN-CHOUKIMEIL (1)
            MOVE    "2"             TO  SPA-GMN-CHOUKIL    (2)
-           MOVE    "�ݸ��Ԥ���Ƭ�˰���"
+           MOVE    "保険者の先頭に印刷"
                                    TO  SPA-GMN-CHOUKIMEIL (2)
            MOVE    2               TO  SPA-GMN-CHOUKI-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-HKNJANUM-PRTKBNL    (1)
-           MOVE    "��Į¼���ݤ���Ƭ�˰���" 
+           MOVE    "市町村国保の先頭に印刷" 
                                    TO  SPA-GMN-HKNJANUM-PRTKBNMEIL (1)
            MOVE    "2"             TO  SPA-GMN-HKNJANUM-PRTKBNL    (2)
-           MOVE    "��Į¼���ݤκǸ�˰���"
+           MOVE    "市町村国保の最後に印刷"
                                    TO  SPA-GMN-HKNJANUM-PRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-HKNJANUM-PRTKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-DRCD-PRTKBNL    (1)
-           MOVE    "����̽��Ϥ򤷤ʤ�" 
+           MOVE    "医師別出力をしない" 
                                    TO  SPA-GMN-DRCD-PRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-DRCD-PRTKBNL    (2)
-           MOVE    "����̽��Ϥ򤹤�"
+           MOVE    "医師別出力をする"
                                    TO  SPA-GMN-DRCD-PRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-DRCD-PRTKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-DRCD-PRTJYUNKBNL   (1)
-           MOVE    "���ʻ�̾������Ρ�"
+           MOVE    "カナ氏名順（全体）"
                                    TO  SPA-GMN-DRCD-PRTJYUNKBNMEIL(1)
            MOVE    "2"             TO  SPA-GMN-DRCD-PRTJYUNKBNL   (2)
-           MOVE    "�����ֹ������Ρ�"
+           MOVE    "患者番号順（全体）"
                                    TO  SPA-GMN-DRCD-PRTJYUNKBNMEIL(2)
            MOVE    "3"             TO  SPA-GMN-DRCD-PRTJYUNKBNL   (3)
-           MOVE    "����衦���ʻ�̾��"
+           MOVE    "提出先・カナ氏名順"
                                    TO  SPA-GMN-DRCD-PRTJYUNKBNMEIL(3)
            MOVE    "4"             TO  SPA-GMN-DRCD-PRTJYUNKBNL   (4)
-           MOVE    "����衦�����ֹ��"
+           MOVE    "提出先・患者番号順"
                                    TO  SPA-GMN-DRCD-PRTJYUNKBNMEIL(4)
            MOVE    4               TO  SPA-GMN-DRCD-PRTJYUNKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-BTUNUM-PRTKBNL    (1)
-           MOVE    "�����̽��Ϥ򤷤ʤ�" 
+           MOVE    "病棟別出力をしない" 
                                    TO  SPA-GMN-BTUNUM-PRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-BTUNUM-PRTKBNL    (2)
-           MOVE    "�����̽��Ϥ򤹤�"
+           MOVE    "病棟別出力をする"
                                    TO  SPA-GMN-BTUNUM-PRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-BTUNUM-PRTKBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-BTUNUM-PRTJYUNKBNL   (1)
-           MOVE    "���ʻ�̾������Ρ�"
+           MOVE    "カナ氏名順（全体）"
                                    TO  SPA-GMN-BTUNUM-PRTJYUNKBNMEIL(1)
            MOVE    "2"             TO  SPA-GMN-BTUNUM-PRTJYUNKBNL   (2)
-           MOVE    "�����ֹ������Ρ�"
+           MOVE    "患者番号順（全体）"
                                    TO  SPA-GMN-BTUNUM-PRTJYUNKBNMEIL(2)
            MOVE    2               TO  SPA-GMN-BTUNUM-PRTJYUNKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-TERMINAL-DIG-PRTKBNL
                                                                    (1)
-           MOVE    "�����ߥʥ�ǥ��åȤˤ����Ϥ򤷤ʤ�"
+           MOVE    "ターミナルデジットによる出力をしない"
                                    TO  SPA-GMN-TERMINAL-DIG-PRTKBNMEIL
                                                                    (1)
            MOVE    "1"             TO  SPA-GMN-TERMINAL-DIG-PRTKBNL
                                                                    (2)
-           MOVE    "�����ߥʥ�ǥ��åȤˤ����Ϥ򤹤�"
+           MOVE    "ターミナルデジットによる出力をする"
                                    TO  SPA-GMN-TERMINAL-DIG-PRTKBNMEIL
                                                                    (2)
            MOVE    2               TO  SPA-GMN-TERMINAL-DIG-PRTKBN-MAX
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-KBNL      (1)
-           MOVE    "���ʤ�"        TO  SPA-GMN-SYUKA-KBNMEIL   (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-KBNMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-KBNL      (2)
-           MOVE    "����"          TO  SPA-GMN-SYUKA-KBNMEIL   (2)
+           MOVE    "する"          TO  SPA-GMN-SYUKA-KBNMEIL   (2)
            MOVE    2               TO  SPA-GMN-SYUKA-KBN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-SYUKA-NYUINL    (1)
-           MOVE    "�������������" 
+           MOVE    "当月の入院日数" 
                                    TO  SPA-GMN-SYUKA-NYUINMEIL (1)
            MOVE    "2"             TO  SPA-GMN-SYUKA-NYUINL    (2)
-           MOVE    "�������������"
+           MOVE    "当月の請求点数"
                                    TO  SPA-GMN-SYUKA-NYUINMEIL (2)
            MOVE    "3"             TO  SPA-GMN-SYUKA-NYUINL    (3)
-           MOVE    "����κǽ�������"
+           MOVE    "当月の最終入院科"
                                    TO  SPA-GMN-SYUKA-NYUINMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-NYUIN-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-SYUKA-GAIRAIL   (1)
-           MOVE    "����μ��ǲ��" 
+           MOVE    "当月の受診回数" 
                                    TO  SPA-GMN-SYUKA-GAIRAIMEIL(1)
            MOVE    "2"             TO  SPA-GMN-SYUKA-GAIRAIL   (2)
-           MOVE    "�������������"
+           MOVE    "当月の請求点数"
                                    TO  SPA-GMN-SYUKA-GAIRAIMEIL(2)
            MOVE    2               TO  SPA-GMN-SYUKA-GAIRAI-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-SELECTL     (1)
-           MOVE    "��ʤ����ꤷ�ʤ�"
+           MOVE    "主科を設定しない"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-SELECTL     (2)
-           MOVE    "���Ųʥ����ɤξ������ʤ�����"
+           MOVE    "診療科コードの小さい科で設定"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-SELECTL     (3)
-           MOVE    "���Ųʥ����ɤ��礭���ʤ�����"
+           MOVE    "診療科コードの大きい科で設定"
                                    TO  SPA-GMN-SYUKA-SELECTMEIL  (3)
            MOVE    3               TO  SPA-GMN-SYUKA-SELECT-MAX 
       *
            MOVE    "1"             TO  SPA-GMN-SYUKA-MODEL     (1)
-           MOVE    "����饤��"    TO  SPA-GMN-SYUKA-MODEMEIL  (1)
+           MOVE    "オンライン"    TO  SPA-GMN-SYUKA-MODEMEIL  (1)
            MOVE    "2"             TO  SPA-GMN-SYUKA-MODEL     (2)
-           MOVE    "���Хå�"    TO  SPA-GMN-SYUKA-MODEMEIL  (2)
+           MOVE    "一括バッチ"    TO  SPA-GMN-SYUKA-MODEMEIL  (2)
            MOVE    2               TO  SPA-GMN-SYUKA-MODE-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-SYAHOL     (1)
-           MOVE    "���ʤ�"        TO  SPA-GMN-SYUKA-SYAHOMEIL  (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-SYAHOMEIL  (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-SYAHOL     (2)
-           MOVE    "���"          TO  SPA-GMN-SYUKA-SYAHOMEIL  (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-SYAHOMEIL  (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-SYAHOL     (3)
-           MOVE    "���̰����Τ�"  TO  SPA-GMN-SYUKA-SYAHOMEIL  (3)
+           MOVE    "科別印刷のみ"  TO  SPA-GMN-SYUKA-SYAHOMEIL  (3)
            MOVE    3               TO  SPA-GMN-SYUKA-SYAHO-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-KOKUHOL    (1)
-           MOVE    "���ʤ�"        TO  SPA-GMN-SYUKA-KOKUHOMEIL (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-KOKUHOMEIL (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-KOKUHOL    (2)
-           MOVE    "���"          TO  SPA-GMN-SYUKA-KOKUHOMEIL (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-KOKUHOMEIL (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-KOKUHOL    (3)
-           MOVE    "���̰����Τ�"  TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
+           MOVE    "科別印刷のみ"  TO  SPA-GMN-SYUKA-KOKUHOMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-KOKUHO-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-SYUKA-KOUIKIL    (1)
-           MOVE    "���ʤ�"        TO  SPA-GMN-SYUKA-KOUIKIMEIL (1)
+           MOVE    "しない"        TO  SPA-GMN-SYUKA-KOUIKIMEIL (1)
            MOVE    "1"             TO  SPA-GMN-SYUKA-KOUIKIL    (2)
-           MOVE    "���"          TO  SPA-GMN-SYUKA-KOUIKIMEIL (2)
+           MOVE    "主科"          TO  SPA-GMN-SYUKA-KOUIKIMEIL (2)
            MOVE    "2"             TO  SPA-GMN-SYUKA-KOUIKIL    (3)
-           MOVE    "���̰����Τ�"  TO  SPA-GMN-SYUKA-KOUIKIMEIL (3)
+           MOVE    "科別印刷のみ"  TO  SPA-GMN-SYUKA-KOUIKIMEIL (3)
            MOVE    3               TO  SPA-GMN-SYUKA-KOUIKI-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-ROUPRTKBNL    (1)
-           MOVE    "�Ȥ򵭺ܤ��ʤ�"
+           MOVE    "枠を記載しない"
                                    TO  SPA-GMN-FRAME-ROUPRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-FRAME-ROUPRTKBNL    (2)
-           MOVE    "�Ȥ򵭺ܤ���"  TO  SPA-GMN-FRAME-ROUPRTKBNMEIL (2)
+           MOVE    "枠を記載する"  TO  SPA-GMN-FRAME-ROUPRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-FRAME-ROUPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-ROUPRTKBN-NL  (1)
-           MOVE    "�Ȥ򵭺ܤ��ʤ�"
+           MOVE    "枠を記載しない"
                                    TO
                                    SPA-GMN-FRAME-ROUPRTKBN-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-FRAME-ROUPRTKBN-NL  (2)
-           MOVE    "�Ȥ򵭺ܤ���"  TO
+           MOVE    "枠を記載する"  TO
                                    SPA-GMN-FRAME-ROUPRTKBN-NMEIL   (2)
            MOVE    2               TO  SPA-GMN-FRAME-ROUPRTKBN-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-COMMENT-ROUL    (1)
-           MOVE    "���¤ηв���˵���"
+           MOVE    "傷病の経過欄に記載"
                                    TO  SPA-GMN-COMMENT-ROUMEIL (1)
            MOVE    "1"             TO  SPA-GMN-COMMENT-ROUL    (2)
-           MOVE    "Ŧ����˵���"  TO  SPA-GMN-COMMENT-ROUMEIL (2)
+           MOVE    "摘要欄に記載"  TO  SPA-GMN-COMMENT-ROUMEIL (2)
            MOVE    2               TO  SPA-GMN-COMMENT-ROU-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-ROUPRTKBNL    (1)
-           MOVE    "�ϣã������ͼ�"
+           MOVE    "ＯＣＲ専用様式"
                                    TO  SPA-GMN-ROUPRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-ROUPRTKBNL    (2)
-           MOVE    "��ǧ�ͼ�"      TO  SPA-GMN-ROUPRTKBNMEIL (2)
+           MOVE    "確認様式"      TO  SPA-GMN-ROUPRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-ROUPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-ROUPRTKBN-NL      (1)
-           MOVE    "�ϣã������ͼ�"
+           MOVE    "ＯＣＲ専用様式"
                                    TO  SPA-GMN-ROUPRTKBN-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-ROUPRTKBN-NL      (2)
-           MOVE    "��ǧ�ͼ�"      TO  SPA-GMN-ROUPRTKBN-NMEIL   (2)
+           MOVE    "確認様式"      TO  SPA-GMN-ROUPRTKBN-NMEIL   (2)
            MOVE    2               TO  SPA-GMN-ROUPRTKBN-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (1)
-           MOVE    "�Ȥ򵭺ܤ��ʤ�"
+           MOVE    "枠を記載しない"
                                    TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-FRAME-JIBAIPRTKBNL    (2)
-           MOVE    "�Ȥ򵭺ܤ���"  TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (2)
+           MOVE    "枠を記載する"  TO  SPA-GMN-FRAME-JIBAIPRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-FRAME-JIBAIPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-FRAME-JIBAIPRTKBN-NL  (1)
-           MOVE    "�Ȥ򵭺ܤ��ʤ�"
+           MOVE    "枠を記載しない"
                                    TO
                                    SPA-GMN-FRAME-JIBAIPRTKBN-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-FRAME-JIBAIPRTKBN-NL  (2)
-           MOVE    "�Ȥ򵭺ܤ���"  TO
+           MOVE    "枠を記載する"  TO
                                    SPA-GMN-FRAME-JIBAIPRTKBN-NMEIL   (2)
            MOVE    2               TO  SPA-GMN-FRAME-JIBAIPRTKBN-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAIPRTKBNL    (1)
-           MOVE    "���ͼ�"        TO  SPA-GMN-JIBAIPRTKBNMEIL (1)
+           MOVE    "旧様式"        TO  SPA-GMN-JIBAIPRTKBNMEIL (1)
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBNL    (2)
-           MOVE    "ʿ������ǯ��������ͼ�"
+           MOVE    "平成１９年４月改正様式"
                                    TO  SPA-GMN-JIBAIPRTKBNMEIL (2)
            MOVE    2               TO  SPA-GMN-JIBAIPRTKBN-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAIPRTKBN-NL      (1)
-           MOVE    "���ͼ�"        TO  SPA-GMN-JIBAIPRTKBN-NMEIL   (1)
+           MOVE    "旧様式"        TO  SPA-GMN-JIBAIPRTKBN-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBN-NL      (2)
-           MOVE    "ʿ������ǯ��������ͼ�"
+           MOVE    "平成１９年４月改正様式"
                                    TO  SPA-GMN-JIBAIPRTKBN-NMEIL   (2)
            MOVE    2               TO  SPA-GMN-JIBAIPRTKBN-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAIPRTKBN1L    (1)
-           MOVE    "���ͼ�"        TO  SPA-GMN-JIBAIPRTKBN1MEIL (1)
+           MOVE    "旧様式"        TO  SPA-GMN-JIBAIPRTKBN1MEIL (1)
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBN1L    (2)
-           MOVE    "ʿ������ǯ��������ͼ�"
+           MOVE    "平成１９年４月改正様式"
                                    TO  SPA-GMN-JIBAIPRTKBN1MEIL (2)
            MOVE    "2"             TO  SPA-GMN-JIBAIPRTKBN1L    (3)
-           MOVE    "�ϣã��ͼ�"
+           MOVE    "ＯＣＲ様式"
                                    TO  SPA-GMN-JIBAIPRTKBN1MEIL (3)
            MOVE    3               TO  SPA-GMN-JIBAIPRTKBN1-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAIPRTKBN1-NL      (1)
-           MOVE    "���ͼ�"        TO  SPA-GMN-JIBAIPRTKBN1-NMEIL   (1)
+           MOVE    "旧様式"        TO  SPA-GMN-JIBAIPRTKBN1-NMEIL   (1)
            MOVE    "1"             TO  SPA-GMN-JIBAIPRTKBN1-NL      (2)
-           MOVE    "ʿ������ǯ��������ͼ�"
+           MOVE    "平成１９年４月改正様式"
                                    TO  SPA-GMN-JIBAIPRTKBN1-NMEIL   (2)
            MOVE    "2"             TO  SPA-GMN-JIBAIPRTKBN1-NL      (3)
-           MOVE    "�ϣã��ͼ�"
+           MOVE    "ＯＣＲ様式"
                                    TO  SPA-GMN-JIBAIPRTKBN1-NMEIL   (3)
            MOVE    3               TO  SPA-GMN-JIBAIPRTKBN1-N-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAI-FRACTION-KBN1L  (1)
-           MOVE    "������̤��ü�������ʤ�"
+           MOVE    "１０円未満端数処理なし"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (1)
            MOVE    "1"             TO  SPA-GMN-JIBAI-FRACTION-KBN1L  (2)
-           MOVE    "���ŵ��ؾ���˽��"
+           MOVE    "医療機関情報に準拠"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (2)
            MOVE    "2"             TO  SPA-GMN-JIBAI-FRACTION-KBN1L  (3)
-           MOVE    "���ŵ��ؾ���˽��ʴ�������ʬ�Τߡ�"
+           MOVE    "医療機関情報に準拠（患者請求分のみ）"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN1MEIL
                                                                      (3)
            MOVE    3               TO  SPA-GMN-JIBAI-FRACTION-KBN1-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAI-FRACTION-KBN2L  (1)
-           MOVE    "������̤��ü�������ʤ�"
+           MOVE    "１０円未満端数処理なし"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (1)
            MOVE    "1"             TO  SPA-GMN-JIBAI-FRACTION-KBN2L  (2)
-           MOVE    "���ŵ��ؾ���˽��"
+           MOVE    "医療機関情報に準拠"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (2)
            MOVE    "2"             TO  SPA-GMN-JIBAI-FRACTION-KBN2L  (3)
-           MOVE    "���ŵ��ؾ���˽��ʴ�������ʬ�Τߡ�"
+           MOVE    "医療機関情報に準拠（患者請求分のみ）"
                                    TO  SPA-GMN-JIBAI-FRACTION-KBN2MEIL
                                                                      (3)
            MOVE    3               TO  SPA-GMN-JIBAI-FRACTION-KBN2-MAX 
       *
            MOVE    "0"             TO  SPA-GMN-JIBAI-PDFL  (1)
-           MOVE    "�������ʤ�"    TO  SPA-GMN-JIBAI-PDFMEIL
+           MOVE    "作成しない"    TO  SPA-GMN-JIBAI-PDFMEIL
                                                            (1)
            MOVE    "1"             TO  SPA-GMN-JIBAI-PDFL  (2)
-           MOVE    "��������"      TO  SPA-GMN-JIBAI-PDFMEIL
+           MOVE    "作成する"      TO  SPA-GMN-JIBAI-PDFMEIL
                                                            (2)
            MOVE    2               TO  SPA-GMN-JIBAI-PDF-MAX
       *     
            MOVE    "0"                 TO  SPA-GMN-HKN-RIREKIL     (1)
-           MOVE    "�Ŀ;���򵭺ܤ���"
+           MOVE    "個人情報を記載する"
                                        TO  SPA-GMN-HKN-RIREKIMEIL  (1)
            MOVE    "1"                 TO  SPA-GMN-HKN-RIREKIL     (2)
-           MOVE    "�Ŀ;���򵭺ܤ��ʤ�"
+           MOVE    "個人情報を記載しない"
                                        TO  SPA-GMN-HKN-RIREKIMEIL  (2)
            MOVE    2                   TO  SPA-GMN-HKN-RIREKI-MAX 
       *     
            MOVE    "0"                 TO  SPA-GMN-GENBUTU-ICHIBUL   (1)
-           MOVE    "��£���ñ�̤Σ�����̤���ͼθ����ʤ�"
+           MOVE    "上限１円単位の１０円未満四捨五入なし"
                                        TO  SPA-GMN-GENBUTU-ICHIBUMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-GENBUTU-ICHIBUL   (2)
-           MOVE    "��£���ñ�̤Σ�����̤���ͼθ�������"
+           MOVE    "上限１円単位の１０円未満四捨五入あり"
                                        TO  SPA-GMN-GENBUTU-ICHIBUMEIL(2)
            MOVE    2                   TO  SPA-GMN-GENBUTU-ICHIBU-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-COMPRESSL   (1)
-           MOVE    "��ˡ�����ɤ����Ƥ򵭺ܤ��ʤ�"
+           MOVE    "用法コードの内容を記載しない"
                                        TO  SPA-GMN-COMPRESSMEIL(1)
            MOVE    "1"                 TO  SPA-GMN-COMPRESSL   (2)
-           MOVE    "��ˡ�����ɤ����Ƥ򵭺ܤ���"
+           MOVE    "用法コードの内容を記載する"
                                        TO  SPA-GMN-COMPRESSMEIL(2)
            MOVE    2                   TO  SPA-GMN-COMPRESS-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-DISASTER-RECEIPTL (1)
-           MOVE    "ʬ�䤷�ʤ�"        TO
+           MOVE    "分割しない"        TO
                                        SPA-GMN-DISASTER-RECEIPTMEIL  (1)
            MOVE    "1"                 TO  SPA-GMN-DISASTER-RECEIPTL (2)
-           MOVE    "ʬ�䤹��"          TO
+           MOVE    "分割する"          TO
                                        SPA-GMN-DISASTER-RECEIPTMEIL  (2)
            MOVE    2                   TO  SPA-GMN-DISASTER-RECEIPT-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-15-YKZL     (1)
-           MOVE    "���ܤ��ʤ�"        TO  SPA-GMN-15-YKZMEIL  (1)
+           MOVE    "記載しない"        TO  SPA-GMN-15-YKZMEIL  (1)
            MOVE    "1"                 TO  SPA-GMN-15-YKZL     (2)
-           MOVE    "���ܤ���"          TO  SPA-GMN-15-YKZMEIL  (2)
+           MOVE    "記載する"          TO  SPA-GMN-15-YKZMEIL  (2)
            MOVE    2                   TO  SPA-GMN-15-YKZ-MAX 
       *
            MOVE    "0"                 TO  SPA-GMN-KOUHI-ICHIBU-KSIL (1)
-           MOVE    "��£��߻��ϡ֣��פ򵭺ܤ��ʤ�"
+           MOVE    "上限０円時は「０」を記載しない"
                                        TO
                                        SPA-GMN-KOUHI-ICHIBU-KSIMEIL  (1)
            MOVE    "1"                 TO  SPA-GMN-KOUHI-ICHIBU-KSIL (2)
-           MOVE    "��£��߻��ϡ֣��פ򵭺ܤ���"
+           MOVE    "上限０円時は「０」を記載する"
                                        TO
                                        SPA-GMN-KOUHI-ICHIBU-KSIMEIL  (2)
            MOVE    2                   TO  SPA-GMN-KOUHI-ICHIBU-KSI-MAX 
       *
-      *       ���ŵ��ؾ���
+      *       医療機関情報
            MOVE    SPACE               TO  SYS-1001-REC
            INITIALIZE                      SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
@@ -3370,7 +3370,7 @@
                MOVE    SYS-1001-HOSPSBT1       TO  SPA-1001-HOSPSBT1 
            END-IF 
       *
-      *    �쥻�ץȡ������Խ�����
+      *    レセプト・総括編集情報
            MOVE    SPACE               TO  SYS-2005-REC
            INITIALIZE                      SYS-2005-REC
            MOVE    "2005"              TO  SYS-2005-KANRICD
@@ -3808,7 +3808,7 @@
                END-PERFORM
            END-IF
       *
-      *    �쥻�ץȡ������Խ�����ʶ�ʬ�����ɣ����Υǡ����ɤ߹��ߡ�
+      *    レセプト・総括編集情報（区分コード０１のデータ読み込み）
            MOVE    SPACE               TO  SYS-200501-REC
            INITIALIZE                      SYS-200501-REC
            MOVE    "2005"              TO  SYS-200501-KANRICD
@@ -4632,7 +4632,7 @@
                END-IF
            END-PERFORM
       *
-      *    �쥻�ץȡ������Խ�����ʶ�ʬ�����ɣ����Υǡ����ɹ���
+      *    レセプト・総括編集情報（区分コード１０のデータ読込）
            MOVE    SPACE               TO  SYS-200505-REC
            INITIALIZE                      SYS-200505-REC
            MOVE    "2005"              TO  SYS-200505-KANRICD
@@ -4678,7 +4678,7 @@
                MOVE    IDX                 TO  SPA-GMN-HKNJALIST-MAX
            END-PERFORM
       *
-      *    �쥻�ץȡ����ֽ�˾���
+      *    レセプト（編綴順）情報
            MOVE    SPACE               TO  SYS-2008-REC
            INITIALIZE                      SYS-2008-REC
            MOVE    "2008"              TO  SYS-2008-KANRICD
@@ -4791,9 +4791,9 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                MOVE    ZERO                TO  SPA-NAI-2008-KBNCD-9  
            END-IF
       *
-      *    �쥻�ץȾ���ʼ�������
+      *    レセプト情報（主科設定）
       *
-      *    �쥻�ץȡ������Խ�����
+      *    レセプト・総括編集情報
            MOVE    SPACE               TO  SYS-2009-REC
            INITIALIZE                      SYS-2009-REC
            MOVE    "2009"              TO  SYS-2009-KANRICD
@@ -4810,8 +4810,8 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            IF      FLG-SYSKANRI            =   ZERO
                MOVE    MCPDATA-REC             TO  SYS-2009-REC
       *
-      *        �������ե饰���֤���פǼ�������ե饰��̤����ΤȤ�
-      *        ��������ե饰��ּ�ʡפˤ���
+      *        主科設定フラグが「する」で社保設定フラグが未設定のとき
+      *        社保設定フラグを「主科」にする
                IF    ( SYS-2009-SYUKA-KBN      =   "1"   )
                AND   ( SYS-2009-SYUKA-SYAHO    =   SPACE )
                    MOVE    "1"             TO  SYS-2009-SYUKA-SYAHO
@@ -4925,7 +4925,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-PERFORM
            END-IF    
       *
-      *    �����ֹ���ڤ�ʸ���������
+      *    記号番号区切り文字設定情報
       *
            MOVE    SPACE               TO  SYS-2011-REC
            INITIALIZE                      SYS-2011-REC
@@ -5423,7 +5423,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                                            SPA-GMN-KOUHI-ICHIBU-KSI-G
            END-IF
       *
-      *    ϫ�Ұ��ŵ��ؾ���
+      *    労災医療機関情報
            INITIALIZE                      SYS-4001-REC
            MOVE    SPA-HOSPNUM         TO  SYS-4001-HOSPNUM
            MOVE    "4001"              TO  SYS-4001-KANRICD
@@ -5456,7 +5456,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    "key8"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    ����������
+      *    入力前退避
            MOVE    SPA-GMN-KKHRECEKBN  TO  SPA-GMN-KKHRECEKBN-O 
            MOVE    SPA-GMN-SYARECEKBN  TO  SPA-GMN-SYARECEKBN-O 
            MOVE    SPA-GMN-KOUIKIRECEKBN
@@ -5471,31 +5471,31 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    MOVE   "CHANGE"             TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *    ���񵭺ܽ�����
+      *    公費記載順設定
                WHEN    "CLICKED"       ALSO    "B34"
                    PERFORM 490-KOUHI-PRTJYUN-SETTEI-SEC
-      *    �ܺ�����
+      *    詳細設定
                WHEN    "CLICKED"       ALSO    "B36"
                    PERFORM 490-SYOUSAI-SETTEI-SEC
-      *    ��Ͽ
+      *    登録
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 490-TOUROKU-SEC
-      *    �����ľ�����᤹���ݸ��ԡ�
+      *    削除（直接請求する保険者）
                WHEN    "CLICKED"       ALSO    "HKNJANUM_DEL"
                    PERFORM 490-HKNJANUM-DELETE-SEC
-      *    ������ľ�����᤹���ݸ��ԡ�
+      *    更新（直接請求する保険者）
                WHEN    "CLICKED"       ALSO    "HKNJANUM_UPD"
                    PERFORM 490-HKNJANUM-UPDATE-SEC
-      *    ����
+      *    タグ
                WHEN    "CLICKED"       ALSO    "B08"
                    PERFORM 440-TAG-CHANGE-SEC
            END-EVALUATE
@@ -5504,7 +5504,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
        200-GMNSENI-EXT.
            EXIT.
       *****************************************************************
-      *    ���á�����
+      *    会話　処理
       *****************************************************************
        200-ENTRY                   SECTION.
       *
@@ -5512,30 +5512,30 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            MOVE    ZERO                TO  SPA-GMN-CUR
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *        �����ֹ������ľ�����᤹���ݸ��ԡ�
+      *        選択番号選択（直接請求する保険者）
                WHEN    ANY             ALSO    "HKNJANUMLIST"
                    PERFORM 420-HKNJANUMLIST-SEC
-      *        ����
+      *        タグ
                WHEN    "SWITCH"        ALSO    "note3"
                    PERFORM 440-TAG-CHANGE-SEC
                    GO  TO  200-ENTRY-EXT
            END-EVALUATE
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            .
        200-ENTRY-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ����å�����
+      *    入力チェック処理
       *****************************************************************
        410-INPUT-CHK-SEC       SECTION.
       * 
-      *    ���̤�ӣУ����å�
+      *    画面をＳＰＡセット
            PERFORM 4101-GMN-SPA-SET-SEC
       *
-      *    ���ܥ����å�����
+      *    基本チェック処理
            PERFORM 4102-KIHON-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
                GO      TO      410-INPUT-CHK-EXT
@@ -5546,11 +5546,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���̤�ӣУ����åȽ���
+      *    画面をＳＰＡセット処理
       *****************************************************************
        4101-GMN-SPA-SET-SEC       SECTION.
       *
-      *    �����ֹ�
+      *    選択番号
            IF      W12-SELNUM          =   SPA-GMN-SELNUM-O
                MOVE    ZERO                TO  FLG-IN-SELNUM
            ELSE
@@ -5737,7 +5737,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ܥ����å�����
+      *    基本チェック処理
       *****************************************************************
        4102-KIHON-CHK-SEC       SECTION.
       *
@@ -6351,7 +6351,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ���ʬ���å�
+      *    病名編集区分ェック
       *****************************************************************
        4100-BYOMEIHENKBN-CHK-SEC       SECTION.
       *
@@ -6383,7 +6383,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݥ쥻�Ž��϶�ʬ�����å�
+      *    国保レセ電出力区分チェック
       *****************************************************************
        4101-KKHRECEKBN-CHK-SEC       SECTION.
       *
@@ -6412,7 +6412,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݥ쥻�Ž��϶�ʬ�����å�
+      *    社保レセ電出力区分チェック
       *****************************************************************
        4102-SYARECEKBN-CHK-SEC       SECTION.
       *
@@ -6441,7 +6441,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����Ϣ��쥻�Ž��϶�ʬ�����å�
+      *    広域連合レセ電出力区分チェック
       *****************************************************************
        4158-KOUIKIRECEKBN-CHK-SEC       SECTION.
       *
@@ -6470,7 +6470,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҥ쥻�Ž��϶�ʬ�����å�
+      *    労災レセ電出力区分チェック
       *****************************************************************
        4193-ROURECEKBN-CHK-SEC       SECTION.
       *
@@ -6507,7 +6507,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ťǡ�������������å�
+      *    レセ電データ出力先チェック
       *****************************************************************
        4103-RECEDENOUT-CHK-SEC       SECTION.
       *
@@ -6542,7 +6542,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݣϣãҰ�����ʬ���å�
+      *    国保ＯＣＲ印刷区分ェック
       *****************************************************************
        4104-KKHOCRKBN-CHK-SEC       SECTION.
       *
@@ -6570,7 +6570,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����Ϣ��ϣãҰ�����ʬ���å�
+      *    広域連合ＯＣＲ印刷区分ェック
       *****************************************************************
        4155-KOUIKIOCRKBN-CHK-SEC       SECTION.
       *
@@ -6598,7 +6598,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ñ�ѹ����Խ��ץ������̾�����å�
+      *    県単用項目編集プログラム名チェック
       *****************************************************************
        4106-PREFPRGID-CHK-SEC       SECTION.
       *
@@ -6619,7 +6619,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ñ�ѹ����Խ��ץ������̾�������ѡ˥����å�
+      *    県単用項目編集プログラム名（入院用）チェック
       *****************************************************************
        4112-PREFPRGID1-CHK-SEC       SECTION.
       *
@@ -6640,7 +6640,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݿ�������������ʬ�����å�
+      *    国保診療報酬請求書印刷分チェック
       *****************************************************************
        4105-KKHPRTKBN-CHK-SEC       SECTION.
       *
@@ -6669,7 +6669,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��̾�Խ���ʬ�������å�
+      *    病名編集区分１チェック
       *****************************************************************
        4107-BYOMEIHENKBN1-CHK-SEC       SECTION.
       *
@@ -6699,7 +6699,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *
       *****************************************************************
-      *    ����̾�Խ��ե饰�����å�
+      *    主病名編集フラグチェック
       *****************************************************************
        4114-SYUBYOHENFLG-CHK-SEC       SECTION.
       *
@@ -6728,7 +6728,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ž�����Խ���ʬ�����å�
+      *    転帰日編集区分チェック
       *****************************************************************
        4108-TENKIHENKBN-CHK-SEC       SECTION.
       *
@@ -6757,7 +6757,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݽ�����ץ��̾�����å�
+      *    社保出力先プリンタ名チェック
       *****************************************************************
        4109-SYAPRTNM-CHK-SEC       SECTION.
       *
@@ -6766,7 +6766,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݽ�����ץ��̾�����å�
+      *    国保出力先プリンタ名チェック
       *****************************************************************
        4110-KKHPRTNM-CHK-SEC       SECTION.
       *
@@ -6775,7 +6775,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �̤��ֹ��Խ���ʬ�����å�
+      *    通し番号編集区分チェック
       *****************************************************************
        4111-RENNUMHEKBN-CHK-SEC       SECTION.
       *
@@ -6804,7 +6804,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ³���ʬ�������˥����å�
+      *    続紙区分（入院）チェック
       *****************************************************************
        4113-NEXTPRTKBN-CHK-SEC       SECTION.
       *
@@ -6833,7 +6833,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ³���ʬ���������˥����å�
+      *    続紙区分（入院外）チェック
       *****************************************************************
        4114-NEXTPRTKBN1-CHK-SEC       SECTION.
       *
@@ -6862,7 +6862,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݽ�����ץ��̾��³��˥����å�
+      *    社保出力先プリンタ名（続紙）チェック
       *****************************************************************
        4115-SYAPRTNM-NEXT-CHK-SEC       SECTION.
       *
@@ -6871,7 +6871,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݽ�����ץ��̾��³��˥����å�
+      *    国保出力先プリンタ名（続紙）チェック
       *****************************************************************
        4116-KKHPRTNM-NEXT-CHK-SEC       SECTION.
       *
@@ -6880,7 +6880,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ϸ�ͤȸ�����ʬ�����å�
+      *    老人と原爆区分チェック
       *****************************************************************
        4117-RJNGNBKKBN-CHK-SEC       SECTION.
       *
@@ -6908,7 +6908,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����쥻Ŧ���󵭺ܶ�ʬ�����å�
+      *    自費レセ摘要欄記載区分チェック
       *****************************************************************
        4118-JIHITEKKSIKBN-CHK-SEC      SECTION.
       *
@@ -6936,7 +6936,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����Ϣ�������ʬ�����å�
+      *    広域連合作成区分チェック
       *****************************************************************
        4156-KOUIKIKBN-CHK-SEC      SECTION.
       *
@@ -6964,7 +6964,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������̤����������ȵ��ܶ�ʬ�����å�
+      *    入院料未算定時コメント記載区分チェック
       *****************************************************************
        4163-COMMENT-NYUINRYO-CHK-SEC      SECTION.
       *
@@ -6992,7 +6992,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������¾�ݸ�����������ȵ��ܶ�ʬ�����å�
+      *    入院料他保険算定時コメント記載区分チェック
       *****************************************************************
        4194-COMMENT-NYUINRYO1-CHK-SEC      SECTION.
       *
@@ -7021,7 +7021,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����å���ʬ�����å�
+      *    チェック区分チェック
       *****************************************************************
        4174-CHKKBN-CHK-SEC      SECTION.
       *
@@ -7049,7 +7049,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��̾���ܽ��ʬ�����å�
+      *    病名記載順区分チェック
       *****************************************************************
        4175-BYOMEI-PRTJYUN-CHK-SEC      SECTION.
       *
@@ -7084,7 +7084,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����󵭺ܶ�ʬ�����å�
+      *    食事欄記載区分チェック
       *****************************************************************
        4197-SHOKUJI-PRTKBN-CHK-SEC      SECTION.
       *
@@ -7111,7 +7111,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ쥻�ץȰ���ʸ�������ʬ�����å�
+      *    点検用レセプト印字文字設定区分チェック
       *****************************************************************
        4181-INSPECT-CHARA-KBN-CHK-SEC      SECTION.
       *
@@ -7141,7 +7141,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ쥻�ץȣ������񵭺ܶ�ʬ�����å�
+      *    点検用レセプト０点公費記載区分チェック
       *****************************************************************
        4184-INSPECT-ZERO-KBN-CHK-SEC      SECTION.
       *
@@ -7171,7 +7171,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ쥻�ץȣ������񵭺ܶ�ʬ�����å�
+      *    点検用レセプト０点公費記載区分チェック
       *****************************************************************
        4192-INSPECT-INCLUDE-CHK-SEC      SECTION.
       *
@@ -7201,7 +7201,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ѥ쥻�ץȰ���̾�������ܶ�ʬ�����å�
+      *    点検用レセプト一般名処方記載区分チェック
       *****************************************************************
        4206-INSPECT-GENERAL-CHK-SEC      SECTION.
       *
@@ -7230,7 +7230,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������ޤȤ����ϲ���ɽ��������å�
+      *    生保等まとめ入力画面表示順チェック
       *****************************************************************
        4173-SEIHO-DSPKBN-CHK-SEC      SECTION.
       *
@@ -7258,7 +7258,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȺ�����ʬ�����å�
+      *    レセプト作成区分チェック
       *****************************************************************
        4189-RECEIPT-MAKEKBN-CHK-SEC      SECTION.
       *
@@ -7287,7 +7287,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����������쥻�ץȵ��ܶ�ʬ������ѥ쥻�ץȡ˥����å�
+      *    ０点全国公費レセプト記載区分（提出用レセプト）チェック
       *****************************************************************
        4198-ZERO-KOH-PRTKBN-CHK-SEC        SECTION.
       *
@@ -7316,7 +7316,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ����Ͻ���
+      *    選択番号入力処理
       *****************************************************************
        4185-SELNUM-CHK-SEC             SECTION.
       *
@@ -7329,7 +7329,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                GO  TO  4185-SELNUM-CHK-EXT
             END-IF
       *
-      *    �����ֹ�����å�
+      *    選択番号チェック
            IF    ( SPA-GMN-SELNUM  >=  1                        )
            AND   ( SPA-GMN-SELNUM  <=  SPA-GMN-HKNJALIST-MAX )
                PERFORM 41851-SELNUM-HENSYU-SEC
@@ -7346,7 +7346,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Խ�����
+      *    選択番号編集処理
       *****************************************************************
        41851-SELNUM-HENSYU-SEC         SECTION.
       *
@@ -7364,7 +7364,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ľ�����᤹���ݸ����ֹ�����å�
+      *    直接請求する保険者番号チェック
       *****************************************************************
        4186-HKNJANUM1-CHK-SEC   SECTION.
       *
@@ -7384,7 +7384,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                PERFORM 900-HKNJAINF-READ-SEC
                IF      FLG-HKNJAINF        =   ZERO
                    MOVE    HKNJA-HKNJANAME     TO  SPA-GMN-HKNJANAME1
-      *            ���ݸ��ȹ礫�������������ȹ礫�����å�
+      *            健康保険組合か地方職員共済組合かチェック
                    IF    ( HKNJA-HKNJANUM(1:2) =   "06"    OR  "32"  )
                    AND   ( HKNJA-HKNNUM        =   "006"   OR  "032" )
                        CONTINUE
@@ -7399,7 +7399,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
                IF      SPA-ERRCD           =   SPACE
                    IF      SPA-GMN-SELNUM      =   ZERO
-      *                ������Ͽ�Ѥ������å�
+      *                既に登録済かチェック
                        PERFORM VARYING IDX FROM    1   BY  1
                                UNTIL   IDX >   SPA-GMN-HKNJALIST-MAX
                            IF      SPA-GMN-HKNJANUM1   =
@@ -7410,7 +7410,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                            END-IF
                        END-PERFORM
                    END-IF
-      *            ������ݸ��ȹ��¸�ߥ����å��ʷ��ݸ��ȹ�Τߡ�
+      *            特定健康保険組合の存在チェック（健康保険組合のみ）
                    IF      SPA-GMN-HKNJANUM1-63    =   SPACE
                        MOVE    SPACE               TO  HKNJAINF-REC
                        INITIALIZE                      HKNJAINF-REC
@@ -7434,7 +7434,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ž���ѽ���̾���ܶ�ʬ�����å�
+      *    転帰済傷病名記載区分チェック
       *****************************************************************
        4187-TENKIBYOMEI-KBN-CHK-SEC       SECTION.
       *
@@ -7463,7 +7463,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ݣϣãҰ�����ʬ���å�
+      *    社保ＯＣＲ印刷区分ェック
       *****************************************************************
        4119-SYAOCRKBN-CHK-SEC       SECTION.
       *
@@ -7491,7 +7491,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȥ����ȡʾɾ��ܵ��˵�Ͽ��ʬ�����å�
+      *    レセプトコメント（症状詳記）記録区分チェック
       *****************************************************************
        4120-RECECOMKBN-CHK-SEC       SECTION.
       *
@@ -7519,7 +7519,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ų��Խ���ʬ�����å�
+      *    診療科編集区分チェック
       *****************************************************************
        4121-SRYKAHENKBN-CHK-SEC       SECTION.
       *
@@ -7547,7 +7547,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ浭�ܶ�ʬ�������˥����å�
+      *    病棟番号記載区分（入院）チェック
       *****************************************************************
        4151-BTUNUM-KSIKBN-CHK-SEC       SECTION.
       *
@@ -7575,7 +7575,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���̾���ܶ�ʬ�����å�
+      *    医師名記載区分チェック
       *****************************************************************
        4190-DRNAME-KSIKBN-CHK-SEC       SECTION.
       *
@@ -7603,7 +7603,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ư���ܶ�ʬ�����å�
+      *    自動遷移区分チェック
       *****************************************************************
        4122-AUTODSPKBN-CHK-SEC       SECTION.
       *
@@ -7631,7 +7631,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����������å������ʬ�����å�
+      *    印刷後チェック解除区分チェック
       *****************************************************************
        4152-PRT-CHECKKBN-CHK-SEC       SECTION.
       *
@@ -7659,7 +7659,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����쥻�ץȰ�����ʬ�����å�
+      *    自費レセプト印刷区分チェック
       *****************************************************************
        4152-JIHI-PRTKBN-CHK-SEC       SECTION.
       *
@@ -7687,7 +7687,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ͻ�����Ρ˥����å�
+      *    一括作成出力順（全体）チェック
       *****************************************************************
        4150-PRTJYUN4-CHK-SEC       SECTION.
       *
@@ -7715,7 +7715,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ͻ�ʼ��ݡ˥����å�
+      *    一括作成出力順（社保）チェック
       *****************************************************************
        4123-PRTJYUN1-CHK-SEC       SECTION.
       *
@@ -7743,7 +7743,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ͻ�ʹ��ݡ˥����å�
+      *    一括作成出力順（国保）チェック
       *****************************************************************
        4135-PRTJYUN3-CHK-SEC       SECTION.
       *
@@ -7771,7 +7771,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ͻ�ʹ���Ϣ��˥����å�
+      *    一括作成出力順（広域連合）チェック
       *****************************************************************
        4157-PRTJYUN5-CHK-SEC       SECTION.
       *
@@ -7799,7 +7799,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���̺������Ͻ�����å�
+      *    個別作成出力順チェック
       *****************************************************************
        4124-PRTJYUN2-CHK-SEC       SECTION.
       *
@@ -7827,7 +7827,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������Ͻ�����Ρ������˥����å�
+      *    一括作成出力順（全体・入院）チェック
       *****************************************************************
        4172-PRTJYUN6-CHK-SEC       SECTION.
       *
@@ -7855,7 +7855,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������������ʸ�����ܰ��֥����å�
+      *    「特別療養費」文字記載位置チェック
       *****************************************************************
        4125-MOJI-KISAIKBN-CHK-SEC       SECTION.
       *
@@ -7883,7 +7883,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ճ���󵭺ܶ�ʬ�����å�
+      *    給付割合欄記載区分チェック
       *****************************************************************
        4126-KYURATE-KISAIKBN-CHK-SEC       SECTION.
       *
@@ -7913,7 +7913,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȼ����󵭺ܶ�ʬ�����å�
+      *    レセプト種別欄記載区分チェック
       *****************************************************************
        4127-RECESYU-KISAIKBN-CHK-SEC   SECTION.
       *
@@ -7944,7 +7944,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������ꡦ���⸩�������å�
+      *    印刷順指定・県内県外チェック
       *****************************************************************
        4128-PREFKBN-PRTJYUN-CHK-SEC       SECTION.
       *
@@ -7972,7 +7972,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������ꡦ�ݸ��ԥ����å�
+      *    印刷順指定・保険者チェック
       *****************************************************************
        4129-HKNJANUM-PRTJYUN-CHK-SEC       SECTION.
       *
@@ -8002,7 +8002,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������ꡦ�쥻�ץȼ��̥����å�
+      *    印刷順指定・レセプト種別チェック
       *****************************************************************
        4130-RECESYU-PRTJYUN-CHK-SEC   SECTION.
       *
@@ -8033,7 +8033,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ǡ��߰��������å�
+      *    在総診・在医総チェック
       *****************************************************************
        4131-ZAITAKU-CHK-SEC       SECTION.
       *
@@ -8061,7 +8061,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ĺ����Ĺ�����������˥����å�
+      *    長期（長期高額療養費）チェック
       *****************************************************************
        4132-CHOUKI-CHK-SEC       SECTION.
       *
@@ -8091,7 +8091,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؤν�����ݸ��ԥ����å�
+      *    医療機関の所在地保険者チェック
       *****************************************************************
        4133-HKNJANUM-CHK-SEC   SECTION.
       *
@@ -8128,7 +8128,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؤν�����ݸ��԰������֥����å�
+      *    医療機関の所在地保険者印刷位置チェック
       *****************************************************************
        4134-HKNJANUM-PRTKBN-CHK-SEC   SECTION.
       *
@@ -8159,7 +8159,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����̽��϶�ʬ�����å�
+      *    医師別出力区分チェック
       *****************************************************************
        4161-DRCD-PRTKBN-CHK-SEC       SECTION.
       *
@@ -8188,7 +8188,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����̽��Ͻ��ʬ�����å�
+      *    医師別出力順区分チェック
       *****************************************************************
        4162-DRCD-PRTJYUNKBN-CHK-SEC       SECTION.
       *
@@ -8222,7 +8222,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����̽��϶�ʬ�����å�
+      *    病棟別出力区分チェック
       *****************************************************************
        4170-BTUNUM-PRTKBN-CHK-SEC       SECTION.
       *
@@ -8251,7 +8251,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������Ͻ��ʬ�����å�
+      *    病棟出力順区分チェック
       *****************************************************************
        4171-BTUNUM-PRTJYUNKBN-CHK-SEC       SECTION.
       *
@@ -8285,7 +8285,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ߥʥ�ǥ��åȤˤ����϶�ʬ�����å�
+      *    ターミナルデジットによる出力区分チェック
       *****************************************************************
        4191-TERMINAL-DI-PRTKBN-CHK-SEC       SECTION.
       *
@@ -8315,7 +8315,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������ե饰�����å�
+      *    主科設定フラグチェック
       *****************************************************************
        4135-SYUKA-KBN-CHK-SEC   SECTION.
       *
@@ -8346,7 +8346,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����������������˥����å�
+      *    主科設定情報（入院）チェック
       *****************************************************************
        4136-SYUKA-NYUIN-CHK-SEC       SECTION.
       *
@@ -8374,7 +8374,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������������������˥����å�
+      *    主科設定情報（入院外）チェック
       *****************************************************************
        4137-SYUKA-GAIRAI-CHK-SEC       SECTION.
       *
@@ -8403,7 +8403,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʾ�������ե饰�����å�
+      *    主科情報取得フラグチェック
       *****************************************************************
        4138-SYUKA-MODE-CHK-SEC   SECTION.
       *
@@ -8433,7 +8433,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ʣ����Ʊ����������å�
+      *    複数科同一選択チェック
       *****************************************************************
        4139-SYUKA-SELECT-CHK-SEC   SECTION.
       *
@@ -8463,7 +8463,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ���������������ݡ˥����å�
+      *    日計表レコード記録条件（入院外・社保）チェック
       *****************************************************************
        4140-NI-JYOKEN1-CHK-SEC   SECTION.
       *
@@ -8476,7 +8476,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ���������������ݡ˥����å�
+      *    日計表レコード記録条件（入院外・国保）チェック
       *****************************************************************
        4141-NI-JYOKEN2-CHK-SEC   SECTION.
       *
@@ -8489,7 +8489,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ�������������ݡ˥����å�
+      *    日計表レコード記録条件（入院・社保）チェック
       *****************************************************************
        4142-NI-JYOKEN3-CHK-SEC   SECTION.
       *
@@ -8502,7 +8502,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ�������������ݡ˥����å�
+      *    日計表レコード記録条件（入院・国保）チェック
       *****************************************************************
        4143-NI-JYOKEN4-CHK-SEC   SECTION.
       *
@@ -8515,7 +8515,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ����������������Ϣ��˥����å�
+      *    日計表レコード記録条件（入院外・広域連合）チェック
       *****************************************************************
        4159-NI-JYOKEN5-CHK-SEC   SECTION.
       *
@@ -8528,7 +8528,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɽ�쥳���ɵ�Ͽ��������������Ϣ��˥����å�
+      *    日計表レコード記録条件（入院・広域連合）チェック
       *****************************************************************
        4160-NI-JYOKEN6-CHK-SEC   SECTION.
       *
@@ -8541,7 +8541,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ţãġݣҽ��϶�ʬ�����å�
+      *    レセ電ＣＤ−Ｒ出力区分チェック
       *****************************************************************
        4167-RECEDEN-CDRKBN-CHK-SEC       SECTION.
       *
@@ -8570,7 +8570,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ɾ��ܵ�������ʬ�����å�
+      *    症状詳記作成区分チェック
       *****************************************************************
        4168-RECEDEN-LST1KBN-CHK-SEC       SECTION.
       *
@@ -8599,7 +8599,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ǥ����������ս������ʬ�����å�
+      *    光ディスク等送付書作成区分チェック
       *****************************************************************
        4169-RECEDEN-LST2KBN-CHK-SEC       SECTION.
       *
@@ -8628,7 +8628,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ǥ����������ս��������������å�
+      *    光ディスク等送付書の媒体設定チェック
       *****************************************************************
        4199-RECEDEN-LST2-MEDIA-CHK-SEC       SECTION.
       *
@@ -8659,7 +8659,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ťǡ���������¸�����ʬ�����å�
+      *    レセ電データ履歴保存設定区分チェック
       *****************************************************************
        4168-RECEDEN-RIREKIKBN-CHK-SEC       SECTION.
       *
@@ -8689,7 +8689,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ե���������������ʬ�����å�
+      *    ファイル出力先設定区分チェック
       *****************************************************************
        4169-RECEDEN-DATAKBN-CHK-SEC       SECTION.
       *
@@ -8750,7 +8750,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��Ԥ�����Ǥ��ʤ��ҳ������쥻�ץȤΥ쥻�ŵ�Ͽ��ʬ�����å�
+      *    保険者が特定できない災害該当レセプトのレセ電記録区分チェック
       *****************************************************************
        4180-RECEDEN-DISASTER-CHK-SEC       SECTION.
       *
@@ -8780,7 +8780,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ťǡ��������å���̵ͭ��ʬ�����å�
+      *    レセ電データチェックの有無区分チェック
       *****************************************************************
        4188-RECEDEN-CHK-CHK-SEC       SECTION.
       *
@@ -8810,7 +8810,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ���ڤ�ʸ������ե饰�ʵ���˥����å�
+      *    記号番号区切り文字設定フラグ（記号）チェック
       *****************************************************************
        4176-KIGO-DELIMITER-FLG-CHK-SEC       SECTION.
       *
@@ -8847,7 +8847,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ���ڤ�ʸ���о��ݸ��ԥե饰�ʵ���˥����å�
+      *    記号番号区切り文字対象保険者フラグ（記号）チェック
       *****************************************************************
        4177-KIGO-DELI-HKNJA-F-CHK-SEC       SECTION.
       *
@@ -8883,7 +8883,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ���ڤ�ʸ������ե饰���ֹ�˥����å�
+      *    記号番号区切り文字設定フラグ（番号）チェック
       *****************************************************************
        4178-NUM-DELIMITER-FLG-CHK-SEC       SECTION.
       *
@@ -8920,7 +8920,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ���ڤ�ʸ���о��ݸ��ԥե饰���ֹ�˥����å�
+      *    記号番号区切り文字対象保険者フラグ（番号）チェック
       *****************************************************************
        4179-NUM-DELI-HKNJA-F-CHK-SEC       SECTION.
       *
@@ -8956,7 +8956,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ౡ���򵭺ܶ�ʬ���������쥻�ץȤΤߡ˥����å�
+      *    入退院履歴記載区分（入院外レセプトのみ）チェック
       *****************************************************************
        4144-NYUTAIIN-KSI-CHK-SEC       SECTION.
       *
@@ -8986,7 +8986,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ౡ���򵭺ܶ�ʬ�������˥����å�
+      *    入退院履歴記載区分（入院）チェック
       *****************************************************************
        4144-NYUTAIIN-NYU-KSI-CHK-SEC       SECTION.
       *
@@ -9020,7 +9020,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����������ޥ�Ĺʬ������ʬ�ʼ��ݡ˥����å�
+      *    診療報酬請求書マル長分作成区分（社保）チェック
       *****************************************************************
        4145-SYAPRTKBN-CHK-SEC       SECTION.
       *
@@ -9049,7 +9049,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����������ҳ�����ʬ�������оݤȸ����оݡˤޤȤ�����å�
+      *    診療報酬請求書災害該当分（非減免対象と減免対象）まとめチェック
       *****************************************************************
        4208-DISASTER-SYAPRTKBN-CHK-SEC       SECTION.
       *
@@ -9079,7 +9079,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ȵ��ܶ�ʬ��ϫ�ҡ��������˥����å�
+      *    枠記載区分（労災・入院外）チェック
       *****************************************************************
        4164-FRAME-ROUPRTKBN-CHK-SEC  SECTION.
       *
@@ -9111,7 +9111,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ȵ��ܶ�ʬ��ϫ�ҡ������˥����å�
+      *    枠記載区分（労災・入院）チェック
       *****************************************************************
        4165-FRAME-ROUPRTKBN-N-CHK-SEC  SECTION.
       *
@@ -9143,7 +9143,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҥ����ȵ��ܶ�ʬ�����å�
+      *    労災コメント記載区分チェック
       *****************************************************************
        4166-COMMENT-ROU-CHK-SEC  SECTION.
       *
@@ -9175,7 +9175,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ͼ�����ǽ��ϫ�ҡ��������˥����å�
+      *    様式選択機能（労災・入院外）チェック
       *****************************************************************
        4182-ROUPRTKBN-CHK-SEC  SECTION.
       *
@@ -9207,7 +9207,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ͼ�����ǽ��ϫ�ҡ������˥����å�
+      *    様式選択機能（労災・入院）チェック
       *****************************************************************
        4183-ROUPRTKBN-N-CHK-SEC  SECTION.
       *
@@ -9239,7 +9239,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ȵ��ܶ�ʬ�ʼ����ա��������˥����å�
+      *    枠記載区分（自賠責・入院外）チェック
       *****************************************************************
        4146-FRAME-JIBAIPRTKB-CHK-SEC  SECTION.
       *
@@ -9271,7 +9271,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ȵ��ܶ�ʬ�ʼ����ա������˥����å�
+      *    枠記載区分（自賠責・入院）チェック
       *****************************************************************
        4147-FRAME-JIBAIPRTKB-N-CHK-SEC  SECTION.
       *
@@ -9303,7 +9303,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ա��ͼ�����ǽ�ʽ����ͼ����������˥����å�
+      *    自賠責・様式選択機能（従来様式・入院外）チェック
       *****************************************************************
        4153-JIBAIPRTKBN-CHK-SEC  SECTION.
       *
@@ -9335,7 +9335,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ա��ͼ�����ǽ�ʽ����ͼ��������˥����å�
+      *    自賠責・様式選択機能（従来様式・入院）チェック
       *****************************************************************
        4154-JIBAIPRTKBN-N-CHK-SEC  SECTION.
       *
@@ -9368,7 +9368,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
       *
       *
       *****************************************************************
-      *    �����ա��ͼ�����ǽ�ʿ��ͼ����������˥����å�
+      *    自賠責・様式選択機能（新様式・入院外）チェック
       *****************************************************************
        4195-JIBAIPRTKBN1-CHK-SEC   SECTION.
       *
@@ -9402,7 +9402,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ա��ͼ�����ǽ�ʿ��ͼ��������˥����å�
+      *    自賠責・様式選択機能（新様式・入院）チェック
       *****************************************************************
        4196-JIBAIPRTKBN1-N-CHK-SEC SECTION.
       *
@@ -9436,7 +9436,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������������ü��������ʬ�ʼ����ա˥����å�
+      *    自賠責請求金額欄端数処理区分（自賠責）チェック
       *****************************************************************
        4202-JIBAI-FRACTIONKBN1-CHK-SEC SECTION.
       *
@@ -9470,7 +9470,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������������ü��������ʬ���軰�Թ԰١˥����å�
+      *    自賠責請求金額欄端数処理区分（第三者行為）チェック
       *****************************************************************
        4203-JIBAI-FRACTIONKBN2-CHK-SEC SECTION.
       *
@@ -9504,7 +9504,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ݸ����򵭺ܶ�ʬ�����å�
+      *    保険履歴記載区分チェック
       *****************************************************************
        4204-HKN-RIREKI-CHK-SEC        SECTION.
       *
@@ -9533,7 +9533,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʪ���հ�����ô�⵭�ܥ����å�
+      *    現物給付一部負担金記載チェック
       *****************************************************************
        4205-GENBUTU-ICHIBU-CHK-SEC        SECTION.
       *
@@ -9562,7 +9562,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��������ˡ�쥻�ץȵ��ܶ�ʬ�����å�
+      *    湿布薬用法レセプト記載区分チェック
       *****************************************************************
        4207-COMPRESS-CHK-SEC        SECTION.
       *
@@ -9590,7 +9590,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ҳ�����ʬ�������оݤȸ����оݡ˥쥻�ץȤ�ʬ������å�
+      *    災害該当分（非減免対象と減免対象）レセプトの分割チェック
       *****************************************************************
        4209-DISASTER-RECEIPT-CHK-SEC        SECTION.
       *
@@ -9620,7 +9620,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����߰ʲ����ޤΥ쥻�ץȵ��ܥ����å�
+      *    １５円以下薬剤のレセプト記載チェック
       *****************************************************************
        4210-15-YKZ-CHK-SEC        SECTION.
       *
@@ -9648,7 +9648,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����գУģƥե����������ʬ�����å�
+      *    自賠責ＰＤＦファイル作成区分チェック
       *****************************************************************
        4211-JIBAI-PDF-CHK-SEC      SECTION.
       *
@@ -9682,7 +9682,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ������������ô�⵭�ܶ�ʬ�ʸ���ΤߤΥ쥻�ץȡ˥����å�
+      *    全国公費一部負担金記載区分（公費のみのレセプト）チェック
       *****************************************************************
        4212-KOUHI-ICHIBU-KSI-CHK-SEC        SECTION.
       *
@@ -9716,7 +9716,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʼ�������ե饰�����å�
+      *    主科社保設定フラグチェック
       *****************************************************************
        4148-SYUKA-SYAHO-CHK-SEC   SECTION.
       *
@@ -9747,7 +9747,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʹ�������ե饰�����å�
+      *    主科国保設定フラグチェック
       *****************************************************************
        4149-SYUKA-KOKUHO-CHK-SEC   SECTION.
       *
@@ -9778,7 +9778,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʹ���Ϣ������ե饰�����å�
+      *    主科広域連合設定フラグチェック
       *****************************************************************
        4150-SYUKA-KOUIKI-CHK-SEC   SECTION.
       *
@@ -9809,7 +9809,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����Ϣ���������������ʬ�����å�
+      *    広域連合診療報酬請求書印刷分チェック
       *****************************************************************
        4146-KOUIKIPRTKBN-CHK-SEC       SECTION.
       *
@@ -9841,7 +9841,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҿ���������񡢥��ե��������������������ͼ���������å�
+      *    労災診療費請求書、アフターケア委託費請求書の様式選択チェック
       *****************************************************************
        4200-ROUSAIPRTKBN-CHK-SEC       SECTION.
       *
@@ -9891,7 +9891,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ϫ�ҿ���������񡢥��ե��������������������ȵ��ܶ�ʬ�����å�
+      *    労災診療費請求書、アフターケア委託費請求書の枠記載区分チェック
       *****************************************************************
        4201-FRAME-ROUSAIPRTKBN-CHK-SEC       SECTION.
       *
@@ -9933,7 +9933,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���������
+      *    行選択処理
       *****************************************************************
        420-HKNJANUMLIST-SEC        SECTION.
       *
@@ -9966,7 +9966,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    タグ編集処理
       *****************************************************************
        440-TAG-CHANGE-SEC            SECTION.
       *
@@ -9981,15 +9981,15 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE   W12-PAGENO   TO  IDX
            END-EVALUATE
       *
-      ***  �������Ѥ�ä��Ȥ����ܥ����å�
+      ***  タグが変わったとき項目チェック
       ***  IF      IDX              NOT =   W12-PAGENO
                MOVE    MCP-WIDGET          TO  WRK-MCP-WIDGET
                MOVE    ZERO                TO  SPA-GMN-CUR
       *
-      *        ���ϥ����å�����
+      *        入力チェック処理
                PERFORM 410-INPUT-CHK-SEC
                IF    ( SPA-ERRCD            =   SPACE )
-      *            ��Ϣ�����å�
+      *            関連チェック
                    PERFORM 4900-KANRENCHK-SEC
                    IF    ( SPA-ERRCD        =   SPACE             )
                    AND   ( SPA-WIDCD        =   SPACE             )
@@ -10024,7 +10024,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                        SECTION.
       *
@@ -10044,7 +10044,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       ���񵭺ܽ��������
+      *       公費記載順設定処理
       *****************************************************************
        490-KOUHI-PRTJYUN-SETTEI-SEC        SECTION.
       *
@@ -10063,7 +10063,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       �ܺ��������
+      *       詳細設定処理
       *****************************************************************
        490-SYOUSAI-SETTEI-SEC              SECTION.
       *
@@ -10082,27 +10082,27 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ������
+      *       登録前処理
       *****************************************************************
        490-TOUROKU-SEC              SECTION.
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF      SPA-ERRCD       NOT =   SPACE
               GO      TO      490-TOUROKU-EXT
            END-IF
       *
-      *    ���Ϲ��ܤδ�Ϣ�����å�����
+      *    入力項目の関連チェック処理
            PERFORM 4900-KANRENCHK-SEC
       *
-      *    �쥻�ťǡ�������������å�
+      *    レセ電データ出力先チェック
            IF    ( SPA-ERRCD        =   SPACE )
            AND   ( SPA-WIDCD        =   SPACE )
            AND   ( SPA-WIDCD2       =   SPACE )
                PERFORM 4103-RECEDENOUT-CHK-SEC
            END-IF
       *
-      *    ����̽��϶�ʬ�Ȱ��̾���ܶ�ʬ�Υ����å�
+      *    医師別出力区分と医師名記載区分のチェック
            IF    ( SPA-ERRCD        =   SPACE )
            AND   ( SPA-WIDCD        =   SPACE )
            AND   ( SPA-WIDCD2       =   SPACE )
@@ -10125,11 +10125,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       ���Ϲ��ܤδ�Ϣ�����å�����
+      *       入力項目の関連チェック処理
       *****************************************************************
        4900-KANRENCHK-SEC           SECTION.
       *
-      *    �쥻�ץ����ֽ����
+      *    レセプト編綴順情報
            IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
            AND   ( SPA-GMN-HKNJANUM-PRTJYUN
                                            =   SPACE )
@@ -10141,7 +10141,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            AND   ( SPA-GMN-HKNJANUM        =   SPACE )
                CONTINUE
            ELSE
-      *        ��������꤬�������Ϥ���Ƥ��뤫  
+      *        印刷順指定が全て入力されているか  
                IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
                OR    ( SPA-GMN-HKNJANUM-PRTJYUN
                                                =   SPACE )
@@ -10150,7 +10150,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                    MOVE    70                  TO  SPA-GMN-CUR
                    MOVE    "0097"              TO  SPA-ERRCD
                END-IF
-      *        ���ŵ��ؤν�����ݸ��ԤȽ�����ݸ��԰�������
+      *        医療機関の所在地保険者と所在地保険者印刷位置
                IF      SPA-ERRCD               =   SPACE  
                    IF    ( SPA-GMN-HKNJANUM-PRTKBN
                                                NOT =   SPACE )
@@ -10161,7 +10161,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
-      *    ������ʹ��ݡˤ����ֽ�����δ�Ϣ�����å�
+      *    印刷順（国保）と編綴順設定の関連チェック
            IF      SPA-ERRCD           =   SPACE
                IF      SPA-GMN-PRTJYUN3    =   "06"
                    IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
@@ -10175,7 +10175,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF                         
       *
-      *    �쥻�ץȡ������Խ�����ʼ�������
+      *    レセプト・総括編集情報（主科設定）
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-GMN-SYUKA-KBN       =   ZERO  )
                AND   ( SPA-GMN-SYUKA-NYUIN     =   SPACE )
@@ -10233,7 +10233,7 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
-      *    �����ֹ���ڤ�ʸ������δ�Ϣ�����å�
+      *    記号番号区切り文字設定の関連チェック
            IF      SPA-ERRCD           =   SPACE
                IF    ( SPA-GMN-KIGO-DELI-FLG
                                        NOT =   "0" )
@@ -10253,10 +10253,10 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
                END-IF
            END-IF
       *
-      *    �쥻�Ž��϶�ʬ�ȹ���Ϣ�������ʬ�����å�
+      *    レセ電出力区分と広域連合作成区分チェック
            IF    ( SPA-ERRCD        =   SPACE )
            AND   ( SPA-WIDCD        =   SPACE )
-      *        ���ϥ����å�
+      *        入力チェック
                IF      SPA-WIDCD-1004-FLG  =   2
                    CONTINUE
                ELSE
@@ -10298,11 +10298,11 @@ grpsys*        MOVE    SPA-HOSPNUM         TO  -HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *       ��Ͽ����
+      *       登録処理
       *****************************************************************
        490-KOUSHIN-SEC           SECTION.
       *
-      *    �쥻�ץȡʴ��ܡ�����������������Խ�����
+      *    レセプト（基本・特別療養費）総括編集情報
            MOVE    SPACE               TO  SYS-2005-REC
            INITIALIZE                      SYS-2005-REC
            MOVE    "2005"                  TO  SYS-2005-KANRICD
@@ -10420,8 +10420,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
-      *    �쥻�ץȡʴ��ܡ�����������������Խ�����
-      *    ��ʬ�����ɣ���
+      *    レセプト（基本・特別療養費）総括編集情報
+      *    区分コード０１
            MOVE    SPACE               TO  SYS-200501-REC
            INITIALIZE                      SYS-200501-REC
            MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
@@ -10595,8 +10595,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
-      *    �쥻�ץȡʴ��ܡ�����������������Խ�����
-      *    ��ʬ�����ɣ���
+      *    レセプト（基本・特別療養費）総括編集情報
+      *    区分コード０５
            MOVE    SPACE               TO  SYS-200505-REC
            INITIALIZE                      SYS-200505-REC
            MOVE    SPA-HOSPNUM         TO  SYS-200505-HOSPNUM
@@ -10666,7 +10666,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    �쥻�ץȡ������Խ�����ʼ�������
+      *    レセプト・総括編集情報（主科設定）
            MOVE    SPACE               TO  SYS-2009-REC
            INITIALIZE                      SYS-2009-REC
            MOVE    "2009"              TO  SYS-2009-KANRICD
@@ -10737,7 +10737,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
-      *    �����ֹ���ڤ�ʸ���������
+      *    記号番号区切り文字設定情報
            MOVE    SPACE               TO  SYS-2011-REC
            INITIALIZE                      SYS-2011-REC
            MOVE    "2011"              TO  SYS-2011-KANRICD
@@ -10806,11 +10806,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  490-KOUSHIN-EXT
            END-IF      
       *
-      *    �쥻�ץȡ����ֽ�˾���
+      *    レセプト（編綴順）情報
       *
            MOVE    ZERO                TO  FLG-UPDFLG
       *
-      *    ���ܤ�̤���Ϥ�̤��Ͽ�ξ��Ϲ������ʤ� 
+      *    項目が未入力で未登録の場合は更新しない 
            IF    ( SPA-GMN-PREFKBN-PRTJYUN =   SPACE )
            AND   ( SPA-GMN-HKNJANUM-PRTJYUN
                                            =   SPACE )
@@ -10823,7 +10823,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            AND   ( SPA-NAI-2008-KBNCD-9    =   ZERO  )
                CONTINUE
            ELSE
-      *        ���ܤ��ѹ������ä����
+      *        項目に変更があった場合
                IF      SPA-NAI-2008-KBNCD-9    >   ZERO
                    MOVE    SPACE               TO  SYS-2008-REC
                    INITIALIZE                      SYS-2008-REC
@@ -10921,17 +10921,17 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ľ�����᤹���ݸ��Ԥι���
+      *    直接請求する保険者の更新
       *****************************************************************
        490-HKNJANUM-UPDATE-SEC           SECTION.
       *
-      *    ���ϥ����å�����
+      *    入力チェック処理
            PERFORM 410-INPUT-CHK-SEC
            IF  SPA-ERRCD           NOT =   SPACE
                GO  TO  490-HKNJANUM-UPDATE-EXT
            END-IF
       *
-      *    ������Ͽ�Ѥ������å�
+      *    既に登録済かチェック
            PERFORM VARYING IDX     FROM    1   BY  1
                    UNTIL   IDX     >       SPA-GMN-HKNJALIST-MAX
                IF    ( SPA-GMN-SELNUM      >   ZERO )
@@ -10947,7 +10947,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    �ɲò�ǽ�������å�
+      *    追加可能かチェック
            IF      SPA-GMN-SELNUM      =   ZERO
                IF      SPA-GMN-HKNJALIST-MAX
                                        >=  WRK-CONS-200505-HKNJANUM-MAX
@@ -10957,7 +10957,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    ������ݸ��ȹ�ι��������å�  
+      *    特定健康保険組合の更新チェック  
            IF      SPA-GMN-HKNJANUM1-63
                                    NOT =   SPACE     
       *****    IF (    SPA-GMN-SELNUM      =   ZERO                  )
@@ -10971,14 +10971,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *****    END-IF
            END-IF
       *
-      *    ľ�����᤹���ݸ��Ԥι�������
+      *    直接請求する保険者の更新処理
            PERFORM 4901-HKNJANUM-UPDATE-01-SEC
            .
        490-HKNJANUM-UPDATE-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ľ�����᤹���ݸ��Ԥι�������
+      *    直接請求する保険者の更新処理
       *****************************************************************
        4901-HKNJANUM-UPDATE-01-SEC          SECTION.
       *
@@ -11014,7 +11014,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ľ�����᤹���ݸ��Ԥκ��
+      *    直接請求する保険者の削除
       *****************************************************************
        490-HKNJANUM-DELETE-SEC          SECTION.
       *
@@ -11052,7 +11052,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    �������Խ�����
+      *    自画面編集処理
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -11085,7 +11085,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    画面編集処理
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -12223,7 +12223,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        W12-HKNJANUMLIST-THKNJANUM (IDX)
                IF      SPA-GMN-HKNJALIST-THKNJANUM-63 (IDX)
                                    NOT =   SPACE
-                   MOVE    "��"        TO
+                   MOVE    "◎"        TO
                                        W12-HKNJANUMLIST-THKNJANUM-63
                                                                   (IDX)
                END-IF
@@ -12260,7 +12260,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��̳�������������
+      *    業務権限非活性処理
       *****************************************************************
        510-GSRAUTH-SEC             SECTION.
       *
@@ -12270,415 +12270,415 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    ���顼��å�����ɽ����
+      *    エラーメッセージ表示理
       *****************************************************************
        510-ERRSET-SEC              SECTION.
            MOVE    SPACE               TO  SPA-ERRMSG
       *
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "����̾���ܶ�ʬ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "傷病名記載区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0002"
-                   MOVE    "���ݥ쥻�Ž��϶�ʬ���ϥ��顼"
+                   MOVE    "国保レセ電出力区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0003"
-                   MOVE    "���ݥ쥻�Ž��϶�ʬ���ϥ��顼"
+                   MOVE    "社保レセ電出力区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0004"
-                   MOVE    "���ݣϣãҵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "国保ＯＣＲ記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0005"
-                   MOVE    "���ݿ�����������ʬ���ϥ��顼"
+                   MOVE    "国保診療報酬請求書区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0006"
                    MOVE
-                       "��ñ�ѥץ������̾�ΰ���ܤϣӤ����Ϥ��Ʋ�����"
+                       "県単用プログラム名の一桁目はＳで入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0007"
-                   MOVE    "ž�������ܶ�ʬ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "転帰日記載区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0008"
-                   MOVE    "�̤��ֹ浭�ܶ�ʬ���ϥ��顼"  TO  SPA-ERRMSG
+                   MOVE    "通し番号記載区分入力エラー"  TO  SPA-ERRMSG
                WHEN    "0009"
-                   MOVE    "³���ʬ���ϥ��顼"          TO  SPA-ERRMSG
+                   MOVE    "続紙区分入力エラー"          TO  SPA-ERRMSG
                WHEN    "0010"
-                   MOVE    "����̾�Խ��ե饰���ϥ��顼"  TO  SPA-ERRMSG
+                   MOVE    "主病名編集フラグ入力エラー"  TO  SPA-ERRMSG
                WHEN    "0011"
-                   MOVE    "Ϸ�ͤȸ�����ʬ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "老人と原爆区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0012"
-                   MOVE    "����쥻Ŧ���󵭺ܶ�ʬ���ϥ��顼"
+                   MOVE    "自費レセ摘要欄記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0013"
                    MOVE
-                       "�쥻�ץȥ����ȡʾɾ��ܵ��˵�Ͽ��ʬ���ϥ��顼"
+                       "レセプトコメント（症状詳記）記録区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0014"
-                   MOVE    "���Ųʵ��ܶ�ʬ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "診療科記載区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0015"
-                   MOVE    "��ư���ܶ�ʬ���ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "自動遷移区分入力エラー"      TO  SPA-ERRMSG
                WHEN    "0016"
-                   MOVE    "���������Ͻ�ʼ��ݡ����ϥ��顼"
+                   MOVE    "一括作成出力順（社保）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0017"
-                   MOVE    "���̺������Ͻ����ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "個別作成出力順入力エラー"    TO  SPA-ERRMSG
                WHEN    "0018"
-                   MOVE    "�������������ʸ�����ܰ������ϥ��顼"
+                   MOVE    "「特別療養費」文字記載位置入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0019"
-                   MOVE    "���ճ���󵭺ܶ�ʬ���ϥ��顼"
+                   MOVE    "給付割合欄記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0020"
-                   MOVE    "�쥻�ץȼ����󵭺ܶ�ʬ���ϥ��顼"
+                   MOVE    "レセプト種別欄記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0021"
-                   MOVE    "��������ꡦ���⸩�����ϥ��顼"
+                   MOVE    "印刷順指定・県内県外入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0022"
-                   MOVE    "��������ꡦ�ݸ������ϥ��顼"
+                   MOVE    "印刷順指定・保険者入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0023"
-                   MOVE    "��������ꡦ�쥻�ץȼ������ϥ��顼"
+                   MOVE    "印刷順指定・レセプト種別入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0024"
-                   MOVE    "���������ϥ��顼"
+                   MOVE    "在総診入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0025"
-                   MOVE    "Ĺ����Ĺ���������������ϥ��顼"
+                   MOVE    "長期（長期高額療養費）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0026"
-                   MOVE    "������ݸ����ֹ����ϥ��顼"
+                   MOVE    "所在地保険者番号入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0027"
-                   MOVE    "������ݸ��԰����������ϥ��顼"
+                   MOVE    "所在地保険者印刷位置入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0028"
-                   MOVE    "���������Ͻ�ʹ��ݡ����ϥ��顼"
+                   MOVE    "一括作成出力順（国保）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0029"
-                   MOVE    "������ݸ��Ԥϸ�����ݸ��Ԥ����Ϥ��Ʋ�����"
+                   MOVE    "所在地保険者は県内の保険者を入力して下さい"
                                                          TO  SPA-ERRMSG
                WHEN    "0030"
-                   MOVE    "��ʼ»ܤ�̵ͭ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "主科実施の有無入力エラー"    TO  SPA-ERRMSG
                WHEN    "0031"
-                   MOVE    "��������������������ϥ��顼"
+                   MOVE    "主科設定情報（入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0032"
-                   MOVE    "����������������������ϥ��顼"
+                   MOVE    "主科設定情報（入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0033"
-                   MOVE    "��ʾ���������ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "主科情報取得入力エラー"      TO  SPA-ERRMSG
                WHEN    "0034"
-                   MOVE    "ʣ����Ʊ���������ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "複数科同一選択入力エラー"    TO  SPA-ERRMSG
                WHEN    "0035"
-                   MOVE    "���ౡ���򵭺ܶ�ʬ�������������ϥ��顼"
+                   MOVE    "入退院履歴記載区分（入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0036"
-                   STRING  "���ݿ����������ʥޥ�Ĺʬ��"
+                   STRING  "社保診療報酬請求書（マル長分）"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0037"
-                   MOVE    "�����ա��ȵ��ܶ�ʬ�������������ϥ��顼"
+                   MOVE    "自賠責・枠記載区分（入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0038"
-                   MOVE    "�����ա��ȵ��ܶ�ʬ�����������ϥ��顼"
+                   MOVE    "自賠責・枠記載区分（入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0039"
-                   MOVE    "��ʼ����������ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "主科社保設定入力エラー"      TO  SPA-ERRMSG
                WHEN    "0040"
-                   MOVE    "��ʹ����������ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "主科国保設定入力エラー"      TO  SPA-ERRMSG
                WHEN    "0041"
-                   MOVE    "���������Ͻ�����Ρ����ϥ��顼"
+                   MOVE    "一括作成出力順（全体）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0042"
-                   MOVE    "�����ֹ浭�ܶ�ʬ���ϥ��顼"  TO  SPA-ERRMSG
+                   MOVE    "病棟番号記載区分入力エラー"  TO  SPA-ERRMSG
                WHEN    "0043"
-                   MOVE    "���������å�����������ϥ��顼"
+                   MOVE    "印刷チェック解除設定入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0044"
                    MOVE
-                       "�������ͼ�����ʽ����ͼ��������������ϥ��顼"
+                       "自倍責様式選択（従来様式・入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0045"
                    MOVE
-                       "�������ͼ�����ʽ����ͼ������������ϥ��顼"
+                       "自倍責様式選択（従来様式・入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0046"
-                   MOVE    "����Ϣ��쥻�Ž��϶�ʬ���ϥ��顼"
+                   MOVE    "広域連合レセ電出力区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0047"
-                   MOVE    "����Ϣ��ϣãҵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "広域連合ＯＣＲ記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0048"
-                   MOVE    "���������Ͻ�ʹ���Ϣ������ϥ��顼"
+                   MOVE    "一括作成出力順（広域連合）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0049"
-                   MOVE    "����Ϣ�������ʬ���ϥ��顼"
+                   MOVE    "広域連合作成区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0050"
-                   MOVE    "��ʹ���Ϣ���������ϥ��顼"  TO  SPA-ERRMSG
+                   MOVE    "主科広域連合設定入力エラー"  TO  SPA-ERRMSG
                WHEN    "0051"
-                   MOVE    "���������������ʬ���ϥ��顼"
+                   MOVE    "広域診療報酬請求書区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0052"
-                   MOVE    "����̽����������ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "医師別出力設定入力エラー"    TO  SPA-ERRMSG
                WHEN    "0053"
-                   MOVE    "����̽��Ͻ����ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "医師別出力順入力エラー"      TO  SPA-ERRMSG
                WHEN    "0054"
-                   MOVE    "������̤����������ȵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "入院料未算定時コメント記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0055"
-                   MOVE    "ϫ�ҡ��ȵ��ܶ�ʬ�������������ϥ��顼"
+                   MOVE    "労災・枠記載区分（入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0056"
-                   MOVE    "ϫ�ҡ��ȵ��ܶ�ʬ�����������ϥ��顼"
+                   MOVE    "労災・枠記載区分（入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0057"
-                   MOVE    "ϫ�ҥ����ȵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "労災コメント記載区分入力エラー"
                                                          TO  SPA-ERRMSG
       *********WHEN    "0058"
-      *********    MOVE    "�쥻�Ž��������ϥ��顼"      TO  SPA-ERRMSG
+      *********    MOVE    "レセ電出力先入力エラー"      TO  SPA-ERRMSG
                WHEN    "0059"
-                   MOVE    "�����̽����������ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "病棟別出力設定入力エラー"    TO  SPA-ERRMSG
                WHEN    "0060"
-                   MOVE    "�����̽��Ͻ����ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "病棟別出力順入力エラー"      TO  SPA-ERRMSG
                WHEN    "0061"
-                   MOVE    "���������Ͻ�����Ρ��������ϥ��顼"
+                   MOVE    "一括作成出力順（全体）入院入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0062"
-                   MOVE    "�������ޤȤ����ϲ���ɽ�������ϥ��顼"
+                   MOVE    "生保等まとめ入力画面表示順入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0063"
-                   MOVE    "���ݣϣãҵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "社保ＯＣＲ記載区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0064"
-                   MOVE    "����쥻�ץȰ�����ʬ���ϥ��顼"
+                   MOVE    "自費レセプト印刷区分入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0065"
-                   MOVE    "�����å���ʬ���ϥ��顼"      TO  SPA-ERRMSG
+                   MOVE    "チェック区分入力エラー"      TO  SPA-ERRMSG
                WHEN    "0066"
-                   MOVE    "��̾���ܽ��ʬ���ϥ��顼"    TO  SPA-ERRMSG
+                   MOVE    "病名記載順区分入力エラー"    TO  SPA-ERRMSG
                WHEN    "0067"
-                   MOVE    "�����ѥ쥻�ץȵ������ϥ��顼"
+                   MOVE    "点検用レセプト記載入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0068"
-                   MOVE    "ϫ���ͼ�����������������ϥ��顼"
+                   MOVE    "労災様式選択（入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0069"
-                   MOVE    "ϫ���ͼ���������������ϥ��顼"
+                   MOVE    "労災様式選択（入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0070"
-                   MOVE    "�����ѥ쥻�ץȣ������񵭺����ϥ��顼"
+                   MOVE    "点検用レセプト０点公費記載入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0071"
-                   MOVE    "�����ֹ����ϥ��顼"
+                   MOVE    "選択番号入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0072"
-                   MOVE    "�ݸ����ֹ����ϥ��顼"
+                   MOVE    "保険者番号入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0073"
-                   MOVE    "����ʾ��ݸ��Ԥ��ɲäǤ��ޤ���"
+                   MOVE    "これ以上保険者を追加できません"
                                                TO  SPA-ERRMSG
                WHEN    "0074"
-                   MOVE    "���ݸ��ȹ硢���������ȹ�ǤϤ���ޤ���"
+                   MOVE    "健康保険組合、地方共済組合ではありません"
                                                TO  SPA-ERRMSG
                WHEN    "0075"
-                   MOVE    "�������ϺѤ��ݸ����ֹ�Ǥ�"
+                   MOVE    "既に入力済の保険者番号です"
                                                TO  SPA-ERRMSG
                WHEN    "0076"
-                   MOVE    "���ౡ���򵭺ܶ�ʬ�����������ϥ��顼"
+                   MOVE    "入退院履歴記載区分（入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0077"
-                   STRING  "������¾�ݸ�����������ȵ��ܶ�ʬ"
+                   STRING  "入院料他保険算定時コメント記載区分"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0078"
                    MOVE
-                       "�������ͼ�����ʿ��ͼ��������������ϥ��顼"
+                       "自倍責様式選択（新様式・入院外）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0079"
                    MOVE
-                       "�������ͼ�����ʿ��ͼ������������ϥ��顼"
+                       "自倍責様式選択（新様式・入院）入力エラー"
                                                          TO  SPA-ERRMSG
                WHEN    "0080"
                    MOVE
-                       "�����󵭺����ϥ��顼"  TO  SPA-ERRMSG
+                       "食事欄記載入力エラー"  TO  SPA-ERRMSG
       *
                WHEN    "0096"
-                   STRING  "���������Ͻ�ʹ��ݡˤλ��꤬���ֽ�Ǥ���"
+                   STRING  "一括作成出力順（国保）の指定が編綴順です。"
                                                DELIMITED  BY  SIZE
-                           "���ֽ�������ԤäƲ�����"
+                           "編綴順の設定を行って下さい"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0097"
-                   MOVE    "�������̤���Ϥι��ܤ�����ޤ�"
+                   MOVE    "印刷順に未入力の項目があります"
                                                TO  SPA-ERRMSG
                WHEN    "0098"
                    STRING
-                       "���ŵ��ؤν�����ݸ��԰������֤����򤷤�"
+                       "医療機関の所在地保険者印刷位置を選択して"
                                                DELIMITED  BY  SIZE
-                       "����Τ˽�����ݸ��Ԥ�̤���ϤǤ�"
+                       "あるのに所在地保険者が未入力です"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0099"
-                   MOVE    "̤���Ϥι��ܤ�����ޤ�"
+                   MOVE    "未入力の項目があります"
                                                TO  SPA-ERRMSG
                WHEN    "0100"
                    MOVE
-                   "����б��򤷤ʤ��Ȥ������ꤵ��Ƥ�����ܤ�����ޤ�"
+                   "主科対応をしないときに設定されている項目があります"
                                                TO  SPA-ERRMSG
                WHEN    "0101"
-                   MOVE    "�������±��Ǥ���Ȥ��������ϤǤ��ޤ���"
+                   MOVE    "旧総合病院であるとき主科設定はできません"
                                                TO  SPA-ERRMSG
                WHEN    "0102"
-                   MOVE    "���ݤޤ��Ϲ��ݡ���������꤬����ޤ���"
+                   MOVE    "社保または国保、広域の設定がありません"
                                                TO  SPA-ERRMSG
                WHEN    "0103"
-                   MOVE    "�ãġݣҽ������ϥ��顼"
+                   MOVE    "ＣＤ−Ｒ出力入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0104"
-                   MOVE    "�ɾ��ܵ�������ʬ���ϥ��顼"
+                   MOVE    "症状詳記作成区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0105"
-                   MOVE    "���ǥ����������ս������ʬ���ϥ��顼"
+                   MOVE    "光ディスク等送付書作成区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0106"
-                   MOVE    "������¸���ϥ��顼"
+                   MOVE    "履歴保存入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0107"
-                   MOVE    "�ե�����������������ϥ��顼"
+                   MOVE    "ファイル出力先設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0108"
-                   MOVE    "�����Խ��������ϥ��顼"
+                   MOVE    "記号編集設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0109"
-                   MOVE    "�����о��ݸ������ϥ��顼"
+                   MOVE    "記号対象保険者入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0110"
-                   MOVE    "�ֹ��Խ��������ϥ��顼"
+                   MOVE    "番号編集設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0111"
-                   MOVE    "�ֹ��о��ݸ������ϥ��顼"
+                   MOVE    "番号対象保険者入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0112"
-                   MOVE    "�о��ݸ��Ԥ����ꤷ�Ʋ�����"
+                   MOVE    "対象保険者を設定して下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0113"
-                   MOVE    "�ҳ������쥻�ץȤΥ쥻�ŵ�Ͽ��ʬ���ϥ��顼"
+                   MOVE    "災害該当レセプトのレセ電記録区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0114"
-                   MOVE    "ž���ѽ���̾���ܶ�ʬ���ϥ��顼"
+                   MOVE    "転帰済傷病名記載区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0115"
-                   MOVE    "�쥻�ťǡ��������å����ϥ��顼"
+                   MOVE    "レセ電データチェック入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0116"
-                   MOVE    "�����ѡ�����ѽ��ɽ�����ϥ��顼"
+                   MOVE    "点検用・提出用初期表示入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0117"
-                   MOVE    "���̾���ܶ�ʬ���ϥ��顼"
+                   MOVE    "医師名記載区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0118"
-                   STRING   "����̽������꤬�ְ���̽��Ϥ򤷤ʤ���"
+                   STRING   "医師別出力設定が「医師別出力をしない」"
                                                DELIMITED  BY  SIZE
-                            "�ΤȤ��ϰ��̾�ε��ܤ�Ԥ����ȤϤǤ��ޤ���"
+                            "のときは医師名の記載を行うことはできません"
                                                DELIMITED  BY  SIZE
                                                INTO  SPA-ERRMSG
                    END-STRING
                WHEN    "0119"
-                   MOVE    "�����ߥʥ�ǥ��åȤˤ������������ϥ��顼"
+                   MOVE    "ターミナルデジットによる出力設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0120"
-                   MOVE    "�����ѥ쥻�ץ�������ʬ�������ϥ��顼"
+                   MOVE    "点検用レセプト包括診療分記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0121"
-                   MOVE    "ϫ�ҥ쥻�Ž��϶�ʬ���ϥ��顼"
+                   MOVE    "労災レセ電出力区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0122"
-                   STRING  "ϫ�һ�����ŵ��ؤǤʤ�����"
+                   STRING  "労災指定医療機関でないため"
                                                DELIMITED  BY  SIZE
-                           "�쥻�Ž��϶�ʬ������ϤǤ��ޤ���"
+                           "レセ電出力区分の設定はできません"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0123"
-                   MOVE    "�ե���������������ԤäƲ�����"
+                   MOVE    "ファイル出力先設定を行って下さい"
                                                TO  SPA-ERRMSG
                WHEN    "0124"
-                   MOVE    "�����������쥻�ץȵ��ܶ�ʬ���ϥ��顼"
+                   MOVE    "０点全国公費レセプト記載区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0125"
-                   MOVE    "���ǥ����������ս�������������ϥ��顼"
+                   MOVE    "光ディスク等送付書の媒体設定入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0126"
-                   STRING  "ϫ�ҿ���������񡢥��ե������������������"
+                   STRING  "労災診療費請求書、アフターケア委託費請求書"
                                                DELIMITED  BY  SIZE
-                           "���ͼ��������ϥ��顼"
+                           "の様式選択入力エラー"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0127"
-                   STRING  "ϫ�ҿ���������񡢥��ե������������������"
+                   STRING  "労災診療費請求書、アフターケア委託費請求書"
                                                DELIMITED  BY  SIZE
-                           "���ȵ��ܶ�ʬ���ϥ��顼"
+                           "の枠記載区分入力エラー"
                                                DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0128"
-                   STRING  "��������������ü��������ʬ�ʼ����ա�"
+                   STRING  "自賠責請求金額欄端数処理区分（自賠責）"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0129"
-                   STRING  "��������������ü��������ʬ���軰�Թ԰١�"
+                   STRING  "自賠責請求金額欄端数処理区分（第三者行為）"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0130"
-                   MOVE    "�ݸ����򵭺ܶ�ʬ���ϥ��顼"
+                   MOVE    "保険履歴記載区分入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0131"
-                   MOVE    "��ʪ���հ�����ô�⵭�����ϥ��顼"
+                   MOVE    "現物給付一部負担金記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0132"
-                   MOVE    "�����ѥ쥻�ץȰ���̾�����������ϥ��顼"
+                   MOVE    "点検用レセプト一般名処方記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0133"
-                   MOVE    "��������ˡ�쥻�ץȵ������ϥ��顼"
+                   MOVE    "湿布薬用法レセプト記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0134"
-                   STRING  "���ݿ����������ʺҳ�����ʬ��"
+                   STRING  "社保診療報酬請求書（災害該当分）"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0135"
-                   STRING  "�ҳ�����ʬ�������оݤȸ����оݡ�ʬ��"
+                   STRING  "災害該当分（非減免対象と減免対象）分割"
                                                DELIMITED  BY  SIZE
-                           "���ϥ��顼"        DELIMITED  BY  SIZE
+                           "入力エラー"        DELIMITED  BY  SIZE
                                                INTO    SPA-ERRMSG
                    END-STRING
                WHEN    "0136"
-                   MOVE    "�����߰ʲ����ޥ쥻�ץȵ������ϥ��顼"
+                   MOVE    "１５円以下薬剤レセプト記載入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0137"
-                   MOVE    "�����գУģƥե�����������ϥ��顼"
+                   MOVE    "自賠責ＰＤＦファイル作成入力エラー"
                                                TO  SPA-ERRMSG
                WHEN    "0138"
-                   MOVE    "������������ô�⵭�����ϥ��顼"
+                   MOVE    "全国公費一部負担金記載入力エラー"
                                                TO  SPA-ERRMSG
       *
                WHEN    "1003"
-                   MOVE    "�������Ǥ��ޤ���Ǥ���"
+                   MOVE    "更新ができませんでした"
                                                TO  SPA-ERRMSG
                WHEN    "1002"
-                   MOVE    "������Ǥ��ޤ���Ǥ���"
+                   MOVE    "削除ができませんでした"
                                                TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -12702,7 +12702,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ��
+      *    ガイドメッセージ表示
       *****************************************************************
        520-WIDSET-SEC              SECTION.
       *
@@ -12710,19 +12710,19 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD
                WHEN    "1001"
-                   MOVE    "�쥻�ץȰ����������Ͽ���ޤ�"
+                   MOVE    "レセプト印刷情報を登録します"
                                                 TO  WRK-WIDMSG
                WHEN    "1002"
-                   STRING  "�쥻�Ž����褬�ޥ���ȤǤ��ޤ��󤬡�"
+                   STRING  "レセ電出力先がマウントできませんが、"
                                            DELIMITED  BY  SIZE
-                           "�쥻�ץȰ����������Ͽ���ޤ���"
+                           "レセプト印刷情報を登録しますか"
                                            DELIMITED  BY  SIZE
                                            INTO  WRK-WIDMSG
                    END-STRING
                WHEN    "1003"
-                   STRING  "��̾���ܽ礬���Ͻ������Ǥ��Τǡ�"
+                   STRING  "病名記載順が入力順の設定ですので、"
                                            DELIMITED  BY  SIZE
-                           "����̾���Խ���Ԥ�ʤ����ѹ����ޤ�"
+                           "主病名の編集を行わないに変更します"
                                            DELIMITED  BY  SIZE
                                            INTO  WRK-WIDMSG
                    END-STRING
@@ -12750,7 +12750,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    �����ɥ�å�����ɽ����
+      *    ガイドメッセージ表示２
       *****************************************************************
        530-WID2SET-SEC              SECTION.
       *
@@ -12758,16 +12758,16 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            EVALUATE    SPA-WIDCD2
                WHEN    "1004"
-                   STRING  "����Ϣ�������ʬ�������"
+                   STRING  "広域連合作成区分の設定を"
                                            DELIMITED  BY  SIZE
-                          "����ʬ�ȤޤȤ�ƺ������ѹ����ޤ���"
+                          "国保分とまとめて作成に変更しますか"
                                            DELIMITED  BY  SIZE
                                            INTO  WRK-WIDMSG
                    END-STRING
                WHEN    "1005"
-                   STRING  "������ݸ��ȹ�����ľ�����ᤷ�ޤ���"
+                   STRING  "特定健康保険組合も一緒に直接請求しますか"
                                            DELIMITED  BY  SIZE
-                           "���ݸ����ֹ桧"
+                           "　保険者番号："
                                            DELIMITED  BY  SIZE
                            SPA-GMN-HKNJANUM1-63
                                            DELIMITED  BY  SIZE
@@ -12779,8 +12779,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      WID2
            MOVE    SPA-WIDCD2          TO  WID2-ID1CODE
            MOVE    WRK-WIDMSG          TO  WID2-ID1MSG
-           MOVE    "������"            TO  WID2-B01
-           MOVE    "��  ��"            TO  WID2-B12
+           MOVE    "いいえ"            TO  WID2-B01
+           MOVE    "は  い"            TO  WID2-B12
            MOVE    "B12"               TO  MCP-WIDGET
       *
            MOVE    "W12"               TO  SPA-MOTOPG
@@ -12798,7 +12798,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���̥������륻�åȽ���    
+      *    画面カーソルセット処理    
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -13176,7 +13176,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���������Խ�����
+      *    カーソル編集処理
       *****************************************************************
        50011-CUR-SET-SEC         SECTION.
       *
@@ -13521,7 +13521,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
       *****************************************************************
        800-MCNDATE-SEC         SECTION.
       *
@@ -13532,7 +13532,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        800-MCNDATE-EXT.
            EXIT.
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -13567,7 +13567,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ңţ���
+      *    システム管理マスタＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -13582,7 +13582,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ԥޥ������ɹ��ʥ�����
+      *    保険者マスター読込（キー）
       *****************************************************************
        900-HKNJAINF-READ-SEC         SECTION.
       *
@@ -13618,7 +13618,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -13637,7 +13637,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -13649,7 +13649,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -13661,7 +13661,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -13674,7 +13674,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

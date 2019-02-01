@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI042R1V2.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �쥻�ץȾ���ʥ쥻�ץȤ�����������˼���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/01/08    NACL��ƣ��������������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : レセプト情報（レセプトの枚数、点数）取得
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/01/08    NACL−藤原　　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -38,7 +38,7 @@
       *FILE                        SECTION.
       *
        WORKING-STORAGE             SECTION.
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -49,14 +49,14 @@
            03  FLG-ERR                 PIC 9(01).
            03  FLG-OK                  PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
            03  IDH                     PIC 9(04).
            03  IDH2                    PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -68,7 +68,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -87,7 +87,7 @@
       *
            03  WRK-Z9-X.
                05  WRK-Z9              PIC ZZZZZZZZZ9.
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
@@ -107,42 +107,42 @@
            03  WRK-MCP-PATHNAME        PIC X(64).
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    ���ե��֥롼�����ΰ�
+      *    日付サブルーチン領域
            COPY  "CPORCSDAY.INC".
            COPY  "CPORCSLNK.INC".
       *
-      *    ���������Ѵ�����
+      *    画面日付変換サブ
            COPY    "CPORCSGDAY.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPRECEIPT-INF1V2REQ.INC".
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPRECEIPT-INF1V2RES.INC".
       *
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �������
+      *    請求管理
            COPY    "CPRCF010.INC".
       *
-      *    ��������ʿ���
+      *    請求管理（新）
            COPY    "CPSKYMAIN.INC".
       *
-      *    ��������ʸ�������
+      *    請求管理（公費情報）
            COPY    "CPSKYKOH.INC".
       *
            COPY    "MCPDATA.INC".
@@ -150,7 +150,7 @@
            COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                 SECTION.
             COPY    "MCPAREA".
@@ -167,7 +167,7 @@
       *
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -181,18 +181,18 @@
       ***  INITIALIZE                      CNT-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST22-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-PTXMLMAKE-SEC
            END-IF
       *
@@ -205,14 +205,14 @@
       *
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE                      WRK-XML-AREA
            INITIALIZE                      XML-RECEIPT-INFRES
            INITIALIZE                      XML-APIREQ
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -221,14 +221,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  RECEIPT-INFS-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  RECEIPT-INFS-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -243,11 +243,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-APTLSTREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -257,12 +257,12 @@
            MOVE    SPACE               TO  WRK-ERRCD
            MOVE    SPACE               TO  WRK-KEICD
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
       *
-      *    �ֵѽ���
+      *    返却処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2002-RECEIPT-SEC
            END-IF
@@ -272,7 +272,7 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-APTLSTREAD-SEC   SECTION.
       *
@@ -305,7 +305,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -313,11 +313,11 @@
        10001-XML-REMAKE-EXT.
            EXIT.
       *****************************************************************
-      *    �������ƥ����å�
+      *    設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC          SECTION.
       *
-      *    ����ǯ��
+      *    診療年月
            MOVE    RECEIPT-INFQ-PERFORM-MONTH
                                        TO  WRK-HEN-DATE
            MOVE    SPACE               TO  WRK-HEN-TIME
@@ -345,14 +345,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȾ���ʥ쥻�ץȤ���������������˽���
+      *    レセプト情報（レセプトの枚数、請求点数）処理
       *****************************************************************
        2002-RECEIPT-SEC            SECTION.
       *
            MOVE    ZERO                TO  WRK-POINT
                                            WRK-COUNT
       * 
-      *    ���ݸ�����Υ쥻�ץ�
+      *    主保険ありのレセプト
            INITIALIZE                      SKYMAIN-REC
            MOVE    SPA-HOSPNUM         TO  SKYMAIN-HOSPNUM
            MOVE    WRK-MONTH           TO  SKYMAIN-SRYYM
@@ -365,7 +365,7 @@
                ADD     SKYMAIN-FTNMONEY    TO  WRK-COUNT
            END-IF
       *
-      *    ����ñ�ȥ쥻�ץ�
+      *    公費単独レセプト
            INITIALIZE                      SKYMAIN-REC
            MOVE    SPA-HOSPNUM         TO  SKYMAIN-HOSPNUM
            MOVE    WRK-MONTH           TO  SKYMAIN-SRYYM
@@ -393,19 +393,19 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-PTXMLMAKE-SEC               SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
-               MOVE    "������λ"      TO  RECEIPT-INFS-API-RESULT-MSG
+      *        正常終了
+               MOVE    "処理終了"      TO  RECEIPT-INFS-API-RESULT-MSG
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD       TO  RECEIPT-INFS-API-RESULT
                MOVE    WRK-ERRMSG      TO  RECEIPT-INFS-API-RESULT-MSG
@@ -438,7 +438,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -468,7 +468,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -491,56 +491,56 @@
       *
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "10"
-               MOVE    "����ǯ������ǤϤ���ޤ���"
+               MOVE    "診療年月が暦日ではありません"
                                                TO  WRK-ERRMSG
            WHEN    "12"
-               MOVE    "�ؼ����줿����ǯ��ˤϡ��оݤ�����ޤ���"
+               MOVE    "指示された診療年月には、対象がありません。"
                                                TO  WRK-ERRMSG
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-               MOVE    "������ʬ̤����"        TO  WRK-ERRMSG
+               MOVE    "処理区分未設定"        TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE    "�������Ƥ˸��꤬����ޤ���"
+               MOVE    "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE    "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE    "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -549,7 +549,7 @@
       *
       *
       *****************************************************************
-      *    ��������ɹ�����
+      *    請求管理読込処理
       *****************************************************************
        900-SEIKYU-READ-SEC         SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ∞ı∫˛Õ—•≥•Û•π•ø•Û•»ŒŒ∞Ë COPY (CPPRTCONST.INC)          *
+      *    Âç∞Âà∑Áî®„Ç≥„É≥„Çπ„Çø„É≥„ÉàÈ†òÂüü COPY (CPPRTCONST.INC)          *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
        01  PRTCONST-AREA.
            03  PRTCONST-T.
@@ -28,19 +28,19 @@
                05  PRTCONST-PRTID-T01  PIC  X(20)
                                        VALUE   "HC401     " .
                05  PRTCONST-PRTID-T02  PIC  X(20)
-      *        º˝«º∞ÏÕ˜                     
+      *        ÂèéÁ¥ç‰∏ÄË¶ß                     
                                        VALUE   "HC07      " .
                05  PRTCONST-PRTID-T03  PIC  X(20)
-      *        ∆¸∑◊…Ω                     
+      *        Êó•Ë®àË°®                     
                                        VALUE   "HC17      " .
                05  PRTCONST-PRTID-T04  PIC  X(20)
                                        VALUE   "HC17V01   " .
-      *        º“ ›¡Ì≥Á…Ω                     
+      *        Á§æ‰øùÁ∑èÊã¨Ë°®                     
                05  PRTCONST-PRTID-T05  PIC  X(20)
                                        VALUE   "HC08      " .
                05  PRTCONST-PRTID-T06  PIC  X(20)
                                        VALUE   "HC08V01   " .
-      *        πÒ ›¡Ì≥Á…Ω                     
+      *        ÂõΩ‰øùÁ∑èÊã¨Ë°®                     
                05  PRTCONST-PRTID-T07  PIC  X(20)
                                        VALUE   "HC04      " .
                05  PRTCONST-PRTID-T08  PIC  X(20)
@@ -49,7 +49,7 @@
                                        VALUE   "HC04V02   " .
                05  PRTCONST-PRTID-T10  PIC  X(20)
                                        VALUE   "HC04V03   " .
-      *        πÒ ›¡Ì≥Á…Ω° …È√¥≥‰πÁ§¢§Í°À                     
+      *        ÂõΩ‰øùÁ∑èÊã¨Ë°®ÔºàË≤†ÊãÖÂâ≤Âêà„ÅÇ„ÇäÔºâ                     
                05  PRTCONST-PRTID-T11  PIC  X(20)
                                        VALUE   "HC041     " .
                05  PRTCONST-PRTID-T12  PIC  X(20)
@@ -58,7 +58,7 @@
                                        VALUE   "HC041V02  " .
                05  PRTCONST-PRTID-T14  PIC  X(20)
                                        VALUE   "HC041V03  " .
-      *        ≈¿øÙ•ﬁ•π•ø∞ÏÕ˜                     
+      *        ÁÇπÊï∞„Éû„Çπ„Çø‰∏ÄË¶ß                     
                05  PRTCONST-PRTID-T15  PIC  X(20)
                                        VALUE   "HCML01    " .
                05  PRTCONST-PRTID-T16  PIC  X(20)
@@ -67,7 +67,7 @@
                                        VALUE   "HCML03    " .
                05  PRTCONST-PRTID-T18  PIC  X(20)
                                        VALUE   "HCML06    " .
-      *        πÒ ›¡Ì≥Á…Ω° £≤£∞£∞£≤«Ø£±£∞∑Ó≤˛¿µ¬–±˛°À                     
+      *        ÂõΩ‰øùÁ∑èÊã¨Ë°®ÔºàÔºíÔºêÔºêÔºíÂπ¥ÔºëÔºêÊúàÊîπÊ≠£ÂØæÂøúÔºâ                     
                05  PRTCONST-PRTID-T19  PIC  X(20)
                                        VALUE   "HCM2C.red " .
                05  PRTCONST-PRTID-T20  PIC  X(20)

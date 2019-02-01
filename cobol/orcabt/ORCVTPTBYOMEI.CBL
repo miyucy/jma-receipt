@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,24 +18,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCVTPTBYOMEI.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ģº�������
-      *  ����ݡ��ͥ��̾  : �ãӣ֥ե����륳��С��Ƚ����ʴ�����̾��
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/11/27    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : ＤＢ作成処理
+      *  コンポーネント名  : ＣＳＶファイルコンバート処理（患者病名）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/11/27    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������        ����      ����
-      *  01.00.01    NACL-����     05/07/13  ���顼��å����������ߥå�
-      *  01.00.02    NACL-����     05/09/28  ��¤�ѹ�
-      *  01.00.03    NACL-����     06/07/26  MONFUNC�б�
-      *  03.05.00    NACL-¿��Ǽ   07/05/16  ���롼�׿����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者        日付      内容
+      *  01.00.01    NACL-森脇     05/07/13  エラーメッセージ、コミット
+      *  01.00.02    NACL-森脇     05/09/28  構造変更
+      *  01.00.03    NACL-森脇     06/07/26  MONFUNC対応
+      *  03.05.00    NACL-多々納   07/05/16  グループ診療対応
       *
-      *  04.06.01    NACL-ƣ��     09/06/20  ��̾�����Ͻ��б�
-      *  04.06.02    NACL-����     11/01/24  ��­�������ɲ�
+      *  04.06.01    NACL-藤原     09/06/20  病名の入力順対応
+      *  04.06.02    NACL-森脇     11/01/24  補足コメント追加
       *
-      *  04.07.01    NACL-ƣ��     15/07/29  ü���ɣĤΥ��å�
+      *  04.07.01    NACL-藤原     15/07/29  端末ＩＤのセット
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -43,18 +43,18 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
            SELECT  PARA-FILE       ASSIGN
                                    ASS-PARA
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-PARA.
       *
-      *    ������̾�ãӣ֥ե�����
+      *    患者病名ＣＳＶファイル
            SELECT  CSV-FILE        ASSIGN
                                    ASS-CSV
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
-      *    �ɣӣ��ͥե�����
+      *    ＩＳＡＭファイル
            SELECT  ISAM-FILE       ASSIGN
                                    ASS-ISAM
                                    ORGANIZATION    IS  INDEXED
@@ -62,7 +62,7 @@
                                    RECORD  KEY     IS  ISAM-KEY
                                    FILE    STATUS  IS  STS-ISAM.
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -70,7 +70,7 @@
       *
        DATA                        DIVISION.
        FILE                        SECTION.
-      *    �ѥ�᡼���ե�����
+      *    パラメータファイル
        FD  PARA-FILE.
        01  PARA-REC.
            03  PARA-RECKBN             PIC X(01).
@@ -78,14 +78,14 @@
            03  FILLER                  PIC X(01).
            03  PARA-DATA               PIC X(100).
       *
-      *    ������̾�ãӣ֥ե�����
+      *    患者病名ＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC.
            03  CSV-R                   PIC X(300).
            03  CSV-RR  REDEFINES       CSV-R.
                05  CSV-X               PIC X(01)  OCCURS   300.
       *
-      *    �ɣӣ��ͥե�����
+      *    ＩＳＡＭファイル
        FD  ISAM-FILE.
        01  ISAM-REC.
            03  ISAM-KEY.
@@ -94,27 +94,27 @@
            03  ISAM-TBL.
                05  ISAM-HKNID          PIC 9(10).
       *
-      *    ���ϥ��顼�ե�����
+      *    出力エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(100).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PARA                PIC X(256).
            03  ASS-CSV                 PIC X(256).
            03  ASS-ISAM                PIC X(256).
            03  ASS-ERR                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA                PIC X(02).
            03  STS-CSV                 PIC X(02).
            03  STS-ISAM                PIC X(02).
            03  STS-LST                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-PARA                PIC 9(01).
            03  FLG-CSV                 PIC 9(01).
@@ -139,7 +139,7 @@
            03  FLG-TENKI               PIC 9(01).
            03  FLG-CHK                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-PARA                PIC 9(06).
            03  CNT-CSV                 PIC 9(06).
@@ -151,7 +151,7 @@
            03  CNT-RENNUM              PIC 9(02).
            03  CNT-HKNCOMB             PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -161,7 +161,7 @@
            03  IDI                     PIC 9(02).
            03  IDJ                     PIC 9(02).
       *
-      *    �ѥ�᡼����¸
+      *    パラメータ保存
        01  PARA-SAVE.
            03  PARA-00-7               PIC X(01).
            03  PARA-05-1               PIC X(02).
@@ -175,9 +175,9 @@
            03  PARA-11-7               PIC X(06).
            03  PARA-HOSPNUM            PIC X(02).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
-      *    ���պ���ΰ�
+      *    日付作業領域
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
                05  WRK-SMM             PIC 9(02).
@@ -191,7 +191,7 @@
                05  WRK-SYSMM           PIC 9(02).
                05  WRK-SYSDD           PIC 9(02).
       *
-      *    ʸ������ΰ�
+      *    文字作業領域
            03  WRK-POINT-AREA.
                05  WRK-PO-ST           PIC 9(04).
                05  WRK-PO-CNT          PIC 9(04).
@@ -212,16 +212,16 @@
       *
            03  WRK-RENNUM              PIC 9(02).
       *
-      *    �ݸ��ȹ礻�ѥơ��֥�
+      *    保険組合せ用テーブル
            03  WRK-HEN-AREA.
                05  WRK-HEN-PTNUM       PIC X(20).
                05  WRK-HEN-HKNCOMBI    PIC 9(10)   OCCURS  4.
       *
-      *    ���顼Ģɼ�����ΰ�
+      *    エラー帳票出力領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCVTPTBYOMEI.CBL��".
+                                       "【PGID:ORCVTPTBYOMEI.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -231,15 +231,15 @@
                05  MES-TITLE2-L1.
                    07  FILLER          PIC X(10) VALUE "LINENO ERR".
                    07  FILLER          PIC X(42) VALUE
-                   " [1]ɬ��̤����        [2]���ܷ������     ".
+                   " [1]必須未入力        [2]項目桁数不正     ".
                    07  FILLER          PIC X(41) VALUE
-                   " [3]������            [4]��̾Ŭ�����ֽ�ʣ".
+                   " [3]誤入力            [4]病名適応期間重複".
                05  MES-TITLE2-L2.
                    07  FILLER          PIC X(10) VALUE SPACE.
                    07  FILLER          PIC X(42) VALUE
-                   " [5]��̾�����Ѵ�����  [6]��̾�ã��Ѵ����� ".
+                   " [5]病名カナ変換失敗  [6]病名ＣＤ変換失敗 ".
                    07  FILLER          PIC X(41) VALUE
-                   " [7]�����ֹ��������  [8]������̾���ϼ���".
+                   " [7]患者番号取得失敗  [8]患者病名出力失敗".
                05  MES-TITLE2-L3.
                    07  FILLER          PIC X(50) VALUE
                    "--------------------------------------------------".
@@ -248,10 +248,10 @@
                05  MES-TITLE2-L4.
                    07  FILLER          PIC X(10) VALUE "       MSG".
                    07  FILLER          PIC X(20) VALUE
-                   " [A]��­�����ȷٹ�".
+                   " [A]補足コメント警告".
       *
        01  ERRLST-AREA.
-      *    ���顼�ֹ棱���������ǻ���
+      *    エラー番号１・２・３で使用
            03  ERR-REC1.
                05  ERR1-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -261,7 +261,7 @@
                    07  ERR1-ERRNO      PIC X(03).
                    07  ERR1-KOMOKU     PIC X(09).
                    07  ERR1-ATAI       PIC X(08).
-      *    ���顼�ֹ棴���������ǻ���
+      *    エラー番号４・５・６で使用
            03  ERR-REC2.
                05  ERR2-LINENO         PIC X(06).
                05  FILLER              PIC X(01).
@@ -282,57 +282,57 @@
                VALUE               "/var/tmp/ORCVTPTRSIINF-HKNID_ISAM".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    �����ƥ�����ʰ��ŵ��ؾ����
+      *    システム管理（医療機関情報）
            COPY    "CPSK1001.INC".
-      *    �����ƥ�����ʿ��Ųʡ�
+      *    システム管理（診療科）
            COPY    "CPSK1005.INC".
-      *    �����ƥ�����ʴ����ֹ湽��������
+      *    システム管理（患者番号構成管理）
            COPY    "CPSK1009.INC".
       *
-      *    �ݸ��ȹ礻
+      *    保険組合せ
        01  COMB-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
-      *    ����Ѵ�����̾
+      *    作業用患者病名
        01  WKPTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC"    REPLACING
                                        //PTBYO-// BY //WKPTBYO-//.
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *    COPY    "CPORCMCP.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
            COPY    "CPORCXKANACONV.INC".
       *
-      *    ��̾����
+      *    病名検索
            COPY    "CPORCSBYOMEI.INC".
       *
-      *    LIKE����KEY�б�
+      *    LIKE使用KEY対応
            COPY    "CPORCSADDSIGN.INC".
       *
       ****************************************************************
@@ -344,7 +344,7 @@
                USING
            COMMAND-PARAM.
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -359,11 +359,11 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ���ܥ��ꥢ
+      *    項目クリア
            MOVE    ZERO            TO  FLG-AREA
            MOVE    ZERO            TO  CNT-AREA
            MOVE    ZERO            TO  IDX-AREA
@@ -371,18 +371,18 @@
            INITIALIZE                  SPA-AREA
            INITIALIZE                  ASS-AREA
       *
-      *    �ѥ�᥿���å�
+      *    パラメタセット
            UNSTRING   COMMAND-PARAM    DELIMITED  BY  ","
                                        INTO    ASS-PARA
            END-UNSTRING
       *
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
            PERFORM 101-PARA-GET-SEC
            IF      FLG-PARA        =   2
                MOVE    1           TO  FLG-CSV
                GO  TO  100-INIT-EXT
            END-IF
-      *    ���ŵ����ֹ�
+      *    医療機関番号
            IF      PARA-HOSPNUM    NUMERIC
                MOVE    PARA-HOSPNUM        TO  SPA-HOSPNUM
            ELSE
@@ -392,7 +392,7 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            ACCEPT  WRK-SYMD2       FROM    DATE
            MOVE    WRK-SYMD2       TO  WRK-SYSYMD (3:)
            ADD     2000            TO  WRK-SYSYY
@@ -401,25 +401,25 @@
            MOVE    SPA-SYSYMD(5:2) TO  MES-TITLE1-MM
            MOVE    SPA-SYSYMD(7:2) TO  MES-TITLE1-DD
       *
-      *    ü���ɣĸ���
+      *    端末ＩＤ固定
            MOVE    "ORCATERM"      TO  SPA-TERMID
       *
-      *    �ǡ����١��������ץ�
+      *    データベースオープン
            PERFORM 100-DBOPEN-SEC
       *
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
            PERFORM 120-CP1001-KENSAKU-SEC
            IF      FLG-CSV         =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �����ֹ����
+      *    患者番号情報
            PERFORM 120-CP1009-KENSAKU-SEC
            IF      FLG-CSV         =   1
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �ãӣ����ϥե����롡�������
+      *    ＣＳＶ入力ファイル　初期処理
            OPEN    INPUT   CSV-FILE
            IF      STS-CSV     NOT =   ZERO
                MOVE    1               TO  FLG-CSV
@@ -428,18 +428,18 @@
                GO  TO  100-INIT-EXT
            END-IF
       *
-      *    �ɣӣ��ͽ������
+      *    ＩＳＡＭ初期処理
            OPEN    INPUT           ISAM-FILE
            IF  STS-ISAM        NOT =   ZERO
                MOVE    1           TO  FLG-ISAM
                MOVE    1           TO  FLG-CHK
                DISPLAY "*(ORCVTPTBYOMEI)* ISAM-FILE OPN STS["
                                        STS-ISAM "]"
-      *         ϫ�ҥե����뤬�ʤ��Ƥ����³����
+      *         労災ファイルがなくても処理続ける
       *         GO  TO  100-INIT-EXT
            END-IF
       *
-      *    Ģɼ���ϡ��������
+      *    帳票出力　初期処理
            PERFORM 2710-ERRLST-INIT-SEC
            IF      FLG-CSV         =   1
                GO  TO  100-INIT-EXT
@@ -449,7 +449,7 @@
            MOVE    PARA-09-7       TO  WRK-COMMIT
            MOVE    PARA-11-7       TO  WRK-ERR
       *
-      *    �����ݸ��ãӣ֥ե����롡��������
+      *    患者保険ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -457,13 +457,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼���������
+      *    パラメータ情報取得
       *****************************************************************
        101-PARA-GET-SEC            SECTION.
       *
            MOVE    ZERO            TO  FLG-PARA
            MOVE    SPACE           TO  PARA-SAVE
-      *    �ѥ�᥿�ե�����OPEN
+      *    パラメタファイルOPEN
            OPEN    INPUT   PARA-FILE
            IF      STS-PARA    NOT =   ZERO
                MOVE    2               TO  FLG-PARA
@@ -472,22 +472,22 @@
                GO  TO  101-PARA-GET-EXT
            END-IF
       *
-      *    �ѥ�᥿�ե������ɤ߹���
+      *    パラメタファイル読み込み
            PERFORM 900-PARA-READ-SEC
       *
            PERFORM UNTIL   FLG-PARA    =   1
                IF      PARA-RECKBN     =   "@"
-      *            �ѥ�᡼����������ʣ���
+      *            パラメータ情報取得（１）
                    PERFORM 101-PARA-GET1-SEC
                END-IF
-      *        �ѥ�᥿�ե������ɤ߹���
+      *        パラメタファイル読み込み
                PERFORM  900-PARA-READ-SEC
            END-PERFORM
       *
-      *    �ѥ�᥿�ե�����CLOSE
+      *    パラメタファイルCLOSE
            CLOSE   PARA-FILE
       *
-      *    �ѥ�᡼�������å�����
+      *    パラメータチェック処理
            IF    ( PARA-05-1       IS  NUMERIC )   AND
                  ( PARA-09-7       IS  NUMERIC )   AND
                  ( PARA-11-7       IS  NUMERIC )
@@ -497,7 +497,7 @@
                GO  TO  101-PARA-GET-EXT
            END-IF
       *
-      *    ϫ�Ҥ�ISAM�ե����뤬�ʤ����ǥե���Ȥ򥻥åȤ���
+      *    労災のISAMファイルがない場合デフォルトをセットする
            IF      ASS-ISAM        =   SPACE
                MOVE    CONST-ISAM      TO  ASS-ISAM
            END-IF
@@ -507,7 +507,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᡼����������ʣ���
+      *    パラメータ情報取得（１）
       *****************************************************************
        101-PARA-GET1-SEC           SECTION.
       *
@@ -555,7 +555,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1001-KENSAKU-SEC      SECTION.
       *
@@ -572,7 +572,7 @@
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-      *        �����ƥ���������ɤ߹���
+      *        システム管理情報読み込み
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -596,7 +596,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸������� (�����ֹ湽����������)
+      *    システム管理情報　検索処理 (患者番号構成管理情報)
       *****************************************************************
        120-CP1009-KENSAKU-SEC      SECTION.
       *
@@ -615,7 +615,7 @@
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-      *        �����ƥ���������ɤ߹���
+      *        システム管理情報読み込み
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -639,7 +639,7 @@
                                        TO  SPA-1009-HJNKSIRENNUMKBN
                MOVE    SYS-1009-HJNKSIRENNUMKETA
                                        TO  SPA-1009-HJNKSIRENNUMKETA
-      *        ��ĥ������ʬ
+      *        拡張構成区分
                MOVE    SYS-1009-KKCKSIKBN
                                        TO  SPA-1009-KKCKSIKBN
                MOVE    SYS-1009-KKCKSIMAEKETA
@@ -659,7 +659,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�������󡡸�������
+      *    システム管理情報　検索処理
       *****************************************************************
        120-CP1005-KENSAKU-SEC      SECTION.
       *
@@ -682,7 +682,7 @@
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_syskanri"  TO  MCP-TABLE
                MOVE    "key10"         TO  MCP-PATHNAME
-      *        �����ƥ���������ɤ߹���
+      *        システム管理情報読み込み
                PERFORM 900-SYSTEM-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-SYSKANRI
@@ -700,19 +700,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
            IF      CNT-CSV (4:3)   =   ZERO
                DISPLAY "***(ORCVTPTBYOMEI)*** CNT-CSV[" CNT-CSV "]"
            END-IF
-      *    ���ꤷ������ˤʤä��饳�ߥåȽ�����Ԥ�
+      *    指定した件数になったらコミット処理を行う
            IF      CNT-COMMIT      =   WRK-COMMIT
                PERFORM 900-DBCOMMIT-SEC
                MOVE    ZERO            TO  CNT-COMMIT
            END-IF
-      *    ���顼�����ꤷ������ˤʤä��������ȴ����
+      *    エラーが指定した件数になったら処理を抜ける
            IF    ( WRK-ERR         NOT =   ZERO )  AND
                  ( CNT-ERR             =   WRK-ERR )
                MOVE    1               TO  FLG-CSV
@@ -725,15 +725,15 @@
            INITIALIZE                  WRK-HEN-AREA
            MOVE    ZERO            TO  WRK-POINT-AREA
            MOVE    ZERO            TO  IDX-AREA
-      *    �оݴ��Ԥ˥��顼��¸�ߤ��뤫�ɤ���
+      *    対象患者にエラーが存在するかどうか
            MOVE    ZERO            TO  FLG-ERRARI
            MOVE    ZERO            TO  FLG-DATAEND
            MOVE    ZERO            TO  CNT-HKNCOMB
            MOVE    ZERO            TO  WRK-KOUMOKU-NO
            MOVE    ZERO            TO  WRK-RENNUM
       *
-      *    ������̾�ãӣ֥ե������¸�ߤ�����ܿ�ʬ�������֤�
-      *    �ޤ��ϥ쥳���ɽ�λ���ޤ��Ϲ��ܥ��顼���Ĥޤ�
+      *    患者病名ＣＳＶファイルに存在する項目数分、繰り返す
+      *    またはレコード終了、または項目エラー４個まで
            PERFORM VARYING   IDX   FROM    1   BY  1
                    UNTIL   ( IDX           >   35   )
                    OR      ( WRK-PO-ED     >=  300  )
@@ -748,33 +748,33 @@
                    MOVE    WRK-PO-ST   TO  WRK-PO-ED
                ELSE
                    ADD     1             TO  WRK-KOUMOKU-NO
-      *            ���ܽ�λʸ����Υ���ް��֤����(WRK-PO-ED)
+      *            項目終了文字後のカンマ位置を取得(WRK-PO-ED)
                    PERFORM 210-CHAR-END-GET-SEC
                END-IF
-      *        ���ܶ��̽����ǥ�ߥ������å�
+      *        項目共通処理デリミタチェック
                PERFORM 220-KOUMOKU-KYOTU-SEC
-      *        �����̽���
+      *        項目別処理
                IF      FLG-DATAEND     =   ZERO
                    PERFORM 240-KOUMOKU-BETU-SEC
                END-IF
            END-PERFORM
       *
-      *    ���顼�����å�
+      *    エラーチェック
            IF      FLG-ERRARI          =   ZERO
-      *        ������̾�ޥ�������������
+      *        患者病名マスタ　更新処理
                PERFORM 260-PTBYOMEI-INSERT-SEC
                IF      FLG-ERR         NOT =   ZERO
-      *            ���顼�ꥹ���Խ�/���Ͻ���
+      *            エラーリスト編集/出力処理
                    PERFORM 270-ERRREC-EDIT-SEC
                    MOVE    2           TO  FLG-ERRARI
                    PERFORM 270-ERRLST-OUT-SEC
                END-IF
            ELSE
-      *        ���顼�ꥹ�Ƚ��Ͻ���
+      *        エラーリスト出力処理
                PERFORM 270-ERRLST-OUT-SEC
            END-IF
       *
-      *    ������̾�ãӣ֥ե����롡��������
+      *    患者病名ＣＳＶファイル　検索処理
            PERFORM 900-CSV-KENSAKU-SEC
       *
            .
@@ -782,7 +782,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �оݹ��ܤ�ʸ����λ���֤����
+      *    対象項目の文字終了位置を取得
       *****************************************************************
        210-CHAR-END-GET-SEC        SECTION.
       *
@@ -791,20 +791,20 @@
                    UNTIL   ( IDY           >=  300  )
                    OR      ( FLG-COMMA   =   1    )
       *
-      *        ����ޤΰ���
+      *        カンマの位置
                IF    ( CSV-X (IDY)         =   "," ) OR
                      ((IDX                 =   35 )  AND
                      ( CSV-X (IDY)         =   SPACE))
                    MOVE    IDY                 TO  WRK-PO-ED
                    MOVE    1                   TO  FLG-COMMA
                ELSE
-      *            ����ޤ�­��ʤ����ν�λ���ַ���
+      *            カンマが足りない場合の終了位置決定
                    IF      CSV-X (IDY) NOT =   SPACE
                        MOVE    IDY         TO  WRK-PO-ED
                    END-IF
                END-IF
       *
-      *        �ǥ�ߥ�(")¸�ߤ��뤫�ɤ���
+      *        デリミタ(")存在するかどうか
                IF      CSV-X (IDY)             =   """"
                    IF      FLG-DELI1           =   ZERO
                        MOVE    1               TO  FLG-DELI1
@@ -819,15 +819,15 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܶ��̽����ǥ�ߥ������å�
+      *    項目共通処理デリミタチェック
       *****************************************************************
        220-KOUMOKU-KYOTU-SEC       SECTION.
       *
            MOVE    ZERO            TO  WRK-MOVE-AREA
       *
-      *    �ǡ�������ά����Ƥ����硢FLG-NODATA��1�򥻥å�
+      *    データが省略されている場合、FLG-NODATAに1をセット
            IF      FLG-DELI1       =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-WK      =   WRK-PO-ST   +   2
                ELSE
@@ -838,16 +838,16 @@
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                IF      WRK-PO-ST       =   WRK-PO-ED
                    MOVE    1               TO  FLG-NODATA
                    GO  TO  220-KOUMOKU-KYOTU-EXT
                END-IF
            END-IF
       *
-      *    ž�����ϰ��֡�ž������򻻽�
+      *    転送開始位置・転送桁数を算出
            IF      FLG-DELI1       =   1
-      *        �ǥ�ߥ�(")��ޤ�Ǥ�����
+      *        デリミタ(")を含んでいる場合
                COMPUTE WRK-MO-ST   =   WRK-PO-ST   +   1
                IF      FLG-DELI2       =   1
                    COMPUTE WRK-MO-CNT  =   WRK-PO-ED
@@ -857,7 +857,7 @@
                                        -   WRK-PO-ST
                END-IF
            ELSE
-      *        �ǥ�ߥ�(")��ޤ�Ǥ��ʤ����
+      *        デリミタ(")を含んでいない場合
                MOVE    WRK-PO-ST       TO  WRK-MO-ST
                COMPUTE WRK-MO-CNT  =   WRK-PO-ED   -   WRK-PO-ST
            END-IF
@@ -867,51 +867,51 @@
            EXIT.
       *
       *****************************************************************
-      *    �����̽���
+      *    項目別処理
       *****************************************************************
        240-KOUMOKU-BETU-SEC        SECTION.
       *
            EVALUATE    WRK-KOUMOKU-NO
-      *    ���������ֹ�
+      *    １：患者番号
            WHEN    1
                PERFORM 2410-PTNUM-SET-SEC
-      *    �������Ų�
+      *    ２：診療科
            WHEN    2
                PERFORM 2410-SRYKA-SET-SEC
-      *    �������ų�����
+      *    ３：診療開始日
            WHEN    3
                PERFORM 2410-SRYYMD-SET-SEC
-      *    ������̾
+      *    ４：病名
            WHEN    4
                PERFORM 2410-BYOMEI-SET-SEC
-      *    �����������ե饰
+      *    １３：疑いフラグ
            WHEN    13
                PERFORM 2410-UTAGAIFLG-SET-SEC
-      *    ����������̾�ե饰
+      *    １４：主病名フラグ
            WHEN    14
                PERFORM 2410-SYUBYOFLG-SET-SEC
-      *    ������������ʬ
+      *    １６：入外区分
            WHEN    16
                PERFORM 2410-NYUGAIKBN-SET-SEC
-      *    �������������ݸ�����쥳�����ֹ�
+      *    １７〜２０：保険限定レコード番号
            WHEN    17
            WHEN    18
            WHEN    19
            WHEN    20
                PERFORM 2410-HKNCOMBI-SET-SEC
-      *    �������쥻�ץ�ɽ�����
+      *    ２１：レセプト表示月数
            WHEN    21
                PERFORM 2410-REZEMM-SET-SEC
-      *    ������ž����ͳ��ʬ
+      *    ２２：転帰事由区分
            WHEN    22
                PERFORM 2410-TENKIKBN-SET-SEC
-      *    ������ž����
+      *    ２４：転帰日
            WHEN    24
                PERFORM 2410-TENKIYMD-SET-SEC
-      *    ��������­������
+      *    ３４：補足コメント
            WHEN    34
                PERFORM 2410-HOSOKU-SET-SEC
-      *    ������ϫ�ҡ��������ݸ��쥳�����ֹ�
+      *    ３５：労災・自賠責保険レコード番号
            WHEN    35
                PERFORM 2410-RENNUM-SET-SEC
            END-EVALUATE
@@ -926,7 +926,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѷ�����������
+      *    全角桁数・空白処理
       *****************************************************************
        2402-ZENKAKU-HEN-SEC        SECTION.
       *
@@ -939,7 +939,7 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-DATA
            MOVE    KANACHK-MAX         TO  WRK-LEN
            IF      KANACHK-RC      NOT =   ZERO
-      *        ���ѡ�Ⱦ�Ѻ��ߤξ���Ⱦ�Ѥ����Ѥ�
+      *        全角・半角混在の場合は半角を全角へ
                INITIALIZE                  ORCSKANACHKAREA
                MOVE    "2"                 TO  KANACHK-SYORI
                MOVE    WRK-DATA            TO  KANACHK-MAE-INPUT
@@ -954,7 +954,7 @@
            IF      WRK-LEN             =   ZERO
                MOVE    1                   TO  WRK-LEN
            END-IF
-      *    ��������Ѷ������
+      *    後ろの全角空白を削除
            IF      WRK-LEN             >   1
                PERFORM 24021-KUHAKU-DEL-SEC
            END-IF
@@ -963,21 +963,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ѷ���������
+      *    全角空白削除処理
       *****************************************************************
        24021-KUHAKU-DEL-SEC        SECTION.
       *
            COMPUTE IDZ             =   WRK-LEN     -   1
-           IF      WRK-DATA (IDZ:2)    =   "��"
+           IF      WRK-DATA (IDZ:2)    =   "　"
                MOVE    1                   TO  WRK-LEN
                PERFORM VARYING IDS     FROM    IDZ BY  -2
                        UNTIL   IDS     <   2
-                   IF      WRK-DATA (IDS:2)    NOT =   "��"
+                   IF      WRK-DATA (IDS:2)    NOT =   "　"
                        COMPUTE WRK-LEN         =   IDS     +   1
                        MOVE    2               TO  IDS
                    ELSE
                        IF      IDS             =   3
-                           IF      WRK-DATA (1:2)      NOT =   "��"
+                           IF      WRK-DATA (1:2)      NOT =   "　"
                                MOVE    2               TO  WRK-LEN
                            END-IF
                        END-IF
@@ -989,7 +989,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ��������ֹ桡����
+      *    項目１：患者番号　処理
       *****************************************************************
        2410-PTNUM-SET-SEC          SECTION.
       *
@@ -1000,7 +1000,7 @@
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    ����ޤǤ��Խ�����
+      *    空白までを編集する
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-HEN-PTNUM
            MOVE    ZERO            TO  WRK-CNT
@@ -1011,14 +1011,14 @@
            END-PERFORM
            MOVE    WRK-CNT         TO  WRK-MO-CNT
       *
-      *    ������å�
+      *    桁チェック
            IF    ( WRK-MO-CNT      =   0  )  OR
                  ( WRK-MO-CNT      >   20 )
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-PTNUM-SET-EXT
            END-IF
       *
-      *    �����ֹ楻�å�
+      *    患者番号セット
            IF   (( SYS-1009-PTNUMKSIKBN    =   "1" ) AND
                  ( SYS-1009-JIYKSIKBN      =   "2" ))    OR
                 (( SYS-1009-PTNUMKSIKBN    =   "2" ) AND
@@ -1039,7 +1039,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������Ųʡ�����
+      *    項目２：診療科　処理
       *****************************************************************
        2410-SRYKA-SET-SEC          SECTION.
       *
@@ -1048,7 +1048,7 @@
                GO  TO  2410-SRYKA-SET-EXT
            END-IF
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT      >   2
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-SRYKA-SET-EXT
@@ -1068,7 +1068,7 @@
                                    TO  WKPTBYO-SRYKA
            END-IF
       *
-      *    ���Ųʥ����å�
+      *    診療科チェック
            PERFORM 120-CP1005-KENSAKU-SEC
            IF      FLG-SYSKANRI    =   1
                MOVE    3               TO  FLG-ERR
@@ -1079,7 +1079,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������ų�����������
+      *    項目３：診療開始日　処理
       *****************************************************************
        2410-SRYYMD-SET-SEC         SECTION.
       *
@@ -1088,7 +1088,7 @@
                GO  TO  2410-SRYYMD-SET-EXT
            END-IF
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT  NOT =   8
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-SRYYMD-SET-EXT
@@ -1096,7 +1096,7 @@
       *
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-SYMD
-      *    ���ե����å�
+      *    日付チェック
            PERFORM 31012-SEIWA-HEN-SEC
            IF      FLG-YMD         =   1
                MOVE    3               TO  FLG-ERR
@@ -1109,7 +1109,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����̾������
+      *    項目４：病名　処理
       *****************************************************************
        2410-BYOMEI-SET-SEC         SECTION.
       *
@@ -1118,13 +1118,13 @@
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT      >   100
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-BYOMEI-SET-EXT
            END-IF
       *
-      *    ��̾���å�
+      *    病名セット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    100             TO  WRK-CNT
@@ -1139,7 +1139,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ����������ե饰������
+      *    項目１３：疑いフラグ　処理
       *****************************************************************
        2410-UTAGAIFLG-SET-SEC      SECTION.
       *
@@ -1152,7 +1152,7 @@
                GO  TO  2410-UTAGAIFLG-SET-EXT
            END-IF
       *
-      *    �����ե饰���å�
+      *    疑いフラグセット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
            WHEN    "0"
                CONTINUE
@@ -1169,7 +1169,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ���������̾�ե饰������
+      *    項目１４：主病名フラグ　処理
       *****************************************************************
        2410-SYUBYOFLG-SET-SEC      SECTION.
       *
@@ -1182,7 +1182,7 @@
                GO  TO  2410-SYUBYOFLG-SET-EXT
            END-IF
       *
-      *    ����̾�ե饰���å�
+      *    主病名フラグセット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
            WHEN    "0"
                CONTINUE
@@ -1197,7 +1197,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����������ʬ������
+      *    項目１６：入外区分　処理
       *****************************************************************
        2410-NYUGAIKBN-SET-SEC      SECTION.
       *
@@ -1210,7 +1210,7 @@
                GO  TO  2410-NYUGAIKBN-SET-EXT
            END-IF
       *
-      *    ������ʬ�����å�
+      *    入外区分チェック
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
            WHEN    "0"
                CONTINUE
@@ -1227,7 +1227,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������������ݸ�����쥳�����ֹ桡����
+      *    項目１７〜２０：保険限定レコード番号　処理
       *****************************************************************
        2410-HKNCOMBI-SET-SEC       SECTION.
       *
@@ -1244,7 +1244,7 @@
               GO  TO  2410-HKNCOMBI-SET-EXT
            END-IF
       *
-      *    �ݸ��Ȥ߹�碌�쥳�����ֹ楻�å�
+      *    保険組み合わせレコード番号セット
            COMPUTE IDZ = 11 - WRK-MO-CNT
            EVALUATE    WRK-KOUMOKU-NO
            WHEN    17
@@ -1268,11 +1268,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ������쥻�ץ�ɽ�����������
+      *    項目２１：レセプト表示月数　処理
       *****************************************************************
        2410-REZEMM-SET-SEC         SECTION.
       *
-      *    ������å�
+      *    桁チェック
            IF      FLG-NODATA      =   1
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
@@ -1282,12 +1282,12 @@
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
       *
-      *    ��������å�
+      *    空白チェック
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT) = SPACE
                GO  TO  2410-REZEMM-SET-EXT
            END-IF
       *
-      *    �쥻�ץ�ɽ��������å�
+      *    レセプト表示月数セット
            EVALUATE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
            WHEN    "99"
                MOVE    00              TO  WKPTBYO-REZEMM
@@ -1302,21 +1302,21 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����ž����ʬ������
+      *    項目２２：転帰区分　処理
       *****************************************************************
        2410-TENKIKBN-SET-SEC       SECTION.
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT      NOT =   1
                GO  TO  2410-TENKIKBN-SET-EXT
            END-IF
       *
-      *    ��������å�
+      *    空白チェック
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT) = SPACE
                GO  TO  2410-TENKIKBN-SET-EXT
            END-IF
       *
-      *    ž����ʬ�����å�(�ѥ�᥿��ž����ʬ��������ܹԤ���)
+      *    転帰区分チェック(パラメタに転帰区分がある場合移行する)
            MOVE    ZERO          TO  FLG-TENKI
            PERFORM VARYING IDZ   FROM      1   BY        1
                    UNTIL  (IDZ        >  PARA-08-KENSU)
@@ -1338,28 +1338,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����ž����������
+      *    項目２４：転帰日　処理
       *****************************************************************
        2410-TENKIYMD-SET-SEC       SECTION.
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT      NOT =   8
                GO  TO  2410-TENKIYMD-SET-EXT
            END-IF
       *
-      *    ��������å�
+      *    空白チェック
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   SPACE
                GO  TO  2410-TENKIYMD-SET-EXT
            END-IF
       *
-      *    ���ե����å�
+      *    日付チェック
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            IF      FLG-YMD         =   1
                MOVE    3               TO  FLG-ERR
            ELSE
-      *        ž���������å�(ž����������������礭����)
+      *        転帰日チェック(転帰日が診療日より大きいか)
                IF      WKPTBYO-SRYYMD  <=  WRK-SYMD
                    MOVE    WRK-SYMD        TO  WKPTBYO-TENKIYMD
                ELSE
@@ -1372,7 +1372,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�������­�����ȡ�����
+      *    項目３４：補足コメント　処理
       *****************************************************************
        2410-HOSOKU-SET-SEC         SECTION.
       *
@@ -1380,18 +1380,18 @@
                GO  TO  2410-HOSOKU-SET-EXT
            END-IF
       *
-      *    ������å�
+      *    桁チェック
            IF      WRK-MO-CNT      >   40
                MOVE    2               TO  FLG-ERR
                GO  TO  2410-HOSOKU-SET-EXT
            END-IF
       *
-      *    ��������å�
+      *    空白チェック
            IF      CSV-REC (WRK-MO-ST:WRK-MO-CNT)  =   SPACE
                GO  TO  2410-HOSOKU-SET-EXT
            END-IF
       *
-      *    ��̾���å�
+      *    病名セット
            MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                    TO  WRK-DATA
            MOVE    40              TO  WRK-CNT
@@ -1400,8 +1400,8 @@
                MOVE    WRK-DATA (1:WRK-LEN)
                                        TO  WKPTBYO-HOSOKU-COMMENT
                COMPUTE IDZ     =   WRK-LEN     -   1
-               IF    ( WRK-DATA (1:2)      =   "��" )  OR
-                     ( WRK-DATA (IDZ:2)    =   "��" )
+               IF    ( WRK-DATA (1:2)      =   "（" )  OR
+                     ( WRK-DATA (IDZ:2)    =   "）" )
                    PERFORM 2910-ERRREC-EDIT-HOSOKU-SEC
                END-IF
            END-IF
@@ -1411,7 +1411,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ܣ�����ϫ�ҡ��������ݸ��쥳�����ֹ桡����
+      *    項目３５：労災・自賠責保険レコード番号　処理
       *****************************************************************
        2410-RENNUM-SET-SEC         SECTION.
       *
@@ -1440,20 +1440,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ�������Ͽ����
+      *    患者病名マスタ　登録処理
       *****************************************************************
        260-PTBYOMEI-INSERT-SEC     SECTION.
       *
-      *    �����ֹ��Ѵ�
+      *    患者番号変換
            PERFORM 900-PTNUM-READ-SEC
            IF      FLG-PTNUM           NOT =   ZERO
                MOVE    7               TO  FLG-ERR
                GO  TO  260-PTBYOMEI-INSERT-EXT
            END-IF
       *
-      *    ϫ�ҡ��������ݸ��쥳�����ֹ���ꤵ��Ƥ����
+      *    労災・自賠責保険レコード番号指定されていれば
            IF      WRK-RENNUM  NOT =   ZERO
-      *        ϫ�ҥե����뤬�����
+      *        労災ファイルがあれば
                IF      FLG-CHK        =   ZERO
                    INITIALIZE                  ISAM-REC
                    MOVE    PTNUM-PTID      TO  ISAM-PTID
@@ -1468,20 +1468,20 @@
            MOVE    PTNUM-PTID      TO  WKPTBYO-PTID
            MOVE    ZERO            TO  CNT-RENNUM
       *
-      *    �ɲ�����̾�����å�
+      *    追加前病名チェック
            PERFORM 2601-BYOMEI-CHECK-SEC
            IF      FLG-ERR         NOT =   ZERO
                GO  TO  260-PTBYOMEI-INSERT-EXT
            END-IF
-      *    �ɲ���ž������ž����ʬ�����å�
+      *    追加前転帰日・転帰区分チェック
            PERFORM 2601-TENKIYMD-CHECK-SEC
            IF      FLG-ERR         NOT =   ZERO
                GO  TO  260-PTBYOMEI-INSERT-EXT
            END-IF
-      *    �ɲ����ݸ��ȹ礻�����å�
+      *    追加前保険組合せチェック
            PERFORM 2601-HKNCOMBI-CHECK-SEC
       *
-      *    ��ʣ�ǡ������ʤ��������å�
+      *    重複データがないかチェック
            MOVE    ZERO            TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    WKPTBYOMEI-REC  TO  PTBYOMEI-REC
@@ -1502,7 +1502,7 @@
            MOVE    "key7"          TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    �ǡ��������Ǥˤ�����Ϻ���Ϣ�֤���Ϣ�֤򿶤�
+      *    データがすでにある場合は最大連番から連番を振る
            IF      FLG-PTBYOMEI    =   ZERO
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
                COMPUTE CNT-RENNUM      =   PTBYO-RENNUM +   1
@@ -1510,7 +1510,7 @@
                MOVE     1              TO  CNT-RENNUM
            END-IF
       *
-      *    ������̾�ɲý���
+      *    患者病名追加処理
            MOVE    ZERO            TO  PTBYOMEI-REC
            INITIALIZE                  PTBYOMEI-REC
            MOVE    WKPTBYOMEI-REC  TO  PTBYOMEI-REC
@@ -1537,11 +1537,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ɲ�����̾�����å�
+      *    追加前病名チェック
       *****************************************************************
        2601-BYOMEI-CHECK-SEC       SECTION.
       *
-      *    ��̾���������å�
+      *    病名検索チェック
            MOVE    SPACE           TO  ORCSBYOMEIAREA
            INITIALIZE                  ORCSBYOMEIAREA
            MOVE    "1"             TO  LNK-BYO-SYORI
@@ -1555,32 +1555,32 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                        ORCSBYOMEIAREA
                                        SPA-AREA
       *
-      *    ���顼�����å�
+      *    エラーチェック
            IF    ( LNK-BYO-KANACHK-ERR     =   1 ) OR
                  ( LNK-BYO-RC          NOT =   SPACE )
                MOVE    5               TO  FLG-ERR
                GO  TO  2601-BYOMEI-CHECK-EXT
            END-IF
-      *    ���顼�����å�
+      *    エラーチェック
            IF    ( LNK-BYO-TANDOKUKBN-ERR  =   1 )
                MOVE    6               TO  FLG-ERR
                GO  TO  2601-BYOMEI-CHECK-EXT
            END-IF
       *
-      *    ������̾������
+      *    基本病名コード
            MOVE    LNK-BYO-KHNBYOMEICD TO  WKPTBYO-KHNBYOMEICD
-      *    �������̥�����
+      *    基本部位コード
            MOVE    LNK-BYO-KHNBUICD(1) TO  WKPTBYO-KHNBUICD(1)
            MOVE    LNK-BYO-KHNBUICD(2) TO  WKPTBYO-KHNBUICD(2)
            MOVE    LNK-BYO-KHNBUICD(3) TO  WKPTBYO-KHNBUICD(3)
-      *    ��̾�����ɿ�
+      *    病名コード数
            MOVE    LNK-BYO-BYOMEICDSU  TO  WKPTBYO-BYOMEICDSU
       *
-      *    ��̾�����ɥ��å�
+      *    病名コードセット
            PERFORM VARYING IDI FROM  1 BY  1
                    UNTIL  (IDI >   LNK-BYO-BYOMEICDSU)
                    OR     (LNK-BYO-TBYOMEICD(IDI)  =   SPACE)
-      *        ���ų��������ѻ�ǯ����
+      *        診療開始日＜廃止年月日
       *         IF    ( LNK-BYO-THAISIYMD(IDY)  NOT =   SPACE ) AND
       *               ( WKPTBYO-SRYYMD  <   LNK-BYO-THAISIYMD(IDY))
                    MOVE    LNK-BYO-TBYOMEICD(IDI)
@@ -1588,31 +1588,31 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *         END-IF
            END-PERFORM
       *
-      *    �����ե饰
+      *    疑いフラグ
            MOVE    LNK-BYO-UTAGAIFLG   TO  WKPTBYO-UTAGAIFLG
       *
-      *    ���³���
+      *    難病外来
            IF      LNK-BYO-NANBYOCD
                                    NOT =   ZERO
                MOVE     LNK-BYO-NANBYOCD
                                        TO  WKPTBYO-MANSEIKBN
            ELSE
-      *        �����ե饰
+      *        慢性フラグ
                IF      WKPTBYO-MANSEIKBN   =  ZERO
                    MOVE    LNK-BYO-MANSEIKBN
                                            TO  WKPTBYO-MANSEIKBN
                END-IF
            END-IF
       *
-      *    ��̾���å�
+      *    病名セット
            MOVE    LNK-BYO-BYOMEI      TO  WKPTBYO-BYOMEI
-      *    ��̾ʸ�������å�
+      *    病名文字数セット
            MOVE    LNK-BYO-BYOMEIMOJI  TO  WKPTBYO-BYOMEIMOJI
       *
-      *    ��̾�Խ��ե饰
+      *    病名編集フラグ
            MOVE    LNK-BYO-BYOMEIHENFLG
                                        TO  WKPTBYO-BYOMEIHENFLG
-      *    �쥻�ť��顼�ե饰
+      *    レセ電エラーフラグ
            MOVE    LNK-BYO-RECEDENFLG  TO  WKPTBYO-RECEDENFLG
       *
            .
@@ -1620,7 +1620,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ɲ����ݸ��ȹ礻�����å�
+      *    追加前保険組合せチェック
       *****************************************************************
        2601-HKNCOMBI-CHECK-SEC     SECTION.
       *
@@ -1628,7 +1628,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO  TO  2601-HKNCOMBI-CHECK-EXT
            END-IF
       *
-      *    �ݸ��ȹ礻�ɤ߹���
+      *    保険組合せ読み込み
            MOVE    ZERO            TO  FLG-COMB
            MOVE    SPACE           TO  COMB-REC
            INITIALIZE                  COMB-REC
@@ -1641,14 +1641,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_hkncombi"  TO  MCP-TABLE
                MOVE    "key2"          TO  MCP-PATHNAME
-      *        �ݸ��Ȥ߹�碌�ɤ߹���
+      *        保険組み合わせ読み込み
                PERFORM 940-HKNCOMBI-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-COMB
            END-IF
       *
            PERFORM UNTIL   FLG-COMB    =   1
-      *        �ݸ��ȹ礻���å�
+      *        保険組合せセット
                PERFORM 26011-HKNCOMBI-SET-SEC
            END-PERFORM
       *
@@ -1661,13 +1661,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ݸ��ȹ礻
+      *    患者病名マスタ　保険組合せ
       *****************************************************************
        26011-HKNCOMBI-SET-SEC      SECTION.
       *
            MOVE    ZERO            TO  FLG-HKNCOMBI
       *
-      *    ����̾������
+      *    主病名コード
            IF    ( COMB-HKNID      NOT =   SPACE ) OR
                  ( COMB-HKNID          =   ZERO )
                IF      WRK-HEN-HKNCOMBI(1)     =   COMB-HKNID
@@ -1677,7 +1677,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-IF
       *
-      *    ������̾������
+      *    公費病名コード
            PERFORM VARYING IDI     FROM    1   BY  1
                    UNTIL ( IDI     >   4 )
                    OR    ( FLG-HKNCOMBI    =   9 )
@@ -1692,10 +1692,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    ���������Ȥ߹�碌���ʤ����⤷���ϸ���ο�������ʤ����
+      *    該当する組み合わせがない、もしくは公費の数があわない場合
            IF     ( FLG-HKNCOMBI   =   9 )  OR
                   ( CNT-HKNCOMB    NOT =   FLG-HKNCOMBI )
-      *        �ݸ��Ȥ߹�碌�ɤ߹���
+      *        保険組み合わせ読み込み
                PERFORM 940-HKNCOMBI-NEXT-SEC
            ELSE
                MOVE    COMB-HKNCOMBINUM    TO  WKPTBYO-HKNCOMBI
@@ -1707,27 +1707,27 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *   �ɲ���ž������ž����ʬ�����å�
+      *   追加前転帰日・転帰区分チェック
       *****************************************************************
        2601-TENKIYMD-CHECK-SEC     SECTION.
       *
            IF      WKPTBYO-TENKIKBN    NOT =   SPACE
-      *        ž����ʬ�����ʤ��Ȥ�
+      *        転帰区分しかないとき
                IF      WKPTBYO-TENKIYMD    =   SPACE
                    MOVE    WKPTBYO-SRYYMD  TO  WRK-SYMD
-      *            �������н���
+      *            翌日算出処理
                    PERFORM 20021-YOKUZITU-GET-SEC
                    MOVE    WRK-SYMD        TO  WKPTBYO-TENKIYMD
                END-IF
            ELSE
-      *        ž���������ʤ��Ȥ�
+      *        転帰日しかないとき
                IF      WKPTBYO-TENKIYMD    NOT =   SPACE
-      *            �������å�
+      *            治癒セット
                    MOVE    "1"         TO  WKPTBYO-TENKIKBN
                END-IF
            END-IF
       *
-      *    Ʊ����̾�ɤ߹���
+      *    同一病名読み込み
            MOVE    ZERO                TO  PTBYOMEI-REC
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -1742,7 +1742,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      MCP-RC          =   ZERO
                MOVE    "tbl_ptbyomei"   TO  MCP-TABLE
                MOVE    "key21"          TO  MCP-PATHNAME
-      *        ������̾�ɤ߹���
+      *        患者病名読み込み
                PERFORM 940-PTBYOMEI-NEXT-SEC
            ELSE
                MOVE    1               TO  FLG-PTBYOMEI
@@ -1750,7 +1750,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            PERFORM UNTIL   FLG-PTBYOMEI    =   1
                MOVE    MCPDATA-REC     TO  PTBYOMEI-REC
-      *        ž���������ų����������å�
+      *        転帰日・診療開始日チェック
                IF    ( PTBYO-TENKIYMD  =   SPACE ) 
                    IF    ( WKPTBYO-SRYYMD      >   PTBYO-SRYYMD )
                        MOVE    4               TO  FLG-ERR
@@ -1778,7 +1778,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-IF
-      *        ������̾�ɤ߹���
+      *        患者病名読み込み
                PERFORM 940-PTBYOMEI-NEXT-SEC
            END-PERFORM
       *
@@ -1791,7 +1791,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ�����
+      *    エラーリスト編集処理
       *****************************************************************
        270-ERRREC-EDIT-SEC         SECTION.
       *
@@ -1809,22 +1809,22 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            EVALUATE    FLG-ERR
-      *    ɬ�ܹ���̤���ϥ��顼
+      *    必須項目未入力エラー
            WHEN    1
-      *    ���ܷ�����顼
+      *    項目桁数エラー
            WHEN    2
-      *    �����ϥ��顼
+      *    誤入力エラー
            WHEN    3
                PERFORM 2910-ERRREC-EDIT-BETU1-SEC
-      *    �ɲ������顼����̾Ŭ������������
+      *    追加前エラー（病名適応期間不正）
            WHEN    4
-      *    �ɲ������顼����̾�����Ѵ����ԡ�
+      *    追加前エラー（病名カナ変換失敗）
            WHEN    5
-      *    �ɲ������顼����̾�ã��Ѵ����ԡ�
+      *    追加前エラー（病名ＣＤ変換失敗）
            WHEN    6
-      *    �����ֹ�������顼
+      *    患者番号取得エラー
            WHEN    7
-      *    �����ݸ��ģ½��ϥ��顼
+      *    患者保険ＤＢ出力エラー
            WHEN    8
                PERFORM 2910-ERRREC-EDIT-BETU2-SEC
            END-EVALUATE
@@ -1834,59 +1834,59 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別１　処理
       *****************************************************************
        2910-ERRREC-EDIT-BETU1-SEC  SECTION.
       *
-      *    ���顼�����ֹ�ž��
+      *    エラー内容番号転送
            MOVE    "["             TO  ERR1-ERRNO(IDE)(1:1)
            MOVE    FLG-ERR (1:1)   TO  ERR1-ERRNO(IDE)(2:1)
            MOVE    "]"             TO  ERR1-ERRNO(IDE)(3:1)
       *
-      *    ���顼����̾��ž��
+      *    エラー項目名称転送
            EVALUATE    WRK-KOUMOKU-NO
-      *    ���������ֹ�
+      *    １：患者番号
            WHEN    1
-               MOVE    "�����ֹ�:"       TO  ERR1-KOMOKU(IDE)
-      *    �������Ų�
+               MOVE    "患者番号:"       TO  ERR1-KOMOKU(IDE)
+      *    ２：診療科
            WHEN    2
-               MOVE    "���Ų�  :"       TO  ERR1-KOMOKU(IDE)
-      *    �������ų�����
+               MOVE    "診療科  :"       TO  ERR1-KOMOKU(IDE)
+      *    ３：診療開始日
            WHEN    3
-               MOVE    "������  :"       TO  ERR1-KOMOKU(IDE)
-      *    ������̾
+               MOVE    "開始日  :"       TO  ERR1-KOMOKU(IDE)
+      *    ４：病名
            WHEN    4
-               MOVE    "��̾    :"       TO  ERR1-KOMOKU(IDE)
-      *    �����������ե饰
+               MOVE    "病名    :"       TO  ERR1-KOMOKU(IDE)
+      *    １３：疑いフラグ
            WHEN    13
-               MOVE    "������ʬ:"       TO  ERR1-KOMOKU(IDE)
-      *    ����������̾�ե饰
+               MOVE    "疑い区分:"       TO  ERR1-KOMOKU(IDE)
+      *    １４：主病名フラグ
            WHEN    14
-               MOVE    "���¶�ʬ:"       TO  ERR1-KOMOKU(IDE)
-      *    ������������ʬ
+               MOVE    "主病区分:"       TO  ERR1-KOMOKU(IDE)
+      *    １６：入外区分
            WHEN    16
-               MOVE    "������ʬ:"       TO  ERR1-KOMOKU(IDE)
-      *    �������������ݸ�����쥳�����ֹ�
+               MOVE    "入外区分:"       TO  ERR1-KOMOKU(IDE)
+      *    １７〜２０：保険限定レコード番号
            WHEN    17
-               MOVE    "�ݸ��ȣ�:"       TO  ERR1-KOMOKU(IDE)
+               MOVE    "保険組１:"       TO  ERR1-KOMOKU(IDE)
            WHEN    18
-               MOVE    "�ݸ��ȣ�:"       TO  ERR1-KOMOKU(IDE)
+               MOVE    "保険組２:"       TO  ERR1-KOMOKU(IDE)
            WHEN    19
-               MOVE    "�ݸ��ȣ�:"       TO  ERR1-KOMOKU(IDE)
+               MOVE    "保険組３:"       TO  ERR1-KOMOKU(IDE)
            WHEN    20
-               MOVE    "�ݸ��ȣ�:"       TO  ERR1-KOMOKU(IDE)
-      *    �������쥻�ץ�ɽ�����
+               MOVE    "保険組４:"       TO  ERR1-KOMOKU(IDE)
+      *    ２１：レセプト表示月数
            WHEN    21
-               MOVE    "ɽ�����:"       TO  ERR1-KOMOKU(IDE)
-      *    ������ž����ͳ��ʬ
+               MOVE    "表示月数:"       TO  ERR1-KOMOKU(IDE)
+      *    ２２：転帰事由区分
            WHEN    22
-               MOVE    "ž����ͳ:"       TO  ERR1-KOMOKU(IDE)
-      *    ������ž����
+               MOVE    "転帰事由:"       TO  ERR1-KOMOKU(IDE)
+      *    ２４：転帰日
            WHEN    24
-               MOVE    "ž����  :"       TO  ERR1-KOMOKU(IDE)
+               MOVE    "転帰日  :"       TO  ERR1-KOMOKU(IDE)
            END-EVALUATE
       *
-      *    ���顼��ž��
+      *    エラー値転送
            IF      WRK-MO-CNT  NOT =   ZERO
                MOVE    CSV-REC (WRK-MO-ST:WRK-MO-CNT)
                                          TO  ERR1-ATAI(IDE)(1:8)
@@ -1897,7 +1897,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ���Խ����̣�������
+      *    エラーリスト編集　別２　処理
       *****************************************************************
        2910-ERRREC-EDIT-BETU2-SEC  SECTION.
       *
@@ -1907,9 +1907,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "["             TO  ERR2-ERRNO(1:1)
            MOVE    FLG-ERR(1:1)    TO  ERR2-ERRNO(2:1)
            MOVE    "]"             TO  ERR2-ERRNO(3:1)
-           MOVE    "�����ֹ�:"     TO  ERR2-PTNUMMES
-           MOVE    "���ԣɣ�:"     TO  ERR2-PTIDMES
-           MOVE    "������̾:"     TO  ERR2-BYOMEIMES
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "患者病名:"     TO  ERR2-BYOMEIMES
       *
            MOVE    SPA-PTNUM       TO  ERR2-PTNUM
            MOVE    WKPTBYO-PTID    TO  ERR2-PTID
@@ -1921,16 +1921,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ��­�ꥹ���Խ�������
+      *    補足リスト編集　処理
       *****************************************************************
        2910-ERRREC-EDIT-HOSOKU-SEC SECTION.
       *
            MOVE    SPACE           TO  ERR-REC2
            MOVE    CNT-CSV         TO  ERR2-LINENO
            MOVE    "[A]"           TO  ERR2-ERRNO
-           MOVE    "�����ֹ�:"     TO  ERR2-PTNUMMES
-           MOVE    "���ԣɣ�:"     TO  ERR2-PTIDMES
-           MOVE    "������:"     TO  ERR2-BYOMEIMES
+           MOVE    "患者番号:"     TO  ERR2-PTNUMMES
+           MOVE    "患者ＩＤ:"     TO  ERR2-PTIDMES
+           MOVE    "コメント:"     TO  ERR2-BYOMEIMES
       *
            MOVE    SPA-PTNUM       TO  ERR2-PTNUM
            MOVE    WKPTBYO-PTID    TO  ERR2-PTID
@@ -1946,7 +1946,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼�ꥹ�Ƚ��Ͻ���
+      *    エラーリスト出力処理
       *****************************************************************
        270-ERRLST-OUT-SEC          SECTION.
       *
@@ -1963,7 +1963,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���顼���ϡ��������
+      *    エラー出力　初期処理
       *****************************************************************
        2710-ERRLST-INIT-SEC        SECTION.
       *
@@ -1991,7 +1991,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ���ե����å�����
+      *    日付チェック処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -2012,7 +2012,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    翌日取得処理
       *****************************************************************
        20021-YOKUZITU-GET-SEC      SECTION.
       *
@@ -2032,13 +2032,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
             EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    Ģɼ���ϡ���λ����
+      *    帳票出力　終了処理
            CLOSE   CSV-FILE
-      *    ϫ�ҥե����뤬�����
+      *    労災ファイルがあれば
            IF      STS-ISAM        =   ZERO
                CLOSE   ISAM-FILE
            END-IF
@@ -2057,7 +2057,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ƣţԣãȽ���
+      *    システム管理マスタＦＥＴＣＨ処理
       *****************************************************************
        900-SYSTEM-NEXT-SEC         SECTION.
       *
@@ -2073,7 +2073,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ����ƣţԣãȽ���
+      *    患者病名マスタＦＥＴＣＨ処理
       *****************************************************************
        940-PTBYOMEI-NEXT-SEC       SECTION.
       *
@@ -2089,7 +2089,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ��Ѵ��ޥ������ɤ߹��߽���
+      *    患者番号変換マスタ　読み込み処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -2129,7 +2129,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ����ƣţԣãȽ���
+      *    保険組合せマスタＦＥＴＣＨ処理
       *****************************************************************
        940-HKNCOMBI-NEXT-SEC       SECTION.
       *
@@ -2146,7 +2146,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        940-HKNCOMBI-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2159,7 +2159,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2174,7 +2174,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *
@@ -2188,7 +2188,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ãӣ֥ե����롡��������
+      *    患者病名ＣＳＶファイル　検索処理
       *****************************************************************
        900-CSV-KENSAKU-SEC         SECTION.
       *
@@ -2208,7 +2208,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *
       *****************************************************************
-      *    �ɣӣ��ͥե������ɤ߹��߽���
+      *    ＩＳＡＭファイル読み込み処理
       *****************************************************************
        900-ISAM-READ-SEC           SECTION.
       *
@@ -2224,7 +2224,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *      
       *****************************************************************
-      *    �ѥ�᡼���ե������ɤ߹��߽���
+      *    パラメータファイル読み込み処理
       *****************************************************************
        900-PARA-READ-SEC           SECTION.
       *
@@ -2242,7 +2242,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
           EXIT.
       *      
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -2264,7 +2264,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡��ãϣͣͣɣԽ���
+      *    ＤＢ　ＣＯＭＭＩＴ処理
       *****************************************************************
        900-DBCOMMIT-SEC            SECTION.
       *
@@ -2286,7 +2286,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

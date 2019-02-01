@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *  �������򹹿����ϡ��ӣ��� �ʣˣ�����
+      *  算定履歴更新入力　ＳＡＰ （Ｋ０６）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  SPA-K06.
@@ -73,7 +73,7 @@
                            11  SPA-NAI-JGNCNT1D        PIC 9(03).
                            11  SPA-NAI-MSANTEIFLG      PIC 9(01).
                            11  SPA-NAI-PLUSKBN         PIC 9(01).
-      *            �ٹ�ե饰
+      *            警告フラグ
                            11  SPA-KEIFLG1             PIC 9(01).
                            11  SPA-KEIFLG2             PIC 9(01).
                            11  SPA-KEIFLG3             PIC 9(01).
@@ -97,15 +97,15 @@
                               13  SPA-DEL-THKNCOMBI    PIC 9(04).
                       09  SPA-DEL-MAX              PIC 9(03). 
       *----(01.00.01) LINE ADD START ----------------------------------
-      *            �ѹ���ǧ�ե饰
+      *            変更確認フラグ
                07  SPA-UPDFLG              PIC X(01).
-      *            �ٹ�ե饰
+      *            警告フラグ
       *        07  SPA-KEIFLG1             PIC 9(01).
       *        07  SPA-KEIFLG2             PIC 9(01).
       *        07  SPA-KEIFLG3             PIC 9(01).
       *----(01.00.01) LINE ADD END   ----------------------------------
       *
-      *�ܹ�������Ͽ���̡ʣˣ�������
+      *移行履歴登録画面（Ｋ０６１）
            03  SPA-K061-MOTOPG                PIC X(08).
            03  SPA-K061-GMN                   PIC 9(01).
            03  SPA-K061-AREA.
@@ -154,7 +154,7 @@
                    07  SPA-K061-LSTYMD         PIC X(08).
                    07  SPA-K061-ENDYMD         PIC X(08).
                    07  SPA-K061-SYORIKBN       PIC X(01).
-      *            ����ٹ�
+      *            回数警告
                    07  SPA-K061-KAISU-KEI      PIC 9(01).
       *
                    07  SPA-K061-KEIFLG         PIC 9(01).
@@ -176,7 +176,7 @@
       *
                    07  SPA-K061-NAI-ENDFLG        PIC X(01).
       *
-      *��ϥӥꥳ������Ͽ�ʣˣ�������
+      *リハビリコメント登録（Ｋ０６２）
            03  SPA-K062-GMN-G.
                05  SPA-K062-MOTOPG            PIC X(08).
                05  SPA-K062-SRYCD             PIC X(09).

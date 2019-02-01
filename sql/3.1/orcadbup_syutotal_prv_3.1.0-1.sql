@@ -1,19 +1,19 @@
 --                                    --
--- ¼ýÇ¼¹ç·×¥×¥ì¥Ó¥å¡¼¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹   --
+-- åŽç´åˆè¨ˆãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´   --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   Ëã¿ì   MSI                       --
---   Àº¿À²ÊÀìÌçÎÅË¡Ëã¿ì   SSN         --
---   Êü¼ÍÀþ         HOU               --
---   ÎÅÍÜÃ´Åö¼êÅö   RYO               --
+-- é …ç›®ã®è¿½åŠ                          --
+--   éº»é…”   MSI                       --
+--   ç²¾ç¥žç§‘å°‚é–€ç™‚æ³•éº»é…”   SSN         --
+--   æ”¾å°„ç·š         HOU               --
+--   ç™‚é¤Šæ‹…å½“æ‰‹å½“   RYO               --
 --                                    --
---   ½èÊý¤»¤óÎÁºÆ·Ç SHOHOU_SAI        --
+--   å‡¦æ–¹ã›ã‚“æ–™å†æŽ² SHOHOU_SAI        --
 --                                    --
 -- Create Date : 2006/07/06           --
 --                                    --
 \set ON_ERROR_STOP
 
---    ¹àÌÜÄÉ²Ã                        --
+--    é …ç›®è¿½åŠ                         --
 alter table TBL_SYUTOTAL_PRV
    add column MSI_HKNTEN    numeric(07);
 alter table TBL_SYUTOTAL_PRV
@@ -49,7 +49,7 @@ alter table TBL_SYUTOTAL_PRV
 alter table TBL_SYUTOTAL_PRV
    add column SHOHOU_SAI      numeric(07);
 
---    ¥¼¥íÀßÄê                       --
+--    ã‚¼ãƒ­è¨­å®š                       --
 alter table TBL_SYUTOTAL_PRV
    alter MSI_HKNTEN set default 0;
 alter table TBL_SYUTOTAL_PRV

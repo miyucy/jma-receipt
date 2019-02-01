@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,67 +16,67 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿    COPY (CPSRYACCT.INC)       *
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿    COPY (CPSRYACCT.INC)       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  13/01/11  ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë£±£°ÂÐ±þ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.08.00    NACL-å¤šã€…ç´  13/01/11  è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼‘ï¼å¯¾å¿œ
       ************************************************************
       *01  SRYACCT-REC.
            03  ACCT-KEY.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  ACCT-HOSPNUM          PIC 9(2).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                05  ACCT-NYUGAIKBN       PIC  X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                05  ACCT-PTID            PIC  9(10).
-      *¿ÇÎÅ²Ê
+      *è¨ºç™‚ç§‘
                05  ACCT-SRYKA           PIC  X(02).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                05  ACCT-SRYYM           PIC  X(06).
-      *¿ÇÎÅ¶èÊ¬
+      *è¨ºç™‚åŒºåˆ†
                05  ACCT-SRYKBN          PIC  X(02).
-      *ºÞÈÖ¹æ
+      *å‰¤ç•ªå·
                05  ACCT-ZAINUM          PIC  9(08).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  ACCT-HKNCOMBI            PIC  9(04).
-      *¼«ÊÝ¶èÊ¬¡ÊÊñ³çºÞ¶èÊ¬¡Ë
+      *è‡ªä¿åŒºåˆ†ï¼ˆåŒ…æ‹¬å‰¤åŒºåˆ†ï¼‰
            03  ACCT-JIHOKBN             PIC  X(01).
-      *ºÞÅÀ¿ô
+      *å‰¤ç‚¹æ•°
            03  ACCT-ZAITEN              PIC  9(08).
-      *¿ÇÎÅ¥³¡¼¥É·×
+      *è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆ
            03  ACCT-SRYCDTOTAL          PIC  9(14).
-      *¿ôÎÌ·×
+      *æ•°é‡è¨ˆ
            03  ACCT-SURYOUTOTAL         PIC  9(07)V9(05).
-      *ÌÀºÙ¿ô
+      *æ˜Žç´°æ•°
            03  ACCT-MEISAISU            PIC  9(07).
-      *ºÞ²ó¿ô
+      *å‰¤å›žæ•°
            03  ACCT-ZAIKAISU            PIC  9(07).
-      *¼êµ»ÅÀ¿ô£±
+      *æ‰‹æŠ€ç‚¹æ•°ï¼‘
            03  ACCT-SYUTEN1             PIC  9(07).
-      *¼êµ»ÅÀ¿ô£²
+      *æ‰‹æŠ€ç‚¹æ•°ï¼’
            03  ACCT-SYUTEN2             PIC  9(07).
-      *ÌôºÞÅÀ¿ô
+      *è–¬å‰¤ç‚¹æ•°
            03  ACCT-YKZTEN              PIC  9(07).
-      *´ïºàÅÀ¿ô
+      *å™¨æç‚¹æ•°
            03  ACCT-KIZAITEN            PIC  9(07).
-      *¥É¥¯¥¿¡¼¥³¡¼¥É
+      *ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  ACCT-DRCD                PIC  X(05).
-      *ºÞÀÁµá¥Õ¥é¥°¡ÊÉÕ²Ã¥ì¥³¡¼¥É¥Õ¥é¥°¡Ë
+      *å‰¤è«‹æ±‚ãƒ•ãƒ©ã‚°ï¼ˆä»˜åŠ ãƒ¬ã‚³ãƒ¼ãƒ‰ãƒ•ãƒ©ã‚°ï¼‰
            03  ACCT-ZAIREQFLG           PIC  X(01).
-      *Äþ¸ºÎ¨
+      *é€“æ¸›çŽ‡
            03  ACCT-TEIGENRATE          PIC  9(03).
-      *ºÞ¼±ÊÌ¶èÊ¬¡Ê£±¡§ÌôÉ¾¡¢£²¡§¸ºÅÀÊ¬¡Ë
+      *å‰¤è­˜åˆ¥åŒºåˆ†ï¼ˆï¼‘ï¼šè–¬è©•ã€ï¼’ï¼šæ¸›ç‚¹åˆ†ï¼‰
            03  ACCT-ZAIKBN              REDEFINES
                ACCT-TEIGENRATE          PIC  9(03).
-      *¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë
+      *è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  ACCT-DAY-AREA.
-      ******** ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê1:¹ç·×,2:£±²ó,3:£²²ó, 4:£³²ó°Ê¾å¡Ë
+      ******** è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆ1:åˆè¨ˆ,2:ï¼‘å›ž,3:ï¼’å›ž, 4:ï¼“å›žä»¥ä¸Šï¼‰
       ****** 04  ACCT-DAY-TBL         OCCURS  4.
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê1:¹ç·×,2¡Á10¡§£±²ó¡Á£¹²ó¡Ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆ1:åˆè¨ˆ,2ã€œ10ï¼šï¼‘å›žã€œï¼™å›žï¼‰
              04  ACCT-DAY-TBL         OCCURS  10.
-      *        ¿ÇÎÅ²ó¿ô¡Ê£±Æü¤«¤é£³£±Æü¡Ë
+      *        è¨ºç™‚å›žæ•°ï¼ˆï¼‘æ—¥ã‹ã‚‰ï¼“ï¼‘æ—¥ï¼‰
                05  ACCT-DAY-1           PIC  9(03).
                05  ACCT-DAY-2           PIC  9(03).
                05  ACCT-DAY-3           PIC  9(03).
@@ -109,22 +109,22 @@
                05  ACCT-DAY-30          PIC  9(03).
                05  ACCT-DAY-31          PIC  9(03).
            03  ACCT-DAY-AREA-R           REDEFINES   ACCT-DAY-AREA.
-      ******   ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê1:¹ç·×,2:£±²ó,3:£²²ó, 4:£³²ó¡¢5:£´²ó)
+      ******   è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆ1:åˆè¨ˆ,2:ï¼‘å›ž,3:ï¼’å›ž, 4:ï¼“å›žã€5:ï¼”å›ž)
       *******  05  ACCT-DAY-TBL2        OCCURS  4.
-      *        ¿ÇÎÅ²ó¿ô¥Æ¡¼¥Ö¥ë¡Ê1:¹ç·×,2¡Á10¡§£±²ó¡Á£¹²ó¡Ë
+      *        è¨ºç™‚å›žæ•°ãƒ†ãƒ¼ãƒ–ãƒ«ï¼ˆ1:åˆè¨ˆ,2ã€œ10ï¼šï¼‘å›žã€œï¼™å›žï¼‰
                05  ACCT-DAY-TBL2        OCCURS  10.
                    07  ACCT-DAY         PIC  9(03)
                                         OCCURS   31.
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  ACCT-TERMID              PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  ACCT-OPID                PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  ACCT-CREYMD              PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  ACCT-UPYMD               PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  ACCT-UPHMS               PIC  X(06).
-      *¿ÇÎÅÇ¯·î¸¡º÷ÍÑ¹àÌÜ
+      *è¨ºç™‚å¹´æœˆæ¤œç´¢ç”¨é …ç›®
            03  ACCT-STSRYYM             PIC  X(06).
            03  ACCT-EDSRYYM             PIC  X(06).

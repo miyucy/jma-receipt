@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,43 +16,43 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ���ŵ��إ��������ؤ�Ƚ��ѥ�᥿������COPY (CPORCSHOSPCHG.INC)
-      *                                ���ѥץ������ (ORCSHOSPCHG)
-      *    �������
-      *      ���ŵ��أɣ�
-      *      Ƚ��ǯ��
-      *      ���ԣɣ�
+      *    医療機関コード切替え判定パラメタ　　　COPY (CPORCSHOSPCHG.INC)
+      *                                使用プログラム (ORCSHOSPCHG)
+      *    設定項目
+      *      医療機関ＩＤ
+      *      判定年月
+      *      患者ＩＤ
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  ORCSHOSPCHG-AREA.
       *
-      *���ŵ��أɣġ�ɬ�ܡ�
+      *医療機関ＩＤ（必須）
            03  LNK-HOSPCHG-HOSPNUM                   PIC  9(02).
-      *Ƚ��ǯ���ɬ�ܡ�
+      *判定年月（必須）
            03  LNK-HOSPCHG-HANTEIYM                  PIC  X(06).
-      *���ԣɣġ�Ǥ�ա�
+      *患者ＩＤ（任意）
            03  LNK-HOSPCHG-PTID                      PIC  9(10).
-      *�ֵѹ���
+      *返却項目
            03  LNK-HOSPCHG-HENKYAKU-AREA.
-      *���ŵ��إ��������ؤ���ʬ�ʣ������ŵ��إ��������ؤ��ʤ�
-      *                          �������ŵ��إ��������ؤ������
+      *医療機関コード切替え区分（０：医療機関コード切替えなし
+      *                          １：医療機関コード切替えあり）
              05  LNK-HOSPCHG-CHGKBN                  PIC  9(01).
-      *���ŵ��إ������ֵѥ��ꥢ��ź����������ŵ��ء�ź�����������ŵ��ء�
+      *医療機関コード返却エリア（添字１：旧医療機関　添字２：新医療機関）
              05  LNK-HOSPCHG-HENKYAKU-TABLE          OCCURS  2.
-      *���ŵ��إ�����
+      *医療機関コード
                07  LNK-HOSPCHG-HOSPCD                PIC  9(07).
-      *���ŵ��إ����ɡʴ�����
+      *医療機関コード（漢字）
                07  LNK-HOSPCHG-HOSPCDN               PIC  X(40).
-      *���ŵ��ؼ���
+      *医療機関種別
                07  LNK-HOSPCHG-HOSPSBT               PIC  9(01).
-      *ͭ������ǯ����
+      *有効開始年月日
                07  LNK-HOSPCHG-STYUKYMD              PIC  X(08).
-      *ͭ����λǯ����
+      *有効終了年月日
                07  LNK-HOSPCHG-EDYUKYMD              PIC  X(08).
       *
-      *���������ɡʣ���Ƚ��ǯ��顼���������Ը������顼��
+      *復帰コード（１：判定年月エラー　２：患者検索エラー）
            03  LNK-HOSPCHG-RC                        PIC S9(9) BINARY.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    �桼���ץ�����൯ư�ѥ�᥿      COPY (CPORCSUSERPG.INC)
+      *    ユーザプログラム起動パラメタ      COPY (CPORCSUSERPG.INC)
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  16/06/XX  ��ɼ�ֹ��ɲ��б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  16/06/XX  伝票番号追加対応
       ************************************************************
       *
        01  ORCSUSERPGAREA.
       *
-      *�����У�
+      *処理ＰＧ
            03  ORCSUSERPG-GMNPG            PIC X(08).
       *
-      *���������ʣ����ɲá��������������������
-      *�����ౡ��Ͽ��̳�϶�̳�ν�����ʬ��01:�������ˤȤʤ롣
+      *処理状況（１：追加、２：更新、３：削除）
+      *※入退院登録業務は業務の処理区分（01:入院等）となる。
            03  ORCSUSERPG-SYORI-FLG        PIC 9(02).
-      *�����ƥ���������
+      *システム日付西暦
            03  ORCSUSERPG-SYSYMD           PIC X(08).
-      *������
+      *診療日
            03  ORCSUSERPG-SRYYMD           PIC X(08).
-      *���ԣɣ�
+      *患者ＩＤ
            03  ORCSUSERPG-PTID             PIC 9(10).
-      *�����ֹ�
+      *患者番号
            03  ORCSUSERPG-PTNUM            PIC X(20).
-      *���Ų�
+      *診療科
            03  ORCSUSERPG-SRYKA            PIC X(02).
-      *�ɥ�����
+      *ドクター
            03  ORCSUSERPG-DRCD             PIC X(05).
-      *�ݸ��ȹ礻
+      *保険組合せ
            03  ORCSUSERPG-HKNCOMBI         PIC X(04).
-      *������Ģɼ̾
+      *処理・帳票名
            03  ORCSUSERPG-SYORINM          PIC X(30).
-      *�¹�̾
+      *実行名
            03  ORCSUSERPG-SHELL            PIC X(100).
-      *�ץ��̾
+      *プリンタ名
            03  ORCSUSERPG-PRTNM            PIC X(16).
-      *��ɼ�ֹ�(K03)
+      *伝票番号(K03)
            03  ORCSUSERPG-DENPNUM          PIC 9(07).
-      *��ݥ��ȥ�̾
+      *リポジトリ名
            03  ORCSUSERPG-REPOS-NAME       PIC X(128).
       *

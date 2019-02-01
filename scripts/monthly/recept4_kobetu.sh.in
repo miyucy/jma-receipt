@@ -10,32 +10,32 @@ fi
 . $JMARECEIPT_ENV
 
 #-------------------------------------------#
-#    �쥻�ťե������������
-#        ${1}-${11} �����ģ��Ѹ������
+#    レセ電ファイル作成処理
+#        ${1}-${11} 印刷ＤＢ用固定引数
 #        ${12}-${13}
-#        ����衢Ϣ��
-#        ${17} �쥻�ťե����������
+#        提出先、連番
+#        ${17} レセ電ファイル出力先
 #        ${18} JOBID 
 #        ${19} SHELLID
-#        ${20} ���顼�ե�����̾ 
-#        ${21} �ե�����������ʬ
+#        ${20} エラーファイル名 
+#        ${21} ファイル出力先区分
 #            8:haori(check) 9:haori
-#        ${22} ü����𥢥ɥ쥹
+#        ${22} 端末ｉｐアドレス
 #        ${23} HOSPNUM
-#        ${24} �쥻�ץȺ�����ʬ
-#            1:����ѥ쥻��2:�����ѥ쥻
-#            6:Ϣ�ȴ����ѡ�7:Ϣ�ȴ����ѡ�������
-#        ${25} �ɾ��ܵ�������ʬ
-#            1:��������
-#        ${26} �쥻�ťǡ���������¸�����ʬ
-#            1:������¸����
-#        ${27} ľ�����᤹���ݸ����ֹ�
-#            99999999:����ʤ�
-#        ${28} �쥻�ťǡ��������å���̵ͭ
-#            1:�����å�����
-#        ${29} ������ʬ
-#        ${30}-  ${31}���ŵ��إ������̤ν��������
-#            ��������ǯ��γ��ϡ���λ
+#        ${24} レセプト作成区分
+#            1:提出用レセ、2:点検用レセ
+#            6:連携基盤用、7:連携基盤用（当日）
+#        ${25} 症状詳記作成区分
+#            1:作成する
+#        ${26} レセ電データ履歴保存設定区分
+#            1:履歴保存する
+#        ${27} 直接請求する保険者番号
+#            99999999:設定なし
+#        ${28} レセ電データチェックの有無
+#            1:チェックする
+#        ${29} 入外区分
+#        ${30}-  ${31}医療機関コード別の処理指定時
+#            該当診療年月の開始、終了
 #        ${32} MONBLOB-ID(data-id)
 #-------------------------------------------#
 
@@ -46,7 +46,7 @@ fi
         fi
 
 cleanup(){
-##      �ѥ�᡼���ե�������
+##      パラメータファイル削除
         if  [ -e "${PARA_FILE_FULL}" ]; then
             rm   ${PARA_FILE_FULL}
         fi
@@ -85,7 +85,7 @@ trap cleanup EXIT
 ##  2HD flesize  
     fixedsize=1441500
 
-##  ���顼�ե�������
+##  エラーファイル削除
     echo "errfile = [" ${MCP_TEMPDIR}/${20}  "]"
     rm  -f ${MCP_TEMPDIR}/${20}
 
@@ -107,11 +107,11 @@ trap cleanup EXIT
         fi
     fi
 
-#   �����ե�������
+#   該当ファイル削除
 	rm  ${MCP_TEMPDIR}/${23}${RECEFILE1}*.UKE
 	rm  ${MCP_TEMPDIR}/${23}${RECEFILE2}*.txt
 
-#   Ϣ�ȴ��ץե��������
+#   連携基盤ファイル作成
     if  [ ${24} -eq '6' ] || [ ${24} -eq '7' ]; then
         if  [ ${12} -eq '1' ]; then
             if  [ ${29} -eq '1' ]; then
@@ -147,7 +147,7 @@ trap cleanup EXIT
         echo "--- file name  [" ${MCP_TEMPDIR}/${23}${RECEFILE2}${3}.txt "=>" ${MCP_TEMPDIR}/${23}${RECEFILE1}${3}.UKE "]"
         nkf -s ${MCP_TEMPDIR}/${23}${RECEFILE2}${3}.txt > ${MCP_TEMPDIR}/${23}${RECEFILE1}${3}.UKE
 
-#       �����ƥ���������ϤΤȤ�
+#       システム管理場所出力のとき
         if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then
             if ! test -d  "${17}"; then
                  mkdir ${17}
@@ -180,7 +180,7 @@ trap cleanup EXIT
         exit 
     fi     
 
-#   �쥻�ťե��������
+#   レセ電ファイル作成
 
     $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM520 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${17},${18},${19},${21},$fixedsize,${24},${23},${30},${31},${20}
     if  [ -e ${MCP_TEMPDIR}/${20} ]; then
@@ -190,7 +190,7 @@ trap cleanup EXIT
 
     rennum=1
         
-#   �ɾ��ܵ�����
+#   症状詳記作成
     if  [ ${25} -eq '1' ]; then
         rennum=$(expr $rennum + 1) 
         $DBSTUB -dir $LDDIRECTORY -bd orcabt ORCBM530 -parameter $1,$2,$3,$rennum,$5,$6,$7,$8,$9,${10},${11},${12},${13},${18},${19},${23},${20}
@@ -200,7 +200,7 @@ trap cleanup EXIT
         fi
    fi     
 
-#   �쥻�ťǡ��������å�
+#   レセ電データチェック
     if  [ ${28} -eq '1' ]; then
 
         cleanup(){
@@ -244,7 +244,7 @@ trap cleanup EXIT
         fi
     fi
 
-#   �����������Ѵ��ʣţգä��饷�եȣʣɣӡ�	
+#   漢字コード変換（ＥＵＣからシフトＪＩＳ）	
 
 	NUM=0
     while [ $NUM -lt 100 ]
@@ -260,7 +260,7 @@ trap cleanup EXIT
 		    break
 	    fi
 	    if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
-		    echo "��Ƭ�ե�����ν���(sjis�Ѵ�)"
+		    echo "先頭ファイルの処理(sjis変換)"
 		    nkf -s ${MCP_TEMPDIR}/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE
 #		    RC=$?
 #		    echo "--- nkf end   ---[" $RC  "]"
@@ -271,7 +271,7 @@ trap cleanup EXIT
 #			exit
 #		    fi
 	    else
-		    echo "�����ܰʹߤΥե�����ν���(sjis�Ѵ�)"
+		    echo "２番目以降のファイルの処理(sjis変換)"
 		    nkf -s ${MCP_TEMPDIR}/${23}${RECEFILE2}${FILENUM:${#FILENUM}-2:2}.txt > ${MCP_TEMPDIR}/${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE
 #		    RC=$?
 #		    echo "--- nkf end   ---[" $RC  "]"
@@ -286,9 +286,9 @@ trap cleanup EXIT
 
 ##
 
-#   �����ƥ���������ϤΤȤ�
+#   システム管理場所出力のとき
     if  [ ${21} -eq '3' ]|| [ ${21} -eq '4' ]; then
-#       ������¸��Υե�����إե��������
+#       履歴保存先のフォルダへファイル作成
         if  [ ${26} -eq '1' ]; then
             if  [ ${12} -eq '1' ]; then
                 OUT_FOLDER="${17}${23}_Shaho_${5}/Kobetsu/"
@@ -323,7 +323,7 @@ trap cleanup EXIT
                 FILENUM='0'$NUM
                 echo "filenum" ${FILENUM:${#FILENUM}-2:2}
                 if  test "${FILENUM:${#FILENUM}-2:2}"	=	"01"; then
-		    echo "��Ƭ�ե�����ν���(������¸)"
+		    echo "先頭ファイルの処理(履歴保存)"
                     if  test -e "${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE"; then
                         cp ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE               
                         chmod -R g+r ${OUT_FOLDER}${RECEFILE1}.UKE
@@ -332,7 +332,7 @@ trap cleanup EXIT
 		        break
 	            fi
                 else     
-		    echo "�����ܰʹߤΥե�����ν���(������¸)"
+		    echo "２番目以降のファイルの処理(履歴保存)"
 	            if  test -e "${MCP_TEMPDIR}/${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE"; then
                        cp ${MCP_TEMPDIR}/${23}${RECEFILE1}${FILENUM:${#FILENUM}-2:2}.UKE ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM              
                        chmod -R g+r ${OUT_FOLDER}${RECEFILE1}.UKE_$NUM
@@ -343,13 +343,13 @@ trap cleanup EXIT
                 fi
             done 
         else
-#           ������¸��Ԥ�ʤ��Ȥ�
+#           履歴保存を行わないとき
             cp ${MCP_TEMPDIR}/${23}${RECEFILE1}*.UKE ${17}
             chmod -R g+r ${17}${23}${RECEFILE1}*.UKE
         fi
     fi
 
-#   �ãġݣҽ��ϤΤȤ�iso�ե��������
+#   ＣＤ−Ｒ出力のときisoファイル作成
     if  [ ${21} -eq '6' ]; then
         echo "--- iso start ---"
         DIR=`mktemp -d`
@@ -365,7 +365,7 @@ trap cleanup EXIT
 	fi
     fi
 
-#   �����̣��Уɺ���
+#   大容量ＡＰＩ作成
     if  [ ${21} -eq '8' ]||[ ${21} -eq '9' ]; then
         cp ${MCP_TEMPDIR}/${23}${RECEFILE1}.UKE ${MCP_TEMPDIR}/${RECEFILE1}.UKE
         FILENM="${RECEFILE1}.UKE"

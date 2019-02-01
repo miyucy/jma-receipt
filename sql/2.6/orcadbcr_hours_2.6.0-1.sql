@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- Äù¤á»ş´Ö´ÉÍı                   --
+-- ç· ã‚æ™‚é–“ç®¡ç†                   --
 --                                --
 -- Table Name  : TBL_HOURS        --
 -- Create Date : 2005/07/13       --

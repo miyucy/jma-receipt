@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,27 +16,27 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö          COPY (CPORCSRSITUSAN.INC)   *
+      *    é€šç®—æ—¥æ•°å–å¾—ã‚µãƒ–          COPY (CPORCSRSITUSAN.INC)   *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSRSITUSANAREA.
-      *    °åÎÅµ¡´Ø¥³¡¼¥É
+      *    åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰
            03  RSITUSAN-HOSPNUM            PIC 9(2).
-      *    ´µ¼Ô£É£Ä
+      *    æ‚£è€…ï¼©ï¼¤
            03  RSITUSAN-PTID               PIC  9(10).
-      *    ÊÝ¸±ÁÈ¹ç¤»
+      *    ä¿é™ºçµ„åˆã›
            03  RSITUSAN-HKNCOMBI           PIC  9(04).
-      *    ¿ÇÎÅÇ¯·î
+      *    è¨ºç™‚å¹´æœˆ
            03  RSITUSAN-SRYYM              PIC  X(06).
       *
-      *    ½ÐÎÏÎÎ°è
+      *    å‡ºåŠ›é ˜åŸŸ
            03  RSITUSAN-OUT-AREA.
-      *        ÆüÉÕ¡Ê1=1.3ÇÜ/2=1.01ÇÜ¡Ë
+      *        æ—¥ä»˜ï¼ˆ1=1.3å€/2=1.01å€ï¼‰
                05  RSITUSAN-DAY            PIC X(01)
                                            OCCURS  31.
       *
-      *    ¥ê¥¿¡¼¥ó¥³¡¼¥É
+      *    ãƒªã‚¿ãƒ¼ãƒ³ã‚³ãƒ¼ãƒ‰
            03  RSITUSAN-RC                 PIC 9(02).

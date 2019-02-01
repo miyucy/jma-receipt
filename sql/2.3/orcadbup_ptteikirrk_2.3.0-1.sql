@@ -1,12 +1,12 @@
 --                                    --
--- ´µ¼ÔÄê´üÀÁµáÍúÎò¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹     --
+-- æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´     --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë                   --
---   ÀÁµá¥Ç¡¼¥¿¹¹¿·¥Õ¥é¥°             --
+-- é …ç›®ã®è¿½åŠ                          --
+--   æ¶ˆè²»ç¨ï¼ˆå†æ²ï¼‰                   --
+--   è«‹æ±‚ãƒ‡ãƒ¼ã‚¿æ›´æ–°ãƒ•ãƒ©ã‚°             --
 --                                    --
 
--- (1)TBL_PTTEIKIRRK_WK ºîÀ®
+-- (1)TBL_PTTEIKIRRK_WK ä½œæˆ
 
 CREATE TABLE "tbl_ptteikirrk_wk" (
 	"hospid" character(24) NOT NULL,
@@ -31,10 +31,10 @@ CREATE TABLE "tbl_ptteikirrk_wk" (
 insert   into tbl_ptteikirrk_wk
 select * from tbl_ptteikirrk;
 
--- (3)TBL_PTTEIKIRRKºï½ü
+-- (3)TBL_PTTEIKIRRKå‰Šé™¤
 drop  table tbl_ptteikirrk;
 
--- (4)TBL_PTTEIKIRRKºîÀ®
+-- (4)TBL_PTTEIKIRRKä½œæˆ
 CREATE TABLE "tbl_ptteikirrk" (
 	"hospid" character(24) NOT NULL,
 	"ptid" numeric(10,0) NOT NULL,
@@ -101,10 +101,10 @@ upymd,
 uphms
 from tbl_ptteikirrk_wk;
 
--- (6)TBL_PTTEIKIRRK_WK ºï½ü
+-- (6)TBL_PTTEIKIRRK_WK å‰Šé™¤
 drop  table tbl_ptteikirrk_wk;
 
--- (7)skymoney_tax_sai¹¹¿·
+-- (7)skymoney_tax_saiæ›´æ–°
 update tbl_ptteikirrk set skymoney_tax_sai = a.skymoney_tax_sai
 from ( select hospid,nyugaikbn,ptid,denpnum,skymoney_tax_sai from tbl_syunou ) a
 where a.hospid    = tbl_ptteikirrk.hospid

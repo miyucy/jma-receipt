@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,42 +16,42 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�����Խ��ѥ�᥿����COPY (CPORCSRECESORT.INC)
+      *    レセ器材再編集パラメタ　　COPY (CPORCSRECESORT.INC)
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  03.05.01    NACL-ƣ��    07/07/10  ��������ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  03.05.01    NACL-藤原    07/07/10  器材点数追加
       *
-      *  04.05.01    NACL-ƣ��    09/11/27  �쥻�ť����ȳ�ĥ�б�
+      *  04.05.01    NACL-藤原    09/11/27  レセ電コメント拡張対応
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     kohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
       ************************************************************
        01  ORCSRECESORTAREA.
       *
-      *����
+      *入力
            03  ORCSRECESORT-IN-AREA.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                05  ORCSRECESORT-HOSPNUM         PIC  9(02).
-      *������ʬ
+      *入外区分
                05  ORCSRECESORT-NYUGAIKBN       PIC  X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                05  ORCSRECESORT-PTID            PIC  9(10).
-      *����ǯ��
+      *診療年月
                05  ORCSRECESORT-SRYYM           PIC  X(06).
-      *���Ŷ�ʬ
+      *診療区分
                05  ORCSRECESORT-SRYKBN          PIC  X(02).
-      *���ֹ�
+      *剤番号
                05  ORCSRECESORT-ZAINUM          PIC  9(08).
-      *�������
+      *器材点数
                05  ORCSRECESORT-KIZAITEN        PIC  9(07).
-      *������
+      *剤内容
                05  ORCSRECESORT-IN-TBL.
                    07  ORCSRECESORT-IN-SRYCD-G  OCCURS   50.
-      *                ��Ϣ�����ȸ����ѣˣţ�
+      *                関連コメント検索用ＫＥＹ
                        09  ORCSRECESORT-IN-KEY.
                            11  ORCSRECESORT-IN-KEY-HOSPNUM   PIC 9(2).
                            11  ORCSRECESORT-IN-KEY-SRYYM     PIC 9(06).
@@ -73,43 +73,43 @@
                            11  ORCSRECESORT-IN-KEY-RENNUM    PIC 9(02).
                        09  ORCSRECESORT-IN-SHORI-RENNUM
                                                     PIC 9(01).
-      *                ���ť�����
+      *                診療コード
                        09  ORCSRECESORT-IN-SRYCD    PIC X(09).
-      *                �ǡ�����ʬ
+      *                データ区分
                        09  ORCSRECESORT-IN-DATAKBN  PIC X(01).
-      *                ����
+      *                数量
                        09  ORCSRECESORT-IN-SRYSURYO PIC  9(05)V9(05).
-      *                ���
+      *                回数
                        09  ORCSRECESORT-IN-SRYKAISU PIC  9(03).
-      *                ñ�̥�����
+      *                単位コード
                        09  ORCSRECESORT-IN-TANICD   PIC  9(03).
-      *                �������̶�ʬ
+      *                点数識別区分
                        09  ORCSRECESORT-IN-TENSIKIBETU
                                                     PIC  9(01).
-      *                ����
+      *                点数
                        09  ORCSRECESORT-IN-TEN      PIC  9(09)V9(02).
-      *                ����̾��
+      *                漢字名称
                        09  ORCSRECESORT-IN-NAME     PIC  X(200).
-      *                ��������̣�
+      *                特定器材種別１
                        09  ORCSRECESORT-IN-TOKUKIZAISBT1 
                                                     PIC X(01).
-      *                ��������ʬ
+      *                酸素等区分
                        09  ORCSRECESORT-IN-SANSOKBN PIC X(01).
-      *                �쥻���������ྦ��̾
+      *                レセ電用特定器材商品名
                        09  ORCSRECESORT-IN-RECEDENNAME
                                                     PIC X(300).
-      *����
+      *出力
            03  ORCSRECESORT-OUT-AREA.
-      *        ���ơ��֥�ʣ����ե���ࡢ�������ǡ��������ǡ���������¾����
-      *                     �����ե���ࣲ�������ե���ࣵ��
+      *        器材テーブル（１：フィルム、２：酸素、３：窒素、４：その他器材）
+      *                     ５：フィルム２〜８：フィルム５）
                05  ORCSRECESORT-DATE-TBL       OCCURS   8.
-      *            ����
+      *            点数
                    07  ORCSRECESORT-ZAITEN     PIC  9(08).
-      *            �ͣ���
+      *            ＭＡＸ
                    07  ORCSRECESORT-TBLMAX     PIC  9(02).
       *
                    07  ORCSRECESORT-SRYCD-G         OCCURS   50.
-      *                ��Ϣ�����ȸ����ѣˣţ�
+      *                関連コメント検索用ＫＥＹ
                        09  ORCSRECESORT-KEY.
                            11  ORCSRECESORT-KEY-HOSPNUM    PIC 9(2).
                            11  ORCSRECESORT-KEY-SRYYM      PIC 9(06).
@@ -131,24 +131,24 @@
                            11  ORCSRECESORT-KEY-RENNUM     PIC 9(02).
                        09  ORCSRECESORT-SHORI-RENNUM
                                                     PIC 9(01).
-      *                ���ť�����
+      *                診療コード
                        09  ORCSRECESORT-SRYCD       PIC X(09).
-      *                �ǡ�����ʬ
+      *                データ区分
                        09  ORCSRECESORT-DATAKBN     PIC X(01).
-      *                ����
+      *                数量
                        09  ORCSRECESORT-SRYSURYO    PIC  9(05)V9(05).
-      *                ���
+      *                回数
                        09  ORCSRECESORT-SRYKAISU    PIC  9(03).
-      *                ñ�̥�����
+      *                単位コード
                        09  ORCSRECESORT-TANICD      PIC  9(03).
-      *                �������̶�ʬ
+      *                点数識別区分
                        09  ORCSRECESORT-TENSIKIBETU PIC  9(01).
-      *                ����
+      *                点数
                        09  ORCSRECESORT-TEN         PIC  9(09)V9(02).
-      *                ����̾��
+      *                漢字名称
                        09  ORCSRECESORT-NAME        PIC  X(200).
-      *                �쥻���������ྦ��̾
+      *                レセ電用特定器材商品名
                        09  ORCSRECESORT-RECEDENNAME PIC  X(300).
-      *���顼�����ɡʣ����ޤʤ���
+      *エラーコード（１：剤なし）
            03  ORCSRECESORT-ERRCD           PIC 9(01).
       *

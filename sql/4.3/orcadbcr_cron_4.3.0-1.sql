@@ -18,4 +18,4 @@ create	table	tbl_cron	(
 ALTER TABLE ONLY tbl_cron
     ADD CONSTRAINT tbl_cron_primary_key PRIMARY KEY (cronid);
 
-COMMENT ON TABLE tbl_cron IS '¥¯¡¼¥í¥ó¾ðÊó';
+COMMENT ON TABLE tbl_cron IS 'ã‚¯ãƒ¼ãƒ­ãƒ³æƒ…å ±';

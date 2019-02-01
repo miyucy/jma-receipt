@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,22 +16,22 @@
       * 113-8621, Japan.
       ********************************************************************
       *-------------------------------------------------*
-      *    �ѥ���ɺ�����ǧ�ڥѥ�᥿  COPY (CPORCSAUTH.INC)     *
+      *    パスワード作成、認証パラメタ  COPY (CPORCSAUTH.INC)     *
       *-------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *
        01  ORCSAUTHAREA.
-      *���ޥ�ɡ�"passwd" or "auth")
+      *コマンド（"passwd" or "auth")
            03  AUTH-COMMAND            PIC X(08).
-      *�Ź沽��ˡ��01:MD5��
+      *暗号化手法（01:MD5）
            03  AUTH-ID                 PIC 9(02).
-      *�ѥ���ɡʥץ졼���
+      *パスワード（プレーン）
            03  AUTH-PASSWORD1          PIC X(128).
-      *�Ź沽�ѥ����
+      *暗号化パスワード
            03  AUTH-PASSWORD2          PIC X(128).
-      *��̡�0:���� 1:���ԡ�
+      *結果（0:成功 1:失敗）
            03  AUTH-RC                 PIC 9(01).
       *

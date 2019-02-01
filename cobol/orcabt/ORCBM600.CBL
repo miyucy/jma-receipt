@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBM600.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �
-      *  ����ݡ��ͥ��̾  : ��������ãӣ֥ǡ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/08/22    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次
+      *  コンポーネント名  : 地方公費ＣＳＶデータ作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/08/22    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -35,29 +35,29 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    �ãӣ֥ǡ���
+      *    ＣＳＶデータ
            SELECT  CSV-FILE   ASSIGN  CSVPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  CSVERR-FILE  ASSIGN  CSVERR
                                    FILE    STATUS  IS  STS-CSVERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ãӣ֥ǡ���
+      *    ＣＳＶデータ
        FD  CSV-FILE.
        01  CSV-REC                 PIC X(2000). 
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  CSVERR-FILE.
        01  CSVERR-REC              PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ãӣ֥ǡ���
+      *    ＣＳＶデータ
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //CSVPARA//.
       *
@@ -73,7 +73,7 @@
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //CSVERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-CSV             PIC X(02).
            03  STS-CSVERR          PIC X(02).
@@ -82,7 +82,7 @@
            03  FLG-END             PIC 9(01).
            03  FLG-CSV-INFO        PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-CSV             PIC 9(06).
       *
@@ -110,15 +110,15 @@
            03  WRK-ERR-FILE-MSG                    PIC X(100).
            03  WRK-ERR-FILE-MSG1                   PIC X(17).
            03  WRK-ERR-FLG                         PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -126,15 +126,15 @@
            COPY    "CPCSV-INFO.INC".          
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "MCPAREA".
       *
@@ -150,7 +150,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -163,7 +163,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -201,11 +201,11 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBM600"      TO  JOB-PGID
-           MOVE    "�ãӣ֥ǡ�������"
+           MOVE    "ＣＳＶデータ作成"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -217,7 +217,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
@@ -228,7 +228,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                CONTINUE
            ELSE
                MOVE    SPACE               TO  WRK-CSVERR
-               STRING "�ãӣ֥ǡ����񤭹��ߥ��顼 STS="
+               STRING "ＣＳＶデータ書き込みエラー STS="
                                                    DELIMITED  BY  SIZE
                        STS-CSV                     DELIMITED  BY  SIZE
                                            INTO    WRK-CSVERR
@@ -244,7 +244,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -258,7 +258,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WRITE   CSVERR-REC
                CLOSE   CSVERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-CSVERR      TO  JOB-YOBI
@@ -272,7 +272,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -289,7 +289,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -300,12 +300,12 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE   CSV-FILE
       *
            IF      CNT-CSV    =   ZERO  
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-CSVERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
@@ -319,7 +319,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡��ɣΣƣϣģ��ɹ�
+      *    ＣＳＶ＿ＩＮＦＯＤＢ読込
       *****************************************************************
        900-CSV-INFO-START-SEC              SECTION.
       *
@@ -349,7 +349,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡��ɣΣƣϣģ��ɹ�
+      *    ＣＳＶ＿ＩＮＦＯＤＢ読込
       *****************************************************************
        900-CSV-INFO-READ-SEC             SECTION.
       *
@@ -368,7 +368,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -385,7 +385,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -398,7 +398,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -424,7 +424,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -436,7 +436,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -448,7 +448,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -461,7 +461,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -479,7 +479,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

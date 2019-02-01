@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ���������ܥӥ塼  COPY (CPMATERIAL-H.INC)      *
+      *         特定器材品目ビュー  COPY (CPMATERIAL-H.INC)      *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  MATERIAL-H-REC.
-      *    �쥳���ɴ����ֹ�
+      *    レコード管理番号
            03  MATERH-KANRINO          PIC 9(08).
-      *    �ʣ��Υ�����
+      *    ＪＡＮコード
            03  MATERH-JANCD            PIC X(13).
-      *    ����̾
+      *    製品名
            03  MATERH-SNAME            PIC X(200).
-      *    ����
+      *    規格
            03  MATERH-KIKAKU           PIC X(120).
-      *    �����ॳ����
+      *    特定器材コード
            03  MATERH-SRYCD            PIC  X(09).
-      *    ��¤����ȼ�̾
+      *    製造販売業者名
            03  MATERH-COMPANY1         PIC  X(100).
-      *    ���������丵�ȼ�̾
+      *    国内総販売元業者名
            03  MATERH-COMPANY2         PIC  X(100).
-      *    ź��ʸ��������������
+      *    添付文書情報管理コード
            03  MATERH-DOCKANRICD       PIC  X(30).
-      *    ��ǽ��ʬ�ֹ�
+      *    機能区分番号
            03  MATERH-KINOKBNNO        PIC  X(30).
-      *    �ѹ�ǯ����
+      *    変更年月日
            03  MATERH-CHGYMD           PIC  X(08).
       *
            03  MATERH-CREYMD           PIC  X(08).

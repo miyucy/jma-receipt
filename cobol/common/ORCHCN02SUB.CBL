@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCHCN02SUB.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Âà±¡¾ÚÌÀ½ñÍÑÆþ±¡¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  06/06/08    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : é€€é™¢è¨¼æ˜Žæ›¸ç”¨å…¥é™¢å–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  06/06/08    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/05/09  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *Ê¿À®£³£°Ç¯£´·î²þÄêÂÐ±þ
-      *  05.00.00    NACL-¾®Æ¦Âô  18/03/07  Ã»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ¤ÎÈ½ÄêÊÑ¹¹
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤šã€…ç´  07/05/09  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  05.00.00    NACL-å°è±†æ²¢  18/03/07  çŸ­æœŸæ»žåœ¨æ‰‹è¡“ç­‰åŸºæœ¬æ–™ã®åˆ¤å®šå¤‰æ›´
       *****************************************************************
       *
       *
@@ -44,7 +44,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -52,7 +52,7 @@
            03  FLG-PTINF                   PIC 9(01).
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-MATCH                   PIC 9(01).
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -66,12 +66,12 @@
            03  ST-IDX                      PIC 9(04).
            03  ED-IDX                      PIC 9(04).
       *
-      *    Æþ±¡ÆüÃÖ´¹¤¨ÍÑ
+      *    å…¥é™¢æ—¥ç½®æ›ãˆç”¨
            03  WRK-DDX                     PIC X(02).
            03  WRK-DD9          REDEFINES  WRK-DDX
                                            PIC 9(02).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
@@ -82,62 +82,62 @@
       *
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
            COPY    "CPTENSU.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿âˆ’
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý¤ÎÃ»´üÂÚºß¥Á¥§¥Ã¥¯ÍÑ¥ï¡¼¥¯¥ì¥³¡¼¥É
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’ã®çŸ­æœŸæ»žåœ¨ãƒã‚§ãƒƒã‚¯ç”¨ãƒ¯ãƒ¼ã‚¯ãƒ¬ã‚³ãƒ¼ãƒ‰
            COPY    "CPTENSU.INC"   REPLACING //TNS-//  BY  //TTNS-//.
       *
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÄÌ»»Æü¿ô¼èÆÀ¥µ¥Ö
+      *    é€šç®—æ—¥æ•°å–å¾—ã‚µãƒ–
            COPY "CPORCSTUSAN.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
+      *    ç‰¹å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
            COPY  "CPORCSTOKNYUIN.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    Âà±¡¾ÚÌÀ½ñÍÑÆþ±¡¼èÆÀ¥Ñ¥é¥á¥¿
+      *    é€€é™¢è¨¼æ˜Žæ›¸ç”¨å…¥é™¢å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCHCN02SUB.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -146,7 +146,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -156,13 +156,13 @@
            INITIALIZE                  LNK-ORCHCN02SUB-HENKYAKU-AREA
            MOVE    ZERO                TO  LNK-ORCHCN02SUB-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-ORCHCN02SUB-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      LNK-ORCHCN02SUB-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -183,11 +183,11 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    »»ÄêÇ¯·î¥Á¥§¥Ã¥¯
+      *    ç®—å®šå¹´æœˆãƒã‚§ãƒƒã‚¯
            IF    ( LNK-ORCHCN02SUB-HOSPNUM   =   ZERO  )   OR
                  ( LNK-ORCHCN02SUB-PTID      =   SPACE )   OR
                  ( LNK-ORCHCN02SUB-NYUINYMD  =   SPACE )   OR
@@ -196,7 +196,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                       PTINF-REC
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  PTINF-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  PTINF-PTID
@@ -211,12 +211,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¼èÆÀ
+      *    ä¸»å–å¾—
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *Æþ±¡ÍúÎò¤«¤é¼«±¡Îò¤ÎÆü¿ô¼èÆÀ¡ÊÆþ±¡ÎòºîÀ®µ¡Ç½¤Ë¤è¤ëÍúÎòÊ¬¤Î
-      *                              Æü¿ô¼èÆÀ¡Ë
+      *å…¥é™¢å±¥æ­´ã‹ã‚‰è‡ªé™¢æ­´ã®æ—¥æ•°å–å¾—ï¼ˆå…¥é™¢æ­´ä½œæˆæ©Ÿèƒ½ã«ã‚ˆã‚‹å±¥æ­´åˆ†ã®
+      *                              æ—¥æ•°å–å¾—ï¼‰
            INITIALIZE                           PTNYUINRRK-REC
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  PTNYUINRRK-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  PTNYUINRRK-PTID
@@ -229,7 +229,7 @@
                MOVE    "key48"             TO  MCP-PATHNAME
                PERFORM   910-PTNYUINRRK-READ-SEC
                IF    FLG-PTNYUINRRK        =   ZERO
-      *            ´ü´Ö»»½Ð½èÍý
+      *            æœŸé–“ç®—å‡ºå‡¦ç†
                    INITIALIZE                      STS-AREA-DAY
                    INITIALIZE                      LNK-DAY5-AREA
                    MOVE    "51"                TO  LNK-DAY5-IRAI
@@ -244,12 +244,12 @@
                    END-IF
                END-IF
            END-IF
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key48"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Æþ±¡ÎÁ¤Î¼èÆÀ
+      *å…¥é™¢æ–™ã®å–å¾—
            INITIALIZE                           NYUINACCT-REC
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  NACCT-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  NACCT-PTID
@@ -267,7 +267,7 @@
                    IF   (LNK-ORCHCN02SUB-NYUINYMD(1:6)  <= NACCT-SRYYM)
                                          AND
                         (LNK-ORCHCN02SUB-TAIINYMD(1:6)  >= NACCT-SRYYM)
-      *                ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
+      *                è©²å½“å…¥é™¢è¡Œç‚ºãƒ†ãƒ¼ãƒ–ãƒ«ã®èª­ã¿è¾¼ã¿
                        PERFORM    210-NYUINACT-GET-SEC
       *
                        INITIALIZE    TNS-TENSU-REC
@@ -277,25 +277,25 @@
                        MOVE   "01"            TO    TNS-YUKOSTYMD(7:2)
                                                     TNS-YUKOEDYMD(7:2)
                        PERFORM    910-TENSU-READ-SEC
-      *                Ã»´üÂÚºß¼ê½ÑÅù´ðËÜÎÁ¤Î¾ì¹ç¡¢Æþ±¡ÎÁ¤ÎÌ¾¾Î¤«¤é¡¢
-      *                µ­ºÜÂÐ¾Ý¤Ç¤¢¤ë¤«¤òºÆ¥Á¥§¥Ã¥¯
+      *                çŸ­æœŸæ»žåœ¨æ‰‹è¡“ç­‰åŸºæœ¬æ–™ã®å ´åˆã€å…¥é™¢æ–™ã®åç§°ã‹ã‚‰ã€
+      *                è¨˜è¼‰å¯¾è±¡ã§ã‚ã‚‹ã‹ã‚’å†ãƒã‚§ãƒƒã‚¯
                        PERFORM    210-TANKI-NAMECHK-SEC
       *
                        IF     (NACCT-ZAIKAISU    =  ZERO)
                           IF  (WRK-TANKI-KBN     =      "1")  AND
                               (WRK-TANKI-KBN2    =      SPACE)
-      *                      Æþ±¡´ðËÜÎÁÃ±°Ì¤ÎÆþ±¡Æü¿ô¥«¥¦¥ó¥È
+      *                      å…¥é™¢åŸºæœ¬æ–™å˜ä½ã®å…¥é™¢æ—¥æ•°ã‚«ã‚¦ãƒ³ãƒˆ
                               PERFORM    210-NYUIN-COUNT-SEC
                           END-IF
                        END-IF
                        IF     (NACCT-ZAIKAISU    NOT =  ZERO)
                           IF  (WRK-TANKI-KBN     =      "1")  AND
                               (WRK-TANKI-KBN2    =      SPACE)
-      *                      Æþ±¡´ðËÜÎÁÃ±°Ì¤ÎÆþ±¡Æü¿ô¥«¥¦¥ó¥È
+      *                      å…¥é™¢åŸºæœ¬æ–™å˜ä½ã®å…¥é™¢æ—¥æ•°ã‚«ã‚¦ãƒ³ãƒˆ
                               PERFORM    210-NYUIN-COUNT-SEC
                           END-IF
                           IF  (WRK-TANKI-KBN     =      SPACE)
-      *                      Æþ±¡´ðËÜÎÁÃ±°Ì¤ÎÆþ±¡Æü¿ô¥«¥¦¥ó¥È
+      *                      å…¥é™¢åŸºæœ¬æ–™å˜ä½ã®å…¥é™¢æ—¥æ•°ã‚«ã‚¦ãƒ³ãƒˆ
                               PERFORM    210-NYUIN-COUNT-SEC
                           END-IF
                        END-IF
@@ -306,13 +306,13 @@
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key53"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *
-      *ÁªÄêÂÐ¾ÝÆü¿ô¤Î¼èÆÀ
+      *é¸å®šå¯¾è±¡æ—¥æ•°ã®å–å¾—
            INITIALIZE                       ORCSTUSANAREA
            MOVE    LNK-ORCHCN02SUB-HOSPNUM  TO  STUSAN-HOSPNUM
            MOVE    LNK-ORCHCN02SUB-PTID     TO  STUSAN-PTID
@@ -322,7 +322,7 @@
            MOVE    STUSAN-NISSU05           TO  LNK-ORCHCN02SUB-TKIKAN
       *
       *
-      *   ·ë²ÌÉ½¼¨
+      *   çµæžœè¡¨ç¤º
       *     PERFORM    VARYING   IDX1   FROM  1  BY  1
       *                UNTIL     (IDX1   >     5)
       *          DISPLAY  "IDX1 = " IDX1
@@ -342,7 +342,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÎÁÃ±°Ì¤ÎÆü¿ô¥«¥¦¥ó¥È
+      *    å…¥é™¢æ–™å˜ä½ã®æ—¥æ•°ã‚«ã‚¦ãƒ³ãƒˆ
       *****************************************************************
        210-NYUIN-COUNT-SEC            SECTION.
       *
@@ -353,7 +353,7 @@
                      (FLG-MATCH        =   1 )     OR
                      (NYUIN-IDX    >   20)
                DISPLAY  "NYUIN-IDX = " NYUIN-IDX
-      *        ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÆþ±¡ÎÁÌ¾¾Î¤Î¼èÆÀ¡Ê¥ï¡¼¥¯¤È¤ÎÈæ³ÓÍÑ¡Ë
+      *        ç‚¹æ•°ãƒžã‚¹ã‚¿ã‚ˆã‚Šå…¥é™¢æ–™åç§°ã®å–å¾—ï¼ˆãƒ¯ãƒ¼ã‚¯ã¨ã®æ¯”è¼ƒç”¨ï¼‰
                INITIALIZE    TNS-TENSU-REC
                MOVE   NSRY-SRYCD(1)   TO    TNS-SRYCD
                MOVE   NACCT-SRYYM     TO    TNS-YUKOSTYMD(1:6)
@@ -364,67 +364,67 @@
                PERFORM    910-TENSU-READ-SEC
                EVALUATE   NSRY-SRYCD(1)
                    WHEN   "111111111"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO   TNS-NAME
                    WHEN   "222222222"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO   TNS-NAME
                    WHEN   "333333333"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO   TNS-NAME
                    WHEN   "111111119"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "222222229"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "333333339"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "111111199"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"
                                                        TO   TNS-NAME
                    WHEN   "222222299"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"
                                                        TO   TNS-NAME
                    WHEN   "333333399"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"
                                                        TO   TNS-NAME
                    WHEN   "111111999"
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "222222999"
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "333333999"
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                                        TO   TNS-NAME
                    WHEN   "444444444"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"  TO   TNS-NAME
                    WHEN   "555555555"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"  TO   TNS-NAME
                    WHEN   "666666666"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"  TO   TNS-NAME
                    WHEN   "444444499"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"
                                                        TO   TNS-NAME
                    WHEN   "555555599"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"
                                                        TO   TNS-NAME
                    WHEN   "666666699"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"
                                                        TO   TNS-NAME
                    WHEN   "111119999"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO   TNS-NAME
                    WHEN   "222229999"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO   TNS-NAME
                    WHEN   "333339999"
-                      MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO   TNS-NAME
+                      MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO   TNS-NAME
                    WHEN   "111199999"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"
                                                        TO   TNS-NAME
                    WHEN   "222299999"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"
                                                        TO   TNS-NAME
                    WHEN   "333399999"
-                      MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"
+                      MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"
                                                        TO   TNS-NAME
                END-EVALUATE
       *
@@ -435,7 +435,7 @@
                                             "190119510"  OR
                                             "190119610")
                    MOVE   "111111111"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "200604")    AND
                      (NACCT-SRYYM      <=   "201403"))   AND
@@ -444,7 +444,7 @@
                                             "190119710"  OR
                                             "190119810")
                    MOVE   "222222222"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201004")    AND
                      (NACCT-SRYYM      <=   "201403"))   AND
@@ -452,7 +452,7 @@
                                             "190135210"  OR
                                             "190135310")
                    MOVE   "333333333"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
                      (NACCT-SRYYM      <=   "201403"))   AND
@@ -460,7 +460,7 @@
                                             "190708710"  OR
                                             "190708810")
                    MOVE   "111111119"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -469,7 +469,7 @@
                                             "190709010"  OR
                                             "190709110")
                    MOVE   "222222229"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -478,7 +478,7 @@
                                             "190709310"  OR
                                             "190709410")
                    MOVE   "333333339"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -487,7 +487,7 @@
                                             "190153610"  OR
                                             "190153810")
                    MOVE   "111111199"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -496,7 +496,7 @@
                                             "190154210"  OR
                                             "190154410")
                    MOVE   "222222299"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -505,7 +505,7 @@
                                             "190154810"  OR
                                             "190155010")
                    MOVE   "333333399"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -514,7 +514,7 @@
                                             "190153710"  OR
                                             "190153910")
                    MOVE   "111111999"     TO    NSRY-SRYCD(1)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -523,7 +523,7 @@
                                             "190154310"  OR
                                             "190154510")
                    MOVE   "222222999"     TO    NSRY-SRYCD(1)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
                IF   ((NACCT-SRYYM      >=   "201204")    AND
@@ -532,39 +532,39 @@
                                             "190154910"  OR
                                             "190155110")
                    MOVE   "333333999"     TO    NSRY-SRYCD(1)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                                           TO   TNS-NAME
                END-IF
       *
-      *        Ê¿À®£²£¶Ç¯£´·î¤«¤é¤Î¿·ÀßÊ¬¡Ê£±¤«¤é£³¡Ë
-      *        ¤Ë³ºÅö
+      *        å¹³æˆï¼’ï¼–å¹´ï¼”æœˆã‹ã‚‰ã®æ–°è¨­åˆ†ï¼ˆï¼‘ã‹ã‚‰ï¼“ï¼‰
+      *        ã«è©²å½“
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190169610"  OR
                                             "190169710"  OR
                                             "190169810")
                    MOVE   "111119999"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190169910"  OR
                                             "190170010"  OR
                                             "190170110")
                    MOVE   "222229999"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190170210"  OR
                                             "190170310"  OR
                                             "190170410")
                    MOVE   "333339999"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190170810"  OR
                                             "190170910"  OR
                                             "190171010")
                    MOVE   "111199999"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"
                                           TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -572,7 +572,7 @@
                                             "190171210"  OR
                                             "190171310")
                    MOVE   "222299999"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"
                                           TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -580,39 +580,39 @@
                                             "190171510"  OR
                                             "190171610")
                    MOVE   "333399999"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"
                                           TO   TNS-NAME
                END-IF
       *
-      *        Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´¤«¤é£¶¤ÏÊ¿À®£²£¶Ç¯£³·î¤Þ¤Ç¤Î£±¤«¤é£³
-      *        ¤Ë³ºÅö
+      *        æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”ã‹ã‚‰ï¼–ã¯å¹³æˆï¼’ï¼–å¹´ï¼“æœˆã¾ã§ã®ï¼‘ã‹ã‚‰ï¼“
+      *        ã«è©²å½“
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190097010"  OR
                                             "190119510"  OR
                                             "190119610")
                    MOVE   "444444444"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190097210"  OR
                                             "190119710"  OR
                                             "190119810")
                    MOVE   "555555555"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190135110"  OR
                                             "190135210"  OR
                                             "190135310")
                    MOVE   "666666666"     TO    NSRY-SRYCD(1)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"  TO   TNS-NAME
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"  TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (NSRY-SRYCD(1)    =    "190153410"  OR
                                             "190153610"  OR
                                             "190153810")
                    MOVE   "444444499"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"
                                           TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -620,7 +620,7 @@
                                             "190154210"  OR
                                             "190154410")
                    MOVE   "555555599"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"
                                           TO   TNS-NAME
                END-IF
                IF    (NACCT-SRYYM      >=   "201204")    AND
@@ -628,7 +628,7 @@
                                             "190154810"  OR
                                             "190155010")
                    MOVE   "666666699"     TO    NSRY-SRYCD(1)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"
                                           TO   TNS-NAME
                END-IF
       *
@@ -651,7 +651,7 @@
                     ELSE
                          MOVE   31       TO   ED-IDX
                     END-IF
-      *             Ã»´üÂÚºß¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤ò¼èÆÀ
+      *             çŸ­æœŸæ»žåœ¨ã®å…¥é™¢æ–™æœªç®—å®šæ—¥ã‚’å–å¾—
                     IF    WRK-TANKI-KBN   =   "1"
                         PERFORM   220-TANKI-SEC
                     ELSE
@@ -686,7 +686,7 @@
                 (NYUIN-IDX     <=       20)
                MOVE  NSRY-SRYCD(1)   TO
                                  LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-      *        ÅÀ¿ô¥Þ¥¹¥¿¤è¤êÆþ±¡ÎÁÌ¾¾Î¤Î¼èÆÀ
+      *        ç‚¹æ•°ãƒžã‚¹ã‚¿ã‚ˆã‚Šå…¥é™¢æ–™åç§°ã®å–å¾—
                INITIALIZE    TNS-TENSU-REC
                MOVE   LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
                                             TO  TNS-SRYCD
@@ -707,7 +707,7 @@
                                             "111111111")
                    MOVE   "111111111"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF   ((NACCT-SRYYM      >=   "200604")    AND
@@ -720,7 +720,7 @@
                                             "222222222")
                    MOVE   "222222222"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF   ((NACCT-SRYYM      >=   "201004")    AND
@@ -732,7 +732,7 @@
                                             "333333333")
                    MOVE   "333333333"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -745,7 +745,7 @@
                                             "111111119")
                    MOVE   "111111119"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -758,7 +758,7 @@
                                             "222222229")
                    MOVE   "222222229"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -771,7 +771,7 @@
                                             "333333339")
                    MOVE   "333333339"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -784,7 +784,7 @@
                                             "111111199")
                    MOVE   "111111199"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -797,7 +797,7 @@
                                             "222222299")
                    MOVE   "222222299"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -810,7 +810,7 @@
                                             "333333399")
                    MOVE   "333333399"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -823,7 +823,7 @@
                                             "111111999")
                    MOVE   "111111999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                        TO      LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -836,7 +836,7 @@
                                             "222222999")
                    MOVE   "222222999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                        TO      LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -849,12 +849,12 @@
                                             "333333999")
                    MOVE   "333333999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-               MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³¡Ê±É´É·Ð²áÁ¼ÃÖ¡Ë"
+               MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“ï¼ˆæ „ç®¡çµŒéŽæŽªç½®ï¼‰"
                        TO      LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
-      *        Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´¤«¤é£¶¤ÏÊ¿À®£²£¶Ç¯£³·î¤Þ¤Ç¤Î£±¤«¤é£³
-      *        ¤Ë³ºÅö
+      *        æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”ã‹ã‚‰ï¼–ã¯å¹³æˆï¼’ï¼–å¹´ï¼“æœˆã¾ã§ã®ï¼‘ã‹ã‚‰ï¼“
+      *        ã«è©²å½“
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)  =
                                             "190097010"  OR
@@ -863,7 +863,7 @@
                                             "444444444")
                    MOVE   "444444444"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -874,7 +874,7 @@
                                             "555555555")
                    MOVE   "555555555"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -885,7 +885,7 @@
                                             "666666666")
                    MOVE   "666666666"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -896,7 +896,7 @@
                                             "444444499")
                    MOVE   "444444499"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£´"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼”"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -907,7 +907,7 @@
                                             "555555599")
                    MOVE   "555555599"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£µ"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼•"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -918,12 +918,12 @@
                                             "666666699")
                    MOVE   "666666699"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£¶"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼–"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
-      *        Ê¿À®£²£¶Ç¯£´·î¤«¤é¤Î¿·ÀßÊ¬¡Ê£±¤«¤é£³¡Ë
-      *        ¤Ë³ºÅö
+      *        å¹³æˆï¼’ï¼–å¹´ï¼”æœˆã‹ã‚‰ã®æ–°è¨­åˆ†ï¼ˆï¼‘ã‹ã‚‰ï¼“ï¼‰
+      *        ã«è©²å½“
                IF    (NACCT-SRYYM      >=   "201404")    AND
                      (LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)  =
                                             "190169610"  OR
@@ -932,7 +932,7 @@
                                             "111119999")
                    MOVE   "111119999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -943,7 +943,7 @@
                                             "222229999")
                    MOVE   "222229999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -954,7 +954,7 @@
                                             "333339999")
                    MOVE   "333339999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO
+                   MOVE   "æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -965,7 +965,7 @@
                                             "111199999")
                    MOVE   "111199999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -976,7 +976,7 @@
                                             "222299999")
                    MOVE   "222299999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
                IF    (NACCT-SRYYM      >=   "201404")    AND
@@ -987,7 +987,7 @@
                                             "333399999")
                    MOVE   "333399999"     TO
                                LNK-ORCHCN02SUB-SYUBETUCD(NYUIN-IDX)
-                   MOVE   "ÎÅÍÜÉÂ¾²¡¦Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³"  TO
+                   MOVE   "ç™‚é¤Šç—…åºŠãƒ»æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“"  TO
                                LNK-ORCHCN02SUB-SYUBETUMEI(NYUIN-IDX)
                END-IF
       *
@@ -1005,7 +1005,7 @@
                ELSE
                     MOVE   31       TO   ED-IDX
                END-IF
-      *        Ã»´üÂÚºß¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤ò¼èÆÀ
+      *        çŸ­æœŸæ»žåœ¨ã®å…¥é™¢æ–™æœªç®—å®šæ—¥ã‚’å–å¾—
                IF    WRK-TANKI-KBN   =   "1"
                    PERFORM   220-TANKI-SEC
                ELSE
@@ -1038,7 +1038,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¼èÆÀ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºå–å¾—
       *****************************************************************
        210-NYUINACT-GET-SEC            SECTION.
       *
@@ -1057,7 +1057,7 @@
                PERFORM   910-NYUINACT-READ-SEC
            END-IF
       *
-      *    Æþ±¡¹Ô°Ù¥¯¥í¡¼¥º
+      *    å…¥é™¢è¡Œç‚ºã‚¯ãƒ­ãƒ¼ã‚º
            MOVE     "tbl_nyuinact"     TO  MCP-TABLE
            MOVE     "key9"             TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -1067,8 +1067,8 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÍúÎò¤«¤éÃ»´üÂÚºß¤Î¥³¡¼¥É¤ò¼èÆÀ¤·¡¢Æþ±¡²ñ·×»»Äê¤Î¥³¡¼¥É¤ÈÆÍ¹ç
-      *    ¡ÊÉÔ°ìÃ×¤Î¾ì¹ç¤Ïµ­ºÜÂÐ¾Ý³°¡Ë
+      *    å…¥é™¢å±¥æ­´ã‹ã‚‰çŸ­æœŸæ»žåœ¨ã®ã‚³ãƒ¼ãƒ‰ã‚’å–å¾—ã—ã€å…¥é™¢ä¼šè¨ˆç®—å®šã®ã‚³ãƒ¼ãƒ‰ã¨çªåˆ
+      *    ï¼ˆä¸ä¸€è‡´ã®å ´åˆã¯è¨˜è¼‰å¯¾è±¡å¤–ï¼‰
       *****************************************************************
        210-TANKI-NAMECHK-SEC            SECTION.
       *
@@ -1098,12 +1098,12 @@
                END-IF
            END-IF
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key72"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ÆÃÄêÆþ±¡ÎÁ¥³¡¼¥É¤ò¥µ¥Ö¥×¥í¤è¤ê¼èÆÀ
+      *    ç‰¹å®šå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ã‚’ã‚µãƒ–ãƒ—ãƒ­ã‚ˆã‚Šå–å¾—
            IF    (PTNYUINRRK-TOKUTEI-KBN   NOT =   SPACE)   AND
                  (PTNYUINRRK-TOKUTEI-NYUIN NOT =   SPACE)
              INITIALIZE                           ORCSTOKNYUIN-AREA
@@ -1135,7 +1135,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ã»´üÂÚºß¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤ò¼èÆÀ
+      *    çŸ­æœŸæ»žåœ¨ã®å…¥é™¢æ–™æœªç®—å®šæ—¥ã‚’å–å¾—
       *****************************************************************
        220-TANKI-SEC            SECTION.
       *
@@ -1156,7 +1156,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1195,7 +1195,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -1215,7 +1215,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -1236,7 +1236,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -1256,7 +1256,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
@@ -1277,7 +1277,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -1297,7 +1297,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
@@ -1318,7 +1318,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -1342,7 +1342,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TNS-TENSU-REC
                    MOVE    ZERO                TO  FLG-TENSU
-      *            Ã»´üÂÚºß¤ÎÈ½ÄêÍÑ
+      *            çŸ­æœŸæ»žåœ¨ã®åˆ¤å®šç”¨
                    IF    (TNS-CDKBN-KBN     =   "A")   AND
                          (TNS-CDKBN-KBNNUM  =   400)   AND
                          (TNS-CDKBN-KOUBAN  =   2  OR 3)
@@ -1366,7 +1366,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼¥ï¡¼¥¯ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼ãƒ¯ãƒ¼ã‚¯èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        910-TTENSU-READ-SEC         SECTION.
       *
@@ -1387,7 +1387,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    SPA-AREA
                IF      MCP-RC              =   ZERO
                    MOVE    MCPDATA-REC         TO  TTNS-TENSU-REC
-      *            Ã»´üÂÚºß¤ÎÈ½ÄêÍÑ
+      *            çŸ­æœŸæ»žåœ¨ã®åˆ¤å®šç”¨
                    IF    (TTNS-CDKBN-KBN     =   "A")   AND
                          (TTNS-CDKBN-KBNNUM  =   400)   AND
                          (TTNS-CDKBN-KOUBAN  =   2  OR 3)
@@ -1409,7 +1409,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

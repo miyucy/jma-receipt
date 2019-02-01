@@ -1,7 +1,7 @@
 --                                --
 -- ORCA DataBase Table Definition --
 --                                --
--- ¥ª¡¼¥ÀÄ¢É¼               --
+-- ã‚ªãƒ¼ãƒ€å¸³ç¥¨               --
 --                                --
 -- Table Name  : TBL_ORDERPRT     --
 -- Create Date : 2005/2/14        --

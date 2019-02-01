@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,11 +16,11 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ∞ÂÃÙ…  ¨Œ‡•ﬁ•π•ø    COPY (CPGENERICCLASS.INC)    *
+      *         ÂåªËñ¨ÂìÅÂàÜÈ°û„Éû„Çπ„Çø    COPY (CPGENERICCLASS.INC)    *
       ************************************************************
       ************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       ************************************************************
       * 01  GECLASS-REC.
            03  GECLASS-KEY.
@@ -29,7 +29,7 @@
                05  GECLASS-YUKOEDYMD   PIC X(08).
            03  GECLASS-KOUHATU         PIC 9(01).
            03  GECLASS-UPYMD           PIC X(08).
-      *ππø∑Õ—
+      *Êõ¥Êñ∞Áî®
            03  GECLASS-UP-KEY.
                05  GECLASS-UPYAKKAKJNCD    PIC X(12).
                05  GECLASS-UPYUKOSTYMD     PIC X(08).

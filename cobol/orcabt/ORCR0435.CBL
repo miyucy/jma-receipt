@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,43 +18,43 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR0435.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץȡ�ϫ�ҡ������ա�
-      *  ����ݡ��ͥ��̾  : ���̳��ϫ�Ҽ��������ٽ�ե��������
-      *                      �������Խ�����ϫ�ҡ������ա�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  02/07/01    MCC-���ơ�    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト（労災・自賠責）
+      *  コンポーネント名  : 月次業務　労災自賠責明細書ファイル作成
+      *                      コメント編集２（労災・自賠責）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  02/07/01    MCC-門脇　    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����    02.09.18  �������б�
-      *  01.00.02    NACL-����    04.06.07  ���ԡ��磰�����ѹ���ȼ������
-      *  ��߽����ɲ�
-      *  01.01.01    NACL-ƣ��    04/10/13  ��߽������ɲ�
-      *  01.01.02    NACL-����    05/07/15  �����ս����ͼ��б�
-      *  02.09.01    NACL-����    06/04/13  ��������ǯ��������б�
-      *  02.09.02    NACL-����    06/04/26  �ߵް��Ŵ����û��������Խ�����
-      *  03.04.01    NACL-����    06/12/01  �����շ��ݽ���б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇    02.09.18  自賠責対応
+      *  01.00.02    NACL-門脇    04.06.07  コピー句０４５変更に伴う修正
+      *  中止処理追加
+      *  01.01.01    NACL-藤原    04/10/13  中止処理の追加
+      *  01.01.02    NACL-門脇    05/07/15  自賠責従来様式対応
+      *  02.09.01    NACL-門脇    06/04/13  ２００６年４月改正対応
+      *  02.09.02    NACL-門脇    06/04/26  救急医療管理加算コメント編集修正
+      *  03.04.01    NACL-門脇    06/12/01  自賠責健保準拠対応
       *
-      *  03.05.01    NACL-����    07/05/25  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/06/01  realtime preview �����ɲ�
-      *  04.01.01    NACL-����    07/10/31  ��̳�ҳ��б�
-      *  04.01.02    NACL-����    07/11/26  �����ྦ��̾�����б�
-      *  04.03.01    NACL-����    08/09/25  �����գ����������ν������б�
-      *  04.05.01    NACL-����    12/04/11  ʿ������ǯ�������
-      *                                     �����Ⱥ���
+      *  03.05.01    NACL-門脇    07/05/25  グループ診療対応
+      *  03.05.02    NACL-藤原    07/06/01  realtime preview 処理追加
+      *  04.01.01    NACL-門脇    07/10/31  公務災害対応
+      *  04.01.02    NACL-門脇    07/11/26  特定器材商品名記載対応
+      *  04.03.01    NACL-門脇    08/09/25  自賠責０９５９３の集計先対応
+      *  04.05.01    NACL-門脇    12/04/11  平成２４年４月改正
+      *                                     コメント差込
       *
-      *  04.06.01    NACL-����    13/02/18  ϫ�ҥ쥻���б�
-      *                                     �ʿ����Ź԰٥������б���
+      *  04.06.01    NACL-門脇    13/02/18  労災レセ電対応
+      *                                     （新診療行為コード対応）
       *
-      *  04.07.01    NACL-����    13/01/21  ϫ�ҥ쥻���б�
-      *  04.07.02    NACL-����    13/10/02  �����ա��軰�Թ԰١��б�
-      *  04.07.03    NACL-����    14/05/08  �ߵް��Ŵ����û��λ���������
-      *                                     ����
-      *  04.07.04    NACL-����    14/07/08  ���٤�������Ķ��������б�
+      *  04.07.01    NACL-門脇    13/01/21  労災レセ電対応
+      *  04.07.02    NACL-門脇    13/10/02  自賠責（第三者行為）対応
+      *  04.07.03    NACL-門脇    14/05/08  救急医療管理加算の算定日記載
+      *                                     やめる
+      *  04.07.04    NACL-門脇    14/07/08  明細が５０を超える場合の対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -91,7 +91,7 @@
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  RECE451-KEY
                                    FILE    STATUS  IS  STS-RECE451.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
@@ -123,12 +123,12 @@
            COPY    "CPRCF045.INC"  REPLACING   //RECE45//
                                    BY          //RECE451//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
-      *     �쥻�ץ����٥ե����� ̾���ΰ� 
+      *     レセプト明細ファイル 名称領域 
            COPY    "CPRECEDAT1.INC"
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE41//.
@@ -149,11 +149,11 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE451//.
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE41          PIC X(02).
            03  STS-RECE44          PIC X(02).
@@ -162,7 +162,7 @@
            03  STS-RECE451         PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-RECE44          PIC 9(01).
@@ -171,14 +171,14 @@
            03  FLG-SYSKANRI        PIC 9(01).
            03  FLG-COMMENT         PIC 9(02).
       *    
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-RECE41          PIC 9(06).
            03  CNT-RECE44          PIC 9(06).
            03  CNT-RECE45          PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX2                PIC 9(04).
@@ -187,7 +187,7 @@
            03  DAY-IDX             PIC 9(02).
            03  IDX-RECE45          PIC 9(04).
       *     
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM              PIC  X(06).
@@ -229,62 +229,62 @@
            03  WRK-JIDO-SETCOMATFLG          PIC  9(03).
            03  WRK-JIDO-SETCOMFLG            PIC  X(01).
       *
-      *    ���������Ѵ��ΰ�
+      *    日付全角変換領域
        01  TBL-TUKI-AREA.
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
+           03  FILLER              PIC X(04)  VALUE "　１".
+           03  FILLER              PIC X(04)  VALUE "　２".
+           03  FILLER              PIC X(04)  VALUE "　３".
+           03  FILLER              PIC X(04)  VALUE "　４".
+           03  FILLER              PIC X(04)  VALUE "　５".
+           03  FILLER              PIC X(04)  VALUE "　６".
+           03  FILLER              PIC X(04)  VALUE "　７".
+           03  FILLER              PIC X(04)  VALUE "　８".
+           03  FILLER              PIC X(04)  VALUE "　９".
+           03  FILLER              PIC X(04)  VALUE "１０".
+           03  FILLER              PIC X(04)  VALUE "１１".
+           03  FILLER              PIC X(04)  VALUE "１２".
        01  TBL-TUKI-AREA-R         REDEFINES   TBL-TUKI-AREA.
            03  TBL-TUKI            PIC X(04)   OCCURS   12.
       *
-      *    ���������Ѵ��ΰ�
+      *    日付全角変換領域
        01  TBL-DAY-AREA.
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
-           03  FILLER              PIC X(04)  VALUE "����".
+           03  FILLER              PIC X(04)  VALUE "　１".
+           03  FILLER              PIC X(04)  VALUE "　２".
+           03  FILLER              PIC X(04)  VALUE "　３".
+           03  FILLER              PIC X(04)  VALUE "　４".
+           03  FILLER              PIC X(04)  VALUE "　５".
+           03  FILLER              PIC X(04)  VALUE "　６".
+           03  FILLER              PIC X(04)  VALUE "　７".
+           03  FILLER              PIC X(04)  VALUE "　８".
+           03  FILLER              PIC X(04)  VALUE "　９".
+           03  FILLER              PIC X(04)  VALUE "１０".
+           03  FILLER              PIC X(04)  VALUE "１１".
+           03  FILLER              PIC X(04)  VALUE "１２".
+           03  FILLER              PIC X(04)  VALUE "１３".
+           03  FILLER              PIC X(04)  VALUE "１４".
+           03  FILLER              PIC X(04)  VALUE "１５".
+           03  FILLER              PIC X(04)  VALUE "１６".
+           03  FILLER              PIC X(04)  VALUE "１７".
+           03  FILLER              PIC X(04)  VALUE "１８".
+           03  FILLER              PIC X(04)  VALUE "１９".
+           03  FILLER              PIC X(04)  VALUE "２０".
+           03  FILLER              PIC X(04)  VALUE "２１".
+           03  FILLER              PIC X(04)  VALUE "２２".
+           03  FILLER              PIC X(04)  VALUE "２３".
+           03  FILLER              PIC X(04)  VALUE "２４".
+           03  FILLER              PIC X(04)  VALUE "２５".
+           03  FILLER              PIC X(04)  VALUE "２６".
+           03  FILLER              PIC X(04)  VALUE "２７".
+           03  FILLER              PIC X(04)  VALUE "２８".
+           03  FILLER              PIC X(04)  VALUE "２９".
+           03  FILLER              PIC X(04)  VALUE "３０".
+           03  FILLER              PIC X(04)  VALUE "３１".
        01  TBL-DAY-AREA-R          REDEFINES   TBL-DAY-AREA.
            03  TBL-DAY             PIC X(04)   OCCURS   31.
       *
-      *    ������
+      *    固定値
        01  CONST-AREA.
-      *    �ߵް��Ŵ����û�
+      *    救急医療管理加算
            03  CONS-KYUKYU     PIC X(09)   VALUE   "101110030".
            03  CONS-KYUKYU2    PIC X(09)   VALUE   "101800890".
       *
@@ -294,31 +294,31 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *
-      *    ���Ų��ܾ���
+      *    診療科目情報
            COPY    "CPSK1005.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *     
-      *    �����Ѵ�����
+      *    数値変換サブ
            COPY    "CPORCSNUM.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
       ****************************************************************
@@ -331,7 +331,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -349,7 +349,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -360,21 +360,21 @@
            INITIALIZE                  SPA-AREA
            INITIALIZE                  RECEERR
       *
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *
            PERFORM 110-FILE-OPEN-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
                PERFORM 120-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR0435"      TO  JOB-PGID
-               MOVE    "�������Խ�����ϫ�ҡ������ա�"
+               MOVE    "コメント編集２（労災・自賠責）"
                                        TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF
       *
@@ -384,7 +384,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�����ϣУţν���
+      *    ファイルＯＰＥＮ処理
       *****************************************************************
        110-FILE-OPEN-SEC          SECTION.
       *
@@ -470,7 +470,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -588,7 +588,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
       *
                PERFORM 990-RECE44-NEXT-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -599,7 +599,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
            IF      FLG-END         =   ZERO
                PERFORM 990-RECE41-READ-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -611,7 +611,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ߵް��Ŵ����û��Υ������Խ�
+      *    救急医療管理加算のコメント編集
       *****************************************************************
        2001-KYUKYU-COMMENT-SEC          SECTION.
       *
@@ -657,7 +657,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
            MOVE    ZERO                 TO  RECE451-SRYSURYO(2)
            MOVE    9                    TO  RECE451-YUKOKETA(2)
       * 
-           MOVE    "���ꡡ���������" TO  RECE451-NAME(2)
+           MOVE    "算定　　　月　　日" TO  RECE451-NAME(2)
       **   MOVE     RECE41-KYUKYUYMD(5:2)
            MOVE     WRK-TAIHI-SRYYMD(5:2)
                                         TO  DAY-IDX
@@ -682,7 +682,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ǡ�Ʊ��ʣ�����ŲʡˤΥ������Խ�
+      *    初診（同日複数診療科）のコメント編集
       *****************************************************************
        2001-SYODOU-COMMENT-SEC          SECTION.
       *
@@ -698,8 +698,8 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE451PARA-HOSPNUM
                        OR     (RECE44-SYODOU-SRYKA(IDX)  =  SPACE)
       *
              ADD      1                  TO  IDZ
-             MOVE    "ʣ�黻����Ųʡ�"  TO  WK-FREE-NAME2(IDZ)(1:16)
-      *      ���Ųʤμ���
+             MOVE    "複初算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
              INITIALIZE                      SYS-1005-REC
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE44-SYODOU-SRYKA(IDX)
@@ -758,7 +758,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                      MOVE  RECE45-REC  TO  WRK-RECE45-REC
            END-START
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
@@ -806,7 +806,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            END-PERFORM
       *
-      *    �����Ȥ�ޤ�����Ƥ���֥ե�����κƺ���
+      *    コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -860,7 +860,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ƿǡ�Ʊ���������ܡˤΥ������Խ�
+      *    再診（同一日２科目）のコメント編集
       *****************************************************************
        2001-SAIDOU-COMMENT-SEC          SECTION.
       *
@@ -876,8 +876,8 @@ grpsys       PERFORM 900-DBSELECT-SEC
                        OR     (RECE44-SAIDOU-SRYKA(IDX)  =  SPACE)
       *
              ADD      1                  TO  IDZ
-             MOVE    "ʣ�ƻ�����Ųʡ�"  TO  WK-FREE-NAME2(IDZ)(1:16)
-      *      ���Ųʤμ���
+             MOVE    "複再算定診療科："  TO  WK-FREE-NAME2(IDZ)(1:16)
+      *      診療科の取得
              INITIALIZE                      SYS-1005-REC
              MOVE    "1005"              TO  SYS-1005-KANRICD
              MOVE    RECE44-SAIDOU-SRYKA(IDX)
@@ -936,7 +936,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
                      MOVE  RECE45-REC  TO  WRK-RECE45-REC
            END-START
       *
-      *    �ңţãţ����ե���������Ƥ�ơ��֥������
+      *    ＲＥＣＥ０５ファイルの内容をテーブルに退避
            MOVE    ZERO                TO  IDX-RECE45
            MOVE    SPACE               TO  WRK-RECE45XX-REC
            INITIALIZE                      WRK-RECE45XX-REC
@@ -984,7 +984,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
       *
            END-PERFORM
       *
-      *    �����Ȥ�ޤ�����Ƥ���֥ե�����κƺ���
+      *    コメントを含んだ内容で中間ファイルの再作成
            MOVE       ZERO             TO      FLG-WRKRECE45
            MOVE       ZERO             TO      IDX
            MOVE       ZERO             TO      IDX-RECE45
@@ -1038,7 +1038,7 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ���ž������
+      *    レセプト０５転送処理
       *****************************************************************
        2002-RECE45-TENSOU-SEC     SECTION.
       *
@@ -1082,15 +1082,15 @@ grpsys       PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�����ạ̃ϣӣŽ���
+      *    ファイルＣＬＯＳＥ処理
            PERFORM 310-FILE-CLOSE-SEC
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -1108,7 +1108,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�����ạ̃ϣӣŽ���
+      *    ファイルＣＬＯＳＥ処理
       *****************************************************************
        310-FILE-CLOSE-SEC              SECTION.
       *
@@ -1126,7 +1126,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1141,7 +1141,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ������Ͻ���
+      *            ジョブ管理開始処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1157,7 +1157,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -1170,7 +1170,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -1183,7 +1183,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1200,7 +1200,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ץȣ����ǡ����縡������
+      *    レセプト０２データ順検索処理
       *****************************************************************
        990-RECE41-READ-SEC           SECTION.
       *
@@ -1220,7 +1220,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０４データ読み
       ****************************************************************
        990-RECE44-NEXT-SEC           SECTION.
       *
@@ -1237,7 +1237,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       ****************************************************************
-      *    �쥻�ץȣ����ǡ����ɤ�
+      *    レセプト０５データ読み
       ****************************************************************
        990-RECE45-NEXT-SEC           SECTION.
       *
@@ -1253,7 +1253,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ������ɹ�
+      *    システム管理マスター読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1271,7 +1271,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1288,7 +1288,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1305,7 +1305,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1317,7 +1317,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    クローズ処理
       *****************************************************************
        900-CLOSE-SEC                  SECTION.
       *
@@ -1329,7 +1329,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1342,7 +1342,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        120-DBOPEN-SEC                SECTION.
       *
@@ -1360,7 +1360,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

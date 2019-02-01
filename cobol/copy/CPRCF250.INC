@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,37 +16,37 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ¸ø³²¥ì¥»¥×¥È¡ÊÆþ±¡¡Ë¡¦ÆþÂà±¡ÍúÎò¾ðÊó  COPY (CPRCF250.INC) 
+      *    å…¬å®³ãƒ¬ã‚»ãƒ—ãƒˆï¼ˆå…¥é™¢ï¼‰ãƒ»å…¥é€€é™¢å±¥æ­´æƒ…å ±  COPY (CPRCF250.INC) 
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  04.07.01    NACL-Æ£¸¶    15/01/24  Æ±ÆüºÆÆþ±¡»þ¤ÎÆþÂà±¡ÍúÎò¤Îµ­Ï¿
-      *                                     ¤ò½¤Àµ
-      *                                    ¡ÊÆþ±¡Æü¤ÈÂà±¡Æü¤¬Æ±¤¸¤È¤­¡Ë
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  04.07.01    NACL-è—¤åŽŸ    15/01/24  åŒæ—¥å†å…¥é™¢æ™‚ã®å…¥é€€é™¢å±¥æ­´ã®è¨˜éŒ²
+      *                                     ã‚’ä¿®æ­£
+      *                                    ï¼ˆå…¥é™¢æ—¥ã¨é€€é™¢æ—¥ãŒåŒã˜ã¨ãï¼‰
       ************************************************************
       *01  RECE250-REC.
            03  RECE250-KEY.
                05  RECE250-KEY1.
-      *°åÎÅµ¡´ØÈÖ¹æ
+      *åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                    07  RECE250-HOSPNUM     PIC 9(2).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
                    07  RECE250-SRYYM       PIC 9(06).
-      *Æþ³°¶èÊ¬
+      *å…¥å¤–åŒºåˆ†
                    07  RECE250-NYUGAIKBN   PIC X(01).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
                    07  RECE250-PTID        PIC 9(10).
-      *¥ì¥»¥×¥È¿ÇÎÅ²Ê
+      *ãƒ¬ã‚»ãƒ—ãƒˆè¨ºç™‚ç§‘
                    07  RECE250-RECEKA      PIC X(02).
-      *¸øÈñ£É£Ä
+      *å…¬è²»ï¼©ï¼¤
                    07  RECE250-HKNID       PIC 9(10).
-      *Å¬ÍÑ³«»ÏÇ¯·îÆü
+      *é©ç”¨é–‹å§‹å¹´æœˆæ—¥
                    07  RECE250-TEKSTYMD    PIC X(08).
-      *Æþ±¡Ç¯·îÆü
+      *å…¥é™¢å¹´æœˆæ—¥
                05  RECE250-NYUINYMD        PIC X(08).
-      *Æþ±¡Ç¯·îÆüÏ¢ÈÖ
+      *å…¥é™¢å¹´æœˆæ—¥é€£ç•ª
                05  RECE250-NYUINYMD-SEQNO  PIC 9(01).
-      *Âà±¡Ç¯·îÆü
+      *é€€é™¢å¹´æœˆæ—¥
            03  RECE250-TAIINYMD            PIC X(08).
-      *¼«±¡Îò¡ÝÆþ±¡Ãæ¶èÊ¬
+      *è‡ªé™¢æ­´âˆ’å…¥é™¢ä¸­åŒºåˆ†
            03  RECE250-NYUINCHUKBN         PIC X(01).

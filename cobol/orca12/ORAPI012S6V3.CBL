@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION      DIVISION.
        PROGRAM-ID.         ORAPI012S6V3.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���ԡ�����ݸ����󡦲��ǧ�����������
-      *                                               ����Ͽ�������(V3)
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  16/10/XX    NACL��¿��Ǽ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 患者　介護保険情報・介護認定情報等設定
+      *                                               （登録・削除）(V3)
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  16/10/XX    NACL−多々納　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -39,14 +39,14 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ������Ͽ�����ΰ�
+      *    患者登録スパ領域
            COPY    "P02COMMON-SPA".
-      *    ���Բ��̥����ΰ�
+      *    患者画面スパ領域
            COPY    "P02SCR-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-PARA                PIC 9(01).
@@ -75,7 +75,7 @@
            03  FLG-HENSYU              PIC 9(01).
            03  FLG-CANSEL              PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                     PIC 9(04).
            03  IDY                     PIC 9(04).
@@ -99,10 +99,10 @@
            03  IDX-T                    PIC 9(04).
            03  IDX-N                    PIC 9(04).
       *
-      *    ��������ΰ�
+      *    カウント領域
       *01  CNT-AREA.
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-SYMD.
@@ -115,7 +115,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -132,7 +132,7 @@
                05  WRK-ENDMM           PIC 9(02).
                05  WRK-ENDDD           PIC 9(02).
       *
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD-G.
                05  WRK-ERRKBN              PIC X(01).
                05  WRK-ERRCD               PIC X(02).
@@ -140,7 +140,7 @@
            03  WRK-ERRCD-2             PIC X(02).
            03  WRK-ERRMSG-1            PIC X(200).
            03  WRK-WERRCD              PIC X(03).
-      *    ���顼����
+      *    エラー種類
            03  WRK-ERR-AREA.
                05  WRK-ERR-NUM             PIC X(03).
                05  WRK-ERR-NUMMEI          PIC X(20).
@@ -148,18 +148,18 @@
                05  WRK-ERR-YMD             PIC X(22).
                05  WRK-ERR-CNT             PIC X(01).
       *
-      *    ��˥󥰥�����
+      *    ワーニングコード
            03  WRK-KEICD               PIC X(03).
            03  WRK-OKMSG               PIC X(100).
-      *    ������Υ��顼
+      *    項目毎のエラー
            03  WRK-ERRCD-TBLG.
                05  WRK-ERRCD-TBL       OCCURS   100.
                    07  WRK-ERRCD-T         PIC X(02).
       *
-      *    �ײ�����
+      *    要介護状態
            03  WRK-CAREJOTAICD         PIC X(02).
       *
-      *    ���륫UID
+      *    オルカUID
            03  WRK-ORCA-UID            PIC X(36).
            03  WRK-OPID                PIC X(16).
       *
@@ -173,7 +173,7 @@
            03  WRK-MCP-TERM            PIC X(64).
       *
       *
-      *    Ⱦ�������Ѵ�
+      *    半角全角変換
        01  WRK-HENKAN-AREA.
            03  WRK-MAE-INPUT           PIC X(100).
            03  WRK-ATO-INPUT           PIC X(100).
@@ -184,7 +184,7 @@
        01  WRK-XML-AREA.
            03  WRK-PTNUM               PIC X(20).
            03  WRK-BIRTHDAY-YMD        PIC X(08).
-      *    �����
+      *    基準日
            03  WRK-BASE-YMD            PIC X(08).
            03  WRK-BASE-YMD-R      REDEFINES  WRK-BASE-YMD.
                05  WRK-BYY             PIC 9(04).
@@ -193,18 +193,18 @@
       *
            03  WRK-WEIGHT              PIC 9(04).
       *
-      *    ���̥ѥ�᥿����
+      *    共通パラメタ内容
        01  WRK-APIV3DATA-AREA.
-      *    �Żҥ����UID
+      *    電子カルテUID
            03  WRK-KARTE-UID           PIC X(36).
-      *    �����ֹ�
+      *    患者番号
            03  WRK-PARA-PTNUM          PIC X(20).
            03  WRK-APIV3DATA-REC.
-      *        �쥹�ݥ��ֹ�
+      *        レスポンス番号
                05  WRK-RESPONSE-NUMBER     PIC X(02).
-      *        �����У�
+      *        処理ＰＧ
                05  WRK-PARA-SYORIPG        PIC X(02).
-      *        ��Ͽ��λ
+      *        登録終了
                05  WRK-PARA-ENDKBN         PIC X(01).
       *
        01  WRK-HENSYU-AREA.
@@ -215,156 +215,156 @@
                05  WRK-HMM         PIC Z9.
                05  FILLER          PIC X(01)   VALUE  ".".
                05  WRK-HDD         PIC Z9.
-      *    ����
+      *    全角
            03  WRK-HENYMD-Z        PIC X(22).
       *
       *
-      *    �գɣļ����ѥ��ꥢ
+      *    ＵＩＤ取得用エリア
        01  UIDIO-AREA.
            03  C-RET               PIC X(2).
            03  C-UID               PIC X(36).
        01  ST                      PIC 9(2).
       *v4.8
-      *    ������ɽ��
+      *    画面非表示
       *    COPY    "ENUM-VALUE".
       *
       *APIV3
-      *    ���Բ��̥����ΰ����¸
+      *    患者画面スパ領域の保存
            COPY    "P02SCR-SPA"
                               REPLACING  //SPA-// BY //APIS-//.
       *
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
        01  TBL-PTCARE-HKNINF-AREA.
            02  TBL-PTCARE-HKNINF-REC    OCCURS   10.
            COPY    "CPPTCARE-HKNINF.INC"   REPLACING
                                      //PTCRHKN-// BY //TBL-PTCRHKN-//.
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
        01  TBL-PTCARE-NINTEI-AREA.
            02  TBL-PTCARE-NINTEI-REC   OCCURS   50.
            COPY    "CPPTCARE-NINTEI.INC"   REPLACING
                                     //PTCRNIN-// BY //TBL-PTCRNIN-//.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ե�����ǥ��쥯�ȥ���ֻ��ꥵ��
+      *    ファイルデイレクトリ位置指定サブ
       **   COPY    "CPMKPASS.INC".
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTNUM.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    �����ֹ�ȯ������
+      *    患者番号発生サブ
       *    COPY    "CPORCSP01.INC".
-      *    �����Խ�����
+      *    画面編集サブ
            COPY    "CPORCSP02.INC".
-      *    �����å��ǥ��å�
+      *    チェックデジット
       *    COPY    "CPORCCHKDGT.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
-      *    ���ѥ����å��ѥ�᥿�ʳ�ĥ������
+      *    全角チェックパラメタ（拡張漢字）
            COPY    "CPORCSKANACHK2.INC".
       *
            COPY    "CPORCXKANACONV.INC".
       *
-      *    ��ĥʸ���б�
+      *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY     "CPORCSGDAY.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ��¾���極�֥ѥ�᥿
+      *    排他制御サブパラメタ
            COPY    "CPORCSLOCK.INC".
       *
-      *    API XML�ɹ��������
+      *    API XML読込用定義体
            COPY    "CPPATIENTMODV3REQ6.INC".
-      *    API XML�����������
+      *    API XML出力用定義体
            COPY    "CPPATIENTMODV3RES6.INC".
       *
-      *    �ݸ��ȹ礻����ؿ�����
+      *    保険組合せ決定関数サブ
       *    COPY    "CPORCSAPIHKN.INC".
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
-      *    �����ʬ̾���Խ��ѥ�᥿
+      *    補助区分名称編集パラメタ
       **** COPY    "CPORAPI012SUB1.INC".
-      *    ������λ�ѥ�᥿
+      *    処理終了パラメタ
            COPY    "CPORAPIV3SUB01.INC".
       *
-      *    �ݸ��ȹ礻�Խ��ѥ�᥿
+      *    保険組合せ編集パラメタ
       **   COPY    "CPORAPI012SUB2V3.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ����
+      *    システム基本
       *01  SYSBASE-REC.
       *    COPY    "CPSYSBASE.INC".
       *
-      *    �����ƥ�桼����
+      *    システムユーザー
       *01  SYSUSER-REC.
       *    COPY    "CPSYSUSER.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    �ʿ��Ųʾ����
+      *    （診療科情報）
       *    COPY    "CPSK1005.INC".
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
       *
            COPY  "CPSK4002.INC".
       *
            COPY  "CPSK1009.INC".
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ���Բ���ݸ�����ơ��֥�
+      *    患者介護保険情報テーブル
        01  PTCARE-HKNINF-REC.
            COPY    "CPPTCARE-HKNINF.INC".
-      *    ���Բ��ǧ��Ծ���ơ��֥�
+      *    患者介護認定者情報テーブル
        01  PTCARE-NINTEI-REC.
            COPY    "CPPTCARE-NINTEI.INC".
       *
-      *    �ѥ�᥿�ơ��֥�
+      *    パラメタテーブル
        01  PARA-REC.
            COPY    "CPPARA.INC".
       *
-      *    �ӣУ�����ơ��֥�
+      *    ＳＰＡ一時テーブル
        01  SPATMP-REC.
            COPY    "CPSPA-TMP.INC".
       *
-      *    API�ѥ�᥿�ơ��֥�
+      *    APIパラメタテーブル
        01  APIPARA-REC.
            COPY    "CPAPIPARA.INC".
       *
            COPY    "MCPDATA2.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
            COPY    "ORCA-BLOB".
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -382,7 +382,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -395,18 +395,18 @@
            INITIALIZE                      WRK-AREA
            INITIALIZE                      SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST08-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-RGTXMLMAKE-SEC
            END-IF
       *
@@ -419,7 +419,7 @@
       *
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -431,7 +431,7 @@
       *
            INITIALIZE                      SPA-P02SCRAREA
            INITIALIZE                      SPA-P02KYOUTU
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -445,14 +445,14 @@
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  PTMODRES-INFORMATION-DATE
            MOVE    WRK-HEN-TIME        TO  PTMODRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å� 
+      *    医療機関識別番号セット 
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"       USING
                                        MCPAREA
@@ -461,7 +461,7 @@
                MOVE   "99"             TO  WRK-ERRCD
                GO  TO         100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE                  SYS-1010-REC
            INITIALIZE                  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -479,11 +479,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 1000-RGTXMLREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO      TO      200-MAIN-EXT
@@ -498,7 +498,7 @@
                                        TO  PTMODRES-REQUEST-NUMBER
            MOVE    PTMODREQ-REQUEST-NUMBER
                                        TO  PTMODRES-RESPONSE-NUMBER
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF      PTMODREQ-ORCA-UID   NOT =   SPACE
                PERFORM 2009-PARA-INIT-SEC
            END-IF
@@ -513,7 +513,7 @@
       *    WHEN    "03"
       *        MOVE    3                   TO  FLG-SYORI
            WHEN    "99"
-      *        ����������λ
+      *        強制処理終了
                PERFORM 2099-CANCEL-SEC
                MOVE    "00"                TO  PTMODRES-RESPONSE-NUMBER
                GO      TO      200-MAIN-EXT
@@ -522,7 +522,7 @@
                MOVE    "01"                TO  PTMODRES-RESPONSE-NUMBER
            END-EVALUATE
       *
-      *    ���Ϲ��ܥ����å�����
+      *    入力項目チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 2001-INPUT-CHK-SEC
            END-IF
@@ -531,9 +531,9 @@
                IF      WRK-ERRCD           =   "08"
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
                END-IF
-      *        �Խ�����
+      *        編集処理
                PERFORM 20010-INPUT-HEN-SEC
-      *        �ѥ�᥿�������¾�������
+      *        パラメタ削除・排他解除処理
                IF     (PTMODREQ-ORCA-UID   NOT =   SPACE  )
                  AND  (FLG-SYORIEND            =   1      )
                    PERFORM 2900-SYORI-END-SEC
@@ -545,13 +545,13 @@
       *
            EVALUATE    PTMODREQ-REQUEST-NUMBER
            WHEN    "01"
-      *        �������
+      *        初期処理
                PERFORM 2001-PTINF-SYORI-SEC
            WHEN    "02"
-      *        ��ǧ����
+      *        確認処理
                PERFORM 2002-CHECK-SYORI-SEC
       *    WHEN    "03"
-      *        ��������
+      *        更新処理
       *        PERFORM 2003-UPDATE-SYORI-SEC
            END-EVALUATE
       *
@@ -560,7 +560,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����������λ
+      *    強制処理終了
       *****************************************************************
        2099-CANCEL-SEC                 SECTION.
       *
@@ -594,7 +594,7 @@
            END-IF
            MOVE    9                   TO  FLG-SYORI
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
            .
        2099-CANCEL-EXT.
@@ -602,7 +602,7 @@
       *
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        1000-RGTXMLREAD-SEC   SECTION.
       *
@@ -611,7 +611,7 @@
            END-IF
            INITIALIZE                      XML-PATIENTMODREQ
            INITIALIZE                      XML-APIREQ
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLOPEN"           TO  MCP-FUNC
            MOVE    "xml_patientmodv3req6"  TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
@@ -654,32 +654,32 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-RGTXMLMAKE-SEC   SECTION.
       *
            MOVE    SPACE               TO  WRK-OKMSG
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "����������λ"
+                       MOVE    "検索処理終了"
                                            TO  WRK-OKMSG
                    WHEN    2
                        IF      PTMODRES-RESPONSE-NUMBER    =  "00"
-                           MOVE    "��Ͽ������λ"
+                           MOVE    "登録処理終了"
                                            TO  WRK-OKMSG
                        ELSE
-                           MOVE    "��Ͽ������λ"
+                           MOVE    "登録処理終了"
                                            TO  WRK-OKMSG
                        END-IF
                    WHEN    9
-                       MOVE    "���������λ"
+                       MOVE    "解除処理終了"
                                            TO  WRK-OKMSG
                END-EVALUATE
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                MOVE    ZERO            TO  WRK-ERRCD
                IF      WRK-ERRKBN          =   SPACE
                    MOVE    ZERO            TO  WRK-ERRKBN
@@ -687,7 +687,7 @@
                MOVE    WRK-ERRCD-G         TO  PTMODRES-API-RESULT
                MOVE    WRK-OKMSG           TO  PTMODRES-API-RESULT-MSG
            ELSE
-      *        ���顼��å�����
+      *        エラーメッセージ
                IF      WRK-ERRMSG          =   SPACE
                    PERFORM 890-ERRCD-MSG-SEC
                END-IF
@@ -742,7 +742,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        10001-XML-REMAKE-SEC        SECTION.
       *
@@ -751,11 +751,11 @@
        10001-XML-REMAKE-EXT.
            EXIT.
       *****************************************************************
-      *    ORCA-UID �������
+      *    ORCA-UID 初期処理
       *****************************************************************
        2009-PARA-INIT-SEC            SECTION.
       *
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    PTMODREQ-ORCA-UID   TO  WRK-ORCA-UID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
@@ -782,13 +782,13 @@
       *
            IF     (WRK-ERRCD               =   SPACE )
              AND  (PTMODREQ-REQUEST-NUMBER =   "01"  )
-      *        �ꥯ�����ȣ���������¾���
+      *        リクエスト０１　は排他解除
                PERFORM 990-LOCK-OUT-SEC
            END-IF
       *
            IF     (WRK-ERRCD               =   SPACE )
              AND  (PTMODREQ-REQUEST-NUMBER NOT =   "01"  )
-      *        �ꥯ�����ȣ����ʳ��ϡ�Ʊ��������³���Ǥ��뤳��
+      *        リクエスト０１以外は、同じ処理の続きであること
                IF      WRK-PARA-SYORIPG    NOT =   "06"
                    MOVE    "08"                TO  WRK-ERRCD
                END-IF
@@ -799,39 +799,39 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ����������ƥ����å�
+      *    患者基本情報設定内容チェック
       *****************************************************************
        2001-INPUT-CHK-SEC      SECTION.
       *
-      *    �Խ�����
+      *    編集処理
            PERFORM 20010-INPUT-HEN-SEC
-      *    ɬ�����ϥ����å�
+      *    必須入力チェック
            PERFORM 20010-INIT-CHECK-SEC
       *
-      *    �Żҥ���ƣգɣĥ����å�
+      *    電子カルテＵＩＤチェック
            IF     (PTMODREQ-ORCA-UID   NOT =   SPACE  )
              AND  (WRK-ERRCD           =   SPACE  )
                IF      PTMODREQ-KARTE-UID  NOT =   WRK-KARTE-UID
-      *            ¾ü��������
+      *            他端末使用中
                    MOVE    "90"            TO  WRK-ERRCD
                END-IF
            END-IF
       *
-      *    �����ֹ�����å�
+      *    患者番号チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20011-PTNUM-CHK-SEC
            END-IF
            IF      WRK-ERRCD       NOT =   SPACE
                MOVE    1               TO  FLG-SYORIEND
            END-IF
-      *    ��³��ʬ
+      *    継続区分
            IF      PTMODREQ-CONT-MODE  =   "True"
                MOVE    1               TO  FLG-CONTKBN
            ELSE
                MOVE    ZERO            TO  FLG-CONTKBN
            END-IF
       *
-      *    ���Դ��ܥ����å�����
+      *    患者基本チェック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200211-KIHON-CHK-SEC
            END-IF
@@ -841,7 +841,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���륫�գɣ��Ѵ��Խ�����
+      *    オルカＵＩＤ変換編集処理
       *****************************************************************
        2001-TERMID-HEN-SEC     SECTION.
       *
@@ -857,26 +857,26 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ϲ����Ѵ��Խ�����
+      *    入力項目変換編集処理
       *****************************************************************
        20010-INPUT-HEN-SEC     SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    PTMODREQ-PATIENTID      TO  PTMODRES-PATIENTID
            MOVE    PTMODREQ-PATIENTID      TO  WRK-PTNUM
-      *    �����
+      *    基準日
       *    MOVE    PTMODREQ-BASE-DATE      TO  PTMODRES-BASE-DATE
       *    MOVE    PTMODREQ-BASE-DATE      TO  WRK-HEN-DATE
       *    MOVE    SPACE                   TO  WRK-HEN-TIME
       *    PERFORM 802-DAYHEN02-SEC
       *    MOVE    WRK-SYMD                TO  WRK-BASE-YMD
-      *    ̤������ϥ����ƥ��������
+      *    未設定時はシステム情報設定
       *    IF      WRK-BASE-YMD         =   SPACE
       *        MOVE    SMCNDATE-YMD        TO  WRK-BASE-YMD
       *    END-IF
-      *    ������򥷥��ƥ����դ�
+      *    基準日をシステム日付へ
       *    MOVE    WRK-BASE-YMD        TO  SPA-SYSYMD
-      *    ����ɽ���Խ�
+      *    画面表示編集
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY2-AREA
            MOVE    "21"                TO  LNK-DAY2-IRAI
@@ -889,7 +889,7 @@
                MOVE    SPA-SYSYMD          TO  SPA-SYSYMDWH
            END-IF
       *
-      *    ���Ծ���
+      *    患者情報
            MOVE    PTMODREQ-NAME           TO  PTMODRES-NAME
            MOVE    PTMODREQ-KANANAME       TO  PTMODRES-KANANAME
            MOVE    PTMODREQ-BIRTHDAY       TO  PTMODRES-BIRTHDAY
@@ -910,23 +910,23 @@
            EXIT.
       *
       *****************************************************************
-      *    ɬ�����ϥ����å�����
+      *    必須入力チェック処理
       *****************************************************************
        20010-INIT-CHECK-SEC    SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            IF      WRK-PTNUM           =   SPACE
                MOVE    "01"                TO  WRK-ERRCD
            END-IF
       *
-      *    UID���Żҥ���ơ�
+      *    UID（電子カルテ）
            IF      PTMODREQ-KARTE-UID  =   SPACE
                IF     (WRK-ERRCD           =   SPACE  )
                    MOVE    "06"                TO  WRK-ERRCD
                END-IF
            END-IF
       *
-      *    ���륫�գɣ�
+      *    オルカＵＩＤ
            IF      PTMODREQ-ORCA-UID   =   SPACE
                IF      PTMODREQ-REQUEST-NUMBER NOT =   "01"
                    MOVE    "07"                TO  WRK-ERRCD
@@ -937,13 +937,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�����å�
+      *    患者番号チェック
       *****************************************************************
        20011-PTNUM-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  SPA-PTID
            MOVE    SPACE               TO  SPA-PTNUM
-      *    �����ֹ����
+      *    患者番号取得
            INITIALIZE                  ORCSPTIDAREA
            MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            MOVE    WRK-PTNUM           TO  SPTID-PTNUM
@@ -963,11 +963,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ի�̾�����å�����
+      *    患者氏名チェック処理
       *****************************************************************
        20011-NAME-CHK-SEC    SECTION.
       *
-      *    Ⱦ�Ѷ�������Ѷ����
+      *    半角空白を全角空白へ
            MOVE    PTMODREQ-NAME       TO  WRK-MAE-INPUT
            MOVE    50                  TO  WRK-LEN
            PERFORM 891-HALF-ZEN2-SEC
@@ -982,11 +982,11 @@
        20011-NAME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���ʻ�̾�����å�����
+      *    カナ氏名チェック処理
       *****************************************************************
        20011-KANANAME-CHK-SEC    SECTION.
       *
-      *    Ⱦ�Ѥ����Ѥ�
+      *    半角を全角へ
            MOVE    PTMODREQ-KANANAME   TO  WRK-MAE-INPUT
            MOVE    50                  TO  WRK-LEN
            PERFORM 880-HALF-ZENCNG-SEC
@@ -1001,7 +1001,7 @@
        20011-KANANAME-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ���̥����å�����
+      *    性別チェック処理
       *****************************************************************
        20011-SEX-CHK-SEC    SECTION.
       *
@@ -1017,11 +1017,11 @@
        20011-SEX-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǯ���������å�����
+      *    生年月日チェック処理
       *****************************************************************
        20011-BIRTHDAY-CHK-SEC    SECTION.
       *
-      *    ���ե����å�����
+      *    日付チェックサブ
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -1042,19 +1042,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �գɣĥ����ɼ�������
+      *    ＵＩＤコード取得処理
       *****************************************************************
        20020-ORCAUID-SYORI-SEC        SECTION.
       *
-      *    UID�����ɽ���
+      *    UIDコード処理
            IF      PTMODREQ-ORCA-UID   =   SPACE
-      *        UID�����ɼ�������
+      *        UIDコード取得処理
                PERFORM 1001-UID-GET-SEC
                MOVE    C-UID               TO  WRK-ORCA-UID
            ELSE
                MOVE    PTMODREQ-ORCA-UID   TO  WRK-ORCA-UID
            END-IF
-      *    UID�����ɤ�TERMID
+      *    UIDコードをTERMID
            MOVE    SPACE               TO  SPA-TERMID
            STRING  "API+"
                    WRK-ORCA-UID        DELIMITED  BY  SPACE
@@ -1068,11 +1068,11 @@
            EXIT.
       *
       *****************************************************************
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
       *****************************************************************
        1001-UID-GET-SEC     SECTION.
       *
-      *    UID�����ɼ�������
+      *    UIDコード取得処理
            INITIALIZE                  UIDIO-AREA
            CALL    "orcuidset"         USING
                                        ST
@@ -1083,16 +1083,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ԡ��ݸ������������
+      *    患者・保険情報取得処理
       *****************************************************************
        2001-PTINF-SYORI-SEC        SECTION.
       *
            INITIALIZE                      APIS-P02SCRAREA
       *
-      *    ���륫�գɣĽ���
+      *    オルカＵＩＤ処理
            PERFORM 20020-ORCAUID-SYORI-SEC
       *
-      *    �����ֹ�Ƚ��
+      *    患者番号判定
            PERFORM 20011-PTINF-INITCHK-SEC
       *
            IF      PTMODREQ-ORCA-UID   NOT =   SPACE
@@ -1100,17 +1100,17 @@
                PERFORM 2009-SPATMP-DEL-SEC
            END-IF
       *
-      *    ���ܾ������
+      *    基本情報処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20012-PTINF-HEN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ����ݸ������Խ�����
+      *        介護保険情報編集処理
                PERFORM 20013-PTCARE-HKNINF-HENSYU-SEC
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ǧ��Ծ����Խ�����
+      *        介護認定者情報編集処理
                PERFORM 20014-PTCARE-NINTEI-HENSYU-SEC
            END-IF
       *
@@ -1122,13 +1122,13 @@
                    MOVE    PTMODREQ-ORCA-UID   TO  PTMODRES-ORCA-UID
                END-IF
            END-IF
-      *    ���顼Ƚ��
+      *    エラー判定
            IF      WRK-ERRCD           =   SPACE
                IF      IDX-ERR             >   ZERO
                    MOVE    "60"               TO  WRK-ERRCD
                END-IF
            END-IF
-      *    �ѥ�᥿��Ͽ
+      *    パラメタ登録
            IF      FLG-SYORIEND    =   1
                IF      PTMODRES-ORCA-UID   NOT =   SPACE
                    PERFORM 2902-APIPARA-INS-SEC
@@ -1141,11 +1141,11 @@
        2001-PTINF-SYORI-EXT.
            EXIT.
       ****************************************************************
-      *    �����ֹ�Ƚ�궦�̽���
+      *    患者番号判定共通処理
       ****************************************************************
        20011-PTINF-INITCHK-SEC      SECTION.
       *
-      *    �����ֹ�Ƚ��
+      *    患者番号判定
            IF     (FLG-SYORI       NOT =   1              )
              AND  (SPA-PTNUM       NOT =   WRK-PARA-PTNUM )
                MOVE    "22"                TO  WRK-ERRCD
@@ -1153,7 +1153,7 @@
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ���Ծ��󸡺�
+      *        患者情報検索
                INITIALIZE                      PTINF-REC
                MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
                MOVE    SPA-PTID            TO  PTINF-PTID
@@ -1161,29 +1161,29 @@
                IF      FLG-PTINF       NOT =   ZERO
                    MOVE    "10"            TO  WRK-ERRCD
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
-      *            ��¾����ʤ�
+      *            排他制御なし
                    MOVE    1               TO  FLG-SYORIEND
                END-IF
            END-IF
-      *    ��¾�����å� & ���å�����
+      *    排他チェック & ロック処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 990-LOCK-IN-SEC
                IF      SLOCK-RETURN    NOT =   ZERO
                    MOVE    "90"            TO  WRK-ERRCD
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
-      *            ��¾����ʤ�
+      *            排他制御なし
                    MOVE    1               TO  FLG-SYORIEND
                END-IF
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ���Ծ�����������Խ�����
+      *        患者情報出力内容編集処理
                PERFORM 20021-PTMODRES-HEN-SEC
            END-IF
       *
       ***  IF     (FLG-SYORI       NOT =   1    )
            IF     (WRK-ERRCD           =   SPACE)
-      *        ��̾�����̡���ǯ�����ΰ���
+      *        氏名・性別・生年月日の一致
                IF     ((PTMODREQ-NAME  NOT =    SPACE        )  AND
                        (PTMODREQ-NAME  NOT =    PTMODRES-NAME))
                   OR  ((PTMODREQ-SEX   NOT =    SPACE        )  AND
@@ -1199,13 +1199,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ծ�����������Խ�����
+      *    患者情報出力内容編集処理
       *****************************************************************
        20021-PTMODRES-HEN-SEC        SECTION.
       *
-      *    �����ֹ�
+      *    患者番号
            MOVE    SPA-PTNUM           TO  PTMODRES-PATIENTID
-      *    ���Ծ���
+      *    患者情報
            MOVE    PTINF-NAME          TO  PTMODRES-NAME
            MOVE    PTINF-KANANAME      TO  PTMODRES-KANANAME
            MOVE    PTINF-SEX           TO  PTMODRES-SEX
@@ -1214,7 +1214,7 @@
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  PTMODRES-BIRTHDAY
       *
-      *    �������
+      *    自宅情報
       *    MOVE    PTINF-HOME-ADRS     TO  PTMODRES-HOME-ADDRESSES1
       *    MOVE    PTINF-HOME-BANTI    TO  PTMODRES-HOME-ADDRESSES2
            .
@@ -1222,14 +1222,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿��Ͽ����
+      *    パラメタ登録処理
       *****************************************************************
        2901-PARA-INS-SEC        SECTION.
       *
-      *    API�ѥ�᥿��Ͽ
+      *    APIパラメタ登録
            PERFORM 2902-APIPARA-INS-SEC
       *
-      *    �ѥ�᥿���
+      *    パラメタ削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -1240,7 +1240,7 @@
            MOVE    "del2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    SPA��¸
+      *    SPA保存
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    "AP12"              TO  PARA-GYOUMUID
@@ -1268,11 +1268,11 @@
            EXIT.
       *
       *****************************************************************
-      *    API�ѥ�᥿��Ͽ����
+      *    APIパラメタ登録処理
       *****************************************************************
        2902-APIPARA-INS-SEC        SECTION.
       *
-      *    �ѥ�᥿���
+      *    パラメタ削除
            INITIALIZE                      APIPARA-REC
            MOVE    "AP12"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
@@ -1284,14 +1284,14 @@
            MOVE    "del2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    ��Ͽ
+      *    登録
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    "AP12"              TO  APIPARA-GYOUMUID
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
            MOVE    "API12V3"           TO  APIPARA-FILEMEI
            MOVE    1                   TO  APIPARA-EDANUM
-      *    �쥹�ݥ��ֹ桦�Żҥ����UID��¸
+      *    レスポンス番号・電子カルテUID保存
            MOVE    PTMODREQ-KARTE-UID  TO  APIPARA-KARTE-UID
            MOVE    WRK-PTNUM           TO  APIPARA-PTNUM
       *
@@ -1299,7 +1299,7 @@
            MOVE    PTMODRES-RESPONSE-NUMBER
                                        TO  WRK-RESPONSE-NUMBER
            MOVE    WRK-ENDKBN          TO  WRK-PARA-ENDKBN
-      *    �����У�
+      *    処理ＰＧ
            MOVE    "06"                TO  WRK-PARA-SYORIPG
       *
            MOVE    WRK-APIV3DATA-REC   TO  APIPARA-DATA-REC
@@ -1323,26 +1323,26 @@
       *
       *
       *****************************************************************
-      *    ���Դ��ܥ����å�����
+      *    患者基本チェック処理
       *****************************************************************
        200211-KIHON-CHK-SEC        SECTION.
       *
-      *    ��̾�����å�
+      *    氏名チェック
            IF     (WRK-ERRCD           =   SPACE )
            AND    (PTMODREQ-NAME   NOT =   SPACE )
                PERFORM 20011-NAME-CHK-SEC
            END-IF
-      *    ���ʻ�̾�����å�
+      *    カナ氏名チェック
            IF     (WRK-ERRCD           =   SPACE ) 
            AND    (PTMODREQ-KANANAME   NOT =   SPACE )
                PERFORM 20011-KANANAME-CHK-SEC
            END-IF
-      *    ���̥����å�
+      *    性別チェック
            IF     (WRK-ERRCD           =   SPACE ) 
            AND    (PTMODREQ-SEX    NOT =   SPACE )
                PERFORM 20011-SEX-CHK-SEC
            END-IF
-      *    ��ǯ�������������å�
+      *    生年月日暦日チェック
            IF     (WRK-ERRCD           =   SPACE ) 
            AND    (WRK-BIRTHDAY-YMD    NOT =   SPACE )
                PERFORM 20011-BIRTHDAY-CHK-SEC
@@ -1353,13 +1353,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報処理
       *****************************************************************
        20012-PTINF-HEN-SEC        SECTION.
       *
            MOVE    SPA-PTID            TO  SPA-GMN-PTID
            MOVE    SPA-PTNUM           TO  SPA-GMN-PTNUM
-      *    �ѥ�᥿�ե����롢���Ծ���Υ��å�
+      *    パラメタファイル、患者情報のセット
            MOVE    SPACE               TO  P02
            INITIALIZE                      P02
       *
@@ -1373,7 +1373,7 @@
                                                SPA-P02SCRAREA
                                                P02
            MOVE    SPACE               TO  SPA-ERRCD
-      *    ����ˡ�̰����Խ���ʬ�ʤ�
+      *    公費法別一覧編集区分なし
            MOVE    "0"                 TO  SPA-NAI-KOHHBTKBN-FLG
       *
            .
@@ -1381,12 +1381,12 @@
            EXIT.
       *
       ****************************************************************
-      *    ����ݸ���������Խ�����
+      *    介護保険情報情報編集処理
       ****************************************************************
        20013-PTCARE-HKNINF-HENSYU-SEC           SECTION.
       *
            INITIALIZE                  PTMODRES-CARE-INFO-G
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            MOVE    SPACE               TO  PTCARE-HKNINF-REC
            INITIALIZE                  PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
@@ -1409,21 +1409,21 @@
            PERFORM UNTIL      (FLG-PTCARE-HKNINF   =   1  )
                           OR  (IDX                 >=  10 )
                ADD     1                       TO  IDX
-      *        �ݸ����ֹ�
+      *        保険者番号
                MOVE    PTCRHKN-HKNJANUM    TO
                                        PTMODRES-CARE-INSURANCE-NUMBER
                                                              (IDX)
-      *        ���ݸ����ֹ�
+      *        被保険者番号
                MOVE    PTCRHKN-HIHKNJANUM  TO
                                            PTMODRES-CARE-POLICYHOLDER
                                                              (IDX)
-      *        ������
+      *        開始日
                MOVE    PTCRHKN-TEKSTYMD    TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  PTMODRES-CARE-START-DATE
                                                              (IDX)
-      *        ��λ��
+      *        終了日
                MOVE    PTCRHKN-TEKEDYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  PTMODRES-CARE-END-DATE
@@ -1441,12 +1441,12 @@
            EXIT.
       *
       ****************************************************************
-      *    ���ǧ��Ծ����Խ�����
+      *    介護認定者情報編集処理
       **************************************************************
        20014-PTCARE-NINTEI-HENSYU-SEC           SECTION.
       *
            INITIALIZE                  PTMODRES-NEED-INFO-G
-      *    ���Բ���ݸ�����
+      *    患者介護保険情報
            INITIALIZE                  PTCARE-NINTEI-REC
            MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
            MOVE    PTINF-PTID          TO  PTCRNIN-PTID
@@ -1468,26 +1468,26 @@
            PERFORM UNTIL      (FLG-PTCARE-NINTEI   =   1  )
                           OR  (IDX                 >=  50 )
                ADD     1                   TO  IDX
-      *        �ײ�����
+      *        要介護状態
                MOVE    PTCRNIN-CAREJOTAICD TO
                                            PTMODRES-NEED-CARE-STATE-CODE
                                                              (IDX)
-      *        �ײ�����̾���Խ�
+      *        要介護状態名称編集
                MOVE    PTCRNIN-CAREJOTAICD TO  WRK-CAREJOTAICD
                PERFORM 200221-PTCARE-CARESTATE-SEC
-      *        ǧ��ǯ����
+      *        認定年月日
                MOVE    PTCRNIN-NINTEIYMD   TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-DATE
                                                              (IDX)
-      *        ������
+      *        開始日
                MOVE    PTCRNIN-TEKSTYMD    TO  WRK-SYMD
                MOVE    ZERO                TO  WRK-THMS
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-START-DATE
                                                              (IDX)
-      *        ��λ��
+      *        終了日
                MOVE    PTCRNIN-TEKEDYMD    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  PTMODRES-NEED-END-DATE
@@ -1505,34 +1505,34 @@
        20014-PTCARE-NINTEI-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    �ײ�����̾���Խ�����
+      *    要介護状態名称編集処理
       *****************************************************************
        200221-PTCARE-CARESTATE-SEC       SECTION.
       *
            MOVE    ZERO                TO  FLG-CHKERR
-      *    �ײ����ֶ�ʬ
+      *    要介護状態区分
            EVALUATE    WRK-CAREJOTAICD
                WHEN    "01"
-                   MOVE    "��Ω"      TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "自立"      TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "11"
-                   MOVE    "�׻ٱ�"    TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援"    TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "12"
-                   MOVE    "�׻ٱ磱"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援１"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "13"
-                   MOVE    "�׻ٱ磲"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要支援２"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "21"
-                   MOVE    "�ײ�"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護１"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "22"
-                   MOVE    "�ײ�"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護２"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "23"
-                   MOVE    "�ײ�"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護３"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "24"
-                   MOVE    "�ײ�"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護４"  TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    "25"
-                   MOVE    "�ײ�"  TO  PTMODRES-NEED-CARE-STATE(IDX)
+                   MOVE    "要介護５"  TO  PTMODRES-NEED-CARE-STATE(IDX)
       *H30.7
                WHEN    "31"
-                   MOVE    "�����оݼ�"
+                   MOVE    "事業対象者"
                                        TO  PTMODRES-NEED-CARE-STATE(IDX)
                WHEN    OTHER
                    MOVE    1           TO  FLG-CHKERR
@@ -1542,29 +1542,29 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    更新確認処理
       *****************************************************************
        2002-CHECK-SYORI-SEC     SECTION.
       *
            MOVE    ZERO                TO  IDX-ERR
       *
-      *    �����ֹ�Ƚ��
+      *    患者番号判定
            PERFORM 20011-PTINF-INITCHK-SEC
       * 
-      *    ���ܾ������
+      *    基本情報処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20012-PTINF-HEN-SEC
            END-IF
-      *    ���ܥ����å�
+      *    項目チェック
            IF      WRK-ERRCD           =   SPACE
                PERFORM 20021-KOUSIN-CHK-SEC
            END-IF
-      *    ��������
+      *    更新処理
            IF     (WRK-ERRCD           =   SPACE )
               AND (IDX-ERR             =   ZERO  )
                PERFORM 20022-KOUSIN-SYORI-SEC
            END-IF
-      *    ���顼Ƚ��
+      *    エラー判定
            IF      WRK-ERRCD           =   SPACE
                IF      IDX-ERR             >   ZERO
                    MOVE    "60"               TO  WRK-ERRCD
@@ -1572,20 +1572,20 @@
            END-IF
       *
            IF      WRK-ERRCD           =   SPACE
-      *        ��³
+      *        継続
                IF      FLG-CONTKBN         =   1
-      *            �ѥ�᥿���
+      *            パラメタ削除
                    PERFORM 2902-PARA-ALLDEL-SEC
                    PERFORM 2009-SPATMP-DEL-SEC
-      *            �ݸ���Ͽ��
+      *            保険登録へ
                    MOVE    "01"            TO  PTMODRES-RESPONSE-NUMBER
-      *            ��³��ʬ��λ
+      *            継続区分終了
                    MOVE    "1"             TO  WRK-ENDKBN
-      *            API�ѥ�᥿��Ͽ
+      *            APIパラメタ登録
                    PERFORM 2902-APIPARA-INS-SEC
                ELSE
                    MOVE    "00"            TO  PTMODRES-RESPONSE-NUMBER
-      *            �ѥ�᥿�������¾�������
+      *            パラメタ削除・排他解除処理
                    PERFORM 2900-SYORI-END-SEC
                END-IF
            ELSE
@@ -1593,7 +1593,7 @@
                    MOVE    "02"            TO  PTMODRES-RESPONSE-NUMBER
                END-IF
                IF      FLG-CANSEL      =   ZERO
-      *            SPA���Խ�
+      *            SPA再編集
                    PERFORM 2901-PARA-INS-SEC
                    PERFORM 2008-SPATMP-INS-SEC
                END-IF
@@ -1604,11 +1604,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���������å�����
+      *    更新チェック処理
       *****************************************************************
        20021-KOUSIN-CHK-SEC         SECTION.
       *
-      *    ����ݸ�����
+      *    介護保険情報
            EVALUATE    PTMODREQ-CARE-MODE
                WHEN    "DELETE"
                WHEN    "Delete"
@@ -1623,7 +1623,7 @@
                    MOVE    "20"            TO  WRK-ERRCD-T (IDX-ERR)
            END-EVALUATE
       *
-      *    �ײ��ǧ�����
+      *    要介護認定情報
            EVALUATE    PTMODREQ-NEED-MODE
                WHEN    "DELETE"
                WHEN    "Delete"
@@ -1643,11 +1643,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        20022-KOUSIN-SYORI-SEC         SECTION.
       *
-      *    ����ݸ�����
+      *    介護保険情報
            EVALUATE    PTMODREQ-CARE-MODE
                WHEN    "DELETE"
                WHEN    "Delete"
@@ -1657,7 +1657,7 @@
                    PERFORM 200221-HKNINF-UPDATE-SEC
            END-EVALUATE
       *
-      *    �ײ��ǧ�����
+      *    要介護認定情報
            EVALUATE    PTMODREQ-NEED-MODE
                WHEN    "DELETE"
                WHEN    "Delete"
@@ -1671,13 +1671,13 @@
        20022-KOUSIN-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    ����ݸ���������å�����
+      *    介護保険情報チェック処理
       *****************************************************************
        200212-PTCARE-HKNINF-CHK-SEC         SECTION.
       *
            INITIALIZE                  TBL-PTCARE-HKNINF-AREA
            MOVE    ZERO                TO  FLG-ERR-01
-      *    �������ƥ����å�
+      *    送信内容チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   10   )
                MOVE    SPACE               TO  SPA-ERRCD
@@ -1693,10 +1693,10 @@
                MOVE    PTMODREQ-CARE-END-DATE (IDX)
                                        TO  PTMODRES-CARE-END-DATE
                                                                 (IDX)
-      *        �ݸ����ֹ�
+      *        保険者番号
                IF       PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
                                        NOT =   SPACE
-      *            Ⱦ�ѣ�ʸ��
+      *            半角６文字
                    MOVE     PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
                                                    TO  WRK-MAE-INPUT
                    MOVE    6                       TO  WRK-LEN
@@ -1709,10 +1709,10 @@
                        MOVE    "2811"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ���ݸ����ֹ�
+      *        被保険者番号
                IF       PTMODREQ-CARE-POLICYHOLDER (IDX)
                                        NOT =   SPACE
-      *            Ⱦ�ѣ���ʸ��
+      *            半角１０文字
                    MOVE     PTMODREQ-CARE-POLICYHOLDER (IDX)
                                                    TO  WRK-MAE-INPUT
                    MOVE    10                      TO  WRK-LEN
@@ -1727,7 +1727,7 @@
                        END-IF
                    END-IF
                END-IF
-      *        ����ǯ����
+      *        開始年月日
                IF      PTMODREQ-CARE-START-DATE (IDX)  =   SPACE
                    CONTINUE
                ELSE
@@ -1737,7 +1737,7 @@
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD        TO  TBL-PTCRHKN-TEKSTYMD
                                                          (IDX)
-      *            ���������å�
+      *            暦日チェック
                    MOVE    TBL-PTCRHKN-TEKSTYMD (IDX)  TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1    )
@@ -1745,7 +1745,7 @@
                        MOVE    "2815"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ��λǯ����
+      *        終了年月日
                IF      PTMODREQ-CARE-END-DATE(IDX)  =   SPACE
                    CONTINUE
                ELSE
@@ -1755,7 +1755,7 @@
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD        TO  TBL-PTCRHKN-TEKEDYMD
                                                          (IDX)
-      *            ���������å�
+      *            暦日チェック
                    MOVE    TBL-PTCRHKN-TEKEDYMD (IDX)  TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1    )
@@ -1763,9 +1763,9 @@
                        MOVE    "2816"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ɬ�ܹ��ܥ����å��ʳ���ǯ������
+      *        必須項目チェック（開始年月日）
                IF      PTMODREQ-CARE-START-DATE (IDX)  =   SPACE
-      *            ¾���ܤ϶���Ǥ��뤳��
+      *            他項目は空白であること
                    IF     (PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
                                                        =   SPACE )
                       AND (PTMODREQ-CARE-POLICYHOLDER (IDX)
@@ -1787,12 +1787,12 @@
                END-IF
            END-PERFORM
       *
-      *    ���ܥ����å�
+      *    基本チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   10   )
                         OR    (TBL-PTCRHKN-TEKSTYMD (IDX)   =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
-      *        ��λǯ����
+      *        終了年月日
                IF      TBL-PTCRHKN-TEKEDYMD (IDX)  =   SPACE
                    MOVE    "99999999"          TO  TBL-PTCRHKN-TEKEDYMD
                                                                  (IDX)
@@ -1803,14 +1803,14 @@
                    MOVE    WRK-HEN-DATE    TO  PTMODRES-CARE-END-DATE
                                                                 (IDX)
                END-IF
-      *        �������佪λ�������顼
+      *        開始日＞終了日　エラー
                IF      TBL-PTCRHKN-TEKSTYMD (IDX)
                                            >  TBL-PTCRHKN-TEKEDYMD (IDX)
                    IF      SPA-ERRCD          =   SPACE
                        MOVE    "2817"              TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        �ݸ����ֹ桦���ݸ����ֹ�ɤ��餫ɬ��
+      *        保険者番号・被保険者番号どちらか必須
                IF    (PTMODREQ-CARE-INSURANCE-NUMBER (IDX)
                                            =   SPACE )
                  AND (PTMODREQ-CARE-POLICYHOLDER (IDX)
@@ -1827,7 +1827,7 @@
                 END-IF
            END-PERFORM
       *
-      *    ���ֽ�ʣ�����å�
+      *    期間重複チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   10   )
                         OR    (FLG-ERR-01  NOT =   ZERO  )
@@ -1853,7 +1853,7 @@
                END-PERFORM
            END-PERFORM
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                       UNTIL   (IDX         >   10   )
                IF      PTMODRES-CARE-ERRCD (IDX) NOT =  SPACE
@@ -1870,7 +1870,7 @@
                ADD    1                TO  IDX-ERR
                MOVE    "21"            TO  WRK-ERRCD-T (IDX-ERR)
            END-IF
-      *    �оݤʤ�
+      *    対象なし
            IF     (TBL-PTCRHKN-TEKSTYMD (1) =   SPACE )
              AND  (FLG-ERR-01              =   ZERO  )
                ADD     1               TO  IDX-ERR
@@ -1880,13 +1880,13 @@
        200212-PTCARE-HKNINF-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �ײ��ǧ���������å�����
+      *    要介護認定情報チェック処理
       *****************************************************************
        200222-PTCARE-NINTEI-CHK-SEC         SECTION.
       *
            INITIALIZE                  TBL-PTCARE-NINTEI-AREA
            MOVE    ZERO                TO  FLG-ERR-01
-      *    �������ƥ����å�
+      *    送信内容チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   50   )
                MOVE    SPACE               TO  SPA-ERRCD
@@ -1902,10 +1902,10 @@
                MOVE    PTMODREQ-NEED-END-DATE (IDX)
                                        TO  PTMODRES-NEED-END-DATE
                                                                 (IDX)
-      *        �ײ����ֶ�ʬ
+      *        要介護状態区分
                IF       PTMODREQ-NEED-CARE-STATE-CODE (IDX)
                                        NOT =   SPACE
-      *            �ײ�����̾���Խ�
+      *            要介護状態名称編集
                    MOVE    PTMODREQ-NEED-CARE-STATE-CODE (IDX)
                                                TO  WRK-CAREJOTAICD
                    PERFORM 200221-PTCARE-CARESTATE-SEC
@@ -1917,7 +1917,7 @@
                                                                 (IDX)
                    END-IF
                END-IF
-      *        ǧ��ǯ����
+      *        認定年月日
                IF      PTMODREQ-NEED-DATE (IDX)  =   SPACE
                    CONTINUE
                ELSE
@@ -1927,7 +1927,7 @@
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD        TO  TBL-PTCRNIN-NINTEIYMD
                                                          (IDX)
-      *            ���������å�
+      *            暦日チェック
                    MOVE    TBL-PTCRNIN-NINTEIYMD (IDX) TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1    )
@@ -1935,7 +1935,7 @@
                        MOVE    "2822"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ����ǯ����
+      *        開始年月日
                IF      PTMODREQ-NEED-START-DATE (IDX)  =   SPACE
                    CONTINUE
                ELSE
@@ -1945,7 +1945,7 @@
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD        TO  TBL-PTCRNIN-TEKSTYMD
                                                          (IDX)
-      *            ���������å�
+      *            暦日チェック
                    MOVE    TBL-PTCRNIN-TEKSTYMD (IDX)  TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1    )
@@ -1953,7 +1953,7 @@
                        MOVE    "2815"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ��λǯ����
+      *        終了年月日
                IF      PTMODREQ-NEED-END-DATE(IDX)  =   SPACE
                    CONTINUE
                ELSE
@@ -1963,7 +1963,7 @@
                    PERFORM 802-DAYHEN02-SEC
                    MOVE    WRK-SYMD        TO  TBL-PTCRNIN-TEKEDYMD
                                                          (IDX)
-      *            ���������å�
+      *            暦日チェック
                    MOVE    TBL-PTCRNIN-TEKEDYMD (IDX)  TO  WRK-SYMD
                    PERFORM 803-ORCSDAY-CHEK-SEC
                    IF     (FLG-DAYERR          =   1    )
@@ -1971,9 +1971,9 @@
                        MOVE    "2816"          TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ɬ�ܹ��ܥ����å��ʳ���ǯ������
+      *        必須項目チェック（開始年月日）
                IF      PTMODREQ-NEED-START-DATE (IDX)  =   SPACE
-      *            ¾���ܤ϶���Ǥ��뤳��
+      *            他項目は空白であること
                    IF     (PTMODREQ-NEED-CARE-STATE-CODE (IDX)
                                                        =   SPACE )
                       AND (PTMODREQ-NEED-DATE (IDX)
@@ -1995,12 +1995,12 @@
                 END-IF
            END-PERFORM
       *
-      *    ���ܥ����å�
+      *    基本チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   50   )
                         OR    (TBL-PTCRNIN-TEKSTYMD (IDX)   =   SPACE )
                MOVE    SPACE               TO  SPA-ERRCD
-      *        ��λǯ����
+      *        終了年月日
                IF      TBL-PTCRNIN-TEKEDYMD (IDX)  =   SPACE
                    MOVE    "99999999"          TO  TBL-PTCRNIN-TEKEDYMD
                                                                  (IDX)
@@ -2011,14 +2011,14 @@
                    MOVE    WRK-HEN-DATE    TO  PTMODRES-NEED-END-DATE
                                                                 (IDX)
                END-IF
-      *        �������佪λ�������顼
+      *        開始日＞終了日　エラー
                IF      TBL-PTCRNIN-TEKSTYMD (IDX)
                                            >  TBL-PTCRNIN-TEKEDYMD (IDX)
                    IF      SPA-ERRCD          =   SPACE
                        MOVE    "2817"              TO  SPA-ERRCD
                    END-IF
                END-IF
-      *        ������ɬ��
+      *        介護状態必須
                IF    (TBL-PTCRNIN-CAREJOTAICD (IDX)
                                            =   SPACE )
                    IF      SPA-ERRCD           =   SPACE
@@ -2033,7 +2033,7 @@
                 END-IF
            END-PERFORM
       *
-      *    ���ֽ�ʣ�����å�
+      *    期間重複チェック
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   50   )
                         OR    (FLG-ERR-01  NOT =   ZERO  )
@@ -2059,7 +2059,7 @@
                END-PERFORM
            END-PERFORM
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                       UNTIL   (IDX         >   50   )
                IF      PTMODRES-NEED-ERRCD (IDX) NOT =  SPACE
@@ -2076,7 +2076,7 @@
                ADD    1                TO  IDX-ERR
                MOVE    "31"            TO  WRK-ERRCD-T (IDX-ERR)
            END-IF
-      *    �оݤʤ�
+      *    対象なし
            IF     (TBL-PTCRNIN-TEKSTYMD (1) =   SPACE )
              AND  (FLG-ERR-01              =   ZERO  )
                ADD     1               TO  IDX-ERR
@@ -2087,11 +2087,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ݸ�����������
+      *    介護保険情報削除処理
       *****************************************************************
        200221-HKNINF-DELETE-SEC         SECTION.
       *
-      *    ����ݸ����󡡺��
+      *    介護保険情報　削除
            INITIALIZE                      PTCARE-HKNINF-REC
            MOVE    SPA-HOSPNUM         TO  PTCRHKN-HOSPNUM
            MOVE    SPA-PTID            TO  PTCRHKN-PTID
@@ -2111,13 +2111,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ݸ����󹹿�����
+      *    介護保険情報更新処理
       *****************************************************************
        200221-HKNINF-UPDATE-SEC         SECTION.
       *
-      *    ����ݸ�����������
+      *    介護保険情報削除処理
            PERFORM 200221-HKNINF-DELETE-SEC
-      *    �ɲý���
+      *    追加処理
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   10   )
                         OR    (TBL-PTCRHKN-TEKSTYMD (IDX)  =   SPACE )
@@ -2150,11 +2150,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ײ��ǧ�����������
+      *    要介護認定情報削除処理
       *****************************************************************
        200223-NINTEI-DELETE-SEC         SECTION.
       *
-      *    �ײ��ǧ�ꡡ���
+      *    要介護認定　削除
            INITIALIZE                      PTCARE-NINTEI-REC
            MOVE    SPA-HOSPNUM         TO  PTCRNIN-HOSPNUM
            MOVE    SPA-PTID            TO  PTCRNIN-PTID
@@ -2174,13 +2174,13 @@
            EXIT.
       *
       *****************************************************************
-      *    �ײ��ǧ����󹹿�����
+      *    要介護認定情報更新処理
       *****************************************************************
        200224-NINTEI-UPDATE-SEC         SECTION.
       *
-      *    �ײ��ǧ�����������
+      *    要介護認定情報削除処理
            PERFORM 200223-NINTEI-DELETE-SEC
-      *    �ɲý���
+      *    追加処理
            PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL  (IDX         >   50   )
                         OR    (TBL-PTCRNIN-TEKSTYMD (IDX)  =   SPACE )
@@ -2196,7 +2196,7 @@
       *
                MOVE    WRK-OPID            TO  PTCRNIN-OPID
       *
-      *        �ɲ�
+      *        追加
                MOVE    PTCARE-NINTEI-REC   TO  MCPDATA-REC
                MOVE    "DBINSERT"          TO  MCP-FUNC
                MOVE    "tbl_ptcare_nintei" TO  MCP-TABLE
@@ -2215,7 +2215,7 @@
       *
       *
       ****************************************************************
-      *    �У��ң��ΣӣУ��Խ�����
+      *    ＰＡＲＡのＳＰＡ編集処理
       ****************************************************************
        2031-SPA-PARA-SEC           SECTION.
       *
@@ -2250,7 +2250,7 @@
            EXIT.
       *
       ****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       ****************************************************************
        290-ERROR-HEN-SEC           SECTION.
       *
@@ -2270,7 +2270,7 @@
        290-ERROR-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ��ǧ��å������Խ�����
+      *    確認メッセージ編集処理
       *****************************************************************
       *292-SELECT-HEN-SEC            SECTION.
       *
@@ -2282,27 +2282,27 @@
       *292-SELECT-HEN-EXT.
       *    EXIT.
       *****************************************************************
-      *    ��λ������PARA�������¾�����
+      *    終了処理（PARA削除・排他解除）
       *****************************************************************
        2900-SYORI-END-SEC            SECTION.
       *
            PERFORM 2902-PARA-ALLDEL-SEC
            PERFORM 2009-SPATMP-DEL-SEC
-      *    ��¾������
+      *    排他制御解除
            PERFORM 990-LOCK-OUT-SEC
            IF      SLOCK-RETURN    NOT =   ZERO
-               DISPLAY "���å��������"
+               DISPLAY "ロック解除失敗"
                MOVE    "81"            TO  WRK-ERRCD
            END-IF
            .
        2900-SYORI-END-EXT.
            EXIT.
       *****************************************************************
-      *    �ѥ�᥿�������
+      *    パラメタ削除処理
       *****************************************************************
        2902-PARA-ALLDEL-SEC          SECTION.
       *
-      *    API�ѥ�᥿���
+      *    APIパラメタ削除
            INITIALIZE                      APIPARA-REC
            MOVE    SPA-HOSPNUM         TO  APIPARA-HOSPNUM
            MOVE    SPA-TERMID          TO  APIPARA-TERMID
@@ -2314,7 +2314,7 @@
            MOVE    "del2"              TO  MCP-PATHNAME
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    �ѥ�᥿���
+      *    パラメタ削除
            INITIALIZE                      PARA-REC
            MOVE    SPA-HOSPNUM         TO  PARA-HOSPNUM
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2341,13 +2341,13 @@
        2902-PARA-ALLDEL-EXT.
            EXIT.
       *****************************************************************
-      *     SPATMP����Ͽ����
+      *     SPATMPの登録処理
       *****************************************************************
        2008-SPATMP-INS-SEC            SECTION.
       *
-      *    ���
+      *    削除
            PERFORM 2009-SPATMP-DEL-SEC
-      *    TBL-SPATMP��¸
+      *    TBL-SPATMP保存
            INITIALIZE                      SPATMP-REC
            MOVE    SPA-HOSPNUM         TO  SPATMP-HOSPNUM
            MOVE    "AP12"              TO  SPATMP-GYOUMUID
@@ -2363,7 +2363,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ӣУ������¸�ơ��֥��ɲ�
+      *    ＳＰＡ一時保存テーブル追加
       *****************************************************************
        20081-SPATMP-INSERT-SEC                SECTION.
       *
@@ -2383,7 +2383,7 @@
        20081-SPATMP-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *     SPATMP�κ������
+      *     SPATMPの削除処理
       *****************************************************************
        2009-SPATMP-DEL-SEC            SECTION.
       *
@@ -2406,11 +2406,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�������
+      *    パラメタ削除処理
       *****************************************************************
        4904-PARA-DEL-SEC          SECTION.
       *
-      *    �ѥ�᥿���
+      *    パラメタ削除
            INITIALIZE                      PARA-REC
            MOVE    "P02"               TO  PARA-GYOUMUID
            MOVE    SPA-TERMID          TO  PARA-TERMID
@@ -2426,7 +2426,7 @@
        4904-PARA-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    �������������å�
+      *    日付暦日チェック
       *****************************************************************
        803-ORCSDAY-CHEK-SEC    SECTION.
       *
@@ -2439,7 +2439,7 @@
                WHEN    "99999999"
                    MOVE    "99999999"          TO  WRK-HENYMD
                WHEN    OTHER
-      *            ���ե����å�����
+      *            日付チェックサブ
                    MOVE    SPACE               TO  STS-AREA-DAY
                    INITIALIZE                      STS-AREA-DAY
                    MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -2459,13 +2459,13 @@
        803-ORCSDAY-CHEK-EXT.
            EXIT.
       *****************************************************************
-      *    ���������Խ�����
+      *    日付暦日編集処理
       *****************************************************************
        803-ORCSDAY-CHEK02-SEC    SECTION.
       *
            MOVE    ZERO                TO  FLG-DAYERR
            MOVE    SPACE               TO  WRK-HENYMD-Z
-      *    ���ե����å�����
+      *    日付チェックサブ
            MOVE    SPACE               TO  STS-AREA-DAY
            INITIALIZE                      STS-AREA-DAY
            MOVE    SPACE               TO  LNK-DAY2-AREA
@@ -2477,11 +2477,11 @@
            IF      STS-DAY-RC1     NOT =   ZERO
                MOVE    1                   TO  FLG-DAYERR
            ELSE
-      *        ���Ѷ�����
+      *        全角空白削除
                MOVE    1                   TO  IDD2
                PERFORM VARYING     IDD     FROM    1   BY  2
                        UNTIL       IDD     >   22
-                   IF      LNK-DAY2-EDTYMD3(IDD:2) =   "��"
+                   IF      LNK-DAY2-EDTYMD3(IDD:2) =   "　"
                        CONTINUE
                    ELSE
                        MOVE    LNK-DAY2-EDTYMD3(IDD:2)
@@ -2496,7 +2496,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -2524,7 +2524,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -2545,12 +2545,12 @@
        802-DAYHEN02-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�Ѷ�������Ѷ�����Ѵ�����
+      *    半角空白を全角空白へ変換処理
       *****************************************************************
        890-HALF-ZEN-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
-      *    ��ĥ����̵ͭ
+      *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
            MOVE    WRK-MAE-INPUT       TO  ORCSSTR-STRING1
@@ -2579,15 +2579,15 @@
        890-HALF-ZEN-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�Ѷ�������Ѷ�����Ѵ������ʳ��������
+      *    半角空白を全角空白へ変換処理（外字あり）
       *****************************************************************
        891-HALF-ZEN2-SEC         SECTION.
       *
            IF     SPA-ENCODING         =   2
-      *        ��ĥ�����б�
+      *        拡張漢字対応
                PERFORM 8910-HALF-ZENC2-SEC
            ELSE
-      *        ��ĥ�����Բ�
+      *        拡張漢字不可
                PERFORM 890-HALF-ZEN-SEC
            END-IF
       *
@@ -2595,7 +2595,7 @@
        891-HALF-ZEN2-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�Ѷ�������Ѷ�����Ѵ������ʳ��������
+      *    半角空白を全角空白へ変換処理（外字あり）
       *****************************************************************
        8910-HALF-ZENC2-SEC         SECTION.
       *
@@ -2619,13 +2619,13 @@
        8910-HALF-ZENC2-EXT.
            EXIT.
       *****************************************************************
-      *    Ⱦ�Ѥ����Ѥ��Ѵ�����
+      *    半角を全角へ変換処理
       *****************************************************************
        880-HALF-ZENCNG-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-ERR
            MOVE    ZERO                TO  FLG-ERR2
-      *    ��ĥ����̵ͭ
+      *    拡張漢字有無
            INITIALIZE                  ORCSSTRINGAREA
            MOVE    "check"             TO  ORCSSTR-COMMAND
            MOVE    WRK-MAE-INPUT       TO  ORCSSTR-STRING1
@@ -2654,7 +2654,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ѥ����å�����
+      *    全角チェック処理
       *****************************************************************
        891-HALF-CHK-SEC         SECTION.
       *
@@ -2667,7 +2667,7 @@
            MOVE    KANACHK-MAE-INPUT   TO  WRK-ATO-INPUT
            IF     (KANACHK-RC          =   ZERO  )  AND
                   (KANACHK-SYUBETU     =   1     )
-      *        Ⱦ��
+      *        半角
                MOVE    ZERO                TO  FLG-ERR
            ELSE
                MOVE    1                   TO  FLG-ERR
@@ -2678,140 +2678,140 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC            SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
            WHEN    "01"
-               MOVE    "�����ֹ椬̤����Ǥ�"
+               MOVE    "患者番号が未設定です"
                                                TO  WRK-ERRMSG
       *    WHEN    "02"
-      *        MOVE    "���Ի�̤̾����"
+      *        MOVE    "患者氏名未設定"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "03"
-      *        MOVE    "���ԥ��ʻ�̤̾����"
+      *        MOVE    "患者カナ氏名未設定"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "04"
-      *        MOVE    "��ǯ����̤����"
+      *        MOVE    "生年月日未設定"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "05"
-      *        MOVE    "����̤����"
+      *        MOVE    "性別未設定"
       *                                        TO  WRK-ERRMSG
            WHEN    "06"
-               MOVE    "�Żҥ���ƣգɣĤ�̤����Ǥ���"
+               MOVE    "電子カルテＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "07"
-               MOVE    "���륫�գɣĤ�̤����Ǥ���"
+               MOVE    "オルカＵＩＤが未設定です。"
                                                TO  WRK-ERRMSG
            WHEN    "08"
-               STRING  "�����³����λ���Ƥ��ޤ���"
+               STRING  "初回接続が完了していません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "10"
-               MOVE    "�����ֹ�˳������봵�Ԥ�¸�ߤ��ޤ���"
+               MOVE    "患者番号に該当する患者が存在しません"
                                                TO  WRK-ERRMSG
       **   WHEN    "11"
-      *        MOVE    "��������������顼"
+      *        MOVE    "基準日の暦日エラー"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "12"
-      *        MOVE    "�������ʿ������ǯ���������Ǥ���"
+      *        MOVE    "基準日は平成２７年４月１日からです。"
       *                                        TO  WRK-ERRMSG
       *    WHEN    "13"
-      *        MOVE    "�����ֹ���Ͽ�Ѥ�"
+      *        MOVE    "患者番号登録済み"
       *                                        TO  WRK-ERRMSG
            WHEN    "14"
-               MOVE    "������̾�����Ѥ����Ϥ��Ʋ�����"
+               MOVE    "漢字氏名は全角で入力して下さい"
                                                TO  WRK-ERRMSG
            WHEN    "15"
-               MOVE    "���ʻ�̾�˥��顼������ޤ�"
+               MOVE    "カナ氏名にエラーがあります"
                                                TO  WRK-ERRMSG
            WHEN    "16"
-               MOVE    "���̤ϣ����ˣ����������Ϥ��Ʋ�����"
+               MOVE    "性別は１：男２：女で入力して下さい"
                                                TO  WRK-ERRMSG
            WHEN    "17"
-               MOVE    "��ǯ�����������顼"
+               MOVE    "生年月日暦日エラー"
                                                TO  WRK-ERRMSG
            WHEN    "18"
-               STRING  "���Ի�̾�����̡���ǯ�������������ƤȰ㤤�ޤ���"
-                       "���Ԥ��ǧ���Ʋ�������"
+               STRING  "患者氏名・性別・生年月日が送信内容と違います。"
+                       "患者を確認して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
       *
            WHEN    "22"
-               MOVE    "����ȴ����ֹ椬�㤤�ޤ���"
+               MOVE    "前回と患者番号が違います。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "60"
-               STRING  "���顼������ޤ���"
+               STRING  "エラーがあります。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "61"
-               MOVE    "����ݸ����󹹿����顼"
+               MOVE    "介護保険情報更新エラー"
                                                TO  WRK-ERRMSG
            WHEN    "62"
-               MOVE    "����ݸ����������顼"
+               MOVE    "介護保険情報削除エラー"
                                                TO  WRK-ERRMSG
            WHEN    "63"
-               MOVE    "�ײ��ǧ����󹹿����顼"
+               MOVE    "要介護認定情報更新エラー"
                                                TO  WRK-ERRMSG
            WHEN    "64"
-               MOVE    "�ײ��ǧ����������顼"
+               MOVE    "要介護認定情報削除エラー"
                                                TO  WRK-ERRMSG
       *
            WHEN    "80"
-               STRING  "����ǡ������ϥ��顼"
+               STRING  "一時データ出力エラー"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
            WHEN    "81"
-               STRING  "����оݤ�����ޤ���"
+               STRING  "解除対象がありません。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                END-STRING
-      *���̥��顼
+      *共通エラー
            WHEN    "89"
-      *        ORCSCOMMON �Υ��顼
+      *        ORCSCOMMON のエラー
                EVALUATE    SPA-ERRCD
                WHEN    "1001"
-                   MOVE    "�������󤬼����Ǥ��ޤ���"
+                   MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1002"
-                   MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                   MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1003"
-                   MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                   MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1005"
-                   MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                   MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                WHEN    "1015"
-                   STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                           "������λ���Ʋ�������"
+                   STRING  "グループ医療機関が不整合です。"
+                           "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                    END-STRING
                WHEN    OTHER
-                   MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                   MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                END-EVALUATE
            WHEN    "90"
-               MOVE    "¾ü��������"          TO  WRK-ERRMSG
+               MOVE    "他端末使用中"          TO  WRK-ERRMSG
            WHEN    "91"
-      ******   MOVE    "������ʬ̤����"        TO  WRK-ERRMSG
-               MOVE    "�ꥯ�������ֹ�����"    TO  WRK-ERRMSG
+      ******   MOVE    "処理区分未設定"        TO  WRK-ERRMSG
+               MOVE    "リクエスト番号不正"    TO  WRK-ERRMSG
            WHEN    "97"
-               MOVE   "�������Ƥ˸��꤬����ޤ���"
+               MOVE   "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "98"
-               MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+               MOVE   "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
            WHEN    "99"
-               MOVE    "�桼���ɣ�̤��Ͽ��"
+               MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -2819,29 +2819,29 @@
            EXIT.
       *
       *****************************************************************
-      *    ���̥��顼��å�����
+      *    個別エラーメッセージ
       *****************************************************************
        8901-PTERRCD-SETAPI-SEC              SECTION.
       *
            EVALUATE    WRK-ERRCD
            WHEN    "20"
-               MOVE    "����ݸ����󹹿���ʬ���顼"
+               MOVE    "介護保険情報更新区分エラー"
                                                TO  WRK-ERRMSG
            WHEN    "21"
-               MOVE    "����ݸ�����ι��ܤ˥��顼������ޤ���"
+               MOVE    "介護保険情報の項目にエラーがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "22"
-               MOVE    "����ݸ�����ι����оݤ�����ޤ���"
+               MOVE    "介護保険情報の更新対象がありません。"
                                                TO  WRK-ERRMSG
       *
            WHEN    "30"
-               MOVE    "�ײ��ǧ����󹹿���ʬ���顼"
+               MOVE    "要介護認定情報更新区分エラー"
                                                TO  WRK-ERRMSG
            WHEN    "31"
-               MOVE    "�ײ��ǧ�����˥��顼������ޤ���"
+               MOVE    "要介護認定情報にエラーがあります。"
                                                TO  WRK-ERRMSG
            WHEN    "32"
-               MOVE    "�ײ��ǧ�����ι����оݤ�����ޤ���"
+               MOVE    "要介護認定情報の更新対象がありません。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
             .
@@ -2849,12 +2849,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ͽ���顼��å������Խ�����
+      *    患者登録エラーメッセージ編集処理
       *****************************************************************
        8901-PTERRCD-SET-SEC             SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
-      *    ���顼��å������Խ��ʣ��Уɤȶ��̡�
+      *    エラーメッセージ編集（ＡＰＩと共通）
            CALL    "ORCSP90"           USING   SPA-AREA
                                                SPA-P02KYOUTU
                                                SPA-P02SCRAREA
@@ -2865,7 +2865,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Դ��ܾ������
+      *    患者基本情報取得
       *****************************************************************
        900-PTINF-READ-SEC              SECTION.
       *
@@ -2889,7 +2889,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ޥ������ɹ�����
+      *    患者番号マスター読込処理
       *****************************************************************
        910-PTINF-NEXT-SEC         SECTION.
       *
@@ -2907,7 +2907,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ֹ�ޥ������ɹ�����
+      *    患者番号マスター読込処理
       *****************************************************************
        910-PTNUM-READ-SEC         SECTION.
       *
@@ -2925,19 +2925,19 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾�������
+      *    排他制御処理
       *****************************************************************
        990-LOCK-IN-SEC         SECTION.
       *
-      *    ��¾�������
+      *    排他制御処理
            MOVE    MCP-WINDOW          TO  WRK-MCP-WINDOW
            MOVE    "P02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
            MOVE    1                   TO  SLOCK-MODE
            MOVE    PTINF-PTID          TO  SLOCK-PTID
-      *    �Żҥ���ƥ���
+      *    電子カルテキー
            MOVE    PTMODREQ-KARTE-UID  TO  SLOCK-KARTE-UID
-      *    API+���륫�գɣ� ��TERMID
+      *    API+オルカＵＩＤ をTERMID
            MOVE    SPA-TERMID          TO  MCP-TERM
       *
            CALL    "ORCSLOCK"          USING
@@ -2955,16 +2955,16 @@
            EXIT.
       *
       *****************************************************************
-      *    ��¾����������(���)
+      *    排他制御解除処理(削除)
       *****************************************************************
        990-LOCK-OUT-SEC         SECTION.
       *
-      *    ��¾����������
+      *    排他制御解除処理
            MOVE    "P02"               TO  SPA-MOTOPG
                                            MCP-WINDOW
            MOVE    ZERO                TO  SLOCK-PTID
            MOVE    3                   TO  SLOCK-MODE
-      *    API+���륫�գɣ� ��TERMID
+      *    API+オルカＵＩＤ をTERMID
            MOVE    SPA-TERMID          TO  MCP-TERM
       *
            CALL    "ORCSLOCK"          USING
@@ -2977,7 +2977,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ�����������
+      *    システム管理マスタ検索処理
       *****************************************************************
        900-SYSKANRI-KEYREAD-SEC      SECTION.
       *
@@ -2995,7 +2995,7 @@
                INITIALIZE                  SYSKANRI-REC
                MOVE    1                   TO  FLG-SYSKANRI
            END-IF
-      *    �������륯������
+      *    カーソルクロース
            MOVE    "tbl_syskanri"      TO  MCP-TABLE
            MOVE    "key10"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
@@ -3003,7 +3003,7 @@
        900-SYSKANRI-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ������ңţ���
+      *    システム管理マスタ　ＲＥＡＤ
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3020,7 +3020,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Բ���ݸ�����ǡ����ǡ����ɹ�����
+      *    患者介護保険情報データデータ読込処理
       *****************************************************************
        930-PTCAREHKNINF-READ-SEC         SECTION.
       *
@@ -3038,7 +3038,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Բ���ǧ�����ǡ����ɹ�����
+      *    患者介護者認定情報データ読込処理
       *****************************************************************
        930-PTCARENINTEI-READ-SEC         SECTION.
       *
@@ -3056,7 +3056,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�����ɤ߹���
+      *    パラメタ情報読み込み
       *****************************************************************
        990-PARA-READ-SEC        SECTION.
       *
@@ -3073,7 +3073,7 @@
        990-PARA-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �У��ң��ǡ�����������
+      *    ＰＡＲＡデータ検索処理
       *****************************************************************
        9010-PARA-KEYREAD-SEC         SECTION.
       *
@@ -3096,7 +3096,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �У��ң��ǡ�����������
+      *    ＰＡＲＡデータ検索処理
       *****************************************************************
        9010-APIPARA-KEYREAD-SEC         SECTION.
       *
@@ -3128,7 +3128,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥��ɤ߹���
+      *    一時保存テーブル読み込み
       *****************************************************************
        9100-SPATMP-KEYREAD-SEC        SECTION.
       *
@@ -3160,7 +3160,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����¸�ơ��֥븡������
+      *    一時保存テーブル検索処理
       *****************************************************************
        910-SPATMP-CALL-SEC                SECTION.
       *
@@ -3175,7 +3175,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥�CALL����
+      *    テーブルCALL処理
       *****************************************************************
        900-ORCDBMAIN-SEC                SECTION.
       *
@@ -3189,7 +3189,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -3203,7 +3203,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        920-DBFETCH-SEC                SECTION.
       *
@@ -3217,7 +3217,7 @@
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC         SECTION.
       *

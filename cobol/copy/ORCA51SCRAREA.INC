@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    orca51¡Ê·î¼¡¡¦·î¼¡Åı·×¡Ë²èÌÌ
+      *    orca51ï¼ˆæœˆæ¬¡ãƒ»æœˆæ¬¡çµ±è¨ˆï¼‰ç”»é¢
       ******************************************************************
            COPY    "L01.INC".
            COPY    "L02.INC".

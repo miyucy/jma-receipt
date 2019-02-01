@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,40 +16,40 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *         ÅÀ¿ô¥Þ¥¹¥¿ ÌôºÞÉí²Ã¾ðÊó   COPY (CPTENSUPLUS2.INC) *
+      *         ç‚¹æ•°ãƒžã‚¹ã‚¿ è–¬å‰¤é™„åŠ æƒ…å ±   COPY (CPTENSUPLUS2.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  TENSUPLUS2-REC.
            03  TNSP2-KEY.
                05  TNSP2-HOSPNUM            PIC 9(2).
                05  TNSP2-SRYCD             PIC  X(09).
-      *    Ä¹´üÅêÍ¿Æü¿ô
+      *    é•·æœŸæŠ•ä¸Žæ—¥æ•°
            03  TNSP2-CHOKI-NISSU           PIC  9(03).
-      *    Ä¹´üÅêÍ¿´ü¸Â
+      *    é•·æœŸæŠ•ä¸ŽæœŸé™
            03  TNSP2-CHOKI-KIGEN           PIC  X(08).
-      *    Ä¹´üÅêÍ¿¥¨¥é¡¼½èÍý
+      *    é•·æœŸæŠ•ä¸Žã‚¨ãƒ©ãƒ¼å‡¦ç†
            03  TNSP2-CHOKIERR              PIC  9(01).
-      *    ÅêÍ¿ÎÌ
+      *    æŠ•ä¸Žé‡
            03  TNSP2-TOUYORYO-G.
                05  TNSP2-TOUYORYO-T        OCCURS   10.
-      *            ²¼¸ÂÇ¯Îð
+      *            ä¸‹é™å¹´é½¢
                    07  TNSP2-TOUYOKGNAGE           PIC  X(02).
-      *            ¾å¸ÂÇ¯Îð
+      *            ä¸Šé™å¹´é½¢
                    07  TNSP2-TOUYOJGNAGE           PIC  X(02).
-      *            ÅêÍ¿ÎÌ
+      *            æŠ•ä¸Žé‡
                    07  TNSP2-TOUYORYO1             PIC  9(05)V9(05).
-      *            ÅêÍ¿ÎÌ¡ÊÆÜÉþ¡Ë
+      *            æŠ•ä¸Žé‡ï¼ˆé “æœï¼‰
                    07  TNSP2-TOUYORYO2             PIC  9(05)V9(05).
-      *    ÅêÍ¿ÎÌ¥¨¥é¡¼½èÍý
+      *    æŠ•ä¸Žé‡ã‚¨ãƒ©ãƒ¼å‡¦ç†
            03  TNSP2-TOUYOERR              PIC  9(01).
-      *    ÆâÉþ»»Äê¶èÊ¬
+      *    å†…æœç®—å®šåŒºåˆ†
            03  TNSP2-NAIFUKUKBN            PIC  9(01).
-      *    ·î¾å¸Â²ó¿ô
+      *    æœˆä¸Šé™å›žæ•°
            03  TNSP2-TUKIJGNKAISU          PIC  9(3).
-      *    ·îÁíÅêÍ¿ÎÌ
+      *    æœˆç·æŠ•ä¸Žé‡
            03  TNSP2-TUKIJGNTOUYORYO       PIC  9(5)V9(5).
            03  TNSP2-TERMID                PIC  X(16).
            03  TNSP2-OPID                  PIC  X(16).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,35 +18,35 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBT020.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����
-      *  ����ݡ��ͥ��̾  : ����ףãӣ֥ǡ�������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/11/12    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次統計
+      *  コンポーネント名  : 月次統計ＣＳＶデータ作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/11/12    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    04/02/01  ��̾�����ɣ������ѹ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
       *
-      *  03.03.01    NACL-ƣ��    06/10/10  ���ݸ����ʤ���硢����������
-      *                                     ����ñ�ȤΥ쥻�ץȤȤ���
-      *  03.03.02    NACL-ƣ��    06/12/15  ���������Υǡ��������ν���
+      *  03.03.01    NACL-藤原    06/10/10  主保険がない場合、精神入院は
+      *                                     公費単独のレセプトとする
+      *  03.03.02    NACL-藤原    06/12/15  入院の包括のデータ作成の修正
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/08/01  ���饤�������¸�б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *
-      *  04.04.02    NACL-ƣ��    09/01/14  ������˰��ݤ����ݤ�ʻ�Ѥ���
-      *                                     ����ñ�Ȥˤʤä��Ȥ��ΤޤȤ�
+      *  04.04.02    NACL-藤原    09/01/14  月途中に医保と生保の併用から
+      *                                     生保単独になったときのまとめ
       *
-      *  04.05.01    NACL-ƣ��    10/02/12  ��ĥ�����б�
-      *  04.05.02    NACL-ƣ��    12/06/22  ������̲��̤ؤη��ɽ��
-      *  04.05.03    NACL-ƣ��    12/07/02  �����������������ɲ�
-      *  04.05.04    NACL-ƣ��    12/11/15  ���������Υޥ��ʥ�ɽ���б�
+      *  04.05.01    NACL-藤原    10/02/12  拡張漢字対応
+      *  04.05.02    NACL-藤原    12/06/22  処理結果画面への件数表示
+      *  04.05.03    NACL-藤原    12/07/02  住所欄に番地方書を追加
+      *  04.05.04    NACL-藤原    12/11/15  剤点数等のマイナス表記対応
       *
-      *  04.06.01    NACL-ƣ��    10/06/21  ���ܸ첽�ʸ��Ф����б�
+      *  04.06.01    NACL-藤原    10/06/21  日本語化（見出し）対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -54,46 +54,46 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ����ץǡ����ʴ��ܾ����
+      *    月次統計データ（基本情報）
            SELECT  TOUKEI01-FILE   ASSIGN  TOUKEI01PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI01-KEY
                                    FILE    STATUS  IS  STS-TOUKEI01.
       *
-      *    ����ץǡ����ʿ��ž����
+      *    月次統計データ（診療情報）
            SELECT  TOUKEI02-FILE   ASSIGN  TOUKEI02PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI02-KEY
                                    FILE    STATUS  IS  STS-TOUKEI02.
       *
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
            SELECT  TOUKEI03-FILE   ASSIGN  TOUKEI03PARA
                                    ORGANIZATION    IS  INDEXED
                                    ACCESS  MODE    IS  DYNAMIC
                                    RECORD  KEY     IS  TOUKEI03-KEY
                                    FILE    STATUS  IS  STS-TOUKEI03.
       *
-      *    �ãӣ֥ǡ����ʿ��ž���� 
+      *    ＣＳＶデータ（診療情報） 
            SELECT  TOUKEI04-FILE   ASSIGN  TOUKEI04PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI04.
       *
-      *    �ãӣ֥ǡ�������̾�����
+      *    ＣＳＶデータ（病名情報）
            SELECT  TOUKEI05-FILE   ASSIGN  TOUKEI05PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-TOUKEI05.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  TOUKEIERR-FILE  ASSIGN  TOUKEIERR
                                    FILE    STATUS  IS  STS-TOUKEIERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ����ץǡ����ʴ��ܾ����
+      *    月次統計データ（基本情報）
        FD  TOUKEI01-FILE.
        01  TOUKEI01-REC. 
            COPY    "CPTCF001.INC".
@@ -101,46 +101,46 @@
                05  TOUKEI01-SEIHO-KEY
                                    PIC X(50)   OCCURS  10.
       *
-      *    ����ץǡ����ʿ��ž����
+      *    月次統計データ（診療情報）
        FD  TOUKEI02-FILE.
        01  TOUKEI02-REC. 
            COPY    "CPTCF002.INC".
       *
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
        FD  TOUKEI03-FILE.
        01  TOUKEI03-REC. 
            COPY    "CPTCF003.INC".
       *
-      *    �ãӣ֥ǡ����ʿ��ž����
+      *    ＣＳＶデータ（診療情報）
        FD  TOUKEI04-FILE.
        01  TOUKEI04-REC            PIC X(3000). 
       *
-      *    �ãӣ֥ǡ�������̾�����
+      *    ＣＳＶデータ（病名情報）
        FD  TOUKEI05-FILE.
        01  TOUKEI05-REC            PIC X(3000). 
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  TOUKEIERR-FILE.
        01  TOUKEIERR-REC           PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ����ץǡ����ʴ��ܾ����
+      *    月次統計データ（基本情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI01PARA//.
       *
-      *    ����ץǡ����ʿ��ž����
+      *    月次統計データ（診療情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI02PARA//.
       *
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
            COPY    "CPCOMMONDAT5.INC"
                                    REPLACING  //TEIKI01PARA//
                                    BY         //TOUKEI03PARA//.
       *
-      *    �ãӣ֥ǡ����ʿ��ž����
+      *    ＣＳＶデータ（診療情報）
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //TOUKEI04PARA//.
       *01  TOUKEI04PARA.
@@ -149,7 +149,7 @@
            03  TOUKEI04PARA-HOSPNUM    PIC  9(02).
            03  TOUKEI04PARA-FILE-ID    PIC  X(12) VALUE "toukei01.dat".
       *
-      *    �ãӣ֥ǡ�������̾�����
+      *    ＣＳＶデータ（病名情報）
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //TOUKEI05PARA//.
       *01  TOUKEI05PARA.
@@ -161,7 +161,7 @@
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //TOUKEIERR//.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-TOUKEI01                    PIC X(02).
            03  STS-TOUKEI02                    PIC X(02).
@@ -175,7 +175,7 @@
            03  FLG-TOUKEI02                    PIC 9(01).
            03  FLG-TOUKEI03                    PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-TOUKEI01                    PIC 9(06).
            03  CNT-TOUKEI04                    PIC 9(06).
@@ -191,7 +191,7 @@
            03  IDX3                            PIC 9(03). 
            03  IDXX                            PIC 9(03). 
       *
-      *    ����ΰ�
+      *    一時領域
       *
        01  WRK-AREA.
            03  WRK-PARA.
@@ -227,11 +227,11 @@
            03  WRK-KOH-MAX             PIC 9(03).
            03  WRK-RENNUM              PIC 9(03).
       *
-      *     ���Ť��Խ���     
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
-      *    ���ϥǡ����Խ���
+      *    出力データ編集用
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
@@ -243,491 +243,491 @@
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
       *
-      *    ������ݸ�����
+      *    ワーク主保険情報
            03  WRK-HKN-AREA.
-      *        ���ݸ����ݸ��ɣ�
+      *        主保険−保険ＩＤ
                05  WRK-HKN-HKNID       PIC  9(10).
-      *        ���ݸ��ݵ���
+      *        主保険−記号
                05  WRK-HKN-KIGO        PIC  X(80).
-      *        ���ݸ����ֹ�
+      *        主保険−番号
                05  WRK-HKN-NUM         PIC  X(80).
-      *        ���ݸ���̾
+      *        被保険者名
                05  WRK-HKN-HIHKNJANAME
                                        PIC  X(100).
-      *        ��ʼ���ǯ����
+      *        資格取得年月日
                05  WRK-HKN-SKKGETYMD   PIC  X(08).
-      *        Ŭ�ѳ���ǯ����
+      *        適用開始年月日
                05  WRK-HKN-TEKSTYMD    PIC  X(08). 
-      *        Ŭ�ѽ�λǯ����
+      *        適用終了年月日
                05  WRK-HKN-TEKEDYMD    PIC  X(08). 
-      *        ���ݸ��ݷ�³��ʬ
+      *        主保険−継続区分
                05  WRK-HKN-CONTKBN     PIC  X(01).
-      *        ���ݸ��������ʬ
+      *        主保険−補助区分
                05  WRK-HKN-HOJOKBN     PIC X(01).
-      *        ���ݸ����ܿͲ�²��ʬ
+      *        主保険−本人家族区分
                05  WRK-HKN-HONKZKKBN   PIC  X(01).
       * 
-      *    ����������
+      *    ワーク公費情報
            03  WRK-KOHI-AREA.
-      *        ����ɣ�
+      *        公費ＩＤ
                07  WRK-KOHID          PIC  9(10).
-      *        �����ݸ��ֹ�
+      *        公費保険番号
                07  WRK-KOHHKNNUM      PIC  X(03).
-      *        �����ʧ��ʬ
+      *        公費支払区分
                07  WRK-KOHPAYKBN      PIC  X(02).
-      *        �����ˡ���ֹ�
+      *        公費−法別番号
                07  WRK-KOHHBTNUM      PIC  X(02).
-      *        �������ô���ֹ�
+      *        公費−負担者番号
                07  WRK-KOHFTNJANUM    PIC  X(08).
-      *        ����ݼ�����ֹ�
+      *        公費−受給者番号
                07  WRK-KOHJKYSNUM     PIC  X(20).
-      *        ����ݥ쥻�ץ������ʬ
+      *        公費−レセプト請求区分
                07  WRK-RECESKYKBN     PIC  X(01).
-      *        Ŭ�ѳ���ǯ����
+      *        適用開始年月日
                07  WRK-KOHTEKSTYMD    PIC  X(08).
-      *        Ŭ�ѽ�λǯ����
+      *        適用終了年月日
                07  WRK-KOHTEKEDYMD    PIC  X(08).
       *
        01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
-      *    �إå�������
+      *    ヘッダー情報
        01  CSV-HEAD-01.
-           03  FILLER              PIC X(12)   VALUE   "���ŵ��أɣ�".
+           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "���ŵ��إ�����".
+           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "����ǯ��".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "�쥳���ɼ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "�쥻�ץȼ��̥�����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "������ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ԣɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ʻ�̾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "������̾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��ǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "���Ųʥ�����".
+           03  FILLER              PIC X(12)   VALUE   "レコード識別".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "�쥻�ſ��Ųʥ�����".
+               "レセプト種別コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "���ֹ�".
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "���Ź԰ٶ�ʬ".
+           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "���ż��̶�ʬ".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����������".
+           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
+           03  FILLER              PIC X(04)   VALUE   "性別".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "�޲��".
+           03  FILLER              PIC X(08)   VALUE   "生年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�굻������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�굻������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "�ݸ��ȹ礻�ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "���ٿ�".
+           03  FILLER              PIC X(12)   VALUE   "診療科コード".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "���ٿ��Ź԰٥�����".
+               "レセ電診療科コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ٿ���".
+           03  FILLER              PIC X(06)   VALUE   "剤番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ٲ��".
+           03  FILLER              PIC X(08)   VALUE   "剤内番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��������".
+           03  FILLER              PIC X(12)   VALUE   "診療行為区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�������".
+           03  FILLER              PIC X(12)   VALUE   "診療種別区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "����̾�������ֹ�".
+           03  FILLER              PIC X(10)   VALUE   "剤点数識別".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "���ټ�����".
+           03  FILLER              PIC X(06)   VALUE   "剤点数".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "����ñ�̥�����".
+           03  FILLER              PIC X(06)   VALUE   "剤回数".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "����ñ��̾��".
+           03  FILLER              PIC X(10)   VALUE   "手技点数１".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "����̾��".
+           03  FILLER              PIC X(10)   VALUE   "手技点数２".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��������̾��".
+           03  FILLER              PIC X(08)   VALUE   "薬剤点数".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "������ॳ����".
+           03  FILLER              PIC X(08)   VALUE   "材料点数".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "�����泰�輱��".
+           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��ե�����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�ݸ��ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�ݸ��ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�ݸ����ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "�ܿͲ�²��ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��³��ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "�ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��ʼ���ǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Ŭ�ѳ���ǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "Ŭ�ѽ�λǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "���ݸ���̾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�����ֹ棱".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����ɣģ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��ʧ��ʬ��".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��ô���ֹ棱".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "������ֹ棱".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѳ���ǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѽ�λǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�����ֹ棲".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����ɣģ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��ʧ��ʬ��".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��ô���ֹ棲".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "������ֹ棲".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѳ���ǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѽ�λǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�����ֹ棳".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����ɣģ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��ʧ��ʬ��".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��ô���ֹ棳".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "������ֹ棳".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѳ���ǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѽ�λǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�����ֹ棴".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "����ɣģ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��ʧ��ʬ��".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��ô���ֹ棴".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "������ֹ棴".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѳ���ǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "Ŭ�ѽ�λǯ������".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ϫ���ݸ���ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "ϫ�Ҵ��Ը����ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ϫ�һ��Ƚ�̾��".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ϫ�ҿ��Ѻ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ϫ��ž����ͳ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "ϫ�ҽ���ǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(16)   VALUE
-               "ϫ�һͻ������ʬ".
+           03  FILLER              PIC X(06)   VALUE   "明細数".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "ϫ�����ܳ���ǯ����".
+               "明細診療行為コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ϫ�����ܽ�λǯ����".
+           03  FILLER              PIC X(08)   VALUE   "明細数量".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ϫ��»����ʬ".
+           03  FILLER              PIC X(08)   VALUE   "明細回数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "点数識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "点数金額".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(16)   VALUE
-               "ϫ��»����ʬ����".
+               "明細名称入力番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細自費金額".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "明細単位コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細単位名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "明細名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "明細正式名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "薬価基準コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "入外中外来識別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "医師コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "１９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２２日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２３日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２４日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２５日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２６日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２７日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２８日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "２９日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "３０日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "３１日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "保険番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "保険ＩＤ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "保険者番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "本人家族区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "補助区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "継続区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "記号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "資格取得年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "適用開始年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "適用終了年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "被保険者名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "公費ＩＤ４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "支払区分４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "負担者番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "受給者番号４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用開始年月日４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "適用終了年月日４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災保険区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災患者交付番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "労災事業所名称".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災新継再別".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災転帰事由".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "労災傷病年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災四肢特例区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "労災療養開始年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "労災療養終了年月日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "労災損傷区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(16)   VALUE
+               "労災損傷区分枝番".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(26)   VALUE
-               "ϫ�ҥ��ե������ܳ���ǯ����".
+               "労災アフター療養開始年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(26)   VALUE
-               "ϫ�ҥ��ե������ܽ�λǯ����".
+               "労災アフター療養終了年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "ϫ�Һҳ���ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "ϫ�Ҽ����������ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "͹���ֹ�".
+           03  FILLER              PIC X(12)   VALUE   "労災災害区分".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "�����������Υ�����".
+               "労災自賠責請求区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
+           03  FILLER              PIC X(08)   VALUE   "郵便番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
+           03  FILLER              PIC X(18)   VALUE
+               "地方公共団体コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "住所".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "電話番号".
       *
        01  CSV-HEAD-02.
-           03  FILLER              PIC X(12)   VALUE   "���ŵ��أɣ�".
+           03  FILLER              PIC X(12)   VALUE   "医療機関ＩＤ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "���ŵ��إ�����".
+           03  FILLER              PIC X(14)   VALUE   "医療機関コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "����ǯ��".
+           03  FILLER              PIC X(08)   VALUE   "診療年月".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "�쥳���ɼ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "�쥻�ץȼ��̥�����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "������ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ԣɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "���ʻ�̾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "������̾".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "��ǯ����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "���Ųʥ�����".
+           03  FILLER              PIC X(12)   VALUE   "レコード識別".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "�쥻�ſ��Ųʥ�����".
+               "レセプト種別コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "���ų�����".
+           03  FILLER              PIC X(08)   VALUE   "入外区分".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "Ϣ��".
+           03  FILLER              PIC X(08)   VALUE   "患者番号".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "��̾".
+           03  FILLER              PIC X(08)   VALUE   "患者ＩＤ".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "��̾ʸ����".
+           03  FILLER              PIC X(08)   VALUE   "カナ氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(10)   VALUE   "�����ե饰".
+           03  FILLER              PIC X(08)   VALUE   "漢字氏名".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "����̾�ե饰".
+           03  FILLER              PIC X(04)   VALUE   "性別".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "����������ʬ".
+           03  FILLER              PIC X(08)   VALUE   "生年月日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "�ݸ��ȹ礻�ֹ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(18)   VALUE
-               "�쥻�ץ�ɽ���ե饰".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "ž����ʬ".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(06)   VALUE   "ž����".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�Խ��ե饰".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "�ݸ���̾�ե饰".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɿ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(12)   VALUE   "��̾�����ɣ�".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(14)   VALUE   "��̾�����ɣ���".
-           03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "͹���ֹ�".
+           03  FILLER              PIC X(12)   VALUE   "診療科コード".
            03  FILLER              PIC X(01)   VALUE   ",".
            03  FILLER              PIC X(18)   VALUE
-               "�����������Υ�����".
+               "レセ電診療科コード".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(04)   VALUE   "����".
+           03  FILLER              PIC X(10)   VALUE   "診療開始日".
            03  FILLER              PIC X(01)   VALUE   ",".
-           03  FILLER              PIC X(08)   VALUE   "�����ֹ�".
+           03  FILLER              PIC X(04)   VALUE   "連番".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "病名".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "病名文字数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(10)   VALUE   "疑いフラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "主病名フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "慢性疾患区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "保険組合せ番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "レセプト表示フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "転帰区分".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(06)   VALUE   "転帰日".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名編集フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "保険病名フラグ".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード数".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード５".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード６".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード７".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード８".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(12)   VALUE   "病名コード９".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１０".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１２".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１３".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１４".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１５".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１６".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１７".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１８".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード１９".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード２０".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(14)   VALUE   "病名コード２１".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "郵便番号".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(18)   VALUE
+               "地方公共団体コード".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(04)   VALUE   "住所".
+           03  FILLER              PIC X(01)   VALUE   ",".
+           03  FILLER              PIC X(08)   VALUE   "電話番号".
       *  
        01  WRK-CONS-AREA.
-      *    �����
+      *    コンマ
            03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
-      *    �����ݸ��ݸ��ֹ� 
+      *    生活保護保険番号 
            03  WRK-CONS-SEIHO-HKNNUM   PIC X(03)   VALUE   "012". 
-      *    �����ݸ��ֹ� 
+      *    自費保険番号 
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980". 
-      *    ϫ���ݸ��ֹ� 
+      *    労災保険番号 
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971". 
-      *    �������ݸ��ֹ� 
+      *    自賠責保険番号 
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".       
-      *    �����ݸ��ֹ� 
+      *    原爆保険番号 
            03  WRK-CONS-GENBAKU-HKNNUM PIC X(03)   VALUE   "019".       
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "COMMON-SPA".
@@ -742,7 +742,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -755,7 +755,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -789,11 +789,11 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBT020"      TO  JOB-PGID
-           MOVE    "�ãӣ֥ǡ�������"
+           MOVE    "ＣＳＶデータ作成"
                                    TO  JOB-SHELLMSG
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *
@@ -850,11 +850,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
-      *    ����ץǡ����ʿ��ž����
+      *    月次統計データ（診療情報）
            IF      WRK-PARA-DATAKBN    =   ZERO    OR  "1"
                MOVE    "1"                 TO  WRK-SYOKBN
       *
@@ -875,7 +875,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    PERFORM 900-TOUKEI02-READ-SEC
                END-PERFORM
       *
-      *        ���ݤޤȤ������ñ��ʬ�ο��ž���
+      *        生保まとめの生保単独分の診療情報
       *
                PERFORM VARYING IDXX    FROM    1   BY  1
                        UNTIL   IDXX    >       10
@@ -902,7 +902,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                END-PERFORM
            END-IF       
       *    
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
            IF      WRK-PARA-DATAKBN    =   ZERO    OR  "2"
                MOVE    "2"                 TO  WRK-SYOKBN
       *
@@ -937,105 +937,105 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ãӣ֥ե�����ʿ��ťǡ����˽���
+      *    ＣＳＶファイル（診療データ）処理
       *****************************************************************
        2001-FILE-HENSYU-SEC         SECTION.
       *
-      *    �ãӣ֡ʣȣţ��ĥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
            IF      CNT-TOUKEI04        =   ZERO
                PERFORM 2003-CSV-HEAD-HENSYU-SEC
            END-IF
       * 
-      *    ���ܾ������
+      *    基本情報取得
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
-      *    ���ŵ��أɣ�      
+      *    医療機関ＩＤ      
            MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ŵ��إ�����
+      *    医療機関コード
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    WRK-PARA-HOSPCD     TO  WRK-DATA
                MOVE    7                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ��
+      *    診療年月
            MOVE    WRK-PARA-SRYYM      TO  WRK-DATA
            MOVE    6                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    �쥳���ɼ���
+      *    レコード識別
       *****MOVE    ?                   TO  WRK-NUM
       *****MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    �쥻�ץȼ���
+      *    レセプト種別
            MOVE    TOUKEI01-RECESYUBETU
                                        TO  WRK-DATA
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ������ʬ
+      *    入外区分
            MOVE    TOUKEI01-NYUGAIKBN  TO  WRK-NUM
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *    ���Ծ���
+      *    患者情報
       *  
-      *    �����ֹ�
+      *    患者番号
            MOVE    TOUKEI01-PTNUM      TO  WRK-DATA
            MOVE    20                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ԣɣ�
+      *    患者ＩＤ
            MOVE    TOUKEI01-PTID       TO  WRK-NUM
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���ʻ�̾
+      *    カナ氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-KANANAME   TO  WRK-DATA
                MOVE    50                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��̾
+      *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����
+      *    性別
            MOVE    TOUKEI01-SEX        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��ǯ����
+      *    生年月日
            MOVE    TOUKEI01-BIRTHDAY   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ž���
+      *    診療情報
       *
-      *    ���Ų�
+      *    診療科
            MOVE    TOUKEI02-SRYKA      TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �쥻�ſ��Ų�
+      *    レセ電診療科
            MOVE    TOUKEI02-RECESRYKA  TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ֹ�
+      *    剤番号
            MOVE    TOUKEI02-ZAINUM     TO  WRK-NUM
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �����ֹ�
+      *    剤内番号
            MOVE    TOUKEI02-RENNUM     TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ���Ź԰ٶ�ʬ
+      *    診療行為区分
            MOVE    TOUKEI02-SRYKBN     TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ż��̶�ʬ
+      *    診療種別区分
            MOVE    TOUKEI02-SRYSYUKBN  TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����������
+      *    剤点数識別
            IF      TOUKEI02-SRYKBN     =   "95"    OR  "96"
                MOVE    1                   TO  WRK-NUM
            ELSE
@@ -1043,101 +1043,101 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            END-IF
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ������
+      *    剤点数
            MOVE    TOUKEI02-ZAITEN     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �޲��
+      *    剤回数
            MOVE    TOUKEI02-ZAIKAISU   TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �굻������
+      *    手技点数１
            MOVE    TOUKEI02-SYUTEN1    TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �굻������
+      *    手技点数２
            MOVE    TOUKEI02-SYUTEN2    TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ��������
+      *    薬剤点数
            MOVE    TOUKEI02-YKZTEN     TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �������
+      *    器材点数
            MOVE    TOUKEI02-KIZAITEN   TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            MOVE    TOUKEI02-HKNCOMBI   TO  WRK-NUM
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ���ٿ�
+      *    明細数
            MOVE    TOUKEI02-MEISAISU   TO  WRK-NUM
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ���Ź԰٥�����
+      *    診療行為コード
            MOVE    TOUKEI02-SRYCD      TO  WRK-DATA
            MOVE    9                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����
+      *    数量
            MOVE    TOUKEI02-SRYSURYO   TO  WRK-NUM
            MOVE    10                  TO  WRK-NAGASA
            MOVE    5                   TO  WRK-SYOSUU     
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ���
+      *    回数
            MOVE    TOUKEI02-SRYKAISU   TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ��������
+      *    点数識別
            MOVE    TOUKEI02-TENSIKIBETU
                                        TO  WRK-NUM
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ����
+      *    点数
            MOVE    TOUKEI02-TEN        TO  WRK-NUM
            MOVE    11                  TO  WRK-NAGASA
            MOVE    2                   TO  WRK-SYOSUU     
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ̾�������ֹ�
+      *    名称入力番号
            MOVE    TOUKEI02-INPUTNUM   TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ������
+      *    自費金額
            MOVE    TOUKEI02-JIHIMONEY  TO  WRK-NUM
            MOVE    7                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ñ�̥�����
+      *    単位コード
            MOVE    TOUKEI02-TANICD     TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ñ��̾��
+      *    単位名称
            MOVE    TOUKEI02-TANINAME   TO  WRK-DATA
            MOVE    12                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ̾��
+      *    名称
            MOVE    TOUKEI02-NAME       TO  WRK-DATA
            MOVE    100                 TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����̾��
+      *    正式名称
            MOVE    TOUKEI02-FORMALNAME TO  WRK-DATA
            MOVE    200                 TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ������ॳ����
+      *    薬価基準コード
            MOVE    TOUKEI02-YAKKAKJNCD TO  WRK-DATA
            MOVE    12                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����泰�輱��
+      *    入外中外来識別
       *****MOVE    ??                  TO  WRK-DATA
       *****MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ɥ�����������
+      *    ドクターコード
            MOVE    TOUKEI02-DRCD       TO  WRK-DATA
            MOVE    5                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
-      *������������
+      *カレンダー情報
       *
-      *    ��������
+      *    カレンダー
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       31
                MOVE    TOUKEI02-KAISU (IDX1)   TO  WRK-NUM
@@ -1145,24 +1145,24 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                PERFORM 5005-NUM-HENSYU-SEC
            END-PERFORM
       *
-      *�ݸ�����
+      *保険情報
       * 
-      *    �ݸ��ֹ�
+      *    保険番号
            MOVE    TOUKEI02-HKNNUM     TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �ݸ��ɣ�
+      *    保険ＩＤ
            MOVE    TOUKEI02-HKNID      TO  WRK-NUM
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �ݸ����ֹ�
+      *    保険者番号
            IF      TOUKEI02-HKNNUM NOT =   SPACE   AND "9999999"    
                MOVE    TOUKEI02-HKNJANUM   TO  WRK-DATA
                MOVE    8                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC  
       *
-      *    �ݸ��������
+      *    保険情報取得
            INITIALIZE                  WRK-HKN-AREA
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       5
@@ -1172,43 +1172,43 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    MOVE    5                       TO  IDX1
                END-IF
            END-PERFORM
-      *    �ܿͲ�²��ʬ
+      *    本人家族区分
            MOVE    WRK-HKN-HONKZKKBN   TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC  
-      *    �����ʬ
+      *    補助区分
            MOVE    WRK-HKN-HOJOKBN     TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��³��ʬ     
+      *    継続区分     
            MOVE    WRK-HKN-CONTKBN     TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����
+      *    記号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    WRK-HKN-KIGO        TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ֹ�
+      *    番号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    WRK-HKN-NUM         TO  WRK-DATA
                MOVE    40                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��ʼ�����
+      *    資格取得日
            MOVE    WRK-HKN-SKKGETYMD   TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��ʳ�����
+      *    資格開始日
            MOVE    WRK-HKN-TEKSTYMD    TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��ʽ�λ��
+      *    資格終了日
            MOVE    WRK-HKN-TEKEDYMD    TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���ݸ���̾
+      *    被保険者名
            IF      WRK-PARA-KOJINKBN   =   "1"
                EVALUATE    TOUKEI01-HKNNUM
                    WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -1222,7 +1222,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
       *    
-      *�������
+      *公費情報
       *
            MOVE    ZERO                TO  WRK-KOH-MAX
       *
@@ -1266,91 +1266,91 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                PERFORM 20011-KOH-HENSYU-SEC
            END-PERFORM
       *
-      *ϫ�Ҿ���
+      *労災情報
       *    
-      *    �ݸ���ʬ
+      *    保険区分
            MOVE    TOUKEI01-HKNKBN         TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ը����ֹ�
+      *    患者交付番号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-KOFUNUM        TO  WRK-DATA
                MOVE    14                      TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ƚ�̾��
+      *    事業所名称
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-JIGYOUNAME     TO  WRK-DATA
                MOVE    40                      TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���Ѻ���
+      *    新継再別
            MOVE    TOUKEI01-SINKEI         TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ž����ͳ
+      *    転帰事由
            MOVE    TOUKEI01-TENKI          TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ����
+      *    傷病年月日
            MOVE    TOUKEI01-SHOBYOYMD      TO  WRK-NUM
            MOVE    8                       TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �ͻ������ʬ
+      *    四肢特例区分
            MOVE    TOUKEI01-SISIKBN        TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ܳ���ǯ����
+      *    療養開始年月日
            MOVE    TOUKEI01-RYOSTYMD       TO  WRK-NUM
            MOVE    8                       TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���ܽ�λǯ����
+      *    療養終了年月日
            MOVE    TOUKEI01-RYOEDYMD       TO  WRK-NUM
            MOVE    8                       TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    »����ʬ
+      *    損傷区分
            MOVE    TOUKEI01-SONSHOUKBN     TO  WRK-DATA
            MOVE    2                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    »����ʬ����
+      *    損傷区分枝番
            MOVE    TOUKEI01-SONSHOUKBN-EDANUM
                                            TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ե������ܳ���ǯ����
+      *    アフター療養開始年月日
            MOVE    TOUKEI01-SINSATUYMD     TO  WRK-NUM
            MOVE    8                       TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���ե������ܽ�λǯ����
+      *    アフター療養終了年月日
            MOVE    TOUKEI01-SINSATUEND     TO  WRK-NUM
            MOVE    8                       TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �ҳ���ʬ
+      *    災害区分
            MOVE    TOUKEI01-SAIGAIKBN      TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����������ʬ
+      *    自賠責請求区分
            MOVE    TOUKEI01-JIBAISEIKBN    TO  WRK-DATA
            MOVE    1                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *����°������
+      *患者属性情報
       *
-      *    ͹���ֹ�
+      *    郵便番号
            MOVE    TOUKEI01-HOME-POST      TO  WRK-DATA
            MOVE    7                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����������Υ�����
+      *    地方公共団体コード
            MOVE    TOUKEI01-LPUBCD         TO  WRK-DATA
            MOVE    5                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����
+      *    住所
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
                MOVE    400                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����ֹ�
+      *    電話番号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-TEL1      TO  WRK-DATA
                MOVE    15                      TO  WRK-NAGASA
@@ -1365,37 +1365,37 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *            
       *
       *****************************************************************
-      *    �ãӣ֥ե�����ʴ��ܥǡ����˸�������Խ�����
+      *    ＣＳＶファイル（基本データ）公費情報編集処理
       *****************************************************************
        20011-KOH-HENSYU-SEC        SECTION.
       *
-      *    �����ݸ��ֹ�     
+      *    公費保険番号     
            MOVE    WRK-KOHHKNNUM       TO  WRK-DATA
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ɣ�
+      *    公費ＩＤ
            MOVE    WRK-KOHID           TO  WRK-NUM
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��ʧ��ʬ
+      *    支払区分
            MOVE    WRK-KOHPAYKBN       TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��ô���ֹ�
+      *    負担者番号
            MOVE    WRK-KOHFTNJANUM     TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ������ֹ�
+      *    受給者番号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    WRK-KOHJKYSNUM      TO  WRK-DATA
                MOVE    20                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    Ŭ�ѳ�����
+      *    適用開始日
            MOVE    WRK-KOHTEKSTYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    Ŭ�ѽ�λ��
+      *    適用終了日
            MOVE    WRK-KOHTEKEDYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
@@ -1407,11 +1407,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *            
       *
       *****************************************************************
-      *    �ãӣ֥ե��������̾�ǡ����˽���
+      *    ＣＳＶファイル（病名データ）処理
       *****************************************************************
        2002-FILE-HENSYU-SEC         SECTION.
       *
-      *    ϫ�ҡ������դΤȤ����ݸ��ȹ礻�ǥ����å�
+      *    労災・自賠責のときは保険組合せでチェック
            EVALUATE    TOUKEI01-HKNNUM
                WHEN    WRK-CONS-ROUSAI-HKNNUM
                WHEN    WRK-CONS-JIBAI-HKNNUM
@@ -1434,143 +1434,143 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                    END-IF
            END-EVALUATE 
       *
-      *    �ãӣ֡ʣȣţ��ĥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
            IF      CNT-TOUKEI05        =   ZERO
                PERFORM 2003-CSV-HEAD-HENSYU-SEC
            END-IF
       *            
-      *���ܾ���
+      *基本情報
       *
            MOVE    SPACE               TO  WRK-REC
            MOVE    ZERO                TO  WRK-REC-LENGTH
-      *    ���ŵ��أɣ�      
+      *    医療機関ＩＤ      
            MOVE    WRK-PARA-HOSPID     TO  WRK-DATA
            MOVE    24                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ŵ��إ�����
+      *    医療機関コード
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    WRK-PARA-HOSPCD     TO  WRK-DATA
                MOVE    7                   TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ��
+      *    診療年月
            MOVE    WRK-PARA-SRYYM      TO  WRK-DATA
            MOVE    6                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    �쥳���ɼ���
+      *    レコード識別
       *****MOVE    ?                   TO  WRK-NUM
       *****MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    �쥻�ץȼ���
+      *    レセプト種別
            MOVE    TOUKEI01-RECESYUBETU
                                        TO  WRK-DATA
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ������ʬ
+      *    入外区分
            MOVE    TOUKEI01-NYUGAIKBN  TO  WRK-NUM
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *���Ծ���
+      *患者情報
       *  
-      *    �����ֹ�
+      *    患者番号
            MOVE    TOUKEI01-PTNUM      TO  WRK-DATA
            MOVE    20                  TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ���ԣɣ�
+      *    患者ＩＤ
            MOVE    TOUKEI01-PTID       TO  WRK-NUM
            MOVE    10                  TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC  
-      *    ���ʻ�̾
+      *    カナ氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-KANANAME   TO  WRK-DATA
                MOVE    50                  TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��̾
+      *    氏名
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-NAME       TO  WRK-DATA
                MOVE    100                 TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����
+      *    性別
            MOVE    TOUKEI01-SEX        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��ǯ����
+      *    生年月日
            MOVE    TOUKEI01-BIRTHDAY   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *��̾����
+      *病名情報
       *
-      *    ���Ų�
+      *    診療科
            MOVE    TOUKEI03-SRYKA      TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �쥻�ſ��Ų�
+      *    レセ電診療科
            MOVE    TOUKEI03-RECESRYKA  TO  WRK-DATA
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ų�����
+      *    診療開始日
            MOVE    TOUKEI03-SRYYMD     TO  WRK-NUM
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    Ϣ��
+      *    連番
            MOVE    TOUKEI03-RENNUM     TO  WRK-NUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ��̾
+      *    病名
            MOVE    TOUKEI03-BYOMEI     TO  WRK-DATA
            MOVE    200                 TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��̾ʸ����
+      *    病名文字数
            MOVE    TOUKEI03-BYOMEIMOJI TO  WRK-NUM
            MOVE    3                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �����ե饰
+      *    疑いフラグ
            MOVE    TOUKEI03-UTAGAIFLG  TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����̾�ե饰
+      *    主病名フラグ
            MOVE    TOUKEI03-SYUBYOFLG  TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ����������ʬ
+      *    慢性疾患区分
            MOVE    TOUKEI03-MANSEIKBN  TO  WRK-NUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �ݸ��ȹ礻
+      *    保険組合せ
            MOVE    TOUKEI03-HKNCOMBI   TO  WRK-NUM
            MOVE    4                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    �쥻�ץ�ɽ����ʬ
+      *    レセプト表示区分
            MOVE    TOUKEI03-REZEFLG    TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ž����ʬ
+      *    転帰区分
            MOVE    TOUKEI03-TENKIKBN   TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ž������
+      *    転帰日付
            MOVE    TOUKEI03-TENKIYMD   TO  WRK-DATA
            MOVE    8                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��̾�Խ��ե饰
+      *    病名編集フラグ
            MOVE    TOUKEI03-BYOMEIHENFLG
                                        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    �ݸ���̾�ե饰
+      *    保険病名フラグ
            MOVE    TOUKEI03-HKNBYOMEIFLG
                                        TO  WRK-DATA
            MOVE    1                   TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC    
-      *    ��̾�����ɿ�
+      *    病名コード数
            MOVE    TOUKEI03-BYOMEICDSU TO  WRK-NUM
            MOVE    2                   TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC    
-      *    ��̾������
+      *    病名コード
            PERFORM VARYING IDX1    FROM    1   BY  1
                    UNTIL   IDX1    >       21
                MOVE    TOUKEI03-BYOMEICD  (IDX1)   TO  WRK-DATA
@@ -1578,23 +1578,23 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                PERFORM 5004-MOJI-HENSYU-SEC
            END-PERFORM
       *
-      *����°������
+      *患者属性情報
       *
-      *    ͹���ֹ�
+      *    郵便番号
            MOVE    TOUKEI01-HOME-POST      TO  WRK-DATA
            MOVE    7                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����������Υ�����
+      *    地方公共団体コード
            MOVE    TOUKEI01-LPUBCD         TO  WRK-DATA
            MOVE    5                       TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����
+      *    住所
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-ADRS      TO  WRK-DATA
                MOVE    200                     TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �����ֹ�
+      *    電話番号
            IF      WRK-PARA-KOJINKBN   =   "1"
                MOVE    TOUKEI01-HOME-TEL1      TO  WRK-DATA
                MOVE    15                      TO  WRK-NAGASA
@@ -1608,7 +1608,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ãӣ֡ʣȣţ��ĥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（ＨＥＡＤレコード）編集処理
       *****************************************************************
        2003-CSV-HEAD-HENSYU-SEC                SECTION.
       *
@@ -1636,11 +1636,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ե�������Ͻ���
+      *    ファイル出力処理
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
       *
-      *    ���ԥ������Խ� 
+      *    改行コード編集 
            STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
                    WRK-KAIGYO                DELIMITED  BY  SIZE
                    INTO        WRK-REC
@@ -1661,7 +1661,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �������Խ�����
+      *    右ずめ編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -1687,7 +1687,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -1729,14 +1729,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
       *
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ����ʿ�����ZZZZZZZZZ9.999���Խ�
+      *    出力レコード処理（数字）ZZZZZZZZZ9.999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE                   
-      *        ���ϰ���
+      *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
                IF      WRK-SYOSUU          >   ZERO
                    COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
@@ -1777,7 +1777,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1791,7 +1791,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  TOUKEI03PARA-HOSPNUM
                WRITE   TOUKEIERR-REC
                CLOSE   TOUKEIERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-TOUKEIERR     TO  JOB-YOBI
@@ -1805,7 +1805,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -1816,15 +1816,15 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    TOUKEI05-FILE
       *
            IF      CNT-TOUKEI01           =   ZERO  
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-TOUKEIERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
-      *        �ե�������¸���󹹿�
+      *        ファイル保存情報更新
                PERFORM 3001-FILE-INFO-INSERT-SEC
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            COMPUTE JOB-UPDCNT  =   CNT-TOUKEI04    +
@@ -1842,7 +1842,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�������¸���󹹿�����
+      *    ファイル保存情報更新処理
       *****************************************************************
        3001-FILE-INFO-INSERT-SEC             SECTION.
       *
@@ -1853,7 +1853,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    WRK-PARA-SHELLID
                                    TO  SFILESV-TBL-KEY
       *
-      *    ����ץǡ����ʿ��ž����
+      *    月次統計データ（診療情報）
            IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "1" )
            AND   ( WRK-PARA-FILE1      =   "6"             )
       *****AND   ( CNT-TOUKEI04        >   ZERO            )
@@ -1876,12 +1876,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-PARA-FILENM1
                                        TO  SFILESV-TO-DATA  (WRK-RENNUM)
                MOVE    CNT-TOUKEI04    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "����ץǡ����ʿ��ž����"
+               MOVE    "月次統計データ（診療情報）"
                                        TO  SFILESV-TITLE    (WRK-RENNUM)
                MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
       *
-      *    ����ץǡ�������̾�����
+      *    月次統計データ（病名情報）
            IF    ( WRK-PARA-DATAKBN    =   ZERO    OR  "2" )
            AND   ( WRK-PARA-FILE2      =   "6"             )
       *****AND   ( CNT-TOUKEI05        >   ZERO            )
@@ -1904,7 +1904,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                MOVE    WRK-PARA-FILENM2
                                        TO  SFILESV-TO-DATA  (WRK-RENNUM)
                MOVE    CNT-TOUKEI05    TO  SFILESV-CNT-ALL  (WRK-RENNUM)
-               MOVE    "����ץǡ�������̾�����"
+               MOVE    "月次統計データ（病名情報）"
                                        TO  SFILESV-TITLE    (WRK-RENNUM)
                MOVE    "1"             TO  SFILESV-DATA-TYPE(WRK-RENNUM) 
            END-IF
@@ -1919,7 +1919,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ץǡ����ʴ��ܾ�����ɹ�
+      *    月次統計データ（基本情報）読込
       *****************************************************************
        900-TOUKEI01-READ-SEC             SECTION.
       *
@@ -1934,7 +1934,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ץǡ����ʿ��ž�����ɹ�
+      *    月次統計データ（診療情報）読込
       *****************************************************************
        900-TOUKEI02-READ-SEC             SECTION.
       *
@@ -1949,7 +1949,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ץǡ�������̾������ɹ�
+      *    月次統計データ（病名情報）読込
       *****************************************************************
        900-TOUKEI03-READ-SEC             SECTION.
       *
@@ -1964,7 +1964,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1981,7 +1981,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1994,7 +1994,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -2012,7 +2012,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

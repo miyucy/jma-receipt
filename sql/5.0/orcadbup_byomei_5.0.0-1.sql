@@ -1,8 +1,8 @@
 --                                      
--- ÉÂÌ¾¥Ş¥¹¥¿¥Æ¡¼¥Ö¥ë                        
+-- ç—…åãƒã‚¹ã‚¿ãƒ†ãƒ¼ãƒ–ãƒ«                        
 --                                    
--- ICD10-1(2013)ÄÉ²Ã
--- ICD10-2(2013)ÄÉ²Ã
+-- ICD10-1(2013)è¿½åŠ 
+-- ICD10-2(2013)è¿½åŠ 
 --                                   
 -- Create Date : 2017/1/6       
 
@@ -13,6 +13,6 @@ alter table master.tbl_byomei add column icd10_2_2 character varying(5);
 update master.tbl_byomei set icd10_1_2 = '';
 update master.tbl_byomei set icd10_2_2 = '';
 
--- public.tbl_byomei(view)¤ÎºÆºîÀ®
+-- public.tbl_byomei(view)ã®å†ä½œæˆ
 drop view tbl_byomei;
 create view tbl_byomei as select * from master.tbl_byomei;

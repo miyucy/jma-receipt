@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBD008.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ����Ģɼ
-      *  ����ݡ��ͥ��̾  : ����ɽ�ʣȣãͣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  04/01/09    NACL-����     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 日次帳票
+      *  コンポーネント名  : 日計表（ＨＣＭ４１）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  04/01/09    NACL-森脇     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      *  Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-����     05/01/12  �����󽸷׽�����ü��������
-      *  03.04.01    NACL-����     07/02/08  ʿ������ǯ����������ɽ���ѹ�
-      *  03.05.00    NACL-����     07/05/28  ���롼�׿����б�
-      *  04.02.01    NACL-����     08/03/10  ʿ������ǯ��������б�
+      *  プログラム修正履歴
+      *  Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-門脇     05/01/12  自費欄集計修正（端数処理）
+      *  03.04.01    NACL-森脇     07/02/08  平成１９年４月自費消費税表示変更
+      *  03.05.00    NACL-太田     07/05/28  グループ診療対応
+      *  04.02.01    NACL-森脇     08/03/10  平成２０年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,20 +38,20 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ��Ǽ�ե�����
+      *    収納ファイル
            SELECT  BD00801-FILE   ASSIGN   BD00801PARA
                                   ORGANIZATION    IS  INDEXED
                                   ACCESS  MODE    IS  DYNAMIC
                                   RECORD  KEY     IS  BD00801-ISAM-KEY
                                   FILE    STATUS  IS  STS-BD00801.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    ��Ǽ�ե�����
+      *    収納ファイル
        FD  BD00801-FILE.
        01  BD00801-REC.
            02  BD00801-ISAM-KEY.
@@ -71,15 +71,15 @@
            COPY    "CPSYUNOU.INC"  REPLACING  //SYU-//
                                    BY         //BD00801-SYU-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
        WORKING-STORAGE             SECTION.
-      *    ���������ΰ�
+      *    シェル用領域
            COPY    "CPCOMMONSHELL.INC".
       *
-      *    ��Ǽ�ե�����
+      *    収納ファイル
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING  //RECE01//
                                    BY         //BD00801//.
@@ -92,12 +92,12 @@
                                    BY         //HCM41//.
       *----(04.02.01)--UPD-END-----
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-RECEERR         PIC X(02).
            03  STS-BD00801         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -109,25 +109,25 @@
            03  FLG-SYUNOU          PIC 9(01).
            03  FLG-OK              PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-LINE            PIC 9(02).
            03  CNT-PAGE            PIC 9(06).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PATHNAME        PIC X(64).
            03  WRK-RECEERR         PIC X(200).
@@ -173,13 +173,13 @@
                05  SUM-MONEY       PIC S9(08).
       *
        01  WRK-CONS-AREA.
-      *    �����ݸ��ֹ�
+      *    自費保険番号
            03  WRK-CONS-JIHI-HKNNUM    PIC X(03)   VALUE   "980".
-      *    ϫ���ݸ��ֹ�
+      *    労災保険番号
            03  WRK-CONS-ROUSAI-HKNNUM  PIC X(03)   VALUE   "971".
-      *    �������ݸ��ֹ�
+      *    自賠責保険番号
            03  WRK-CONS-JIBAI-HKNNUM   PIC X(03)   VALUE   "973".
-      *    �����ݸ��ֹ�
+      *    公害保険番号
            03  WRK-CONS-KOUGAI-HKNNUM   PIC X(03)   VALUE  "975".
       *
       *----(03.04.01)--ADD-START---
@@ -192,30 +192,30 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��Ǽ�ޥ���
+      *    収納マスタ
        01  SYU-REC.
            COPY    "CPSYUNOU.INC".
       *
-      *    �����ݸ��ޥ���
+      *    患者保険マスタ
        01  PTHKNINF-REC.
            COPY    "CPPTHKNINF.INC".
       *
-      *    ���ԥޥ���
+      *    患者マスタ
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    �����ֹ�ޥ���
+      *    患者番号マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    �ݸ��Ȥ߹�碌
+      *    保険組み合わせ
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
@@ -226,28 +226,28 @@
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����ֹ��Ѵ�����
+      *    患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -257,7 +257,7 @@
       ****************************************************************
        LINKAGE                     SECTION.
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                      PIC 9(07).
@@ -274,7 +274,7 @@
                ORCBD008AREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -288,7 +288,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -303,7 +303,7 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -314,16 +314,16 @@
            EVALUATE    ORCBD008-SYORIKBN
            WHEN        "1"
                MOVE    "ORCBD006"              TO  JOB-PGID
-               MOVE    "����ɽ����ɼȯ������"  TO  JOB-SHELLMSG
+               MOVE    "日計表（伝票発行日）"  TO  JOB-SHELLMSG
            WHEN        "2"
                MOVE    "ORCBD007"              TO  JOB-PGID
-               MOVE    "����ɽ�ʿ���ǯ������"  TO  JOB-SHELLMSG
+               MOVE    "日計表（診療年月日）"  TO  JOB-SHELLMSG
            WHEN        "3"
                MOVE    "ORCBD002"              TO  JOB-PGID
-               MOVE    "����ɽ����ɼȯ������"  TO  JOB-SHELLMSG
+               MOVE    "日計表（伝票発行日）"  TO  JOB-SHELLMSG
            WHEN        "4"
                MOVE    "ORCBD003"              TO  JOB-PGID
-               MOVE    "����ɽ�ʿ���ǯ������"  TO  JOB-SHELLMSG
+               MOVE    "日計表（診療年月日）"  TO  JOB-SHELLMSG
            END-EVALUATE
       *
            PERFORM 800-ORCSJOB-SEC
@@ -345,10 +345,10 @@
            MOVE    SGETTEMP-FULLNAMES (2)
                                    TO  RECEERR
       *
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
            PERFORM 110-PARA-HENSYU-SEC
       *
-      *    ��Ǽ�ե������Խ�����
+      *    収納ファイル編集処理
            PERFORM 120-BD00801-HEN-SEC
       *
            .
@@ -356,17 +356,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�Խ�����
+      *    パラメタ編集処理
       *****************************************************************
        110-PARA-HENSYU-SEC         SECTION.
       *
-      *    �����ƥ����ե��å�
+      *    システム日付セット
            MOVE    LNK-PRTKANRI-SKYYMD
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG     TO  WRK-SYSYMDWH
       *
-      *    �о�ǯ�����Խ�
+      *    対象年月日編集
            MOVE    ORCBD008-SYORIYMD
                                    TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
@@ -377,7 +377,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ե������Խ�����
+      *    収納ファイル編集処理
       *****************************************************************
        120-BD00801-HEN-SEC             SECTION.
       *
@@ -422,7 +422,7 @@
        120-BD00801-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -431,15 +431,15 @@
            PERFORM 900-BD00801-READ-SEC
       *
            PERFORM UNTIL   FLG-END     =   1
-      *        Ģɼ�Խ�<���Ф�>����
+      *        帳票編集<見出し>処理
                PERFORM 310-HEAD-HEN-SEC
-      *        Ģɼ�Խ�<����>����
+      *        帳票編集<明細>処理
                PERFORM 320-BODY-HEN-SEC
-      *        Ģɼ�Խ�<���>����
+      *        帳票編集<合計>処理
                IF     FLG-END       =   1
                    PERFORM 330-TERM-HEN-SEC
                END-IF
-      *        Ģɼ��������
+      *        帳票印刷処理
                PERFORM 390-PRINT-OUT-SEC
            END-PERFORM
       *
@@ -449,7 +449,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<�إå�����>����
+      *    帳票編集<ヘッダー部>処理
       *****************************************************************
        310-HEAD-HEN-SEC            SECTION.
       *
@@ -459,9 +459,9 @@
            INITIALIZE                  HCM41
       *
            IF      ORCBD008-SYORIKBN   =   "1" OR "3"
-               MOVE    "��ɼȯ����"    TO  HCM41-MIDASI
+               MOVE    "伝票発行日"    TO  HCM41-MIDASI
            ELSE
-               MOVE    "����ǯ����"    TO  HCM41-MIDASI
+               MOVE    "診療年月日"    TO  HCM41-MIDASI
            END-IF
       *
            MOVE    WRK-SYORIYMDWH  TO  HCM41-SRYYMD
@@ -469,9 +469,9 @@
       *
            IF    ( ORCBD008-SYORIKBN   =   "1"  OR "2" )
                IF      ORCBD008-NYUGAIKBN  =   "1"
-                   MOVE    "��������"  TO  HCM41-NYUGAIKBN
+                   MOVE    "（入院）"  TO  HCM41-NYUGAIKBN
                ELSE
-                   MOVE    "�ʳ����"  TO  HCM41-NYUGAIKBN
+                   MOVE    "（外来）"  TO  HCM41-NYUGAIKBN
                END-IF
            END-IF
       *
@@ -480,26 +480,26 @@
       *
       *----(04.02.01)--ADD-START---
            IF      ORCBD008-SYORIYMD   <   CONST-H200401
-               MOVE    "�����ܿ�"      TO  HCM41-HKNNAME(1)
-               MOVE    "���ݲ�²"      TO  HCM41-HKNNAME(2)
-               MOVE    "����Ϸ��"      TO  HCM41-HKNNAME(3)
-               MOVE    "���ݰ���"      TO  HCM41-HKNNAME(4)
-               MOVE    "����Ϸ��"      TO  HCM41-HKNNAME(5)
-               MOVE    "����ñ��"      TO  HCM41-HKNNAME(6)
-               MOVE    "����"          TO  HCM41-HKNNAME(7)
-               MOVE    "ϫ��"          TO  HCM41-HKNNAME(8)
-               MOVE    "������"        TO  HCM41-HKNNAME(9)
-               MOVE    "����"          TO  HCM41-HKNNAME(10)
+               MOVE    "社保本人"      TO  HCM41-HKNNAME(1)
+               MOVE    "社保家族"      TO  HCM41-HKNNAME(2)
+               MOVE    "社保老人"      TO  HCM41-HKNNAME(3)
+               MOVE    "国保一般"      TO  HCM41-HKNNAME(4)
+               MOVE    "国保老人"      TO  HCM41-HKNNAME(5)
+               MOVE    "公費単独"      TO  HCM41-HKNNAME(6)
+               MOVE    "自費"          TO  HCM41-HKNNAME(7)
+               MOVE    "労災"          TO  HCM41-HKNNAME(8)
+               MOVE    "自賠責"        TO  HCM41-HKNNAME(9)
+               MOVE    "公害"          TO  HCM41-HKNNAME(10)
            ELSE
-               MOVE    "�����ܿ�"      TO  HCM41-HKNNAME(1)
-               MOVE    "���ݲ�²"      TO  HCM41-HKNNAME(2)
-               MOVE    "����"          TO  HCM41-HKNNAME(3)
-               MOVE    "�������"      TO  HCM41-HKNNAME(4)
-               MOVE    "����ñ��"      TO  HCM41-HKNNAME(5)
-               MOVE    "����"          TO  HCM41-HKNNAME(6)
-               MOVE    "ϫ��"          TO  HCM41-HKNNAME(7)
-               MOVE    "������"        TO  HCM41-HKNNAME(8)
-               MOVE    "����"          TO  HCM41-HKNNAME(9)
+               MOVE    "社保本人"      TO  HCM41-HKNNAME(1)
+               MOVE    "社保家族"      TO  HCM41-HKNNAME(2)
+               MOVE    "国保"          TO  HCM41-HKNNAME(3)
+               MOVE    "後期高齢"      TO  HCM41-HKNNAME(4)
+               MOVE    "公費単独"      TO  HCM41-HKNNAME(5)
+               MOVE    "自費"          TO  HCM41-HKNNAME(6)
+               MOVE    "労災"          TO  HCM41-HKNNAME(7)
+               MOVE    "自賠責"        TO  HCM41-HKNNAME(8)
+               MOVE    "公害"          TO  HCM41-HKNNAME(9)
            END-IF
       *----(04.02.01)--ADD-END-----
       *
@@ -508,7 +508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        320-BODY-HEN-SEC            SECTION.
       *
@@ -516,7 +516,7 @@
       *
            PERFORM UNTIL   FLG-END     =   1
                    OR      CNT-LINE    =   30
-      *    ���Ծ����ɤ߹���
+      *    患者情報読み込み
       *         INITIALIZE                  PTINF-REC
       *         MOVE    SYU-HOSPNUM    TO  PTINF-HOSPNUM
       *         MOVE    SYU-PTID      TO  PTINF-PTID
@@ -535,24 +535,24 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        3201-BODY-HEN-SEC            SECTION.
       *
            ADD     1               TO  CNT-LINE
-      *    Ϣ��
+      *    連番
            ADD     1               TO  WRK-RENNUM
            MOVE    WRK-RENNUM      TO  WRK-RENNUM-X
            MOVE    WRK-RENNUM-X    TO  HCM41-RENNUM(CNT-LINE)
-      *    �����ֹ�
+      *    患者番号
            IF    ( BD00801-PTNUM (11:) =   SPACE )
                MOVE    BD00801-PTNUM   TO  HCM41-PTNUM(CNT-LINE)
            ELSE
                MOVE    BD00801-PTNUM   TO  HCM41-PTNUM2(CNT-LINE)
            END-IF
-      *    ��̾
+      *    氏名
            MOVE    PTINF-NAME      TO  HCM41-NAME(CNT-LINE)
-      *    �ݸ�����
+      *    保険点数
            EVALUATE    SYU-SYUHKNNUM
                WHEN    WRK-CONS-JIBAI-HKNNUM
                WHEN    WRK-CONS-ROUSAI-HKNNUM
@@ -576,11 +576,11 @@
        3201-BODY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ݸ��ȹ礻ɽ������
+      *    保険組合せ表示処理
       *****************************************************************
        3201-PTHKNINF-HENSYU-SEC    SECTION.
       *
-      *   �ݸ��ȹ礻�ɤ߽Ф�
+      *   保険組合せ読み出し
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SYU-HOSPNUM    TO  COMB-HOSPNUM
            MOVE    SYU-PTID      TO  COMB-PTID
@@ -588,7 +588,7 @@
                                    TO  COMB-HKNCOMBINUM
            PERFORM 900-HKNCOMBI-READ-SEC
            IF      FLG-HKNCOMBI        =   ZERO
-      *    �����ݸ������ɤ߹���
+      *    患者保険情報読み込み
                INITIALIZE                  PTHKNINF-REC
                MOVE    SYU-HOSPNUM    TO  PTHKN-HOSPNUM
                MOVE    SYU-PTID      TO  PTHKN-PTID
@@ -601,52 +601,52 @@
       *
       *----(04.02.01)--ADD-START---
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        3201-BODY-H200401-MAE-SEC   SECTION.
       *
-      *    �ݸ��̶�ۡʼ����ܿ͡������ա�
+      *    保険別金額（社保本人〜自賠責）
            MOVE    ZERO                TO  IDX
            EVALUATE    SYU-SYUHKNNUM
-      *        ����ñ��
+      *        公費単独
                WHEN    SPACE
                    MOVE    6                   TO  IDX
-      *        ����
+      *        公害
                WHEN    WRK-CONS-KOUGAI-HKNNUM
                    MOVE    10                  TO  IDX
-      *        ������
+      *        自賠責
                WHEN    WRK-CONS-JIBAI-HKNNUM
                    MOVE    9                   TO  IDX
-      *        ϫ��
+      *        労災
                WHEN    WRK-CONS-ROUSAI-HKNNUM
                    MOVE    8                   TO  IDX
       ***      WHEN    WRK-CONS-JIHI-HKNNUM    
       ***          MOVE    7                   TO  IDX
-      *        ����
+      *        国保
                WHEN    "060"
                WHEN    "067"
                WHEN    "068"
                WHEN    "069"
-      *            ����Ϸ��
+      *            国保老人
                    IF      SYU-KOH1HKNNUM      =   "027"
                        MOVE    5                   TO  IDX
                    ELSE
-      *                ���ݰ���
+      *                国保一般
                        MOVE    4                   TO  IDX
                    END-IF
                WHEN    OTHER
-      *            ����
+      *            自費
                    IF    ( SYU-SYUHKNNUM(1:2) = "98" ) OR
                          ( SYU-SYUHKNNUM(1:2) = "90" ) OR
                          ( SYU-SYUHKNNUM(1:2) = "91" )
                        MOVE    7                   TO  IDX
                    ELSE
-      *                ����Ϸ��
+      *                社保老人
                        IF      SYU-KOH1HKNNUM      =   "027"
                            MOVE    3                   TO  IDX
                        ELSE
                            PERFORM 3201-PTHKNINF-HENSYU-SEC
-      *                    �����ܿ͡���²
+      *                    社保本人・家族
                            EVALUATE    PTHKN-HONKZKKBN
                                WHEN    "1"
                                    MOVE    1                   TO  IDX
@@ -658,7 +658,7 @@
            END-EVALUATE
       *
            IF      IDX                 >   ZERO
-      *        ����ʳ��ΤȤ�����ʬ��������
+      *        自費以外のとき自費分だけ集計
                IF      IDX             =   7
                    MOVE    ZERO            TO  WRK-JIHI
                ELSE
@@ -757,53 +757,53 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�Խ�<���ٹ�>����
+      *    帳票編集<明細行>処理
       *****************************************************************
        3201-BODY-H200401-ATO-SEC   SECTION.
       *
-      *    �ݸ��̶�ۡʼ����ܿ͡������ա�
+      *    保険別金額（社保本人〜自賠責）
            MOVE    ZERO                TO  IDX
            EVALUATE    SYU-SYUHKNNUM
-      *        ����ñ��
+      *        公費単独
                WHEN    SPACE
                    MOVE    5                   TO  IDX
-      *        ����
+      *        公害
                WHEN    WRK-CONS-KOUGAI-HKNNUM
                    MOVE    9                   TO  IDX
-      *        ������
+      *        自賠責
                WHEN    WRK-CONS-JIBAI-HKNNUM
                    MOVE    8                   TO  IDX
-      *        ϫ��
+      *        労災
                WHEN    WRK-CONS-ROUSAI-HKNNUM
                    MOVE    7                   TO  IDX
-      *        ����
+      *        国保
                WHEN    "060"
                WHEN    "067"
                WHEN    "068"
                WHEN    "069"
-      *            ����Ϸ��
+      *            国保老人
                    IF      SYU-KOH1HKNNUM      =   "027"
                        MOVE    4                   TO  IDX
                    ELSE
                        MOVE    3                   TO  IDX
                    END-IF
-      *        �������
+      *        後期高齢
                WHEN    "039"
                WHEN    "040"
                    MOVE    4                   TO  IDX
-      *        ����¾
+      *        その他
                WHEN    OTHER
-      *            ����
+      *            自費
                    IF    ( SYU-SYUHKNNUM(1:2) = "98" ) OR
                          ( SYU-SYUHKNNUM(1:2) = "90" ) OR
                          ( SYU-SYUHKNNUM(1:2) = "91" )
                        MOVE    6                   TO  IDX
                    ELSE
-      *                ����Ϸ��
+      *                社保老人
                        IF      SYU-KOH1HKNNUM      =   "027"
                            MOVE    4                   TO  IDX
                        ELSE
-      *                    ����
+      *                    社保
                            PERFORM 3201-PTHKNINF-HENSYU-SEC
                            EVALUATE    PTHKN-HONKZKKBN
                                WHEN    "1"
@@ -816,7 +816,7 @@
            END-EVALUATE
       *
            IF      IDX                 >   ZERO
-      *        ����ʳ��ΤȤ�����ʬ��������
+      *        自費以外のとき自費分だけ集計
                IF      IDX             =   6
                    MOVE    ZERO            TO  WRK-JIHI
                ELSE
@@ -913,7 +913,7 @@
       *
       *----(04.02.01)--ADD-END-----
       *****************************************************************
-      *          *    Ģɼ�Խ�<���>����
+      *          *    帳票編集<合計>処理
       *****************************************************************
        330-TERM-HEN-SEC            SECTION.
       *
@@ -948,7 +948,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        390-PRINT-OUT-SEC           SECTION.
       *
@@ -975,10 +975,10 @@
            MOVE    "HCM41V02.red"  TO  SPRT-PRTID
       *----(04.02.01)--UPD-END-----
            IF      ORCBD008-SYORIKBN   =   "1" OR "3"
-               MOVE    "����ɽ����ɼȯ������"
+               MOVE    "日計表（伝票発行日）"
                                        TO  SPRT-TITLE
            ELSE
-               MOVE    "����ɽ�ʿ���ǯ������"
+               MOVE    "日計表（診療年月日）"
                                        TO  SPRT-TITLE
            END-IF
            MOVE    HCM41            TO  SPRT-PRTDATA
@@ -995,7 +995,7 @@
            IF      SPRT-RETURN          =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                         TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -1005,7 +1005,7 @@
            EXIT.
 057400*
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1019,7 +1019,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -1040,17 +1040,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
-      *    �ե�������
+      *    ファイル削除
            MOVE    ZERO            TO  IF-RESULT
            MOVE    BD00801PARA     TO  IF-FILENAME
            CALL    "orcfiledel"    USING
                                        ORCSFDELAREA
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -1068,7 +1068,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -1081,13 +1081,13 @@
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3
                                    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "��"
+           INSPECT WRK-HENYMDG    REPLACING  ALL "  "  BY  "　"
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ����ִ��������å�����
+      *    ジョブ管理チェック処理
       *****************************************************************
        800-ORCSJOB-SEC                 SECTION.
       *
@@ -1101,7 +1101,7 @@
        800-ORCSJOB-EXT.
            EXIT.
       *****************************************************************
-      *    ��Ǽ�ޥ�������ɼȯ�����Ǹ���
+      *    収納マスタ　伝票発行日で検索
       *****************************************************************
        900-SYUNOU-SEL-SEC              SECTION.
       *
@@ -1150,7 +1150,7 @@
            EXIT.
       *
       *****************************************************************
-      *     ��Ǽ�򸡺�����
+      *     収納を検索処理
       *****************************************************************
        900-SYUNOU-FET-SEC              SECTION.
       *
@@ -1171,7 +1171,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��Ǽ�ե������ɹ�����
+      *    収納ファイル読込処理
       *****************************************************************
        900-BD00801-READ-SEC            SECTION.
       *
@@ -1184,7 +1184,7 @@
                NOT AT  END
                    MOVE    ZERO            TO  FLG-END
                    MOVE    BD00801-SYU-DAT TO  SYU-REC
-      *            ���Ծ����ɤ߹���
+      *            患者情報読み込み
                    INITIALIZE                  PTINF-REC
                    MOVE    SYU-HOSPNUM    TO  PTINF-HOSPNUM
                    MOVE    SYU-PTID      TO  PTINF-PTID
@@ -1202,7 +1202,7 @@
        900-BD00801-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ������ɹ�����
+      *    患者マスター読込処理
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -1226,7 +1226,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ֹ�ޥ������ɹ�����
+      *    患者番号マスター読込処理
       *****************************************************************
        900-PTNUM-READ-SEC          SECTION.
       *
@@ -1252,7 +1252,7 @@
       *
       *
       *****************************************************************
-      *    �����ݸ��ޥ������ɹ�����
+      *    患者保険マスター読込処理
       *****************************************************************
        900-PTHKNINF-READ-SEC       SECTION.
       *
@@ -1277,7 +1277,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ݸ��ȹ礻�ޥ������ɹ�����
+      *    保険組合せマスター読込処理
       *****************************************************************
        900-HKNCOMBI-READ-SEC       SECTION.
       *
@@ -1301,7 +1301,7 @@
        900-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1318,7 +1318,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -1332,7 +1332,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥��ɹ�����
+      *    テーブル読込処理
       *****************************************************************
        910-DBFETCH-SEC                SECTION.
       *
@@ -1346,7 +1346,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        910-DBCLOSECURSOR-SEC               SECTION.
       *
@@ -1360,7 +1360,7 @@
        910-DBCLOSECURSOR-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -1384,7 +1384,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

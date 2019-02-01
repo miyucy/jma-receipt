@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGZ97.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �����ޥ�������
-      *  ����ݡ��ͥ��̾  : �������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  00/12/01    MCC��ƣ����   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 点数マスタ設定
+      *  コンポーネント名  : 処理結果
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  00/12/01    MCC−藤原　   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-¿��Ǽ  05/12/12  MONFUNC�б�
-      *  01.00.02    NACL-����    06/03/20  �ץ�ӥ塼�ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-多々納  05/12/12  MONFUNC対応
+      *  01.00.02    NACL-森脇    06/03/20  プレビュー追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,21 +42,21 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "Z01COMMON-SPA".
-      *    ���̣ӣУ����ꥢ
+      *    画面ＳＰＡエリア
            COPY    "Z01SCR-SPA".
       *
            COPY    "ENUM-VALUE".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
       *
@@ -74,37 +74,37 @@
                05  WRK-SS          PIC X(02).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK3003.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *     
       *****COPY    "CPORCMCP.INC".  
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
            COPY    "ORCA-BLOB".
       *
-      *    �ե��������ѥ�᥿
+      *    ファイル削除パラメタ
            COPY    "CPORCSFDEL.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -123,7 +123,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -134,7 +134,7 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *        ��������
+      *        画面遷移
                WHEN      OTHER
                    PERFORM 200-GMNSENI
            END-EVALUATE.
@@ -148,7 +148,7 @@
            .
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -167,15 +167,15 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܽ���
+      *    画面遷移処理
       *****************************************************************
        200-GMNSENI                   SECTION.
       *
            EVALUATE    MCP-EVENT       ALSO    MCP-WIDGET
-      *    ���
+      *    戻る
                WHEN    "CLICKED"       ALSO    "B01"
                    PERFORM 210-BACK
-      *    ��������
+      *    処理状態
                WHEN    "CLICKED"       ALSO    "pandatimer1"
                WHEN    "CLICKED"       ALSO    "B11"
                    PERFORM 490-KAKUNIN-SEC
@@ -190,7 +190,7 @@
                    MOVE    ZERO                TO  Z97-DURATION
                  END-IF
                END-IF
-      *    �ץ�ӥ塼���̤�
+      *    プレビュー画面へ
                WHEN    "CLICKED"       ALSO    "B12"
                    PERFORM 4501-NEXT-GMN-SEC
            END-EVALUATE
@@ -200,11 +200,11 @@
            EXIT.
       *     
       *****************************************************************
-      *    ��롡����
+      *    戻る　処理
       *****************************************************************
        210-BACK                    SECTION.
       *
-      *    ���饤�������¸�Ѻ�ȥե�������
+      *    クライアント保存用作業ファイル削除
            PERFORM VARYING IDX FROM    1   BY  1
                    UNTIL   IDX >       SPA-SFILESV-MAX
                INITIALIZE              ORCSFDELAREA
@@ -236,7 +236,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    更新処理
       *****************************************************************
        4501-NEXT-GMN-SEC            SECTION.
       *
@@ -257,7 +257,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    処理確認処理
       *****************************************************************
        490-KAKUNIN-SEC            SECTION.
       *
@@ -282,7 +282,7 @@
                MOVE    MCPDATA-REC         TO  SYS-3003-REC 
                PERFORM VARYING IDX FROM    1   BY  1
                        UNTIL   IDX >       SYS-3003-JOBID
-      *            ����ִ��������å�����
+      *            ジョブ管理チェック処理
                    MOVE    "CHK"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    IDX             TO  JOB-JOBID
@@ -302,10 +302,10 @@
            MOVE    "B01"                TO  MCP-WIDGET
            IF    ( Z97-MSG              =   SPACE )
                IF    ( Z97-COUNT        >   ZERO  )
-                   MOVE    "����������˽�λ���ޤ���"
+                   MOVE    "処理は正常に終了しました"
                                                 TO  Z97-MSG
                ELSE
-                   MOVE    "������������Ϥ���ޤ���"
+                   MOVE    "該当する処理はありません"
                                                 TO  Z97-MSG
                END-IF 
            END-IF                                 
@@ -313,7 +313,7 @@
            MOVE    SPACE               TO  LINKAREA
       *
            IF    ( SPA-ZID1-FLG    =   "PV" )
-               MOVE    "F12:�ץ�ӥ塼"    TO  Z97-B12-LABEL
+               MOVE    "F12:プレビュー"    TO  Z97-B12-LABEL
                IF    ( WRK-PRT-PAGE    >   ZERO )
                        MOVE    WIDGET-NORMAL    TO  Z97-B12-STATE
                        MOVE    "B12"            TO  MCP-WIDGET
@@ -327,7 +327,7 @@
                        IF      SPA-Z97-FILESV-CHK-FLG  =   ZERO
                            PERFORM 4902-FILE-INFO-CHK-SEC
                        ELSE
-      *                    �ե����륨��ȥ����(���饤�������¸)
+      *                    ファイルエントリ処理(クライアント保存)
                            ADD     1               TO  SPA-SFILESV-IDX 
                            PERFORM 3001-FILEENTRY-SEC
                            IF      FLG-END         =   1
@@ -347,7 +347,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������ǧ����
+      *    処理確認処理
       *****************************************************************
        4901-KAKUNIN-HYOUJI-SEC     SECTION.
       *     
@@ -371,16 +371,16 @@
            MOVE    WRK-PAGE        TO  Z97-PAGE     (IDX)
            MOVE    JOB-YOBI        TO  Z97-ERRMSG   (IDX)
            IF      JOB-ENDYMD      =   SPACE
-               MOVE    "������Ǥ�"    TO  Z97-MSG
+               MOVE    "処理中です"    TO  Z97-MSG
            ELSE
                IF      JOB-ERRCD       =   SPACE
                    CONTINUE
                ELSE
                    INITIALIZE          Z97-MSG
                    STRING  JOB-YOBI        DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE
+                           "【"            DELIMITED  BY  SIZE
                            JOB-SHELLMSG    DELIMITED  BY  SPACE
-                           "��"            DELIMITED  BY  SIZE      
+                           "】"            DELIMITED  BY  SIZE      
                                            INTO  Z97-MSG
                    END-STRING
                END-IF
@@ -394,7 +394,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���饤�������¸��������å�����
+      *    クライアント保存情報チェック処理
       *****************************************************************
        4902-FILE-INFO-CHK-SEC          SECTION.
       *
@@ -440,7 +440,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨��ȥ����(���饤�������¸)
+      *    ファイルエントリ処理(クライアント保存)
       *****************************************************************
        3001-FILEENTRY-SEC          SECTION.
       *
@@ -477,32 +477,32 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������åȽ���
+      *    エラーメッセージセット処理
       *****************************************************************
        4901-JOB-ERRSET-SEC             SECTION.
       *
            EVALUATE    JOB-ERRCD
                WHEN    "0001"
-                   MOVE    "�ڥե����뤬����ޤ����" 
+                   MOVE    "【ファイルがありません】" 
                                                TO  Z97-MSG
                WHEN    "0002"
-                   MOVE    "�ڣ��䤬��ư����Ƥ��ޤ����" 
+                   MOVE    "【ｆｄｄが起動されていません】" 
                                                TO  Z97-MSG
                WHEN    "0003"
                WHEN    "0004"
-                   MOVE    "�ڣ���ǽ��������Ԥ��ޤ�����" 
+                   MOVE    "【ｆｄｄで処理が失敗しました】" 
                                                TO  Z97-MSG
                WHEN    "0011"
-                   MOVE    "�����Τ��ޥ���ȤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【媒体がマウントできませんでした】" 
                                                TO  Z97-MSG
                WHEN    "0012"
-                   MOVE    "�����Τ�����ޥ���ȤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【媒体がアンマウントできませんでした】" 
                                                TO  Z97-MSG
                WHEN    "0021"
-                   MOVE    "�ڥե����륳�ԡ��ǥ��顼��ȯ�����ޤ�����" 
+                   MOVE    "【ファイルコピーでエラーが発生しました】" 
                                                TO  Z97-MSG
                WHEN    "0127"
-                   MOVE    "�ڥ�����ץȤ��¹ԤǤ��ޤ���Ǥ�����" 
+                   MOVE    "【スクリプトが実行できませんでした】" 
                                                TO  Z97-MSG
            END-EVALUATE
       *
@@ -511,7 +511,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ��ʥ�����
+      *    管理マスター読込（キー）
       *****************************************************************
        900-SYSKANRI-INV-SEC         SECTION.
       *
@@ -552,7 +552,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �Уգԡ�����
+      *    ＰＵＴ　処理
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,19 +18,19 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCHC67.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ͽ����Ͽ
-      *  ����ݡ��ͥ��̾  : ͽ��ɼ�������ʣȣãͣ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/01/XX    NACL��¿��Ǽ  ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 予約登録
+      *  コンポーネント名  : 予約票　印刷（ＨＣＭ６７）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/01/XX    NACL−多々納  新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.00    NACL-¿��Ǽ  14/07/30  ����ǥ��쥯�ȥ��б�
-      *  04.08.00    NACL-¿��Ǽ  16/02/03  �ץ�����४�ץ�������б�
-      *  04.08.00    NACL-¿��Ǽ  16/10/19  API(GINBEE)�б�
-      *  05.00.00    NACL-����    17/02/26  API(GINBEE)�б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
+      *  04.08.00    NACL-多々納  16/02/03  プログラムオプションメモ対応
+      *  04.08.00    NACL-多々納  16/10/19  API(GINBEE)対応
+      *  05.00.00    NACL-太田    17/02/26  API(GINBEE)対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -38,7 +38,7 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
       **** SELECT  PRT-FILE        ASSIGN  HC01PARA
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    FILE    STATUS  IS  STS-PARA.
@@ -46,26 +46,26 @@
        DATA                    DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC                 PIC X(2000).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ͽ��ɼ�ǡ���
+      *    予約票データ
            COPY    "HCM67.INC".
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPCOMMONPRT.INC".
       *v4.8
-      *    ����ǥ��쥯�ȥ��ΰ� 
+      *    一時デイレクトリ領域 
            COPY    "CPASGNPARA.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PARA            PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SYSKANRI        PIC 9(01).
@@ -78,18 +78,18 @@
       *API
            03  FLG-APISYORI        PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
            03  IDH                 PIC 9(04).
            03  IDZ                 PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-TIME            PIC 9(08).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-SYMD.
@@ -131,9 +131,9 @@
            03  WRK-Z9                  PIC Z9.
       *
       *H28.10
-      *    API�б���
+      *    API対応用
        01  WRK-API-AREA.
-      *    �����Խ�
+      *    日付編集
            03  WRK-HEN-DATE.
                05  WRK-HEN-YY          PIC X(04).
                05  WRK-HEN-H1          PIC X(01).
@@ -141,7 +141,7 @@
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
       *
-      *    ͽ��ơ��֥�
+      *    予約テーブル
        01  TBL-YY-AREA.
            03  TBL-YYK-REC             OCCURS   50.
                07  TBL-SRYNAIYO            PIC X(02).
@@ -153,9 +153,9 @@
                    09  TBL-COMMENT         PIC X(80)   OCCURS  6.
            03  TBL-MAX                     PIC 9(04).
       *
-      *ͽ��ɼ���ٹ�
+      *予約票明細行
        01  LINE-MAX                PIC 9(02)   VALUE   12.
-      *�����Ⱥ����
+      *コメント最大桁
        01  COM-MAX                 PIC 9(02)   VALUE   48.
       *
        01  WRK-TIME-HEN.
@@ -163,7 +163,7 @@
            03  WRK-F1              PIC X(01)   VALUE    ":".
            03  WRK-TSS             PIC 9(02).
       *H28.2
-      *    �ץ�����४�ץ����ѥ�᥿
+      *    プログラムオプションパラメタ
        01  PARA-AREA.
            03  PARA-YUKOSTYMD          PIC X(08).
            03  PARA-YUKOEDYMD          PIC X(08).
@@ -178,85 +178,85 @@
       *
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ���� 
+      *    医療機関情報−所在地、連絡先 
            COPY    "CPSK1002.INC".
       *
            COPY    "CPSK1005.INC".
            COPY    "CPSK1010.INC".
       *
-      *    ������ץ��̾������ƾ���
+      *    出力先プリンタ名割り当て情報
            COPY  "CPSK1031.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
-      *    ���ŵ���̾���Խ�����
+      *    医療機関名称編集情報
            COPY    "CPSK1901.INC".
-      *    ���ŵ��ؽ����Խ�����
+      *    医療機関住所編集情報
            COPY    "CPSK1902.INC".
       *
-      *    ���ԥޥ�����
+      *    患者マスタ−
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
-      *    ͽ��ޥ�����
+      *    予約マスター
        01  YYK-REC.
            COPY    "CPYYK.INC".
-      *    ͽ����ޥ�����
+      *    予約メモマスター
        01  YYKCOM-REC.
            COPY    "CPYYKCOM.INC".
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���ѥ����å��ѥ�᥿
+      *    全角チェックパラメタ
            COPY    "CPORCSKANACHK.INC".
       *
       *H28.2
-      *    �ץ�����४�ץ�����Խ��ѥ�᥿
+      *    プログラムオプション編集パラメタ
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    �����ѥ�᥿
+      *    印刷パラメタ
            COPY    "CPORCSMKPRT.INC".
       *
-      *    ����饤��Ģɼ̾��������ץ��̾�����ѥ�
+      *    オンライン帳票名・出力先プリンタ名取得パラ
            COPY    "CPORCSPRTNM.INC".
       *
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
-      *    ͽ��ɼ�ѥ�᥿
+      *    予約票パラメタ
            COPY    "CPORCHC67.INC".
       *
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *H28.10
-      * API�б�
-      *    ͽ��ɼ����¤��
+      * API対応
+      *    予約票情報構造体
            COPY    "CPFMYYKHYO.INC".
       *
            COPY    "CPORCRPMAIN.INC".
-      *    ���̿���
+      *    画面色等
            COPY    "ENUM-VALUE".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
            COPY    "CPONPRTDATA.INC".
@@ -267,13 +267,13 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
-      *    ����Խ�����
+      *    初期編集処理
            PERFORM 100-INIT-SYORI-SEC
-      *    ͽ��ɼ
+      *    予約票
            PERFORM 200-MAIN-SYORI-SEC
       *
            .
@@ -281,7 +281,7 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ����Խ�����
+      *    初期編集処理
       *****************************************************************
        100-INIT-SYORI-SEC                SECTION.
       *
@@ -293,40 +293,40 @@
       *
            ACCEPT  SYS-TIME            FROM    TIME
       *
-      *    �ץ�����४�ץ��������
+      *    プログラムオプション取込み
            PERFORM 100-OPTION-SELECT-SEC
       *
-      *    �ƣģ��ɹ�
+      *    各ＤＢ読込
            PERFORM 100-SYORI-SEC
            .
        100-INIT-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �ץ�����४�ץ�������߽���
+      *    プログラムオプション取込み処理
       *****************************************************************
        100-OPTION-SELECT-SEC             SECTION.
       *
            INITIALIZE                  PARA-AREA
-      *    ͭ��������
+      *    有効開始日
            MOVE    "YUKOSTYMD"         TO  WRK-PARA-NAME
            MOVE    8                   TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:WRK-PARA-MAX)
                                        TO  PARA-YUKOSTYMD
-      *    ͭ����λ��
+      *    有効終了日
            MOVE    "YUKOEDYMD"         TO  WRK-PARA-NAME
            MOVE    8                   TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:WRK-PARA-MAX)
                                        TO  PARA-YUKOEDYMD
-      *    ���
+      *    メモ
            MOVE    "MEMO"              TO  WRK-PARA-NAME
            MOVE    100                 TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
            MOVE    WRK-PARA(1:WRK-PARA-MAX)
                                        TO  PARA-MEMO
-      *    ͭ�����ֽ������
+      *    有効期間初期設定
            IF      PARA-YUKOSTYMD      =   SPACE
                MOVE    "00000000"          TO  PARA-YUKOSTYMD
            END-IF
@@ -334,8 +334,8 @@
                MOVE    "99999999"          TO  PARA-YUKOEDYMD
            END-IF
       *H28.10
-      *API�б�
-      *    ���У��ֵѥǡ�����1:�������� Ģɼ�����ʤ���
+      *API対応
+      *    ＡＰＩ返却データ（1:作成する 帳票印刷なし）
            MOVE    "API_DATA"          TO  WRK-PARA-NAME
            MOVE    1                   TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
@@ -344,14 +344,14 @@
            IF     (PARA-API-DATA       =   "1"       )
                CONTINUE
            ELSE
-      *        API�����ʤ�
+      *        API送信なし
                MOVE    "0"             TO  PARA-API-DATA
            END-IF
-      *    HAORI�б�
+      *    HAORI対応
            IF      SPA-API-FLG         =   1
                MOVE    "1"             TO  PARA-API-DATA
            END-IF
-      *    ���Уɥ�������ɣ�
+      *    ＡＰＩカスタムＩＤ
            MOVE    "API_CUSTOM_ID"     TO  WRK-PARA-NAME
            MOVE    30                  TO  WRK-PARA-MAX
            PERFORM 1001-OPTION-CALL-SEC
@@ -363,7 +363,7 @@
        100-OPTION-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ�����४�ץ����ѥ�᥿��������
+      *    プログラムオプションパラメタ取得処理
       *****************************************************************
        1001-OPTION-CALL-SEC             SECTION.
       *
@@ -374,14 +374,14 @@
                                                ORCSPRGOPTIONAREA
            MOVE    SPACE               TO  WRK-PARA
            IF      ORCSPRGOPTION-OT-TYPE   =   1
-      *        Ⱦ�Ѥǣ�ʸ���ܤ��ͤȤ���
+      *        半角で１文字目を値とする
                MOVE    ORCSPRGOPTION-OT-PARA(1:1)  TO  WRK-PARA(1:1)
                IF      WRK-PARA-MAX        >   ZERO
                     MOVE    ORCSPRGOPTION-OT-PARA(1:WRK-PARA-MAX)
                                                    TO  WRK-PARA
                END-IF
            ELSE
-      *        ����Ƚ��
+      *        全角判定
                IF      WRK-PARA-MAX        >   ZERO
                    INITIALIZE                  ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
@@ -397,18 +397,18 @@
        1001-OPTION-CALL-EXT.
            EXIT.
       *****************************************************************
-      *    ����Խ�����
+      *    初期編集処理
       *****************************************************************
        100-SYORI-SEC                SECTION.
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1001-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1001-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1001-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1001-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -417,14 +417,14 @@
                INITIALIZE                  SYS-1001-REC
            END-IF
       *
-      *    ���ŵ��ؾ���ݽ���ϡ�Ϣ����
+      *    医療機関情報−所在地、連絡先
            MOVE    SPACE               TO  SYS-1002-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1002-HOSPNUM
            MOVE    "1002"              TO  SYS-1002-KANRICD
            MOVE    "*"                 TO  SYS-1002-KBNCD
            MOVE    SPA-SYSYMD          TO  SYS-1002-STYUKYMD
            MOVE    SPA-SYSYMD          TO  SYS-1002-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SYS-1002-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
            IF      FLG-SYSKANRI        =   ZERO
@@ -433,7 +433,7 @@
                INITIALIZE                  SYS-1002-REC
            END-IF
       *
-      *    ������ץ��̾������ƾ����Խ�
+      *    出力先プリンタ名割り当て情報編集
            INITIALIZE                      SYS-1031-REC
            INITIALIZE                      ORCSPRTNMAREA
            MOVE    "2"                 TO  ORCSPRTNM-KBN
@@ -444,17 +444,17 @@
                                        SPA-AREA
                                        SYS-1031-REC
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            MOVE    SYS-1001-HOSPNAME   TO  WRK-HOSPNAME
                                            WRK-API-HOSPNAME (1)
            MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
                                            WRK-API-HOSPADRS (1)
            MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
            MOVE    SYS-1002-POST       TO  WRK-API-POST
-      *    ���ŵ����Խ�
+      *    医療機関編集
            PERFORM 1010-HOSPHENSYU-SEC
       *
-      *    ���Ծ���
+      *    患者情報
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    SPA-PTID            TO  PTINF-PTID
@@ -465,11 +465,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ�������Ͻ���
+      *    帳票印刷開始処理
       *****************************************************************
        400-SYOKI-PRINT-SEC             SECTION.
       *
-      *    �ե�����ϣУţ�
+      *    ファイルＯＰＥＮ
            MOVE    SPA-HOSPNUM         TO  HC01PARA-HOSPNUM
            MOVE    "HC67"              TO  HC01PARA-FORM-ID
            MOVE    SPA-TERMID          TO  HC01PARA-TERMID
@@ -478,7 +478,7 @@
            ADD     1                   TO  WRK-PAGE-CNT
            MOVE    WRK-PAGE-CNT        TO  HC01PARA-CNT
       *v4.8
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            INITIALIZE                      SGETTEMP-AREA
            MOVE    HC01PARA            TO  SGETTEMP-BASENAME
            CALL    "ORCSGETTEMP"       USING
@@ -492,11 +492,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        400-PRINT-SEC                SECTION.
       *
-      *    �����ѥǡ�������
+      *    印刷用データ出力
            MOVE    HCM67               TO  PRT-REC
            WRITE   PRT-REC
       *
@@ -509,7 +509,7 @@
       **** MOVE   HC01PARA            TO  MKPRT-DAT
            MOVE   ASGNPARA            TO  MKPRT-DAT
            MOVE   SYS-1031-PRTNM(17)  TO  MKPRT-PRTNM
-           MOVE   "ͽ��ɼ"            TO  MKPRT-INFO
+           MOVE   "予約票"            TO  MKPRT-INFO
            CALL   "ORCSMKPRT1"        USING
                                       ORCSMKPRTAREA
                                       SPA-AREA
@@ -519,7 +519,7 @@
            EXIT.
       *
       *****************************************************************
-      *   ͽ��ɼ ����
+      *   予約票 処理
       *****************************************************************
        200-MAIN-SYORI-SEC                SECTION.
       *
@@ -529,7 +529,7 @@
            INITIALIZE                      YYK-REC
            MOVE    SPA-HOSPNUM         TO  YYK-HOSPNUM
            MOVE    SPA-PTID            TO  YYK-PTID
-      *    �����ƥ����հʹߤ�ͽ����оݤȤ���
+      *    システム日付以降の予約を対象とする
            MOVE    SPA-SYSYMD          TO  YYK-YYKYMD
       *
            MOVE    YYK-REC             TO  MCPDATA-REC
@@ -546,7 +546,7 @@
       *
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL       FLG-YYK     =   1
-      *        �象�Ѥߤ��оݳ�
+      *        来院済みは対象外
                IF      YYK-RAIINZUMI       =   "1"
                    CONTINUE
                ELSE
@@ -563,7 +563,7 @@
       *
       *H28.10
            IF      PARA-API-DATA        =   "1"
-      *        ���У����������Խ�����
+      *        ＡＰＩ送信内容編集処理
                IF      TBL-MAX             >   ZERO
                    PERFORM 2009-API-HENSYU-SEC
                END-IF
@@ -571,7 +571,7 @@
            END-IF
       *
            IF      TBL-MAX             >   ZERO
-      *        ͽ��ɼ�Խ���������
+      *        予約票編集印刷処理
                PERFORM 2002-YYKHYO-HENSYU-SEC
            END-IF
            .
@@ -579,7 +579,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ���Խ�����
+      *    予約編集処理
       *****************************************************************
        2001-YYK-HENSYU-SEC             SECTION.
       *
@@ -596,11 +596,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ͽ�󥳥����Խ�����
+      *    予約コメント編集処理
       *****************************************************************
        20011-YYKCOM-HEN-SEC             SECTION.
       *
-      *    ͽ����
+      *    予約メモ
            INITIALIZE                  YYKCOM-REC
            MOVE    YYK-HOSPNUM         TO  YYKCOM-HOSPNUM
            MOVE    YYK-SRYNAIYO        TO  YYKCOM-SRYNAIYO
@@ -639,26 +639,26 @@
        20011-YYKCOM-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   ͽ��ɼ�Խ���������
+      *   予約票編集印刷処理
       *****************************************************************
        2002-YYKHYO-HENSYU-SEC          SECTION.
       *
            MOVE    ZERO                TO  WRK-PAGE
            MOVE    ZERO                TO  CNT-LINE
-      *    Ģɼ����Խ�
+      *    帳票初期編集
            PERFORM 230-HCM67-INIT-SEC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   TBL-MAX
-      *        ͽ�������Խ�
+      *        予約明細編集
                PERFORM 20021-YYKHYO-MEI-SEC
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   6  )    OR
                                   (TBL-COMMENT (IDX IDY)   =   SPACE)
-      *            ͽ�󥳥����Խ�
+      *            予約コメント編集
                    PERFORM 20022-YYKCOM-MEI-SEC
                END-PERFORM
-      *        ͽ����ˣ��Բ���
+      *        予約毎に１行改行
                IF      IDX             NOT =   TBL-MAX
                    ADD     1                   TO  CNT-LINE
                    IF      CNT-LINE            >   LINE-MAX
@@ -676,7 +676,7 @@
        20011-YYKCOM-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   ͽ��ɼ����Խ�����
+      *   予約票初期編集処理
       *****************************************************************
        20021-YYKHYO-MEI-SEC          SECTION.
       *
@@ -685,26 +685,26 @@
                PERFORM 400-PRINT-SYORI-SEC
                ADD     1                   TO  CNT-LINE
            END-IF
-      *    ͽ����
+      *    予約日
            MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM67-YYKYMD (CNT-LINE)
-      *    ͽ�����
+      *    予約時間
            MOVE    TBL-YYKTIME(IDX)(1:2)   TO  WRK-THH
            MOVE    TBL-YYKTIME(IDX)(3:2)   TO  WRK-TSS
            MOVE    WRK-TIME-HEN        TO  HCM67-YYKTIME (CNT-LINE)
-      *    ���Ų�
+      *    診療科
            MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYSYMD
            MOVE    TBL-SRYKA  (IDX)    TO  WRK-SRYKA
            PERFORM 2008-SRYKAMEI-HEN-SEC
            MOVE    WRK-SRYKA-MEI       TO  HCM67-SRYKA (CNT-LINE)
-      *    �ɥ�����
+      *    ドクター
            MOVE    TBL-DRCD   (IDX)    TO  WRK-DRCD
            PERFORM 2009-DRNAME-HEN-SEC
            MOVE    WRK-DRCD-NAME       TO  HCM67-DRNAME  (CNT-LINE)
       *
       *H28.2
-      *    �ץ�����४�ץ�����Խ�
+      *    プログラムオプション編集
            IF     (PARA-YUKOSTYMD      <=  SPA-SYSYMD )
               AND (PARA-YUKOEDYMD      >=  SPA-SYSYMD )
                MOVE    PARA-MEMO           TO  HCM67-MSG
@@ -713,7 +713,7 @@
        20021-YYKHYO-MEI-EXT.
            EXIT.
       *****************************************************************
-      *   ͽ�󥳥����Խ�����
+      *   予約コメント編集処理
       *****************************************************************
        20022-YYKCOM-MEI-SEC          SECTION.
       *
@@ -748,7 +748,7 @@
        20022-YYKCOM-MEI-EXT.
            EXIT.
       *****************************************************************
-      *   ͽ��ɼ����Խ�����
+      *   予約票初期編集処理
       *****************************************************************
        230-HCM67-INIT-SEC          SECTION.
       *
@@ -758,21 +758,21 @@
       *
            MOVE    WRK-PAGE            TO  WRK-Z9
            MOVE    WRK-Z9              TO  HCM67-PAGE
-      *    �����ֹ�
+      *    患者番号
            MOVE    SPA-PTNUM           TO  HCM67-PTNUM
-      *    ����̾��
+      *    患者名称
            MOVE    PTINF-NAME          TO  HCM67-NAME
-      *    ȯ����
+      *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 800-SEIWA-HEN-SEC
            MOVE    WRK-HENYMDG         TO  HCM67-PRTYMD
       *
-      *    ���ŵ���
+      *    医療機関
            MOVE    WRK-HOSPADRS        TO  HCM67-HOSPADRS
-           INSPECT HCM67-HOSPADRS      REPLACING ALL "  " BY "��"
+           INSPECT HCM67-HOSPADRS      REPLACING ALL "  " BY "　"
       *
            MOVE    WRK-HOSPNAME        TO  HCM67-HOSPNAME
-           INSPECT HCM67-HOSPNAME      REPLACING ALL "  " BY "��"
+           INSPECT HCM67-HOSPNAME      REPLACING ALL "  " BY "　"
       *
            MOVE    WRK-HOSPTEL         TO  HCM67-HOSPTEL
       *
@@ -782,17 +782,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ų�̾�Խ�����
+      *    診療科名編集処理
       *****************************************************************
        2008-SRYKAMEI-HEN-SEC                SECTION.
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1005-REC
            MOVE    "1005"              TO  SYS-1005-KANRICD
            MOVE    WRK-SRYKA           TO  SYS-1005-KBNCD
            MOVE    WRK-SYSYMD          TO  SYS-1005-STYUKYMD
            MOVE    WRK-SYSYMD          TO  SYS-1005-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1005-HOSPNUM
            MOVE    SYS-1005-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -808,17 +808,17 @@
        2008-SRYKAMEI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�̾�Խ�����
+      *    診療科名編集処理
       *****************************************************************
        2009-DRNAME-HEN-SEC                SECTION.
       *
-      *    ���Ų�
+      *    診療科
            MOVE    SPACE               TO  SYS-1010-REC
            MOVE    "1010"              TO  SYS-1010-KANRICD
            MOVE    WRK-DRCD            TO  SYS-1010-KBNCD
            MOVE    WRK-SYSYMD          TO  SYS-1010-STYUKYMD
            MOVE    WRK-SYSYMD          TO  SYS-1010-EDYUKYMD
-      *    �����ƥ��������
+      *    システム管理検索
            MOVE    SPA-HOSPNUM         TO  SYS-1010-HOSPNUM
            MOVE    SYS-1010-REC        TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-KEY10-SEC
@@ -836,17 +836,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������
+      *    印刷処理
       *****************************************************************
        400-PRINT-SYORI-SEC          SECTION.
       *
-      *    Ģɼ�������Ͻ���
+      *    帳票印刷開始処理
            PERFORM 400-SYOKI-PRINT-SEC
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            PERFORM 400-PRINT-SEC
       *
-      *    Ģɼ����Խ�
+      *    帳票初期編集
            PERFORM 230-HCM67-INIT-SEC
       *
            .
@@ -854,7 +854,7 @@
            EXIT.
       *H28.7
       *****************************************************************
-      *    ���У����������Խ�����
+      *    ＡＰＩ送信内容編集処理
       *****************************************************************
        2009-API-HENSYU-SEC          SECTION.
       *
@@ -862,54 +862,54 @@
       *
            MOVE    "yoyakuhyo"         TO  FMYH-FORM-ID
            MOVE    SYS-1031-PRTNM(17)  TO  FMYH-PRINTER
-      *    ȯ����
+      *    発行日
            MOVE    SPA-SYSYMD          TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMYH-KOFYMD
-      *    ���Ծ���
+      *    患者情報
            MOVE    SPA-PTNUM           TO  FMYH-PTNUM
            MOVE    PTINF-KANANAME      TO  FMYH-KANANAME
            MOVE    PTINF-NAME          TO  FMYH-NAME
            MOVE    PTINF-SEX           TO  FMYH-SEX
-      *    ��ǯ����
+      *    生年月日
            MOVE    PTINF-BIRTHDAY      TO  WRK-SYMD
            PERFORM 801-DAYHEN01-SEC
            MOVE    WRK-HEN-DATE        TO  FMYH-BIRTHDAY
-      *    ���ŵ���̾��
+      *    医療機関名称
            MOVE    WRK-API-HOSPNAME(1) TO  FMYH-HOSP-NAME (1)
            MOVE    WRK-API-HOSPNAME(2) TO  FMYH-HOSP-NAME (2)
            MOVE    WRK-API-HOSPNAME(3) TO  FMYH-HOSP-NAME (3)
-      *    ���ŵ��ؽ���
+      *    医療機関住所
            MOVE    WRK-API-HOSPADRS(1) TO  FMYH-HOSP-ADRS (1)
            MOVE    WRK-API-HOSPADRS(2) TO  FMYH-HOSP-ADRS (2)
            MOVE    WRK-API-HOSPADRS(3) TO  FMYH-HOSP-ADRS (3)
       *
            MOVE    WRK-API-POST        TO  FMYH-HOSP-POST
            MOVE    WRK-HOSPTEL         TO  FMYH-HOSP-TEL
-      *    �ץ�����४�ץ�����Խ�
+      *    プログラムオプション編集
            IF     (PARA-YUKOSTYMD      <=  SPA-SYSYMD )
               AND (PARA-YUKOEDYMD      >=  SPA-SYSYMD )
                MOVE    PARA-MEMO           TO  FMYH-MEMO
            END-IF
       *
-      *    ͽ�������Խ�
+      *    予約明細編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   TBL-MAX
-      *        ͽ����
+      *        予約日
                MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYMD
                PERFORM 801-DAYHEN01-SEC
                MOVE    WRK-HEN-DATE        TO  FMYH-TYYKYMD(IDX)
-      *        ͽ�����
+      *        予約時間
                MOVE    TBL-YYKTIME(IDX)(1:2)   TO  WRK-THH
                MOVE    TBL-YYKTIME(IDX)(3:2)   TO  WRK-TSS
                MOVE    WRK-TIME-HEN        TO  FMYH-TYYKTIME(IDX)
-      *        ���Ų�
+      *        診療科
                MOVE    TBL-YYKYMD (IDX)    TO  WRK-SYSYMD
                MOVE    TBL-SRYKA  (IDX)    TO  WRK-SRYKA
                PERFORM 2008-SRYKAMEI-HEN-SEC
                MOVE    TBL-SRYKA  (IDX)    TO  FMYH-TSRYKA    (IDX)
                MOVE    WRK-SRYKA-MEI       TO  FMYH-TSRYKANAME(IDX)
-      *        �ɥ�����
+      *        ドクター
                MOVE    TBL-DRCD   (IDX)    TO  WRK-DRCD
                PERFORM 2009-DRNAME-HEN-SEC
                MOVE    TBL-DRCD   (IDX)    TO  FMYH-TDR-CODE (IDX)
@@ -918,13 +918,13 @@
                PERFORM VARYING     IDY     FROM    1   BY  1
                        UNTIL      (IDY     >   6  )    OR
                                   (TBL-COMMENT (IDX IDY)   =   SPACE)
-      *            ͽ�󥳥����Խ�
+      *            予約コメント編集
                    MOVE    TBL-COMMENT (IDX IDY)
                                            TO  FMYH-TCOMMENT (IDX IDY)
                END-PERFORM
            END-PERFORM
       *
-      *    ���У�����
+      *    ＡＰＩ送信
            PERFORM 20031-API-SYORI-SEC
       *
            .
@@ -932,17 +932,17 @@
            EXIT.
       *
       *****************************************************************
-      *    ���У���������
+      *    ＡＰＩ送信処理
       *****************************************************************
        20031-API-SYORI-SEC         SECTION.
       *
-      *    ��������ɣ�
+      *    カスタムＩＤ
            MOVE    PARA-API-CUSTOM-ID  TO  FMYH-CUSTOM-ID
       *
            INITIALIZE                      RPMAIN-AREA
            MOVE    "yoyakuhyo"         TO  RPMAIN-ID
            MOVE    PARA-API-CUSTOM-ID  TO  RPMAIN-CUSTOM-ID
-           MOVE    "ͽ��ɼ"            TO  RPMAIN-TITLE
+           MOVE    "予約票"            TO  RPMAIN-TITLE
            MOVE    "fm_appointment_form"
                                        TO  MCP-TABLE
            MOVE    FMYH-DATA           TO  RPMAIN-DATA
@@ -955,7 +955,7 @@
        20031-API-SYORI-EXT.
            EXIT.
       *****************************************************************
-      *    �����Խ�������API�Խ���
+      *    日付編集処理（API編集）
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -979,7 +979,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �������ܸ��Ѵ�����
+      *    西暦日本語変換処理
       *****************************************************************
        800-SEIWA-HEN-SEC        SECTION.
       *
@@ -995,11 +995,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ�����
+      *    医療機関編集処理
       *****************************************************************
        1010-HOSPHENSYU-SEC         SECTION.
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            MOVE    SPACE               TO  SYS-1900-REC
            INITIALIZE                      SYS-1900-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1900-HOSPNUM
@@ -1012,9 +1012,9 @@
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    SYSKANRI-REC        TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(22) NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-SYS1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-SYS1902-READ-SEC
                END-IF
            END-IF
@@ -1023,11 +1023,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-SYS1901-READ-SEC            SECTION.
       *
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
            MOVE    SPACE               TO  SYS-1901-REC
            INITIALIZE                      SYS-1901-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1901-HOSPNUM
@@ -1055,11 +1055,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-SYS1902-READ-SEC           SECTION.
       *
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
            MOVE    SPACE               TO  SYS-1902-REC
            INITIALIZE                      SYS-1902-REC
            MOVE    SPA-HOSPNUM         TO  SYS-1902-HOSPNUM
@@ -1087,7 +1087,7 @@
        900-SYS1902-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����祭���ɤ߹��߽���
+      *    システム管理マスタ主キー読み込み処理
       *****************************************************************
        900-SYSKANRI-KEY10-SEC         SECTION.
       *
@@ -1115,7 +1115,7 @@
        900-SYSKANRI-KEY10-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -1130,7 +1130,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���ԥޥ������ɤ߹���
+      *    患者マスター読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -1159,7 +1159,7 @@
        900-PTINF-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ͽ��ޥ������ɹ�
+      *    予約マスター読込
       *****************************************************************
        900-YYK-READ-SEC         SECTION.
       *
@@ -1176,7 +1176,7 @@
        900-YYK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ���Ų�ץޥ������ɹ�
+      *    診療会計マスター読込
       *****************************************************************
        910-YYKCOM-READ-SEC         SECTION.
       *
@@ -1194,7 +1194,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -1206,7 +1206,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -1219,7 +1219,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������������
+      *    クロース処理
       *****************************************************************
        990-DBCLOSE-SEC                 SECTION.
       *
@@ -1232,7 +1232,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ��������
+      *    終了　　処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,20 +18,20 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCR1040.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �����쥻�ץȡ���������
-      *                      ����̾�Խ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  07/11/16    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 公害レセプト（入院外）
+      *                      傷病名編集
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  07/11/16    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.06.01    NACL-ƣ��    10/11/04  ��­�������б�
-      *  04.06.02    NACL-ƣ��    12/07/04  ɽ�����֤ˤ��쥻�ץȵ����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.06.01    NACL-藤原    10/11/04  補足コメント対応
+      *  04.06.02    NACL-藤原    12/07/04  表示期間によるレセプト記載対応
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -78,15 +78,15 @@
                                    REPLACING  //RECEDAT1//
                                    BY         //RECE110//.
       *
-      *    ���顼�ե�����̾���ΰ�
+      *    エラーファイル名称領域
            COPY    "CPERRFL.INC"   REPLACING  //ERRFLPARA//
                                    BY         //RECEERR//.
       *
-      *    �ե�����̾���ΰ�
+      *    ファイル名称領域
            COPY    "CPRECEDAT1.INC".
            COPY    "CPTEMPFL.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE100         PIC X(02).
            03  STS-RECE110         PIC X(02).
@@ -100,7 +100,7 @@
       *
            03  FLG-BYOMEI-UMU      PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(06).
            03  CNT-IN-CANCEL       PIC 9(06).
@@ -111,7 +111,7 @@
        01  INDEX-AREA.
            03  IDX                 PIC 9(03). 
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-SRYYM  PIC X(06).
@@ -134,58 +134,58 @@
                05  KEY-O-SRYYMD    PIC 9(08).
       *
        01  WRK-CONS-AREA.
-      *    �絤�ϣ��������
+      *    大気系４指定疾病
            03  WRK-CONS-BYOMEI1    PIC X(12)   VALUE
-                                                   "�������ɻٱ�".  
+                                                   "慢性気管支炎".  
            03  WRK-CONS-BYOMEI2    PIC X(12)   VALUE
-                                                   "���ɻ٤���©".  
+                                                   "気管支ぜん息".  
            03  WRK-CONS-BYOMEI3    PIC X(10)   VALUE
-                                                   "���ɻ���©".  
+                                                   "気管支喘息".  
            03  WRK-CONS-BYOMEI4    PIC X(16)   VALUE
-                                                   "����©�����ɻٱ�".  
+                                                   "ぜん息性気管支炎".  
            03  WRK-CONS-BYOMEI5    PIC X(14)   VALUE
-                                                   "��©�����ɻٱ�".  
+                                                   "喘息性気管支炎".  
            03  WRK-CONS-BYOMEI6    PIC X(06)   VALUE
-                                                   "�ٵ���".  
+                                                   "肺気腫".  
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ������̾
+      *    患者病名
        01  PTBYOMEI-REC.
            COPY    "CPPTBYOMEI.INC".
       *
-      *    �����ƥ�����ޥ���
+      *    システム管理マスタ
            COPY    "CPSYSKANRI.INC".
       *     
            COPY    "CPSK200501.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    ��̾��Ω����
+      *    病名組立サブ
            COPY    "CPORCSMKBYOMEI.INC".
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -200,7 +200,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -217,7 +217,7 @@
            END-IF 
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -250,17 +250,17 @@
            MOVE    TEMPFLPARA          TO  RECE110PARA
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        �ģ¥����ץ����
+      *        ＤＢオープン処理
                PERFORM 100-DBOPEN-SEC
       *
-      *        ���ƥå״������Ͻ���
+      *        ステップ管理開始処理
                MOVE    "STS"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    "ORCR1040"      TO  JOB-PGID
-               MOVE    "����̾�Խ�"    TO  JOB-SHELLMSG
+               MOVE    "傷病名編集"    TO  JOB-SHELLMSG
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *        ��������������
+      *        処理中止設定処理
                PERFORM 500-CANCEL-HENSYU-SEC
            END-IF    
       *
@@ -270,7 +270,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE                       RECE110-FILE
            OPEN    I-O                 RECE110-FILE
       *         
-      *    �쥻�ץ��Խ���ʬ����
+      *    レセプト編集区分情報
            MOVE    SPACE            TO  SYSKANRI-REC
            INITIALIZE                   SYSKANRI-REC
            MOVE    "2005"           TO  SYS-KANRICD
@@ -295,11 +295,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *    
-      *    ������̾�ɤ߹��ߡʴ��ԣɣġ�����ǯ���������Ųʽ��
+      *    患者病名読み込み（患者ＩＤ、診療年月日、診療科順）
            INITIALIZE                      PTBYOMEI-REC
            MOVE    RECE100-HOSPNUM     TO  PTBYO-HOSPNUM
            MOVE    RECE100-PTID        TO  PTBYO-PTID
@@ -331,7 +331,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            IF      FLG-END             =   ZERO
                PERFORM 900-RECE100-READ-SEC      
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -343,7 +343,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *            
       * 
       *****************************************************************
-      *    ������̾����ǯ�����̽���
+      *    患者病名診療年月日別処理
       *****************************************************************
        2001-PTBYO-HENSYU-SEC                SECTION.
       *
@@ -361,7 +361,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                PERFORM 900-PTBYO-READ-SEC
                ADD     1               TO  CNT-IN-CANCEL
       *
-      *        ��������������
+      *        処理中止設定処理
                IF      CNT-IN-CANCEL   =   50
                    MOVE    ZERO            TO  CNT-IN-CANCEL
                    PERFORM 500-CANCEL-HENSYU-SEC
@@ -372,11 +372,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT. 
       *            
       *****************************************************************
-      *    ������̾�����å�����
+      *    患者病名チェック処理
       *****************************************************************
        2001-PTBYO-CHK-SEC         SECTION.
       *
-      *    ������ʬ
+      *    入外区分
            IF      PTBYO-NYUGAIKBN      =   SPACE
                CONTINUE
            ELSE
@@ -385,14 +385,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *
-      *    ���ų�����
+      *    診療開始日
            IF      PTBYO-SRYYMD(1:6)    =   RECE100-SRYYM
                CONTINUE
            ELSE
                IF      PTBYO-SRYYMD(1:6)    >   RECE100-SRYYM 
                    GO  TO  2001-PTBYO-CHK-EXT
                ELSE
-      *            ž����
+      *            転帰日
                    IF      PTBYO-TENKIKBN       =   SPACE
                        CONTINUE
                    ELSE
@@ -408,7 +408,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF       
                END-IF
       *
-      *        �쥻�ץ�ɽ������
+      *        レセプト表示期間
                MOVE    ZERO                   TO  WRK-YM
                IF      PTBYO-REZEMM           >   ZERO
                    INITIALIZE                      STS-AREA-DAY
@@ -432,7 +432,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                    END-IF
                END-IF                    
       *
-      *        �쥻�ץ�ɽ�����֤�ž������ͥ������ˤ��Ƚ��
+      *        レセプト表示期間と転帰日の優先設定による判定
                IF    ( PTBYO-TENKIKBN      =   SPACE )
                OR    ( PTBYO-REZEMM        =   ZERO  )
                    CONTINUE
@@ -448,22 +448,22 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF
            END-IF
       *                               
-      *    �Խ�����
+      *    編集処理
            PERFORM 20011-RECE110-WRITE-SEC
            .
        2001-PTBYO-CHK-EXT.
            EXIT. 
       *            
       *****************************************************************
-      *    �Խ�����
+      *    編集処理
       *****************************************************************
        20011-RECE110-WRITE-SEC              SECTION.
       *
-      *    ����̾�ե饰������
+      *    主病名フラグの設定
            IF      PTBYO-SYUBYOFLG     =   "1"
                CONTINUE
            ELSE
-      *        �絤�ϣ�������¤ΤȤ��ϼ��¤Ȥ���
+      *        大気系４指定疾病のときは主病とする
                MOVE    ZERO                TO  CNT-SYU-BYOMEI
                INSPECT PTBYO-BYOMEI    TALLYING  
                        CNT-SYU-BYOMEI  FOR ALL WRK-CONS-BYOMEI1,
@@ -479,7 +479,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                END-IF 
            END-IF
       *
-      *    ž�����ȿ��ŷ�ˤ��ž��������
+      *    転記日と診療月による転記の設定
            IF      RECE100-SRYYM       <   PTBYO-TENKIYMD(1:6)
                MOVE    SPACE               TO  PTBYO-TENKIKBN
                                                PTBYO-TENKIYMD
@@ -495,7 +495,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                COMPUTE PTBYO-BYOMEIMOJI    =   KANACHK-MAX  /   2
            END-IF        
       *
-      *    �����ե饰����­�����Ȥ����̾���Խ�
+      *    疑いフラグ、補足コメントより病名を編集
            IF    ( PTBYO-UTAGAIFLG NOT =   SPACE )
            OR    ( PTBYO-HOSOKU-COMMENT
                                    NOT =   SPACE )
@@ -571,7 +571,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -586,7 +586,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                CLOSE   RECEERR-FILE
       *         
                IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *            ����ִ�����λ����
+      *            ジョブ管理終了処理
                    MOVE    "JBE"           TO  SJOBKANRI-MODE
                    INITIALIZE                  JOBKANRI-REC
                    MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -602,7 +602,7 @@ grpsys             PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������߽���
+      *    処理中止処理
       *****************************************************************
        500-CANCEL-HENSYU-SEC                SECTION.
       *
@@ -616,7 +616,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( SJOBKANRI-RETURN
                                        =   ZERO )
                AND   ( JOB-STOPFLG     =   1    )
-                   MOVE    "��������ߤ���ޤ���"
+                   MOVE    "処理が中止されました"
                                            TO  WRK-RECEERR
       *
                    OPEN    INPUT   RECEERR-FILE
@@ -629,7 +629,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
                        WRITE   RECEERR-REC
                        CLOSE   RECEERR-FILE
       *         
-      *                ����ִ�����λ����
+      *                ジョブ管理終了処理
                        MOVE    "CAN"           TO  SJOBKANRI-MODE
                        INITIALIZE                  JOBKANRI-REC
                        MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -646,7 +646,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -654,7 +654,7 @@ grpsys                 PERFORM 900-CALL-ORCSJOB-SEC
            CLOSE   RECE110-FILE
       *
            IF      WRK-PARA-SHELLID    NOT =   "RECEPTX"
-      *        ���ƥå״�����λ����
+      *        ステップ管理終了処理
                MOVE    "STE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
 grpsys         PERFORM 900-CALL-ORCSJOB-SEC
@@ -670,7 +670,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ե�����̾��������
+      *    一時ファイル名取得処理
       *****************************************************************
        800-FILENM-SET-SEC        SECTION.
       *
@@ -684,7 +684,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ������̾�ޥ������ңţ���
+      *    患者病名マスタ　ＲＥＡＤ
       *****************************************************************
        900-PTBYO-READ-SEC         SECTION.
       *
@@ -700,7 +700,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ܾ���ե������ɹ�����
+      *    基本情報ファイル読込処理
       *****************************************************************
        900-RECE100-READ-SEC             SECTION.
       *
@@ -718,7 +718,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��̾����ե������ɹ�����
+      *    病名情報ファイル読込処理
       *****************************************************************
        900-RECE110-READ-SEC           SECTION.
       *
@@ -733,7 +733,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -766,7 +766,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -783,7 +783,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -794,7 +794,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -806,7 +806,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -818,7 +818,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -831,7 +831,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -849,7 +849,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

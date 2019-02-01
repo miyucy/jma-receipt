@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,56 +18,56 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSC93.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���Ź԰�����
-      *  ����ݡ��ͥ��̾  : ���Ź԰٤κ�ʬ�䡦�Խ����׻�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  01/06/14    MCC��¿��Ǽ   ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 診療行為入力
+      *  コンポーネント名  : 診療行為の剤分割・編集・計算処理
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  01/06/14    MCC−多々納   新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      * 01.00.01     NACL-¿��Ǽ  02/08/23  ���ͤ˳����������ϲ�ǽ�Ȥ���
-      * 01.00.02     NACL-¿��Ǽ  02/09/12  �����դ��ɲá�09591��09592)
-      * 01.00.03     NACL-¿��Ǽ  02/10/03  ϫ�Ҳû��ʤ����ɲ�
-      * 01.00.04     NACL-¿��Ǽ  02/10/18  �����ɲ�
-      * 01.00.05     NACL-¿��Ǽ  02/11/11  �ģգͣͣٿǻ����ɲ�
-      * 01.00.06     NACL-¿��Ǽ  02/11/20  �����մ���ɲ�
-      * 01.00.07     NACL-¿��Ǽ  02/11/22  �������Ǥ���ũ�ɲá�731)
-      * 01.00.08     NACL-¿��Ǽ  02/12/17  �����Ƴ�����ɲá�143)
-      * 01.00.09     NACL-¿��Ǽ  02/12/20  ���������ν���
-      * 01.00.10     NACL-¿��Ǽ  03/01/30  �����������ޤȤ�����
-      * 01.00.11     NACL-¿��Ǽ  03/02/12  ����κ�ʬΥ�ν���
-      * 01.00.12     NACL-¿��Ǽ  03/02/21  �������βû��Τ߽���
-      * 01.00.13     NACL-¿��Ǽ  03/05/09  �����٤򣳣��ޤǤȤ���
-      * 01.00.14     NACL-¿��Ǽ  03/09/12  �������ʤ��ɲá�610��
-      * 01.00.15     NACL-¿��Ǽ  03/10/28  ������罤��
-      * 01.00.16     NACL-¿��Ǽ  04/01/23  ���å���θ�������оݳ�
-      * 01.00.17     NACL-¿��Ǽ  04/03/17  �ȣ������������б�
-      * 01.00.18     NACL-¿��Ǽ  04/04/27  �桼�����������ɲ�
-      * 01.00.19     NACL-¿��Ǽ  04/07/26  ʣ���ʡ��ݸ��ɲ�
-      *                                     ���ֲû����ɲ�(403)
-      * 01.00.20     NACL-¿��Ǽ  05/01/12  ��ǻ��֥�å������б�
-      * 01.00.20     NACL-¿��Ǽ  05/01/13  �������ޤγ������б�
-      * 01.00.21     NACL-¿��Ǽ  05/06/03  ���θ����������б�
-      * 01.00.22     NACL-¿��Ǽ  05/08/12  ��縡�� �������������ɲ�
-      * 01.00.23     NACL-¿��Ǽ  06/01/23  ���̳�祳�����ɲ�
-      * 01.00.24     NACL-¿��Ǽ  06/03/XX  �ȣ������������б�
-      * 03.04.00     NACL-¿��Ǽ  06/12/19  �����������������ɲ�
-      * 04.01.00     NACL-¿��Ǽ  07/10/XX  �������縡����ư�����б�
-      * 04.03.00     NACL-¿��Ǽ  08/07/01  �����û������б�¾
-      * 04.04.00     NACL-¿��Ǽ  08/12/21  ����⻻�ꥳ�����б�
-      * 04.04.00     NACL-¿��Ǽ  09/01/09  ��縡���������Խ��ɲ�
-      * 04.04.00     NACL-¿��Ǽ  09/02/12  ����ޤȤ��б�
-      * 04.05.00     NACL-¿��Ǽ  10/01/XX  �����б�
-      * 04.06.00     NACL-¿��Ǽ  10/12/01  �����ն�������б�
-      * 04.07.00     NACL-¿��Ǽ  12/08/28  �����������б�
-      * 04.07.00     NACL-¿��Ǽ  13/07/XX  �軰�Թ԰��б�
-      * 04.07.00     NACL-¿��Ǽ  14/06/XX  ���������׻��������б�
-      * 04.07.00     NACL-¿��Ǽ  14/09/XX  �ȣ���ǯ����������б�
-      * 04.07.00     NACL-¿��Ǽ  15/03/XX  �ȣ���ǯ��������б�¾
-      * 04.08.00     NACL-¿��Ǽ  16/03/XX  �ȣ���ǯ��������б�¾
-      * 04.08.00     NACL-¿��Ǽ  16/08/XX  ������ͽ�󥳡����б�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      * 01.00.01     NACL-多々納  02/08/23  注射に外用薬を入力可能とする
+      * 01.00.02     NACL-多々納  02/09/12  自賠責の追加（09591〜09592)
+      * 01.00.03     NACL-多々納  02/10/03  労災加算なしの追加
+      * 01.00.04     NACL-多々納  02/10/18  入院追加
+      * 01.00.05     NACL-多々納  02/11/11  ＤＵＭＭＹ診察料追加
+      * 01.00.06     NACL-多々納  02/11/20  自賠責器材追加
+      * 01.00.07     NACL-多々納  02/11/22  画像診断の点滴追加（731)
+      * 01.00.08     NACL-多々納  02/12/17  在宅指導料の追加（143)
+      * 01.00.09     NACL-多々納  02/12/20  自費修正時の修正
+      * 01.00.10     NACL-多々納  03/01/30  入院時検査まとめをやめる
+      * 01.00.11     NACL-多々納  03/02/12  自費の剤分離の修正
+      * 01.00.12     NACL-多々納  03/02/21  入院料の加算のみ修正
+      * 01.00.13     NACL-多々納  03/05/09  剤明細を３０までとする
+      * 01.00.14     NACL-多々納  03/09/12  検査包括なし追加（610）
+      * 01.00.15     NACL-多々納  03/10/28  検査包括修正
+      * 01.00.16     NACL-多々納  04/01/23  セット内の検査包括対象外
+      * 01.00.17     NACL-多々納  04/03/17  Ｈ１６．４改正対応
+      * 01.00.18     NACL-多々納  04/04/27  ユーザーコード追加
+      * 01.00.19     NACL-多々納  04/07/26  複数科・保険追加
+      *                                     処置加算料追加(403)
+      * 01.00.20     NACL-多々納  05/01/12  初診時ブラッシング料対応
+      * 01.00.20     NACL-多々納  05/01/13  歯科薬剤の外用薬対応
+      * 01.00.21     NACL-多々納  05/06/03  検体検査コメント対応
+      * 01.00.22     NACL-多々納  05/08/12  包括検査 ０９，１０の追加
+      * 01.00.23     NACL-多々納  06/01/23  用量割合コード追加
+      * 01.00.24     NACL-多々納  06/03/XX  Ｈ１８．４改正対応
+      * 03.04.00     NACL-多々納  06/12/19  外用薬の内服算定追加
+      * 04.01.00     NACL-多々納  07/10/XX  悪性腫瘍検査自動設定対応
+      * 04.03.00     NACL-多々納  08/07/01  検査加算種別対応他
+      * 04.04.00     NACL-多々納  08/12/21  出来高算定コード対応
+      * 04.04.00     NACL-多々納  09/01/09  包括検査コメント編集追加
+      * 04.04.00     NACL-多々納  09/02/12  外来まとめ対応
+      * 04.05.00     NACL-多々納  10/01/XX  治験対応
+      * 04.06.00     NACL-多々納  10/12/01  自賠責金額入力対応
+      * 04.07.00     NACL-多々納  12/08/28  薬剤料減点対応
+      * 04.07.00     NACL-多々納  13/07/XX  第三者行為対応
+      * 04.07.00     NACL-多々納  14/06/XX  外用薬（臨時投薬）対応
+      * 04.07.00     NACL-多々納  14/09/XX  Ｈ２６年１０月改正対応
+      * 04.07.00     NACL-多々納  15/03/XX  Ｈ２７年４月改正対応他
+      * 04.08.00     NACL-多々納  16/03/XX  Ｈ２８年４月改正対応他
+      * 04.08.00     NACL-多々納  16/08/XX  持参薬予約コード対応
       *****************************************************************
       *
       *
@@ -82,7 +82,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
@@ -90,38 +90,38 @@
            03  FLG-BUIKBN          PIC 9(01).
            03  FLG-SYORI           PIC 9(01).
            03  FLG-ARI             PIC 9(01).
-      *    �ޥ����å��оݳ�
+      *    剤チェック対象外
            03  FLG-TAISYO          PIC 9(01).
            03  FLG-JIHI            PIC 9(01).
-      *    �굻���ե饰
+      *    手技料フラグ
            03  FLG-SYUGI           PIC 9(01).
       *H28.4
            03  FLG-KSNARI          PIC 9(01).
-      *    ���ޥե饰
+      *    １剤フラグ
            03  FLG-ZAI             PIC 9(01).
-      *    ȯ�����ե饰
+      *    発生日フラグ
            03  FLG-HASSYO          PIC 9(01).
-      *    �����������ե饰
+      *    処方せん料フラグ
            03  FLG-SYOHO           PIC 9(01).
       *
            03  FLG-ZEN             PIC 9(01).
            03  FLG-HOUKATU         PIC 9(01).
       *@@
-      *    ���������Ƴ������
+      *    悪性腫瘍指導料あり
            03  FLG-AKUSEI-ARI      PIC 9(01).
-      *    �����Ȱʳ�����
+      *    コメント以外あり
            03  FLG-CONTCHK         PIC 9(01).
-      *    ��ɾ����ɾ
+      *    薬評・器評
            03  FLG-YAKUHYO         PIC 9(01).
-      *    ����ʬ
+      *    減点分
            03  FLG-GENTEN          PIC 9(01).
-      *H28.9 ������ͽ�󥳡���
+      *H28.9 持参薬予約コード
            03  FLG-JISANYAKU       PIC 9(01).
       *
        01  FLG-AREA2.
            03  FLG-KENSA-CHK       PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -138,7 +138,7 @@
            03  IDX-S               PIC 9(04).
            03  IDX-4               PIC 9(04).
            03  IDX-5               PIC 9(04).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
       *
            03  WRK-MOJI            PIC X(01).
@@ -151,7 +151,7 @@
            03  WRK-ZAINUM          PIC 9(04).
            03  WRK-H-SRYSYUKBN     PIC X(03).
            03  WRK-H-SRYKBN        PIC X(02).
-      *    �������
+      *    検査回数
            03  WRK-KENSA-CNT       PIC 9(04).
            03  WRK-KENSA-MAX       PIC 9(04).
            03  WRK-CHK-MAX         PIC 9(04).
@@ -170,7 +170,7 @@
            03  WRK-INPUTCD         PIC X(22).
       *
            03  WRK-ZAI-CNT         PIC 9(04).
-      *    �����ʳ���ǻ����û�Ƚ��
+      *    小児科外来診察料加算判定
            03  WRK-SYONIKA-KBN         PIC X(01).
       *
            03  WRK-ERRCD               PIC X(04).
@@ -179,15 +179,15 @@
            03  WRK-SRYKA               PIC X(02).
            03  WRK-DRCD                PIC X(04).
            03  WRK-CHIKENKBN           PIC X(01).
-      *    �������
+      *    入院回数
            03  WRK-HZN-INPUTCD-G.
                05  WRK-HZN-INPUTCD     PIC X(22)  OCCURS   10.
            03  IDX-TBL2                PIC 9(03).
       *
-      *    �����ʳ���ǻ����ơ��֥�
+      *    小児科外来診察料テーブル
            COPY   "CMSYONIKATBL.INC".
       *
-      *    ���̣ӣУ��ΰ���
+      *    画面ＳＰＡ領域ワーク
        01  WRK-SCR-REC.
            COPY    "CPK02SPASCR.INC"  REPLACING
                                        //SPA-// BY //WRK-//.
@@ -198,15 +198,15 @@
       *
       *H24.5
        01  CONS-AREA.
-      *    ���ֳ��б��û������ϰ���Ź׸��û�����
+      *    時間外対応加算２（地域医療貢献加算２）
            03  TBL-CHISRYCD2       PIC X(09)   VALUE   "112015670".
-      *    ���ֳ��б��û���
+      *    時間外対応加算１
            03  TBL-CHISRYCD1       PIC X(09)   VALUE   "112016070".
-      *    ���ֳ��б��û���
+      *    時間外対応加算３
            03  TBL-CHISRYCD3       PIC X(09)   VALUE   "112016170".
       *
       *H28.9
-      *������ͽ�󥳡���
+      *持参薬予約コード
            03  CONS-JSNYCD1        PIC X(09)    VALUE   "099209811".
            03  CONS-JSNYCD2        PIC X(09)    VALUE   "099209812".
            03  CONS-JSNYCD3        PIC X(09)    VALUE   "099209821".
@@ -218,22 +218,22 @@
            03  CONS-JSNYCD8        PIC X(09)    VALUE   "099209722".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
         LINKAGE                     SECTION.
       *
            COPY    "MCPAREA".
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  SPA-SCR-REC.
            COPY    "CPK02SPASCR.INC".
       *
-      *    ���Ź԰ٻ����Ѷ��̥ѥ�᥿
+      *    診療行為算定用共通パラメタ
            COPY    "CPORCSC93.INC".
       *
-      *    ���ż���̾�ơ��֥�
+      *    診療種別名テーブル
            COPY    "CPORCSSRYSYU.INC".
       *
       *
@@ -246,7 +246,7 @@
            .
       *
       *****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -256,12 +256,12 @@
       *
            EVALUATE    LNK-SC93-DELSYORIFLG
                WHEN    1
-      *            Ʊ�측�����
+      *            同一検査削除
                    PERFORM 300-KENSA-DELETE-SEC
            END-EVALUATE
-      *    ���ꥢ����
+      *    クリア処理
            PERFORM 100-INTI-SYORI-SEC
-      *    ��ʬΥ����
+      *    剤分離処理
            PERFORM 100-ZAI-SET-SEC
       *
            .
@@ -272,11 +272,11 @@
            .
       *
       *****************************************************************
-      *    ���ꥢΥ����
+      *    クリア離処理
       *****************************************************************
        100-INTI-SYORI-SEC              SECTION.
       *
-      *    ���Ź԰١��׷׻�
+      *    診療行為、計計算
            INITIALIZE                  WRK-AREA
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
@@ -285,15 +285,15 @@
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MAX-LINE
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
-      *        �׻������å��ѥե饰
+      *        計算チェック済フラグ
                MOVE    ZERO            TO  SPA-COM-SANFLG (IDX)
-      *        ��������Υ��ꥢ
+      *        カーソルのクリア
                MOVE    SPACE           TO  SPA-COM-CUR    (IDX)
       *
                IF      SPA-COM-SRYKBN (IDX)    =   "23"
                    PERFORM 1003-SAIHENSYU-SEC
                END-IF
-      *        ���Ŷ�ʬ�����̤Υ��ꥢ
+      *        診療区分、種別のクリア
                IF      SPA-COM-INPUTCD(IDX)(1:1)   NOT =   "1" 
                    MOVE    SPACE           TO  SPA-COM-SRYKBN    (IDX)
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
@@ -306,13 +306,13 @@
                        MOVE    SPACE       TO  SPA-COM-SRYSYUKBN (IDX)
                    END-IF
                END-IF
-      *        ���θ��������Ȥ�Ƚ��
+      *        検体検査コメントの判定
                IF      SPA-COM-KENTAICOMMENT (IDX) =   1
                    MOVE    ZERO            TO  SPA-COM-HOUKNSKBN(IDX)
                END-IF
-      *        Ʊ�측��Ƚ�ꥳ����
+      *        同一検査判定コード
                MOVE    SPACE               TO  SPA-COM-KENGRP (IDX)
-      *        ��ɾ���ꥢ
+      *        薬評クリア
                MOVE    SPACE               TO  SPA-COM-YAKUHYO (IDX)
                MOVE    SPACE               TO  SPA-COM-GENTEN  (IDX)
                MOVE    SPACE               TO  SPA-COM-JISANYAKU(IDX)
@@ -329,20 +329,20 @@
            EXIT.
       *
       *****************************************************************
-      *    ��ʬΥ����
+      *    剤分離処理
       *****************************************************************
        100-ZAI-SET-SEC              SECTION.
       *
            MOVE    ZERO                TO  FLG-KENSA-ARI
       *H27.10
            MOVE    ZERO                TO  FLG-KENSA-CHK
-      *    ��ʬΥ
+      *    剤分離
            PERFORM 1002-ZAIBUNNRI-SEC
            IF     (SPA-ERRCD           =   SPACE ) 
              AND  (LNK-SC93-DELSYORIFLG    =   ZERO)
              AND  (LNK-SC93-ERRCD          =   ZERO)
-      *    ��������礬���ä������ޤȤ��
-      *    �����ǿ��Ź԰����ϤϤ��ʤ�
+      *    検査の包括があった時、まとめる
+      *    入院で診療行為入力はしない
                IF    ((SPA-NYUGAIKBN       =   "1" )  AND
                       (LNK-SC93-PG         =   "K02N") )
                OR     (LNK-SC93-PG         =   "KT01")
@@ -352,7 +352,7 @@
                        END-IF
       *H27.10
                        MOVE    1               TO  FLG-KENSA-CHK
-      *                ��ʬΥ
+      *                剤分離
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
                ELSE
@@ -360,7 +360,7 @@
                        PERFORM 200-KENSA-SORT-SEC
       *H27.10
                        MOVE    1               TO  FLG-KENSA-CHK
-      *                ��ʬΥ
+      *                剤分離
                        PERFORM 1002-ZAIBUNNRI-SEC
                    END-IF
                END-IF
@@ -374,7 +374,7 @@
                               (SPA-COM-INPUTCD(IDX) =   SPACE ))
       *
                MOVE    SPACE               TO  SPA-GMN-SRYKBN (IDX)
-      *        �����Ʊ����ܺ��Խ�
+      *        剤毎の同一項目再編集
                IF     (IDX                         =   1   )  OR
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "." )  OR
                       (SPA-COM-ZAIEND (IDX - 1)    =   "1" )
@@ -386,7 +386,7 @@
                    MOVE    ZERO                    TO  WRK-ZAI-CNT
                    MOVE    ZERO                    TO  FLG-CONTCHK
                END-IF
-      *        �޲�������å�
+      *        剤回数チェック
                EVALUATE    LNK-SC93-PG
                    WHEN    "J04"
                    WHEN    "K05"
@@ -395,7 +395,7 @@
                MOVE    WRK-H-SRYSYUKBN     TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    WRK-H-SRYKBN        TO  SPA-COM-SRYKBN (IDX)
                MOVE    WRK-ZAINUM          TO  SPA-COM-ZAINUM (IDX)
-      *        ���ż��̤Ϻ����٤Ȥ��ʤ�
+      *        診療種別は剤明細としない
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
                                                    OR  "*"
                                                    OR  "#"
@@ -403,7 +403,7 @@
                    CONTINUE
                ELSE
                    ADD     1                   TO  WRK-ZAI-CNT
-      *            �����Ȱʳ�
+      *            コメント以外
                    IF     (SPA-COM-INPUTCD(IDX)(1:1)   =   "1"
                                                        OR  "6"
                                                        OR  "7" )  OR
@@ -416,13 +416,13 @@
                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
                END-IF
       *!!
-      *        ��³�����ȤΥ����å�
+      *        継続コメントのチェック
                IF      SPA-COM-INPUTCONT (IDX) =   "1"
                    IF      FLG-CONTCHK         =   ZERO
                        MOVE    "0208"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
-      *            �������������û��ϥ��顼
+      *            入院料・食事加算はエラー
                    IF     (SPA-ERRCD           =   SPACE )
                    AND    (WRK-H-SRYKBN        =   "90"
                                                OR  "92"
@@ -431,9 +431,9 @@
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
                END-IF
-      *        �������������ϤΥ����å�
+      *        内服１種類入力のチェック
                IF      SPA-COM-INPUTNAIF (IDX) =   "1"
-      *            �����ʳ��ϥ��顼
+      *            内服以外はエラー
                    IF     (SPA-ERRCD           =   SPACE )
                    AND    (WRK-H-SRYKBN    NOT =   "21"  )
                        MOVE    "0203"          TO  SPA-ERRCD
@@ -441,8 +441,8 @@
                    END-IF
                END-IF
       *!!
-      *!!!  H24.4 ���
-      *    ���Ŵѻ�ˡ���ѤΥ�����Ƚ��
+      *!!!  H24.4 削除
+      *    医療観察法専用のコード判定
       *        IF      SPA-ERRCD           =   SPACE
       *            IF     (SPA-COM-INPUTCD (IDX)(1:3)  =   "188"  )
       *            AND    (SPA-COM-KZMFLG  (IDX)   =   SPACE      )
@@ -453,13 +453,13 @@
       *        END-IF
       *!!!
            END-PERFORM
-      *    ����򤹤٤�Ʊ����ʬ
+      *    剤内をすべて同じ区分
            MOVE    ZERO                TO  IDX
            MOVE    1                   TO  IDX-S
            MOVE    ZERO                TO  FLG-HOUKATU
            MOVE    ZERO                TO  FLG-YAKUHYO
            MOVE    ZERO                TO  FLG-GENTEN
-      *H28.9 ������ͽ�󥳡���
+      *H28.9 持参薬予約コード
            MOVE    ZERO                TO  FLG-JISANYAKU
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
@@ -495,20 +495,20 @@
                        ELSE
                            MOVE    SPACE       TO  SPA-COM-YAKUHYO (IDX)
                        END-IF
-      *H28.9 ������ͽ�󥳡���
+      *H28.9 持参薬予約コード
                        MOVE    SPACE           TO  SPA-COM-JISANYAKU
                                                                (IDX-Z)
                        IF      FLG-JISANYAKU   =   1
                            MOVE    "1"         TO  SPA-COM-JISANYAKU
                                                               (IDX-Z)
-      *                    ��簷��
+      *                    包括扱い
                            MOVE    1           TO  SPA-COM-HOUKATU-ZAI
                                                               (IDX-Z)
                        END-IF
                        IF      FLG-JISANYAKU   =   2
                            MOVE    "2"         TO  SPA-COM-JISANYAKU
                                                               (IDX-Z)
-      *                    ��簷��
+      *                    包括扱い
                            MOVE    1           TO  SPA-COM-HOUKATU-ZAI
                                                               (IDX-Z)
                        END-IF
@@ -525,7 +525,7 @@
        100-ZAI-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ��ʬΥ����
+      *    剤分離処理
       *****************************************************************
        1002-ZAIBUNNRI-SEC              SECTION.
       *
@@ -533,7 +533,7 @@
            INITIALIZE                  FLG-AREA
            INITIALIZE                  IDX-AREA
       *
-      *    ���ꥢ
+      *    クリア
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   SPA-MAX-LINE
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
@@ -547,7 +547,7 @@
            MOVE    SPACE               TO  WRK-CHIKENKBN
            MOVE    SPACE               TO  WRK-SRYKA
            MOVE    SPACE               TO  WRK-DRCD
-      *    ����
+      *    外来
            IF     (SPA-NYUGAIKBN       =   "2"  )  AND
                   (LNK-SC93-PG         =   "K02")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
@@ -555,14 +555,14 @@
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
                MOVE    SPA-DRCD(2:4)       TO  WRK-DRCD
            END-IF
-      *    ����
+      *    入院
            IF     (SPA-NYUGAIKBN       =   "1"  )  AND
                   (LNK-SC93-PG         =   "K02N")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
                MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
            END-IF
-      *    ����ޤȤ�
+      *    外来まとめ
            IF     (LNK-SC93-PG         =   "KT01")
                MOVE    SPA-HKNCOMBINUM     TO  WRK-HKNCOMBI
                MOVE    SPA-SRYKA           TO  WRK-SRYKA
@@ -570,15 +570,15 @@
                MOVE    SPA-CHIKENKBN       TO  WRK-CHIKENKBN
            END-IF
       *!
-      *    ���ż��̶�ʬ�Խ�
+      *    診療種別区分編集
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX              >   SPA-MAX-LINE)   OR
                               (SPA-ERRCD        NOT =   SPACE )   OR
                              ((SPA-GMN-INPUTCD(IDX) =   SPACE ) AND
                               (SPA-COM-INPUTCD(IDX) =   SPACE ))
-      *        ��������Υ����å�
+      *        入院回数のチェック
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "*"
-      *            �����ʳ����顼
+      *            入院以外エラー
                    IF      LNK-SC93-PG         =   "K02N"
                                                OR  "KT01"
                        IF     (IDX             =   1  )  OR
@@ -591,12 +591,12 @@
                        MOVE    "1"             TO  SPA-COM-CUR(IDX)
                    END-IF
                END-IF
-      *        �ݸ������Ų�����
+      *        保険・診療科入力
                IF     (SPA-NYUGAIKBN       =   "2"  )  AND
                       (SPA-GMN-INPUTCD(IDX)(1:1)   =   "#"
                                                    OR  "$")
                    IF      LNK-SC93-PG         =   "K02"
-      *!               �����ܤϥ��顼
+      *!               １行目はエラー
                        IF      IDX             =   1
                            MOVE    "1056"          TO  SPA-ERRCD
                            MOVE    "1"             TO  SPA-COM-CUR(IDX)
@@ -614,7 +614,7 @@
                    END-IF
                END-IF
                IF      SPA-ERRCD           =   SPACE
-      *            ��ʬΥ
+      *            剤分離
                    PERFORM 5101-SYRKBN-SET-SEC
       *!!!!!!!!!!!!!
                    IF      SPA-ERRCD       NOT =   SPACE
@@ -625,7 +625,7 @@
                    END-IF
                END-IF
       *
-      *        �ƽ����Υ����å�
+      *        各処理のチェック
                IF      SPA-ERRCD           =   SPACE
                    EVALUATE    LNK-SC93-PG
                        WHEN    "K05"
@@ -650,11 +650,11 @@
        1002-ZAIBUNNRI-EXT.
            EXIT.
       *****************************************************************
-      *    ���å����ϻ��������å�����
+      *    セット入力時、チェック処理
       *****************************************************************
        1001-K05-SET-CHK-SEC              SECTION.
       *
-      *    ���åȥ����ɤ���«�λ������åȤ������ԲĤȤ���
+      *    セットコードが約束の時、セットは入力不可とする
            IF      LNK-SC93-SETCODE(1:1)   =   "S"
                IF     (SPA-GMN-INPUTCD(IDX)(1:1)   =   "S" OR "P" ) AND
                       (SPA-GMN-INPUTCD(IDX)(2:5)   NUMERIC        )
@@ -663,7 +663,7 @@
                    END-IF
                    MOVE    "1"                 TO  SPA-COM-CUR (IDX)
                END-IF
-      *        ���ż��̤����Ϥ��ʤ�
+      *        診療種別は入力しない
                IF      SPA-GMN-INPUTCD(IDX)(1:1)   =   "."
                    IF      SPA-ERRCD           =   SPACE
                        MOVE    "5011"              TO  SPA-ERRCD
@@ -677,19 +677,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �޲�������å�����
+      *    剤回数チェック処理
       *****************************************************************
        1002-ZAIKAI-CHK-SEC              SECTION.
       *
            EVALUATE    LNK-SC93-PG
                WHEN    "J04"
-      *            �޽����λ������ޤΤߤȤ���
+      *            剤修正の時、１剤のみとする
                    IF      WRK-ZAINUM          >   1
                        MOVE    "1023"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR (IDX)
                    END-IF
                WHEN    "K05"
-      *            ��«���åȤλ����ޤϣ��ޤΤߤȤ���
+      *            約束セットの時、剤は１剤のみとする
                    IF     (WRK-ZAINUM              >   1  )  AND
                           (LNK-SC93-SETCODE(1:1)   =   "S")
                        MOVE    "5010"              TO  SPA-ERRCD
@@ -701,7 +701,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ż��̶�ʬ�Խ��������
+      *    診療種別区分編集決定処理
       *****************************************************************
        5101-SYRKBN-SET-SEC             SECTION.
       *
@@ -718,7 +718,7 @@
       *
            EVALUATE    SPA-GMN-INPUTCD(IDX)(1:1)
                WHEN    "#"
-      *            �ݸ����ϻ����ޤν�λ�Ȥ���
+      *            保険入力時、剤の終了とする
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:4)   TO  WRK-HKNCOMBI
                    MOVE    SPA-COM-CHIKENKBN(IDX)  TO  WRK-CHIKENKBN
                    MOVE    "1"                 TO  SPA-COM-ZAIEND (IDX)
@@ -744,7 +744,7 @@
                                                               (IDX)
                    MOVE    WRK-CHIKENKBN       TO  SPA-COM-CHIKENKBN
                                                               (IDX)
-      *        ���Ųʡ��ޤν�λ�Ȥ���
+      *        診療科、剤の終了とする
                WHEN    "$"
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:2)   TO  WRK-SRYKA
                    MOVE    SPA-GMN-INPUTCD(IDX)(5:4)   TO  WRK-DRCD
@@ -770,7 +770,7 @@
                    MOVE    WRK-SRYKA           TO  SPA-COM-SRYKA(IDX)
                    MOVE    WRK-DRCD            TO  SPA-COM-DRCD (IDX)
       *!
-      *        ���å����ϻ������ο��ż��̤Ȥ���
+      *        セット入力時、前の診療種別とする
                WHEN    "S"
                    IF     (IDX                 =   1   )   OR
                           (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".")
@@ -789,9 +789,9 @@
                    END-IF
       *
                WHEN    "."
-      *        ���ż������ϻ����ޤν�λ�Ȥ���
+      *        診療種別入力時、剤の終了とする
                    MOVE    SPA-GMN-INPUTCD(IDX)(2:3)   TO  WRK-SRYSYUKBN
-      *            ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *            診療種別区分名称、診療行為区分セット
                    PERFORM 510-SRYKBN-MEI-SEC
                    IF      SPA-ERRCD       NOT =   SPACE
                        MOVE    "1"             TO  SPA-COM-CUR (IDX)
@@ -807,7 +807,7 @@
                                                              (IDX - 1)
                    END-IF
                    MOVE    SPACE               TO  SPA-COM-ZAIEND (IDX)
-      *            ����λ���������ϤޤǼ���Ȥ���
+      *            自費の時、回数入力まで自費とする
                    IF      WRK-SRYSYUKBN       =   "950"  OR  "960"
       *H25.10
                                                           OR  "961"
@@ -826,14 +826,14 @@
                    MOVE    ZERO                TO  WRK-KENSA-CNT
                    MOVE    SPACE               TO  WRK-HOUKNSKBN
                    MOVE    ZERO                TO  WRK-HOU-IDX
-      *!           ���������Ȥ������Τ�
+      *!           処方コメントは入院のみ
       *            IF      WRK-SRYSYUKBN       =   "980"
       *                IF      SPA-NYUGAIKBN       =   "1"
       *                    MOVE    "9028"          TO  SPA-ERRCD
       *                    MOVE    "1"             TO  SPA-COM-CUR(IDX)
       *                END-IF
       *!           END-IF
-      *!           �ౡ���������������Ȥ������Τ�
+      *!           退院時院外処方コメントは入院のみ
                    IF      WRK-SRYSYUKBN       =   "982"
                        IF      SPA-NYUGAIKBN       =   "2"
                            MOVE    "9024"          TO  SPA-ERRCD
@@ -841,7 +841,7 @@
                        END-IF
                    END-IF
       *ver.4.5.0
-      *            �����ɤ��ؤ��оݳ��ϣȣ���ǯ�����
+      *            処置読み替え対象外はＨ２０年４月から
                    IF      WRK-SRYSYUKBN       =   "409"
                        IF      SPA-SRYYMD          <   "20080401"
                            MOVE    "0501"          TO  SPA-ERRCD
@@ -860,7 +860,7 @@
                        END-IF
                    END-IF
       *ver.4.6.0
-      *            �����ն�����Ϥϣȣ���ǯ�����
+      *            自賠責金額入力はＨ２２年４月から
                    IF      WRK-SRYSYUKBN       =   "809"
                        IF      SPA-SRYYMD          <   "20100401"
                            MOVE    "0503"          TO  SPA-ERRCD
@@ -878,7 +878,7 @@
                        END-IF
                    END-IF
       *ver.4.7.0
-      *            �׻������ʳ��ѡˤ�H����ǯ�����
+      *            臨時投薬（外用）はH２６年４月から
                    IF      WRK-SRYSYUKBN       =   "293"
                                                OR  "294"
                                                OR  "295"
@@ -887,7 +887,7 @@
                            MOVE    "1"             TO  SPA-COM-CUR(IDX)
                        END-IF
                    END-IF
-      *            �׻������������ˤ�H����ǯ�������
+      *            臨時投薬（頓服）はH２６年１０月から
                    IF      WRK-SRYSYUKBN       =   "296"
                                                OR  "297"
                                                OR  "298"
@@ -897,7 +897,7 @@
                        END-IF
                    END-IF
       *H28.9
-      *            ��ǡ��ƿǲû��Τߤϣȣ���ǯ�����
+      *            初診・再診加算のみはＨ２８年４月から
                    IF      WRK-SRYSYUKBN       =   "114"
                                                OR  "124"
                                                OR  "133"
@@ -907,9 +907,9 @@
                        END-IF
                    END-IF
                WHEN    OTHER
-      *        ����¾
+      *        その他
                    IF      FLG-JIHI            =   1
-      *                ����λ���������ϤޤǼ���Ȥ���
+      *                自費の時、回数入力まで自費とする
                        PERFORM 5101-JIHI-HEN-SEC
                    ELSE
                        PERFORM 51011-SRYKBN-HEN-SEC
@@ -920,14 +920,14 @@
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    自費処理
       *****************************************************************
        5101-JIHI-HEN-SEC           SECTION.
       *
            MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
            MOVE    WRK-SRYKBN          TO  SPA-COM-SRYKBN (IDX)
       *
-      *    �������Ͱʳ����������Խ���ϫ�ұ��Ѵ���
+      *    きざみ値以外は点数再編集（労災円変換）
            IF     (SPA-COM-INPUTCD (IDX)(1:1)  =   "1"  )   AND
                   (SPA-COM-KZMCOMPSIKIBETU (IDX)   =   1 )
                CONTINUE
@@ -939,7 +939,7 @@
                MOVE    SPACE           TO  WRK-SRYSYUKBN
                MOVE    ZERO            TO  FLG-JIHI
            END-IF
-      *    ������Ϥμ�����դ��Ƥϡ����ޣ������ɤȤ���
+      *    金額入力の自費に付いては、１剤１コードとする
            IF     (SPA-COM-INPUTCD(IDX)(1:3)   =   "095" OR
                                                    "096" )  AND
                   (SPA-COM-KISOTEN(IDX)        =   ZERO  )
@@ -957,33 +957,33 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ŷ�Ƚ�����
+      *    診療区判定処理
       *****************************************************************
        51011-SRYKBN-HEN-SEC           SECTION.
       *
-      *    ���Ŷ��Ƚ�ꤹ��
+      *    診療区を判定する
            MOVE    SPA-COM-INPUTCD(IDX)(1:1)   TO  WRK-MOJI
            EVALUATE    WRK-MOJI
                WHEN    "1"
                    MOVE    SPA-COM-INPUTCD(IDX)(2:2)
                                            TO  WRK-SRYKBN
-      *            ϫ�ҥ�����
+      *            労災コード
                    IF      SPA-COM-RSIKBN (IDX)    =   1
                        MOVE    SPA-COM-INPUTCD(IDX)(4:2)
                                                TO  WRK-SRYKBN
                    END-IF
-      *            �������Ǥ���ũ�����å�
+      *            画像診断の点滴チェック
                    IF     (IDX                 >   1   )  AND
                           (SPA-COM-SRYSYUKBN (IDX - 1) =   "731") AND
                           (SPA-COM-ZAIEND    (IDX - 1) =   SPACE)
                        PERFORM 51013-731-CHKSYORI-SEC
                    ELSE
-      *            �����ޥ����ο��ż��̤����Ŷ��Ƚ�ꤹ��
+      *            点数マスタの診療種別より診療区を判定する
                        IF      SPA-COM-TNSSRYSYUKBN(IDX) NOT =   SPACE
                            PERFORM 51011-SRYSYUKBN-KBN-SEC
                        END-IF
                    END-IF
-      *            �û��԰٤ˤĤ��Ƥϡ����κޤȤ����ϫ�Ұʳ���
+      *            加算行為については、前の剤とする（労災以外）
                    IF     (SPA-COM-DATAKBN (IDX)   =   "2"   )  AND
                           (SPA-COM-RSIKBN  (IDX)   NOT =   1 )
                        PERFORM 51012-KASAN-CHK-SEC
@@ -991,7 +991,7 @@
                        MOVE    WRK-SRYKBN      TO  SPA-COM-SRYKBN(IDX)
                    END-IF
       *---(01.00.0X)--
-      *            �ƿǻ��μ굻���Ǻ޽�λ�Ȥ���
+      *            再診時の手技料で剤終了とする
       *            IF     (IDX                     >   1    )  AND
       *                   (SPA-COM-SRYKBN (IDX)    =   "12" )  AND
       *                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
@@ -1003,7 +1003,7 @@
       *                END-IF
       *            END-IF
       *---(01.00.0X)--
-      *            ��ɾ����ɾ�ϥ��顼
+      *            薬評・器評はエラー
                    IF      FLG-YAKUHYO         =   1
                        MOVE    ZERO            TO  FLG-YAKUHYO
                        MOVE    "1"             TO  SPA-COM-ZAIEND
@@ -1012,12 +1012,12 @@
       *
                WHEN    "0"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *            �桼������Ͽʬ
+      *            ユーザー登録分
                    PERFORM 5101-SRYKBN-0-HEN-SEC
       *
                WHEN    "8"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *            �����Ȥλ������κޤȤ���(���Ԥ˲�����ʤ�����
+      *            コメントの時、前の剤とする(前行に回数がない時）
                    IF     (IDX                 =   1   )  OR
                           (SPA-COM-KAIFLG (IDX - 1 )   =   "1" ) OR
                           (SPA-GMN-INPUTCD(IDX - 1 )(1:1)  =  "#"
@@ -1025,7 +1025,7 @@
       *H26.10
                        OR (SPA-COM-INPUTCD(IDX - 1)
                                                =   "099140012" )
-      *                �����������λ����������ޤȤ���
+      *                薬剤料逓減の時、内服薬剤とする
                        IF      SPA-COM-INPUTCD (IDX)   =   "820000047"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
                                                                 (IDX)
@@ -1036,7 +1036,7 @@
                                                                 (IDX)
                        END-IF
                    ELSE
-      *                �����������λ����������ޤȤ���
+      *                薬剤料逓減の時、内服薬剤とする
                        IF      (SPA-COM-INPUTCD(IDX)  =   "820000047")
       *???               AND   (SPA-COM-AUTOKBN(IDX)  =   "3"        )
                          AND   (SPA-COM-AUTOKBN(IDX)  =   SPACE      )
@@ -1051,7 +1051,7 @@
                                                                 (IDX)
                            MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
-      *                    ���ż�������
+      *                    診療種別入力
       *                    IF      WRK-SRYSYUKBN   NOT =   SPACE
       *                        MOVE    WRK-SRYSYUKBN
       *                                            TO  SPA-COM-SRYSYUKBN
@@ -1061,24 +1061,24 @@
       *                    END-IF
                        END-IF
                    END-IF
-      *            �������Ϥλ������Υ����ɤ�����å�����
+      *            時間入力の時、前のコードをチェックする
                    IF      (SPA-COM-INPUTCD (IDX)  =   "840000071"  OR
                                                        "840000044"  )
                        PERFORM 510112-JIKAN-INP-SEC
                    END-IF
-      *            ��ɾ����ɾ
+      *            薬評・器評
                    IF      FLG-YAKUHYO     =   1
                        MOVE    "1"             TO  SPA-COM-YAKUHYO
                                                               (IDX)
                    END-IF
-      *            ��ɾ����ɾ
+      *            薬評・器評
                    IF      (SPA-COM-INPUTCD (IDX)  =   "820000094"  OR
                                                        "820000095"
-      *H26.12          �ʲ�ɾ��
+      *H26.12          （加評）
                                                    OR  "820000171"
-      *H28.4           ����ɾ��
+      *H28.4           （体評）
                                                    OR  "820000226"  )
-      *                ���ż��̤�ľ��
+      *                診療種別の直下
                        IF     (IDX             >   1     )  AND
                               (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                 =   "."  )
@@ -1091,7 +1091,7 @@
                            MOVE    "0221"          TO  SPA-ERRCD
                        END-IF
                    END-IF
-      *            ����
+      *            減点
                    IF      SPA-ERRCD           =   SPACE
                        IF      FLG-GENTEN          =   1
                            MOVE    "1"             TO  SPA-COM-GENTEN
@@ -1101,24 +1101,24 @@
                WHEN    "6"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
       *
-      *H24.4����
-      *�������᤹
+      *H24.4改正
+      *点数を戻す
                    MOVE    SPA-COM-TEN (IDX)   TO  SPA-COM-KISOTEN(IDX)
       *
-      *            ���ޤλ������������Ѥ���ꤹ��
+      *            薬剤の時、内服・外用を決定する
                    EVALUATE    SPA-COM-YKZKBN(IDX)
                        WHEN    "6"
                            MOVE    "23"            TO  WRK-SRYKBN
                        WHEN    "4"
                            MOVE    "30"            TO  WRK-SRYKBN
-      *                    ��������
+      *                    歯科薬剤
                        WHEN    "8"
                        WHEN    "9"
                            MOVE    "23"            TO  WRK-SRYKBN
       *ver.4.7
                        WHEN    "3"
-      *                    ����¾
-      *                    ���������������ͤȤ���
+      *                    その他
+      *                    薬剤料減点は注射とする
                            IF      SPA-COM-INPUTCD (IDX) =   "630010001"
                                MOVE    "30"            TO  WRK-SRYKBN
                            ELSE
@@ -1128,20 +1128,20 @@
                        WHEN    OTHER
                            MOVE    "21"            TO  WRK-SRYKBN
                    END-EVALUATE
-      *            �������μ��̤����Ϥ��줿�顢���٤Ƴ��ѤȤ���
+      *            外用薬の種別が入力されたら、すべて外用とする
                    IF      WRK-SRYSYUKBN       =   "230" OR
                                                    "231" OR
                                                    "232"
                                                OR  "233"
                                                OR  "234"
-      *H26.4 ���顡�׻������ɲ�
+      *H26.4 から　臨時投薬追加
                                                OR  "293"
                                                OR  "294"
                                                OR  "295"
                        MOVE    "23"            TO  WRK-SRYKBN
                    END-IF
       *!
-      *            �����������������Ƚ��
+      *            外用薬で内服算定の判定
                    IF     (WRK-SRYKBN          =   "23"  )  AND
                           (SPA-COM-NAIFUKUKBN (IDX)
                                                =   1     )  AND
@@ -1156,7 +1156,7 @@
                        MOVE    "21"            TO  WRK-SRYKBN
                    END-IF
       *!
-      *            �����������������Ƚ��
+      *            注射薬で内服算定の判定
                    IF     (WRK-SRYKBN          =   "30"  )  AND
                           (SPA-COM-NAIFUKUKBN (IDX)
                                                =   1     )  AND
@@ -1170,7 +1170,7 @@
                                                OR  "292"  )
                        MOVE    "21"            TO  WRK-SRYKBN
                    END-IF
-      *            �������������������ޤ����Ϥ��ʤ�
+      *            前が処方せん料は薬剤は入力しない
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
                           (SPA-COM-SRYSYUKBN (IDX - 1)
@@ -1179,7 +1179,7 @@
                    ELSE
                        MOVE    ZERO            TO  FLG-SYOHO
                    END-IF
-      *            �����λ������ι԰٤����ޤ���°�Ǥ��뤫Ƚ��
+      *            内服の時、前の行為が薬剤に付属できるか判定
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "21"  )
@@ -1196,7 +1196,7 @@
                                                               (IDX - 1)
                            WHEN    "23"
                                CONTINUE
-      ****��Ƴ�����       WHEN    "13"
+      ****指導料削除       WHEN    "13"
                            WHEN    "14"
                            WHEN    "40"
                            WHEN    "50"
@@ -1211,7 +1211,7 @@
                                                               (IDX - 1)
                        END-EVALUATE
                    END-IF
-      *            �������λ������֡���������Ѥ���°����
+      *            外用薬の時、処置・検査・手術に付属する
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (WRK-SRYKBN              =   "23"  )
@@ -1220,9 +1220,9 @@
                      AND  (SPA-COM-SRYSYUKBN(IDX - 1)
                                                NOT =   "809" )
                        EVALUATE    SPA-COM-SRYKBN(IDX - 1)
-      ****��Ƴ�����       WHEN    "13"
+      ****指導料削除       WHEN    "13"
                            WHEN    "14"
-      *                    ���ͤ��ǽ�Ȥ���
+      *                    注射を可能とする
                            WHEN    "31"
                            WHEN    "32"
                            WHEN    "33"
@@ -1240,7 +1240,7 @@
                                                              (IDX - 1)
                        END-EVALUATE
                    END-IF
-      *            ���ͱա����͹԰���Ǥ��뤳��
+      *            注射液　注射行為中であること
                    IF      WRK-SRYKBN          =   "30"
                        IF     (IDX                     >   1   )  AND
                               (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
@@ -1249,7 +1249,7 @@
                          AND  (SPA-COM-SRYSYUKBN(IDX - 1)
                                                    NOT =   "809" )
                            EVALUATE    SPA-COM-SRYKBN(IDX - 1)
-      ****��Ƴ�����           WHEN    "13"
+      ****指導料削除           WHEN    "13"
                                WHEN    "14"
                                WHEN    "31"
                                WHEN    "32"
@@ -1273,16 +1273,16 @@
                        END-IF
                    END-IF
                    MOVE    WRK-SRYKBN      TO  SPA-COM-SRYKBN(IDX)
-      *            ��ɾ����ɾ
+      *            薬評・器評
                    IF      FLG-YAKUHYO     =   1
                        MOVE    "1"             TO  SPA-COM-YAKUHYO
                                                               (IDX)
                    END-IF
-      *            ��ɾ����ɾ
+      *            薬評・器評
                    IF      (SPA-COM-INPUTCD (IDX)  =   "630010011"
                                                    OR  "630010012"
                                                    OR  "630010013"  )
-      *                ���ż��̤�ľ��
+      *                診療種別の直下
                        IF     (IDX             >   1     )  AND
                               (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                 =   "."  )
@@ -1296,9 +1296,9 @@
                        END-IF
                    END-IF
       *ver.4.7
-      *            ��������
+      *            減点入力
                    IF     (SPA-COM-TENSIKIBETU (IDX)   =   7  )
-      *                ���ż��̤�ľ��
+      *                診療種別の直下
                        IF     (IDX             >   1     )  AND
                               (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                 =   "."  )
@@ -1310,7 +1310,7 @@
                        ELSE
                            MOVE    "0240"          TO  SPA-ERRCD
                        END-IF
-      *                �����������Υ����å��ʤ���¾���͡�������
+      *                薬剤料減点のチェック（その他注射・入院）
                        IF     (SPA-COM-INPUTCD (IDX) =   "630010001" )
                            IF     (SPA-NYUGAIKBN         =   "2"   )
                              AND  (SPA-ERRCD             =   SPACE )
@@ -1326,7 +1326,7 @@
                    END-IF
       *!!!!
                WHEN    "7"
-      *            �������������������ޤ����Ϥ��ʤ�
+      *            前が処方せん料は薬剤は入力しない
                    IF     (IDX                     >   1     ) AND
                           (SPA-COM-SRYKBN (IDX - 1) =   "80" ) AND
                           (SPA-COM-SRYSYUKBN (IDX - 1)
@@ -1336,7 +1336,7 @@
                        MOVE    ZERO            TO  FLG-SYOHO
                    END-IF
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *            �������κޤ���°�����
+      *            器材（前の剤に付属する）
                    IF     (IDX             >   1   )  AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE ) AND
                           (SPA-COM-SRYKBN(IDX - 1) 
@@ -1354,7 +1354,7 @@
                                                TO  SPA-COM-SRYKBN(IDX)
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
-      *                ��ɾ����ɾ
+      *                薬評・器評
                        IF      FLG-YAKUHYO     =   1
                            MOVE    "1"             TO  SPA-COM-YAKUHYO
                                                               (IDX)
@@ -1365,18 +1365,18 @@
            END-EVALUATE
       *
            IF      SPA-ERRCD           =   SPACE
-      *    �Ƕ衡�ѹ���
+      *    診区　変更時
                IF     (IDX                 >   1         )  AND
                       (SPA-COM-SRYKBN (IDX - 1)
                                        NOT =  SPA-COM-SRYKBN(IDX))
-      *        ��«���åȤλ���������Ϥޤ�Ʊ���Ǥ��뤳��
+      *        約束セットの時、回数入力まで同じであること
                    IF      SPA-COM-SET (IDX)   =   "1"
                        MOVE    "0049"          TO  SPA-ERRCD
                        MOVE    "1"             TO  SPA-COM-CUR(IDX-SET)
                    END-IF
                END-IF
            END-IF
-      *    �޽�λȽ��
+      *    剤終了判定
            IF      SPA-ERRCD           =   SPACE
                PERFORM 510112-ZAIEND-HEN-SEC
            END-IF
@@ -1388,17 +1388,17 @@
            EXIT.
       *
       *****************************************************************
-      *    �޽�λȽ�����
+      *    剤終了判定処理
       *****************************************************************
        510112-ZAIEND-HEN-SEC           SECTION.
       *
            MOVE    ZERO                TO  FLG-SYORI
-      *    �ǽ��ԡ�������ס����ϻ�
+      *    最終行・回数・計　入力時
            IF     (SPA-COM-KAIFLG (IDX)     =   "1"        )  OR
                   (SPA-COM-KEIFLG (IDX)     =   "1" OR "2" )
                MOVE    1               TO  FLG-SYORI
            END-IF
-      *    �ǻ��λ����굻���Ǻ�ʬΥ�Ȥ���
+      *    診察の時、手技料で剤分離とする
            IF     (SPA-COM-SRYKBN (IDX)(1:1)    =   "1" )  AND
                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
                IF      FLG-SYUGI           =   1
@@ -1413,7 +1413,7 @@
            END-IF
       *
       *H25.7
-      *    ϫ�ҥ����ɤΤ���¾�����Ϻ�ʬΥ
+      *    労災コードのその他８０は剤分離
            IF     (SPA-SRYYMD          >=  "20130701" )
                IF     (SPA-COM-SRYKBN (IDX)    =   "80" )
                 AND   (SPA-COM-INPUTCD(IDX)(1:3)   =   "101")
@@ -1425,7 +1425,7 @@
                END-IF
            END-IF
       *!!
-      *    �����������ϼ굻���Ǻ�ʬΥ�Ȥ���
+      *    処方せん料は手技料で剤分離とする
            IF     (SPA-COM-SRYKBN (IDX)    =   "80" )  AND
                   (SPA-COM-SRYSYUKBN(IDX)  =   "820")  AND
                   (SPA-COM-DATAKBN (IDX)   =   "1"  )
@@ -1434,7 +1434,7 @@
                END-IF
                MOVE    1               TO  FLG-SYUGI
            END-IF
-      *    �������ϼ굻���Ǻ�ʬΥ�Ȥ���
+      *    処方料は手技料で剤分離とする
            IF     (SPA-COM-SRYKBN (IDX)(1:1)   =   "2" )  AND
                   (SPA-COM-INPUTCD(IDX)(1:1)   =   "1" )  AND
                   (SPA-COM-DATAKBN(IDX)        =   "1"  )
@@ -1444,21 +1444,21 @@
                MOVE    1               TO  FLG-SYUGI
            END-IF
       *!!
-      *    �Ƕ衡�ѹ���
+      *    診区　変更時
            IF     (IDX                 >   1         )  AND
                   (SPA-COM-SRYKBN (IDX - 1)
                                    NOT =  SPA-COM-SRYKBN(IDX))
                MOVE    2               TO  FLG-SYORI
            END-IF
       *
-      *    ��«���åȽ�λ������λ�Ȥ���
+      *    約束セット終了時、終了とする
            IF      IDX                 <   SPA-MAX-LINE
                IF     (SPA-COM-SET (IDX)        =   "1" )  AND
                       (SPA-COM-SET (IDX + 1)    =   SPACE)
                    MOVE    1               TO  FLG-SYORI
                END-IF
            END-IF
-      *    ���ż��� ���ѹ���
+      *    診療種別 　変更時
            IF     (IDX                 >   1         )  AND
                   (SPA-COM-SRYSYUKBN (IDX - 1)
                                    NOT =   SPACE     )  AND
@@ -1469,7 +1469,7 @@
                MOVE    2               TO  FLG-SYORI
            END-IF
       *---(02.00.05)  LINE ADD  START  --------------------------------
-      *    �����λ�������оݸ����ˤ�ꡢ�ޤ���ꤹ��
+      *    検査の時、包括対象検査により、剤を決定する
            IF     (SPA-COM-SRYKBN (IDX)    =   "60"
                                            OR  "64"  )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   NOT =   "." )  AND
@@ -1478,13 +1478,13 @@
                PERFORM 5101121-HKTKENSA-HEN-SEC
            END-IF
       *
-      *    ���Ԥ�����ȯ���λ���λ�Ȥ���
+      *    前行が急性発生の時終了とする
            IF     (SPA-COM-INPUTCD(IDX)    =   "099800101"
                                            OR  "099800102"
-      *        �����ǻ��꽪λ
+      *        在総診算定終了
                                            OR  "099140001"
                                            OR  "099140004" )
-      *H26.10  ����ˬ�����¾
+      *H26.10  在宅訪問診療他
             OR    (SPA-COM-INPUTCD(IDX)    =   "099140011"
                                            OR  "099140012" )
                MOVE    1               TO  FLG-HASSYO
@@ -1503,7 +1503,7 @@
                    END-IF
                END-IF
            END-IF
-      *    ����ʬ�ϥ����Ȱʳ��Ͻ�λ
+      *    減点分はコメント以外は終了
            IF      FLG-GENTEN          =   1
                IF      (SPA-COM-INPUTCD (IDX)(1:1) =   "8" )
                    OR  (SPA-COM-INPUTCD (IDX)(1:3) =   "008")
@@ -1515,10 +1515,10 @@
                END-IF
            END-IF
       *
-      *    ��׾Ȼ������ѹ��������Ŷ�ʬ�ѹ����顼
+      *    会計照時、剤変更時、診療区分変更エラー
            IF      LNK-SC93-PG         =   "J04"
                IF      FLG-SYORI           =   2
-      *            ���θ��������Ȥ�Ƚ��
+      *            検体検査コメントの判定
                    IF    ((SPA-COM-KENTAICOMMENT (IDX) =   1) AND
                           (IDX                 <   SPA-GMN-MAX))
                       OR ( IDX                 =   1          )
@@ -1536,7 +1536,7 @@
                END-IF
            END-IF
       *
-      *    ���ޣ����٤Υ����ɤλ��ϡ��޽�λ�Ȥ���
+      *    １剤１明細のコードの時は、剤終了とする
            IF      FLG-ZAI             =   1
                IF     (IDX             >   1   )  AND
                      ((SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =   ".") OR
@@ -1547,7 +1547,7 @@
                    MOVE    1               TO  FLG-SYORI
                END-IF
            END-IF
-      *    ���ޣ����٤Υ����ɡʼ����դ���¾�ˤλ��ϡ��޽�λ�Ȥ���
+      *    １剤１明細のコード（自賠責その他）の時は、剤終了とする
            IF      FLG-ZAI             =   2
                IF     (IDX             >   1   )  AND
                      ((SPA-COM-SRYSYUKBN (IDX - 1)
@@ -1561,7 +1561,7 @@
            END-IF
       *
            IF      FLG-SYORI           =   ZERO
-      *        �޷�³
+      *        剤継続
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX)
                IF     (IDX             >   1  )  AND
                       (SPA-COM-ZAIEND(IDX - 1)   =   SPACE )
@@ -1569,7 +1569,7 @@
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                END-IF
            ELSE
-      *        �޽�λ
+      *        剤終了
                IF    ((IDX                 =   1    )  AND
                       (FLG-SYORI       NOT =   2    )   )  OR
                       (SPA-COM-KAIFLG(IDX) =   "1"      )
@@ -1594,12 +1594,12 @@
                END-IF
            END-IF
       *
-      *    ���Ԥ˲�����ϻ��������λ�Ȥ���
+      *    前行に回数入力時、前回を終了とする
            IF     (IDX                 >   1         )  AND
                   (SPA-COM-KAIFLG (IDX - 1)    =   "1" )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:1)   NOT =  ".")
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX - 1)
-      *H28.8   ���
+      *H28.8   削除
       *        IF     (SPA-COM-SRYKBN(IDX - 1) NOT =   "13" )
       *        AND    (SPA-COM-SRYKBN(IDX)     =   "13"     )
       *            CONTINUE
@@ -1608,7 +1608,7 @@
       ****     END-IF
            END-IF
       *
-      *    ����������ϻ�����λ�Ȥ���
+      *    入院回数入力時、終了とする
            IF     (IDX                 >   1         )  AND
                   (SPA-GMN-INPUTCD(IDX)(1:1)   =   "*" )
                MOVE    SPACE           TO  SPA-COM-ZAIEND (IDX - 1)
@@ -1620,12 +1620,12 @@
                                        TO  SPA-COM-SRYKBN (IDX)
            END-IF
       *
-      *    �ǽ��Ԥ�޽�λ�Ȥ���
+      *    最終行を剤終了とする
            IF      IDX                 =   SPA-GMN-MAX
                MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
            END-IF
       *
-      *    ���̥ե饰���ꥢ
+      *    部位フラグクリア
            IF      SPA-COM-ZAIEND (IDX)    =   "1"
                MOVE    ZERO                TO  FLG-BUIKBN
                MOVE    ZERO                TO  WRK-KENSA-CNT
@@ -1640,47 +1640,47 @@
            EXIT.
       *
       *****************************************************************
-      *    ��縡���κ޽�λȽ�����
+      *    包括検査の剤終了判定処理
       *****************************************************************
        5101121-HKTKENSA-HEN-SEC           SECTION.
       *
-      *    ���԰���
+      *    前行位置
            IF      IDX                 =   1
                MOVE    1               TO  IDX-1
            ELSE
                COMPUTE IDX-1           =   IDX    -   1
            END-IF
-      *    ����оݳ����оݤȤ��ʤ�
+      *    包括対象外は対象としない
            IF      (SPA-COM-SRYSYUKBN(IDX)  =   "610" )
                OR  (SPA-COM-KENTAICOMMENT (IDX) =   1    )
                OR  (SPA-COM-INPUTCD (IDX)(1:1)  NOT =   "1"  )
                 CONTINUE
            ELSE
-      *         ����оݸ�����������å�
+      *         包括対象検査件数チェック
                 PERFORM 51013-KENSA-ZAI-CHK-SEC
            END-IF
       *
            IF      (SPA-GMN-INPUTCD(IDX-1)(1:1)  =   "." )  OR
                    (SPA-COM-SRYKBN (IDX-1)   NOT =  SPA-COM-SRYKBN
                                                              (IDX))
-      *        �������
+      *        包括出来高
              OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999903" )
-      *        ��绻��ʺޡ�
+      *        包括算定（剤）
              OR    (SPA-COM-INPUTCD (IDX-1)      =   "099999908" )
-      *        ������
+      *        コメント
              OR    (SPA-COM-INPUTCD (IDX)(1:1)   =   "8"    )
              OR    (SPA-COM-INPUTCD (IDX)(1:3)   =   "008"  )
                CONTINUE
            ELSE
-      *        ���θ��������Ȥ�Ƚ��
+      *        検体検査コメントの判定
                IF     (SPA-COM-KENTAICOMMENT (IDX-1)   =   1 )
-      *            �������»�Ƚ�ǥ��롼��Ƚ��
+      *            検査等実施判断グループ判定
                    IF      SPA-COM-KNSJISGRPKBN (IDX)  >=  01
                                                    AND <=  07
                        MOVE    SPA-COM-HOUKNSKBN(IDX)
                                                    TO  SPA-COM-HOUKNSKBN
                                                                (IDX-1)
-      *                ���ż���
+      *                診療種別
                        IF    (SPA-COM-SRYKBN (IDX-1 - 1)
                                                    =  SPA-COM-SRYKBN
                                                              (IDX-1))
@@ -1697,7 +1697,7 @@
                            MOVE    SPA-COM-SRYSYUKBN (IDX-1 - 1)
                                                    TO  WRK-SRYSYUKBN
                        END-IF
-      *                Ʊ�측��Ƚ�ꥳ����
+      *                同一検査判定コード
                        MOVE    SPA-COM-INPUTCD(IDX-1)
                                                    TO  SPA-COM-KENGRP
                                                                (IDX)
@@ -1708,20 +1708,20 @@
                        END-IF
                    END-IF
                END-IF
-      *        ����оݸ����ʤ�
+      *        包括対象検査なし
                IF      SPA-COM-HOUKNSKBN(IDX)   =   ZERO
                    MOVE    2                    TO  FLG-SYORI
-      *            ���θ��������Ȥ�Ƚ��
+      *            検体検査コメントの判定
                    IF     (SPA-COM-KENTAICOMMENT(IDX-1) =   1)
-      *            �������»�Ƚ�ǥ��롼��Ƚ��
+      *            検査等実施判断グループ判定
                       AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
                                                    AND <=  07 )
                        MOVE    1               TO  FLG-SYORI
                    END-IF
-      *            ����������⥳���ɤ����Ԥǽ�λ
+      *            前が包括出来高コードは前行で終了
                    IF      (SPA-COM-INPUTCD (IDX-1)
                                                    =   "099999903"
-      *            ��绻��ʺޡ�
+      *            包括算定（剤）
                                                    OR  "099999908" )
                        MOVE    1                   TO  FLG-SYORI
                    END-IF
@@ -1731,22 +1731,22 @@
                        MOVE    ZERO                TO  WRK-KENSA-CNT
                    END-IF
                ELSE
-      *            ����оݸ����ѹ���
+      *            包括対象検査変更時
                    IF     (SPA-COM-HOUKNSKBN(IDX)
                                                =  SPA-COM-HOUKNSKBN
                                                              (IDX-1)
                                                OR  WRK-HOUKNSKBN  )
-      *            �������
+      *            包括出来高
                       OR  (SPA-COM-INPUTCD (IDX-1)
                                                =   "099999903"
-      *            ��绻��ʺޡ�
+      *            包括算定（剤）
                                                OR  "099999908" )
                        CONTINUE
                    ELSE
                        MOVE    2                    TO  FLG-SYORI
                    END-IF
       *
-      *            �������θ���������
+      *            前が検体検査コメント
                    IF     (SPA-COM-KENTAICOMMENT (IDX-1) =   1)
                      AND  (IDX-1             >   1   )
                        IF     (SPA-COM-HOUKNSKBN(IDX)
@@ -1783,7 +1783,7 @@
                    END-IF
                END-IF
       *
-      *        ����оݳ��κ޽�λ�������ż��̤򸡺��ˤ���
+      *        包括対象外の剤終了時、診療種別を検査にする
                IF    (SPA-COM-SRYSYUKBN(IDX)  =   "610" ) AND
                      (FLG-SYORI               =   2     )
                    MOVE    SPA-COM-TNSSRYSYUKBN (IDX)
@@ -1791,7 +1791,7 @@
                END-IF
            END-IF
       *
-      *    �������»�Ƚ�ǥ��롼��Ƚ��
+      *    検査等実施判断グループ判定
            IF     (SPA-COM-HOUKNSKBN(IDX)  NOT =   ZERO  )
               AND (SPA-COM-INPUTCD  (IDX)(1:1) =   "1"   )
               AND (SPA-COM-KNSJISGRPKBN (IDX)  >=  01
@@ -1805,12 +1805,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �桼������Ͽ�����ɿ��Ŷ�Ƚ�����
+      *    ユーザー登録コード診療区判定処理
       *****************************************************************
        5101-SRYKBN-0-HEN-SEC           SECTION.
       *
            EVALUATE    SPA-COM-INPUTCD (IDX)(1:3)
-      *        ���ޡ����ѥ�����(�������ޤλ���Ʊ���ޤˤ����
+      *        薬剤　服用コメント(前が薬剤の時、同じ剤にする）
                WHEN    "001"
                    MOVE    ZERO                TO  FLG-ZEN
                    IF     (IDX                 >   1   )  AND
@@ -1842,7 +1842,7 @@
       *!               MOVE    "990"           TO  SPA-COM-SRYSYUKBN
       *!                                                         (IDX)
                    END-IF
-      *        �������ǻ�������(�����������ǤǤ��뤳�ȡ�
+      *        画像診断撮影部位(前が画像診断であること）
                WHEN    "002"
                    IF     (IDX                 >   1    )  AND
                           (SPA-COM-SRYKBN(IDX - 1) =   "70"  )
@@ -1861,20 +1861,20 @@
                        MOVE    SPACE           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
                    END-IF
-      *            �޽�λ
+      *            剤終了
                    IF      FLG-BUIKBN      =   1
                         MOVE    "1"            TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
                    END-IF
                    MOVE    1                 TO  FLG-BUIKBN
-      *        �ݸ����ʼ���ˡ�1�ԣ��ޤȤ����
+      *        保険外（自費）（1行１剤とする）
                WHEN    "095"
                    MOVE    "95"            TO  SPA-COM-SRYKBN (IDX)
                    MOVE    "950"           TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
                    MOVE    "1"             TO  SPA-COM-ZAIEND (IDX)
                    MOVE    1               TO  FLG-ZAI
-      *            �����դλ��������Ȥ���
+      *            自賠責の時、８０とする
                    IF     (SPA-RSI-HKNKBN            =  "4" )  AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
                                                     OR  "09592"
@@ -1882,7 +1882,7 @@
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
-      *                �����ޥ�����ۡᣰ
+      *                点数マスタ金額＝０
                        IF     (SPA-COM-TEN (IDX)    =   ZERO )
                        AND    (SPA-SRYYMD           >=  "20100401")
                            MOVE    "809"       TO  SPA-COM-SRYSYUKBN
@@ -1891,16 +1891,16 @@
                        MOVE    "1"         TO  SPA-COM-ZAIEND (IDX)
                        MOVE    2           TO  FLG-ZAI
                    END-IF
-      *            ϫ�Ҥλ��������Ȥ���
+      *            労災の時、８０とする
                    IF     (SPA-RSI-HKNKBN            =  "1"
                                                      OR "2"
                                                      OR "3"
-      *                   ��̳�ҳ�
+      *                   公務災害
                                                      OR "5") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09593")
                        MOVE    "80"        TO  SPA-COM-SRYKBN  (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN(IDX)
-      *                �����ޥ�����ۡᣰ
+      *                点数マスタ金額＝０
                        IF     (SPA-COM-TEN (IDX)    =   ZERO )
                        AND    (SPA-SRYYMD           >=  "20100401")
                            MOVE    "809"       TO  SPA-COM-SRYSYUKBN
@@ -1909,14 +1909,14 @@
                        MOVE    "1"         TO  SPA-COM-ZAIEND  (IDX)
                        MOVE    2           TO  FLG-ZAI
                    END-IF
-      *            ϫ�ҡ������դ������λ��������Ȥ���
+      *            労災・自賠責で入院の時、８０とする
                    IF     (SPA-HKNKBN                =  1  ) AND
                           (SPA-NYUGAIKBN             =  "1") AND
                           (SPA-COM-INPUTCD(IDX)(1:5) =  "09594")
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
-      *                �����ޥ�����ۡᣰ
+      *                点数マスタ金額＝０
                        IF     (SPA-COM-TEN (IDX)    =   ZERO )
                        AND    (SPA-SRYYMD           >=  "20100401")
                            MOVE    "809"       TO  SPA-COM-SRYSYUKBN
@@ -1926,7 +1926,7 @@
                        MOVE    2           TO  FLG-ZAI
                    END-IF
       *H25.7
-      *            �軰�Թ԰٤λ��������Ȥ���
+      *            第三者行為の時　８０とする
                    IF     (SPA-RSI-HKNKBN            =  "6" )
                     AND  ((SPA-COM-INPUTCD(IDX)(1:5) =  "09591"
                                                     OR  "09592"
@@ -1936,7 +1936,7 @@
                        MOVE    "80"        TO  SPA-COM-SRYKBN (IDX)
                        MOVE    "800"       TO  SPA-COM-SRYSYUKBN
                                                                (IDX)
-      *                �����ޥ�����ۡᣰ
+      *                点数マスタ金額＝０
                        IF     (SPA-COM-TEN (IDX)    =   ZERO )
                        AND    (SPA-SRYYMD           >=  "20100401")
                            MOVE    "809"       TO  SPA-COM-SRYSYUKBN
@@ -1946,17 +1946,17 @@
                        MOVE    2           TO  FLG-ZAI
                    END-IF
       *
-      *        �ݸ����ʼ���ˡ�1�ԣ��ޤȤ����
+      *        保険外（自費）（1行１剤とする）
                WHEN    "096"
                    MOVE    "96"            TO  SPA-COM-SRYKBN (IDX)
                    MOVE    "960"           TO  SPA-COM-SRYSYUKBN (IDX)
                    MOVE    "1"             TO  SPA-COM-ZAIEND  (IDX)
                    MOVE    1               TO  FLG-ZAI
-      *        ����������κޤ���°�����
+      *        特定器材（前の剤に付属する）
                WHEN    "058"
                WHEN    "059"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN (IDX)
-      *            �������κޤ���°�����
+      *            器材（前の剤に付属する）
                    IF     (IDX             >   1   )  AND
                           (SPA-COM-KAIFLG(IDX - 1) =   SPACE )
                      AND  (SPA-COM-SRYKBN(IDX - 1) 
@@ -1975,10 +1975,10 @@
                    ELSE
                        MOVE    "0047"          TO  SPA-ERRCD
                    END-IF
-      *        �����ȡ����κޤ���°�����
+      *        コメント（前の剤に付属する）
                WHEN    "008"
                    MOVE    SPACE           TO  SPA-COM-SRYSYUKBN(IDX)
-      *            ���Ԥ˲�����ʤ�����
+      *            前行に回数がない時）
                    IF     (SPA-COM-INPUTCD (IDX)(1:4)
                                            NOT =   "0082"
                                                AND "0083"
@@ -2004,21 +2004,21 @@
                        MOVE    SPACE           TO  SPA-COM-ZAIEND
                                                               (IDX - 1)
                    END-IF
-      *        �ե꡼�λ��������ޥ�����ꡢ����
+      *        フリーの時、点数マスタより、決定
                WHEN    OTHER
                    EVALUATE    SPA-COM-INPUTCD (IDX)
-      *            �����Ѵ��λ������ͤǤ��뤳��
+      *            残量廃棄の時、注射であること
                        WHEN    "099309901"
                            PERFORM 51019-ZANHAIKI-CHK-SEC
-      *            ʴ�դλ��������Ȥ���
+      *            粉砕の時、内服とする
                        WHEN    "099209901"
                            MOVE    "21"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-      *                    ��ũ�굻�ʤ�
+      *                    点滴手技なし
                        WHEN    "099303301"
                            MOVE    "33"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-      *                ϫ�ҡ������դβû��ִ���
+      *                労災・自賠責の加算置換え
                        WHEN    "099509901"
                            IF     (IDX             >   1   )  AND
                                   (SPA-COM-SRYKBN(IDX - 1)
@@ -2033,13 +2033,13 @@
                            ELSE
                                MOVE    "8020"      TO  SPA-ERRCD
                            END-IF
-      *                �ģգͣͣٿǻ���
+      *                ＤＵＭＭＹ診察料
                        WHEN    "099110001"
                            MOVE    "11"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "110"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    �ǻ����λ��ޤ�ʬ����
+      *                    診察料の時剤を分ける
                            IF     (IDX             >   1  )  AND
                                   (SPA-COM-SRYKBN(IDX - 1)
                                                    =   "11" )  AND
@@ -2053,7 +2053,7 @@
                                                                   (IDX)
                            MOVE    "120"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    �ǻ����λ��ޤ�ʬ����
+      *                    診察料の時剤を分ける
                            IF     (IDX             >   1  )  AND
                                   (SPA-COM-SRYKBN(IDX - 1)
                                                    =   "12" )  AND
@@ -2062,35 +2062,35 @@
                                MOVE    "1"         TO  SPA-COM-ZAIEND
                                                              (IDX - 1)
                            END-IF
-      *                �ȣ��������������ȯ����
+      *                Ｈ１６．４から急性発生日
                        WHEN    "099800101"
                        WHEN    "099800102"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "810"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
-      *                �����ǽ�λ
+      *                在総診終了
                        WHEN    "099140001"
-      *                ���𴵼Զ�Ʊ������
+      *                在宅患者共同開始日
                        WHEN    "099140004"
                            MOVE    "14"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "140"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
       *H26.10
-      *                ˬ����Ť˳ݤ��뵭Ͽ��
+      *                訪問診療に掛かる記録書
                        WHEN    "099140011"
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-      *                    1���������ż��̰ʳ�
+      *                    1行前が診療種別以外
                            IF     (IDX             >   1  )  AND
                                   (SPA-GMN-INPUTCD(IDX - 1)(1:4)
                                                    =   ".990"
@@ -2100,11 +2100,11 @@
                                MOVE    "991"       TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
                            END-IF
-      *                ���ſͿ����
+      *                診療人数合計
                        WHEN    "099140012"
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
-      *                    1���������ż��̰ʳ�
+      *                    1行前が診療種別以外
                            IF     (IDX             >   1  )  AND
                                   (SPA-GMN-INPUTCD(IDX - 1)(1:4)
                                                    =   ".990"
@@ -2114,18 +2114,18 @@
                                MOVE    "991"       TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
                            END-IF
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
       *TEST
-      *                ���̳��
+      *                用量割合
                        WHEN    "099200011"
                        WHEN    "099200012"
                        WHEN    "099200013"
                        WHEN    "099200014"
                        WHEN    "099200015"
-      *H27.4           ������������ǽ
+      *H27.4           ３０日投薬可能
                        WHEN    "099200101"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
@@ -2137,7 +2137,7 @@
                                MOVE    "2062"        TO  SPA-ERRCD
                            END-IF
       *H30.4
-      *               ʬ��Ĵ��
+      *               分割調剤
                        WHEN    "099208101"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
@@ -2151,23 +2151,23 @@
                                MOVE    "0281"        TO  SPA-ERRCD
                            END-IF
       *
-      *                ��ȯ�����ʤؤ��ѹ��ġʽ����������
+      *                後発医薬品への変更可（処方せん毎）
                        WHEN    "099209902"
-      *                ��ȯ�����ʤؤ��ѹ��Բ�
+      *                後発医薬品への変更不可
                        WHEN    "099209904"
-      *H28.4           ������������²��
+      *H28.4           湿布薬枚数制限解除
                        WHEN    "099200201"
-      *                �ݸ����ŵ��ؤص����Ȳ񤷤����Ĵ��
+      *                保険医療機関へ疑義照会した上で調剤
                        WHEN    "099209921"
-      *                �ݸ����ŵ��ؤؾ�����
+      *                保険医療機関へ情報提供
                        WHEN    "099209922"
-      *H28.11          �����ؼ��ץ�����४�ץ������
+      *H28.11          残薬指示プログラムオプション解除
                        WHEN    "099209923"
                            MOVE    "98"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ��������982 ��
+      *                    入院時は982 へ
                            IF      SPA-NYUGAIKBN   =   "1"
                                IF      SPA-COM-SRYSYUKBN(IDX - 1)
                                                    NOT =   "980"
@@ -2175,11 +2175,11 @@
                                                                   (IDX)
                                END-IF
                            END-IF
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
-      *                ��ȯ�����ʤؤ��ѹ��Բġ��������
+      *                後発医薬品への変更不可（薬剤毎）
                        WHEN    "099209903"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
@@ -2191,9 +2191,9 @@
                            ELSE
                                MOVE    "2063"        TO  SPA-ERRCD
                            END-IF
-      *                ���̵����ѹ��Բġ��������
+      *                含量規格変更不可（薬剤毎）
                        WHEN    "099209905"
-      *                �޷��ѹ��Բġ��������
+      *                剤型変更不可（薬剤毎）
                        WHEN    "099209906"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
@@ -2205,10 +2205,10 @@
                            ELSE
                                MOVE    "0268"        TO  SPA-ERRCD
                            END-IF
-      *H24.4 ����
-      *                ����̾����
+      *H24.4 改正
+      *                銘柄名記載
                        WHEN    "099209907"
-      *                ����̾����
+      *                一般名記載
                        WHEN    "099209908"
                            IF     (SPA-COM-SRYKBN(IDX - 1) =   "21"
                                                            OR  "22"
@@ -2220,12 +2220,12 @@
                            ELSE
                                MOVE    "2071"        TO  SPA-ERRCD
                            END-IF
-      *H28.9 ������ͽ�󥳡���
+      *H28.9 持参薬予約コード
                        WHEN    CONS-JSNYCD1
                        WHEN    CONS-JSNYCD2
                        WHEN    CONS-JSNYCD3
                        WHEN    CONS-JSNYCD4
-      *                    �����Σ����ܤȤ���
+      *                    投薬の１件目とする
                            IF     (IDX             >   ZERO )
                              AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                    =   "."  )
@@ -2239,7 +2239,7 @@
                                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                        ��������ʬ
+      *                        持参薬区分
                                MOVE    "1"         TO  SPA-COM-JISANYAKU
                                                               (IDX)
                                MOVE    "1"         TO  SPA-COM-JISANYAKU
@@ -2247,16 +2247,16 @@
                            ELSE
                                MOVE    "0227"        TO  SPA-ERRCD
                            END-IF
-      *                    ����ݸ��ϥ��顼
+      *                    包括保険はエラー
                            IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
                                MOVE    "0228"        TO  SPA-ERRCD
                            END-IF
-      *                ��������
+      *                数量不明
                        WHEN    CONS-JSNYCD5
                        WHEN    CONS-JSNYCD6
                        WHEN    CONS-JSNYCD7
                        WHEN    CONS-JSNYCD8
-      *                    �����Σ����ܤȤ���
+      *                    投薬の１件目とする
                            IF     (IDX             >   ZERO )
                              AND  (SPA-GMN-INPUTCD (IDX - 1)(1:1)
                                                    =   "."  )
@@ -2270,7 +2270,7 @@
                                MOVE    SPA-COM-SRYSYUKBN(IDX - 1)
                                                    TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                        ��������ʬ
+      *                        持参薬区分
                                MOVE    "2"         TO  SPA-COM-JISANYAKU
                                                               (IDX)
                                MOVE    "2"         TO  SPA-COM-JISANYAKU
@@ -2278,33 +2278,33 @@
                            ELSE
                                MOVE    "0227"        TO  SPA-ERRCD
                            END-IF
-      *                    ����ݸ��ϥ��顼
+      *                    包括保険はエラー
                            IF      SPA-COM-HKNCOMBI (IDX)  =   "9999"
                                MOVE    "0228"        TO  SPA-ERRCD
                            END-IF
       *H27.4
-      *                ��ȯ�����ʤؤ��ѹ��ġʽ����������
+      *                後発医薬品への変更可（処方せん毎）
                        WHEN    "099209910"
-      *                ��ȯ�����ʤؤ��ѹ��Բġʽ����������
+      *                後発医薬品への変更不可（処方せん毎）
                        WHEN    "099209911"
                            MOVE    "98"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "980"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ��������982 ��
+      *                    入院時は982 へ
                            IF      SPA-NYUGAIKBN   =   "1"
                                MOVE    "982"       TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
                            END-IF
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
-      *                    �����Ȥ��Բ�
+      *                    コメントも不可
                            MOVE   "1"              TO  SPA-COM-KAIFLG
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
       *
-      *                ������⻻��ʺޡ�
+      *                包括出来高算定（剤）
                        WHEN    "099999903"
                            IF     (IDX             >   ZERO )  AND
                                   (SPA-GMN-INPUTCD (IDX - 1)(1:1)
@@ -2318,7 +2318,7 @@
                            ELSE
                                MOVE    "0219"          TO  SPA-ERRCD
                            END-IF
-      *                ��绻��ʺޡ�
+      *                包括算定（剤）
                        WHEN    "099999908"
                            IF     (IDX             >   ZERO )  AND
                                   (SPA-GMN-INPUTCD (IDX - 1)(1:1)
@@ -2332,67 +2332,67 @@
                            ELSE
                                MOVE    "0229"          TO  SPA-ERRCD
                            END-IF
-      *                ������⻻����
+      *                包括出来高算定日
                        WHEN    "099999904"
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "990"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
       *H26.4
-      *                �����ˤ��ɷ�ˡ������
+      *                磁気による刺激法開始日
                        WHEN    "099400001"
       *H30.4
-      *                �ⵤ�����Ǽ��ų�����
+      *                高気圧酸素治療開始日
                        WHEN    "099400002"
                            MOVE    "40"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "400"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
-      *ver.4.7         �����ʥ�������
+      *ver.4.7         精神科ケア開始
                        WHEN    "099830101"
-      *H26.4           �̱�������������ˡ����
+      *H26.4           通院・在宅精神療法開始
                        WHEN    "099830102"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
-      *H28.4           ��¸�ɽ�����ˡ����
+      *H28.4           依存症集団療法開始
                        WHEN    "099830103"
-      *H30.4           �����ʣӣü�����������ץ������û�������
+      *H30.4           精神科ＳＣ疾患別等専門プログラム加算開始日
                        WHEN    "099830104"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "830"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
                        WHEN    OTHER
-      *                �ȣ������������ϥӥ�ȯ����
+      *                Ｈ１８．４からリハビリ発生日
                        IF       SPA-COM-INPUTCD (IDX)(1:6) =   "099800"
                            MOVE    "80"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
                            MOVE    "810"           TO  SPA-COM-SRYSYUKBN
                                                                   (IDX)
-      *                    ���ޣ����٤Ȥ���
+      *                    １剤１明細とする
                            MOVE    "1"             TO  SPA-COM-ZAIEND
                                                                   (IDX)
                            MOVE    1               TO  FLG-ZAI
                        ELSE
-      *                    �����ȤȤ���
+      *                    コメントとする
                            MOVE    "99"            TO  SPA-COM-SRYKBN
                                                                   (IDX)
       *!                   MOVE    "990"           TO  SPA-COM-SRYSYUKBN
@@ -2401,7 +2401,7 @@
                    END-EVALUATE
            END-EVALUATE
       *
-      *    ��ɾ����ɾ
+      *    薬評・器評
            IF     (FLG-YAKUHYO         =   1  )
              AND  (SPA-ERRCD           =   SPACE )
                EVALUATE    SPA-COM-INPUTCD (IDX)(1:3)
@@ -2417,7 +2417,7 @@
                        END-IF
                END-EVALUATE
            END-IF
-      *    ����
+      *    減点
            IF     (FLG-GENTEN          =   1     )
              AND  (SPA-ERRCD           =   SPACE )
                IF      SPA-COM-INPUTCD (IDX)(1:3)  =   "008"
@@ -2437,12 +2437,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ������å�����
+      *    残量廃棄チェック処理
       *****************************************************************
        51019-ZANHAIKI-CHK-SEC           SECTION.
       *
            IF      LNK-SC93-HAIKIKBN-FLG   =   "2"
-      *        ���͡����֡���������ѡ���졦�������ǡ���ϥӥ���
+      *        注射・処置・検査・手術・麻酔・画像診断・リハビリ等
                IF      SPA-COM-SRYKBN(IDX - 1)(1:1)    =   "3"
                                                        OR  "4"
                                                        OR  "5"
@@ -2455,11 +2455,11 @@
                    MOVE    "0061"              TO  SPA-ERRCD
                END-IF
            ELSE
-      *        ���͡����֤Τ�
+      *        注射・処置のみ
                IF      SPA-COM-SRYKBN(IDX - 1) =   "31"
                                                OR  "32"
                                                OR  "33"
-      *             �����ɲ�
+      *             処置追加
                                                OR  "40"
                    MOVE    SPA-COM-SRYKBN(IDX - 1)
                                                TO  SPA-COM-SRYKBN (IDX)
@@ -2472,12 +2472,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ο��ż��̤����Ŷ�Ƚ�����
+      *    点数マスタの診療種別より診療区判定処理
       *****************************************************************
        51011-SRYSYUKBN-KBN-SEC           SECTION.
       *
       *ver.4.5.0
-      *    ��������ʬ
+      *    治験減点分
            IF     (SPA-COM-TENSIKIBETU (IDX)   =   7  )
               IF      (IDX                 >   1      )  AND
                       (SPA-GMN-INPUTCD (IDX - 1)(1:1)
@@ -2503,7 +2503,7 @@
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
       *
-      *    �����Ƴ���λ��������Ƴ���Ȥ���
+      *    在宅指導料の時、在宅指導料とする
            IF     (WRK-SRYSYUKBN           =   "143" )  AND
                   (SPA-COM-TNSSRYKBN (IDX) =   "14"  )
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
@@ -2512,7 +2512,7 @@
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
       *
-      *    �������ʤ��λ������ż��̤��Խ�����
+      *    検査包括なしの時、診療種別を編集する
            IF     (WRK-SRYSYUKBN           =   "610" )  AND
                   (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
@@ -2522,7 +2522,7 @@
            END-IF
       *
       *ver.4.5.0
-      *    ϫ���ɤ��ؤ��оݳ�����
+      *    労災読み替え対象外処置
            IF     (WRK-SRYSYUKBN           =   "409" )  AND
                   (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
                MOVE    WRK-SRYSYUKBN       TO  SPA-COM-SRYSYUKBN (IDX)
@@ -2531,7 +2531,7 @@
                GO      TO      51011-SRYSYUKBN-KBN-EXT
            END-IF
       *
-      *    �鲼�������ͤο��ؤ��ʤ��λ������Τޤ�
+      *    皮下筋肉注射の振替えなしの時、そのまま
            IF     (IDX                     >   1     )  AND
                   (SPA-GMN-INPUTCD(IDX - 1)(1:4)   =   ".312" ) AND
                   (SPA-COM-TNSSRYKBN (IDX) =   "31"  )
@@ -2551,7 +2551,7 @@
            IF      SPA-COM-TNSSRYKBN (IDX) NOT =   ZERO
                MOVE    SPA-COM-TNSSRYKBN (IDX) TO  WRK-SRYKBN
            END-IF
-      *    ������λ�������
+      *    前回自費の時、元へ
            IF      SPA-COM-SRYSYUKBN (IDX) =   "960"  OR
                                                "950"  OR
                                                SPACE
@@ -2561,18 +2561,18 @@
                MOVE    SPA-COM-TNSSRYSYUKBN(IDX)
                                            TO  SPA-COM-SRYSYUKBN (IDX)
                MOVE    SPACE               TO  SPA-COM-KEIFLG    (IDX)
-      *        �������Ǥλ������٤�"700"�Ȥ���
+      *        画像診断の時、すべて"700"とする
                EVALUATE    SPA-COM-SRYSYUKBN (IDX)(1:1)
                    WHEN    "7"
                        MOVE    "700"       TO  SPA-COM-SRYSYUKBN(IDX)
                END-EVALUATE
       *!
-      *         ϫ�ҥ����ɤα��Ѵ�
+      *         労災コードの円変換
                IF     (SPA-HKNKBN          =   1  )
                  AND  (SPA-COM-INPUTCD (IDX)(1:3)  =   "101")
                  AND  (SPA-COM-TNSSRYKBN(IDX)  NOT =   "97" )
                    IF     (SPA-COM-TENSIKIBETU(IDX)    =   "1"  )
-      *                ��ۤ��������ִ�����
+      *                金額を点数へ置換える
                        COMPUTE SPA-COM-KISOTEN(IDX)    =   SPA-COM-TEN
                                                              (IDX)
                                                        /   10
@@ -2581,7 +2581,7 @@
       *!
            END-IF
       *
-      *    ��ǻ��֥�å�����Ƚ��ʣȣ���ǯ�����ϼ�Ѥ����
+      *    初診時ブラッシング料判定（Ｈ２５年７月からは手術あり）
            IF     (SPA-COM-INPUTCD(IDX)    =   "101400030" )
              AND  (SPA-SRYYMD              <   "20130701"  )
                IF     (IDX                 >   1  )  AND
@@ -2599,14 +2599,14 @@
                END-IF
            END-IF
       *!@
-      *�������缣�Ŵ����������å��ʣȣ������������
+      *悪性腫瘍治療管理料チェック（Ｈ１８．４から）
            IF      SPA-SRYYMD              >=  "20060401"
                IF      SPA-COM-INPUTCD (IDX)   =   "113001210"  OR
                                                    "113001310"  OR
                                                    "113002110"
                    MOVE    1                   TO  FLG-AKUSEI-ARI
                END-IF
-      *        ���������Ʊ�����μ��縡���ϥ����Ȱ���
+      *        悪性腫瘍と同一剤内の腫瘍検査はコメント扱い
                IF     (FLG-AKUSEI-ARI          =   1   )  AND
                       (SPA-COM-SRYKBN(IDX - 1) =   "13"    )  AND
                       (SPA-COM-INPUTCD (IDX)(1:1)  =   "1" )  AND
@@ -2628,11 +2628,11 @@
            EXIT.
       *
       *****************************************************************
-      *   �������Ǥ���ũ�����å�������
+      *   画像診断の点滴チェックク処理
       *****************************************************************
        51013-731-CHKSYORI-SEC           SECTION.
       *
-      *    �������Ǥ���ũ�����å�
+      *    画像診断の点滴チェック
            MOVE    SPA-COM-SRYKBN    (IDX - 1)
                                        TO  SPA-COM-SRYKBN    (IDX)
            MOVE    SPA-COM-SRYSYUKBN (IDX - 1)
@@ -2645,19 +2645,19 @@
            EXIT.
       *
       *****************************************************************
-      *    �������Ϥλ������Υ����ɥ����å�����
+      *    時間入力の時、前のコードチェック処理
       *****************************************************************
        510112-JIKAN-INP-SEC           SECTION.
       *
            EVALUATE    SPA-COM-INPUTCD (IDX)
-      *        �������ǡʻ��ֳ��۵ޱ���������ǲû���
+      *        画像診断（時間外緊急院内画像診断加算）
                WHEN    "840000071"
                    IF      (IDX            =   1     )  OR 
                            (SPA-COM-INPUTCD (IDX - 1)
                                        NOT =   "170016010" )
                        MOVE    "0025"              TO  SPA-ERRCD
                    END-IF
-      *        ����    �ʻ��ֳ��۵ޱ���������ǲû���
+      *        検査    （時間外緊急院内画像診断加算）
                WHEN    "840000044"
                    IF      (IDX            =   1     )  OR 
                            (SPA-COM-INPUTCD (IDX - 1)
@@ -2671,51 +2671,51 @@
            EXIT.
       *
       *****************************************************************
-      *    ����оݸ����ѹ�����
+      *    包括対象検査変更処理
       *****************************************************************
        51013-KENSA-ZAI-CHK-SEC           SECTION.
       *
            EVALUATE    SPA-COM-HOUKNSKBN(IDX)
                WHEN    01
-      *            ��ղ��ظ��������
+      *            血液化学検査の包括
                    MOVE    5             TO  WRK-KENSA-MAX
                WHEN    02
-      *            ��ʬ��ظ��������
+      *            内分泌学検査の包括
                    MOVE    3             TO  WRK-KENSA-MAX
                WHEN    03
-      *            �αꥦ���륹��Ϣ�����
+      *            肝炎ウイルス関連の包括
                    MOVE    3             TO  WRK-KENSA-MAX
                WHEN    04
-      *            ����ޡ����������
+      *            腫瘍マーカーの包括
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    05
                    MOVE    2             TO  WRK-KENSA-MAX
-      *            ���ʳ��μ���ޡ����������
+      *            ４以外の腫瘍マーカーの包括
                WHEN    06
-      *            �з졦�ŸǸ��������
+      *            出血・凝固検査の包括
                    MOVE    3             TO  WRK-KENSA-MAX
                WHEN    07
-      *            ���ʹ��θ��������
+      *            自己抗体検査の包括
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    08
-      *            ��������ٻ��������α��
+      *            内部泌負荷試験の包括（保留）
       ****         MOVE    1             TO  WRK-KENSA-MAX
-      *H29.12      �ޤȤ��ѻ�
+      *H29.12      まとめ廃止
                    MOVE    ZERO          TO  WRK-KENSA-MAX
-      *ʿ������ǯ����
+      *平成１５年９月
                WHEN    09
-      *            �����륹���β�
+      *            ウイルス抗体価
                    MOVE    8             TO  WRK-KENSA-MAX
                WHEN    10
-      *            �����֥�󥯥饹�̥����륹���β�
+      *            グロブリンクラス別ウイルス抗体価
                    MOVE    2             TO  WRK-KENSA-MAX
-      *ʿ������ǯ����
+      *平成１８年４月
                WHEN    11
-      *            �ð�Ū�ɣǣ�
+      *            特異的ＩＧＥ
                    MOVE    2             TO  WRK-KENSA-MAX
-      *ʿ������ǯ����
+      *平成３０年４月
                WHEN    12
-      *            ������������Ҹ���
+      *            悪性腫瘍遺伝子検査
                    MOVE    2             TO  WRK-KENSA-MAX
                WHEN    OTHER
                    MOVE    ZERO          TO  WRK-KENSA-MAX
@@ -2737,7 +2737,7 @@
                    MOVE    ZERO                TO  FLG-KEN-ERR
                    IF      (SPA-COM-KAIFLG (IDX-KEN)   =   "1" )  AND
                            (SPA-COM-KAISU  (IDX-KEN)   >   1   )
-      *                ��������ʾ�ǡ����ޤλ�������оݳ�
+      *                回数が１以上で、１剤の時、包括対象外
                        IF     ((IDX-KEN                >   1   )  AND
                                (SPA-GMN-INPUTCD (IDX-KEN - 1)(1:1)
                                                        =   "." )) OR
@@ -2752,7 +2752,7 @@
                        ADD     1                 TO  WRK-KENSA-CNT
                    END-IF
       *H27.10
-      *            ����ʬ�ѹ��ǽ�λ
+      *            包括区分変更で終了
                    IF      FLG-KENSA-CHK       =   1
       *
                        IF     (WRK-KENSA-CNT       >   ZERO )  AND
@@ -2770,7 +2770,7 @@
       *
                END-IF
       *H29.6
-      *        ���ż������Ϥǽ�λ
+      *        診療種別入力で終了
                IF     (SPA-GMN-INPUTCD (IDX-KEN)(1:1)  =   "."
                                                        OR  "*" )
                  AND  (SPA-NYUGAIKBN        =   1     )
@@ -2788,19 +2788,19 @@
            ELSE
                IF      WRK-KENSA-MAX       <=  WRK-KENSA-CNT
                    MOVE    1                   TO  FLG-KENSA-ARI
-      *            ����о�
+      *            包括対象
                    MOVE    SPA-COM-HOUKNSKBN(IDX)  TO ID2
                    IF      TBL-HOUKNARI (ID2)  =   ZERO
                        MOVE    1               TO  TBL-HOUKNARI (ID2)
                    END-IF
                END-IF
-      *        ���������ջ��꤬�����硢�оݳ�
+      *        入院の日付指定がある場合、対象外
       ******** IF     (SPA-NYUGAIKBN       =   "1" )  AND
                IF     (IDX                 <   SPA-MAX-LINE )  AND
                       (SPA-GMN-INPUTCD (IDX + 1)(1:1) =   "*" )
                  AND  (ID2                 >   ZERO  )
                    MOVE    9               TO  TBL-HOUKNARI (ID2)
-      *            �ٹ�
+      *            警告
                    MOVE    1               TO  LNK-SC93-ERRCD
                END-IF
            END-IF
@@ -2810,7 +2810,7 @@
                   (SPA-GMN-INPUTCD(IDX-1)(1:1)   =   "." ) 
               OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999903" )
               OR  (SPA-COM-INPUTCD(IDX-1)   =   "099999908" )
-      *       ��׾Ȳ�Ǻǽ��Ԥ�Ƚ��
+      *       会計照会で最終行の判定
               OR  (IDX                  =   1     ) 
               OR  ((LNK-SC93-PG         =   "J04" ) AND
                    (IDX             NOT =   SPA-GMN-MAX ))
@@ -2824,12 +2824,12 @@
            EXIT.
       *
       *****************************************************************
-      *    �û��ǡ��������å�����
+      *    加算データチェック処理
       *****************************************************************
        51012-KASAN-CHK-SEC           SECTION.
       *
-      *    �û��ǡ����λ������˼굻�������뤳��
-      *        â�����������Ǥλ����������̥����ɤ����뤳��
+      *    加算データの時、前に手技料があること
+      *        但し、画像診断の時、撮影部位コードがあること
            MOVE    ZERO                TO  FLG-ARI
            PERFORM VARYING     IDX1    FROM    IDX   BY  -1
                    UNTIL      (IDX1        =   ZERO )  OR
@@ -2853,18 +2853,18 @@
                END-IF
            END-PERFORM
       *
-      *    ���ο��Ŷ�ʬ�������ްʳ��Ǥ��뤳��
+      *    前の診療区分が、薬剤以外であること
            IF     (IDX                 >   1  )  AND
                   (SPA-COM-SRYKBN (IDX - 1)
                                        =   "21"  OR  "22"  OR  "23" )
                MOVE    ZERO                TO  FLG-ARI
            END-IF
       *
-      *    �����ʳ���ǻ����λ��ֳ��ΤߤϣϣˤȤ���
+      *    小児科外来診察料の時間外のみはＯＫとする
            IF      FLG-ARI             =   ZERO
                IF      LNK-SC93-SYONIKA-ARI2   =   1
                    PERFORM 10052-SYONIKASRYCD-CHK-SEC
-      *            �ƿǤλ��ֳ��λ����ϣˤȤ���
+      *            再診の時間外の時、ＯＫとする
                    IF      WRK-SYONIKA-KBN     =   "4"
                        IF     (IDX             >   1 )  AND
                               (SPA-GMN-INPUTCD(IDX - 1)(1:4)
@@ -2874,7 +2874,7 @@
                    END-IF
                END-IF
       *H26.4
-      *        �ϰ������������ֳ�
+      *        地域包括診療料時間外
                IF     (IDX                 >   1 )  AND
                       (SPA-GMN-INPUTCD(IDX - 1)(1:4)
                                            =   ".130")
@@ -2883,7 +2883,7 @@
                     END-IF
                END-IF
       *
-      *        �����Ƴ���λ��������û��ϣϣ�
+      *        在宅指導料の時、点数加算はＯＫ
       ******** IF      LNK-SC93-NETAKIRI-ARI   =   1
                    IF     (WRK-SRYSYUKBN           =   "143" )  AND
                           (SPA-COM-SRYKBN (IDX)    =   "14"  )
@@ -2893,7 +2893,7 @@
                        END-IF
                    END-IF
       *********END-IF
-      *        ������ũ�ǿ��ż��̤����Ϥ���Ƥ��뤳��
+      *        入院点滴で診療種別が入力されていること
                IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
                                                            "330" OR
@@ -2903,7 +2903,7 @@
                                                    =   ".330" 
                                                    OR  ".332"
                                                    OR  ".340" )
-      *                ǯ��û��ʳ�
+      *                年齢加算以外
                        IF      SPA-COM-INPUTCD(IDX)    =   "130009470"
                            MOVE    ZERO                TO  FLG-ARI
                        ELSE
@@ -2912,7 +2912,7 @@
                    END-IF
       *H28.5
                ELSE
-      *            ����ϡ�332,340�Τ�
+      *            外来は、332,340のみ
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "300" OR
                                                            "330" OR
                                                            "340" )  AND
@@ -2920,7 +2920,7 @@
                            (SPA-GMN-INPUTCD(IDX - 1)(1:4)
                                                    =   ".332"
                                                    OR  ".340" )
-      *                ��§�û��Τ�
+      *                通則加算のみ
                        IF     (SPA-COM-CDKBN-KBN (IDX)     =   "G"  )
                          AND  (SPA-COM-CDKBN-KBNNUM(IDX)   =   "000")
                            MOVE    1                   TO  FLG-ARI
@@ -2928,7 +2928,7 @@
                    END-IF
                END-IF
       *
-      *        �������̤����Ϥ���Ƥ��뤳��
+      *        入院種別が入力されていること
                IF      SPA-NYUGAIKBN           =   "1"
                    IF      (SPA-COM-TNSSRYSYUKBN (IDX) =   "900")  AND
                            (IDX                    >   1 )  AND
@@ -2939,31 +2939,31 @@
                    END-IF
                END-IF
       *
-      *        �������Ǥβû��Τ�
+      *        画像診断の加算のみ
                IF     (WRK-SRYSYUKBN           =   "704" )  AND
                       (SPA-COM-SRYKBN (IDX)    =   "70"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
       *
-      *        ���ֲû��Τ�
+      *        処置加算のみ
                IF     (WRK-SRYSYUKBN           =   "403" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "40"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
       *!
-      *        �����û��Τ�
+      *        検査加算のみ
                IF     (WRK-SRYSYUKBN           =   "603" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "60"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
-      *        �������ǲû��Τ�
+      *        病理診断加算のみ
                IF     (WRK-SRYSYUKBN           =   "643" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "64"  )
                    MOVE    1               TO  FLG-ARI
                END-IF
       *
       *H28.1
-      *        ��ǡ��ƿǲû��Τ�
+      *        初診・再診加算のみ
                IF    ((WRK-SRYSYUKBN           =   "114" )  AND
                       (SPA-COM-TNSSRYKBN (IDX) =   "11"  ))
                OR    ((WRK-SRYSYUKBN           =   "124" )  AND
@@ -2991,11 +2991,11 @@
        51012-KASAN-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    �����ʳ���ǻ����ʥ����å�������
+      *    小児科外来診察料科チェックク処理
       *****************************************************************
        10052-SYONIKASRYCD-CHK-SEC                SECTION.
       *
-      *    �ǻ�������
+      *    診察料検索
            SET     TBL-SYO             TO  1
            SEARCH  TBL-SYONIKA-OCC     VARYING   TBL-SYO
                AT  END
@@ -3012,7 +3012,7 @@
       *
       *
       *****************************************************************
-      *     ���ż��̶�ʬ̾�Ρ����Ź԰ٶ�ʬ���å�
+      *     診療種別区分名称、診療行為区分セット
       *****************************************************************
        510-SRYKBN-MEI-SEC            SECTION.
       *
@@ -3035,11 +3035,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Խ�����
+      *    検査ソート編集処理
       *****************************************************************
        200-KENSA-SORT-SEC              SECTION.
       *
-      *    ���̣ӣУ��ΰ���
+      *    画面ＳＰＡ領域ワーク
            INITIALIZE                  WRK-GMN-REC
            INITIALIZE                  HZN-GMN-REC
            MOVE    SPA-GMN-REC         TO  WRK-GMN-REC
@@ -3058,7 +3058,7 @@
                           (WRK-COM-HOUKNSKBN(IDX)  NOT =  ZERO)
                    AND    (WRK-COM-SRYSYUKBN(IDX)  NOT =  "610")
                    AND    (WRK-COM-SET      (IDX)  NOT =   "1"  )
-      *            �����β����
+      *            入院の回数行
                    AND    (WRK-GMN-INPUTCD(IDX)(1:1)   NOT =   "*")
                        IF     (IDX                 >   1          )  AND
                               (WRK-GMN-INPUTCD (IDX - 1)(1:4)
@@ -3092,7 +3092,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����������Խ�����
+      *    検査ソート編集処理
       *****************************************************************
        2001-KENSA-SET-SEC              SECTION.
       *
@@ -3104,7 +3104,7 @@
                                        TO  WRK-HKNCOMBI
            MOVE    WRK-COM-SRYKA (IDX)
                                        TO  WRK-SRYKA
-      *    ����оݸ�������Ƚ��
+      *    包括対象検査数の判定
            MOVE    WRK-HOUKNSKBN       TO  ID2
            IF      TBL-HOUKNARI (ID2)  =   ZERO
                                        OR  9
@@ -3119,7 +3119,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��縡�������Ƚ���
+      *    包括検査ソート処理
       *****************************************************************
        20011-KENSA-SYORI-SEC              SECTION.
       *
@@ -3154,7 +3154,7 @@
                    END-IF
                END-IF
                IF      FLG-KENSA-OK         =   ZERO
-      *            ���ιԤ����ż��̤Ǻ���Ǥ��뤫�ɤ�����Ƚ��
+      *            前の行が診療種別で削除できるかどうかの判定
                    IF     ((IDX-2              >   1  )  AND
                            (WRK-GMN-INPUTCD(IDX-2 - 1)(1:4)
                                                =   ".600")) AND
@@ -3185,7 +3185,7 @@
                                                               (IDX-TBL)
                    END-IF
                    MOVE    SPACE           TO  WRK-GMN-TBL (IDX-2)
-      *            ���ιԤΥ����Ȥ���˰�ư����
+      *            次の行のコメントを一緒に移動する
                    COMPUTE IDX-5               =   IDX-2  +  1
                    PERFORM VARYING     IDX-4   FROM    IDX-5   BY  1
                            UNTIL       IDX-4   >   SPA-MAX-LINE
@@ -3201,7 +3201,7 @@
                            MOVE    SPACE           TO  WRK-GMN-TBL
                                                              (IDX-4)
                            MOVE    IDX-4           TO  IDX-2
-      *                    ������
+      *                    回数削除
                            IF      SPA-COM-KAIFLG (IDX-TBL)  =   "1"
                                MOVE    SPACE           TO  WRK-INPUTCD
                                STRING  SPA-GMN-INPUTCD(IDX-TBL)
@@ -3227,7 +3227,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���Ŷ�ʬ�ѹ����Խ�����
+      *    診療区分変更時編集処理
       *****************************************************************
        1003-SAIHENSYU-SEC              SECTION.
       *
@@ -3239,14 +3239,14 @@
            EXIT.
       *
       *****************************************************************
-      *    Ʊ�측���������
+      *    同一検査削除処理
       *****************************************************************
        300-KENSA-DELETE-SEC                  SECTION.
       *
            INITIALIZE                  WRK-SCR-REC
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
       *
-      *    Ʊ�측������
+      *    同一検査を削除
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX         >   SPA-MAX-LINE  )   OR
                              ((SPA-GMN-INPUTCD (IDX) =   SPACE) AND
@@ -3254,13 +3254,13 @@
                IF     (SPA-COM-SRYKBN (IDX)  =   "60"  )  AND
                       (SPA-COM-INPUTCD(IDX)(1:1)  =   "1" )  AND
                       (SPA-COM-DATAKBN(IDX)  =   "1"   )
-      *        �����ʳ�
+      *        逓減以外
                AND    (SPA-COM-TEIGENKBN (IDX)   NOT =   1    )
-      *        ����оݰʳ�
+      *        包括対象以外
                AND    (SPA-COM-SRYSYUKBN (IDX)   NOT =   "610")
-      *        ���ʬ
+      *        包括分
                AND    (SPA-COM-HOUKNSKBN(IDX)    NOT =   ZERO )
-      *        ���θ��������Ȱʳ�
+      *        検体検査コメント以外
                AND    (SPA-COM-KENTAICOMMENT (IDX)  =   ZERO )
                    PERFORM VARYING     IDX-2  FROM    IDX     BY  1
                            UNTIL       IDX-2      >   SPA-MAX-LINE
@@ -3270,7 +3270,7 @@
                               (SPA-COM-INPUTCD(IDX)
                                                =   SPA-COM-INPUTCD
                                                         (IDX-2))
-      *                 ���θ��������Ȥ�Ƚ��
+      *                 検体検査コメントの判定
                          AND  (WRK-COM-KENGRP(IDX)
                                              =   WRK-COM-KENGRP(IDX-2))
                            MOVE    SPACE           TO  SPA-GMN-INPUTCD
@@ -3283,7 +3283,7 @@
            MOVE    SPA-SCR-REC         TO  WRK-SCR-REC
            INITIALIZE                  SPA-SCR-REC
            MOVE    ZERO                TO  IDX-TBL
-      *    Ʊ�측������
+      *    同一検査を削除
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE     )
                IF      WRK-GMN-INPUTCD (IDX)   =   SPACE

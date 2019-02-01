@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,30 +16,30 @@
       * 113-8621, Japan.
       ********************************************************************
       *----------------------------------------------------------*
-      *    ������������ٽ���ϥѥ�᥿       COPY (CPORCHC04.INC)
-      *                                          (ORCHC04 �ǻ��ѡ�
+      *    外来診療費明細書出力パラメタ       COPY (CPORCHC04.INC)
+      *                                          (ORCHC04 で使用）
       *----------------------------------------------------------*
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.07.00    NACL-¿��Ǽ  14/10/XX  �����ȥ������о����ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.07.00    NACL-多々納  14/10/XX  コメントコード対象等追加
       ************************************************************
       *
        01  ORCHC04SUBAREA.
       *
-      *    ��ɼ�ֹ��ɬ�ܡ�
+      *    伝票番号（必須）
            03  ORCHC04SUB-DENPNUM      PIC 9(07).
-      *    ���ñ�̡ʥץ�����४�ץ�����
+      *    合計単位（プログラムオプション）
            03  ORCHC04SUB-GOKEITANI    PIC X(01).
-      *    ���סʣ�������ˡ�������
+      *    小計（１：あり）（請求書）
            03  ORCHC04SUB-PARAKBN      PIC X(01).
-      *    �����ȥ������оݡʣ����оݡ�
+      *    コメントコード対象（１：対象）
            03  ORCHC04SUB-PARACOMKBN   PIC X(01).
-      *    �ݸ����оݡʣ����оݡ�
+      *    保険外対象（１：対象）
            03  ORCHC04SUB-PARAJIHIKBN  PIC X(01).
-      *    API�ֵ���
+      *    API返却用
            03  ORCHC04SUB-APIKBN       PIC X(01).
-      *����
+      *出力
            03  ORCHC04SUB-INFO-AREA.
                05  ORCHC04SUB-SRYYMD           PIC X(08).
                05  ORCHC04SUB-SRYYMDMEI        PIC X(22).
@@ -47,10 +47,10 @@
                05  ORCHC04SUB-SRYKAMEI         PIC X(30).
                05  ORCHC04SUB-HKNCOMBI         PIC X(04).
                05  ORCHC04SUB-HKNCOMBIMEI      PIC X(40).
-      *    ��������
+      *    印刷内容
            03  ORCHC04SUB-LIST-AREA.
                05  ORCHC04SUB-HEN-G    OCCURS   800.
-      *            �Խ��Ѥ�����
+      *            編集済み内容
                    07  ORCHC04SUB-H-SRYKBN        PIC X(10).
                    07  ORCHC04SUB-NAME            PIC X(100).
                    07  ORCHC04SUB-TANINAME        PIC X(10).
@@ -62,26 +62,26 @@
                        09  ORCHC04SUB-H-KINGAKU1  PIC X(02).
                        09  ORCHC04SUB-H-KINGAKU2  PIC X(09).
                    07  ORCHC04SUB-H-KAISU         PIC X(03).
-      *            �޳���
+      *            剤開始
                    07  ORCHC04SUB-H-ZAIHEN        PIC X(02).
-      *            ���̡�ñ�̡����ѡ�
+      *            数量＋単位（全角）
                    07  ORCHC04SUB-H-ZEN-SURYO     PIC X(40).
                    07  ORCHC04SUB-H-ZENMAX        PIC 9(02).
-      *            �����ߡ�������
+      *            １：円、０：点
                    07  ORCHC04SUB-H-ENKBN         PIC X(01).
       *
                    07  ORCHC04SUB-SRYKBN          PIC X(02).
-      *            ����
+      *            数量
                    07  ORCHC04SUB-SURYO           PIC 9(05)V9(05).
-      *            ���
+      *            回数
                    07  ORCHC04SUB-KAISU           PIC 9(03).
-      *            �����ʥ����ɤ������ˡ��о�ʬ�Τߡ�
+      *            点数（コードの点数）（対象分のみ）
                    07  ORCHC04SUB-TENSU           PIC 9(07).
-      *            ������
+      *            剤点数
                    07  ORCHC04SUB-ZAITENSU        PIC S9(08).
-      *            ���ť�����
+      *            診療コード
                    07  ORCHC04SUB-SRYCD           PIC X(09).
-      *            �޽�λ
+      *            剤終了
                    07  ORCHC04SUB-ZAIEND          PIC X(01).
       *
                05  ORCHC04SUB-TBL-MAX         PIC  9(04).

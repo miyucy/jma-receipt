@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,44 +16,44 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *      ÅÅ»ÒÅÀ¿ôÉ½¡¡Êä½õ¥Þ¥¹¥¿¡¼   COPY (CPETENSU1.INC) *
+      *      é›»å­ç‚¹æ•°è¡¨ã€€è£œåŠ©ãƒžã‚¹ã‚¿ãƒ¼   COPY (CPETENSU1.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  ETENSU1-REC.
            03  ETENSU1-KEY.
-      *        ¿ÇÎÅ¹Ô°Ù¥³¡¼¥É
+      *        è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰
                05  ETENSU1-SRYCD               PIC  X(09).
-      *        Í­¸ú³«»ÏÆü
+      *        æœ‰åŠ¹é–‹å§‹æ—¥
                05  ETENSU1-YUKOSTYMD           PIC  X(08).
-      *        Í­¸ú½ªÎ»Æü
+      *        æœ‰åŠ¹çµ‚äº†æ—¥
                05  ETENSU1-YUKOEDYMD           PIC  X(08).
-      *    Êñ³ç´ØÏ¢
+      *    åŒ…æ‹¬é–¢é€£
            03  ETENSU1-HKTGRP-AREA.
                05  ETENSU1-HKTGRP-T            OCCURS   3.
-      *            Êñ³çÃ±°Ì
+      *            åŒ…æ‹¬å˜ä½
                    07  ETENSU1-H-TANI          PIC 9(02).
-      *            ¥°¥ë¡¼¥×ÈÖ¹æ
+      *            ã‚°ãƒ«ãƒ¼ãƒ—ç•ªå·
                    07  ETENSU1-H-GROUP         PIC X(07).
-      *    ÇØÈ¿´ØÏ¢¼±ÊÌ
+      *    èƒŒåé–¢é€£è­˜åˆ¥
            03  ETENSU1-HAIHAN-KANREN.
-      *        £±Æü¤Ë¤Ä¤­
+      *        ï¼‘æ—¥ã«ã¤ã
                05  ETENSU1-R-DAY               PIC  9(01).
-      *        Æ±°ì·îÆâ
+      *        åŒä¸€æœˆå†…
                05  ETENSU1-R-MONTH             PIC  9(01).
-      *        Æ±»þ
+      *        åŒæ™‚
                05  ETENSU1-R-SAME              PIC  9(01).
-      *        £±½µ´Ö¤Ë¤Ä¤­
+      *        ï¼‘é€±é–“ã«ã¤ã
                05  ETENSU1-R-WEEK              PIC  9(01).
-      *    Æþ±¡´ðËÜÎÁ¼±ÊÌ
+      *    å…¥é™¢åŸºæœ¬æ–™è­˜åˆ¥
            03  ETENSU1-N-GROUP                 PIC  9(03).
-      *    »»Äê²ó¿ô
+      *    ç®—å®šå›žæ•°
            03  ETENSU1-C-KAISU                 PIC  9(01).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  ETENSU1-CHGYMD                  PIC  X(08).
-      *¹¹¿·ÍÑ
+      *æ›´æ–°ç”¨
            03  ETENSU1-UP-KEY.
                05  ETENSU1-UPSRYCD             PIC  X(09).
                05  ETENSU1-UPYUKOSTYMD         PIC  X(08).

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,36 +16,36 @@
       * 113-8621, Japan.
       ********************************************************************
       ***************************************************************
-      *    ���ԥ����Ͽ                  COPY  (CPPTMEMOINF.INC)    *
+      *    患者メモ登録                  COPY  (CPPTMEMOINF.INC)    *
       ***************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
       *01  PTMEMOINF-REC.
-      *���ԥ��
+      *患者メモ
            03  PTMEMOINF-KEY.
-      *  ���ŵ��أɣ�
+      *  医療機関ＩＤ
                05  PTMEMOINF-HOSPNUM       PIC 9(2).
-      *  ���ԣɣ�
+      *  患者ＩＤ
                05  PTMEMOINF-PTID          PIC  9(10).
-      *  ��Ͽ��
+      *  登録日
                05  PTMEMOINF-SYSYMD        PIC  X(08).
-      *  ��ʬ��1:��⣱��2:��⣲(�ạ̃��ɣͤ��Ϥ���
+      *  区分（1:メモ１、2:メモ２(ＣＬＡＩＭに渡す）
                05  PTMEMOINF-MEMOKBN       PIC  9(01).
-      *  Ϣ��(���ζ�ʬ�����Ų����Ϣ�֡�����ɽ���˻��Ѥ����
+      *  連番(日の区分・診療科毎の連番。一覧表示に使用する）
                05  PTMEMOINF-RENNUM        PIC  9(02).
-      *  ���Ų�
+      *  診療科
                05  PTMEMOINF-SRYKA         PIC  X(02).
-      *�������
+      *メモ内容
            03  PTMEMOINF-MEMO              PIC  X(1000).
-      *ü���ɣ�
+      *端末ＩＤ
            03  PTMEMOINF-TERMID            PIC  X(16).
-      *���ڡ��졼���ɣ�
+      *オペーレータＩＤ
            03  PTMEMOINF-OPID              PIC  X(16).
-      *����ǯ����
+      *作成年月日
            03  PTMEMOINF-CREYMD            PIC  X(08).
-      *����ǯ����
+      *更新年月日
            03  PTMEMOINF-UPYMD             PIC  X(08).
-      *��������
+      *更新時間
            03  PTMEMOINF-UPHMS             PIC  X(06).

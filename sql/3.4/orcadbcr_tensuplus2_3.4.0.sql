@@ -1,11 +1,11 @@
 --                                    --
--- ÅÀ¿ô¥Ş¥¹¥¿ÅêÌôÉÕ²Ã¥Æ¡¼¥Ö¥ë¤ÎºîÀ®   --
+-- ç‚¹æ•°ãƒã‚¹ã‚¿æŠ•è–¬ä»˜åŠ ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä½œæˆ   --
 --                                    --
 --                                    --
 -- Create Date : 2006/12/11           --
 --                                    --
 
--- TBL_TENSUPLUS2  ºîÀ®               --
+-- TBL_TENSUPLUS2  ä½œæˆ               --
 
 create	table	tbl_tensuplus2	(
 	SRYCD		char(9) not null,

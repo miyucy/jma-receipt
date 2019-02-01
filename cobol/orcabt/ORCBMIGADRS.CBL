@@ -1,24 +1,24 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCBMIGADRS.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : ���åȥ��å׽���
-      *  ����ݡ��ͥ��̾  : ����ޥ�������
-      *                    : ����ޥ���ʬΥ��ȼ���桼����������
-      *                    : �������ƤˤĤ��Ƥϥ桼�����ѤΥơ��֥�Ȥ���
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  17/10/27    NACL-��ƣ     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : セットアップ処理
+      *  コンポーネント名  : 住所マスタ更新
+      *                    : 住所マスタ分離に伴いユーザーが訂正
+      *                    : した内容についてはユーザー用のテーブルとする
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  17/10/27    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PRF-FILE        ASSIGN
                                    ASS-PRF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -27,29 +27,29 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PRF-FILE.
        01  PRF-REC                     PIC X(1000).
       *
        WORKING-STORAGE             SECTION.
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-PRF                 PIC X(256).
        01  STS-AREA.
            03  STS-PRF                 PIC X(02).
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END                 PIC 9(01).
            03  FLG-ADRSM               PIC 9(01).
            03  FLG-ADRSU               PIC 9(01).
            03  FLG-ADRSO               PIC 9(01).
            03  FLG-SYSKANRI            PIC 9(01).
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-ADRSO               PIC 9(06).
            03  CNT-ADRSM               PIC 9(06).
            03  CNT-PRF                 PIC 9(06).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-PARA.
                05  WRK-PARA-HOSPNUM    PIC 9(02).
@@ -64,14 +64,14 @@
                05  WRK-SMM             PIC 9(02).
                05  WRK-SDD             PIC 9(02).
            03  WRK-PRFCD               PIC 9(02).
-      *    ��ӥơ��֥�
+      *    比較テーブル
        01  TBL-COMP-AREA.
            03  TBL-COMP                PIC 9(01) OCCURS    11.
-      *    �ץ롼���Խ��ΰ�
+      *    プルーフ編集領域
        01  PRF-AREA.
            03  PRF-HEADER1.
                05  FILLER              PIC X(35) VALUE
-                   "����ޥ����ܹԽ�����ORCBMIGADRS��".
+                   "住所マスタ移行処理【ORCBMIGADRS】".
                05  PRF-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE "/".
                05  PRF-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -83,21 +83,21 @@
                05  FILLER              PIC X(01) VALUE "]".
                05  PRF-HOSPNAME        PIC X(120) VALUE SPACE.
            03  PRF-HEADER3.
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "処理".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(10) VALUE "����������".
+               05  FILLER              PIC X(10) VALUE "公共コード".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(08) VALUE "͹���ֹ�".
+               05  FILLER              PIC X(08) VALUE "郵便番号".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "枝番".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(14) VALUE
-                               "�桼�����꽻��".
+                               "ユーザ設定住所".
                05  FILLER              PIC X(01) VALUE ",".
                05  FILLER              PIC X(12) VALUE
-                               "ɸ���󶡽���".
+                               "標準提供住所".
                05  FILLER              PIC X(01) VALUE ",".
-               05  FILLER              PIC X(04) VALUE "����".
+               05  FILLER              PIC X(04) VALUE "内容".
            03  PRF-DETAIL.
                05  PRF-COMMAND         PIC X(20).
                05  PRF-LPUBCD          PIC X(05).
@@ -111,46 +111,46 @@
                05  PRF-COMMENT         PIC X(200).
        01  CONST-AREA.
            03  CONST-COMM1             PIC X(38) VALUE
-           "�桼�����꽻������Ƥ��ѹ�����ޤ�����".
+           "ユーザ設定住所の内容に変更されました。".
            03  CONST-COMM2.
                05  CONST-COMM2-1       PIC X(36) VALUE
-               "�桼�����꽻������Ƥ��ɲä���ޤ���".
+               "ユーザ設定住所の内容を追加されました".
                05  CONST-COMM2-2       PIC X(28) VALUE
-               "��ɸ���󶡤ˤϤ���ޤ���ˡ�".
+               "（標準提供にはありません）。".
       *****************************************************************
-      *    ���֥ץ������
+      *    サブプロ用定義
       *****************************************************************
-      *    �ޥ������ռ���
+      *    マシン日付取得
            COPY    "CPORCSMCNDATE.INC".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
       *    COPY    "CPORCSGETTEMP.INC".
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
-      *    ����ܹ����ơ��֥�
+      *    住所移行前テーブル
        01  ADRSO-REC.
            COPY    "CPADRS.INC"        REPLACING
                                        //ADRS-// BY //ADRSO-//.
-      *    ����ޥ������ơ��֥�
+      *    住所マスターテーブル
        01  ADRSM-REC.
            COPY    "CPADRS.INC"        REPLACING
                                        //ADRS-// BY //ADRSM-//.
-      *    ����桼�����ơ��֥�
+      *    住所ユーザーテーブル
        01  ADRSU-REC.
            COPY    "CPADRS.INC"        REPLACING
                                        //ADRS-// BY //ADRSU-//.
-      *    ������
+      *    住所ワーク
        01  ADRSW-REC.
            COPY    "CPADRS.INC"        REPLACING
                                        //ADRS-// BY //ADRSW-//.
-      *    ���ŵ��ؾ���ݴ��ܾ��� 
+      *    医療機関情報−基本情報 
            COPY    "CPSK1001.INC".
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
            COPY    "COMMON-SPA".
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
        01  COMMAND-PARAM.
@@ -159,7 +159,7 @@
        PROCEDURE                   DIVISION
                                    USING   COMMAND-PARAM.
       ****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
            PERFORM 100-INIT-SEC
@@ -168,10 +168,10 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
-           DISPLAY "*(ORCBMIGADRS)* ����ܹԽ�������"
+           DISPLAY "*(ORCBMIGADRS)* 住所移行処理開始"
            MOVE    ZERO                TO  FLG-AREA
            MOVE    ZERO                TO  CNT-AREA
            INITIALIZE  WRK-AREA
@@ -223,14 +223,14 @@
        100-INIT-EXT.
            EXIT.
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
            INITIALIZE  PRF-DETAIL
-      *    �ޥ������ơ��֥�¸�߳�ǧ
+      *    マスターテーブル存在確認
            PERFORM 900-ADRSM-READ-SEC
            IF      FLG-ADRSM           =   ZERO
-      *        ɸ��ȹ�������ӡ����ξ��桼�����ơ��֥���ɲ�
+      *        標準と項目別比較、相違の場合ユーザーテーブルに追加
                PERFORM 220-COMPARE-SEC
                IF      TBL-COMP-AREA       =   ZERO
                    MOVE    ZERO                TO  WRK-PRFCD
@@ -242,7 +242,7 @@
                    END-IF
                END-IF
            ELSE
-      *        �ޥ������ˤʤ����桼�����ơ��֥���ɲ�
+      *        マスターになし、ユーザーテーブルに追加
                MOVE    ADRSO-REC           TO  ADRSW-REC
                PERFORM 210-ADRSU-INSERT-SEC
            END-IF
@@ -252,15 +252,15 @@
        200-MAIN-EXT.
            EXIT.
       *****************************************************************
-      *    ����桼�����ơ��֥��ɲ�
+      *    住所ユーザーテーブル追加
       *****************************************************************
        210-ADRSU-INSERT-SEC        SECTION.
            PERFORM 900-ADRSU-READ-SEC
            IF      FLG-ADRSU           =   ZERO
-      *        �桼�����ơ��֥��ͭ��
+      *        ユーザーテーブルに有る
                MOVE    ZERO                TO  WRK-PRFCD
            ELSE
-      *        �������ϸ��ΤޤޤȤ���
+      *        更新日は元のままとする
       *        MOVE    LNK-MNTYMD          TO  CHGW-CREYMD
       *                                        CHGW-UPYMD
       *        MOVE    LNK-MNTHMS          TO  CHGW-UPHMS
@@ -279,59 +279,59 @@
        210-ADRSU-INSERT-EXT.
            EXIT.
       *****************************************************************
-      *    ���������
+      *    項目別比較
       *****************************************************************
        220-COMPARE-SEC             SECTION.
            MOVE    ZERO                TO  TBL-COMP-AREA
       *
-      *�����������Υ�����
-      *͹���ֹ�
-      *����
-      *��ƻ�ܸ�̾����
+      *地方公共団体コード
+      *郵便番号
+      *枝番
+      *都道府県名カナ
            IF      ADRSO-PREFKANA  NOT =   ADRSM-PREFKANA
                MOVE    1                   TO  TBL-COMP (1)
            END-IF
-      *��Į¼̾����
+      *市町村名カナ
            IF      ADRSO-CITYKANA  NOT =   ADRSM-CITYKANA
                MOVE    1                   TO  TBL-COMP (2)
            END-IF
-      *Į��̾����
+      *町域名カナ
            IF      ADRSO-TOWNKANA  NOT =   ADRSM-TOWNKANA
                MOVE    1                   TO  TBL-COMP (3)
            END-IF
-      *��ƻ�ܸ�̾
+      *都道府県名
            IF      ADRSO-PREFNAME  NOT =   ADRSM-PREFNAME
                MOVE    1                   TO  TBL-COMP (4)
            END-IF
-      *��Į¼̾
+      *市町村名
            IF      ADRSO-CITYNAME  NOT =   ADRSM-CITYNAME
                MOVE    1                   TO  TBL-COMP (5)
            END-IF
-      *Į��̾
+      *町域名
            IF      ADRSO-TOWNNAME  NOT =   ADRSM-TOWNNAME
                MOVE    1                   TO  TBL-COMP (6)
            END-IF
-      *�Խ��彻�ꥫ��
+      *編集後住所カナ
            IF      ADRSO-EDITADRS-KANA
                                    NOT =   ADRSM-EDITADRS-KANA
                MOVE    1                   TO  TBL-COMP (7)
            END-IF
-      *�Խ��彻��
+      *編集後住所
            IF      ADRSO-EDITADRS-NAME
                                    NOT =   ADRSM-EDITADRS-NAME
                MOVE    1                   TO  TBL-COMP (8)
            END-IF
-      *Į��ʬ��ե饰
+      *町域分割フラグ
            IF      ADRSO-TOWNDIVFLG
                                    NOT =   ADRSM-TOWNDIVFLG
                MOVE    1                   TO  TBL-COMP (9)
            END-IF
-      *ʣ��Į��ե饰
+      *複数町域フラグ
            IF      ADRSO-MANYTOWNFLG
                                    NOT =   ADRSM-MANYTOWNFLG
                MOVE    1                   TO  TBL-COMP (10)
            END-IF
-      *��­���̤�̾��
+      *補足（通り名）
            IF      ADRSO-TOWNNAME2 NOT =   ADRSM-TOWNNAME2
                MOVE    1                   TO  TBL-COMP (11)
            END-IF
@@ -339,12 +339,12 @@
        220-COMPARE-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        290-PRF-SEC                 SECTION.
            EVALUATE    WRK-PRFCD
                WHEN    1
-                   MOVE    "�ɲ�"              TO  PRF-COMMAND
+                   MOVE    "追加"              TO  PRF-COMMAND
                    MOVE    CONST-COMM2         TO  PRF-COMMENT
                    MOVE    ADRSW-LPUBCD        TO  PRF-LPUBCD
                    MOVE    ADRSW-POST (1:3)    TO  PRF-POST1
@@ -353,7 +353,7 @@
                    MOVE    ADRSW-EDANUM        TO  PRF-EDANUM
                    MOVE    ADRSW-EDITADRS-NAME TO  PRF-ADRS-NAMEU
                WHEN    2
-                   MOVE    "�ѹ�"              TO  PRF-COMMAND
+                   MOVE    "変更"              TO  PRF-COMMAND
                    MOVE    CONST-COMM1         TO  PRF-COMMENT
                    MOVE    ADRSW-LPUBCD        TO  PRF-LPUBCD
                    MOVE    ADRSW-POST (1:3)    TO  PRF-POST1
@@ -363,7 +363,7 @@
                    MOVE    ADRSW-EDITADRS-NAME TO  PRF-ADRS-NAMEU
                    MOVE    ADRSM-EDITADRS-NAME TO  PRF-ADRS-NAMEM
                WHEN    91
-                   MOVE    "�ɲå��顼"        TO  PRF-COMMAND
+                   MOVE    "追加エラー"        TO  PRF-COMMAND
                    MOVE    ADRSW-LPUBCD        TO  PRF-LPUBCD
                    MOVE    ADRSW-POST (1:3)    TO  PRF-POST1
                    MOVE    "-"                 TO  PRF-POSTH
@@ -378,7 +378,7 @@
        290-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    �ץ롼�ս��Ͻ���
+      *    プルーフ出力処理
       *****************************************************************
        2901-PRF-SEC                SECTION.
            IF      CNT-PRF             =   ZERO
@@ -413,7 +413,7 @@
        2901-PRF-EXT.
            EXIT.
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
            MOVE    "tbl_adrs_org"      TO  MCP-TABLE
@@ -424,14 +424,14 @@
            CLOSE   PRF-FILE
            DISPLAY " "
            MOVE    CNT-PRF             TO  WRK-MSG-CNT
-           DISPLAY "*(ORCBMIGADRS)* �ץ롼�� [ " WRK-MSG-CNT " ]"
+           DISPLAY "*(ORCBMIGADRS)* プルーフ [ " WRK-MSG-CNT " ]"
            DISPLAY " "
-           DISPLAY "*(ORCBMIGADRS)* ����ܹԽ�����λ"
+           DISPLAY "*(ORCBMIGADRS)* 住所移行処理終了"
            .
        300-END-EXT.
            EXIT.
       *****************************************************************
-      *    ����ܹ����ơ��֥��ɹ�
+      *    住所移行前テーブル読込
       *****************************************************************
        900-ADRSO-SELECT-SEC        SECTION.
            INITIALIZE  ADRSO-REC
@@ -447,7 +447,7 @@
        900-ADRSO-SELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ����ܹ����ơ��֥��ɹ�
+      *    住所移行前テーブル読込
       *****************************************************************
        900-ADRSO-FETCH-SEC         SECTION.
            MOVE    "tbl_adrs_org"      TO  MCP-TABLE
@@ -472,7 +472,7 @@
        900-ADRSO-FETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ����ޥ����ơ��֥��ɹ�
+      *    住所マスタテーブル読込
       *****************************************************************
        900-ADRSM-READ-SEC          SECTION.
            INITIALIZE  ADRSM-REC
@@ -501,7 +501,7 @@
        900-ADRSM-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ����桼�����ơ��֥��ɹ�
+      *    住所ユーザーテーブル読込
       *****************************************************************
        900-ADRSU-READ-SEC          SECTION.
            INITIALIZE  ADRSU-REC
@@ -530,7 +530,7 @@
        900-ADRSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC       SECTION.
            INITIALIZE  SYS-1001-REC
@@ -563,7 +563,7 @@
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        900-DBSELECT-SEC            SECTION.
            MOVE    "DBSELECT"          TO  MCP-FUNC
@@ -577,7 +577,7 @@
        900-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �쥳������н���
+      *    レコード抽出処理
       *****************************************************************
        900-DBFETCH-SEC             SECTION.
            MOVE    "DBFETCH"           TO  MCP-FUNC
@@ -586,7 +586,7 @@
        900-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    �������륯����������
+      *    カーソルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
            MOVE    "DBCLOSECURSOR"     TO  MCP-FUNC
@@ -595,7 +595,7 @@
        900-CLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -610,7 +610,7 @@
        100-DBOPEN-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
            MOVE    LOW-VALUE           TO  MCP-TABLE
@@ -625,7 +625,7 @@
        900-DBDISCONNECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC           SECTION.
            CALL    "ORCDBMAIN"     USING   MCPAREA
@@ -635,7 +635,7 @@
        900-ORCDBMAIN-EXT.
            EXIT.
       *****************************************************************
-      *    �ơ��֥빹�����顼������λ����
+      *    テーブル更新エラー強制終了処理
       *****************************************************************
        900-DBABORT-SEC             SECTION.
            MOVE    SPACE               TO  WRK-ERRMSG

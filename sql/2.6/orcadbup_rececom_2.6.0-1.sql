@@ -1,14 +1,14 @@
 --                                    --
--- •Ï•ª•◊•»•≥•·•Û•»•∆°º•÷•Î§Œ —ππ     --
+-- „É¨„Çª„Éó„Éà„Ç≥„É°„É≥„Éà„ÉÜ„Éº„Éñ„É´„ÅÆÂ§âÊõ¥     --
 --                                    --
--- π‡Ã‹ƒπ§Œ —ππ                       --
---   °°°°•≥•·•Û•» COMMENT             --
+-- È†ÖÁõÆÈï∑„ÅÆÂ§âÊõ¥                       --
+--   „ÄÄ„ÄÄ„Ç≥„É°„É≥„Éà COMMENT             --
 --                800 -> 1600         --
 --                                    --
 -- Create Date : 2003/03/05           --
 --                                    --
 
--- TBL_RECECOMWK ∫Ó¿Æ                 --
+-- TBL_RECECOMWK ‰ΩúÊàê                 --
 
 create table TBL_RECECOMWK (
 HOSPID				char(24)	not null,
@@ -27,16 +27,16 @@ UPHMS				char(6),
 constraint TBL_RECECOMWK_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYM,HKNCOMBI,SRYDD));
 
--- TBL_RECECOM ¢™ TBL_RECECOMWK   --
+-- TBL_RECECOM ‚Üí TBL_RECECOMWK   --
 
 insert into TBL_RECECOMWK
 select * from TBL_RECECOM;
 
--- TBL_RECECOM ∫ÔΩ¸               --
+-- TBL_RECECOM ÂâäÈô§               --
 
 drop table TBL_RECECOM;
 
--- TBL_RECECOM ∫Ó¿Æ               --
+-- TBL_RECECOM ‰ΩúÊàê               --
 
 create table TBL_RECECOM (
 HOSPID				char(24)	not null,
@@ -55,11 +55,11 @@ UPHMS				char(6),
 constraint TBL_RECECOM_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYM,HKNCOMBI,SRYDD));
 
--- TBL_RECECOMWK ¢™ TBL_RECECOM   --
+-- TBL_RECECOMWK ‚Üí TBL_RECECOM   --
 
 insert into TBL_RECECOM
 select * from TBL_RECECOMWK;
 
--- TBL_RECECOMWK ∫ÔΩ¸             --
+-- TBL_RECECOMWK ÂâäÈô§             --
 
 drop table TBL_RECECOMWK;

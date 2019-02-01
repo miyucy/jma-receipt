@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,17 +18,17 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORAPIRELR2V2.
       *****************************************************************
-      *  �����ƥ�̾        : ����ɸ��쥻�ץȥ��ե�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : ���Ԥ�����Ģ���� (xml2��
-      *  ������            :
-      *  ��������    ��ȼ�        ����
-      *  15/08/11    NACL�ݰ�ƣ����������
+      *  システム名        : 日医標準レセプトソフト
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 患者お薬手帳情報 (xml2）
+      *  管理者            :
+      *  作成日付    作業者        記述
+      *  15/08/11    NACL−伊藤　新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
-      *  ������Ģ�ǡ��������ޥۡ��������쥻
+      *  お薬手帳データ　スマホ　→　日レセ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -40,7 +40,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ΰ�
+      *    スパ領域
            COPY    "COMMON-SPA".
       *
        01  FLG-AREA.
@@ -48,11 +48,11 @@
            03  FLG-CUT                 PIC 9(01).
            03  FLG-DATA-KEY            PIC 9(01).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IX-D                    PIC 9(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
@@ -64,7 +64,7 @@
                05  WRK-HEN-MM          PIC X(02).
                05  WRK-HEN-H2          PIC X(01).
                05  WRK-HEN-DD          PIC X(02).
-      *    �����Խ�
+      *    時間編集
            03  WRK-THMS.
                05  WRK-THH             PIC X(02).
                05  WRK-TMM             PIC X(02).
@@ -75,11 +75,11 @@
                05  WRK-HEN-TMM         PIC X(02).
                05  WRK-HEN-T2          PIC X(01).
                05  WRK-HEN-TSS         PIC X(02).
-      *    ���顼������
+      *    エラーコード
            03  WRK-ERRCD               PIC X(02).
            03  WRK-ERRMSG              PIC X(100).
            03  WRK-KEICD               PIC X(02).
-      *    ������Ģ�ǡ����Խ�
+      *    お薬手帳データ編集
            03  WRK-CSV-DATA            PIC X(30000).
            03  WRK-CSV-DATA-R          REDEFINES   WRK-CSV-DATA.
                05  WRK-CSV-X           PIC X(01)   OCCURS 30000.
@@ -102,36 +102,36 @@
            03  CONST-DATA-MAX          PIC 9(06)  VALUE  30000.
       *
       *****************************************************************
-      *    ���֥ץ��ѡ��ΰ�
+      *    サブプロ用　領域
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
       *
-      *    CSVʬ�䥵��
+      *    CSV分割サブ
            COPY    "CPORCSDIVCSV.INC".
       *
-      *    API XML�ɤ߹����������
+      *    API XML読み込み用定義体
            COPY    "CPOKUSURIPUTV2REQ.INC".
-      *    API XML�񤭹����������
+      *    API XML書き込み用定義体
            COPY    "CPOKUSURIPUTV2RES.INC".
       *ver.4.7
-      *    API XML�ɤ߹��߶������
+      *    API XML読み込み共通定義
            COPY    "CPAPIV2REQ.INC".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ��������
+      *    職員情報
            COPY  "CPSK1010.INC".
       *
-      *    ������Ģ�ǡ�����Ͽ
+      *    お薬手帳データ登録
        01  OKUSURI-KANRI-REC.
            COPY    "CPOKUSURIKANRI.INC".
        01  OKUSURI-DATA-REC.
@@ -145,7 +145,7 @@
       **   COPY    "ORCA-BLOB".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
             COPY    "MCPAREA".
@@ -161,7 +161,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-MAIN-SEC                SECTION.
       *
@@ -174,18 +174,18 @@
            INITIALIZE  WRK-AREA
            INITIALIZE  SPA-AREA
       *
-      *    �������
+      *    初期処理
            PERFORM 100-INIT-SEC
-      *    �����
+      *    主処理
            IF      WRK-ERRCD           =   SPACE
                PERFORM 200-MAIN-SEC
            END-IF
       *
            IF      WRK-ERRCD           =   "99"
-      *        �桼���ɣĥ��顼
+      *        ユーザＩＤエラー
                MOVE   404                  TO  APILST29-HTTPSTATUS
            ELSE
-      *        �ֵ��ΰ��Խ�
+      *        返却領域編集
                PERFORM 300-OKUSURIPUTMAKE-SEC
            END-IF
       *
@@ -197,18 +197,18 @@
            EXIT    PROGRAM.
       *
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
            INITIALIZE  XML-OKUSURIPUTRES
-      *    ����������
+      *    更新日取得
            INITIALIZE  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"   USING   ORCSMCNDATEAREA
       *
            MOVE    MCP-USER            TO  SPA-OPID
            MOVE    SMCNDATE-YMD        TO  SPA-SYSYMD
-      *    ���ա����ֽ����Խ�
+      *    日付・時間出力編集
            MOVE    SMCNDATE-YMD        TO  WRK-SYMD
            MOVE    SMCNDATE-HMS        TO  WRK-THMS
            PERFORM 801-DAYHEN01-SEC
@@ -217,7 +217,7 @@
            MOVE    WRK-HEN-TIME        TO
                                        OKUSURIPUTRES-INFORMATION-TIME
       *
-      *    ���ŵ��ؼ����ֹ楻�å�
+      *    医療機関識別番号セット
            MOVE    "API"               TO  SPA-MOTOPG
            CALL    "ORCSHOSPNUM"   USING   MCPAREA
                                            SPA-AREA
@@ -225,7 +225,7 @@
                MOVE    "99"                TO  WRK-ERRCD
                GO  TO  100-INIT-EXT
            END-IF
-      *    �ӣУ���������
+      *    ＳＰＡ共通設定
            INITIALIZE  SYS-1010-REC
            INITIALIZE  ORCSCOMMONAREA
            MOVE    "M00"               TO  ORCSCOMMON-PG
@@ -241,11 +241,11 @@
            EXIT.
       *
       *****************************************************************
-      *    �硡����
+      *    主　処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
-      *    XML������Ф�
+      *    XML情報取り出し
            PERFORM 2001-OKUSURIPUTREAD-SEC
            IF      WRK-ERRCD       NOT =   SPACE
                GO  TO  200-MAIN-EXT
@@ -258,7 +258,7 @@
            MOVE    ZERO                TO  FLG-SYORI
            EVALUATE    APILST29-CLASS
                WHEN    "01"
-      *        ������Ͽ
+      *        新規登録
                    MOVE    1                   TO  FLG-SYORI
                WHEN    OTHER
                    MOVE    "91"                TO  WRK-ERRCD
@@ -270,7 +270,7 @@
       *
            EVALUATE    APILST29-CLASS
                WHEN    "01"
-      *            ������Ģ������Ͽ����
+      *            お薬手帳情報登録処理
                    PERFORM 400-OKUSURI-TOROKU-SEC
            END-EVALUATE
            .
@@ -278,14 +278,14 @@
            EXIT.
       *
       *****************************************************************
-      *    XML���󤫤����Ƥ���Ф�
+      *    XML情報から内容を取り出す
       *****************************************************************
        2001-OKUSURIPUTREAD-SEC     SECTION.
       *
            IF      APILST29-BODY   NOT =   LOW-VALUE
                DISPLAY "MDCRES-OBJECT not low_value"
            END-IF
-      * XML������Ф�
+      * XML情報取り出し
            MOVE    "XMLREAD"           TO  MCP-FUNC
            MOVE    "xml_okusuriputv2req"
                                        TO  MCP-TABLE
@@ -308,7 +308,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ɤ߹����XML��LOW-VALUE ��  SPACE ���ִ�
+      *    読み込んだXMLのLOW-VALUE を  SPACE に置換
       *****************************************************************
        20011-XML-REMAKE-SEC        SECTION.
       *
@@ -322,23 +322,23 @@
            EXIT.
       *
       *****************************************************************
-      *    XML����񤭹��߽���
+      *    XML情報書き込み処理
       *****************************************************************
        300-OKUSURIPUTMAKE-SEC      SECTION.
       *
-      *    ���顼��å������Խ�
+      *    エラーメッセージ編集
            IF      WRK-ERRCD           =   SPACE
                MOVE    WRK-KEICD           TO  WRK-ERRCD
            END-IF
            IF      WRK-ERRCD           =   SPACE
-      *        ���ｪλ
+      *        正常終了
                EVALUATE    FLG-SYORI
                    WHEN    1
-                       MOVE    "������λ"
+                       MOVE    "処理終了"
                                        TO  OKUSURIPUTRES-API-RESULT-MSG
                END-EVALUATE
            ELSE
-      *        ���顼���ٹ��å�����
+      *        エラー・警告メッセージ
                PERFORM 890-ERRCD-MSG-SEC
                MOVE    WRK-ERRCD           TO  OKUSURIPUTRES-API-RESULT
                MOVE    WRK-ERRMSG          TO
@@ -372,7 +372,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ģ������Ͽ����
+      *    お薬手帳情報登録処理
       *****************************************************************
        400-OKUSURI-TOROKU-SEC      SECTION.
       *
@@ -387,7 +387,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ģ�����ɲý���
+      *    お薬手帳管理追加処理
       *****************************************************************
        4001-OKUSURI-KANRI-INS-SEC  SECTION.
       *
@@ -397,7 +397,7 @@
            MOVE    SPA-HOSPNUM         TO  OKUKAN-HOSPNUM
            MOVE    OKUSURI-KANRI-REC   TO  OKUSURI-KANRI-SAV-REC
       *
-      *    RENNUM����
+      *    RENNUM決定
            PERFORM 40012-RENNUM-SEC
       *
            MOVE    OKUSURI-KANRI-SAV-REC
@@ -427,7 +427,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ǡ��������������
+      *    データキー決定処理
       *****************************************************************
        40011-DATA-KEY-SEC          SECTION.
       *
@@ -452,7 +452,7 @@
                            MOVE    1                   TO  FLG-DATA-KEY
                        ELSE
                            CONTINUE
-      *                    �������ٱ������뤫(sleep)
+      *                    ここで遅延を入れるか(sleep)
                        END-IF
                    ELSE
                        MOVE    1                   TO  FLG-DATA-KEY
@@ -469,7 +469,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ϣ�ַ������
+      *    連番決定処理
       *****************************************************************
        40012-RENNUM-SEC            SECTION.
       *
@@ -498,11 +498,11 @@
        40012-RENNUM-EXT.
            EXIT.
       *****************************************************************
-      *    CSV-DATA ʬ�����
+      *    CSV-DATA 分割処理
       *****************************************************************
        4002-CSV-RECORD-SEC         SECTION.
       *
-      *    �쥳���ɿ������
+      *    レコード数を求める
       *     MOVE    ZERO                TO  CNT-STR
       *     INSPECT WRK-CSV-DATA    TALLYING   CNT-STR
       *             FOR     ALL X"0A"
@@ -511,7 +511,7 @@
       *         COMPUTE CNT-STR             =   CNT-STR +   1
       *     END-IF
       *
-      *    ����ʸ���ޤǤΥǡ������ڤ�Ф�
+      *    改行文字までのデータを切り出し
            MOVE    ZERO                TO  FLG-CUT
            MOVE    1                   TO  WRK-ST
            PERFORM UNTIL   FLG-CUT =   1
@@ -545,11 +545,11 @@
            EXIT.
       *
       *****************************************************************
-      *    CSV-DATA ʬ�����
+      *    CSV-DATA 分割処理
       *****************************************************************
        40021-REC-DIVIDE-SEC        SECTION.
       *
-      *    ���ǿ������
+      *    要素数を求める
            STRING  WRK-REC         DELIMITED   BY  ","
                INTO    WRK-STR
            END-STRING
@@ -585,7 +585,7 @@
            EXIT.
       *
       *****************************************************************
-      *    CSV-DATA ʬ�����
+      *    CSV-DATA 分割処理
       *****************************************************************
        40022-SET-VALUE-SEC         SECTION.
       *
@@ -615,7 +615,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ������Ģ�ǡ����ɲý���
+      *    お薬手帳データ追加処理
       *****************************************************************
        4003-OKUSURI-DATA-INS-SEC   SECTION.
       *
@@ -699,7 +699,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC            SECTION.
       *
@@ -728,53 +728,53 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å������Խ�����
+      *    エラーメッセージ編集処理
       *****************************************************************
        890-ERRCD-MSG-SEC           SECTION.
       *
            MOVE    SPACE               TO  WRK-ERRMSG
            EVALUATE    WRK-ERRCD
                WHEN    "01"
-                   MOVE    "������Ģ�ǡ���������ޤ���"
+                   MOVE    "お薬手帳データがありません"
                                                TO  WRK-ERRMSG
-      *���̥��顼
+      *共通エラー
                WHEN    "89"
-      *            ORCSCOMMON �Υ��顼
+      *            ORCSCOMMON のエラー
                    EVALUATE    SPA-ERRCD
                        WHEN    "1001"
-                           MOVE    "�������󤬼����Ǥ��ޤ���"
+                           MOVE    "職員情報が取得できません"
                                                TO  WRK-ERRMSG
                        WHEN    "1002"
-                           MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���"
+                           MOVE    "医療機関情報が取得できません"
                                                TO  WRK-ERRMSG
                        WHEN    "1003"
-                           MOVE    "�����ƥ����դ������Ǥ��ޤ���"
+                           MOVE    "システム日付が取得できません"
                                                TO  WRK-ERRMSG
                        WHEN    "1005"
-                           MOVE    "�����ֹ湽�����󤬼����Ǥ��ޤ���"
+                           MOVE    "患者番号構成情報が取得できません"
                                                TO  WRK-ERRMSG
                        WHEN    "1015"
-                           STRING  "���롼�װ��ŵ��ؤ�������Ǥ���"
-                                   "������λ���Ʋ�������"
+                           STRING  "グループ医療機関が不整合です。"
+                                   "処理を終了して下さい。"
                                                DELIMITED  BY  SIZE
                                                INTO    WRK-ERRMSG
                            END-STRING
                        WHEN    OTHER
-                           MOVE    "�����ƥ���ܤ�����Ǥ��ޤ���"
+                           MOVE    "システム項目が設定できません"
                                                TO  WRK-ERRMSG
                    END-EVALUATE
                WHEN    "90"
-                   MOVE    "¾ü��������"      TO  WRK-ERRMSG
+                   MOVE    "他端末使用中"      TO  WRK-ERRMSG
                WHEN    "91"
-                   MOVE    "������ʬ̤����"    TO  WRK-ERRMSG
+                   MOVE    "処理区分未設定"    TO  WRK-ERRMSG
                WHEN    "97"
-                   MOVE    "�������Ƥ˸��꤬����ޤ���"
+                   MOVE    "送信内容に誤りがあります。"
                                                TO  WRK-ERRMSG
                WHEN    "98"
-                   MOVE   "�������Ƥ��ɹ����Ǥ��ޤ���Ǥ���"
+                   MOVE   "送信内容の読込ができませんでした"
                                                TO  WRK-ERRMSG
                WHEN    "99"
-                   MOVE    "�桼���ɣ�̤��Ͽ��"
+                   MOVE    "ユーザＩＤ未登録。"
                                                TO  WRK-ERRMSG
            END-EVALUATE
            .
@@ -782,7 +782,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
@@ -795,7 +795,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBFETCH-SEC             SECTION.
       *
@@ -808,7 +808,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC             SECTION.
       *

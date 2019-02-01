@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    £¡£–£…°°∆˛±°ΩË ˝‰µƒ¢…ºæ Û        COPY (CPFMSHOHON.INC)
+      *    Ôº°Ôº∞Ôº©„ÄÄÂÖ•Èô¢Âá¶ÊñπÁÆãÂ∏≥Á•®ÊÉÖÂ†±        COPY (CPFMSHOHON.INC)
       ******************************************************************
         01  FMSHOHON-REC.
             03  FMSHOHON-CONTEXT                PIC S9(9)   BINARY.
@@ -26,42 +26,42 @@
               05  FMSHOHON-FORM-ID              PIC X(30).
               05  FMSHOHON-CUSTOM-ID            PIC X(30).
               05  FMSHOHON-PRINTER              PIC X(20).
-      *       ƒ¢…º•ø•§•»•Î
+      *       Â∏≥Á•®„Çø„Ç§„Éà„É´
               05  FMSHOHON-TITLE-AREA.
                   07  FMSHOHON-TITLE-OCC        OCCURS 4.
                       09  FMSHOHON-TITLE        PIC X(30).
                       09  FMSHOHON-MAISU        PIC X(2).
               05  FMSHOHON-HAKKOKBN             PIC X(1).
-      *       ΩË ˝∆¸
+      *       Âá¶ÊñπÊó•
               05  FMSHOHON-SRYYMD               PIC X(10).
-      *       ∏Ú…’∆¸
+      *       ‰∫§‰ªòÊó•
               05  FMSHOHON-SYSYMD               PIC X(10).
-      *       ∏Ú…’ª˛πÔ
+      *       ‰∫§‰ªòÊôÇÂàª
               05  FMSHOHON-SYSTIME              PIC X(5).
-      *       ø«Œ≈≤ ° ∆¸•Ï•ª°À
+      *       Ë®∫ÁôÇÁßëÔºàÊó•„É¨„ÇªÔºâ
               05  FMSHOHON-SRYKA                PIC X(2).
               05  FMSHOHON-SRYKANAME            PIC X(20).
-      *       …¬≈Ô»÷πÊ
+      *       ÁóÖÊ£üÁï™Âè∑
               05  FMSHOHON-BTUNUM               PIC X(2).
               05  FMSHOHON-BTUNAME              PIC X(20).
               05  FMSHOHON-BRMNUM               PIC X(6).
-      *       ¥µº‘æ Û
+      *       ÊÇ£ËÄÖÊÉÖÂ†±
               05  FMSHOHON-PTINF.
                 07  FMSHOHON-PTNUM              PIC X(20).
                 07  FMSHOHON-NAME               PIC X(50).
                 07  FMSHOHON-KANANAME           PIC X(50).
                 07  FMSHOHON-BIRTHDAY           PIC X(10).
                 07  FMSHOHON-SEX                PIC X(1).
-      *       •…•Ø•ø°º
+      *       „Éâ„ÇØ„Çø„Éº
               05  FMSHOHON-DOCTOR-AREA.
                 07  FMSHOHON-DR-CODE             PIC X(5).
                 07  FMSHOHON-DR-NAME             PIC X(50).
                 07  FMSHOHON-DR-KANANAME         PIC X(50).
                 07  FMSHOHON-DR-MAYAKULICENSE    PIC X(15).
       *
-      *       1:À„ÃÙ§Úµ≠∫‹§∑§øªÿº®§ª§Û
+      *       1:È∫ªËñ¨„ÇíË®òËºâ„Åó„ÅüÊåáÁ§∫„Åõ„Çì
               05  FMSHOHON-MAYAKU                PIC X(1).
-      *       1:Œ◊ª˛
+      *       1:Ëá®ÊôÇ
               05  FMSHOHON-RINJI                 PIC X(1).
       *
               05  FMSHOHON-ZAI-AREA              OCCURS  50 TIMES.
@@ -72,13 +72,13 @@
                     09  FMSHOHON-KAISU           PIC X(03).
       *
                 07  FMSHOHON-MEDICATION          OCCURS  50 TIMES.
-      *           ÃÙ∫ﬁÃæ
+      *           Ëñ¨Ââ§Âêç
                   09  FMSHOHON-YKZNAME           PIC X(200).
-      *           øÙŒÃ
+      *           Êï∞Èáè
                   09  FMSHOHON-SURYO             PIC X(12).
-      *           √±∞ÃÃææŒ
+      *           Âçò‰ΩçÂêçÁß∞
                   09  FMSHOHON-TANINAME          PIC X(12).
-      *           •≥°º•…
+      *           „Ç≥„Éº„Éâ
                   09  FMSHOHON-SRYCD             PIC X(9).
               05  FMSHOHON-MEMO                  PIC X(110)
                                                  OCCURS  3  TIMES.

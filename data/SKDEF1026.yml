@@ -1,29 +1,29 @@
 kanri_cd    : "1026"
-name        : "¸ºÌÈ»öÍ³¾ğÊó"
+name        : "æ¸›å…äº‹ç”±æƒ…å ±"
 class_cd    : "*"
 item_max    : 4
 item_list   :
 - item_no   : 1
   item      : "DISCOUNT-BODY"
-  item_jp   : "¸ºÌÈ»öÍ³"
+  item_jp   : "æ¸›å…äº‹ç”±"
   type      : "X"
   start     : 1
   length    : 40
 - item_no   : 2
   item      : "DISCOUNT-KBN"
-  item_jp   : "³ä°úÎ¨¶èÊ¬"
+  item_jp   : "å‰²å¼•ç‡åŒºåˆ†"
   type      : "X"
   start     : 41
   length    : 2
 - item_no   : 3
   item      : "DISCOUNT-OBJ"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 43
   length    : 1
 - item_no   : 4
   item      : "YOBI"
-  item_jp   : "Í½È÷"
+  item_jp   : "äºˆå‚™"
   type      : "X"
   start     : 44
   length    : 457

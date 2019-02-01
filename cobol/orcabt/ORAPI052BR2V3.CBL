@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,41 +18,41 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORAPI052BR2V3.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : APIϢ���ѥ⥸�塼��
-      *  ����ݡ��ͥ��̾  : �����ޥ����ֵ�
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  17/06/30    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : API連携用モジュール
+      *  コンポーネント名  : 点数マスタ返却
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  17/06/30    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  05.00.01    NACL-ƣ��    18/09/05  �ãӣ��б�
-      *                                     �������������ȿ�ɸ�ܲû����ɲ�
-      *                                     ��о����ɲ�
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    18/09/05  ＣＳＶ対応
+      *                                     悪性腫瘍病理組織標本加算の追加
+      *                                     抽出条件の追加
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
        CONFIGURATION               SECTION.
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
            SELECT  CSV-FILE        ASSIGN  CSVPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-CSV.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �ãӣ֥ե�����
+      *    ＣＳＶファイル
        FD  CSV-FILE.
        01  CSV-REC                 PIC X(3000).
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200).
       *
@@ -61,40 +61,40 @@
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //CSVPARA//.
       *
-      *    ����ե������б�
+      *    一時ファイル対応
            COPY    "CPRECEERR.INC".
       *
-      *    �����ΰ�
+      *    スパ領域
        01  STS-AREA.
            03  STS-CSV             PIC X(02).
            03  STS-RECEERR         PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-TENSU           PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-OUT             PIC 9(10).
            03  CNT-OUT1            PIC 9(10).
            03  CNT-XMLCOUNT        PIC 9(06).
       *
-      *    ź���ΰ�
+      *    添字領域
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
            03  IDW2                PIC 9(04).
       *
-      *    �����ƥ��ΰ�
+      *    システム領域
        01  SYS-AREA.
            03  SYS-YMD.
                05  SYS-YY          PIC 9(02).
                05  SYS-MM          PIC 9(02).
                05  SYS-DD          PIC 9(02).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -108,7 +108,7 @@
                                    PIC X(05).
            03  WRK-PARA-ERRFILE    PIC X(64).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC X(04).
@@ -132,11 +132,11 @@
                05  WRK-HEN-T2      PIC X(01).
                05  WRK-HEN-TSS     PIC X(02).
       *
-      *     ���Ť��Խ���
+      *     右づめ編集用
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
-      *    ���ϥǡ����Խ���
+      *    出力データ編集用
            03  WRK-REC                 PIC X(3000).
            03  WRK-REC-LENGTH          PIC 9(04).
            03  WRK-HENSYU-AREA.
@@ -155,16 +155,16 @@
            03  WRK-ERR-FILE-MSG        PIC X(100).
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
-      *    �����ǡ���(1298 byte)
+      *    点数データ(1298 byte)
        01  TENSULST-REC.
            03  TENSULST-OCC          OCCURS   1000.
       *1-20
@@ -320,511 +320,511 @@
        01  TITLE-01.
       *1-20
            03  FILLER                 PIC X(14)    VALUE
-               "���Ź԰٥�����".
+               "診療行為コード".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "ͭ������ǯ����".
+               "有効開始年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "ͭ����λǯ����".
+               "有効終了年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "���Ź԰ٶ�ʬ".
+               "診療行為区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "���ż��̶�ʬ".
+               "診療種別区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "����ͭ�����".
+               "漢字有効桁数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "����̾��".
+               "漢字名称".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "����ͭ�����".
+               "カナ有効桁数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "����̾��".
+               "カナ名称".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "����̾��ͭ�����".
+               "正式名称有効桁数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "����̾��".
+               "正式名称".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��������".
+               "点数識別".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(04)    VALUE
-               "����".
+               "点数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "ñ�̥�����".
+               "単位コード".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "ñ��ʸ����".
+               "単位文字数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "ñ��̾��".
+               "単位名称".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "�ǡ�����ʬ".
+               "データ区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "�ݸ�Ŭ�Ѷ�ʬ".
+               "保険適用区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "����Ŭ�Ѷ�ʬ".
+               "入外適用区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "�������԰���Ŭ�Ѷ�ʬ".
+               "後期高齢者医療適用区分".
       *21-40
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�±����Ž��ʬ".
+               "病院診療所区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "���Ƕ�ʬ".
+               "往診区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "����оݸ���".
+               "包括対象検査".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "����̾��Ϣ��ʬ".
+               "傷病名関連区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "��Ƴ����������ش�����".
+               "指導管理料、医学管理料".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(06)    VALUE
-               "������".
+               "実日数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "�������".
+               "日数回数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�����ʴ�Ϣ��ʬ".
+               "医薬品関連区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "�������ͷ׻�����".
+               "きざみ値計算識別".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�������Ͳ�����".
+               "きざみ値下限値".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�������;����".
+               "きざみ値上限値".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��������".
+               "きざみ値".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "����������".
+               "きざみ点数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "�������;岼�¥��顼����".
+               "きざみ値上下限エラー処理".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��²��".
+               "上限回数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "��²������".
+               "上限回数１日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "��²������".
+               "上限回数１週".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "��²��¾���".
+               "上限回数他月数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "��²��¾".
+               "上限回数他".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "��²�����顼����".
+               "上限回数エラー処理".
            03  FILLER                 PIC X(01)    VALUE   ",".
       *41-60
            03  FILLER                 PIC X(12)    VALUE
-               "���û�������".
+               "注加算コード".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "���û�����".
+               "注加算通番".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��§ǯ��".
+               "通則年齢".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�岼��ǯ�𲼸�ǯ��".
+               "上下限年齢下限年齢".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�岼��ǯ����ǯ��".
+               "上下限年齢上限年齢".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "���ֲû���ʬ".
+               "時間加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�����Ŭ��������ʬ".
+               "基準不適合逓減区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(26)    VALUE
-               "�����Ŭ�������оݻ��߶�ʬ".
+               "基準不適合逓減対象施設区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�������Ļ��û���ʬ".
+               "処置乳幼児加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "��������νŻ��û���ʬ".
+               "極低出生体重児加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "�����������������оݼ���".
+               "入院基本料等減算対象識別".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "�ɥʡ�ʬ���׶�ʬ".
+               "ドナー分集計区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�������»�Ƚ�Ƕ�ʬ".
+               "検査等実施判断区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(26)    VALUE
-               "�������»�Ƚ�ǥ��롼�׶�ʬ".
+               "検査等実施判断グループ区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "�����оݶ�ʬ".
+               "逓減対象区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(26)    VALUE
-               "�Կ�Ͷȯ�Ű�¬�����û���ʬ".
+               "脊髄誘発電位測定等加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "����������ʻ�ܲû���ʬ".
+               "頸部郭清術併施加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "��ư˥���û���ʬ".
+               "自動縫合器加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "��������û���ʬ".
+               "外来管理加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(44)    VALUE
-               "��§�û��оݳ���ʬ����§�û����������оݶ�ʬ".
+               "通則加算対象外区分、通則加算所定点数対象区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
       *61-91
            03  FILLER                 PIC X(12)    VALUE
-               "���������ʬ".
+               "包括逓減区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "Ķ���������û���ʬ".
+               "超音波内視鏡加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "��ưʭ���û���ʬ".
+               "自動吻合器加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "�ϰ�û�".
+               "地域加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "�¾�����ʬ".
+               "病床数区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(28)    VALUE
-               "Ķ���ȶŸ��ڳ��������û���ʬ".
+               "超音波凝固切開装置等加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "û���ں߼��".
+               "短期滞在手術".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "���̶�ʬ".
+               "部位区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "���������ʬ".
+               "算定履歴区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード１".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード２".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード３".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード４".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード５".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード６".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード７".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード８".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "���ߴ�ॳ���ɣ�".
+               "施設基準コード９".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "���ߴ�ॳ���ɣ���".
+               "施設基準コード１０".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û�����ǯ��".
+               "年齢加算下限年齢１".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û����ǯ��".
+               "年齢加算上限年齢１".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(30)    VALUE
-               "ǯ��û����û����Ź԰٥����ɣ�".
+               "年齢加算注加算診療行為コード１".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û�����ǯ��".
+               "年齢加算下限年齢２".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û����ǯ��".
+               "年齢加算上限年齢２".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(30)    VALUE
-               "ǯ��û����û����Ź԰٥����ɣ�".
+               "年齢加算注加算診療行為コード２".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û�����ǯ��".
+               "年齢加算下限年齢３".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û����ǯ��".
+               "年齢加算上限年齢３".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(30)    VALUE
-               "ǯ��û����û����Ź԰٥����ɣ�".
+               "年齢加算注加算診療行為コード３".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û�����ǯ��".
+               "年齢加算下限年齢４".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "ǯ��û����ǯ��".
+               "年齢加算上限年齢４".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(30)    VALUE
-               "ǯ��û����û����Ź԰٥����ɣ�".
+               "年齢加算注加算診療行為コード４".
            03  FILLER                 PIC X(01)    VALUE   ",".
       *92-110
            03  FILLER                 PIC X(16)    VALUE
-               "���θ���������".
+               "検体検査コメント".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "������������ʬ".
+               "入院基本料区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "�����������û���ʬ".
+               "入院基本料加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "�Ǹ�û�".
+               "看護加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "����������".
+               "旧点数識別".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(06)    VALUE
-               "������".
+               "旧点数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "���Ƕ�ʬ".
+               "麻毒区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�����˲��޶�ʬ".
+               "神経破壊剤区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "��ʪ��Ū���޶�ʬ".
+               "生物学的製剤区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "¤�ƺ޶�ʬ".
+               "造影剤区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��������".
+               "注射容量".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "���޶�ʬ".
+               "薬剤区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "�޷���ʬ".
+               "剤型区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "��ȯ�����ʶ�ʬ".
+               "後発医薬品区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "Ĺ����Ϳ��ʬ".
+               "長期投与区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "̾�λ��Ѽ���".
-      *******         �ּ�������ʬ�ס����򼰥����ȼ��̡�
+               "名称使用識別".
+      *******         「湿布薬区分」「選択式コメント識別」
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "������ǯ��û���ʬ".
+               "特定器材年齢加算区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "��������ʬ".
+               "酸素等区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "��������̣�".
+               "特定器材種別１".
            03  FILLER                 PIC X(01)    VALUE   ",".
       *111-130
            03  FILLER                 PIC X(24)    VALUE
-               "��������̣�����²���".
+               "特定器材種別２、上限価格".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "�������".
+               "上限点数".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "�����󽸷��輱�̡ʳ����".
+               "点数欄集計先識別（外来）".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "�����󽸷��輱�̡�������".
+               "点数欄集計先識別（入院）".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "������ɽ�Ѷ�ʬ�ݶ�ʬ".
+               "コード表用区分−区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "������ɽ�Ѷ�ʬ�ݾ�".
+               "コード表用区分−章".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "������ɽ�Ѷ�ʬ����".
+               "コード表用区分−部".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "������ɽ�Ѷ�ʬ�ݶ�ʬ�ֹ�".
+               "コード表用区分−区分番号".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(30)    VALUE
-               "������ɽ�Ѷ�ʬ�ݶ�ʬ�ֹ�ݻ���".
+               "コード表用区分−区分番号−枝番".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "������ɽ�Ѷ�ʬ�ݹ���".
+               "コード表用区分−項番".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "���Ρ����δ�Ϣ�ֹ�ݶ�ʬ".
+               "告知・通知関連番号−区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "���Ρ����δ�Ϣ�ֹ�ݾ�".
+               "告知・通知関連番号−章".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "���Ρ����δ�Ϣ�ֹ����".
+               "告知・通知関連番号−部".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(28)    VALUE
-               "���Ρ����δ�Ϣ�ֹ�ݶ�ʬ�ֹ�".
+               "告知・通知関連番号−区分番号".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(34)    VALUE
-               "���Ρ����δ�Ϣ�ֹ�ݶ�ʬ�ֹ�ݻ���".
+               "告知・通知関連番号−区分番号−枝番".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "���Ρ����δ�Ϣ�ֹ�ݹ���".
+               "告知・通知関連番号−項番".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "�������̶�ʬ�ʣ���".
+               "告示等識別区分（１）".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "�������̶�ʬ�ʣ���".
+               "告示等識別区分（２）".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "����̾���ѹ���ʬ".
+               "漢字名称変更区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "����̾���ѹ���ʬ".
+               "カナ名称変更区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
       *131-154
            03  FILLER                 PIC X(08)    VALUE
-               "��ư��Ϣ".
+               "異動関連".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "��ɽ����ֹ�".
+               "公表順序番号".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "������ॳ����".
+               "薬価基準コード".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "��������������".
+               "収載方式等識別".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "����̾����Ϣ".
+               "商品名等関連".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "�ѹ�ǯ����".
+               "変更年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "�ѻ�ǯ����".
+               "廃止年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�в�����ǯ����".
+               "経過措置年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "����ǯ����".
+               "作成年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(10)    VALUE
-               "����ǯ����".
+               "更新年月日".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(08)    VALUE
-               "��������".
+               "更新時間".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "��������ѻٱ�û�".
+               "画像等手術支援加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "���Ŵѻ�ˡ�оݶ�ʬ".
+               "医療観察法対象区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(12)    VALUE
-               "��켱�̶�ʬ".
+               "麻酔識別区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(22)    VALUE
-               "��ɡ�м���������û�".
+               "副鼻腔手術用内視鏡加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(34)    VALUE
-               "��ɡ�м���ѹ������ȿ��ڽ�����û�".
+               "副鼻腔手術用骨軟部組織切除機器加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(18)    VALUE
-               "Ĺ�����������û�".
+               "長時間麻酔管理加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "�ģУ�Ŭ�Ѷ�ʬ".
+               "ＤＰＣ適用区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(32)    VALUE
-               "�󿯽�Ū���ư�֥�˥���󥰲û�".
+               "非侵襲的血行動態モニタリング加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "�����¸Ʊ���ȿ��û�".
+               "凍結保存同種組織加算".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(14)    VALUE
-               "����ɽ��ʬ�ֹ�".
+               "点数表区分番号".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(16)    VALUE
-               "ϫ�һ����ԲĶ�ʬ".
+               "労災算定不可区分".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(20)    VALUE
-               "�ͻ�û���ʬ��ϫ�ҡ�".
+               "四肢加算区分（労災）".
            03  FILLER                 PIC X(01)    VALUE   ",".
            03  FILLER                 PIC X(24)    VALUE
-               "�������������ȿ�ɸ�ܲû�".
+               "悪性腫瘍病理組織標本加算".
            03  FILLER                 PIC X(01)    VALUE   X"0D".
       *
        01  WRK-CONS-AREA.
-      *    ���ڤ�ʸ��
+      *    区切り文字
            03  WRK-KUGIRI             PIC X(01)    VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO             PIC X(01)    VALUE   X"0D".
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����
+      *    点数
            COPY    "CPTENSU.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����Ѵ�����
+      *    日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ����ե�����̾����
+      *    一時ファイル名取得
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
@@ -839,7 +839,7 @@
            COPY    "CPORCSAPIFILE.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -853,7 +853,7 @@
                                    COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -868,7 +868,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -921,11 +921,11 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"               TO  SJOBKANRI-MODE
            INITIALIZE                      JOBKANRI-REC
            MOVE    "ORAPI052BR2V3"     TO  JOB-PGID
-           MOVE    "�����ޥ����ֵ�"    TO  JOB-SHELLMSG
+           MOVE    "点数マスタ返却"    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
            IF      WRK-PARA-DATA-FORMAT
@@ -938,7 +938,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *      
@@ -959,7 +959,7 @@
                MOVE    1                   TO  FLG-TENSU
            END-IF
       *
-      *    �����ޥ����Խ�����
+      *    点数マスタ編集処理
            PERFORM     UNTIL   FLG-TENSU  =   1
                MOVE    ZERO                TO  CNT-OUT1
       *
@@ -989,7 +989,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����Խ�����
+      *    点数マスタ編集処理
       *****************************************************************
        2001-TENSULST-HENSYU-SEC          SECTION.
       *
@@ -1189,7 +1189,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ����ãӣ��Խ�����
+      *    点数マスタＣＳＶ編集処理
       *****************************************************************
        2002-TENSULST-CSV-SEC       SECTION.
       *
@@ -1780,7 +1780,7 @@
            EXIT.
       *
       *****************************************************************
-      *    EXPORT ����
+      *    EXPORT 処理
       *****************************************************************
        910-XMLEXPORT-SEC           SECTION.
       *
@@ -1820,7 +1820,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1860,7 +1860,7 @@
        801-DAYHEN01-EXT.
            EXIT.
       *****************************************************************
-      *    �����Ѵ��Խ�����
+      *    日付変換編集処理
       *****************************************************************
        802-DAYHEN02-SEC                SECTION.
       *
@@ -1882,12 +1882,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
            IF      CNT-OUT         =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                        TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
@@ -1913,7 +1913,7 @@
                IF      SAPIFILE-RC     =   0
                    CONTINUE
                ELSE
-                   STRING   "������ե�����������顼 RC="
+                   STRING   "ｘｍｌファイル作成エラー RC="
                                            DELIMITED   BY  SIZE
                             SAPIFILE-RC    DELIMITED   BY  SIZE
                                            INTO    WRK-RECEERR
@@ -1928,7 +1928,7 @@
                CLOSE           CSV-FILE
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-OUT         TO  JOB-UPDCNT
@@ -1944,7 +1944,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -1958,7 +1958,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1973,26 +1973,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -2024,7 +2024,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -2032,7 +2032,7 @@
                CONTINUE
            ELSE
                IF      WRK-MOJI-CHK    =   1
-      *            ��������Ѷ����������
+      *            後ろの全角空白を削除する
                    INITIALIZE                      ORCSKANACHKAREA
                    MOVE    "1"                 TO  KANACHK-SYORI
                    MOVE    "1"                 TO  KANACHK-SYORIKBN
@@ -2082,7 +2082,7 @@
       *
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -2099,7 +2099,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ޥ������ɹ�
+      *    点数マスター読込
       *****************************************************************
        900-TENSU-READ-N-SEC         SECTION.
       *
@@ -2125,7 +2125,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥븡������
+      *    テーブル検索処理
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2139,7 +2139,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    �ģ��ɤ߹��߽���
+      *    ＤＢ読み込み処理
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2155,7 +2155,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクロース処理
       *****************************************************************
        990-DBCLOSE-SEC           SECTION.
       *
@@ -2170,7 +2170,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -2194,7 +2194,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

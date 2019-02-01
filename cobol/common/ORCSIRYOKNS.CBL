@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSIRYOKNS.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : °åÎÅ´Ñ»¡Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  10/08/24    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : åŒ»ç™‚è¦³å¯Ÿå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  10/08/24    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *
       *
@@ -41,43 +41,43 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-SYSKANRI                PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK5001.INC".
       *
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    °åÎÅ´Ñ»¡Æþ±¡ÎÁ¥³¡¼¥É¼èÆÀ¥Ñ¥é¥á¥¿
+      *    åŒ»ç™‚è¦³å¯Ÿå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSIRYOKNS.INC".
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -86,7 +86,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -101,7 +101,7 @@
            .
       *
       *****************************************************************
-      *    °åÎÅ´Ñ»¡Æþ±¡ÎÁ¥³¡¼¥É¥»¥Ã¥È
+      *    åŒ»ç™‚è¦³å¯Ÿå…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰ã‚»ãƒƒãƒˆ
       *****************************************************************
        200-EDIT-SEC                    SECTION.
       *
@@ -111,21 +111,21 @@
       *
            IF  LNK-IRYOKNS-KBN      =      "4"
       *
-      *(8801-0)Æþ±¡°å³Ø´ÉÍýÎÁ¤Î¥»¥Ã¥È
+      *(8801-0)å…¥é™¢åŒ»å­¦ç®¡ç†æ–™ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
-      *        µÞÀ­´üÆþ±¡ÂÐ¾Ý¼ÔÆþ±¡°å³Ø´ÉÍýÎÁ
+      *        æ€¥æ€§æœŸå…¥é™¢å¯¾è±¡è€…å…¥é™¢åŒ»å­¦ç®¡ç†æ–™
                WHEN    "01"
                WHEN    "02"
                WHEN    "03"
                        ADD     1            TO  IDX
                        MOVE   "188000110"   TO  LNK-IRYOKNS-SRYCD(IDX)
-      *        ²óÉü´üÆþ±¡ÂÐ¾Ý¼ÔÆþ±¡°å³Ø´ÉÍýÎÁ
+      *        å›žå¾©æœŸå…¥é™¢å¯¾è±¡è€…å…¥é™¢åŒ»å­¦ç®¡ç†æ–™
                WHEN    "04"
                WHEN    "11"
                WHEN    "18"
                        ADD     1            TO  IDX
                        MOVE   "188000510"   TO  LNK-IRYOKNS-SRYCD(IDX)
-      *        ¼Ò²ñÉüµ¢´üÆþ±¡ÂÐ¾Ý¼ÔÆþ±¡°å³Ø´ÉÍýÎÁ
+      *        ç¤¾ä¼šå¾©å¸°æœŸå…¥é™¢å¯¾è±¡è€…å…¥é™¢åŒ»å­¦ç®¡ç†æ–™
                WHEN    "05"
                WHEN    "06"
                WHEN    "07"
@@ -143,7 +143,7 @@
              END-EVALUATE
       *
       *
-      *(8801-1)Ì¤´ð½à¸º»»¡ÊÉÂÅï¤Ë·¸¤ë´ð½à¤òËþ¤¿¤µ¤Ê¤¤¾ì¹ç¡Ë¤Î¥»¥Ã¥È
+      *(8801-1)æœªåŸºæº–æ¸›ç®—ï¼ˆç—…æ£Ÿã«ä¿‚ã‚‹åŸºæº–ã‚’æº€ãŸã•ãªã„å ´åˆï¼‰ã®ã‚»ãƒƒãƒˆ
              INITIALIZE                   SYSKANRI-REC
              MOVE    LNK-IRYOKNS-HOSPNUM
                                       TO  SYS-HOSPNUM
@@ -180,20 +180,20 @@
              PERFORM   900-CLOSE-SEC
       *
       *
-      *(8801-2)µÞÀ­´üÆþ±¡ÂÐ¾Ý¼ÔÆþ±¡°å³Ø´ÉÍýÎÁ¤ÎÌ¤Å¬¹ç¸º»»¤Î¥»¥Ã¥È
+      *(8801-2)æ€¥æ€§æœŸå…¥é™¢å¯¾è±¡è€…å…¥é™¢åŒ»å­¦ç®¡ç†æ–™ã®æœªé©åˆæ¸›ç®—ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "02"
-      *                Ì¤Å¬¹ç¸º»»¡ÊÆþ±¡·èÄêÆü¤«¤é£¹£±Æü°Ê¾å£±Ç¯°ÊÆâ¡Ë
+      *                æœªé©åˆæ¸›ç®—ï¼ˆå…¥é™¢æ±ºå®šæ—¥ã‹ã‚‰ï¼™ï¼‘æ—¥ä»¥ä¸Šï¼‘å¹´ä»¥å†…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188000370"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "03"
-      *                Ì¤Å¬¹ç¸º»»¡ÊÆþ±¡·èÄêÆü¤«¤é£±Ç¯Ä¶¡Ë
+      *                æœªé©åˆæ¸›ç®—ï¼ˆå…¥é™¢æ±ºå®šæ—¥ã‹ã‚‰ï¼‘å¹´è¶…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188000470"   TO  LNK-IRYOKNS-SRYCD(IDX)
              END-EVALUATE
       *
       *
-      *(8801-2)´Ñ»¡²óÉü´ü¸º»»¤Î¥»¥Ã¥È¡Ê»»Äê³«»ÏÆü¤«¤é£²£·£±Æü°Ê¾å¡Ë
+      *(8801-2)è¦³å¯Ÿå›žå¾©æœŸæ¸›ç®—ã®ã‚»ãƒƒãƒˆï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼’ï¼—ï¼‘æ—¥ä»¥ä¸Šï¼‰
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "11"
                        ADD     1            TO  IDX
@@ -201,7 +201,7 @@
              END-EVALUATE
       *
       *
-      *(8801-2)´Ñ»¡²óÉü´ü¸º»»¤Î¥»¥Ã¥È¡Ê»»Äê³«»ÏÆü¤«¤é£±Ç¯£¹£°ÆüÄ¶¡Ë
+      *(8801-2)è¦³å¯Ÿå›žå¾©æœŸæ¸›ç®—ã®ã‚»ãƒƒãƒˆï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘å¹´ï¼™ï¼æ—¥è¶…ï¼‰
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "18"
                        ADD     1            TO  IDX
@@ -209,52 +209,52 @@
              END-EVALUATE
       *
       *
-      *(8801-2)´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¤Î¥»¥Ã¥È
+      *(8801-2)è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "06"
                WHEN    "15"
-      *                ´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¡Ê»»Äê³«»ÏÆü¤«¤é£±£¸£±Æü°Ê¾å
-      *                                    £±Ç¯°ÊÆâ¡Ë
+      *                è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘ï¼˜ï¼‘æ—¥ä»¥ä¸Š
+      *                                    ï¼‘å¹´ä»¥å†…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188000770"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "07"
-      *                ´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¡Ê»»Äê³«»ÏÆü¤«¤é£±Ç¯Ä¶
-      *                                    £±Ç¯£±£¸£°Æü°ÊÆâ¡Ë
+      *                è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘å¹´è¶…
+      *                                    ï¼‘å¹´ï¼‘ï¼˜ï¼æ—¥ä»¥å†…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188000870"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "08"
-      *                ´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¡Ê»»Äê³«»ÏÆü¤«¤é£±Ç¯£±£¸£°ÆüÄ¶¡Ë
+      *                è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘å¹´ï¼‘ï¼˜ï¼æ—¥è¶…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188005870"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "16"
-      *                ´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¡Ê»»Äê³«»ÏÆü¤«¤é£±Ç¯Ä¶
-      *                                    £±Ç¯£±£¸£°Æü°ÊÆâ¡¦±ó³ÖÃÏ²Ã»»¡Ë
+      *                è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘å¹´è¶…
+      *                                    ï¼‘å¹´ï¼‘ï¼˜ï¼æ—¥ä»¥å†…ãƒ»é éš”åœ°åŠ ç®—ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188009170"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "17"
-      *                ´Ñ»¡¼Ò²ñÉüµ¢´ü¸º»»¡Ê»»Äê³«»ÏÆü¤«¤é£±Ç¯£±£¸£°ÆüÄ¶
-      *                                    ¡¦±ó³ÖÃÏ²Ã»»¡Ë
+      *                è¦³å¯Ÿç¤¾ä¼šå¾©å¸°æœŸæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ã‹ã‚‰ï¼‘å¹´ï¼‘ï¼˜ï¼æ—¥è¶…
+      *                                    ãƒ»é éš”åœ°åŠ ç®—ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188009270"   TO  LNK-IRYOKNS-SRYCD(IDX)
              END-EVALUATE
       *
       *
-      *(8801-2)Ì¤·Ð²á¸º»»¤Î¥»¥Ã¥È
+      *(8801-2)æœªçµŒéŽæ¸›ç®—ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "09"
-      *                Ì¤·Ð²á¸º»»¡Ê»»Äê³«»ÏÆü£±Ç¯Ä¶¡¢Âà±¡µö²Ä¤Î¿½Î©¤Æ
-      *                            £±£¸£°Æü°ÊÆâ¡Ë
+      *                æœªçµŒéŽæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ï¼‘å¹´è¶…ã€é€€é™¢è¨±å¯ã®ç”³ç«‹ã¦
+      *                            ï¼‘ï¼˜ï¼æ—¥ä»¥å†…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188000970"   TO  LNK-IRYOKNS-SRYCD(IDX)
                WHEN    "10"
-      *                Ì¤·Ð²á¸º»»¡Ê»»Äê³«»ÏÆü£±Ç¯£±£¸£°ÆüÄ¶¡¢Âà±¡µö²Ä¤Î¿½Î©¤Æ
-      *                        £±£¸£°Æü°ÊÆâ¡Ë
+      *                æœªçµŒéŽæ¸›ç®—ï¼ˆç®—å®šé–‹å§‹æ—¥ï¼‘å¹´ï¼‘ï¼˜ï¼æ—¥è¶…ã€é€€é™¢è¨±å¯ã®ç”³ç«‹ã¦
+      *                        ï¼‘ï¼˜ï¼æ—¥ä»¥å†…ï¼‰
                        ADD     1            TO  IDX
                        MOVE   "188005970"   TO  LNK-IRYOKNS-SRYCD(IDX)
              END-EVALUATE
       *
       *
-      *(8801-3)¼Ò²ñÉüµ¢´ü°Ü¹Ô²Ã»»¤Î¥»¥Ã¥È
+      *(8801-3)ç¤¾ä¼šå¾©å¸°æœŸç§»è¡ŒåŠ ç®—ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "12"
                WHEN    "14"
@@ -263,7 +263,7 @@
              END-EVALUATE
       *
       *
-      *(8801-4)±ó³ÖÃÏ²Ã»»¤Î¥»¥Ã¥È
+      *(8801-4)é éš”åœ°åŠ ç®—ã®ã‚»ãƒƒãƒˆ
              EVALUATE    LNK-IRYOKNS-NYUIN
                WHEN    "13"
                WHEN    "14"
@@ -273,7 +273,7 @@
              END-EVALUATE
       *
       *
-      *(8801-5)¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¤Î¥»¥Ã¥È
+      *(8801-5)å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ã®ã‚»ãƒƒãƒˆ
              INITIALIZE                   SYSKANRI-REC
              MOVE    LNK-IRYOKNS-HOSPNUM
                                       TO  SYS-HOSPNUM
@@ -295,105 +295,105 @@
                    PERFORM  VARYING  IDX1  FROM  1  BY  1
                       UNTIL (IDX1     >   14)   OR
                             (SYS-5001-KSNCD(IDX1)  =   SPACE)
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£±£µ¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼‘ï¼•åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001070") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001070"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£±£¶¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼‘ï¼–åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001170") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001170"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£±£·¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼‘ï¼—åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001270") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001270"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£±£¸¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼‘ï¼˜åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001370") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001370"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£±£¹¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼‘ï¼™åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001470") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001470"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£°¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001570") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001570"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£±¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼‘åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001670") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001670"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£²¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼’åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001770") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001770"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£³¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼“åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001870") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001870"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£´¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼”åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188001970") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188001970"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£µ¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼•åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188002070") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188002070"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£¶¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼–åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188002170") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188002170"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£·¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼—åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188002270") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188002270"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£¸¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼˜åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188002370") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
                            MOVE   "188002370"   TO  LNK-IRYOKNS-SRYCD
                                                                  (IDX)
                         END-IF
-      *                 ¾®µ¬³ÊÉÂÅïÉÂ¾²¿ô²Ã»»¡Ê£²£¹¾²¡Ë
+      *                 å°è¦æ ¼ç—…æ£Ÿç—…åºŠæ•°åŠ ç®—ï¼ˆï¼’ï¼™åºŠï¼‰
                         IF  (SYS-5001-KSNCD(IDX1)  =  "188002470") AND
                             (SYS-5001-KSNKBN(IDX1) =  "2")
                            ADD     1            TO  IDX
@@ -420,7 +420,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-SYSKANRI-SELECT-SEC        SECTION.
       *
@@ -437,7 +437,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SYSKANRI-READ-SEC        SECTION.
       *
@@ -455,7 +455,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Ó£Å£Ì£Å£Ã£Ô½èÍý
+      *    ï¼¤ï¼¢ï¼³ï¼¥ï¼¬ï¼¥ï¼£ï¼´å‡¦ç†
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -472,7 +472,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â£Æ£Å£Ô£Ã£È½èÍý
+      *    ï¼¤ï¼¢ï¼¦ï¼¥ï¼´ï¼£ï¼¨å‡¦ç†
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -484,7 +484,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¢¥¯¥»¥¹½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¢ã‚¯ã‚»ã‚¹å‡¦ç†
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -497,7 +497,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,55 +16,55 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Æþ±¡ÎÁ²Ã»»¼èÆÀ¥Ñ¥é¥á¥¿¡¡¡¡COPY (CPORCSNYUKSNGET.INC)
-      *                                »ÈÍÑ¥×¥í¥°¥é¥à (ORCSNYUKSNGET)
-      *    ÀßÄê¹àÌÜ
-      *      °åÎÅµ¡´Ø£É£Ä
-      *      ´µ¼Ô£É£Ä
-      *      »»Äê³«»ÏÆü
-      *      Æþ±¡ÎÁ¥³¡¼¥É
-      *    ÊÖµÑ¹àÌÜ
-      *      Æþ±¡ÎÁ²Ã»»¶èÊ¬
-      *      Æþ±¡ÎÁ²Ã»»¥³¡¼¥É
-      *      ÆÃÊÌÆþ±¡ÎÁÈ½Äê¥Õ¥é¥°
+      *    å…¥é™¢æ–™åŠ ç®—å–å¾—ãƒ‘ãƒ©ãƒ¡ã‚¿ã€€ã€€COPY (CPORCSNYUKSNGET.INC)
+      *                                ä½¿ç”¨ãƒ—ãƒ­ã‚°ãƒ©ãƒ  (ORCSNYUKSNGET)
+      *    è¨­å®šé …ç›®
+      *      åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
+      *      æ‚£è€…ï¼©ï¼¤
+      *      ç®—å®šé–‹å§‹æ—¥
+      *      å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
+      *    è¿”å´é …ç›®
+      *      å…¥é™¢æ–™åŠ ç®—åŒºåˆ†
+      *      å…¥é™¢æ–™åŠ ç®—ã‚³ãƒ¼ãƒ‰
+      *      ç‰¹åˆ¥å…¥é™¢æ–™åˆ¤å®šãƒ•ãƒ©ã‚°
       *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
        01  ORCSNYUKSNGET-AREA.
       *
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            03  LNK-NYUKSNGET-HOSPNUM                 PIC  9(02).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  LNK-NYUKSNGET-PTID                    PIC  9(10).
-      *»»Äê³«»ÏÆü
+      *ç®—å®šé–‹å§‹æ—¥
            03  LNK-NYUKSNGET-SANTEIYM                PIC  X(06).
-      *Æþ±¡ÉÂÅïÈÖ¹æ
+      *å…¥é™¢ç—…æ£Ÿç•ªå·
            03  LNK-NYUKSNGET-BTUNUM                  PIC  X(02).
-      *Æþ±¡ÉÂ¼¼ÈÖ¹æ
+      *å…¥é™¢ç—…å®¤ç•ªå·
            03  LNK-NYUKSNGET-BRMNUM                  PIC  X(08).
-      *Æþ±¡ÎÁ¥³¡¼¥É
+      *å…¥é™¢æ–™ã‚³ãƒ¼ãƒ‰
            03  LNK-NYUKSNGET-NYUIN-SRYCD             PIC  X(09).
-      *ÆÃÄêÆþ±¡ÎÁ»»ÄêÍ×·ï³°¤ÇÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ£É¤ò»»Äê»þ¤ËÆþ±¡ÎÁ²Ã»»
-      *¤òÆÃÊÌÈ½Äê¤¹¤ë¾ì¹ç¤ÎÈ½Äê¶èÊ¬
+      *ç‰¹å®šå…¥é™¢æ–™ç®—å®šè¦ä»¶å¤–ã§ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼©ã‚’ç®—å®šæ™‚ã«å…¥é™¢æ–™åŠ ç®—
+      *ã‚’ç‰¹åˆ¥åˆ¤å®šã™ã‚‹å ´åˆã®åˆ¤å®šåŒºåˆ†
            03  LNK-NYUKSNGET-GAI-NYUKSNKBN           PIC  X(01).
-      *ÆþÂà±¡ÅÐÏ¿²èÌÌÀßÄê¤Î²Ã»»ÎÎ°è
+      *å…¥é€€é™¢ç™»éŒ²ç”»é¢è¨­å®šã®åŠ ç®—é ˜åŸŸ
            03  LNK-NYUKSNGET-I01-KSN-SRYCD           PIC  X(09)
                                                      OCCURS  3.
            03  LNK-NYUKSNGET-FLG-IPPAN               PIC  9(01).
            03  LNK-NYUKSNGET-FLG-IPPAN2              PIC  9(01).
-      *ÊÖµÑ¹àÌÜ
+      *è¿”å´é …ç›®
            03  LNK-NYUKSNGET-HENKYAKU-AREA.
-      *Æþ±¡ÎÁ²Ã»»¥³¡¼¥ÉÊÖµÑÎÎ°è
+      *å…¥é™¢æ–™åŠ ç®—ã‚³ãƒ¼ãƒ‰è¿”å´é ˜åŸŸ
              05  LNK-NYUKSNGET-HENKYAKU-OCC          OCCURS  20.
-      *Æþ±¡ÎÁ²Ã»»¶èÊ¬
+      *å…¥é™¢æ–™åŠ ç®—åŒºåˆ†
                  07  LNK-NYUKSNGET-NYUKSNKBN         PIC  X(01).
-      *Æþ±¡ÎÁ²Ã»»¥³¡¼¥É
+      *å…¥é™¢æ–™åŠ ç®—ã‚³ãƒ¼ãƒ‰
                  07  LNK-NYUKSNGET-KSNSRYCD          PIC  X(09).
-      *ÆÃÊÌÆþ±¡ÎÁ¶èÊ¬
+      *ç‰¹åˆ¥å…¥é™¢æ–™åŒºåˆ†
            03  LNK-NYUKSNGET-TOKUBETSU-NYUIN         PIC  X(01).
-      *Éüµ¢¥³¡¼¥É¡Ê£°¡§Æþ±¡ÎÁ²Ã»»ÊÖµÑ¤¢¤ê¡¡£±¡§Æþ±¡ÎÁ²Ã»»ÊÖµÑ¤Ê¤·¡Ë
+      *å¾©å¸°ã‚³ãƒ¼ãƒ‰ï¼ˆï¼ï¼šå…¥é™¢æ–™åŠ ç®—è¿”å´ã‚ã‚Šã€€ï¼‘ï¼šå…¥é™¢æ–™åŠ ç®—è¿”å´ãªã—ï¼‰
            03  LNK-NYUKSNGET-RC                      PIC S9(9) BINARY.
       *

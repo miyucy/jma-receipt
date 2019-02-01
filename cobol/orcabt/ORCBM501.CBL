@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,119 +18,119 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBM501.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �쥻�ץ��Ż��ե���������ʣãӣַ�����
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  03/07/18    NACL��ƣ��    ��������
-      *  17/12/20    NACL�ݰ�ƣ    ����������ORCBM500ʣ�̡�
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : レセプト電算ファイル作成（ＣＳＶ形式）
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  03/07/18    NACL−藤原    新規作成
+      *  17/12/20    NACL−伊藤    新規作成（ORCBM500複写）
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  00.00.01    NACL-ƣ��    04/03/18  �оݤ�̵�����Υ��顼ɽ��
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  00.00.01    NACL-藤原    04/03/18  対象が無い場合のエラー表示
       *
-      *  ��������ǯ��������ѹ�
-      *  01.01.01    NACL-ƣ��    04/04/02  �����ֹ�ʰ��ŵ��ؾ����
-      *                                     ���ɲ�
-      *                                     ������ȼ�����ܿ����ѹ�
-      *  01.01.02    NACL-ƣ��    04/08/10  �����쥻�Ť��ɲ�
-      *  01.01.03    NACL-ƣ��    04/09/17  ������ʬ�ˤ�äƽ����оݤ�
-      *                                     ���ꤹ��
-      *  01.01.04    NACL-ƣ��    05/05/09  �����̿��壱����������
-      *                                     �ּ�פε�Ͽ�ˤĤ��Ƥ��
-      *                                    ��0000998�פ��0000999�פ��ѹ�
+      *  ２００４年４月仕様変更
+      *  01.01.01    NACL-藤原    04/04/02  電話番号（医療機関情報）
+      *                                     の追加
+      *                                     改正に伴う項目数の変更
+      *  01.01.02    NACL-藤原    04/08/10  入院レセ電の追加
+      *  01.01.03    NACL-藤原    04/09/17  入外区分によって処理対象を
+      *                                     限定する
+      *  01.01.04    NACL-藤原    05/05/09  改定通信医１６０３９号
+      *                                     「主」の記録についてより
+      *                                    「0000998」を「0000999」に変更
       *
-      *  02.07.01    NACL-ƣ��    05/12/02  �쥻�ťǡ���ʣ�����б�
-      *                                     ���Ͼ���1�ס�3�פΤȤ��Τ�
-      *  02.07.02    NACL-ƣ��    05/12/02  MONFUNC�б�
+      *  02.07.01    NACL-藤原    05/12/02  レセ電データ複数枚対応
+      *                                     出力場所「1」「3」のときのみ
+      *  02.07.02    NACL-藤原    05/12/02  MONFUNC対応
       *
-      *  02.08.03    NACL-ƣ��    06/02/20  ����б�
+      *  02.08.03    NACL-藤原    06/02/20  主科対応
       *
-      *  02.09.05    NACL-ƣ��    06/05/16  �����̿��壱����������
-      *                                     �ɾ��ܵ��쥳�����б�
-      *                                     �쥻�ťǡ����򣲣��������ѹ�
+      *  02.09.05    NACL-藤原    06/05/16  改定通信医１６０４９号
+      *                                     症状詳記レコード対応
+      *                                     レセ電データを２５００に変更
       *
-      *  03.00.01    NACL-ƣ��    06/06/21  �����ƥ�����ξ��������ǯ
-      *                                     ��Ǽ�������
+      *  03.00.01    NACL-藤原    06/06/21  システム管理の情報をを診療年
+      *                                     月で取得する
       *
-      *  03.05.01    NACL-ƣ��    07/04/19  ���롼�׿����б�
-      *  03.05.02    NACL-ƣ��    07/08/01  ���饤�������¸�б�
+      *  03.05.01    NACL-藤原    07/04/19  グループ診療対応
+      *  03.05.02    NACL-藤原    07/08/01  クライアント保存対応
       *
-      *  04.02.01    NACL-ƣ��    08/03/04  ʿ������ǯ��������б�
-      *                                     ������ȼ����Ͽ�����ͤ��ѹ�
+      *  04.02.01    NACL-藤原    08/03/04  平成２０年４月改正対応
+      *                                     改正に伴う記録条件仕様の変更
       *
       *
-      *  04.03.01    NACL-ƣ��    08/05/07  ���񣴼�ޤǤ�ʻ�Ѥε�Ͽ�б�
-      *  04.03.02    NACL-ƣ��    08/06/18  ���ŵ����Խ����󤫤�ΰ��ŵ�
-      *                                     ��̾�Ρ������ֹ���Խ��б�
-      *  04.03.03    NACL-ƣ��    08/07/09  ���쥻�����ʱ��������ޤ���б�
+      *  04.03.01    NACL-藤原    08/05/07  公費４種までの併用の記録対応
+      *  04.03.02    NACL-藤原    08/06/18  医療機関編集情報からの医療機
+      *                                     関名称、電話番号の編集対応
+      *  04.03.03    NACL-藤原    08/07/09  仮レセ作成（院外処方含む）対応
       *
-      *  04.04.01    NACL-ƣ��    09/11/19  �쥻�ţãġݣҽ����б�
-      *  04.04.02    NACL-ƣ��    09/12/10  �����б�
-      *  04.04.03    NACL-ƣ��    10/03/09  ���ŵ��ؾ���ʽ���ˤμ���
-      *                                     ��ˡ�ν���
+      *  04.04.01    NACL-藤原    09/11/19  レセ電ＣＤ−Ｒ出力対応
+      *  04.04.02    NACL-藤原    09/12/10  返戻対応
+      *  04.04.03    NACL-藤原    10/03/09  医療機関情報（住所）の取得
+      *                                     方法の修正
       *
-      *  04.05.01    NACL-ƣ��    10/03/23  ʿ������ǯ��������б�
-      *                                     ����˷���뵭Ͽ�����ͤ�
-      *                                     �ѹ���ȼ������
-      *  04.05.02    NACL-ƣ��    11/04/20  �ҳ��б�
-      *                                     �����ƥ����������˽�������
-      *                                     �������쥻�ץȤΥ쥻�ťǡ���
-      *                                     �κ�����Ԥ�
-      *  04.05.03    NACL-ƣ��    12/06/05  �쥻�ťǡ���̵�����Υ��顼����
-      *                                     ����ʬ�ˤĤ��Ƥϲ��̤���ǧ
-      *                                     �ѤʤΤǥ����å����ʤ� 
-      *  04.05.04    NACL-ƣ��    12/06/25  ����ե���������߻��Υ쥳
-      *                                     ����Ĺ�ѹ�
+      *  04.05.01    NACL-藤原    10/03/23  平成２２年４月改正対応
+      *                                     請求に係わる記録条件仕様の
+      *                                     変更に伴う修正
+      *  04.05.02    NACL-藤原    11/04/20  災害対応
+      *                                     システム管理の設定に従い、災
+      *                                     害該当レセプトのレセ電データ
+      *                                     の作成を行う
+      *  04.05.03    NACL-藤原    12/06/05  レセ電データ無し時のエラー処理
+      *                                     月後れ分については画面より確認
+      *                                     済なのでチェックしない 
+      *  04.05.04    NACL-藤原    12/06/25  返戻ファイル取り込み時のレコ
+      *                                     ード長変更
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
-      *  04.06.02    NACL-ƣ��    12/10/26  �õ����ࣰ����Ϸʻ�˵ڤ�
-      *                                     ������Ϸ��ˤΥ쥻�ץ��б�
-      *                                     receipt_kbn �ɲ�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
+      *  04.06.02    NACL-藤原    12/10/26  特記事項０７（老併）及び
+      *                                     ０８（老健）のレセプト対応
+      *                                     receipt_kbn 追加
       *
-      *  04.07.01    NACL-ƣ��    12/02/13  �����ȹ�ؤ�ľ������ȿ���
-      *                                     ��ʧ���������б�
-      *  04.07.02    NACL-ƣ��    12/10/05  �쥻�ץȷ���򥸥�ִ����˹���
+      *  04.07.01    NACL-藤原    12/02/13  健保組合への直接請求と審査
+      *                                     支払機関請求対応
+      *  04.07.02    NACL-藤原    12/10/05  レセプト件数をジョブ管理に更新
       *
-      *  04.08.01    NACL-ƣ��    14/07/07  ����ǥ��쥯�ȥ��б�
-      *  04.08.02    NACL-ƣ��    15/08/24  �쥻�ťǡ����������������ʬ
-      *                                     �����б�
-      *  04.08.03    NACL-ƣ��    16/06/27  ���ŵ��إ������ѹ����Υ쥻��
-      *                                     �ǡ������κ����б�
-      *                                      �ʣ���������ѹ��Τߡ�
+      *  04.08.01    NACL-藤原    14/07/07  一時ディレクトリ対応
+      *  04.08.02    NACL-藤原    15/08/24  レセ電データ作成時の請求区分
+      *                                     更新対応
+      *  04.08.03    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
+      *                                     データ等の作成対応
+      *                                      （１日からの変更のみ）
       *
-      *  05.00.01    NACL-ƣ��    17/07/04  �ȣ��ϣң��б�
-      *  05.00.03    NACL-��ƣ    17/12/20  ���ž��󥷥��ƥ��б�
-      *                                     ORCBM500��ʣ�̤��ƺ���
-      *                                     ��������ʤ��ǥǡ�������
-      *                                     tbl_receden_tmp����
-      *  04.08.04    NACL-��ƣ    18/04/23  ʿ������ǯ��������б�
-      *                                     �������ʡʻ�̾�ˡ����Ծ��֤��ɲ�
+      *  05.00.01    NACL-藤原    17/07/04  ＨＡＯＲＩ対応
+      *  05.00.03    NACL-伊藤    17/12/20  診療情報システム対応
+      *                                     ORCBM500を複写して作成
+      *                                     請求管理なしでデータ作成
+      *                                     tbl_receden_tmp使用
+      *  04.08.04    NACL-伊藤    18/04/23  平成３０年４月改正対応
+      *                                     カタカナ（氏名）、患者状態の追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
        CONFIGURATION           SECTION.
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
-      *    �쥻�ץ��Ż��ե�����  
+      *    レセプト電算ファイル  
            SELECT  RECE30-FILE     ASSIGN  RECE30PARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL
                                    FILE    STATUS  IS  STS-RECE30.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                    DIVISION.
        FILE                    SECTION.
       *
-      *    �쥻�ץ��Ż��ե�����  
+      *    レセプト電算ファイル  
        FD  RECE30-FILE.
        01  RECE30-R         PIC X(2500).
       *     
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC             PIC X(200). 
       *
@@ -138,7 +138,7 @@
 grpsys*
 grpsys COPY    "COMMON-SPA".
       *
-      *    �쥻�ץ��Ż��ե����� ̾���ΰ� 
+      *    レセプト電算ファイル 名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //RECE30PARA//.
       *01  RECE30PARA.
@@ -151,10 +151,10 @@ grpsys COPY    "COMMON-SPA".
            03  RECE30PARA-RENNUM   PIC 9(02).
            03  FILLER              PIC X(04)   VALUE   ".txt".
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-RECE30              PIC X(02).
            03  STS-RECEERR             PIC X(02).
@@ -168,7 +168,7 @@ grpsys COPY    "COMMON-SPA".
            03  FLG-DATA                PIC 9(01).
            03  FLG-ERR                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
@@ -199,8 +199,8 @@ grpsys COPY    "COMMON-SPA".
            03  SUM-TOTALKENSU         PIC 9(06).
            03  SUM-TOTALTEN           PIC 9(10).
       *
-      *    ����ΰ�
-      *    �ѥ�᥿���ꥢ
+      *    一時領域
+      *    パラメタエリア
        01  WRK-AREA.
            COPY    "CPORCSPRTLNK.INC".
            05  WRK-PARA-TEISYUTUSAKI   PIC X(01).
@@ -215,13 +215,13 @@ grpsys COPY    "COMMON-SPA".
            05  WRK-PARA-HKNJANUM       PIC X(08).
            05  WRK-PARA-STSRYYM        PIC 9(06).
            05  WRK-PARA-EDSRYYM        PIC 9(06).
-      *    �ޥ���ܥ�塼�༱�̾���     
+      *    マルチボリューム識別情報     
            03  WRK-VOLNUM              PIC 9(02).
-      *    �쥻�ץ��ֹ�
+      *    レセプト番号
            03  WRK-RECENUM             PIC 9(06).        
-      *    ����ǯ��������
+      *    請求年月（和暦）
            03  WRK-SEIYM               PIC 9(05).         
-      *    ����ǯ��������
+      *    診療年月（和暦）
            03  WRK-SRYYM               PIC 9(05). 
       *
            03  WRK-MOJISU              PIC 9(02).
@@ -232,16 +232,16 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-INFO1-INDEX         PIC 9(04).        
            03  WRK-INFO2-INDEX         PIC 9(04).        
       *
-      *    �ǡ���Ĺ
+      *    データ長
            03  WRK-DATA-LENGTH         PIC 9(07).        
            03  WRK-PTNUM-LENGTH        PIC 9(07).   
            03  WRK-LEN                 PIC 9(07). 
       *       
-      *     ���Ť��Խ���     
+      *     右づめ編集用     
            03  WRK-HENKAN              PIC X(20).
            03  WRK-LENGTH              PIC 9(02).
            03  WRK-HENSYU              PIC X(20).
-      *    ���ϥǡ����Խ���
+      *    出力データ編集用
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-COM-SRYKBN          PIC X(02).
            03  WRK-REC                 PIC X(2500).
@@ -255,7 +255,7 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-ST              PIC 9(02). 
                05  WRK-SYOSUU          PIC 9(01).
                05  WRK-END             PIC 9(01).
-      *    �����Ѵ���
+      *    日付変換用
            03  WRK-SYMD.
                05  WRK-SYY             PIC X(04).
                05  WRK-SMM             PIC X(02).
@@ -282,7 +282,7 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-CNT-X   REDEFINES   WRK-CNT
                                        PIC X(10).
       *
-      *    �ѥ�᥿�ģ��Խ���
+      *    パラメタＤＢ編集用
            03  WRK-BTPARA-INFO-PARA.
                05  WRK-BTPARA-DATA PIC X(10).
                05  WRK-BTPARA-FILENM
@@ -293,7 +293,7 @@ grpsys COPY    "COMMON-SPA".
                05  WRK-BTPARA-EDNO PIC 9(02).
                05  WRK-BTPARA-WRNO PIC 9(02).
       * 
-      *    �����ȥ�
+      *    タイトル
            03  WRK-SFILESV-TITLE       PIC X(100).
       *
            03  WRK-MCP-PATHNAME        PIC X(64).
@@ -306,16 +306,16 @@ grpsys COPY    "COMMON-SPA".
            03  WRK-ERR-FILE-MSG        PIC X(100).
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
-      *    ���顼�ե�����̾���ΰ� 
+      *    エラーファイル名称領域 
            COPY    "CPTEMPFL.INC"  REPLACING  //TEMPFLPARA//
                                    BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-SGETTEMP-TEMPDIR    PIC X(1024).
       *
-      *    FULLNAME���BASENAME���ϰ���
+      *    FULLNAME内のBASENAME開始位置
        01  WRK-SGETTEMP-ST         PIC 9(05).
       *
-      *    ���ŵ��ؾ�����
+      *    医療機関情報ワーク
            COPY    "CPSK1001.INC"      REPLACING  //SYS-1001//
                                        BY         //WRK-S-1001//.
            COPY    "CPSK1002.INC"      REPLACING  //SYS-1002//
@@ -334,70 +334,70 @@ grpsys COPY    "COMMON-SPA".
            03  TABLE-MAX               PIC 9(05).
       *  
        01  WRK-CONS-AREA.
-      *    �����
+      *    コンマ
            03  WRK-KUGIRI              PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO              PIC X(01)   VALUE   X"0D".
       *
            03  WRK-CONS-LENGTH         PIC 9(07)   VALUE   1441500.
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
            COPY    "CPSK2005.INC".
       *
            COPY    "CPSK200501.INC".
       *
-      *    ���ŵ��ؾ���ʴ��ܡ�
+      *    医療機関情報（基本）
            COPY    "CPSK1001.INC".
       *
-      *    ���ŵ��ؾ���ʽ����
+      *    医療機関情報（住所）
            COPY    "CPSK1002.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
       *
-      *    �쥻�ץ��Ż�
+      *    レセプト電算
            COPY    "CPRECEDEN.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    �ѥ�᥿
+      *    パラメタ
        01  BTPARA-REC.
            COPY    "CPBTPARA.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    Ⱦ�ѥ����å�����
+      *    半角チェックサブ
            COPY    "CPORCSKANACHK.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    �����Ѵ��ΰ�
+      *    数字変換領域
            COPY    "CPORCSNUM.INC".
-      *   �����ֹ��Ѵ�����
+      *   患者番号変換サブ
            COPY    "CPORCSPTID.INC".
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -412,7 +412,7 @@ grpsys COPY    "COMMON-SPA".
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -425,7 +425,7 @@ grpsys COPY    "COMMON-SPA".
            STOP    RUN
            .
       *****************************************************************
-      *    ���������
+      *    初期　処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -486,47 +486,47 @@ grpsys COPY    "COMMON-SPA".
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBM501"      TO  JOB-PGID
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN   
                WHEN    "1" ALSO    ZERO
-                   MOVE    "�쥻�ťե���������ʼ��ݡ�"
+                   MOVE    "レセ電ファイル作成（社保）"
                                            TO  JOB-SHELLMSG
                WHEN    "1" ALSO    "1"
-                   MOVE    "�쥻�ťե���������ʼ��ݡ�������"
+                   MOVE    "レセ電ファイル作成（社保・入院）"
                                            TO  JOB-SHELLMSG
                WHEN    "1" ALSO    "2"
-                   MOVE    "�쥻�ťե���������ʼ��ݡ���������"
+                   MOVE    "レセ電ファイル作成（社保・入院外）"
                                            TO  JOB-SHELLMSG
                WHEN    "2" ALSO    ZERO
-                   MOVE    "�쥻�ťե���������ʹ��ݡ�"
+                   MOVE    "レセ電ファイル作成（国保）"
                                            TO  JOB-SHELLMSG
                WHEN    "2" ALSO    "1"
-                   MOVE    "�쥻�ťե���������ʹ��ݡ�������"
+                   MOVE    "レセ電ファイル作成（国保・入院）"
                                            TO  JOB-SHELLMSG
                WHEN    "2" ALSO    "2"
-                   MOVE    "�쥻�ťե���������ʹ��ݡ���������"
+                   MOVE    "レセ電ファイル作成（国保・入院外）"
                                            TO  JOB-SHELLMSG
                WHEN    "3" ALSO    ZERO
-                   MOVE    "�쥻�ťե���������ʹ����"
+                   MOVE    "レセ電ファイル作成（広域）"
                                            TO  JOB-SHELLMSG
                WHEN    "3" ALSO    "1"
-                   MOVE    "�쥻�ťե���������ʹ��衦������"
+                   MOVE    "レセ電ファイル作成（広域・入院）"
                                            TO  JOB-SHELLMSG
                WHEN    "3" ALSO    "2"
-                   MOVE    "�쥻�ťե���������ʹ��衦��������"
+                   MOVE    "レセ電ファイル作成（広域・入院外）"
                                            TO  JOB-SHELLMSG
                WHEN    "4" ALSO    ZERO
-                   MOVE    "�쥻�ťե���������ʹ��ݡ������"
+                   MOVE    "レセ電ファイル作成（国保、広域）"
                                            TO  JOB-SHELLMSG
                WHEN    "4" ALSO    "1"
-                   MOVE    "�쥻�ťե���������ʹ��ݡ����衦������"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院）"
                                            TO  JOB-SHELLMSG
                WHEN    "4" ALSO    "2"
-                   MOVE    "�쥻�ťե���������ʹ��ݡ����衦��������"
+                   MOVE    "レセ電ファイル作成（国保、広域・入院外）"
                                            TO  JOB-SHELLMSG
            END-EVALUATE
 grpsys     PERFORM 900-CALL-ORCSJOB-SEC
@@ -560,11 +560,11 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       * 
       *****************************************************************
-      *    �����ƥ�����ޥ�������      
+      *    システム管理マスタ取得      
       *****************************************************************
        110-SYSKANRI-HENSYU-SEC      SECTION.
       *
-      *    ���ŵ��ؾ����Խ�
+      *    医療機関情報編集
            INITIALIZE                  SYS-1001-REC
            MOVE    "1001"              TO  SYS-1001-KANRICD
            MOVE    "*"                 TO  SYS-1001-KBNCD
@@ -581,7 +581,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1001-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1001-REC
            ELSE
-               MOVE    "���ŵ��ؾ���ʴ��ܡˤ������Ǥ��ޤ���" 
+               MOVE    "医療機関情報（基本）が取得できません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -603,7 +603,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1002-REC
            ELSE
-               MOVE    "���ŵ��ؾ���ʽ���ˤ������Ǥ��ޤ���" 
+               MOVE    "医療機関情報（住所）が取得できません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -612,11 +612,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            IF      FLG-END             =   ZERO
                MOVE    SYS-1001-HOSPNAME   TO  WRK-S-1001-HOSPNAME
                MOVE    SYS-1002-TEL        TO  WRK-S-1002-TEL
-      *        ���ŵ����Խ�����
+      *        医療機関編集情報
                PERFORM 900-1900-READ-SEC
            END-IF    
       *
-      *    �쥻�ץȰ�������
+      *    レセプト印刷情報
            MOVE    SPACE               TO  SYS-200501-REC
            INITIALIZE                      SYS-200501-REC
            MOVE    "2005"              TO  SYS-200501-KANRICD
@@ -644,7 +644,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    ����ǯ���Խ�����      
+      *    請求年月編集処理      
       *****************************************************************
        120-SKYYM-HENSYU-SEC      SECTION.
       *
@@ -662,7 +662,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -671,10 +671,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                                        WRK-LENGTH 
                                        FLG-DATA 
       *     
-      *    ���ŵ��ؾ���쥳����
+      *    医療機関情報レコード
            PERFORM     2001-HENSYU-SEC
       *
-      *    ���Ų��̽���
+      *    診療科別処理
            MOVE    KEY-NEW         TO  KEY-OLD
            PERFORM                 UNTIL   FLG-END     =   1
                                    OR      FLG-ERR     =   1
@@ -696,14 +696,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
                MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
       *
-      *        �ǡ������Ͻ���
+      *        データ出力処理
                PERFORM 2003-TABLE-WRITE-SEC
                IF      FLG-RECEDEN     =   1
                    MOVE    1                   TO  FLG-END
                END-IF
            END-PERFORM
       * 
-      *    ��׽�쥳����
+      *    合計書レコード
            IF      FLG-ERR         =   ZERO
       *???
                DISPLAY "2008 WRITE VOL="  WRK-VOLNUM 
@@ -716,7 +716,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT.             
       * 
       *****************************************************************
-      *    ���ŵ��ؾ���쥳�����Խ�����
+      *    医療機関情報レコード編集処理
       *****************************************************************
        2001-HENSYU-SEC              SECTION.
       *     
@@ -745,7 +745,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            ELSE
                CALL "coblog" USING   "file open err " RECE30PARA
                MOVE    SPACE               TO  WRK-RECEERR
-               STRING "�ե����� �����ץ󥨥顼 STS="
+               STRING "ファイル オープンエラー STS="
                                                DELIMITED  BY  SIZE
                        STS-RECE30              DELIMITED  BY  SIZE
                                        INTO    WRK-RECEERR
@@ -809,14 +809,14 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT. 
       * 
       *****************************************************************
-      *    �쥻�ץȶ��̥쥳�����Խ�����
+      *    レセプト共通レコード編集処理
       *****************************************************************
        2002-HENSYU-SEC              SECTION.
       *
            MOVE    SPACE               TO  WRK-REC
       *
            IF      RECEDEN-RECEDATA (1:2)  =   "RE"
-      *        ������������ν���
+      *        総件数・点数の集計
                EVALUATE    RECEDEN-RECESYUBETU (3:1)
                    WHEN    "1"
                        ADD     1               TO  SUM-TOTALKENSU
@@ -832,7 +832,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       *
                ADD     RECEDEN-TOTALTEN    TO  SUM-TOTALTEN
       *  
-      *        �쥻�ץ��ֹ���Խ�
+      *        レセプト番号の編集
                MOVE    "RE,"               TO  WRK-REC
                MOVE    3                   TO  WRK-REC-LENGTH
                ADD     1                   TO  WRK-RECENUM
@@ -1057,7 +1057,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT. 
       * 
       *****************************************************************
-      *    �ǡ������Ͻ���
+      *    データ出力処理
       *****************************************************************
        2003-TABLE-WRITE-SEC         SECTION.
       *
@@ -1089,7 +1089,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT. 
       * 
       *****************************************************************
-      *    ��ץ쥳�����Խ�����
+      *    合計レコード編集処理
       *****************************************************************
        2008-HENSYU-SEC              SECTION.
       *
@@ -1126,7 +1126,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
       *
            CLOSE   RECE30-FILE
       *
-      *    �ѥ�᥿�ģ¹�������
+      *    パラメタＤＢ更新処理
       **   IF      FLG-DATA            =   ZERO    OR  9
       **       PERFORM 20081-BTPARA-UPDATE-SEC
       **   END-IF
@@ -1139,11 +1139,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            EXIT. 
       *
       *****************************************************************
-      *    �ѥ�᥿�ģ¹�������
+      *    パラメタＤＢ更新処理
       *****************************************************************
        20081-BTPARA-UPDATE-SEC     SECTION.
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -1172,13 +1172,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  BTPARA-HOSPNUM
                MOVE    "DBUPDATE"          TO  MCP-FUNC
 grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC      NOT =   ZERO
-                   MOVE    "�ѥ�᥿�ģ¤ι��������ǥ��顼�Ȥʤ�ޤ���"
+                   MOVE    "パラメタＤＢの更新処理でエラーとなりました"
                                            TO  WRK-RECEERR
                    PERFORM 500-ERR-HENSYU-SEC
                    PERFORM 500-COBABORT-SEC
                END-IF
            ELSE
-               MOVE    "�оݤΥѥ�᥿�ģ¤�¸�ߤ��ޤ���" 
+               MOVE    "対象のパラメタＤＢが存在しません" 
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -1189,22 +1189,22 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            EXIT. 
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
            IF      CNT-RECEDEN         =   ZERO
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            ELSE
-      *        �ե�������¸���󹹿�
+      *        ファイル保存情報更新
                IF      WRK-PARA-DATAKBN    =   "5" OR  "6"
                    PERFORM 3001-FILE-INFO-INSERT-SEC
                END-IF
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-RECENUM     TO  JOB-UPDCNT2
@@ -1220,7 +1220,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�������¸���󹹿�����
+      *    ファイル保存情報更新処理
       *****************************************************************
        3001-FILE-INFO-INSERT-SEC             SECTION.
       *
@@ -1276,46 +1276,46 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EVALUATE    WRK-PARA-TEISYUTUSAKI
                            ALSO    WRK-PARA-NYUGAIKBN   
                WHEN    "1" ALSO    ZERO
-                   MOVE    "�쥻�ťե���������ʼ��ݡ�"
+                   MOVE    "レセ電ファイル作成（社保）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "1" ALSO    "1"
-                   MOVE    "�쥻�ťǡ����ʼ��ݡ�������"
+                   MOVE    "レセ電データ（社保・入院）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "1" ALSO    "2"
-                   MOVE    "�쥻�ťǡ����ʼ��ݡ���������"
+                   MOVE    "レセ電データ（社保・入院外）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2" ALSO    ZERO
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ�"
+                   MOVE    "レセ電データ（国保）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2" ALSO    "1"
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ�������"
+                   MOVE    "レセ電データ（国保・入院）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2" ALSO    "2"
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ���������"
+                   MOVE    "レセ電データ（国保・入院外）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "3" ALSO    ZERO
-                   MOVE    "�쥻�ťǡ����ʹ����"
+                   MOVE    "レセ電データ（広域）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "3" ALSO    "1"
-                   MOVE    "�쥻�ťǡ����ʹ��衦������"
+                   MOVE    "レセ電データ（広域・入院）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "3" ALSO    "2"
-                   MOVE    "�쥻�ťǡ����ʹ��衦��������"
+                   MOVE    "レセ電データ（広域・入院外）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "4" ALSO    ZERO
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ������"
+                   MOVE    "レセ電データ（国保、広域）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "4" ALSO    "1"
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ����衦������"
+                   MOVE    "レセ電データ（国保、広域・入院）"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "4" ALSO    "2"
-                   MOVE    "�쥻�ťǡ����ʹ��ݡ����衦��������"
+                   MOVE    "レセ電データ（国保、広域・入院外）"
                                            TO  SFILESV-TITLE    (1)
            END-EVALUATE
            IF      WRK-PARA-PRTKBN =   "2"
                MOVE    SFILESV-TITLE (1)   TO  WRK-SFILESV-TITLE
                MOVE    SPACE               TO  SFILESV-TITLE (1)
-               STRING  "�������ѡ�"        DELIMITED  BY  SIZE
+               STRING  "【点検用】"        DELIMITED  BY  SIZE
                        WRK-SFILESV-TITLE   DELIMITED  BY  SPACE
                                            INTO    SFILESV-TITLE (1)
                END-STRING
@@ -1330,7 +1330,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -1344,7 +1344,7 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -1359,7 +1359,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -1376,26 +1376,26 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -1427,11 +1427,11 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�������Ͻ���
+      *    ファイル出力処理
       *****************************************************************
        5001-FILE-WRITE-SEC        SECTION.
       *
-      *    ���ԥ������Խ� 
+      *    改行コード編集 
            STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
                    WRK-KAIGYO                DELIMITED  BY  SIZE
                    INTO        WRK-REC
@@ -1463,7 +1463,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���������Ѵ��Խ�����
+      *    和暦西暦変換編集処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC          SECTION.
       *
@@ -1488,7 +1488,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ť��Խ�����
+      *    右づめ編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -1514,7 +1514,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -1551,14 +1551,14 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
       *
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ����ʿ�����ZZZZZZZZZ9.999���Խ�
+      *    出力レコード処理（数字）ZZZZZZZZZ9.999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE                   
-      *        ���ϰ���
+      *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
                IF      WRK-SYOSUU          >   ZERO
                    COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
@@ -1599,7 +1599,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    日付編集処理
       *****************************************************************
        801-DAYHEN01-SEC                SECTION.
       *
@@ -1625,7 +1625,7 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ţģ��ɹ�
+      *    レセ電ＤＢ読込
       *****************************************************************
        900-RECEDEN-SELECT-SEC             SECTION.
       *
@@ -1657,7 +1657,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �쥻�ţģ��ɹ�
+      *    レセ電ＤＢ読込
       *****************************************************************
        900-RECEDEN-READ-SEC           SECTION.
       *
@@ -1677,7 +1677,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɹ�
+      *    システム管理マスタ読込
       *****************************************************************
        910-SYSKANRI-INV-SEC         SECTION.
       *
@@ -1706,7 +1706,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-SEC         SECTION.
       *
@@ -1731,7 +1731,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ѥ�᥿�ɹ�
+      *    パラメタ読込
       *****************************************************************
        900-BTPARA-READ-N-SEC          SECTION.
       *
@@ -1749,11 +1749,11 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
       *****************************************************************
        900-1900-READ-SEC           SECTION.
       *
-      *    ���ŵ����Խ������ɤ߹���
+      *    医療機関編集情報読み込み
            MOVE    SPACE           TO  SYS-1900-REC
            INITIALIZE                  SYS-1900-REC
            MOVE    "1900"          TO  SYS-1900-KANRICD
@@ -1772,9 +1772,9 @@ grpsys         PERFORM 900-DBFETCH-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(19)  NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
                 END-IF
            ELSE
@@ -1786,7 +1786,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
@@ -1818,7 +1818,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɤ߹���
+      *    医療機関住所編集情報読み込み
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
@@ -1852,7 +1852,7 @@ grpsys         PERFORM 900-DBFETCH-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -1869,7 +1869,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -1882,7 +1882,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -1908,7 +1908,7 @@ grpsys     MOVE    SPA-HOSPNUM     TO  JOB-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -1920,7 +1920,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -1932,7 +1932,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -1945,7 +1945,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -1963,7 +1963,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

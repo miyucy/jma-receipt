@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,44 +18,44 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCHCN33SUB.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¥«¥ë¥Æ£³¹æ»æÍÑÆþ±¡²ñ·×¼èÆÀ¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  04/12/15    NACL¡Ý¾®Æ¦Âô  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : ã‚«ãƒ«ãƒ†ï¼“å·ç´™ç”¨å…¥é™¢ä¼šè¨ˆå–å¾—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  04/12/15    NACLâˆ’å°è±†æ²¢  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  00.00.01    NACL-¾®Æ¦Âô  05/09/16  °Ê²¼¤ÎÆÃÄêÆþ±¡ÎÁ¤Î³°Çñ·×»»¤ò½¤Àµ
-      *                                     ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
-      *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
-      *                                     Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
-      *  01.00.02    NACL-¾®Æ¦Âô  06/01/27  É¸·çÂÐ±þ
-      *  01.00.03    NACL-¾®Æ¦Âô  06/02/01  ¼ç²Ê»»ÄêÍÑ¤ÎÊÖµÑÃÍÂÐ±þ
-      *  01.00.04    NACL-¾®Æ¦Âô  06/02/03  ÎÅÍÜÃ´Åö¼êÅö¤ÆÊÖµÑÃÍÂÐ±þ
-      *  01.00.05    NACL-¾®Æ¦Âô  06/02/02  MONFUNC ÂÐ±þ
-      *  01.00.06    NACL-¾®Æ¦Âô  06/03/22  ÆÃÄêÆþ±¡ÎÁÄÉ²ÃÊ¬¡ÊÇ¾Â´Ãæ¥±¥¢¥æ¥Ë¡Ë
-      *                                     ³°ÇñÃÖ¤­´¹¤¨½èÍý
-      *  01.00.07    NACL-ÌçÏÆ    06/03/27  ¿©»ö²þÀµÂÐ±þ¡Ê£²£°£°£¶Ç¯£´·î¡Ë
-      *  01.00.08    NACL-¾®Æ¦Âô  06/05/23  ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ½¤Àµ
-      *  01.00.09    NACL-¾®Æ¦Âô  06/10/24  Æþ±¡»þÀ¸³èÎÅÍÜÂÐ±þ
-      *  03.04.01    NACL-Æ£¸¶    07/04/18  £Ä£Â£Ã£Ì£Ï£Ó£Å£Ã£Õ£Ò£Ó£Ï£ÒÂÐ±þ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.01.00    NACL-¾®Æ¦Âô  07/12/18  Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÍâÆü¤Î
-      *                                     ¿©»ö¤ÈÆþ±¡ÎÁ²Ã»»ÂÐ±þ
-      *  04.04.01    NACL-ÌçÏÆ    10/06/01  Â¾°åÎÅµ¡´Ø¼õ¿ÇÂÐ±þ
-      *  04.04.02    NACL-ÌçÏÆ    10/08/09  Â¾°å¼õ¿Ç¡Ê³°Çñ£´¡Ë¤ÎÁªÄê»þÂÐ±þ
-      *  04.05.01    NACL-¾®Æ¦Âô  10/01/14  ¼£¸³ÂÐ±þ
-      *  04.05.02    NACL-¾®Æ¦Âô  10/01/19  ¿ÇÎÅÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤ÎÂÐ±þ
-      *  04.05.03    NACL-ÌçÏÆ    12/03/13  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¶¡¤£·¤ÎÂÐ±þ¡Ë
-      *  04.05.04    NACL-ÌçÏÆ    12/09/18  ²þÀµÂÐ±þ¡Ê³°Çñ¶èÊ¬£¸¡¤£¹¤ÎÂÐ±þ¡Ë
-      *  04.07.01    NACL-ÌçÏÆ    14/03/14  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *  04.07.02    NACL-ÌçÏÆ    14/03/26  Ê¿À®£²£¶Ç¯£´·î²þÀµÂÐ±þ
-      *                                     ¡ÊÌë¶Ð»þ´Ö·Ð²á¸º»»¤ÎÁªÄêÂÐ±þ¡Ë
-      *  04.08.01    NACL-ÌçÏÆ    16/03/01  Ê¿À®£²£¸Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.02    NACL-ÌçÏÆ    18/03/01  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
-      *  04.08.03    NACL-ÌçÏÆ    18/03/27  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  00.00.01    NACL-å°è±†æ²¢  05/09/16  ä»¥ä¸‹ã®ç‰¹å®šå…¥é™¢æ–™ã®å¤–æ³Šè¨ˆç®—ã‚’ä¿®æ­£
+      *                                     è¨ºç™‚æ‰€è€äººåŒ»ç™‚ç®¡ç†æ–™
+      *                                     è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼‘
+      *                                     è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼’
+      *  01.00.02    NACL-å°è±†æ²¢  06/01/27  æ¨™æ¬ å¯¾å¿œ
+      *  01.00.03    NACL-å°è±†æ²¢  06/02/01  ä¸»ç§‘ç®—å®šç”¨ã®è¿”å´å€¤å¯¾å¿œ
+      *  01.00.04    NACL-å°è±†æ²¢  06/02/03  ç™‚é¤Šæ‹…å½“æ‰‹å½“ã¦è¿”å´å€¤å¯¾å¿œ
+      *  01.00.05    NACL-å°è±†æ²¢  06/02/02  MONFUNC å¯¾å¿œ
+      *  01.00.06    NACL-å°è±†æ²¢  06/03/22  ç‰¹å®šå…¥é™¢æ–™è¿½åŠ åˆ†ï¼ˆè„³å’ä¸­ã‚±ã‚¢ãƒ¦ãƒ‹ï¼‰
+      *                                     å¤–æ³Šç½®ãæ›ãˆå‡¦ç†
+      *  01.00.07    NACL-é–€è„‡    06/03/27  é£Ÿäº‹æ”¹æ­£å¯¾å¿œï¼ˆï¼’ï¼ï¼ï¼–å¹´ï¼”æœˆï¼‰
+      *  01.00.08    NACL-å°è±†æ²¢  06/05/23  å¤–æ³Šæ™‚ã®å…¥é™¢åŸºæœ¬æ–™å–å¾—ä¿®æ­£
+      *  01.00.09    NACL-å°è±†æ²¢  06/10/24  å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šå¯¾å¿œ
+      *  03.04.01    NACL-è—¤åŽŸ    07/04/18  ï¼¤ï¼¢ï¼£ï¼¬ï¼¯ï¼³ï¼¥ï¼£ï¼µï¼²ï¼³ï¼¯ï¼²å¯¾å¿œ
+      *  03.05.00    NACL-å¤šã€…ç´  07/04/XX  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.01.00    NACL-å°è±†æ²¢  07/12/18  çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ã®å…¥é™¢ç¿Œæ—¥ã®
+      *                                     é£Ÿäº‹ã¨å…¥é™¢æ–™åŠ ç®—å¯¾å¿œ
+      *  04.04.01    NACL-é–€è„‡    10/06/01  ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨ºå¯¾å¿œ
+      *  04.04.02    NACL-é–€è„‡    10/08/09  ä»–åŒ»å—è¨ºï¼ˆå¤–æ³Šï¼”ï¼‰ã®é¸å®šæ™‚å¯¾å¿œ
+      *  04.05.01    NACL-å°è±†æ²¢  10/01/14  æ²»é¨“å¯¾å¿œ
+      *  04.05.02    NACL-å°è±†æ²¢  10/01/19  è¨ºç™‚å…¥åŠ›ã•ã‚ŒãŸç‰¹åˆ¥é£ŸåŠ ç®—ã®å¯¾å¿œ
+      *  04.05.03    NACL-é–€è„‡    12/03/13  æ”¹æ­£å¯¾å¿œï¼ˆå¤–æ³ŠåŒºåˆ†ï¼–ï¼Œï¼—ã®å¯¾å¿œï¼‰
+      *  04.05.04    NACL-é–€è„‡    12/09/18  æ”¹æ­£å¯¾å¿œï¼ˆå¤–æ³ŠåŒºåˆ†ï¼˜ï¼Œï¼™ã®å¯¾å¿œï¼‰
+      *  04.07.01    NACL-é–€è„‡    14/03/14  å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.07.02    NACL-é–€è„‡    14/03/26  å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *                                     ï¼ˆå¤œå‹¤æ™‚é–“çµŒéŽæ¸›ç®—ã®é¸å®šå¯¾å¿œï¼‰
+      *  04.08.01    NACL-é–€è„‡    16/03/01  å¹³æˆï¼’ï¼˜å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.08.02    NACL-é–€è„‡    18/03/01  å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
+      *  04.08.03    NACL-é–€è„‡    18/03/27  å¹³æˆï¼“ï¼å¹´ï¼”æœˆæ”¹æ­£å¯¾å¿œ
       *****************************************************************
       *
       *
@@ -70,7 +70,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-NYUINACCT               PIC 9(01).
            03  FLG-NYUINACT                PIC 9(01).
@@ -91,7 +91,7 @@
            03  FLG-PTNYUINRRK              PIC 9(01).
            03  FLG-HKNCOMBI-MATCH          PIC 9(01).
            03  FLG-NYUINKA-MATCH           PIC 9(01).
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                         PIC 9(04).
            03  IDX1                        PIC 9(04).
@@ -113,32 +113,32 @@
            03  IDX-NYUINKA                 PIC 9(02).
            03  IDX-HKNCOMBI                PIC 9(02).
       *
-      *    ¥³¥ó¥¹¥¿¥ó¥ÈÃÍ
+      *    ã‚³ãƒ³ã‚¹ã‚¿ãƒ³ãƒˆå€¤
        01  CONSTANT-AREA.
-      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
+      *    å…¥é™¢è¨ºç™‚è¨ˆç”»æœªå®Ÿæ–½æ¸›ç®—
            03  CONS-KEIKAKU-GENSAN1        PIC X(09) VALUE "190080470".
            03  CONS-KEIKAKU-GENSAN2        PIC X(09) VALUE "190799670".
-      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+      *    é™¢å†…æ„ŸæŸ“é˜²æ­¢å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
            03  CONS-INNAI-GENSAN1          PIC X(09) VALUE "190080570".
            03  CONS-INNAI-GENSAN2          PIC X(09) VALUE "190799770".
-      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+      *    åŒ»ç™‚å®‰å…¨ç®¡ç†ä½“åˆ¶æœªæ•´å‚™æ¸›ç®—
            03  CONS-ANZEN-GENSAN1          PIC X(09) VALUE "190111690".
            03  CONS-ANZEN-GENSAN2          PIC X(09) VALUE "190809090".
-      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+      *    è¤¥ç˜¡å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
            03  CONS-JYOKU-GENSAN1          PIC X(09) VALUE "190111790".
            03  CONS-JYOKU-GENSAN2          PIC X(09) VALUE "190809190".
-      *    Æü¾ïÀ¸³è¾ã³²²Ã»»
+      *    æ—¥å¸¸ç”Ÿæ´»éšœå®³åŠ ç®—
            03  CONS-NICHIJOU-KSN1          PIC X(09) VALUE "190109170".
            03  CONS-NICHIJOU-KSN2          PIC X(09) VALUE "190807570".
-      *    ÃÔÊò²Ã»»
+      *    ç—´å‘†åŠ ç®—
            03  CONS-CHIHOU-KSN1            PIC X(09) VALUE "190109270".
            03  CONS-CHIHOU-KSN2            PIC X(09) VALUE "190808670".
-      *    êóáì´µ¼Ô´ÉÍý²Ã»»
+      *    è¤¥ç˜¡æ‚£è€…ç®¡ç†åŠ ç®—
            03  CONS-JYOKU-KSN1             PIC X(09) VALUE "190116990".
            03  CONS-JYOKU-KSN2             PIC X(09) VALUE "190813390".
-      *    ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
+      *    ç‰¹å®šæŠ—ç²¾ç¥žç—…è–¬æ²»ç™‚ç®¡ç†åŠ ç®—
            03  CONS-TOKUSEIYAKU-KSN        PIC X(09) VALUE "190117570".
-      *    É¸·ç¸º³Û¥³¡¼¥É
+      *    æ¨™æ¬ æ¸›é¡ã‚³ãƒ¼ãƒ‰
            03  CONS-HYOUKETSU1             PIC X(09) VALUE "190107890".
            03  CONS-HYOUKETSU2             PIC X(09) VALUE "190107990".
            03  CONS-HYOUKETSU3             PIC X(09) VALUE "190108090".
@@ -148,13 +148,13 @@
            03  CONS-HYOUKETSU7             PIC X(09) VALUE "190108490".
            03  CONS-HYOUKETSU8             PIC X(09) VALUE "190108590".
            03  CONS-HYOUKETSU9             PIC X(09) VALUE "190108690".
-      *    ¤½¤ÎÂ¾¿ÇÎÅ¹Ô°Ù¤ÇÆþÎÏ¤·¤¿Æþ±¡ÎÁ²Ã»»
+      *    ãã®ä»–è¨ºç™‚è¡Œç‚ºã§å…¥åŠ›ã—ãŸå…¥é™¢æ–™åŠ ç®—
            03  CONS-ETCNYUIN-TBL.
              05  CONS-ETCNYUIN-KSN         PIC X(09)  OCCURS 10.
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß¥ï¡¼¥¯ÍÑ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿ãƒ¯ãƒ¼ã‚¯ç”¨
            03  TTNS-CONST-MAX              PIC 9(03) VALUE 200.
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
       *
            03  WRK-GAIHAKU-SRYCD           PIC X(09).
@@ -175,7 +175,7 @@
                05  WRK-GETSUMATSU-MM       PIC 9(02).
                05  WRK-GETSUMATSU-DD       PIC 9(02).
       *
-      *    Æþ±¡²ñ·×¥ï¡¼¥¯
+      *    å…¥é™¢ä¼šè¨ˆãƒ¯ãƒ¼ã‚¯
            03  WRK-NYUIN-TABLE.
                05  WRK-NYUIN-TBL           OCCURS  31.
                    07  WRK-SRYKA-DAY       PIC X(01).
@@ -191,7 +191,7 @@
                    07  WRK-NYUKHNKBN       PIC 9(03).
                    07  WRK-KANGOGEN        PIC X(09).
       *
-      *    Æþ±¡²ñ·×ÊÂ¤ÓÂØ¤¨¥ï¡¼¥¯
+      *    å…¥é™¢ä¼šè¨ˆä¸¦ã³æ›¿ãˆãƒ¯ãƒ¼ã‚¯
            03  WRK-NYUIN-SORT-TABLE.
                05  WRK-NYUIN-SORT-TBL      OCCURS  31.
                    07  WRK-SO-MEISAISU     PIC 9(02).
@@ -202,7 +202,7 @@
                    07  WRK-SO-TEN          PIC S9(07).
                    07  WRK-SO-KAISU        PIC 9(02).
       *
-      *    Æ±°ìºÞ¤Þ¤È¤áÍÑÈæ³Ó¥­¡¼
+      *    åŒä¸€å‰¤ã¾ã¨ã‚ç”¨æ¯”è¼ƒã‚­ãƒ¼
            03  WRK-OLD-KEY.
                05  WRK-OLD-MEISAISU        PIC 9(02).
                05  WRK-OLD-SRYKA-DAY       PIC X(01).
@@ -214,77 +214,77 @@
                05  WRK-NEW-SRYCDTOTAL      PIC 9(14).
                05  WRK-NEW-TEN             PIC 9(07).
       *
-      *    Æþ±¡ÎÁ²Ã»»ÂàÈòÎÎ°è
+      *    å…¥é™¢æ–™åŠ ç®—é€€é¿é ˜åŸŸ
            03  WRK-NYUKSN-TABLE.
                05  WRK-NYUKSN-TBL          OCCURS  20.
                    07  WRK-NYUKSN          PIC X(09).
                    07  WRK-NYUKSN-ZAITEN   PIC 9(08).
                    07  WRK-NYUKSN-DAY      PIC 9(03)  OCCURS 31.
       *
-      *    ¼£¸³¸ºÅÀÂàÈòÎÎ°è
+      *    æ²»é¨“æ¸›ç‚¹é€€é¿é ˜åŸŸ
            03  WRK-CHIKEN-TABLE.
                05  WRK-CHIKEN-ZAITEN       PIC 9(08)  OCCURS 31.
       *
-      *    °åÎÅ´Ñ»¡ÅÀ¿ôÂàÈòÎÎ°è
+      *    åŒ»ç™‚è¦³å¯Ÿç‚¹æ•°é€€é¿é ˜åŸŸ
            03  WRK-IRYOKNS-TABLE.
                05  WRK-IRYOKNS-ZAITEN      PIC 9(08)  OCCURS 31.
       *
-      *    Ì¤¼Â»Ü¸º»»ÂàÈòÍÑ¥Õ¥é¥°¥Æ¡¼¥Ö¥ë
+      *    æœªå®Ÿæ–½æ¸›ç®—é€€é¿ç”¨ãƒ•ãƒ©ã‚°ãƒ†ãƒ¼ãƒ–ãƒ«
            03  WRK-GENSAN-TABLE.
                05  WRK-GENSAN-INF          OCCURS  31.
                    07  WRK-GENSAN-INNAI    PIC X(01).
                    07  WRK-GENSAN-IRYO     PIC X(01).
                    07  WRK-GENSAN-JYOKU    PIC X(01).
       *
-      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+      *    é™¢å†…æ„ŸæŸ“é˜²æ­¢å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-GENSAN2                 PIC X(09).
-      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»¥ï¡¼¥¯
+      *    åŒ»ç™‚å®‰å…¨ç®¡ç†ä½“åˆ¶æœªæ•´å‚™æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-GENSAN3                 PIC X(09).
-      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+      *    è¤¥ç˜¡å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-GENSAN4                 PIC X(09).
       *
-      *    Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+      *    å…¥é™¢è¨ºç™‚è¨ˆç”»æœªå®Ÿæ–½æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-KEIKAKU-GENSAN1         PIC 9(03) OCCURS 31.
            03  WRK-KEIKAKU-GENSAN2         PIC 9(03) OCCURS 31.
-      *    ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+      *    é™¢å†…æ„ŸæŸ“é˜²æ­¢å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-INNAI-GENSAN1           PIC 9(03) OCCURS 31.
            03  WRK-INNAI-GENSAN2           PIC 9(03) OCCURS 31.
-      *    °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»¥ï¡¼¥¯
+      *    åŒ»ç™‚å®‰å…¨ç®¡ç†ä½“åˆ¶æœªæ•´å‚™æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-ANZEN-GENSAN1           PIC 9(03) OCCURS 31.
            03  WRK-ANZEN-GENSAN2           PIC 9(03) OCCURS 31.
-      *    êóáìÂÐºöÌ¤¼Â»Ü¸º»»¥ï¡¼¥¯
+      *    è¤¥ç˜¡å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—ãƒ¯ãƒ¼ã‚¯
            03  WRK-JYOKU-GENSAN1           PIC 9(03) OCCURS 31.
            03  WRK-JYOKU-GENSAN2           PIC 9(03) OCCURS 31.
       *
-      *    Æü¾ïÀ¸³è¾ã³²²Ã»»ÂàÈò
+      *    æ—¥å¸¸ç”Ÿæ´»éšœå®³åŠ ç®—é€€é¿
            03  WRK-NICHIJOU-KSN1           PIC 9(03) OCCURS 31.
            03  WRK-NICHIJOU-KSN2           PIC 9(03) OCCURS 31.
       *
-      *    ÃÔÊò²Ã»»ÂàÈò
+      *    ç—´å‘†åŠ ç®—é€€é¿
            03  WRK-CHIHOU-KSN1             PIC 9(03) OCCURS 31.
            03  WRK-CHIHOU-KSN2             PIC 9(03) OCCURS 31.
       *
-      *    êóáì´µ¼Ô´ÉÍý²Ã»»
+      *    è¤¥ç˜¡æ‚£è€…ç®¡ç†åŠ ç®—
            03  WRK-JYOKU-KSN1              PIC 9(03) OCCURS 31.
            03  WRK-JYOKU-KSN2              PIC 9(03) OCCURS 31.
       *
-      *    ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
+      *    ç‰¹å®šæŠ—ç²¾ç¥žç—…è–¬æ²»ç™‚ç®¡ç†åŠ ç®—
            03  WRK-TOKUSEIYAKU-KSN         PIC 9(03) OCCURS 31.
       *
-      *    ¤½¤ÎÂ¾¿ÇÎÅ¹Ô°Ù¤ÇÆþÎÏ¤·¤¿Æþ±¡ÎÁ²Ã»»
+      *    ãã®ä»–è¨ºç™‚è¡Œç‚ºã§å…¥åŠ›ã—ãŸå…¥é™¢æ–™åŠ ç®—
            03  WRK-ETCNYUIN-TBL            OCCURS  10.
              05  WRK-ETCNYUIN-KSN          PIC 9(03) OCCURS 31.
       *
-      *    ¿ÇÎÅ¥³¡¼¥É·×½¸·×ÍÑ
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆé›†è¨ˆç”¨
            03  WRK-SRYCD-X                 PIC X(09).
            03  WRK-SRYCD-9    REDEFINES    WRK-SRYCD-X
                                            PIC 9(09).
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¿©»öÂàÈòÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†é£Ÿäº‹é€€é¿é ˜åŸŸ
            03  WRK-SYS5000-SKJ             OCCURS  5.
                05  WRK-SYS5000-SHOKUCD     PIC X(09) OCCURS 31.
       *
-      *    ¿©»ö¥ï¡¼¥¯
+      *    é£Ÿäº‹ãƒ¯ãƒ¼ã‚¯
            03  WRK-SKJ-TABLE.
                05  WRK-SKJ-TBL           OCCURS  31.
                    07  WRK-SKJ-SRYKA-DAY       PIC X(01).
@@ -298,20 +298,20 @@
                    07  WRK-SKJ-SRYCDTOTAL      PIC 9(14).
                    07  WRK-SKJ-KAISU           PIC 9(02).
                    07  WRK-SKJ-MONEY           PIC 9(07).
-      *    ¿©»ö¥ï¡¼¥¯£²¡ÊÊ£¿ô¸¥Î©²Ã»»¡Ë
+      *    é£Ÿäº‹ãƒ¯ãƒ¼ã‚¯ï¼’ï¼ˆè¤‡æ•°çŒ®ç«‹åŠ ç®—ï¼‰
            03  WRK-SKJ2-TABLE.
                05  WRK-SKJ2-TBL          OCCURS  31.
                    07  WRK-SKJ2-SRYKA-DAY      PIC X(01).
                    07  WRK-SKJ2-FUKUSU         PIC X(09).
                    07  WRK-SKJ2-KAISU          PIC 9(02).
-      *    ¿©»ö¥ï¡¼¥¯£³¡ÊÆÃÊÌ¿©²Ã»»¡Ë
+      *    é£Ÿäº‹ãƒ¯ãƒ¼ã‚¯ï¼“ï¼ˆç‰¹åˆ¥é£ŸåŠ ç®—ï¼‰
            03  WRK-SKJ3-TABLE.
                05  WRK-SKJ3-TBL          OCCURS  31.
                    07  WRK-SKJ3-SRYKA-DAY      PIC X(01).
                    07  WRK-SKJ3-TOKU-SHOKU     PIC X(09).
                    07  WRK-SKJ3-KAISU          PIC 9(02).
       *
-      *    ¿©»ö¥ï¡¼¥¯£²£°£°£¶£°£´
+      *    é£Ÿäº‹ãƒ¯ãƒ¼ã‚¯ï¼’ï¼ï¼ï¼–ï¼ï¼”
            03  WRK-SKJ200604-TABLE.
                05  WRK-SKJ200604-TBL     OCCURS  31.
                    07  WRK-SKJ200604-NYUINJI   PIC 9(04).
@@ -330,7 +330,7 @@
       *
            03  WRK-KEISAN                      PIC 9(07).
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯
            03  WRK-TENSU-OCC                   OCCURS  200.
                05  WRK-TENSU-SRYCD             PIC X(09).
                05  WRK-TENSU-DATA              PIC X(2000).
@@ -338,104 +338,104 @@
            03  TTNS-IDX                        PIC 9(03).
            03  TTNS-MAX                        PIC 9(03).
       *
-      *    ÁªÄêÎÅÍÜÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+      *    é¸å®šç™‚é¤Šé€€é¿ç”¨ãƒ†ãƒ¼ãƒ–ãƒ«
            03  TABLE-SENTEI.
                05  TBL-SENTEI                  PIC 9(01)   OCCURS  31.
       *
-      *    Æþ±¡²Ê°ìÃ×È½ÄêÍÑ¥Æ¡¼¥Ö¥ë
+      *    å…¥é™¢ç§‘ä¸€è‡´åˆ¤å®šç”¨ãƒ†ãƒ¼ãƒ–ãƒ«
            03  TABLE-KAMATCH.
                05  TBL-KAMATCH                 PIC X(01)   OCCURS  31.
       *
-      *    Æþ±¡²ÊÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+      *    å…¥é™¢ç§‘é€€é¿ç”¨ãƒ†ãƒ¼ãƒ–ãƒ«
            03  TABLE-NYUINKA.
                05  TBL-NYUINKA                 PIC X(02)   OCCURS  31.
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»ÂàÈòÍÑ¥Æ¡¼¥Ö¥ë
+      *    ä¿é™ºçµ„åˆã›é€€é¿ç”¨ãƒ†ãƒ¼ãƒ–ãƒ«
            03  TABLE-HKNCOMBI.
                05  TBL-HKNCOMBI                PIC 9(04)   OCCURS  31.
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿
            COPY    "CPSYSKANRI.INC".
       *
            COPY    "CPSK5000.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  NYUINACT-REC.
            COPY    "CPNYUINACT.INC".
       *
-      *    ¿ÇÎÅ²ñ·×
+      *    è¨ºç™‚ä¼šè¨ˆ
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù
+      *    è¨ºç™‚è¡Œç‚º
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
            COPY    "CPTENSU.INC".
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ÁªÄêÎÅÍÜÈñ
+      *    é¸å®šç™‚é¤Šè²»
        01  SENTEICDCHG-REC.
            COPY    "CPSENTEICDCHG.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
            COPY    "MCPAREA".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ÊÝ¸±»»ÄêÍÑÇ¯Îð¡¦³ä¹ç·×»»¥µ¥Ö
+      *    ä¿é™ºç®—å®šç”¨å¹´é½¢ãƒ»å‰²åˆè¨ˆç®—ã‚µãƒ–
            COPY    "CPORCSAGECHK.INC".
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYULIFE.INC".
       *
-      *    Æþ±¡ÎÁÌ¤»»ÄêÆü¼èÆÀ¥µ¥Ö
+      *    å…¥é™¢æ–™æœªç®—å®šæ—¥å–å¾—ã‚µãƒ–
            COPY    "CPORCSNYUINDAY.INC".
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜÈñÉéÃ´³Û¼èÆÀ¥µ¥Ö£²
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šè²»è² æ‹…é¡å–å¾—ã‚µãƒ–ï¼’
            COPY    "CPORCSNYULIFE2.INC".
       *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ¥µ¥Ö
+      *    å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—å–å¾—ã‚µãƒ–
            COPY    "CPORCSKANGOGEN.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    Æþ±¡²ñ·×ºîÀ®ÍÑ¥Ñ¥é¥á¥¿
+      *    å…¥é™¢ä¼šè¨ˆä½œæˆç”¨ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCHCN33SUB.INC".
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
       *
        PROCEDURE                   DIVISION    USING
@@ -444,7 +444,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -455,13 +455,13 @@
            INITIALIZE                  CONS-ETCNYUIN-TBL
            MOVE    ZERO                TO  LNK-ORCHCN33SUB-RC
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
            PERFORM 100-PRM-CHK-SEC
            IF    ( LNK-ORCHCN33SUB-RC       NOT =   ZERO )
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
            IF      LNK-ORCHCN33SUB-RC      =    ZERO
                PERFORM 200-MAIN-SEC
            END-IF
@@ -473,17 +473,17 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        100-PRM-CHK-SEC                     SECTION.
       *
-      *    »»ÄêÇ¯·î¥Á¥§¥Ã¥¯
+      *    ç®—å®šå¹´æœˆãƒã‚§ãƒƒã‚¯
            IF    ( LNK-ORCHCN33SUB-SANTEIYM    =   SPACE )
                MOVE    1               TO  LNK-ORCHCN33SUB-RC
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
            INITIALIZE                      PTINF-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  PTINF-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  PTINF-PTID
@@ -493,7 +493,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    ¿ÇÎÅ²Ê¥Á¥§¥Ã¥¯
+      *    è¨ºç™‚ç§‘ãƒã‚§ãƒƒã‚¯
            IF     LNK-ORCHCN33SUB-SRYKA    NOT =   SPACE
                CONTINUE
            ELSE
@@ -501,7 +501,7 @@
                GO  TO  100-PRM-CHK-EXT
            END-IF
       *
-      *    Æþ±¡Ãæ¤Î¥Á¥§¥Ã¥¯¡ÊÆþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷¡ÝÊÝ¸±ÁÈ¹ç¤»¤ÎºÞ¡Ë
+      *    å…¥é™¢ä¸­ã®ãƒã‚§ãƒƒã‚¯ï¼ˆå…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢âˆ’ä¿é™ºçµ„åˆã›ã®å‰¤ï¼‰
            INITIALIZE                      NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
@@ -528,7 +528,7 @@
                END-IF
            END-IF
       *
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -537,14 +537,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼ç¼èÆÀ
+      *    ä¸»å–å¾—
       *****************************************************************
        200-MAIN-SEC            SECTION.
       *
-      *    ¥Æ¥¹¥ÈÍÑ
+      *    ãƒ†ã‚¹ãƒˆç”¨
       *     MOVE   "00"     TO    LNK-ORCHCN33SUB-SRYKA
       *     MOVE   "2"     TO    LNK-ORCHCN33SUB-SHORIKBN
-      *ÂÐ¾ÝÆþ±¡²Ê¤Î¼èÆÀ
+      *å¯¾è±¡å…¥é™¢ç§‘ã®å–å¾—
            INITIALIZE                           TABLE-NYUINKA
            MOVE    ZERO                     TO  IDX-ST
                                                 IDX-ED
@@ -634,7 +634,7 @@
                MOVE     5      TO      LNK-ORCHCN33SUB-RC
       *********GO   TO    200-MAIN-EXT
            END-IF
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥¯¥í¡¼¥º
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_ptnyuinrrk"        TO  MCP-TABLE
            MOVE    "key8"                  TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -655,17 +655,17 @@
                END-PERFORM
            END-IF
       *
-      *    Æþ±¡ÅÀ¿ô¼èÆÀ½èÍý
+      *    å…¥é™¢ç‚¹æ•°å–å¾—å‡¦ç†
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE  OR  "1"
                PERFORM    210-NYUINTEN-GET-SEC
            END-IF
       *
-      *    Æþ±¡ÅÀ¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È
+      *    å…¥é™¢ç‚¹æ•°è¿”å´ã‚¨ãƒªã‚¢ã¸ã®ã‚»ãƒƒãƒˆ
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   "1"
                PERFORM    210-NYUINTEN-SET-SEC
            END-IF
       *
-      *    Æþ±¡Æü¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È
+      *    å…¥é™¢æ—¥æ•°è¿”å´ã‚¨ãƒªã‚¢ã¸ã®ã‚»ãƒƒãƒˆ
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   "2"
                PERFORM    210-NYUINDAY-SET-SEC
            END-IF
@@ -675,11 +675,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÅÀ¿ô¼èÆÀ
+      *    å…¥é™¢ç‚¹æ•°å–å¾—
       *****************************************************************
        210-NYUINTEN-GET-SEC            SECTION.
       *
-      *    Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»¼èÆÀ
+      *    å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—å–å¾—
            IF      LNK-ORCHCN33SUB-SANTEIYM   >=   "201804"
              INITIALIZE                         ORCSKANGOGEN-AREA
              MOVE  LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-KANGOGEN-HOSPNUM
@@ -695,7 +695,7 @@
              END-IF
            END-IF
       *
-      *Æþ±¡ÎÁ¤Î¼èÆÀ
+      *å…¥é™¢æ–™ã®å–å¾—
            MOVE    ZERO                    TO  FLG-OK
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
@@ -716,9 +716,9 @@
                    IF    NACCT-SRYCDTOTAL     =    99999916
                        CONTINUE
                    ELSE
-      *                ³ºÅöÆþ±¡¹Ô°Ù¥Æ¡¼¥Ö¥ë¤ÎÆÉ¤ß¹þ¤ß
+      *                è©²å½“å…¥é™¢è¡Œç‚ºãƒ†ãƒ¼ãƒ–ãƒ«ã®èª­ã¿è¾¼ã¿
                        PERFORM    210-NYUINACT-GET-SEC
-      *                Æþ±¡´ðËÜÎÁ¤È½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë¤ÎÂàÈò
+      *                å…¥é™¢åŸºæœ¬æ–™ã¨åˆæœŸåŠ ç®—ï¼ˆé•·æœŸæ¸›ç®—ï¼‰ã®é€€é¿
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF    (WRK-SRYKA-DAY(IDX1) NOT = SPACE)
@@ -726,7 +726,7 @@
                                MOVE    NSRY-SRYCD(1)   TO  
                                                    WRK-NYUINKHN(IDX1)
       *
-      *                        °åÎÅ´Ñ»¡Ë¡¤ÎÆþ±¡ÎÁ»»Äê»þ¤Ï¥ï¡¼¥¯ÎÎ°èÂàÈò
+      *                        åŒ»ç™‚è¦³å¯Ÿæ³•ã®å…¥é™¢æ–™ç®—å®šæ™‚ã¯ãƒ¯ãƒ¼ã‚¯é ˜åŸŸé€€é¿
                                IF   NSRY-SRYCD(1)(1:3)  =  "188"
                                    MOVE  NACCT-ZAITEN  TO
                                                WRK-IRYOKNS-ZAITEN(IDX1)
@@ -755,7 +755,7 @@
                                                    WRK-SHOKIKSN(IDX1)
                                    END-IF
                                END-IF
-      *                        É¸·ç¥³¡¼¥É
+      *                        æ¨™æ¬ ã‚³ãƒ¼ãƒ‰
                                IF   NSRY-SRYCD(2)  NOT =   SPACE
                                    IF (NSRY-SRYCD(2) =
                                                     CONS-HYOUKETSU1) OR
@@ -802,13 +802,13 @@
                                                    WRK-HYOUKETSU(IDX1)
                                    END-IF
                                END-IF
-      *                        ¿ÇÎÅ¶èÊ¬
+      *                        è¨ºç™‚åŒºåˆ†
                                MOVE    NACCT-SRYKBN
                                                 TO  WRK-SRYKBN(IDX1)
                                IF   FLG-RYAKU   =   ZERO
       *
-      *                           ³°Çñ¥³¡¼¥ÉÊÔ½¸ÍÑ¤ËÆþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬
-      *                           ¤ÎÂàÈò
+      *                           å¤–æ³Šã‚³ãƒ¼ãƒ‰ç·¨é›†ç”¨ã«å…¥é™¢åŸºæœ¬æ–™åŠ ç®—åŒºåˆ†
+      *                           ã®é€€é¿
                                   PERFORM   210-GAIHAKU-MAE-SEC
       *
                                   MOVE    1     TO    FLG-RYAKU
@@ -816,16 +816,16 @@
       *
                                MOVE  WRK-KSNKBN
                                          TO  WRK-NYUKHNKSNKBN(IDX1)
-      *                        Æþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬ÃÖ¤­´¹¤¨
+      *                        å…¥é™¢åŸºæœ¬æ–™åŠ ç®—åŒºåˆ†ç½®ãæ›ãˆ
                                IF  LNK-ORCHCN33SUB-SANTEIYM >= "201804"
-      *                          ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
-      *                                        ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
+      *                          ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™
+      *                                        ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰
                                  IF   (WRK-KSNKBN       = 27 )
                                  AND  (WRK-CDKBN-KBNNUM = 101)
                                    MOVE  901 TO WRK-NYUKHNKSNKBN(IDX1)
                                  END-IF
-      *                          Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
-      *                                        ¡ÊÆÃÊÌÆþ±¡´ðËÜÎÁ¡Ë
+      *                          æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™
+      *                                        ï¼ˆç‰¹åˆ¥å…¥é™¢åŸºæœ¬æ–™ï¼‰
                                  IF   (WRK-KSNKBN       = 27 )
                                  AND  (WRK-CDKBN-KBNNUM = 109)
                                    MOVE  909 TO WRK-NYUKHNKSNKBN(IDX1)
@@ -849,12 +849,12 @@
            ELSE
                MOVE     6      TO      LNK-ORCHCN33SUB-RC
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ã®å…¥é™¢æ–™æœªç®—å®šæ—¥ã«ã¤ã„ã¦å–å¾—
            INITIALIZE                         ORCSNYUINDAY-AREA
            MOVE LNK-ORCHCN33SUB-HOSPNUM   TO  LNK-NYUINDAY-HOSPNUM
            MOVE LNK-ORCHCN33SUB-PTID      TO  LNK-NYUINDAY-PTID
@@ -869,7 +869,7 @@
                 GO   TO    210-NYUINTEN-GET-EXT
           END-IF
       *
-      *Æþ±¡»þ¤Î³°Çñ¼èÆÀ
+      *å…¥é™¢æ™‚ã®å¤–æ³Šå–å¾—
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
@@ -881,7 +881,7 @@
                MOVE    "key17"             TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-      *            ³°Çñ¶èÊ¬¤ÎÂàÈò
+      *            å¤–æ³ŠåŒºåˆ†ã®é€€é¿
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
@@ -893,12 +893,12 @@
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *ÁªÄêÎÅÍÜ¾ðÊó¤Î¼èÆÀ
+      *é¸å®šç™‚é¤Šæƒ…å ±ã®å–å¾—
            MOVE    ZERO                    TO  FLG-SENTEI-SET
            MOVE    ZERO                    TO  FLG-NYUINACCT
            INITIALIZE                          NYUINACCT-REC
@@ -911,7 +911,7 @@
                MOVE     "key22"            TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-      *            ÁªÄêÆþ±¡¤ÎÂàÈò
+      *            é¸å®šå…¥é™¢ã®é€€é¿
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-NYUINKHN(IDX1) NOT = SPACE) 
@@ -925,18 +925,18 @@
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key22"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Ï·¿ÍÂÐ¾Ý´µ¼Ô¥Á¥§¥Ã¥¯
+      *è€äººå¯¾è±¡æ‚£è€…ãƒã‚§ãƒƒã‚¯
            PERFORM   210-RJN-TAISYO-CHK-SEC
       *
-      *·îÆâ¤ËÊ£¿ô¤ÎÆþ±¡´ðËÜ¾ðÊó¡Ê£µ£°£°£°¡Ë¤¬¤Ê¤¤¤«¸¡º÷
+      *æœˆå†…ã«è¤‡æ•°ã®å…¥é™¢åŸºæœ¬æƒ…å ±ï¼ˆï¼•ï¼ï¼ï¼ï¼‰ãŒãªã„ã‹æ¤œç´¢
            PERFORM   210-SYS-5000-CHK-SEC
       *
-      *°åÎÅµ¡´Ø¸º»»¾ðÊó¤Î¼èÆÀ¡Ê¥·¥¹¥Æ¥à´ÉÍý¥Æ¡¼¥Ö¥ë¤è¤ê¡Ë
+      *åŒ»ç™‚æ©Ÿé–¢æ¸›ç®—æƒ…å ±ã®å–å¾—ï¼ˆã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šï¼‰
            MOVE    ZERO                TO  FLG-SYSKANRI
            INITIALIZE                      SYSKANRI-REC
            MOVE    "5000"              TO  SYS-KANRICD
@@ -996,7 +996,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                         END-EVALUATE
                     END-IF
                END-PERFORM
-      *        ¿©»ö¾ðÊó¤ÎÂàÈò
+      *        é£Ÿäº‹æƒ…å ±ã®é€€é¿
                PERFORM    VARYING   IDX  FROM  1  BY  1
                           UNTIL     IDX   >    31
                    IF     SYS-5000-SHOKUJIRYOYOCD  NOT =  SPACE
@@ -1017,7 +1017,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *             END-IF
                END-PERFORM
            END-IF
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥¯¥í¡¼¥º
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_syskanri"          TO  MCP-TABLE
            MOVE    "key"                   TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -1028,7 +1028,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  PERFORM  210-SYS-5000-GET-SEC
            END-IF
       *
-      *¿©Æ²²Ã»»¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
+      *é£Ÿå ‚åŠ ç®—å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆã‚ˆã‚Šï¼‰
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
@@ -1042,7 +1042,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                  IF   NACCT-SRYCDTOTAL     =   197000570
-      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+      *            å…¥é™¢æ–™åŠ ç®—ã®é€€é¿
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF    (WRK-SRYKA-DAY(IDX1) NOT = SPACE)
@@ -1058,12 +1058,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *Æþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
+      *å…¥é™¢æ™‚ã®å…¥é™¢æ–™åŠ ç®—å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆã‚ˆã‚Šï¼‰
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
@@ -1078,7 +1078,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
                    MOVE      ZERO     TO      FLG-RYAKU
                    MOVE      ZERO     TO      FLG-KSN
-      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+      *            å…¥é™¢æ–™åŠ ç®—ã®é€€é¿
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)    OR
@@ -1103,12 +1103,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *ËÌ³¤Æ»¤ÎÎÅÍÜÃ´Åö¼êÅö¼èÆÀ¡ÊÆþ±¡²ñ·×¤è¤ê¡Ë
+      *åŒ—æµ·é“ã®ç™‚é¤Šæ‹…å½“æ‰‹å½“å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆã‚ˆã‚Šï¼‰
            MOVE    ZERO                    TO  KSN-IDX
            INITIALIZE                          NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
@@ -1121,7 +1121,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE     "key17"            TO  MCP-PATHNAME
                PERFORM   910-NYUINACCT-READ-SEC
                PERFORM   UNTIL   (FLG-NYUINACCT    =   1)
-      *            Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+      *            å…¥é™¢æ–™åŠ ç®—ã®é€€é¿
                    PERFORM    VARYING   IDX1   FROM   1   BY   1
                               UNTIL     IDX1   >   31
                        IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
@@ -1139,26 +1139,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 910-NYUINACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key17"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¤Î¼èÆÀ
+      *    è¨ºç™‚ä¼šè¨ˆãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šå…¥é™¢æ–™åŠ ç®—ã®å–å¾—
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE  OR  "1"
                PERFORM    210-NYUKSN-SRYACCT-GET-SEC
            END-IF
       *
-      *    ¼èÆÀ¤·¤¿Æþ±¡¾ðÊó¤«¤éÆüÃ±°Ì¤ÎÆþ±¡²ñ·×¾ðÊó¤òºÆ¹½ÃÛ
+      *    å–å¾—ã—ãŸå…¥é™¢æƒ…å ±ã‹ã‚‰æ—¥å˜ä½ã®å…¥é™¢ä¼šè¨ˆæƒ…å ±ã‚’å†æ§‹ç¯‰
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        ¿ÇÎÅ¶èÊ¬
+      *        è¨ºç™‚åŒºåˆ†
                MOVE   WRK-SRYKBN(IDX1)  TO  WRK-SO-SRYKBN(IDX1)
-      *        ÊÝ¸±ÁÈ¹ç¤»
+      *        ä¿é™ºçµ„åˆã›
                MOVE   WRK-SRYKA-DAY(IDX1)
                                         TO  WRK-SO-SRYKA-DAY(IDX1)
                MOVE     ZERO                TO  WRK-MEISAISU
-      *        Æþ±¡´ðËÜÎÁ
+      *        å…¥é™¢åŸºæœ¬æ–™
                IF         WRK-NYUINKHN(IDX1)  NOT =        SPACE
                    ADD      1               TO  WRK-MEISAISU
                    MOVE   WRK-NYUINKHN(IDX1) TO  WRK-SO-SRYCD
@@ -1177,7 +1177,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                IF    FLG-SENTEICDCHG  =   ZERO
                                  IF  SENCHG-IPNSRYCD  =
                                                   SENCHG-SENTEISRYCD
-      *                            Ìë¶Ð»þ´Ö·Ð²á¸º»»¤ÎÁªÄêÂÐ±þ
+      *                            å¤œå‹¤æ™‚é–“çµŒéŽæ¸›ç®—ã®é¸å®šå¯¾å¿œ
       *                            "190131410","190165810","190165910",
       *                            "190131310"
                                    IF  LNK-ORCHCN33SUB-SANTEIYM
@@ -1200,26 +1200,26 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                        END-IF
                    END-IF
                END-IF
-      *        Ìë´Ö´Ç¸îÂÎÀ©ÆÃÄêÆü¸º»»
+      *        å¤œé–“çœ‹è­·ä½“åˆ¶ç‰¹å®šæ—¥æ¸›ç®—
                IF        (WRK-NYUINKHN(IDX1)  NOT =        SPACE)
                AND       (WRK-KANGOGEN(IDX1)  NOT =        SPACE)
                    ADD      1                TO  WRK-MEISAISU
                    MOVE   WRK-KANGOGEN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ³°Çñ
+      *        å¤–æ³Š
                IF         WRK-GAIHAKU(IDX1)   NOT =        SPACE
                    ADD      1                TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU(IDX1)  TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ³°Çñ£²
+      *        å¤–æ³Šï¼’
                IF         WRK-GAIHAKU2(IDX1)  NOT =        SPACE
                    ADD      1                TO  WRK-MEISAISU
                    MOVE   WRK-GAIHAKU2(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ½é´ü²Ã»»¡ÊÄ¹´ü¸º»»¡Ë
+      *        åˆæœŸåŠ ç®—ï¼ˆé•·æœŸæ¸›ç®—ï¼‰
                IF      (WRK-GAIHAKU(IDX1)        =
                                      SPACE      OR
                                     "190142190" OR  "190142090" OR
@@ -1243,7 +1243,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   WRK-SHOKIKSN(IDX1) TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        É¸·ç
+      *        æ¨™æ¬ 
                IF      WRK-HYOUKETSU(IDX1)   NOT =         SPACE
                  IF   (WRK-GAIHAKU(IDX1)        =
                                      SPACE      OR
@@ -1271,7 +1271,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   SPACE             TO  WRK-HYOUKETSU(IDX1)
                  END-IF
                END-IF
-      *        Æþ±¡²ñ·×²Ã»»¾ðÊó
+      *        å…¥é™¢ä¼šè¨ˆåŠ ç®—æƒ…å ±
                PERFORM   VARYING   KSN-IDX   FROM   1  BY   1
                          UNTIL (WRK-NYUKSN(KSN-IDX)  =  SPACE)  OR
                                (KSN-IDX    >      20)
@@ -1283,7 +1283,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                  TO  WRK-SO-SRYCD(IDX1 WRK-MEISAISU)
                   END-IF
                END-PERFORM
-      *        Æü¾ïÀ¸³è¾ã³²²Ã»»
+      *        æ—¥å¸¸ç”Ÿæ´»éšœå®³åŠ ç®—
                IF         WRK-NICHIJOU-KSN1(IDX1)   NOT =   ZERO
                    ADD      1                 TO  WRK-MEISAISU
                    MOVE   CONS-NICHIJOU-KSN1  TO  WRK-SO-SRYCD
@@ -1294,7 +1294,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-NICHIJOU-KSN2  TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ÃÔÊò²Ã»»
+      *        ç—´å‘†åŠ ç®—
                IF         WRK-CHIHOU-KSN1(IDX1)     NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-CHIHOU-KSN1     TO  WRK-SO-SRYCD
@@ -1305,7 +1305,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-CHIHOU-KSN2     TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        êóáì´µ¼Ô´ÉÍý²Ã»»
+      *        è¤¥ç˜¡æ‚£è€…ç®¡ç†åŠ ç®—
                IF         WRK-JYOKU-KSN1(IDX1)      NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-KSN1      TO  WRK-SO-SRYCD
@@ -1316,13 +1316,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-JYOKU-KSN2      TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
+      *        ç‰¹å®šæŠ—ç²¾ç¥žç—…è–¬æ²»ç™‚ç®¡ç†åŠ ç®—
                IF         WRK-TOKUSEIYAKU-KSN(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-TOKUSEIYAKU-KSN TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ¤½¤ÎÂ¾Æþ±¡ÎÁ²Ã»»
+      *        ãã®ä»–å…¥é™¢æ–™åŠ ç®—
                PERFORM    VARYING   ETC-IDX   FROM  1  BY  1
                           UNTIL     ETC-IDX  >  10
                    IF  CONS-ETCNYUIN-KSN(ETC-IDX)  NOT =  SPACE
@@ -1333,7 +1333,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      END-IF
                    END-IF
                END-PERFORM
-      *        Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
+      *        å…¥é™¢è¨ºç™‚è¨ˆç”»æœªå®Ÿæ–½æ¸›ç®—
                IF         WRK-KEIKAKU-GENSAN1(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-KEIKAKU-GENSAN1 TO  WRK-SO-SRYCD
@@ -1344,7 +1344,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-KEIKAKU-GENSAN2 TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+      *        é™¢å†…æ„ŸæŸ“é˜²æ­¢å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
                IF         WRK-INNAI-GENSAN1(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-INNAI-GENSAN1   TO  WRK-SO-SRYCD
@@ -1355,7 +1355,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-INNAI-GENSAN2   TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+      *        åŒ»ç™‚å®‰å…¨ç®¡ç†ä½“åˆ¶æœªæ•´å‚™æ¸›ç®—
                IF         WRK-ANZEN-GENSAN1(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-ANZEN-GENSAN1   TO  WRK-SO-SRYCD
@@ -1366,7 +1366,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-ANZEN-GENSAN2   TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+      *        è¤¥ç˜¡å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
                IF         WRK-JYOKU-GENSAN1(IDX1) NOT =   ZERO
                    ADD      1                  TO  WRK-MEISAISU
                    MOVE   CONS-JYOKU-GENSAN1   TO  WRK-SO-SRYCD
@@ -1377,7 +1377,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE   CONS-JYOKU-GENSAN2   TO  WRK-SO-SRYCD
                                            (IDX1 WRK-MEISAISU)
                END-IF
-      *        ¸º»»¾ðÊó¡Ê¥·¥¹¥Æ¥à´ÉÍý¡Ë
+      *        æ¸›ç®—æƒ…å ±ï¼ˆã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ï¼‰
                IF      (WRK-NYUINKHN(IDX1)   NOT =         SPACE)  AND
                        (WRK-GAIHAKU(IDX1)        =         SPACE)  AND
                        (WRK-GENSAN-INNAI(IDX1)   NOT =     SPACE)
@@ -1402,15 +1402,15 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                            (IDX1 WRK-MEISAISU)
                    MOVE     1               TO  WRK-GENSAN4-MIJISI
                END-IF
-      *        ÁªÄêÆþ±¡»þ¤Î³°Çñ
+      *        é¸å®šå…¥é™¢æ™‚ã®å¤–æ³Š
                IF   (TBL-SENTEI(IDX1)    =         1)   AND
                     (WRK-GAIHAKU-KBN(IDX1)     NOT =  ZERO)
                    EVALUATE   WRK-GAIHAKU-KBN(IDX1)
-      *                ³°Çñ
+      *                å¤–æ³Š
                        WHEN   1
                        WHEN   3
                            INITIALIZE   WRK-NYUIN-SORT-TBL(IDX1)
-      *                Â¾°åÎÅµ¡´Ø¼õ¿Ç
+      *                ä»–åŒ»ç™‚æ©Ÿé–¢å—è¨º
                        WHEN   4
                          IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "201004"
                            CONTINUE
@@ -1421,16 +1421,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    ºÆ¹½ÃÛ¤·¤¿Æþ±¡²ñ·×¾ðÊó¤«¤éÅÀ¿ô¤Î»»Äê
+      *    å†æ§‹ç¯‰ã—ãŸå…¥é™¢ä¼šè¨ˆæƒ…å ±ã‹ã‚‰ç‚¹æ•°ã®ç®—å®š
            PERFORM      VARYING    IDX1   FROM   1  BY  1
                         UNTIL      IDX1   >   31
-      *        ÅÀ¿ô¥Þ¥¹¥¿¤ÎÆÉ¤ß¹þ¤ß
+      *        ç‚¹æ•°ãƒžã‚¹ã‚¿ã®èª­ã¿è¾¼ã¿
                PERFORM   VARYING   IDX2    FROM   1  BY   1
                          UNTIL (WRK-SO-SRYCD(IDX1 IDX2) = SPACE)
                             OR (IDX2    >      20)
                    PERFORM    210-TENSU-KEISAN-SEC
                END-PERFORM
-      *        ¼£¸³Ê¬¤Î¸ºÅÀ
+      *        æ²»é¨“åˆ†ã®æ¸›ç‚¹
                COMPUTE  WRK-SO-TEN(IDX1)  =    WRK-SO-TEN(IDX1)  -
                                                WRK-CHIKEN-ZAITEN(IDX1)
            END-PERFORM
@@ -1453,7 +1453,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       **     END-PERFORM
       *
       *
-      *    ¥«¥ë¥Æ£³¹æÍÑ»æ¥µ¥ÖÊÖµÑ¥¨¥ê¥¢¤ØÆþ±¡ÅÀ¿ô¥»¥Ã¥È
+      *    ã‚«ãƒ«ãƒ†ï¼“å·ç”¨ç´™ã‚µãƒ–è¿”å´ã‚¨ãƒªã‚¢ã¸å…¥é™¢ç‚¹æ•°ã‚»ãƒƒãƒˆ
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                PERFORM    VARYING   IDX1   FROM  1  BY  1
                           UNTIL     (IDX1   >     31)
@@ -1461,7 +1461,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                         MOVE   WRK-SO-TEN(IDX1)   TO
                                        LNK-ORCHCN33SUB-TEN(IDX1)
                    END-IF
-      *            °åÎÅ´Ñ»¡Ë¡¤ÎÆþ±¡»þÅÀ¿ôÃÖ¤­´¹¤¨
+      *            åŒ»ç™‚è¦³å¯Ÿæ³•ã®å…¥é™¢æ™‚ç‚¹æ•°ç½®ãæ›ãˆ
                    IF    (WRK-SO-TEN(IDX1)       NOT =   ZERO)  AND
                          (WRK-IRYOKNS-ZAITEN(IDX1)  NOT =  ZERO)
                         MOVE   WRK-IRYOKNS-ZAITEN(IDX1)   TO
@@ -1470,7 +1470,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
-      *    ¥«¥ë¥Æ£³¹æÍÑ»æ¥µ¥ÖÊÖµÑ¥¨¥ê¥¢¤Ø¿©»ö¾ðÊó¤Î¥»¥Ã¥È
+      *    ã‚«ãƒ«ãƒ†ï¼“å·ç”¨ç´™ã‚µãƒ–è¿”å´ã‚¨ãƒªã‚¢ã¸é£Ÿäº‹æƒ…å ±ã®ã‚»ãƒƒãƒˆ
            IF   LNK-ORCHCN33SUB-SHORIKBN       =   SPACE
                IF   LNK-ORCHCN33SUB-SANTEIYM  >=  "200604"
                   PERFORM    210-SKJ-SET200604-SEC
@@ -1486,7 +1486,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¼èÆÀ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºå–å¾—
       *****************************************************************
        210-NYUINACT-GET-SEC            SECTION.
       *
@@ -1503,7 +1503,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM   910-NYUINACT-READ-SEC
            END-IF
       *
-      *    Æþ±¡¹Ô°Ù¥¯¥í¡¼¥º
+      *    å…¥é™¢è¡Œç‚ºã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinact"      TO  MCP-TABLE
            MOVE    "key9"              TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -1513,11 +1513,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°ÇñÁ°½èÍý
+      *    å¤–æ³Šå‰å‡¦ç†
       *****************************************************************
        210-GAIHAKU-MAE-SEC            SECTION.
       *
-      *    ³°Çñ¥³¡¼¥ÉÊÔ½¸ÍÑ¤ËÆþ±¡´ðËÜÎÁ²Ã»»¶èÊ¬¤È¿ÇÎÅ¶èÊ¬¤ÎÂàÈò
+      *    å¤–æ³Šã‚³ãƒ¼ãƒ‰ç·¨é›†ç”¨ã«å…¥é™¢åŸºæœ¬æ–™åŠ ç®—åŒºåˆ†ã¨è¨ºç™‚åŒºåˆ†ã®é€€é¿
            INITIALIZE                      TNS-TENSU-REC
            MOVE    NSRY-SRYCD(1)       TO  TNS-SRYCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -1535,7 +1535,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ
+      *    å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—
       *****************************************************************
        210-GAIHAKU-SET-SEC            SECTION.
       *
@@ -1599,7 +1599,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ
+      *    å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—
       *****************************************************************
        2101-GAIHAKU-TAKIKAN-SEC           SECTION.
       *
@@ -1618,7 +1618,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£±
+      *    å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—ï¼‘
       *****************************************************************
        2101-GAIHAKU-TAKIKAN1-SEC           SECTION.
       *
@@ -1783,12 +1783,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£²  201604
+      *    å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—ï¼’  201604
       *****************************************************************
        2101-GAIHAKU-TAKIKAN2-SEC           SECTION.
       *
            EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ÆÃÄêÆþ±¡ÎÁ
+      *        ç‰¹å®šå…¥é™¢æ–™
                WHEN   201  THRU  206
                WHEN   208  THRU  210
                WHEN   212  THRU  217
@@ -1801,8 +1801,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN   257  THRU  267
       *        --- H28.4 TUIKA ---
                WHEN   268  THRU  270
-      *          Ç§ÃÎ¾É¼£ÎÅÉÂÅïÆþ±¡ÎÁ¡¢Àº¿ÀÎÅÍÜÉÂÅïÆþ±¡ÎÁ
-      *          ÃÏ°è°Ü¹Ôµ¡Ç½¶¯²½ÉÂÅïÆþ±¡ÎÁ
+      *          èªçŸ¥ç—‡æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ã€ç²¾ç¥žç™‚é¤Šç—…æ£Ÿå…¥é™¢æ–™
+      *          åœ°åŸŸç§»è¡Œæ©Ÿèƒ½å¼·åŒ–ç—…æ£Ÿå…¥é™¢æ–™
                  IF  WRK-NYUKHNKSNKBN(IDX1) = 221 OR 232 OR 217 OR 268
                    EVALUATE   NACCT-DAY(IDX1)
                     WHEN     4
@@ -1820,7 +1820,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190142090"    TO   WRK-GAIHAKU(IDX1)
                    END-EVALUATE
                  END-IF
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™
                WHEN   004  THRU  008
                WHEN   010  THRU  012
                WHEN   152
@@ -1837,7 +1837,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   WHEN     5
                     MOVE   "190142190"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
+      *        æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™
                WHEN   153  THRU  158
                  EVALUATE   NACCT-DAY(IDX1)
                   WHEN     4
@@ -1847,7 +1847,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   WHEN     6
                     MOVE   "190109090"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡¦Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
+      *        çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ãƒ»çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“
                WHEN   226
                WHEN   240
                  CONTINUE
@@ -1863,16 +1863,16 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ³°Çñ¿ÇÎÅ¥³¡¼¥É¼èÆÀ£³  201804
+      *    å¤–æ³Šè¨ºç™‚ã‚³ãƒ¼ãƒ‰å–å¾—ï¼“  201804
       *****************************************************************
        2101-GAIHAKU-TAKIKAN3-SEC           SECTION.
       *
            EVALUATE   WRK-NYUKHNKSNKBN(IDX1)
-      *        ÆÃÄêÆþ±¡ÎÁ
+      *        ç‰¹å®šå…¥é™¢æ–™
                WHEN   200  THRU  257
                WHEN   260  THRU  263
-      *          Ç§ÃÎ¾É¼£ÎÅÉÂÅïÆþ±¡ÎÁ¡¢Àº¿ÀÎÅÍÜÉÂÅïÆþ±¡ÎÁ
-      *          ÃÏ°è°Ü¹Ôµ¡Ç½¶¯²½ÉÂÅïÆþ±¡ÎÁ
+      *          èªçŸ¥ç—‡æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ã€ç²¾ç¥žç™‚é¤Šç—…æ£Ÿå…¥é™¢æ–™
+      *          åœ°åŸŸç§»è¡Œæ©Ÿèƒ½å¼·åŒ–ç—…æ£Ÿå…¥é™¢æ–™
                  IF  WRK-NYUKHNKSNKBN(IDX1) = 255 OR 254 OR 257
                    EVALUATE   NACCT-DAY(IDX1)
                     WHEN     4
@@ -1900,7 +1900,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                       MOVE   "190213990"    TO   WRK-GAIHAKU(IDX1)
                    END-EVALUATE
                  END-IF
-      *        ÎÅÍÜÉÂÅïÆþ±¡´ðËÜÎÁ
+      *        ç™‚é¤Šç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™
                WHEN    11  THRU   14
                WHEN    51
                WHEN   901
@@ -1914,7 +1914,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   WHEN    15
                     MOVE   "190213890"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        Í­¾²¿ÇÎÅ½êÎÅÍÜÉÂ¾²Æþ±¡´ðËÜÎÁ
+      *        æœ‰åºŠè¨ºç™‚æ‰€ç™‚é¤Šç—…åºŠå…¥é™¢åŸºæœ¬æ–™
                WHEN    26
                WHEN    53
                WHEN   909
@@ -1932,7 +1932,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                   WHEN    16
                     MOVE   "190214090"    TO   WRK-GAIHAKU(IDX1)
                  END-EVALUATE
-      *        Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¡¦Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£³
+      *        çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ãƒ»çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼“
                WHEN   258  THRU  259
                  CONTINUE
                WHEN   OTHER
@@ -1949,7 +1949,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ
+      *    æ¸›ç®—ã‚³ãƒ¼ãƒ‰å–å¾—
       *****************************************************************
        2101-GAIHAKU-GENSAN-SEC           SECTION.
       *
@@ -1968,7 +1968,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£±
+      *    æ¸›ç®—ã‚³ãƒ¼ãƒ‰å–å¾—ï¼‘
       *****************************************************************
        2101-GAIHAKU-GENSAN1-SEC           SECTION.
       *
@@ -2038,7 +2038,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£²  201604
+      *    æ¸›ç®—ã‚³ãƒ¼ãƒ‰å–å¾—ï¼’  201604
       *****************************************************************
        2101-GAIHAKU-GENSAN2-SEC           SECTION.
       *
@@ -2098,7 +2098,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¸º»»¥³¡¼¥É¼èÆÀ£³  201804
+      *    æ¸›ç®—ã‚³ãƒ¼ãƒ‰å–å¾—ï¼“  201804
       *****************************************************************
        2101-GAIHAKU-GENSAN3-SEC           SECTION.
       *
@@ -2156,13 +2156,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Ï·¿ÍÂÐ¾Ý´µ¼Ô¥Á¥§¥Ã¥¯
+      *    è€äººå¯¾è±¡æ‚£è€…ãƒã‚§ãƒƒã‚¯
       *****************************************************************
        210-RJN-TAISYO-CHK-SEC         SECTION.
       *
            MOVE    ZERO                TO  FLG-RJN
       *
-      *    Æþ±¡´µ¼Ô¤ÎÏ·¿ÍÊÝ¸±È½Äê
+      *    å…¥é™¢æ‚£è€…ã®è€äººä¿é™ºåˆ¤å®š
            MOVE    ZERO                TO   FLG-HKNCOMBI
            INITIALIZE                       HKNCOMBI-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  COMB-HOSPNUM
@@ -2181,12 +2181,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE     "key"          TO  MCP-PATHNAME
                PERFORM   910-HKNCOMBI-READ-SEC
            END-IF
-      *    ÊÝ¸±ÁÈ¹ç¤»¥¯¥í¡¼¥º
+      *    ä¿é™ºçµ„åˆã›ã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    Æþ±¡´µ¼Ô¤ÎÇ¯Îð·×»»
+      *    å…¥é™¢æ‚£è€…ã®å¹´é½¢è¨ˆç®—
            INITIALIZE                      ORCSAGECHKAREA
            MOVE    LNK-ORCHCN33SUB-HOSPNUM
                                        TO  AGECHK-HOSPNUM
@@ -2205,7 +2205,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                INITIALIZE  ORCSAGECHKAREA
            END-IF
       *
-      *    Ï·¿ÍÂÐ¾Ý´µ¼ÔÈ½Äê
+      *    è€äººå¯¾è±¡æ‚£è€…åˆ¤å®š
            IF    ((FLG-HKNCOMBI        =   ZERO)    AND
                   (COMB-KOH1HKNNUM     =   "027"))   OR
                  ( AGECHK-NENREI      >=    75)      OR
@@ -2219,11 +2219,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Æ¡¼¥Ö¥ë¤è¤êÆþ±¡ÎÁ²Ã»»¡Ê¼£¸³¤Î¸ºÅÀ¡Ë¤Î¼èÆÀ½èÍý
+      *    è¨ºç™‚ä¼šè¨ˆãƒ†ãƒ¼ãƒ–ãƒ«ã‚ˆã‚Šå…¥é™¢æ–™åŠ ç®—ï¼ˆæ²»é¨“ã®æ¸›ç‚¹ï¼‰ã®å–å¾—å‡¦ç†
       *****************************************************************
        210-NYUKSN-SRYACCT-GET-SEC            SECTION.
       *
-      *Æþ±¡»þ¤ÎÆþ±¡ÎÁ²Ã»»¼èÆÀ¡Ê¿ÇÎÅ²ñ·×¤è¤ê¡Ë
+      *å…¥é™¢æ™‚ã®å…¥é™¢æ–™åŠ ç®—å–å¾—ï¼ˆè¨ºç™‚ä¼šè¨ˆã‚ˆã‚Šï¼‰
            INITIALIZE                             SRYACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO   ACCT-HOSPNUM
            MOVE    "1"                       TO   ACCT-NYUGAIKBN
@@ -2256,7 +2256,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                         OR  CONS-JYOKU-KSN1
                                         OR  CONS-JYOKU-KSN2
                                         OR  CONS-TOKUSEIYAKU-KSN
-      *                Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
+      *                å…¥é™¢æ–™åŠ ç®—ã®é€€é¿
                        PERFORM    VARYING   IDX1   FROM   1   BY   1
                                   UNTIL     IDX1   >   31
                            IF   ((WRK-NYUINKHN(IDX1) NOT = SPACE)  OR
@@ -2265,56 +2265,56 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                  (WRK-GAIHAKU-KBN(IDX1) >=  4   ))
                            AND  ( ACCT-DAY(1 IDX1)   NOT =  ZERO )
                               EVALUATE   ACCT-SRYCDTOTAL(6:9)
-      *                         Æþ±¡¿ÇÎÅ·×²èÌ¤¼Â»Ü¸º»»
+      *                         å…¥é™¢è¨ºç™‚è¨ˆç”»æœªå®Ÿæ–½æ¸›ç®—
                                 WHEN  CONS-KEIKAKU-GENSAN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KEIKAKU-GENSAN1(IDX1)
                                 WHEN  CONS-KEIKAKU-GENSAN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-KEIKAKU-GENSAN2(IDX1)
-      *                         ±¡Æâ´¶À÷ËÉ»ßÂÐºöÌ¤¼Â»Ü¸º»»
+      *                         é™¢å†…æ„ŸæŸ“é˜²æ­¢å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
                                 WHEN  CONS-INNAI-GENSAN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-INNAI-GENSAN1(IDX1)
                                 WHEN  CONS-INNAI-GENSAN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-INNAI-GENSAN2(IDX1)
-      *                         °åÎÅ°ÂÁ´´ÉÍýÂÎÀ©Ì¤À°È÷¸º»»
+      *                         åŒ»ç™‚å®‰å…¨ç®¡ç†ä½“åˆ¶æœªæ•´å‚™æ¸›ç®—
                                 WHEN  CONS-ANZEN-GENSAN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-ANZEN-GENSAN1(IDX1)
                                 WHEN  CONS-ANZEN-GENSAN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-ANZEN-GENSAN2(IDX1)
-      *                         êóáìÂÐºöÌ¤¼Â»Ü¸º»»
+      *                         è¤¥ç˜¡å¯¾ç­–æœªå®Ÿæ–½æ¸›ç®—
                                 WHEN  CONS-JYOKU-GENSAN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-JYOKU-GENSAN1(IDX1)
                                 WHEN  CONS-JYOKU-GENSAN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-JYOKU-GENSAN2(IDX1)
-      *                         Æü¾ïÀ¸³è¾ã³²²Ã»»
+      *                         æ—¥å¸¸ç”Ÿæ´»éšœå®³åŠ ç®—
                                 WHEN  CONS-NICHIJOU-KSN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-NICHIJOU-KSN1(IDX1)
                                 WHEN  CONS-NICHIJOU-KSN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-NICHIJOU-KSN2(IDX1)
-      *                         ÃÔÊò²Ã»»
+      *                         ç—´å‘†åŠ ç®—
                                 WHEN  CONS-CHIHOU-KSN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-CHIHOU-KSN1(IDX1)
                                 WHEN  CONS-CHIHOU-KSN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-CHIHOU-KSN2(IDX1)
-      *                         êóáì´µ¼Ô´ÉÍý²Ã»»
+      *                         è¤¥ç˜¡æ‚£è€…ç®¡ç†åŠ ç®—
                                 WHEN  CONS-JYOKU-KSN1
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-JYOKU-KSN1(IDX1)
                                 WHEN  CONS-JYOKU-KSN2
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-JYOKU-KSN2(IDX1)
-      *                         ÆÃÄê¹³Àº¿ÀÉÂÌô¼£ÎÅ´ÉÍý²Ã»»
+      *                         ç‰¹å®šæŠ—ç²¾ç¥žç—…è–¬æ²»ç™‚ç®¡ç†åŠ ç®—
                                 WHEN  CONS-TOKUSEIYAKU-KSN
                                   MOVE   ACCT-DAY(1 IDX1)
                                         TO  WRK-TOKUSEIYAKU-KSN(IDX1)
@@ -2323,9 +2323,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            END-IF
                        END-PERFORM
                      ELSE
-      *                ¤½¤ÎÂ¾Æþ±¡ÎÁ²Ã»»¤ÎÂàÈò
-      *                ¿ÇÎÅ²ñ·×¤«¤é¿ÇÎÅ¹Ô°Ù¤ò¸¡º÷¤·¡¢Æþ±¡ÎÁ²Ã»»¤Î¿ÇÎÅ
-      *                ¥³¡¼¥É¤òÆÃÄê¤¹¤ë¡Ê¼£¸³¸ºÅÀÊ¬¤Ï½ü¤¯¡Ë
+      *                ãã®ä»–å…¥é™¢æ–™åŠ ç®—ã®é€€é¿
+      *                è¨ºç™‚ä¼šè¨ˆã‹ã‚‰è¨ºç™‚è¡Œç‚ºã‚’æ¤œç´¢ã—ã€å…¥é™¢æ–™åŠ ç®—ã®è¨ºç™‚
+      *                ã‚³ãƒ¼ãƒ‰ã‚’ç‰¹å®šã™ã‚‹ï¼ˆæ²»é¨“æ¸›ç‚¹åˆ†ã¯é™¤ãï¼‰
                        IF        ACCT-MEISAISU    =      1
                              CONTINUE
                        ELSE
@@ -2347,7 +2347,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                   ACCT-SRYCDTOTAL(6:9)   
                               END-IF
                           END-IF
-      *                   ¿ÇÎÅ¹Ô°Ù¥¯¥í¡¼¥º
+      *                   è¨ºç™‚è¡Œç‚ºã‚¯ãƒ­ãƒ¼ã‚º
                           MOVE    "tbl_sryact"   TO  MCP-TABLE
                           MOVE    "key"          TO  MCP-PATHNAME
                           PERFORM   910-DB-CLOSE-SEC
@@ -2404,7 +2404,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      END-IF
                     END-IF
       *
-      *             ¼£¸³¸ºÅÀ¿ô¤ÎÂàÈò
+      *             æ²»é¨“æ¸›ç‚¹æ•°ã®é€€é¿
                     IF      (ACCT-ZAIKBN      =      2)   AND
                             (ACCT-ZAITEN      NOT =  ZERO)
                         PERFORM    VARYING   IDX1   FROM   1   BY   1
@@ -2424,7 +2424,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  PERFORM   910-SRYACCT-READ-SEC
                END-PERFORM
            END-IF
-      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+      *    è¨ºç™‚ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_sryacct"        TO  MCP-TABLE
            MOVE    "key30"              TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -2434,7 +2434,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô·×»»½èÍý
+      *    ç‚¹æ•°è¨ˆç®—å‡¦ç†
       *****************************************************************
        210-TENSU-KEISAN-SEC            SECTION.
       *
@@ -2465,24 +2465,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 910-TTNS-HEN-SEC
            END-IF
       *
-      *    ÅÀ¿ô»»Äê
+      *    ç‚¹æ•°ç®—å®š
            EVALUATE    TNS-TENSIKIBETU
-      *        ÅÀ¿ô¡Ê¥×¥é¥¹¡Ë
+      *        ç‚¹æ•°ï¼ˆãƒ—ãƒ©ã‚¹ï¼‰
                WHEN    3
                    ADD   TNS-TEN     TO  WRK-SO-TEN(IDX1)
-      *        ¡ó²Ã»»
+      *        ï¼…åŠ ç®—
                WHEN    5
                    COMPUTE    WRK-SO-TEN(IDX1)  =
                               WRK-SO-TEN(IDX1)  +
                             ((WRK-SO-TEN(IDX1)  *
                               (TNS-TEN   /  100))  + 0.5)
-      *        ¡ó¸º»»
+      *        ï¼…æ¸›ç®—
                WHEN    6
                    COMPUTE    WRK-SO-TEN(IDX1)  =
                               WRK-SO-TEN(IDX1)  -
                              (WRK-SO-TEN(IDX1)  *
                              (TNS-TEN   /  100))   +  0.5
-      *        ÅÀ¿ô¡Ê¥Þ¥¤¥Ê¥¹¡Ë
+      *        ç‚¹æ•°ï¼ˆãƒžã‚¤ãƒŠã‚¹ï¼‰
                WHEN    8
                    COMPUTE  WRK-SO-TEN(IDX1)  =
                             WRK-SO-TEN(IDX1)  -  TNS-TEN
@@ -2490,7 +2490,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *            ADD   TNS-TEN     TO  WRK-SO-TEN(IDX1)
            END-EVALUATE
       *
-      *    ¿ÇÎÅ¥³¡¼¥É·×
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆ
            MOVE    TNS-SRYCD          TO  WRK-SRYCD-X
            COMPUTE WRK-SO-SRYCDTOTAL(IDX1)  =
                    WRK-SO-SRYCDTOTAL(IDX1)  +   WRK-SRYCD-9
@@ -2501,7 +2501,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       **************************************************************
-      *    ³°Çñ»þ¤ÎÆþ±¡´ðËÜÎÁ¼èÆÀ
+      *    å¤–æ³Šæ™‚ã®å…¥é™¢åŸºæœ¬æ–™å–å¾—
       **************************************************************
        2101-GAIHAKU-NYUINKHN-SET-SEC           SECTION.
       *
@@ -2646,13 +2646,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                      MOVE  "190097010"      TO   WRK-GAIHAKU-SRYCD
                WHEN  "190813870"
                      MOVE  "190805710"      TO   WRK-GAIHAKU-SRYCD
-      *        ¿ÇÎÅ½êÏ·¿Í°åÎÅ´ÉÍýÎÁ
+      *        è¨ºç™‚æ‰€è€äººåŒ»ç™‚ç®¡ç†æ–™
                WHEN  "190774210"
                      MOVE  "190774110"      TO   WRK-GAIHAKU-SRYCD
-      *        Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£±
+      *        è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼‘
                WHEN  "190740010"
                      MOVE  "190739910"      TO   WRK-GAIHAKU-SRYCD
-      *        Ï·¿ÍÀ­Ç§ÃÎ¾É¼À´µ¼£ÎÅÉÂÅïÆþ±¡ÎÁ£²
+      *        è€äººæ€§èªçŸ¥ç—‡ç–¾æ‚£æ²»ç™‚ç—…æ£Ÿå…¥é™¢æ–™ï¼’
                WHEN  "190813510"
                      MOVE  "190813410"      TO   WRK-GAIHAKU-SRYCD
            END-EVALUATE
@@ -2669,7 +2669,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ******************************************************************
-      *    ·îÆâ¤ËÊ£¿ô¤Î°åÎÅ´ü´Ö¾ðÊó¤¬¤Ê¤¤¤«¸¡º÷¡Ê°åÎÅµ¡´Ø¸º»»¤Î³ÎÇ§¡Ë  *
+      *    æœˆå†…ã«è¤‡æ•°ã®åŒ»ç™‚æœŸé–“æƒ…å ±ãŒãªã„ã‹æ¤œç´¢ï¼ˆåŒ»ç™‚æ©Ÿé–¢æ¸›ç®—ã®ç¢ºèªï¼‰  *
       ******************************************************************
        210-SYS-5000-CHK-SEC                 SECTION.
       *
@@ -2711,7 +2711,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       ******************************************************************
-      *    ·îÆâ¤Î°åÎÅ´ü´Ö¾ðÊó¼èÆÀ¡Ê°åÎÅµ¡´Ø¸º»»¾ðÊó¡Ë                  *
+      *    æœˆå†…ã®åŒ»ç™‚æœŸé–“æƒ…å ±å–å¾—ï¼ˆåŒ»ç™‚æ©Ÿé–¢æ¸›ç®—æƒ…å ±ï¼‰                  *
       ******************************************************************
        210-SYS-5000-GET-SEC                 SECTION.
       *
@@ -2736,7 +2736,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM  910-SYSKANRI-READ-SEC
                PERFORM  UNTIL    FLG-SYSKANRI   =   1
                  MOVE   SYS-5000-STYUKYMD(7:2)  TO  IDV
-      *          ¿©»ö¤ÎÆÃÊÌ´ÉÍý²Ã»»ÂàÈò
+      *          é£Ÿäº‹ã®ç‰¹åˆ¥ç®¡ç†åŠ ç®—é€€é¿
                  IF     SYS-5000-SHOKUCD(1)  NOT =  SPACE
                     IF  SYS-5000-SHOKUKBN(1) =     "2"
                         PERFORM VARYING GENSAN-IDX2 FROM IDV BY 1
@@ -2832,7 +2832,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        210-SYS-5000-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯¥Á¥§¥Ã¥¯½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        910-TENSUWRK-CHK-SEC               SECTION.
       *
@@ -2854,7 +2854,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-TENSUWRK-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿ÂàÈò¥ï¡¼¥¯ÊÔ½¸½èÍý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿é€€é¿ãƒ¯ãƒ¼ã‚¯ç·¨é›†å‡¦ç†
       *****************************************************************
        910-TTNS-HEN-SEC               SECTION.
       *
@@ -2871,11 +2871,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¾ðÊó¼èÆÀ½èÍý¡ÊÊ¿À®£±£¸Ç¯£³·î°ÊÁ°¡Ë
+      *    é£Ÿäº‹æƒ…å ±å–å¾—å‡¦ç†ï¼ˆå¹³æˆï¼‘ï¼˜å¹´ï¼“æœˆä»¥å‰ï¼‰
       *****************************************************************
        210-SKJ-SET-SEC            SECTION.
       *
-      *¿©»ö¾ðÊó¤Î¼èÆÀ¡ÊÆþ±¡²ñ·×¡Ë
+      *é£Ÿäº‹æƒ…å ±ã®å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆï¼‰
            INITIALIZE                           NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
@@ -2942,7 +2942,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                       ADD  1520 TO WRK-SKJ-MONEY(IDX1)
                                END-EVALUATE
                        END-EVALUATE
-      *                ÆÃÊÌ´ÉÍý²Ã»»
+      *                ç‰¹åˆ¥ç®¡ç†åŠ ç®—
                        IF    WRK-SYS5000-SHOKUCD(1 IDX1) = "197000110"
                         IF    WRK-SYS5000-SHOKUCD(2 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(2 IDX1)
@@ -2950,7 +2950,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                            ADD   200          TO  WRK-SKJ-MONEY(IDX1)
                         END-IF
                        END-IF
-      *                ¿©Æ²²Ã»»
+      *                é£Ÿå ‚åŠ ç®—
                        IF    WRK-SYS5000-SHOKUCD(1 IDX1) = "197000110"
                         IF    WRK-SYS5000-SHOKUCD(3 IDX1)  NOT = SPACE
                            MOVE  WRK-SYS5000-SHOKUCD(3 IDX1)
@@ -2962,7 +2962,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
-      *    ¿©»ö¤Î¿ÇÎÅ¥³¡¼¥É·×
+      *    é£Ÿäº‹ã®è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆ
            PERFORM    VARYING   IDX1    FROM  1  BY  1
                       UNTIL     IDX1    >   31
                PERFORM   VARYING  IDX2  FROM  1  BY  1
@@ -2974,12 +2974,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
                END-PERFORM
            END-PERFORM
-      *    Æþ±¡²ñ·×¥¯¥í¡¼¥º
+      *    å…¥é™¢ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_nyuinacct"         TO  MCP-TABLE
            MOVE    "key28"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *   ·ë²ÌÉ½¼¨
+      *   çµæžœè¡¨ç¤º
       **     PERFORM    VARYING   IDX1   FROM  1  BY  1
       **                UNTIL     (IDX1   >     31)
       **          DISPLAY  "IDX1 = " IDX1
@@ -2993,7 +2993,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       **          DISPLAY  "WRK-SKJ-MONEY    = " WRK-SKJ-MONEY(IDX1)
       **          DISPLAY  "WRK-SKJ-KAISU    = " WRK-SKJ-KAISU(IDX1)
       **     END-PERFORM
-      *    ÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¿©»ö¥»¥Ã¥È
+      *    è¿”å´ã‚¨ãƒªã‚¢ã¸ã®é£Ÿäº‹ã‚»ãƒƒãƒˆ
            MOVE       ZERO    TO   IDX2
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
@@ -3002,7 +3002,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                 LNK-ORCHCN33SUB-SKJ(IDX1)
                 END-IF
            END-PERFORM
-      *    ÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¿©»ö¥»¥Ã¥È¡ÊÆÃÊÌ¿©²Ã»»¡Ë
+      *    è¿”å´ã‚¨ãƒªã‚¢ã¸ã®é£Ÿäº‹ã‚»ãƒƒãƒˆï¼ˆç‰¹åˆ¥é£ŸåŠ ç®—ï¼‰
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
                 IF    WRK-SKJ3-TOKU-SHOKU(IDX1)   NOT =  SPACE
@@ -3010,7 +3010,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                 LNK-ORCHCN33SUB-SKJ(IDX1)
                 END-IF
            END-PERFORM
-      *    ÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¿©»ö¥»¥Ã¥È¡ÊÊ£¿ô¸¥Î©²Ã»»¡Ë
+      *    è¿”å´ã‚¨ãƒªã‚¢ã¸ã®é£Ÿäº‹ã‚»ãƒƒãƒˆï¼ˆè¤‡æ•°çŒ®ç«‹åŠ ç®—ï¼‰
            PERFORM    VARYING   IDX1   FROM  1  BY  1
                       UNTIL     (IDX1   >     31)
                 IF    WRK-SKJ2-FUKUSU(IDX1)   NOT =  SPACE
@@ -3024,11 +3024,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¾ðÊó¼èÆÀ½èÍý¡ÊÊ¿À®£±£¸Ç¯£´·î°Ê¹ß¡Ë
+      *    é£Ÿäº‹æƒ…å ±å–å¾—å‡¦ç†ï¼ˆå¹³æˆï¼‘ï¼˜å¹´ï¼”æœˆä»¥é™ï¼‰
       *****************************************************************
        210-SKJ-SET200604-SEC            SECTION.
       *
-      *    ¿©»ö¾ðÊó¤Î¼èÆÀ¡ÊÆþ±¡²ñ·×¡Ë
+      *    é£Ÿäº‹æƒ…å ±ã®å–å¾—ï¼ˆå…¥é™¢ä¼šè¨ˆï¼‰
            INITIALIZE                           NYUINACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM   TO  NACCT-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID     TO  NACCT-PTID
@@ -3075,7 +3075,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key33"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¤ÈÆÃÊÌ¿©²Ã»»¤Î¿¶¤êÊ¬¤±
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šã¨ç‰¹åˆ¥é£ŸåŠ ç®—ã®æŒ¯ã‚Šåˆ†ã‘
            PERFORM    VARYING   IDX1   FROM   1   BY   1
                        UNTIL    IDX1    >    31
               EVALUATE   WRK-SKJ200604-ASA (IDX1)
@@ -3113,7 +3113,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
               END-EVALUATE
            END-PERFORM
       *
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰
            INITIALIZE                      TNS-TENSU-REC
            MOVE    "197000110"         TO  TNS-SRYCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3123,7 +3123,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(1)
       *
-      *    Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë
+      *    å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰
            INITIALIZE                      TNS-TENSU-REC
            MOVE    "197000710"         TO  TNS-SRYCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3133,7 +3133,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(2)
       *
-      *    ÆÃÊÌ¿©²Ã»»
+      *    ç‰¹åˆ¥é£ŸåŠ ç®—
            INITIALIZE                      TNS-TENSU-REC
            MOVE    "197000470"         TO  TNS-SRYCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3143,7 +3143,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM 910-TENSU-READ-SEC
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(3)
       *
-      *    ¿©Æ²²Ã»»
+      *    é£Ÿå ‚åŠ ç®—
            INITIALIZE                      TNS-TENSU-REC
            MOVE    "197000570"         TO  TNS-SRYCD
            MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3154,7 +3154,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    TNS-TEN             TO  WRK-SKJ200604-KINGAKU(4)
       *
            IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
-      *      Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£±¡Ë¡Ê£±¿©¤Ë¤Ä¤­¡Ë¡ÊÎ®Æ°¿©¤Î¤ß¤òÄó¶¡¡Ë
+      *      å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼‘ï¼‰ï¼ˆï¼‘é£Ÿã«ã¤ãï¼‰ï¼ˆæµå‹•é£Ÿã®ã¿ã‚’æä¾›ï¼‰
              INITIALIZE                    TNS-TENSU-REC
              MOVE    "197003110"       TO  TNS-SRYCD
              MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3163,7 +3163,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              MOVE    TNS-YUKOSTYMD     TO  TNS-YUKOEDYMD
              PERFORM 910-TENSU-READ-SEC
              MOVE    TNS-TEN           TO  WRK-SKJ200604-KINGAKU(5)
-      *      Æþ±¡»þ¿©»öÎÅÍÜ¡Ê£²¡Ë¡Ê£±¿©¤Ë¤Ä¤­¡Ë¡ÊÎ®Æ°¿©¤Î¤ß¤òÄó¶¡¡Ë
+      *      å…¥é™¢æ™‚é£Ÿäº‹ç™‚é¤Šï¼ˆï¼’ï¼‰ï¼ˆï¼‘é£Ÿã«ã¤ãï¼‰ï¼ˆæµå‹•é£Ÿã®ã¿ã‚’æä¾›ï¼‰
              INITIALIZE                    TNS-TENSU-REC
              MOVE    "197003210"       TO  TNS-SRYCD
              MOVE    LNK-ORCHCN33SUB-SANTEIYM
@@ -3174,7 +3174,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              MOVE    TNS-TEN           TO  WRK-SKJ200604-KINGAKU(6)
            END-IF
       *
-      *    Æþ±¡»þÀ¸³èÎÅÍÜ¡Ê¿©»öÎÅÍÜ¡¦´Ä¶­ÎÅÍÜ¡Ë¤Î¼èÆÀ
+      *    å…¥é™¢æ™‚ç”Ÿæ´»ç™‚é¤Šï¼ˆé£Ÿäº‹ç™‚é¤Šãƒ»ç’°å¢ƒç™‚é¤Šï¼‰ã®å–å¾—
            IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
              INITIALIZE                           ORCSNYULIFE2-AREA
              MOVE    LNK-ORCHCN33SUB-HOSPNUM  TO  LNK-NYULIFE2-HOSPNUM
@@ -3193,7 +3193,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-IF
            END-IF
       *    
-      *    Ã»´üÂÚºß¼ê½Ñ´ðËÜÎÁ£²¤ÎÆþ±¡ÎÁÌ¤»»ÄêÆü¤Ë¤Ä¤¤¤Æ¼èÆÀ
+      *    çŸ­æœŸæ»žåœ¨æ‰‹è¡“åŸºæœ¬æ–™ï¼’ã®å…¥é™¢æ–™æœªç®—å®šæ—¥ã«ã¤ã„ã¦å–å¾—
            INITIALIZE                          ORCSNYUINDAY-AREA
            MOVE    LNK-ORCHCN33SUB-HOSPNUM     TO  LNK-NYUINDAY-HOSPNUM
            MOVE    LNK-ORCHCN33SUB-PTID        TO  LNK-NYUINDAY-PTID
@@ -3201,14 +3201,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            CALL    "ORCSNYUINDAY"      USING   ORCSNYUINDAY-AREA
                                                SPA-AREA
       *
-      *    ¿©»öÎÅÍÜÈñ·×»»
+      *    é£Ÿäº‹ç™‚é¤Šè²»è¨ˆç®—
            IF    LNK-ORCHCN33SUB-SANTEIYM  >=  "201604"
               PERFORM  2101-SKJ-HEN201604-SEC
            ELSE
               PERFORM  2102-SKJ-HEN200604-SEC
            END-IF
       *
-      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤Î¶â³Û»»Äê
+      *    è¨ºç™‚è¡Œç‚ºå…¥åŠ›ã•ã‚ŒãŸç‰¹åˆ¥é£ŸåŠ ç®—ã®é‡‘é¡ç®—å®š
            PERFORM     210-TOKU-SHOKU-HENSHU-SEC
       *
            .
@@ -3216,11 +3216,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°ÙÆþÎÏ¤µ¤ì¤¿ÆÃÊÌ¿©²Ã»»¤Î¶â³Û»»Äê
+      *    è¨ºç™‚è¡Œç‚ºå…¥åŠ›ã•ã‚ŒãŸç‰¹åˆ¥é£ŸåŠ ç®—ã®é‡‘é¡ç®—å®š
       *****************************************************************
        210-TOKU-SHOKU-HENSHU-SEC        SECTION.
       *
-      *ÆÃÊÌ¿©²Ã»»¡Ê¿©»öÎÅÍÜ¡Ë¤Î¼èÆÀ
+      *ç‰¹åˆ¥é£ŸåŠ ç®—ï¼ˆé£Ÿäº‹ç™‚é¤Šï¼‰ã®å–å¾—
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -3254,13 +3254,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
-      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+      *    è¨ºç™‚ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_sryacct"           TO  MCP-TABLE
            MOVE    "key54"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
       *
       *
-      *ÆÃÊÌ¿©²Ã»»¡ÊÀ¸³èÎÅÍÜ¡Ë¤Î¼èÆÀ
+      *ç‰¹åˆ¥é£ŸåŠ ç®—ï¼ˆç”Ÿæ´»ç™‚é¤Šï¼‰ã®å–å¾—
            INITIALIZE                          SRYACCT-REC
            MOVE    LNK-ORCHCN33SUB-HOSPNUM TO  ACCT-HOSPNUM
            MOVE    "1"                     TO  ACCT-NYUGAIKBN
@@ -3294,7 +3294,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-PERFORM
            END-IF
       *
-      *    ¿ÇÎÅ²ñ·×¥¯¥í¡¼¥º
+      *    è¨ºç™‚ä¼šè¨ˆã‚¯ãƒ­ãƒ¼ã‚º
            MOVE    "tbl_sryacct"           TO  MCP-TABLE
            MOVE    "key55"                 TO  MCP-PATHNAME
            PERFORM   910-DB-CLOSE-SEC
@@ -3304,7 +3304,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¾ðÊóÊÔ½¸½èÍý¡ÊÊ¿À®£²£¸Ç¯£´·î¡Á¡Ë 
+      *    é£Ÿäº‹æƒ…å ±ç·¨é›†å‡¦ç†ï¼ˆå¹³æˆï¼’ï¼˜å¹´ï¼”æœˆã€œï¼‰ 
       *****************************************************************
        2101-SKJ-HEN201604-SEC            SECTION.
       *
@@ -3384,7 +3384,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              END-IF
       *
-      *      ´Ä¶­ÎÅÍÜ·×»»
+      *      ç’°å¢ƒç™‚é¤Šè¨ˆç®—
              IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
                    (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
@@ -3407,7 +3407,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿©»ö¾ðÊóÊÔ½¸½èÍý
+      *    é£Ÿäº‹æƒ…å ±ç·¨é›†å‡¦ç†
       *****************************************************************
        2102-SKJ-HEN200604-SEC            SECTION.
       *
@@ -3462,7 +3462,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              END-IF
       *
-      *      ´Ä¶­ÎÅÍÜ·×»»
+      *      ç’°å¢ƒç™‚é¤Šè¨ˆç®—
              IF   ( WRK-SRYKA-DAY(IDX1)          NOT = SPACE )
              AND  ((WRK-NYUINKHN(IDX1)           NOT = SPACE)  OR
                    (LNK-NYUINDAY-KBN(IDX1)       =     "1"  ))
@@ -3486,7 +3486,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÅÀ¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý¡Ê¼ç²Ê½èÍýÍÑ¡Ë
+      *    å…¥é™¢ç‚¹æ•°è¿”å´ã‚¨ãƒªã‚¢ã¸ã®ã‚»ãƒƒãƒˆå‡¦ç†ï¼ˆä¸»ç§‘å‡¦ç†ç”¨ï¼‰
       *****************************************************************
        210-NYUINTEN-SET-SEC            SECTION.
       *
@@ -3542,8 +3542,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *    
-      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
-      *    ·îËöÆü¤ò¼èÆÀ
+      *    æœˆæœ«æ—¥ã®åŒæ—¥å†å…¥é™¢åˆ¤å®šã«ã¤ã„ã¦å–å¾—
+      *    æœˆæœ«æ—¥ã‚’å–å¾—
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
            MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -3626,33 +3626,33 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-PERFORM
            END-IF
       *
-      *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
+      *     DISPLAY   "è¿”å´æƒ…å ±è¡¨ç¤º"
+      *     DISPLAY   "ä¿é™ºçµ„åˆã›ï¼‘ = " 
       *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
-      *     DISPLAY   "ÅÀ¿ô£±¡¡£± = "
+      *     DISPLAY   "ç‚¹æ•°ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-TENSU (1 1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 2)
-      *     DISPLAY   "ÅÀ¿ô£±¡¡£² = "
+      *     DISPLAY   "ç‚¹æ•°ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-TENSU (1 2)
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
+      *     DISPLAY   "ä¿é™ºçµ„åˆã›ï¼’ = " 
       *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
-      *     DISPLAY   "ÅÀ¿ô£²¡¡£± = "
+      *     DISPLAY   "ç‚¹æ•°ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-TENSU (2 1)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 2)
-      *     DISPLAY   "ÅÀ¿ô£²¡¡£² = "
+      *     DISPLAY   "ç‚¹æ•°ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-TENSU (2 2)
            .
        210-NYUINTEN-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡Æü¿ôÊÖµÑ¥¨¥ê¥¢¤Ø¤Î¥»¥Ã¥È½èÍý¡Ê¼ç²Ê½èÍýÍÑ¡Ë
+      *    å…¥é™¢æ—¥æ•°è¿”å´ã‚¨ãƒªã‚¢ã¸ã®ã‚»ãƒƒãƒˆå‡¦ç†ï¼ˆä¸»ç§‘å‡¦ç†ç”¨ï¼‰
       *****************************************************************
        210-NYUINDAY-SET-SEC            SECTION.
       *
@@ -3717,8 +3717,8 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *         END-IF
            END-PERFORM
       *    
-      *    ·îËöÆü¤ÎÆ±ÆüºÆÆþ±¡È½Äê¤Ë¤Ä¤¤¤Æ¼èÆÀ
-      *    ·îËöÆü¤ò¼èÆÀ
+      *    æœˆæœ«æ—¥ã®åŒæ—¥å†å…¥é™¢åˆ¤å®šã«ã¤ã„ã¦å–å¾—
+      *    æœˆæœ«æ—¥ã‚’å–å¾—
            INITIALIZE                      STS-AREA-DAY
            INITIALIZE                      LNK-DAY7-AREA
            MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -3801,49 +3801,49 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-PERFORM
            END-IF
       *
-      *     DISPLAY   "ÊÖµÑ¾ðÊóÉ½¼¨"
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£± = " 
+      *     DISPLAY   "è¿”å´æƒ…å ±è¡¨ç¤º"
+      *     DISPLAY   "ä¿é™ºçµ„åˆã›ï¼‘ = " 
       *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£± = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 1)
-      *     DISPLAY   "³«»ÏÆü£±¡¡£± = "
+      *     DISPLAY   "é–‹å§‹æ—¥ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-STDAY (1 1)
-      *     DISPLAY   "½ªÎ»Æü£±¡¡£± = "
+      *     DISPLAY   "çµ‚äº†æ—¥ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-EDDAY (1 1)
-      *     DISPLAY   "Æü¿ô£±¡¡£± = "
+      *     DISPLAY   "æ—¥æ•°ï¼‘ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-DAY (1 1)
-      *     DISPLAY   "Æþ±¡²Ê£±¡¡£² = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-NYUINKA (1 2)
-      *     DISPLAY   "³«»ÏÆü£±¡¡£² = "
+      *     DISPLAY   "é–‹å§‹æ—¥ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-STDAY (1 2)
-      *     DISPLAY   "½ªÎ»Æü£±¡¡£² = "
+      *     DISPLAY   "çµ‚äº†æ—¥ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-EDDAY (1 2)
-      *     DISPLAY   "Æü¿ô£±¡¡£² = "
+      *     DISPLAY   "æ—¥æ•°ï¼‘ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-DAY (1 2)
-      *     DISPLAY   "ÊÝ¸±ÁÈ¹ç¤»£² = " 
+      *     DISPLAY   "ä¿é™ºçµ„åˆã›ï¼’ = " 
       *                LNK-ORCHCN33SUB-HENKYAKU-HKNCOM (2)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£± = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 1)
-      *     DISPLAY   "³«»ÏÆü£²¡¡£± = "
+      *     DISPLAY   "é–‹å§‹æ—¥ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-STDAY (2 1)
-      *     DISPLAY   "½ªÎ»Æü£²¡¡£± = "
+      *     DISPLAY   "çµ‚äº†æ—¥ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-EDDAY (2 1)
-      *     DISPLAY   "Æü¿ô£²¡¡£± = "
+      *     DISPLAY   "æ—¥æ•°ï¼’ã€€ï¼‘ = "
       *                LNK-ORCHCN33SUB-DAY (2 1)
-      *     DISPLAY   "Æþ±¡²Ê£²¡¡£² = "
+      *     DISPLAY   "å…¥é™¢ç§‘ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-NYUINKA (2 2)
-      *     DISPLAY   "³«»ÏÆü£²¡¡£² = "
+      *     DISPLAY   "é–‹å§‹æ—¥ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-STDAY (2 2)
-      *     DISPLAY   "½ªÎ»Æü£²¡¡£² = "
+      *     DISPLAY   "çµ‚äº†æ—¥ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-EDDAY (2 2)
-      *     DISPLAY   "Æü¿ô£²¡¡£² = "
+      *     DISPLAY   "æ—¥æ•°ï¼’ã€€ï¼’ = "
       *                LNK-ORCHCN33SUB-DAY (2 2)
            .
        210-NYUINDAY-SET-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍý¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SYSKANRI-READ-SEC         SECTION.
       *
@@ -3865,7 +3865,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -3904,7 +3904,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACCT-SELECT-SEC        SECTION.
       *
@@ -3925,7 +3925,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACCT-READ-SEC        SECTION.
       *
@@ -3947,7 +3947,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁ¿¶ÂØ¥Þ¥¹¥¿¡¼¸¡º÷
+      *    é¸å®šå…¥é™¢æ–™æŒ¯æ›¿ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-SENTEICDCHG-SELECT-SEC        SECTION.
       *
@@ -3969,7 +3969,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÁªÄêÆþ±¡ÎÁ¿¶ÂØ¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    é¸å®šå…¥é™¢æ–™æŒ¯æ›¿ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SENTEICDCHG-READ-SEC        SECTION.
       *
@@ -3991,7 +3991,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-NYUINACT-SELECT-SEC        SECTION.
       *
@@ -4012,7 +4012,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-NYUINACT-READ-SEC         SECTION.
       *
@@ -4034,7 +4034,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¸¡º÷
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-SRYACCT-SELECT-SEC        SECTION.
       *
@@ -4055,7 +4055,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SRYACCT-READ-SEC        SECTION.
       *
@@ -4077,7 +4077,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¸¡º÷
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-SRYACT-SELECT-SEC        SECTION.
       *
@@ -4098,7 +4098,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-SRYACT-READ-SEC        SECTION.
       *
@@ -4120,7 +4120,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼¸¡º÷
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-HKNCOMBI-SELECT-SEC        SECTION.
       *
@@ -4141,7 +4141,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ä¿é™ºçµ„åˆã›ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -4162,7 +4162,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -4202,7 +4202,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼¸¡º÷
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼æ¤œç´¢
       *****************************************************************
        910-PTNYUINRRK-SELECT-SEC        SECTION.
       *
@@ -4224,7 +4224,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÆþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC        SECTION.
       *
@@ -4246,7 +4246,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DB-CLOSE-SEC                 SECTION.
       *

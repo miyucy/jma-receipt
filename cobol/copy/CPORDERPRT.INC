@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,76 +16,76 @@
       * 113-8621, Japan.
       ********************************************************************
       *****************************************************************
-      *    Æþ±¡Ä¢É¼¥ª¡¼¥À      COPY (CPORDERPRT.INC)                 *
+      *    å…¥é™¢å¸³ç¥¨ã‚ªãƒ¼ãƒ€      COPY (CPORDERPRT.INC)                 *
       *****************************************************************
       *****************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  ORDERPRT-REC.
            03  ORDERPRT-KEY.
-      *  °åÎÅµ¡´Ø£É£Ä
+      *  åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
                05  ORDERPRT-HOSPNUM        PIC 9(2).
-      *  ´µ¼Ô£É£Ä
+      *  æ‚£è€…ï¼©ï¼¤
                05  ORDERPRT-PTID          PIC  9(10).
-      *  ´µ¼ÔÈÖ¹æ
+      *  æ‚£è€…ç•ªå·
                05  ORDERPRT-PTNUM         PIC  X(20).
-      *  Æþ³°¶èÊ¬
+      *  å…¥å¤–åŒºåˆ†
                05  ORDERPRT-NYUGAIKBN     PIC  X(01).
-      *  ¿ÇÎÅ²Ê
+      *  è¨ºç™‚ç§‘
                05  ORDERPRT-SRYKA         PIC  X(02).
-      *  ÊÝ¸±ÁÈ¹ç¤»
+      *  ä¿é™ºçµ„åˆã›
                05  ORDERPRT-HKNCOMBI      PIC  X(04).
-      *  ¥·¥¹¥Æ¥àÆüÉÕ
+      *  ã‚·ã‚¹ãƒ†ãƒ æ—¥ä»˜
                05  ORDERPRT-SYSYMD        PIC  X(08).
-      *  È¯¹ÔÆü
+      *  ç™ºè¡Œæ—¥
                05  ORDERPRT-PRINTYMD      PIC X(08).
-      *  È¯¹Ô»þ´Ö
+      *  ç™ºè¡Œæ™‚é–“
                05  ORDERPRT-PRINTHMS      PIC X(06).
-      *  Ä¢É¼¼ïÎà  £±¡§Æþ±¡½èÊýäµ¡¢£²¡§Æþ±¡ËãÌô½èÊý¡¢£³¡§Î×»þÅêÌô
-      *            £´¡§Ãí¼Í½èÊýäµ¡¢£µ¡§Ãí¼ÍËãÌô½èÊý¡¢£¶¡§»Ø¼¨äµ
+      *  å¸³ç¥¨ç¨®é¡ž  ï¼‘ï¼šå…¥é™¢å‡¦æ–¹ç®‹ã€ï¼’ï¼šå…¥é™¢éº»è–¬å‡¦æ–¹ã€ï¼“ï¼šè‡¨æ™‚æŠ•è–¬
+      *            ï¼”ï¼šæ³¨å°„å‡¦æ–¹ç®‹ã€ï¼•ï¼šæ³¨å°„éº»è–¬å‡¦æ–¹ã€ï¼–ï¼šæŒ‡ç¤ºç®‹
                05  ORDERPRT-PRTKBN        PIC  X(01).
-      *  ÈÖ¹æ
+      *  ç•ªå·
                05  ORDERPRT-ORDERNUM      PIC 9(02).
-      *  »ÞÈÖ¡ÊºÞËè¤Ë£±¤«¤é¤ÎÏ¢ÈÖ¡Ë
+      *  æžç•ªï¼ˆå‰¤æ¯Žã«ï¼‘ã‹ã‚‰ã®é€£ç•ªï¼‰
                05  ORDERPRT-RENNUM        PIC 9(02).
-      *Æ±°ìÈÖ¹æ¤Ï¤¹¤Ù¤ÆÆ±°ìÆâÍÆ
-      *  ¥É¥¯¥¿¡¼¥³¡¼¥É
+      *åŒä¸€ç•ªå·ã¯ã™ã¹ã¦åŒä¸€å†…å®¹
+      *  ãƒ‰ã‚¯ã‚¿ãƒ¼ã‚³ãƒ¼ãƒ‰
            03  ORDERPRT-DRCD              PIC X(05).
-      *  ¿ÇÎÅ¶èÊ¬
+      *  è¨ºç™‚åŒºåˆ†
            03  ORDERPRT-SRYKBN            PIC X(02).
-      *  ¿ÇÎÅ¼ïÊÌ
+      *  è¨ºç™‚ç¨®åˆ¥
            03  ORDERPRT-SRYSYUKBN         PIC X(03).
-      *  ¿ÇÎÅÆüÉÕ
+      *  è¨ºç™‚æ—¥ä»˜
            03  ORDERPRT-SRYYMD            PIC X(08).
-      *»ÞÈÖ¡á£°£±¤Î»þÀßÄê
-      *  ²ó¿ô
+      *æžç•ªï¼ï¼ï¼‘ã®æ™‚è¨­å®š
+      *  å›žæ•°
            03  ORDERPRT-DAY-G.
                05  ORDERPRT-DAY           PIC 9(03)
                                        OCCURS   31.
-      *¿ÇÎÅÆâÍÆ¡ÊÉ¬¿Ü¡Ë
+      *è¨ºç™‚å†…å®¹ï¼ˆå¿…é ˆï¼‰
            03  ORDERPRT-SINRYO-G.
-      *  ¿ÇÎÅ¥³¡¼¥É
+      *  è¨ºç™‚ã‚³ãƒ¼ãƒ‰
                05  ORDERPRT-SRYCD             PIC X(09).
-      *  ¿ôÎÌ
+      *  æ•°é‡
                05  ORDERPRT-SRYSURYO          PIC 9(05)V9(5).
-      *  ¿ôÎÌ¡Ê³°ÍÑ¤Î¸ÄÊÌ¿ôÎÌ¡Ë
+      *  æ•°é‡ï¼ˆå¤–ç”¨ã®å€‹åˆ¥æ•°é‡ï¼‰
                05  ORDERPRT-SRYSURYO2         PIC 9(05)V9(5).
-      *  »£±Æ²ó¿ô¡¦³°ÍÑ¤Î¸ÄÊÌ²ó¿ô
+      *  æ’®å½±å›žæ•°ãƒ»å¤–ç”¨ã®å€‹åˆ¥å›žæ•°
                05  ORDERPRT-SRYKAISU          PIC 9(03).
-      *  ÆþÎÏ¥³¥á¥ó¥È¡Ê¥Õ¥ê¡¼¥³¥á¥ó¥ÈÅù¡Ë
+      *  å…¥åŠ›ã‚³ãƒ¡ãƒ³ãƒˆï¼ˆãƒ•ãƒªãƒ¼ã‚³ãƒ¡ãƒ³ãƒˆç­‰ï¼‰
                05  ORDERPRT-INPUTCOMENT       PIC X(80).
-      *  ´¹»»ÃÍ¿ôÎÌ
+      *  æ›ç®—å€¤æ•°é‡
                05  ORDERPRT-KANSURYO          PIC 9(05)V9(5).
       *
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  ORDERPRT-TERMID            PIC  X(64).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  ORDERPRT-OPID              PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  ORDERPRT-CREYMD            PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  ORDERPRT-UPYMD             PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  ORDERPRT-UPHMS             PIC  X(06).
 

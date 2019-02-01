@@ -1,8 +1,8 @@
 \set ON_ERROR_STOP
 
 COPY tbl_syskanri (kanricd, kbncd, styukymd, edyukymd, kanritbl, termid, opid, creymd, upymd, uphms, hospnum) FROM stdin;
-1028	01      	00000000	99999999	´µ¼Ô¤Ë¤è¤ëÍ½Ìó                ´µ¼ÔÍ½Ìó  1                                     			        	        	      	0
-1028	02      	00000000	99999999	°å»Õ¤Ë¤è¤ëÍ½Ìó                °å»ÕÍ½Ìó                                        			        	        	      	0
+1028	01      	00000000	99999999	æ‚£è€…ã«ã‚ˆã‚‹äºˆç´„                æ‚£è€…äºˆç´„  1                                     			        	        	      	0
+1028	02      	00000000	99999999	åŒ»å¸«ã«ã‚ˆã‚‹äºˆç´„                åŒ»å¸«äºˆç´„                                        			        	        	      	0
 \.
 
 insert into tbl_syskanri

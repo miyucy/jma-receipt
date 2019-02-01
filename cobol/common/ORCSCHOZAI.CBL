@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,26 +18,26 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSCHOZAI.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æþ±¡²ñ·×¾È²ñ
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : Æþ±¡ÍÑÆþ±¡Ä´ºÞÎÁ¹¹¿·½èÍý
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/01/10    NACL¡ÝÂ¿¡¹Ç¼  ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : å…¥é™¢ä¼šè¨ˆç…§ä¼š
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : å…¥é™¢ç”¨å…¥é™¢èª¿å‰¤æ–™æ›´æ–°å‡¦ç†
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/01/10    NACLâˆ’å¤šã€…ç´  æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  01.00.01    NACL-Â¿¡¹Ç¼  03/07/10  Æþ±¡Ä´ºÞÎÁ»»Äê¤Ê¤·ÄÉ²Ã
-      *  01.00.02    NACL-Â¿¡¹Ç¼  06/02/09  MONFUNC ÂÐ±þ
-      *                                     Âà±¡¤ÎÍâÆüÆþ±¡¤ÎÂÐ±þ
-      *  03.05.00    NACL-Â¿¡¹Ç¼  07/04/XX  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *  04.03.00    NACL-Â¿¡¹Ç¼  08/08/01  ÊÝ¸±ÁÈ¹ç¤»´ü´Ö¥Á¥§¥Ã¥¯ÄÉ²Ã
-      *  04.04.00    NACL-Â¿¡¹Ç¼  08/12/17  Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯ÂÐ±þ
-      *  04.05.00    NACL-Â¿¡¹Ç¼  09/12/03  Á°·îÊÝ¸±ÁÈ¹ç¤»½ªÎ»ÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  11/10/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  12/08/XX  ¥µ¥ó¥×¥ëÌô¡Ê¥µ¡ËÂÐ±þ
-      *  04.07.00    NACL-Â¿¡¹Ç¼  14/04/01  ½ÐÍè¹â»»Äê¡ÊºÞ¡ËÅùÂÐ±þ
-      *  04.08.00    NACL-Â¿¡¹Ç¼  16/10/XX  H28.10·îÅÓÃæ¤ÇËãÆÇÊÑ¹¹ÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  01.00.01    NACL-å¤šã€…ç´  03/07/10  å…¥é™¢èª¿å‰¤æ–™ç®—å®šãªã—è¿½åŠ 
+      *  01.00.02    NACL-å¤šã€…ç´  06/02/09  MONFUNC å¯¾å¿œ
+      *                                     é€€é™¢ã®ç¿Œæ—¥å…¥é™¢ã®å¯¾å¿œ
+      *  03.05.00    NACL-å¤šã€…ç´  07/04/XX  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *  04.03.00    NACL-å¤šã€…ç´  08/08/01  ä¿é™ºçµ„åˆã›æœŸé–“ãƒã‚§ãƒƒã‚¯è¿½åŠ 
+      *  04.04.00    NACL-å¤šã€…ç´  08/12/17  å…¥é™¢æ–™åŒ…æ‹¬ãƒã‚§ãƒƒã‚¯å¯¾å¿œ
+      *  04.05.00    NACL-å¤šã€…ç´  09/12/03  å‰æœˆä¿é™ºçµ„åˆã›çµ‚äº†å¯¾å¿œ
+      *  04.07.00    NACL-å¤šã€…ç´  11/10/XX  åŒæ—¥å†å…¥é™¢å¯¾å¿œ
+      *  04.07.00    NACL-å¤šã€…ç´  12/08/XX  ã‚µãƒ³ãƒ—ãƒ«è–¬ï¼ˆã‚µï¼‰å¯¾å¿œ
+      *  04.07.00    NACL-å¤šã€…ç´  14/04/01  å‡ºæ¥é«˜ç®—å®šï¼ˆå‰¤ï¼‰ç­‰å¯¾å¿œ
+      *  04.08.00    NACL-å¤šã€…ç´  16/10/XX  H28.10æœˆé€”ä¸­ã§éº»æ¯’å¤‰æ›´å¯¾å¿œ
       *****************************************************************
       *
       *
@@ -53,7 +53,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-SRYACT          PIC 9(01).
@@ -88,7 +88,7 @@
       *ver.4.7
            03  FLG-ARI2            PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDX1                PIC 9(04).
@@ -113,7 +113,7 @@
       *ver.4.7
            03  IDX4                PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
@@ -131,14 +131,14 @@
            03  WRK-SRYCD               PIC X(09).
            03  WRK-SRYCD-9             PIC 9(09).
       *
-      *    ËöÆü
+      *    æœ«æ—¥
            03  WRK-MATU                PIC 9(02).
            03  WRK-SRYYM.
                05  WRK-SRYYY           PIC 9(04).
                05  WRK-SRYMM           PIC 9(02).
            03  WRK-SRYKBN              PIC X(02).
            03  WRK-KAISU               PIC 9(03).
-      *    Íâ·î
+      *    ç¿Œæœˆ
            03  WRK-MATU-NEXT           PIC 9(02).
            03  WRK-SRYYM-N.
                05  WRK-SRYYY-N         PIC 9(04).
@@ -166,22 +166,22 @@
            03  WRK-RENNUM              PIC 9(01).
       *
       *H26.7
-      *    Á°·î¤«¤é¤ÎÆþ±¡Æü
+      *    å‰æœˆã‹ã‚‰ã®å…¥é™¢æ—¥
            03  WRK-NYUINYMD            PIC X(08).
            03  WRK-CHK-SRYYMD.
                05  WRK-CHK-SRYYM       PIC X(06).
                05  WRK-CHK-DD          PIC 9(02).
       *H28.10
-      *    ËãÌô³«»Ï
+      *    éº»è–¬é–‹å§‹
            03  WRK-MADOKU-ST           PIC 9(02).
-      *    ¥Þ¥¹¥¿³«»ÏÆüÉÕ
+      *    ãƒžã‚¹ã‚¿é–‹å§‹æ—¥ä»˜
            03  WRK-YKSTYMD.
                05  WRK-YKSTYM          PIC X(06).
                05  WRK-YKSTDD          PIC 9(02).
            03  WRK-HZN-DD              PIC 9(02).
       *H26.7
       *
-      *    ÅêÌôÆü
+      *    æŠ•è–¬æ—¥
        01  TBL-TOUYAKU-AREA.
            03  TBL-TOUYAKU-OCC1        OCCURS   3.
                05  TBL-TOUYAKU-OCC         OCCURS   31.
@@ -196,7 +196,7 @@
                        09  TBL-DOK-SRYKA       PIC X(02).
                        09  TBL-DOK-HKNCOMBI    PIC X(04).
                        09  TBL-DOK-HKNERR      PIC X(01).
-      *    Ä´ºÞÎÁ
+      *    èª¿å‰¤æ–™
        01  TBL-CHOZAI-AREA.
            03  TBL-CHOZAI-OCC         OCCURS   10.
                05  TBL-CHO-ZAINUM          PIC 9(08).
@@ -205,12 +205,12 @@
                05  TBL-CHO-JIHOKBN         PIC X(01).
                05  TBL-CHO-ADD             PIC X(01).
                05  TBL-CHO-SYORI           PIC X(01).
-      *        ºîÀ®
+      *        ä½œæˆ
                05  TBL-CHO-DAY-AREA.
                    07  TBL-CHO-DAY-TBL     OCCURS   10.
                         09  TBL-CHO-DAY    PIC 9(03)
                                            OCCURS  31.
-      *    ËãÆÇÎÁ
+      *    éº»æ¯’æ–™
        01  TBL-MADOKU-AREA.
            03  TBL-MADOKU-OCC         OCCURS   10.
                05  TBL-MAD-ZAINUM          PIC 9(08).
@@ -219,95 +219,95 @@
                05  TBL-MAD-JIHOKBN         PIC X(01).
                05  TBL-MAD-ADD             PIC X(01).
                05  TBL-MAD-SYORI           PIC X(01).
-      *        ºîÀ®
+      *        ä½œæˆ
                05  TBL-MAD-DAY-AREA.
                    07  TBL-MAD-DAY-TBL     OCCURS   10.
                         09  TBL-MAD-DAY    PIC 9(03)
                                            OCCURS  31.
-      *    ³°Çñ
+      *    å¤–æ³Š
        01  TBL-GAIHAKU-AREA.
            03  TBL-GAIHAKU-OCC         OCCURS   31.
                05  TBL-GAI-DAY         PIC 9(01).
-      *    Æþ±¡´ü´Ö
+      *    å…¥é™¢æœŸé–“
        01  TBL-NYUIN-AREA.
            03  TBL-NYUIN-OCC         OCCURS   31.
                05  TBL-NYU-DAY         PIC 9(01).
                05  TBL-NYU-SRYKA       PIC X(02).
                05  TBL-NYU-HKNCOMBI    PIC X(04).
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»´ü´Ö
+      *    ä¿é™ºçµ„åˆã›æœŸé–“
        01  TBL-HKNCOMBI-AREA.
            03  TBL-HKNCOMBI-OCC         OCCURS   50.
                05  TBL-HKNCOMBINUM         PIC X(04).
                05  TBL-TEKSTYMD            PIC X(08).
                05  TBL-TEKEDYMD            PIC X(08).
       *
-      *Æþ±¡ÎÁÊñ³ç
+      *å…¥é™¢æ–™åŒ…æ‹¬
        01  TBL-NYUAREA.
            03  TBL-HKTCHKFLG-G.
                05  TBL-HKTCHKFLG-OCC        OCCURS   31.
                    07  TBL-HKTCHKFLG        PIC 9(01).
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡Ý
+      *    æ‚£è€…ãƒžã‚¹ã‚¿âˆ’
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼
        01  SRYACT-REC.
            COPY    "CPSRYACT.INC".
       *
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  SRYACCT-REC.
            COPY    "CPSRYACCT.INC".
       *
-      *    ÊÝ¸±ÁÈ¤ß¹ç¤ï¤»
+      *    ä¿é™ºçµ„ã¿åˆã‚ã›
        01  HKNCOMBI-REC.
            COPY    "CPHKNCOMBI.INC".
       *
-      *    ¼õ¿ÇÍúÎò
+      *    å—è¨ºå±¥æ­´
        01  JYURRK-REC.
            COPY    "CPJYURRK.INC".
       *
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  NYUINACCT-REC.
            COPY    "CPNYUINACCT.INC".
       *
-      *    ´µ¼ÔÆþ±¡ÍúÎò
+      *    æ‚£è€…å…¥é™¢å±¥æ­´
        01  PTNYUINRRK-REC.
            COPY    "CPPTNYUINRRK.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
       *01  TENSU-REC.
            COPY    "CPTENSU.INC".
       *
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡Ý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿âˆ’
        01  HZN-SRYACCT-REC.
            COPY    "CPSRYACCT.INC"  REPLACING
                                     //ACCT-// BY //HZN-ACCT-//.
       *
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *   ÆüÉÕÊÑ´¹¥µ¥Ö
+      *   æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *   »»ÄêÍúÎò¹¹¿·¥µ¥Ö
+      *   ç®—å®šå±¥æ­´æ›´æ–°ã‚µãƒ–
            COPY    "CPORCSSANTEI.INC".
       *
-      *    ¥Þ¥·¥óÆüÉÕ¼èÆÀ¥µ¥Ö
+      *    ãƒžã‚·ãƒ³æ—¥ä»˜å–å¾—ã‚µãƒ–
            COPY    "CPORCSMCNDATE.INC".
       *
-      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥¯¥Ñ¥é¥á¥¿
+      *    å…¥é™¢æ–™åŒ…æ‹¬è¨ºç™‚ãƒã‚§ã‚¯ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSCHKTALL.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *****COPY    "CPORCMCP.INC".
       *
@@ -316,13 +316,13 @@
       *
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    ¿ÇÎÅ¹Ô°ÙÆþ±¡¹¹¿·¥Ñ¥é¥á¥¿ÎÎ°è
+      *    è¨ºç™‚è¡Œç‚ºå…¥é™¢æ›´æ–°ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
            COPY    "CPORCSCHOZAI.INC".
       *
        PROCEDURE                   DIVISION    USING
@@ -331,7 +331,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -345,28 +345,28 @@
       *
            INITIALIZE                  ORCSCHO-ERRCD
       *
-      *    ¹¹¿·Æü¼èÆÀ
+      *    æ›´æ–°æ—¥å–å¾—
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
            MOVE    "1"                 TO  SPA-NYUGAIKBN
       *
-      *    Æþ±¡¡¦³°Çñ¤ÎÊÔ½¸
+      *    å…¥é™¢ãƒ»å¤–æ³Šã®ç·¨é›†
            PERFORM 200-GAIHAKU-HEN-SEC
-      *    ÊÝ¸±ÁÈ¹ç¤»¤ÎÊÔ½¸
+      *    ä¿é™ºçµ„åˆã›ã®ç·¨é›†
            PERFORM 200-HKNCOMBI-HEN-SEC
       *
            EVALUATE    ORCSCHO-KBN
-      *        ÄÌ¾ï
+      *        é€šå¸¸
                WHEN    "1"
-      *            Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î³ÎÄê
+      *            å…¥é™¢èª¿å‰¤æ–™ã¨éº»æ¯’ã®ç¢ºå®š
                    PERFORM 300-CHOZAI-HEN-SEC
-      *            ÅêÌô¤ÎÆü¿ôÊÔ½¸
+      *            æŠ•è–¬ã®æ—¥æ•°ç·¨é›†
                    PERFORM 100-TOUYAKU-HEN-SEC
-      *            Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î¹¹¿·
+      *            å…¥é™¢èª¿å‰¤æ–™ã¨éº»æ¯’ã®æ›´æ–°
                    PERFORM 400-SANTEI-SYORI-SEC
-      *        Âà±¡½èÍý
+      *        é€€é™¢å‡¦ç†
                WHEN    "2"
                    PERFORM 500-TAIIN-SYORI-SEC
            END-EVALUATE
@@ -377,13 +377,13 @@
            EXIT    PROGRAM
            .
       *****************************************************************
-      *    ÅêÌô¤ÎÆü¿ôÊÔ½¸½èÍý
+      *    æŠ•è–¬ã®æ—¥æ•°ç·¨é›†å‡¦ç†
       *****************************************************************
        100-TOUYAKU-HEN-SEC             SECTION.
       *
            INITIALIZE                  TBL-TOUYAKU-AREA
            MOVE    ORCSCHO-SRYYM       TO  WRK-SRYYM
-      *    Á°£±·îÊ¬
+      *    å‰ï¼‘æœˆåˆ†
            COMPUTE WRK-SRYMM           =   WRK-SRYMM   -   1
            IF      WRK-SRYMM           =   ZERO
                COMPUTE WRK-SRYYY       =   WRK-SRYYY   -   1
@@ -391,7 +391,7 @@
            END-IF
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   2
-      *        ¿ÇÎÅÇ¯·î¤ÎËöÆü»»Äê
+      *        è¨ºç™‚å¹´æœˆã®æœ«æ—¥ç®—å®š
                INITIALIZE                      STS-AREA-DAY
                INITIALIZE                      LNK-DAY7-AREA
                MOVE    "71"                TO  LNK-DAY7-IRAI
@@ -400,7 +400,7 @@
                                            STS-AREA-DAY
                                            LNK-DAY7-AREA
                MOVE    LNK-DAY7-KOYOMI(7:2)    TO  WRK-MATU
-      *        ¿ÇÎÅÇ¯·î¡Ü£±·î¤ÎËöÆü»»Äê
+      *        è¨ºç™‚å¹´æœˆï¼‹ï¼‘æœˆã®æœ«æ—¥ç®—å®š
                COMPUTE WRK-SRYMM-N         =   WRK-SRYMM   +   1
                IF      WRK-SRYMM-N         >   12
                    COMPUTE WRK-SRYYY-N     =   WRK-SRYYY   +   1
@@ -424,7 +424,7 @@
                    MOVE    "21"                TO  WRK-SRYKBN
                    PERFORM 10011-SRYACCT-21HEN-SEC
                END-IF
-      *        ¼¡·î
+      *        æ¬¡æœˆ
                COMPUTE WRK-SRYMM           =   WRK-SRYMM   +   1
                IF      WRK-SRYMM           >   12
                    COMPUTE WRK-SRYYY       =   WRK-SRYYY   +   1
@@ -432,11 +432,11 @@
                END-IF
       *
            END-PERFORM
-      *    ÆÜÉþ
+      *    é “æœ
            MOVE    "22"                TO  WRK-SRYKBN
            MOVE    ORCSCHO-SRYYM       TO  WRK-SRYYM
            PERFORM 10012-SRYACCT-HEN-SEC
-      *    ³°ÍÑ
+      *    å¤–ç”¨
            MOVE    "23"                TO  WRK-SRYKBN
            MOVE    ORCSCHO-SRYYM       TO  WRK-SRYYM
            PERFORM 10012-SRYACCT-HEN-SEC
@@ -445,11 +445,11 @@
        100-TOUYAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÅêÌô¤ÎÊÔ½¸½èÍý
+      *    æŠ•è–¬ã®ç·¨é›†å‡¦ç†
       *****************************************************************
        10011-SRYACCT-21HEN-SEC             SECTION.
       *
-      *    ¿ÇÎÅÇ¯·î¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    è¨ºç™‚å¹´æœˆã®è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -472,22 +472,22 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
       *!!!!! IF     (ACCT-YKZTEN       >   ZERO  )
-      *        Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        åŒ…æ‹¬ã¾ã¨ã‚å…¥åŠ›ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
       *!!!!    AND  (ACCT-HKNCOMBI NOT =   "9999" )
       *!     IF     (ACCT-HKNCOMBI NOT =   "9999" )
-      *!       ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *!       è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
       *!       AND  (ACCT-ZAIKBN   NOT =   1      )
       *H28.9
              IF     (ACCT-HKNCOMBI     =   "9999" )
-      *        ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                OR   (ACCT-ZAIKBN       =   1      )
-      *        »ý»²Ìô¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        æŒå‚è–¬ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                OR   (ACCT-ZAIKBN       =   3      )
                OR   (ACCT-ZAIKBN       =   4      )
                CONTINUE
              ELSE
       *H26.7
-      *        Á°·îÊ¬¤ÇÆþ±¡Æü¤¬¿ÇÎÅÇ¯·î°ÊÁ°¤Î»þ
+      *        å‰æœˆåˆ†ã§å…¥é™¢æ—¥ãŒè¨ºç™‚å¹´æœˆä»¥å‰ã®æ™‚
                IF      (WRK-SRYYM      NOT =   ORCSCHO-SRYYM)
                    AND (WRK-NYUINYMD   NOT =   SPACE)
                    MOVE    ACCT-SRYYM       TO  WRK-CHK-SRYYM
@@ -495,14 +495,14 @@
                    MOVE    SPACE            TO  WRK-CHK-SRYYM
                END-IF
       *
-      *        ºÇ½é¤ÎÆü¤òÊÝÂ¸¡ÊÅÀ¿ô¥Þ¥¹¥¿¸¡º÷¤Î¤¿¤á¡Ë
+      *        æœ€åˆã®æ—¥ã‚’ä¿å­˜ï¼ˆç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢ã®ãŸã‚ï¼‰
                MOVE    01                  TO  WRK-DD
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
                    IF      ACCT-DAY (1 IDY2)   >   ZERO
                        MOVE    IDY2                TO  WRK-DD
       *
-      *H26.7           Á°·î¤ÎÆþ±¡Æü¤è¤êÁ°¤Î»»Äê¤Ï¤Ê¤·
+      *H26.7           å‰æœˆã®å…¥é™¢æ—¥ã‚ˆã‚Šå‰ã®ç®—å®šã¯ãªã—
                        IF      WRK-CHK-SRYYM       NOT =   SPACE
                            MOVE    IDY2            TO  WRK-CHK-DD
                            IF     (WRK-NYUINYMD    >   WRK-CHK-SRYYMD)
@@ -514,15 +514,15 @@
       *!!
                    END-IF
                END-PERFORM
-      *        ¿ÇÎÅ¹Ô°Ù¤è¤êËãÆÇÈ½Äê
+      *        è¨ºç™‚è¡Œç‚ºã‚ˆã‚Šéº»æ¯’åˆ¤å®š
                PERFORM 600111-SRYACT-HEN-SEC
       *
       *
                IF      FLG-NASI            =   ZERO
-      *        ²ó¿ô¤Ë¤è¤êÊÝÂ¸
+      *        å›žæ•°ã«ã‚ˆã‚Šä¿å­˜
                PERFORM VARYING     IDY2    FROM    1   BY  1
                        UNTIL       IDY2    >   31
-      *            Æ±ÆüÆþ±¡
+      *            åŒæ—¥å…¥é™¢
                    MOVE    ZERO                TO  WRK-RENNUM
                    MOVE    ZERO                TO  WRK-DDAY
                    MOVE    ZERO                TO  WRK-KAISU
@@ -536,7 +536,7 @@
                            END-IF
                        ELSE
       **                   MOVE    ACCT-DAY (2 IDY2)   TO  WRK-KAISU
-      *                    Æ±ÆüÂà±¡Ê¬¤Ï¡¢£±²ó¤Î¤ß¤È¤¹¤ë
+      *                    åŒæ—¥é€€é™¢åˆ†ã¯ã€ï¼‘å›žã®ã¿ã¨ã™ã‚‹
                            IF      ACCT-DAY (2 IDY2)   >   ZERO
                                MOVE    1               TO  WRK-KAISU
                            END-IF
@@ -544,7 +544,7 @@
                    ELSE
                        MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
                    END-IF
-      *            ÅêÌô¤ÎÆü¤¬Æþ±¡Ãæ¤Ç¤¢¤ë¤³¤È
+      *            æŠ•è–¬ã®æ—¥ãŒå…¥é™¢ä¸­ã§ã‚ã‚‹ã“ã¨
       *********    IF      ACCT-DAY (1 IDY2)   >   ZERO
                    IF      WRK-KAISU           >   ZERO
       ***************  MOVE    ACCT-DAY (1 IDY2)   TO  WRK-KAISU
@@ -554,11 +554,11 @@
                                                +   IDX2
                                                -   1
                            IF      IDX3        >   WRK-MATU
-      *                        Íâ·î¤Ø
+      *                        ç¿Œæœˆã¸
                                COMPUTE IDX3        =   IDX3
                                                    -   WRK-MATU
-      *                        £²·î°Ê¾å¤Þ¤¿¤¬¤é¤Ê¤¤¤³¤È¤È¤¹¤ë
-      *                        ¡ÊÍâ·îËöÆü¤Þ¤Ç¡Ë
+      *                        ï¼’æœˆä»¥ä¸Šã¾ãŸãŒã‚‰ãªã„ã“ã¨ã¨ã™ã‚‹
+      *                        ï¼ˆç¿Œæœˆæœ«æ—¥ã¾ã§ï¼‰
                                IF      IDX3        >   WRK-MATU-NEXT
                                    MOVE    WRK-MATU-NEXT   TO  IDX3
                                END-IF
@@ -566,12 +566,12 @@
                            ELSE
                                MOVE    IDX             TO  IDX1
                            END-IF
-      *                    Åö·î¤ÇÂà±¡°Ê¹ß¤Ï¤Ê¤·¤È¤¹¤ë
+      *                    å½“æœˆã§é€€é™¢ä»¥é™ã¯ãªã—ã¨ã™ã‚‹
                            IF     (IDX1                =  2  )  AND
                                   (TBL-NYU-DAY (IDX3)  =   ZERO)
                                MOVE    WRK-KAISU       TO  IDX2
                            ELSE
-      *ver.4.7                 »»Äê¤¢¤êÊÔ½¸
+      *ver.4.7                 ç®—å®šã‚ã‚Šç·¨é›†
                                PERFORM 100110-TOUDAY-HEN-SEC
       ***********************  PERFORM 100111-TOU-SRYKAHEN-SEC
       *                        IF      FLG-MADOKU      =   1
@@ -579,7 +579,7 @@
       *                                                     (IDX1 IDX3)
       *                            PERFORM 100112-DOK-SRYKAHEN-SEC
       *******************      END-IF
-      *                        Âà±¡Æü¤Î»þ¡¢°Ê¹ß¤Ï¤Ê¤·¤È¤¹¤ë
+      *                        é€€é™¢æ—¥ã®æ™‚ã€ä»¥é™ã¯ãªã—ã¨ã™ã‚‹
                                IF     (IDX1                =  2  )  AND
                                      ((TBL-NYU-DAY (IDX3)  =  2  )  OR
                                       (TBL-NYU-DAY (IDX3)  =  3  AND
@@ -608,30 +608,30 @@
        10011-SRYACCT-21HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÅêÌôÍ­ÊÔ½¸½èÍý
+      *    æŠ•è–¬æœ‰ç·¨é›†å‡¦ç†
       *****************************************************************
        100110-TOUDAY-HEN-SEC             SECTION.
       *
            IF     (WRK-DDAY            =   IDX3 )
              AND  (WRK-RENNUM          =   1    )
-      *        Æ±ÆüºÆÆþ±¡Æü¤ÇÂà±¡Ê¬¤¬¤Ê¤¤»þ
+      *        åŒæ—¥å†å…¥é™¢æ—¥ã§é€€é™¢åˆ†ãŒãªã„æ™‚
                IF      TBL-TOU-DAY (IDX1 IDX3) =   ZERO
                    MOVE    2           TO  TBL-TOU-DAY (IDX1 IDX3)
-      *            ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÊÔ½¸½èÍý¡ÊÅêÌô¡Ë
+      *            è¨ºç™‚ç§‘ãƒ»ä¿é™ºç·¨é›†å‡¦ç†ï¼ˆæŠ•è–¬ï¼‰
                    PERFORM 100111-TOU-SRYKAHEN-SEC
                END-IF
            ELSE
                MOVE    1               TO  TBL-TOU-DAY (IDX1 IDX3)
-      *        ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÊÔ½¸½èÍý¡ÊÅêÌô¡Ë
+      *        è¨ºç™‚ç§‘ãƒ»ä¿é™ºç·¨é›†å‡¦ç†ï¼ˆæŠ•è–¬ï¼‰
                PERFORM 100111-TOU-SRYKAHEN-SEC
            END-IF
-      *    ËãÆÇ»»Äê
+      *    éº»æ¯’ç®—å®š
            IF      FLG-MADOKU          =   1
       *H28.10
             AND   (WRK-MADOKU-ST       <=  IDX3  )
                IF     (WRK-DDAY            =   IDX3 )
                  AND  (WRK-RENNUM          =   1    )
-      *            Æ±ÆüºÆÆþ±¡Æü¤ÇÂà±¡Ê¬¤¬¤Ê¤¤»þ
+      *            åŒæ—¥å†å…¥é™¢æ—¥ã§é€€é™¢åˆ†ãŒãªã„æ™‚
                    IF      TBL-DOK-DAY (IDX1 IDX3) =   ZERO
                        MOVE    2           TO  TBL-DOK-DAY (IDX1 IDX3)
                        PERFORM 100112-DOK-SRYKAHEN-SEC
@@ -645,7 +645,7 @@
        100110-TOUDAY-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÊÔ½¸½èÍý¡ÊÅêÌô¡Ë
+      *    è¨ºç™‚ç§‘ãƒ»ä¿é™ºç·¨é›†å‡¦ç†ï¼ˆæŠ•è–¬ï¼‰
       *****************************************************************
        100111-TOU-SRYKAHEN-SEC             SECTION.
       *
@@ -653,17 +653,17 @@
            MOVE    WRK-SRYYM            TO  WRK-STYM
            MOVE    IDX3                 TO  WRK-STDD
            IF      IDX             NOT  =   IDX1
-      *        Íâ·î
+      *        ç¿Œæœˆ
                COMPUTE WRK-STMM         =   WRK-STMM   +   1
                IF      WRK-STMM         >   12
                    COMPUTE WRK-STYY         =   WRK-STYY   +   1
                    MOVE    1                TO  WRK-STMM
                END-IF
            END-IF
-      *    ÊÝ¸±ÁÈ¹ç¤»¥Á¥§¥Ã¥¯
+      *    ä¿é™ºçµ„åˆã›ãƒã‚§ãƒƒã‚¯
            MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
            PERFORM 100111-HKNCOMBI-CHK-SEC
-      *    Á°·îÊ¬¤ÇÊÝ¸±ÁÈ¹ç¤»¤¬¤Ê¤¤¾ì¹ç
+      *    å‰æœˆåˆ†ã§ä¿é™ºçµ„åˆã›ãŒãªã„å ´åˆ
            MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
            IF     (FLG-HKN-CHK         =   ZERO          ) AND
                   (ACCT-SRYYM      NOT =   ORCSCHO-SRYYM )
@@ -706,7 +706,7 @@
        100111-TOU-SRYKAHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±¥Á¥§¥Ã¥¯½èÍý
+      *    ä¿é™ºãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        100111-HKNCOMBI-CHK-SEC             SECTION.
       *
@@ -727,7 +727,7 @@
        100111-HKNCOMBI-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²Ê¡¦ÊÝ¸±ÊÔ½¸½èÍý¡ÊËãÆÇ¡Ë
+      *    è¨ºç™‚ç§‘ãƒ»ä¿é™ºç·¨é›†å‡¦ç†ï¼ˆéº»æ¯’ï¼‰
       *****************************************************************
        100112-DOK-SRYKAHEN-SEC             SECTION.
       *
@@ -756,11 +756,11 @@
        100112-DOK-SRYKAHEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÆÜÉþ¡¦³°ÍÑ¤ÎÊÔ½¸½èÍý
+      *    é “æœãƒ»å¤–ç”¨ã®ç·¨é›†å‡¦ç†
       *****************************************************************
        10012-SRYACCT-HEN-SEC             SECTION.
       *
-      *    ¿ÇÎÅÇ¯·î¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    è¨ºç™‚å¹´æœˆã®è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -783,22 +783,22 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1       )
       *!!!!!!  IF      ACCT-YKZTEN       >   ZERO
-      *        Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        åŒ…æ‹¬ã¾ã¨ã‚å…¥åŠ›ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
       *!!!       AND  (ACCT-HKNCOMBI NOT =   "9999" )
       **       IF     (ACCT-HKNCOMBI NOT =   "9999" )
-      *        ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
       ***        AND  (ACCT-ZAIKBN   NOT =   1      )
       *H28.9
                IF     (ACCT-HKNCOMBI     =   "9999" )
-      *          ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *          è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                  OR   (ACCT-ZAIKBN       =   1      )
-      *          »ý»²Ìô¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *          æŒå‚è–¬ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                  OR   (ACCT-ZAIKBN       =   3      )
                  OR   (ACCT-ZAIKBN       =   4      )
                    CONTINUE
                ELSE
       *
-      *            ºÇ¸å¤ÎÆü¤òÊÝÂ¸¡ÊÅÀ¿ô¥Þ¥¹¥¿¸¡º÷¤Î¤¿¤á¡Ë
+      *            æœ€å¾Œã®æ—¥ã‚’ä¿å­˜ï¼ˆç‚¹æ•°ãƒžã‚¹ã‚¿æ¤œç´¢ã®ãŸã‚ï¼‰
                    MOVE    01                  TO  WRK-DD
                    PERFORM VARYING     IDY2    FROM    1   BY  1
                            UNTIL       IDY2    >   31
@@ -806,11 +806,11 @@
                            MOVE    IDY2                TO  WRK-DD
                        END-IF
                    END-PERFORM
-      *            ¿ÇÎÅ¹Ô°Ù¤è¤êËãÆÇÈ½Äê
+      *            è¨ºç™‚è¡Œç‚ºã‚ˆã‚Šéº»æ¯’åˆ¤å®š
                    PERFORM 600111-SRYACT-HEN-SEC
                  IF      FLG-NASI            =   ZERO
       *
-      *            ²ó¿ô¤Ë¤è¤êÊÝÂ¸
+      *            å›žæ•°ã«ã‚ˆã‚Šä¿å­˜
                    PERFORM VARYING     IDX3    FROM    1   BY  1
                            UNTIL       IDX3    >   31
                        IF      ACCT-DAY (1 IDX3)   >   ZERO
@@ -852,7 +852,7 @@
        10012-SRYACCT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÊÔ½¸½èÍý
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼ç·¨é›†å‡¦ç†
       *****************************************************************
        600111-SRYACT-HEN-SEC             SECTION.
       *
@@ -860,7 +860,7 @@
            MOVE    ZERO                TO  FLG-ARI2
            MOVE    ZERO                TO  FLG-MADOKU
            MOVE    ZERO                TO   WRK-MADOKU-ST
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤«¤é¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼¤ò¸¡º÷¤¹¤ë
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‹ã‚‰è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼ã‚’æ¤œç´¢ã™ã‚‹
            MOVE    SPACE               TO  SRYACT-REC
            INITIALIZE                      SRYACT-REC
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
@@ -881,17 +881,17 @@
            ELSE
                MOVE    1                   TO  FLG-SRYACT
            END-IF
-      *    Æþ±¡Ä´ºÞÎÁ¤Ê¤·¤òÂÐ¾Ý³°¤È¤¹¤ë
+      *    å…¥é™¢èª¿å‰¤æ–™ãªã—ã‚’å¯¾è±¡å¤–ã¨ã™ã‚‹
            IF     (FLG-SRYACT          =   ZERO )  AND
                   (SRY-SRYSYUKBN       =   "214"
                                        OR  "224"
                                        OR  "234"
-      *     ±¡³°½èÊýÂÐ¾Ý³°
+      *     é™¢å¤–å‡¦æ–¹å¯¾è±¡å¤–
                                        OR  "212"
                                        OR  "222"
                                        OR  "232"
                                        OR  "292"
-      *H26.4   ³°ÍÑ¡ÊÎ×»þ¡Ë
+      *H26.4   å¤–ç”¨ï¼ˆè‡¨æ™‚ï¼‰
                                        OR  "298"
                                        OR  "295" )
                MOVE    1                   TO  FLG-SRYACT
@@ -905,10 +905,10 @@
                        UNTIL      (IDX2            >   5   )  OR
       **************              (FLG-MADOKU      =   1    )  OR
                                   (SRY-SRYCD(IDX2) =   SPACE )
-      *            ÌôºÞ
+      *            è–¬å‰¤
                    IF      SRY-SRYCD (IDX2)(1:1)   =   "6"
                        MOVE    1                   TO  FLG-ARI
-      *                ÅÀ¿ô¥Þ¥¹¥¿
+      *                ç‚¹æ•°ãƒžã‚¹ã‚¿
                        MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
       *
@@ -919,7 +919,7 @@
                                                      =   ORCSCHO-SRYYM)
                                MOVE    TNS-YUKOSTYMD
                                                      TO  WRK-YKSTYMD
-      *                        ·îÅÓÃæËãÆÇ³«»ÏÆü
+      *                        æœˆé€”ä¸­éº»æ¯’é–‹å§‹æ—¥
                                PERFORM 6001110-TENSU-CHK-SEC
                                IF     (WRK-MADOKU-ST   =   ZERO )
                                   OR  (WRK-MADOKU-ST   >   WRK-YKSTDD)
@@ -933,7 +933,7 @@
                        END-IF
                    END-IF
       *ver.4.7
-      *            ¥µ¥ó¥×¥ëÌô¥³¥á¥ó¥È
+      *            ã‚µãƒ³ãƒ—ãƒ«è–¬ã‚³ãƒ¡ãƒ³ãƒˆ
                    IF      SRY-SRYCD (IDX2)    =   "820000046"
                        MOVE    1                   TO  FLG-ARI2
                    END-IF
@@ -958,18 +958,18 @@
        600111-SRYACT-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ·îÅÓÃæËãÆÇ³«»ÏÆü½èÍý
+      *    æœˆé€”ä¸­éº»æ¯’é–‹å§‹æ—¥å‡¦ç†
       *****************************************************************
        6001110-TENSU-CHK-SEC             SECTION.
       *
-      *    £±Æü¤Î»»Äê
+      *    ï¼‘æ—¥ã®ç®—å®š
            MOVE    WRK-DD              TO  WRK-HZN-DD
            MOVE    01                  TO  WRK-DD
            MOVE    SRY-SRYCD (IDX2)    TO  TNS-SRYCD
            PERFORM 910-TENSU-READ-SEC
       *
            IF      TNS-MADOKUKBN       NOT =   ZERO
-      *        £±ÆüÊ¬¤¬ËãÆÇ¤Î»þ¡¢£±Æü¤«¤é
+      *        ï¼‘æ—¥åˆ†ãŒéº»æ¯’ã®æ™‚ã€ï¼‘æ—¥ã‹ã‚‰
                MOVE    01              TO  WRK-YKSTDD
            END-IF
            MOVE    WRK-HZN-DD          TO  WRK-DD
@@ -978,12 +978,12 @@
        6001110-TENSU-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡¡¦³°Çñ¤ÎÊÔ½¸½èÍý
+      *    å…¥é™¢ãƒ»å¤–æ³Šã®ç·¨é›†å‡¦ç†
       *****************************************************************
        200-GAIHAKU-HEN-SEC             SECTION.
       *
            MOVE    ZERO                TO  FLG-NYUIN01
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÆÃÄê¤¹¤ë
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‚’ç‰¹å®šã™ã‚‹
            INITIALIZE                      NYUINACCT-REC
            MOVE    SPA-HOSPNUM         TO  NACCT-HOSPNUM
            MOVE    SPA-NYUGAIKBN       TO  NACCT-NYUGAIKBN
@@ -1007,7 +1007,7 @@
                PERFORM VARYING     IDX     FROM    1   BY  1
                        UNTIL       IDX     >   31
       *************IF      NACCT-DAY (IDX) >   ZERO
-      *            ³°Çñ¤Î¥¼¥í¤È£´¤ÏÂÐ¾Ý³°
+      *            å¤–æ³Šã®ã‚¼ãƒ­ã¨ï¼”ã¯å¯¾è±¡å¤–
                    IF     (NACCT-DAY (IDX)  =  ZERO)
                    OR     (NACCT-DAY (IDX) >=   4  )
                        CONTINUE
@@ -1024,7 +1024,7 @@
            MOVE    "key17"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    Æþ±¡ÍúÎòÈ½Äê
+      *    å…¥é™¢å±¥æ­´åˆ¤å®š
            MOVE    SPACE               TO  PTNYUINRRK-REC
            INITIALIZE                  PTNYUINRRK-REC
            MOVE    SPA-HOSPNUM         TO  PTNYUINRRK-HOSPNUM
@@ -1049,7 +1049,7 @@
                               (FLG-OK              =   1 )  OR
                               (PTNYUINRRK-TAIINYMD(1:6)
                                                    <  ORCSCHO-SRYYM)
-      *        Æþ±¡Æü¤«¤é£¹£°Æü°Ê¾å¤ÎÈ½Äê
+      *        å…¥é™¢æ—¥ã‹ã‚‰ï¼™ï¼æ—¥ä»¥ä¸Šã®åˆ¤å®š
                MOVE    ZERO                    TO  WRK-MAX
       ******** IF      PTNYUINRRK-NYUINYMD(1:6)    <   ORCSCHO-SRYYM
       *            INITIALIZE                      STS-AREA-DAY
@@ -1068,7 +1068,7 @@
       *            END-IF
       ******** END-IF
       *
-      *        Æþ±¡Ãæ¤Î»þ
+      *        å…¥é™¢ä¸­ã®æ™‚
                MOVE    ZERO                TO  IDX-S
                MOVE    ZERO                TO  IDX-E
                IF     (PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM) AND
@@ -1077,10 +1077,10 @@
                    MOVE    31              TO  IDX-E
                    MOVE    1               TO  FLG-OK
                END-IF
-      *        Æþ±¡Æü
+      *        å…¥é™¢æ—¥
                IF      PTNYUINRRK-NYUINYMD(1:6)  =   ORCSCHO-SRYYM
                    MOVE    PTNYUINRRK-NYUINYMD(7:2)  TO  IDX-S
-      *            Åö·î£±ÆüÆþ±¡Æü
+      *            å½“æœˆï¼‘æ—¥å…¥é™¢æ—¥
                    IF      IDX-S                 =   1
                        MOVE    1                     TO  FLG-NYUIN01
                    END-IF
@@ -1088,11 +1088,11 @@
                IF      PTNYUINRRK-NYUINYMD(1:6)  <   ORCSCHO-SRYYM
                    MOVE    1                         TO  IDX-S
       *H26.7
-      *            Á°·î¤«¤é¤ÎÆþ±¡Æü
+      *            å‰æœˆã‹ã‚‰ã®å…¥é™¢æ—¥
                    MOVE    PTNYUINRRK-NYUINYMD   TO  WRK-NYUINYMD
       *H26.7
                END-IF
-      *        Âà±¡Æü
+      *        é€€é™¢æ—¥
                IF     PTNYUINRRK-TAIINYMD(1:6)   =   ORCSCHO-SRYYM
                    MOVE    PTNYUINRRK-TAIINYMD(7:2)  TO  IDX-E
                    MOVE    IDX-E                 TO  IDX-TAI
@@ -1107,7 +1107,7 @@
                    PERFORM VARYING     IDX     FROM    IDX-S  BY  1
                            UNTIL       IDX     >   IDX-E
       *****            MOVE    1                   TO  TBL-NYU-DAY(IDX)
-      *                Âà±¡ÆüÀßÄê
+      *                é€€é™¢æ—¥è¨­å®š
                        IF      IDX                 =   IDX-TAI
                            IF      TBL-NYU-DAY(IDX)    =   1
                                MOVE    3           TO  TBL-NYU-DAY(IDX)
@@ -1117,7 +1117,7 @@
                        ELSE
                            MOVE    1               TO  TBL-NYU-DAY(IDX)
                        END-IF
-      *                Æþ±¡¤Î²Ê¤ÈÊÝ¸±
+      *                å…¥é™¢ã®ç§‘ã¨ä¿é™º
                        MOVE    PTNYUINRRK-NYUINKA  TO  TBL-NYU-SRYKA
                                                                   (IDX)
                        MOVE    PTNYUINRRK-HKNCOMBINUM
@@ -1146,12 +1146,12 @@
        200-GAIHAKU-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»¤ÎÊÔ½¸½èÍý
+      *    ä¿é™ºçµ„åˆã›ã®ç·¨é›†å‡¦ç†
       *****************************************************************
        200-HKNCOMBI-HEN-SEC             SECTION.
       *
            INITIALIZE                  TBL-HKNCOMBI-AREA
-      *    ÊÝ¸±ÁÈ¹ç¥Þ¥¹¥¿¡¼ÊÔ½¸
+      *    ä¿é™ºçµ„åˆãƒžã‚¹ã‚¿ãƒ¼ç·¨é›†
            MOVE    SPACE               TO  HKNCOMBI-REC
            INITIALIZE                  HKNCOMBI-REC
            MOVE    SPA-HOSPNUM         TO  COMB-HOSPNUM
@@ -1173,7 +1173,7 @@
            PERFORM
                UNTIL      (FLG-HKNCOMBI        =   1      )  OR
                           (IDX                 >=  50     )
-      *        ÂÐ¾Ý¤ÎÊÝ¸±ÁÈ¹ç¤»¤Î¤ßÊÔ½¸
+      *        å¯¾è±¡ã®ä¿é™ºçµ„åˆã›ã®ã¿ç·¨é›†
                IF     (COMB-DELKBN     NOT =   "1"   )  AND
       *              ((SPA-SRYYMD(1:6)     >=  COMB-TEKSTYMD(1:6))
       *          AND  (SPA-SRYYMD(1:6)     <=  COMB-TEKEDYMD(1:6)))
@@ -1199,15 +1199,15 @@
        200-HKNCOMBI-HEN-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡Ä´ºÞÎÁ¤ÈËãÆÇ¤Î³ÎÄê½èÍý
+      *    å…¥é™¢èª¿å‰¤æ–™ã¨éº»æ¯’ã®ç¢ºå®šå‡¦ç†
       *****************************************************************
        300-CHOZAI-HEN-SEC             SECTION.
       *
-      *    Ä´ºÞÎÁ
+      *    èª¿å‰¤æ–™
            MOVE    ZERO                TO  IDX1
            INITIALIZE                  TBL-CHOZAI-AREA
       *
-      *    ¿ÇÎÅÇ¯·î¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    è¨ºç™‚å¹´æœˆã®è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -1231,9 +1231,9 @@
                UNTIL       (FLG-SRYACCT         =   1 )  OR
                            (IDX1                >=  10 )
                IF      ACCT-SYUTEN1        >   ZERO
-      *            Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *            åŒ…æ‹¬ã¾ã¨ã‚å…¥åŠ›ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                   AND  (ACCT-HKNCOMBI NOT =   "9999" )
-      *           ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *           è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                   AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                    ADD     1                   TO  IDX1
@@ -1245,7 +1245,7 @@
                                                                  (IDX1)
                    MOVE    ACCT-DAY-AREA       TO  TBL-CHO-DAY-AREA
                                                                  (IDX1)
-      *            ¼êÆþÎÏ¤ÏÆâÍÆ¤ò¥Á¥§¥Ã¥¯
+      *            æ‰‹å…¥åŠ›ã¯å†…å®¹ã‚’ãƒã‚§ãƒƒã‚¯
                    IF      ACCT-SRYCDTOTAL     >   1
                        PERFORM 3001-CHOZAI-CHEK-SEC
                        IF     (FLG-DEKIDA      =   1  )
@@ -1264,11 +1264,11 @@
            MOVE    "key14"             TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
-      *    ËãÆÇÎÁ
+      *    éº»æ¯’æ–™
            MOVE    ZERO                TO  IDX1
            INITIALIZE                  TBL-MADOKU-AREA
       *
-      *    ¿ÇÎÅÇ¯·î¤Î¿ÇÎÅ²ñ·×¥Þ¥¹¥¿ÆÉ¤ß¹þ¤ß
+      *    è¨ºç™‚å¹´æœˆã®è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿èª­ã¿è¾¼ã¿
            MOVE    SPACE               TO  SRYACCT-REC
            INITIALIZE                      SRYACCT-REC
            MOVE    SPA-HOSPNUM         TO  ACCT-HOSPNUM
@@ -1291,9 +1291,9 @@
            PERFORM
                UNTIL       (FLG-SRYACCT         =   1 )  OR
                            (IDX1                >=  10 )
-      *        Êñ³ç¤Þ¤È¤áÆþÎÏ¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        åŒ…æ‹¬ã¾ã¨ã‚å…¥åŠ›ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                IF   (ACCT-HKNCOMBI NOT =   "9999" )
-      *        ÌôÉ¾¤ÏÂÐ¾Ý³°¤È¤¹¤ë
+      *        è–¬è©•ã¯å¯¾è±¡å¤–ã¨ã™ã‚‹
                AND  (ACCT-ZAIKBN   NOT =   1      )
       *
                ADD     1                   TO  IDX1
@@ -1303,7 +1303,7 @@
                MOVE    ACCT-JIHOKBN        TO  TBL-MAD-JIHOKBN (IDX1)
                MOVE    ACCT-DAY-AREA       TO  TBL-MAD-DAY-AREA(IDX1)
       *
-      *            ¼êÆþÎÏ¤ÏÆâÍÆ¤ò¥Á¥§¥Ã¥¯
+      *            æ‰‹å…¥åŠ›ã¯å†…å®¹ã‚’ãƒã‚§ãƒƒã‚¯
                    IF      ACCT-SRYCDTOTAL     >   1
                        PERFORM 3001-CHOZAI-CHEK-SEC
                        IF     (FLG-DEKIDA      =   1  )
@@ -1327,7 +1327,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°ÙÆâÍÆ¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚è¡Œç‚ºå†…å®¹ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        3001-CHOZAI-CHEK-SEC            SECTION.
       *
@@ -1358,11 +1358,11 @@
                PERFORM VARYING     IDX2    FROM    1   BY  1
                        UNTIL      (IDX2            >   5   )  OR
                                   (SRY-SRYCD(IDX2) =   SPACE )
-      *            ½ÐÍè¹âºÞ
+      *            å‡ºæ¥é«˜å‰¤
                    IF      SRY-SRYCD (IDX2)        =   "099999903"
                        MOVE    1                   TO  FLG-DEKIDA
                    END-IF
-      *            Êñ³çºÞ
+      *            åŒ…æ‹¬å‰¤
                    IF      SRY-SRYCD (IDX2)        =   "099999908"
                        MOVE    1                   TO  FLG-HOKATU
                    END-IF
@@ -1380,11 +1380,11 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä´ºÞÎÁºÆÊÔ½¸½èÍý
+      *    èª¿å‰¤æ–™å†ç·¨é›†å‡¦ç†
       *****************************************************************
        400-SANTEI-SYORI-SEC            SECTION.
       *
-      *    Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯
+      *    å…¥é™¢æ–™åŒ…æ‹¬ãƒã‚§ãƒƒã‚¯
            PERFORM 4010-HKTNYUIN-HEN-SEC
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
@@ -1392,32 +1392,32 @@
                IF     (TBL-TOU-DAY (2 IDX)     =   ZERO )  OR
                       (TBL-GAI-DAY (IDX)       >   ZERO )  OR
                       (TBL-NYU-DAY (IDX)       =   ZERO )
-      *         Êñ³ç¤Ç¥¨¥é¡¼
+      *         åŒ…æ‹¬ã§ã‚¨ãƒ©ãƒ¼
                 OR    (TBL-HKTCHKFLG (IDX)     =   9    )
-      *            Ä´ºÞÎÁ¤Ê¤·
+      *            èª¿å‰¤æ–™ãªã—
                    PERFORM 4001-TOU-DEL-SYORI-SEC
                ELSE
-      *            Ä´ºÞÎÁ¤¢¤ê
+      *            èª¿å‰¤æ–™ã‚ã‚Š
                    PERFORM 4002-TOU-ADD-SYORI-SEC
                END-IF
       *
                IF     (TBL-DOK-DAY (2 IDX)     =   ZERO )  OR
                       (TBL-GAI-DAY (IDX)       >   ZERO )  OR
                       (TBL-NYU-DAY (IDX)       =   ZERO )
-      *         Êñ³ç¤Ç¥¨¥é¡¼
+      *         åŒ…æ‹¬ã§ã‚¨ãƒ©ãƒ¼
                 OR    (TBL-HKTCHKFLG (IDX)     =   9    )
-      *            Ä´ºÞÎÁ¤Ê¤·
+      *            èª¿å‰¤æ–™ãªã—
                    PERFORM 4003-MAD-DEL-SYORI-SEC
                ELSE
-      *            Ä´ºÞÎÁ¤¢¤ê
+      *            èª¿å‰¤æ–™ã‚ã‚Š
                    PERFORM 4004-MAD-ADD-SYORI-SEC
                END-IF
            END-PERFORM
       *
-      *    Ä´ºÞÎÁ¹¹¿·
+      *    èª¿å‰¤æ–™æ›´æ–°
            PERFORM 4005-CHOU-UPDATE-SEC
       *
-      *    ËãÆÇ¹¹¿·
+      *    éº»æ¯’æ›´æ–°
            PERFORM 4006-MADO-UPDATE-SEC
            .
       *
@@ -1425,7 +1425,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä´ºÞÎÁ¤Ê¤·½èÍý
+      *    èª¿å‰¤æ–™ãªã—å‡¦ç†
       *****************************************************************
        4001-TOU-DEL-SYORI-SEC            SECTION.
       *
@@ -1443,7 +1443,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä´ºÞÎÁ¤¢¤ê½èÍý
+      *    èª¿å‰¤æ–™ã‚ã‚Šå‡¦ç†
       *****************************************************************
        4002-TOU-ADD-SYORI-SEC            SECTION.
       *
@@ -1456,7 +1456,7 @@
                MOVE    2                   TO  IDX4
            END-IF
       *
-      *    Êñ³çÊ¬¤ÎÈ½Äê
+      *    åŒ…æ‹¬åˆ†ã®åˆ¤å®š
            IF      TBL-HKTCHKFLG (IDX)     =   1
                MOVE    "1"                 TO  WRK-JIHOKBN
            ELSE
@@ -1469,7 +1469,7 @@
                PERFORM VARYING     IDX-T   FROM    1   BY  1
                        UNTIL      (IDX-T   >   10  )  OR
                               (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
-      *            ÅöÆüÆþÎÏ¤Î²Ê¡¦ÊÝ¸±¤Ç¤¢¤ë¤³¤È
+      *            å½“æ—¥å…¥åŠ›ã®ç§‘ãƒ»ä¿é™ºã§ã‚ã‚‹ã“ã¨
                    IF     (TBL-CHO-SRYKA(IDX2)     =   TBL-TOU-SRYKA
                                                      (2 IDX IDX-T)) AND
                           (TBL-CHO-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
@@ -1477,7 +1477,7 @@
                      AND  (TBL-CHO-JIHOKBN (IDX2)  =   WRK-JIHOKBN )
                        MOVE    1               TO  FLG-CHK
       *H26.4
-      *                ÅöÆü½ÐÍè¹âºÞ¡¦Êñ³ç»»Äê¤Î¼êÆþÎÏ¤¬¤Ê¤¤»þ
+      *                å½“æ—¥å‡ºæ¥é«˜å‰¤ãƒ»åŒ…æ‹¬ç®—å®šã®æ‰‹å…¥åŠ›ãŒãªã„æ™‚
                        IF     (TBL-CHO-SYORI  (IDX2)   =   "1"   )
                          AND  (TBL-CHO-DAY(IDX2 1 IDX) =   ZERO  )
                            MOVE    ZERO            TO  FLG-CHK
@@ -1490,7 +1490,7 @@
                            UNTIL      (IDX-T   >   10  )  OR
                                  (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
                              OR  (FLG-CHK      =   1   )
-      *            ÅöÆü½ÐÍè¹âºÞ¡¦Êñ³ç»»Äê¤Î¼êÆþÎÏºÞÍ­
+      *            å½“æ—¥å‡ºæ¥é«˜å‰¤ãƒ»åŒ…æ‹¬ç®—å®šã®æ‰‹å…¥åŠ›å‰¤æœ‰
                    IF     (TBL-CHO-SRYKA(IDX2)     =   TBL-TOU-SRYKA
                                                      (2 IDX IDX-T)) AND
                           (TBL-CHO-HKNCOMBI(IDX2)  =   TBL-TOU-HKNCOMBI
@@ -1511,7 +1511,7 @@
                        IF      FLG-ARI         =   ZERO
                            MOVE    1               TO  FLG-ARI
       *ver.4.7
-      *                    Âà±¡Æü¡¦Æþ±¡ÆüÈ½Äê
+      *                    é€€é™¢æ—¥ãƒ»å…¥é™¢æ—¥åˆ¤å®š
                            IF      TBL-CHO-DAY (IDX2 IDX4 IDX) =   ZERO
                                MOVE    ZERO            TO  FLG-ARI
                                MOVE    ZERO            TO  TBL-CHO-DAY
@@ -1549,7 +1549,7 @@
            IF      FLG-ARI             =   1
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
-      *    ÅöÆüÄ´ºÞÎÁ»ØÄê¤¬¤Ê¤¤»þ¡¢ÂÐ¾Ý¤ÎºÞ¤Ø
+      *    å½“æ—¥èª¿å‰¤æ–™æŒ‡å®šãŒãªã„æ™‚ã€å¯¾è±¡ã®å‰¤ã¸
            IF      WRK-IDX2            >   ZERO
                MOVE    1               TO  TBL-CHO-DAY (WRK-IDX2 1 IDX)
                MOVE    ZERO            TO  TBL-CHO-DAY (WRK-IDX2 2 IDX)
@@ -1559,7 +1559,7 @@
                GO      TO      4002-TOU-ADD-SYORI-EXT
            END-IF
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¤Î´ü´Ö¥Á¥§¥Ã¥¯
+      *    ä¿é™ºçµ„åˆã›ã®æœŸé–“ãƒã‚§ãƒƒã‚¯
            MOVE    ZERO                TO  IDX-TOU
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL      (IDX-T   >   10  )  OR
@@ -1573,7 +1573,7 @@
            IF      IDX-TOU             =   ZERO
                MOVE    1               TO  IDX-TOU
            END-IF
-      *    ÅöÆüÄ´ºÞÎÁ»ØÄê¤¬¤Ê¤¤»þ¡¢ºîÀ®¤Ø
+      *    å½“æ—¥èª¿å‰¤æ–™æŒ‡å®šãŒãªã„æ™‚ã€ä½œæˆã¸
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
                MOVE    ZERO                TO  FLG-HEN
@@ -1589,7 +1589,7 @@
                IF      FLG-HEN                 =   1
       *
                    MOVE    "1"                 TO  TBL-CHO-ADD (IDX2)
-      *            ÅöÆüÆþÎÏ¤Î²Ê¡¦ÊÝ¸±¤ÇºîÀ®¤¹¤ë
+      *            å½“æ—¥å…¥åŠ›ã®ç§‘ãƒ»ä¿é™ºã§ä½œæˆã™ã‚‹
                    MOVE    TBL-TOU-SRYKA   (2 IDX IDX-TOU)
                                            TO  TBL-CHO-SRYKA(IDX2)
                    MOVE    TBL-TOU-HKNCOMBI(2 IDX IDX-TOU)
@@ -1607,7 +1607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ËãÆÇ¤Ê¤·½èÍý
+      *    éº»æ¯’ãªã—å‡¦ç†
       *****************************************************************
        4003-MAD-DEL-SYORI-SEC            SECTION.
       *
@@ -1624,13 +1624,13 @@
            EXIT.
       *
       *****************************************************************
-      *    ËãÆÇ¤¢¤ê½èÍý
+      *    éº»æ¯’ã‚ã‚Šå‡¦ç†
       *****************************************************************
        4004-MAD-ADD-SYORI-SEC            SECTION.
       *
            MOVE    ZERO                TO  FLG-ARI
            MOVE    ZERO                TO  WRK-IDX2
-      *    Êñ³çÊ¬¤ÎÈ½Äê
+      *    åŒ…æ‹¬åˆ†ã®åˆ¤å®š
            IF      TBL-HKTCHKFLG (IDX)     =   1
                MOVE    "1"                 TO  WRK-JIHOKBN
            ELSE
@@ -1650,7 +1650,7 @@
                PERFORM VARYING     IDX-T   FROM    1   BY  1
                        UNTIL      (IDX-T   >   10  )  OR
                               (TBL-DOK-SRYKA(2 IDX IDX-T)  =  SPACE)
-      *            ÅöÆüÆþÎÏ¤Î²Ê¡¦ÊÝ¸±¤Ç¤¢¤ë¤³¤È
+      *            å½“æ—¥å…¥åŠ›ã®ç§‘ãƒ»ä¿é™ºã§ã‚ã‚‹ã“ã¨
                    IF     (TBL-MAD-SRYKA(IDX2)     =   TBL-DOK-SRYKA
                                                      (2 IDX IDX-T)) AND
                           (TBL-MAD-HKNCOMBI(IDX2)  =   TBL-DOK-HKNCOMBI
@@ -1658,7 +1658,7 @@
                      AND  (TBL-MAD-JIHOKBN (IDX2)  =   WRK-JIHOKBN )
                        MOVE    1               TO  FLG-CHK
       *H26.4
-      *                ÅöÆü½ÐÍè¹âºÞ¡¦Êñ³ç»»Äê¤Î¼êÆþÎÏ¤¬¤Ê¤¤»þ
+      *                å½“æ—¥å‡ºæ¥é«˜å‰¤ãƒ»åŒ…æ‹¬ç®—å®šã®æ‰‹å…¥åŠ›ãŒãªã„æ™‚
                        IF     (TBL-MAD-SYORI  (IDX2)   =   "1"   )
                          AND  (TBL-MAD-DAY(IDX2 1 IDX) =   ZERO  )
                            MOVE    ZERO            TO  FLG-CHK
@@ -1671,7 +1671,7 @@
                            UNTIL      (IDX-T   >   10  )  OR
                                  (TBL-TOU-SRYKA(2 IDX IDX-T)  =  SPACE)
                              OR  (FLG-CHK      =   1   )
-      *            ÅöÆü½ÐÍè¹âºÞ¡¦Êñ³ç»»Äê¤Î¼êÆþÎÏºÞÍ­
+      *            å½“æ—¥å‡ºæ¥é«˜å‰¤ãƒ»åŒ…æ‹¬ç®—å®šã®æ‰‹å…¥åŠ›å‰¤æœ‰
                    IF     (TBL-MAD-SRYKA(IDX2)     =   TBL-DOK-SRYKA
                                                      (2 IDX IDX-T)) AND
                           (TBL-MAD-HKNCOMBI(IDX2)  =   TBL-DOK-HKNCOMBI
@@ -1728,7 +1728,7 @@
            IF     FLG-ARI              =   1
                GO      TO      4004-MAD-ADD-SYORI-EXT
            END-IF
-      *    ÅöÆüÄ´ºÞÎÁ»ØÄê¤¬¤Ê¤¤»þ¡¢ÂÐ¾Ý¤ÎºÞ¤Ø
+      *    å½“æ—¥èª¿å‰¤æ–™æŒ‡å®šãŒãªã„æ™‚ã€å¯¾è±¡ã®å‰¤ã¸
            IF      WRK-IDX2            >   ZERO
                MOVE    1               TO  TBL-MAD-DAY (WRK-IDX2 1 IDX)
       *ver.4.7
@@ -1739,7 +1739,7 @@
                GO      TO      4004-MAD-ADD-SYORI-EXT
            END-IF
       *
-      *    ÊÝ¸±ÁÈ¹ç¤»¤Î´ü´Ö¥Á¥§¥Ã¥¯
+      *    ä¿é™ºçµ„åˆã›ã®æœŸé–“ãƒã‚§ãƒƒã‚¯
            MOVE    ZERO                TO  IDX-TOU
            PERFORM VARYING     IDX-T   FROM    1   BY  1
                    UNTIL      (IDX-T   >   10  )  OR
@@ -1753,7 +1753,7 @@
            IF      IDX-TOU             =   ZERO
                MOVE    1               TO  IDX-TOU
            END-IF
-      *    ÅöÆüÄ´ºÞÎÁ»ØÄê¤¬¤Ê¤¤»þ¡¢ºîÀ®¤Ø
+      *    å½“æ—¥èª¿å‰¤æ–™æŒ‡å®šãŒãªã„æ™‚ã€ä½œæˆã¸
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL      (IDX2    >   10  )
                MOVE    ZERO                TO  FLG-HEN
@@ -1768,7 +1768,7 @@
                END-IF
                IF      FLG-HEN                 =   1
                    MOVE    "1"                 TO  TBL-MAD-ADD (IDX2)
-      *            ÅöÆüÆþÎÏ¤Î²Ê¡¦ÊÝ¸±¤ÇºîÀ®¤¹¤ë
+      *            å½“æ—¥å…¥åŠ›ã®ç§‘ãƒ»ä¿é™ºã§ä½œæˆã™ã‚‹
                    MOVE    TBL-DOK-SRYKA(2 IDX IDX-TOU)
                                            TO  TBL-MAD-SRYKA(IDX2)
                    MOVE    TBL-DOK-HKNCOMBI(2 IDX IDX-TOU)
@@ -1785,7 +1785,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ä´ºÞÎÁ¹¹¿·½èÍý
+      *    èª¿å‰¤æ–™æ›´æ–°å‡¦ç†
       *****************************************************************
        4005-CHOU-UPDATE-SEC            SECTION.
       *
@@ -1818,21 +1818,21 @@
                MOVE    "key"               TO  MCP-PATHNAME
                PERFORM 990-DBCLOSE-SEC
                IF      FLG-SRYACCT          =   ZERO
-      *            ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÑ¹¹¤¹¤ë
+      *            è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‚’å¤‰æ›´ã™ã‚‹
                    MOVE    TBL-CHO-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
-      *            ²ó¿ô¤¬¤Ê¤¤»þ¡¢ÂÐ¾Ý¤Î²Ê¡¦ÊÝ¸±¤ÇÅêÌô¤Î¤Ê¤¤»þºï½ü
+      *            å›žæ•°ãŒãªã„æ™‚ã€å¯¾è±¡ã®ç§‘ãƒ»ä¿é™ºã§æŠ•è–¬ã®ãªã„æ™‚å‰Šé™¤
                    MOVE    ZERO                TO  FLG-SRYACCT-DEL
                    IF      ACCT-ZAIKAISU       =   ZERO
                        PERFORM 40054-DELETE-CHK-SEC
                    END-IF
-      *            Âà±¡¤Ç²ó¿ô¤¬¤Ê¤¤»þ¡¢ºï½ü¤¹¤ë
+      *            é€€é™¢ã§å›žæ•°ãŒãªã„æ™‚ã€å‰Šé™¤ã™ã‚‹
                    IF    ((ORCSCHO-KBN         =   "2"  )  AND
                           (ACCT-ZAIKAISU       =   ZERO ))  OR
                          ( FLG-SRYACCT-DEL     =   1     )
                        PERFORM 40052-SRYACCT-DEL-SEC
                    ELSE
-      *                ÊÝ¸±ÁÈ¹ç¤»´ü´Ö¥Á¥§¥Ã¥¯
+      *                ä¿é™ºçµ„åˆã›æœŸé–“ãƒã‚§ãƒƒã‚¯
                        MOVE    ACCT-HKNCOMBI       TO  WRK-HKNCOMBI
                        MOVE    ACCT-DAY-AREA       TO  WRK-DAY-AREA
                        PERFORM 40054-HKNCOMBI-CHK-SEC
@@ -1862,7 +1862,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            END-PERFORM
       *
-      *    Åö·îÆþ±¡Ä´ºÞÎÁ¤ÎºÞ¤¬¤Ê¤¤»þ¡¢ºîÀ®¤¹¤ë
+      *    å½“æœˆå…¥é™¢èª¿å‰¤æ–™ã®å‰¤ãŒãªã„æ™‚ã€ä½œæˆã™ã‚‹
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
                           OR  (ORCSCHO-ERRCD   NOT =   ZERO )
@@ -1877,7 +1877,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ºï½ü¥Á¥§¥Ã¥¯½èÍý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼å‰Šé™¤ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        40054-DELETE-CHK-SEC           SECTION.
       *
@@ -1931,7 +1931,7 @@ grpsys                 CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ºï½ü½èÍý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼å‰Šé™¤å‡¦ç†
       *****************************************************************
        40052-SRYACCT-DEL-SEC           SECTION.
       *
@@ -1969,7 +1969,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  ORCSCHO-ERRCD
            END-IF
       *
-      *    ¼õ¿ÇÍúÎòºï½ü
+      *    å—è¨ºå±¥æ­´å‰Šé™¤
            MOVE    ACCT-HOSPNUM        TO  SRY-HOSPNUM
            MOVE    ACCT-NYUGAIKBN      TO  SRY-NYUGAIKBN
            MOVE    ACCT-PTID           TO  SRY-PTID
@@ -2053,7 +2053,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÊÑ¹¹ÊÔ½¸½èÍý
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼å¤‰æ›´ç·¨é›†å‡¦ç†
       *****************************************************************
        40051-DAY-UPD-SEC           SECTION.
       *
@@ -2061,7 +2061,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            PERFORM VARYING     IDX-D   FROM    1   BY  1
                    UNTIL       IDX-D   >   31
               IF      ACCT-DAY (1 IDX-D)   >   ZERO
-      *            ºÞ²ó¿ô¡¡ÊÑ¹¹
+      *            å‰¤å›žæ•°ã€€å¤‰æ›´
                    COMPUTE ACCT-ZAIKAISU       =   ACCT-ZAIKAISU
                                                +   ACCT-DAY
                                                        (1  IDX-D)
@@ -2072,7 +2072,7 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ËãÆÇ¹¹¿·½èÍý
+      *    éº»æ¯’æ›´æ–°å‡¦ç†
       *****************************************************************
        4006-MADO-UPDATE-SEC            SECTION.
       *
@@ -2106,15 +2106,15 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                PERFORM 990-DBCLOSE-SEC
       *
                IF      FLG-SRYACCT          =   ZERO
-      *            ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÑ¹¹¤¹¤ë
+      *            è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‚’å¤‰æ›´ã™ã‚‹
                    MOVE    TBL-MAD-DAY-AREA(IDX)   TO  ACCT-DAY-AREA
                    PERFORM 40051-DAY-UPD-SEC
-      *            ²ó¿ô¤¬¤Ê¤¤»þ¡¢ÂÐ¾Ý¤Î²Ê¡¦ÊÝ¸±¤ÇÅêÌô¤Î¤Ê¤¤»þºï½ü
+      *            å›žæ•°ãŒãªã„æ™‚ã€å¯¾è±¡ã®ç§‘ãƒ»ä¿é™ºã§æŠ•è–¬ã®ãªã„æ™‚å‰Šé™¤
                    MOVE    ZERO                TO  FLG-SRYACCT-DEL
                    IF      ACCT-ZAIKAISU       =   ZERO
                        PERFORM 40054-DELETE-CHK-SEC
                    END-IF
-      *            Âà±¡¤Ç²ó¿ô¤¬¤Ê¤¤»þ¡¢ºï½ü¤¹¤ë
+      *            é€€é™¢ã§å›žæ•°ãŒãªã„æ™‚ã€å‰Šé™¤ã™ã‚‹
                    IF    ((ORCSCHO-KBN         =   "2"  )  AND
                           (ACCT-ZAIKAISU       =   ZERO ))  OR
                          ( FLG-SRYACCT-DEL     =   1    )
@@ -2145,7 +2145,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                END-IF
            END-PERFORM
       *
-      *    Åö·îÆþ±¡ËãÆÇ¤ÎºÞ¤¬¤Ê¤¤»þ¡¢ºîÀ®¤¹¤ë
+      *    å½“æœˆå…¥é™¢éº»æ¯’ã®å‰¤ãŒãªã„æ™‚ã€ä½œæˆã™ã‚‹
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   10
                           OR  (ORCSCHO-ERRCD   NOT =   ZERO )
@@ -2160,11 +2160,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡Ä´ºÞÎÁÄÉ²Ã½èÍý
+      *    å…¥é™¢èª¿å‰¤æ–™è¿½åŠ å‡¦ç†
       *****************************************************************
        40052-CHOUZAI-INS-SEC         SECTION.
       *
-      *    Ä´ºÞÎÁ¡ÊÆþ±¡¡Ë
+      *    èª¿å‰¤æ–™ï¼ˆå…¥é™¢ï¼‰
            MOVE    "120001110"         TO  WRK-SRYCD
            MOVE    "24"                TO  WRK-SRYKBN
            MOVE    "240"               TO  WRK-SRYSYUKBN
@@ -2175,15 +2175,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-DAY-AREA
            MOVE    TBL-CHO-JIHOKBN(IDX)
                                        TO  WRK-JIHOKBN
-      *    ÊÝ¸±ÁÈ¹ç¤»´ü´Ö¥Á¥§¥Ã¥¯
+      *    ä¿é™ºçµ„åˆã›æœŸé–“ãƒã‚§ãƒƒã‚¯
            PERFORM 40054-HKNCOMBI-CHK-SEC
-      *    ²ñ·×¾È²ñºîÀ®½èÍý
+      *    ä¼šè¨ˆç…§ä¼šä½œæˆå‡¦ç†
            PERFORM 40052-SRYACCT-INS-SEC
            IF      ORCSCHO-ERRCD   NOT =   ZERO
                GO     TO      40052-CHOUZAI-INS-EXT
            END-IF
       *
-      *    ¿ÇÎÅ¹Ô°ÙºîÀ®½èÍý
+      *    è¨ºç™‚è¡Œç‚ºä½œæˆå‡¦ç†
            PERFORM 40053-SRYACT-INS-SEC
       *
            .
@@ -2191,7 +2191,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±ÁÈ¹ç¤»´ü´Ö¥Á¥§¥Ã¥¯½èÍý
+      *    ä¿é™ºçµ„åˆã›æœŸé–“ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        40054-HKNCOMBI-CHK-SEC         SECTION.
       *
@@ -2223,7 +2223,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ÊÝ¸±´ü´Ö¥Á¥§¥Ã¥¯½èÍý
+      *    ä¿é™ºæœŸé–“ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        400541-HKNCOMBI-KIKAN-SEC         SECTION.
       *
@@ -2244,11 +2244,11 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ËãÆÇÄÉ²Ã½èÍý
+      *    éº»æ¯’è¿½åŠ å‡¦ç†
       *****************************************************************
        40062-MADOKU-INS-SEC         SECTION.
       *
-      *    ËãÆÇÎÁ¡ÊÆþ±¡¡Ë
+      *    éº»æ¯’æ–™ï¼ˆå…¥é™¢ï¼‰
            MOVE    "120000410"         TO  WRK-SRYCD
            MOVE    "26"                TO  WRK-SRYKBN
            MOVE    "260"               TO  WRK-SRYSYUKBN
@@ -2259,13 +2259,13 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                                        TO  WRK-DAY-AREA
            MOVE    TBL-MAD-JIHOKBN(IDX)
                                        TO  WRK-JIHOKBN
-      *    ²ñ·×¾È²ñºîÀ®½èÍý
+      *    ä¼šè¨ˆç…§ä¼šä½œæˆå‡¦ç†
            PERFORM 40052-SRYACCT-INS-SEC
            IF      ORCSCHO-ERRCD   NOT =   ZERO
                GO     TO      40062-MADOKU-INS-EXT
            END-IF
       *
-      *    ¿ÇÎÅ¹Ô°ÙºîÀ®½èÍý
+      *    è¨ºç™‚è¡Œç‚ºä½œæˆå‡¦ç†
            PERFORM 40053-SRYACT-INS-SEC
       *
            .
@@ -2273,7 +2273,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *   ²ñ·×¾È²ñºîÀ®½èÍý
+      *   ä¼šè¨ˆç…§ä¼šä½œæˆå‡¦ç†
       *****************************************************************
        40052-SRYACCT-INS-SEC          SECTION.
       *
@@ -2285,7 +2285,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                        ",KEY:" WRK-SRYCD
                GO      TO      40052-SRYACCT-INS-EXT
            END-IF
-      *    ºÞÈÖ¹æ¼èÆÀ½èÍý
+      *    å‰¤ç•ªå·å–å¾—å‡¦ç†
            PERFORM 400521-ZAINUM-SET-SEC
       *
            MOVE    SPACE               TO  SRYACCT-REC
@@ -2298,32 +2298,32 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-SRYKA           TO  ACCT-SRYKA
            MOVE    WRK-ZAINUM          TO  ACCT-ZAINUM
            MOVE    WRK-HKNCOMBI        TO  ACCT-HKNCOMBI
-      *    ºÞÅÀ¿ô
+      *    å‰¤ç‚¹æ•°
            MOVE    TNS-TEN             TO  ACCT-ZAITEN
-      *    ¿ÇÎÅ¥³¡¼¥É·×
+      *    è¨ºç™‚ã‚³ãƒ¼ãƒ‰è¨ˆ
            MOVE    WRK-SRYCD           TO  WRK-SRYCD-9
            MOVE    WRK-SRYCD-9         TO  ACCT-SRYCDTOTAL
-      *    ¿ôÎÌ·×
+      *    æ•°é‡è¨ˆ
            MOVE    1                   TO  ACCT-SURYOUTOTAL
-      *    ÌÀºÙ¿ô
+      *    æ˜Žç´°æ•°
            MOVE    1                   TO  ACCT-MEISAISU
-      *    ¼êµ»ÅÀ¿ô£±
+      *    æ‰‹æŠ€ç‚¹æ•°ï¼‘
            MOVE    TNS-TEN             TO  ACCT-SYUTEN1
-      *    ¼êµ»ÅÀ¿ô£²
+      *    æ‰‹æŠ€ç‚¹æ•°ï¼’
            MOVE    ZERO                TO  ACCT-SYUTEN2
-      *    ÌôºÞÅÀ¿ô
+      *    è–¬å‰¤ç‚¹æ•°
            MOVE    ZERO                TO  ACCT-YKZTEN
-      *    ´ïºàÅÀ¿ô
+      *    å™¨æç‚¹æ•°
            MOVE    ZERO                TO  ACCT-KIZAITEN
-      *    ²ó¿ô
+      *    å›žæ•°
            MOVE    WRK-DAY-AREA        TO  ACCT-DAY-AREA
-      *    ºÞ²ó¿ô
+      *    å‰¤å›žæ•°
            MOVE    ZERO                TO  ACCT-ZAIKAISU
            PERFORM VARYING     IDX2    FROM    1   BY  1
                    UNTIL       IDX2    >   31
                ADD     ACCT-DAY (1 IDX2)   TO  ACCT-ZAIKAISU
            END-PERFORM
-      *    Êñ³çºÞ¤ÎÀßÄê
+      *    åŒ…æ‹¬å‰¤ã®è¨­å®š
            MOVE    WRK-JIHOKBN         TO  ACCT-JIHOKBN
       *
            MOVE    SMCNDATE-YMD        TO  ACCT-CREYMD
@@ -2349,11 +2349,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *   ºÞÈÖ¹æ¼èÆÀ½èÍý
+      *   å‰¤ç•ªå·å–å¾—å‡¦ç†
       *****************************************************************
        400521-ZAINUM-SET-SEC          SECTION.
       *
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼¤è¤ê¡¢ºÇ½ªºÞÈÖ¹æ¤òºÆÈÖ¤·¡¢´µ¼Ô¥Þ¥¹¥¿¡¼¤ò¹¹¿·¤¹¤ë
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼ã‚ˆã‚Šã€æœ€çµ‚å‰¤ç•ªå·ã‚’å†ç•ªã—ã€æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼ã‚’æ›´æ–°ã™ã‚‹
            INITIALIZE                      PTINF-REC
            MOVE    SPA-HOSPNUM         TO  PTINF-HOSPNUM
            MOVE    ORCSCHO-PTID        TO  PTINF-PTID
@@ -2364,7 +2364,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                GO      TO      400521-ZAINUM-SET-EXT
            END-IF
       *
-      *    ºÇÂçºÞÈÖ¹æ
+      *    æœ€å¤§å‰¤ç•ªå·
            IF      PTINF-MAXZAINUM     =   ALL "9"
                MOVE    ZERO                TO  PTINF-MAXZAINUM
            END-IF
@@ -2393,7 +2393,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù£Ä£Â¿·µ¬ºîÀ®½èÍý
+      *    è¨ºç™‚è¡Œç‚ºï¼¤ï¼¢æ–°è¦ä½œæˆå‡¦ç†
       *****************************************************************
        40053-SRYACT-INS-SEC         SECTION.
       *
@@ -2403,14 +2403,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ACCT-PTID           TO  SRY-PTID
            MOVE    ACCT-SRYKA          TO  SRY-SRYKA
            MOVE    ACCT-SRYYM          TO  SRY-SRYYM
-      *    ºÞÈÖ¹æ
+      *    å‰¤ç•ªå·
            MOVE    WRK-ZAINUM          TO  SRY-ZAINUM
-      *    Ï¢ÈÖ¹æ
+      *    é€£ç•ªå·
            MOVE    1                   TO  SRY-RENNUM
            MOVE    WRK-SRYSYUKBN       TO  SRY-SRYSYUKBN
            MOVE    WRK-SRYKBN          TO  SRY-SRYKBN
            MOVE    ZERO                TO  SRY-JIHIMONEYTOTAL
-      *    £±ÌÀºÙ¤È¤¹¤ë
+      *    ï¼‘æ˜Žç´°ã¨ã™ã‚‹
            MOVE    WRK-SRYCD           TO  SRY-SRYCD    (1)
            MOVE    1                   TO  SRY-SRYSURYO (1)
            MOVE    ZERO                TO  SRY-SRYKAISU (1)
@@ -2443,24 +2443,24 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        40053-SRYACT-INS-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁÊñ³ç¥Á¥§¥Ã¥¯½èÍý
+      *    å…¥é™¢æ–™åŒ…æ‹¬ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        4010-HKTNYUIN-HEN-SEC             SECTION.
       *
-      *    Æþ±¡ÎÁÊñ³ç¿ÇÎÅ¥Á¥§¥Ã¥¯
+      *    å…¥é™¢æ–™åŒ…æ‹¬è¨ºç™‚ãƒã‚§ãƒƒã‚¯
            INITIALIZE                  ORCSCHKTALLAREA
            MOVE    ORCSCHO-SRYYM       TO  ORCSCHKTALL-SRYYM
            MOVE    "01"                TO  ORCSCHKTALL-SRYDD
            MOVE    ORCSCHO-PTID        TO  ORCSCHKTALL-PTID
-      *    Æþ±¡Ä´ºÞÎÁ¡Ê¿ÇÎÅ¶èÊ¬¤Î¤ßÈ½Äê¡Ë
+      *    å…¥é™¢èª¿å‰¤æ–™ï¼ˆè¨ºç™‚åŒºåˆ†ã®ã¿åˆ¤å®šï¼‰
            MOVE    "24"                TO  ORCSCHKTALL-HKTSRYKBN
            MOVE    "240"               TO  ORCSCHKTALL-HKTSRYSYUKBN
-      *H26.4   Æþ±¡Ä´ºÞÎÁ¤Î¤ßÊñ³ç¤Î¾ì¹ç¤ÎÂÐ±þ
+      *H26.4   å…¥é™¢èª¿å‰¤æ–™ã®ã¿åŒ…æ‹¬ã®å ´åˆã®å¯¾å¿œ
            MOVE    "120001110"         TO  ORCSCHKTALL-HKTSRYCD (1)
            CALL    "ORCSCHKTALL"       USING
                                        ORCSCHKTALLAREA
                                        SPA-AREA
-      *    ÆüËè¤ÎÊñ³çÀßÄê
+      *    æ—¥æ¯Žã®åŒ…æ‹¬è¨­å®š
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL       IDX     >   31
                MOVE    ORCSCHKTALL-HKTCHKFLG (IDX)
@@ -2472,14 +2472,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Âà±¡½èÍý
+      *    é€€é™¢å‡¦ç†
       *****************************************************************
        500-TAIIN-SYORI-SEC         SECTION.
       *
-      *    Ä´ºÞÎÁ¡ÊÆþ±¡¡Ë
+      *    èª¿å‰¤æ–™ï¼ˆå…¥é™¢ï¼‰
            MOVE    "24"                TO  WRK-SRYKBN
            PERFORM 5001-TAIIN-DEL-SEC
-      *    ËãÆÇÎÁ¡ÊÆþ±¡¡Ë
+      *    éº»æ¯’æ–™ï¼ˆå…¥é™¢ï¼‰
            MOVE    "26"                TO  WRK-SRYKBN
            PERFORM 5001-TAIIN-DEL-SEC
            .
@@ -2488,7 +2488,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Âà±¡ºï½ü½èÍý
+      *    é€€é™¢å‰Šé™¤å‡¦ç†
       *****************************************************************
        5001-TAIIN-DEL-SEC         SECTION.
       *
@@ -2513,9 +2513,9 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
            PERFORM UNTIL   FLG-SRYACCT     NOT =   ZERO
       *
-      *        ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼¤òÊÑ¹¹¤¹¤ë
+      *        è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼ã‚’å¤‰æ›´ã™ã‚‹
                PERFORM 50011-DAY-DEL-SEC
-      *        ²ó¿ô¤¬¤Ê¤¤»þºï½ü
+      *        å›žæ•°ãŒãªã„æ™‚å‰Šé™¤
                MOVE    ZERO                TO  FLG-SRYACCT-DEL
                IF      ACCT-ZAIKAISU       =   ZERO
                    PERFORM 40052-SRYACCT-DEL-SEC
@@ -2553,7 +2553,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        5001-TAIIN-DEL-EXT.
            EXIT.
       *****************************************************************
-      *    Âà±¡Æü°Ê¹ßºï½ü½èÍý
+      *    é€€é™¢æ—¥ä»¥é™å‰Šé™¤å‡¦ç†
       *****************************************************************
        50011-DAY-DEL-SEC         SECTION.
       *
@@ -2566,14 +2566,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    ZERO                TO  ACCT-DAY (4 IDX)
                END-IF
            END-PERFORM
-      *    ¹ç·×²ó¿ôÀßÄê
+      *    åˆè¨ˆå›žæ•°è¨­å®š
            PERFORM 40051-DAY-UPD-SEC
            .
        50011-DAY-DEL-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -2611,7 +2611,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅ¹Ô°Ù¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚è¡Œç‚ºãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        920-SRYACT-NEXT-SEC         SECTION.
       *
@@ -2628,7 +2628,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        920-SRYACT-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    ¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        930-SRYACCT-READ-SEC         SECTION.
       *
@@ -2646,7 +2646,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡¿ÇÎÅ²ñ·×¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢è¨ºç™‚ä¼šè¨ˆãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        930-NYUINACCT-READ-SEC         SECTION.
       *
@@ -2664,7 +2664,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    æ‚£è€…ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        940-PTINF-READ-SEC         SECTION.
       *
@@ -2694,7 +2694,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            EXIT.
       *
       *****************************************************************
-      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-PTNYUINRRK-READ-SEC         SECTION.
       *
@@ -2711,7 +2711,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-PTNYUINRRK-READ-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÍúÎò¥Þ¥¹¥¿¡¼ÆÉ¹þ
+      *    å…¥é™¢å±¥æ­´ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼
       *****************************************************************
        910-HKNCOMBI-READ-SEC         SECTION.
       *
@@ -2728,7 +2728,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        910-HKNCOMBI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¼õ¿ÇÍúÎò½çÆÉ¤ß
+      *    å—è¨ºå±¥æ­´é †èª­ã¿
       *****************************************************************
        970-JYURRK-NEXT-SEC           SECTION.
       *
@@ -2744,7 +2744,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        970-JYURRK-NEXT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥·¥¹¥Æ¥à´ÉÍýÆÉ¤ß¹þ¤ß
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†èª­ã¿è¾¼ã¿
       *****************************************************************
        900-SYSKANRI-READ-SEC         SECTION.
       *
@@ -2759,7 +2759,7 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
        900-SYSKANRI-READ-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -2774,7 +2774,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        920-DBFETCH-SEC                 SECTION.
       *
@@ -2788,7 +2788,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
        920-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥¹½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚¹å‡¦ç†
       *****************************************************************
        990-DBCLOSE-SEC               SECTION.
       *

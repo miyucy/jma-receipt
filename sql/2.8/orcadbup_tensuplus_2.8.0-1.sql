@@ -1,17 +1,17 @@
 --                                    --
--- ÅÀ¿ô¥Þ¥¹¥¿¥×¥é¥¹                   --
+-- ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ—ãƒ©ã‚¹                   --
 --                                    --
--- ÌôºÞ¾ðÊóÁ´¿ôÎÌµ­ºÜ´ØÏ¢¶èÊ¬¤ÎÄÉ²Ã   --
+-- è–¬å‰¤æƒ…å ±å…¨æ•°é‡è¨˜è¼‰é–¢é€£åŒºåˆ†ã®è¿½åŠ    --
 --                                    --
---   Á´¿ôÎÌµ­ºÜ¶èÊ¬(ALLSURYOKBN)      --
---   ¿ôÎÌ´¹»»Ã±°Ì¥³¡¼¥É(KANZANTANICD) --
---   ¿ôÎÌ´¹»»Ã±°ÌÌ¾¾Î(KANZANTANINAME) --
---   ¿ôÎÌ´¹»»ÃÍ(KANZANCHI)            --
+--   å…¨æ•°é‡è¨˜è¼‰åŒºåˆ†(ALLSURYOKBN)      --
+--   æ•°é‡æ›ç®—å˜ä½ã‚³ãƒ¼ãƒ‰(KANZANTANICD) --
+--   æ•°é‡æ›ç®—å˜ä½åç§°(KANZANTANINAME) --
+--   æ•°é‡æ›ç®—å€¤(KANZANCHI)            --
 --                                    --
 -- Create Date : 2006/03/13           --
 --                                    --
 
--- TBL_TENSUPLUSWK  ºîÀ®              --
+-- TBL_TENSUPLUSWK  ä½œæˆ              --
 
 create table TBL_TENSUPLUSWK (
 SRYCD				char(9)		not null,
@@ -29,16 +29,16 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TENSUPLUSWK_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
 
--- TBL_TENSUPLUS ¢ª TBL_TENSUPLUSWK   --
+-- TBL_TENSUPLUS â†’ TBL_TENSUPLUSWK   --
 
 insert into TBL_TENSUPLUSWK
 select * from TBL_TENSUPLUS;
 
--- TBL_TENSUPLUS ºï½ü               --
+-- TBL_TENSUPLUS å‰Šé™¤               --
 
 drop table TBL_TENSUPLUS;
 
--- TBL_TENSUPLUS ºîÀ®               --
+-- TBL_TENSUPLUS ä½œæˆ               --
 
 create table TBL_TENSUPLUS (
 SRYCD				char(9)		not null,
@@ -60,7 +60,7 @@ UPYMD    			char(8),
 UPHMS				char(6),
 constraint TBL_TENSUPLUS_primary_key primary key (SRYCD,YUKOSTYMD,YUKOEDYMD));
 
--- TBL_TENSUPLUSWK ¢ª TBL_TENSUPLUS   --
+-- TBL_TENSUPLUSWK â†’ TBL_TENSUPLUS   --
 
 insert into TBL_TENSUPLUS
 (SRYCD,
@@ -101,11 +101,11 @@ UPYMD,
 UPHMS
 from TBL_TENSUPLUSWK;
 
--- TBL_TENSUPLUSWK ºï½ü             --
+-- TBL_TENSUPLUSWK å‰Šé™¤             --
 
 drop table TBL_TENSUPLUSWK;
 
--- ¥Ç¥Õ¥©¥ë¥ÈÃÍÀßÄê             --
+-- ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆå€¤è¨­å®š             --
 
 update tbl_tensuplus set ALLSURYOKBN='1',KANZANTANICD='000',KANZANCHI=1 where substr(srycd,1,1)='6';
 

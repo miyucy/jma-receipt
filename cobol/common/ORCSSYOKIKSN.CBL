@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,28 +18,28 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCSSYOKIKSN.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : 
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ½é´ü²Ã»»¥µ¥Ö
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  02/10/03    NACL-ÂÀÅÄ     ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : 
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : åˆæœŸåŠ ç®—ã‚µãƒ–
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  02/10/03    NACL-å¤ªç”°     æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  00.00.01    NACL-¾®Æ¦Âô  04/03/11  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
-      *                                     ¡Ê°å»ÕÇÛÃÖÅ¬¹ç¡Ë¤ÎÄÉ²Ã
-      *  00.00.02    NACL-¾®Æ¦Âô  04/04/21  Í­¾²¿ÇÎÅ½ê£±·²Æþ±¡´ðËÜÎÁ£±
-      *                                     ¡Ê´Ç¸î¡¦°å»ÕÇÛÃÖÅ¬¹ç¡Ë¤ÎÄÉ²Ã
-      *Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ
-      *  00.00.03    NACL-¾®Æ¦Âô  06/03/15  Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁÂÐ±þ
-      *  03.05.00    NACL-ÂÀÅÄ    07/05/10  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
-      *Ê¿À®£²£²Ç¯£´·î²þÄêÂÐ±þ
-      *  00.00.00    NACL-¾®Æ¦Âô  10/03/02  Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³ÂÐ±þ
-      *Ê¿À®£²£¶Ç¯£´·î²þÄêÂÐ±þ
-      *  00.00.00    NACL-¾®Æ¦Âô  14/02/27  Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±
-      *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£²
-      *                                     Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£³ÄÉ²ÃÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  00.00.01    NACL-å°è±†æ²¢  04/03/11  æœ‰åºŠè¨ºç™‚æ‰€ï¼‘ç¾¤å…¥é™¢åŸºæœ¬æ–™ï¼‘
+      *                                     ï¼ˆåŒ»å¸«é…ç½®é©åˆï¼‰ã®è¿½åŠ 
+      *  00.00.02    NACL-å°è±†æ²¢  04/04/21  æœ‰åºŠè¨ºç™‚æ‰€ï¼‘ç¾¤å…¥é™¢åŸºæœ¬æ–™ï¼‘
+      *                                     ï¼ˆçœ‹è­·ãƒ»åŒ»å¸«é…ç½®é©åˆï¼‰ã®è¿½åŠ 
+      *å¹³æˆï¼‘ï¼˜å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  00.00.03    NACL-å°è±†æ²¢  06/03/15  æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™å¯¾å¿œ
+      *  03.05.00    NACL-å¤ªç”°    07/05/10  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
+      *å¹³æˆï¼’ï¼’å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  00.00.00    NACL-å°è±†æ²¢  10/03/02  æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“å¯¾å¿œ
+      *å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œ
+      *  00.00.00    NACL-å°è±†æ²¢  14/02/27  æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘
+      *                                     æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼’
+      *                                     æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼“è¿½åŠ å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -53,7 +53,7 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-ERR                     PIC 9(01).
            03  FLG-SINRYOJO-VAL-1804       PIC 9(01).
@@ -61,7 +61,7 @@
            03  FLG-SINRYOJO-VAL-2604       PIC 9(01).
            03  FLG-TENSU                   PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX1                        PIC 9(05).
            03  IDX2                        PIC 9(05).
@@ -69,7 +69,7 @@
            03  IDX4                        PIC 9(05).
            03  IDX5                        PIC 9(05).
       *
-      *    ºî¶ÈÎÎ°è
+      *    ä½œæ¥­é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-YMD                     PIC X(10). 
            03  WRK-SYMD.
@@ -101,7 +101,7 @@
                    07  WRK-KGNTEN-YUKOEDYMD
                                            PIC X(08).
       *
-      *    ¸ÇÄêÃÍÎÎ°è
+      *    å›ºå®šå€¤é ˜åŸŸ
        01  CONST-AREA.
            03  CONST-KGNTEN-VAL.
                05  CONST-KGNTEN-01-ST      PIC X(4)    VALUE   "1001".
@@ -148,7 +148,7 @@
                05  CONST-SINRYOJO-06-ED    PIC X(4)    VALUE   "3001".
                05  CONST-SINRYOJO-07-ST    PIC X(4)    VALUE   "1180".
                05  CONST-SINRYOJO-07-ED    PIC X(4)    VALUE   "9999".
-      *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡¢£²¡¢£³¡ÊÊ¿À®£²£²Ç¯ÅÙ²þÄê¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ã€ï¼’ã€ï¼“ï¼ˆå¹³æˆï¼’ï¼’å¹´åº¦æ”¹å®šï¼‰
            03  CONST-SINRYOJO-VAL-2204.
                05  CONST-SINRYOJO-01-ST    PIC X(4)    VALUE   "1001".
                05  CONST-SINRYOJO-01-ED    PIC X(4)    VALUE   "1014".
@@ -164,7 +164,7 @@
                05  CONST-SINRYOJO-06-ED    PIC X(4)    VALUE   "1035".
                05  CONST-SINRYOJO-07-ST    PIC X(4)    VALUE   "1036".
                05  CONST-SINRYOJO-07-ED    PIC X(4)    VALUE   "9999".
-      *    Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±¡¢£²¡¢£³¡¢£´¡¢£µ¡¢£¶¡ÊÊ¿À®£²£¶Ç¯ÅÙ²þÄê¡Ë
+      *    æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘ã€ï¼’ã€ï¼“ã€ï¼”ã€ï¼•ã€ï¼–ï¼ˆå¹³æˆï¼’ï¼–å¹´åº¦æ”¹å®šï¼‰
            03  CONST-SINRYOJO-VAL-2604.
                05  CONST-SINRYOJO-01-ST    PIC X(4)    VALUE   "1001".
                05  CONST-SINRYOJO-01-ED    PIC X(4)    VALUE   "1014".
@@ -181,7 +181,7 @@
                05  CONST-SINRYOJO-07-ST    PIC X(4)    VALUE   "1036".
                05  CONST-SINRYOJO-07-ED    PIC X(4)    VALUE   "9999".
       *
-      *    ·ë³ËÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÊ¿À®£²£¸Ç¯ÅÙ²þÄê¡Ë
+      *    çµæ ¸ç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼ˆå¹³æˆï¼’ï¼˜å¹´åº¦æ”¹å®šï¼‰
            03  CONST-KEKKAKU-VAL-2804.
                05  CONST-KEKKAKU-01-ST      PIC X(4)    VALUE   "1001".
                05  CONST-KEKKAKU-01-ED      PIC X(4)    VALUE   "1014".
@@ -205,31 +205,31 @@
                05  CONST-KEKKAKU-07-ED      PIC X(4)    VALUE   "9999".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿
        01  NYUINKHN-REC.
            COPY  "CPNYUINKHN.INC".
       *
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡Ý
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿âˆ’
            COPY    "CPTENSU.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
            COPY    "CPORCSGDAY.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -242,7 +242,7 @@
            .
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -251,14 +251,14 @@
                                    IDX-AREA
                                    WRK-AREA
       *
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯å‡¦ç†
            PERFORM 100-PARA-CHK-SEC
            IF    ( FLG-ERR NOT =   ZERO )
                MOVE    FLG-ERR TO  SYOKIKSN-OT-RC
                GO  TO  000-PROC-EXT
            END-IF
       *
-      *    ÊÔ½¸½èÍý
+      *    ç·¨é›†å‡¦ç†
            IF     SYOKIKSN-IN-SANTEISTYMD   >=  "20140401"
                PERFORM 202-EDIT-SEC
            ELSE
@@ -281,11 +281,11 @@
            .
       *
       *****************************************************************
-      *    ¥Ñ¥é¥á¡¼¥¿¥Á¥§¥Ã¥¯½èÍý
+      *    ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ãƒã‚§ãƒƒã‚¯å‡¦ç†
       *****************************************************************
        100-PARA-CHK-SEC            SECTION.
       *
-      *    ÄÌ»»Æü¿ô¤Ë¿ô»ú¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
+      *    é€šç®—æ—¥æ•°ã«æ•°å­—ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã“ã¨
            IF    ( SYOKIKSN-IN-TUSANNISSU  IS  NUMERIC )
                CONTINUE
            ELSE
@@ -293,19 +293,19 @@
                GO  TO  100-PARA-CHK-EXT
            END-IF
       *
-      *    ´ðËÜÅÀ¿ô¿ÇÎÅ¥³¡¼¥É ¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
+      *    åŸºæœ¬ç‚¹æ•°è¨ºç™‚ã‚³ãƒ¼ãƒ‰ ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã“ã¨
            IF    ( SYOKIKSN-IN-KHNSRYCD    =   SPACE )
                MOVE    1       TO  FLG-ERR
                GO  TO  100-PARA-CHK-EXT
            END-IF
       *
-      *    »»Äê³«»ÏÆü¤¬ÀßÄê¤µ¤ì¤Æ¤¤¤ë¤³¤È
+      *    ç®—å®šé–‹å§‹æ—¥ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã“ã¨
            IF    ( SYOKIKSN-IN-SANTEISTYMD =   SPACE )
                MOVE    1       TO  FLG-ERR
                GO  TO  100-PARA-CHK-EXT
            END-IF
       *
-      *    »»Äê³«»ÏÆü¤¬ÆüÉÕ¤È¤·¤ÆÂÅÅö¤Ç¤¢¤ë¤³¤È
+      *    ç®—å®šé–‹å§‹æ—¥ãŒæ—¥ä»˜ã¨ã—ã¦å¦¥å½“ã§ã‚ã‚‹ã“ã¨
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO  WRK-YMD
            PERFORM 5002-HIZUKE-CHK-SEC
@@ -317,7 +317,7 @@
        100-PARA-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÔ½¸½èÍý¡ÊÊ¿À®£²£²Ç¯£³·î°ÊÁ°¡Ë
+      *    ç·¨é›†å‡¦ç†ï¼ˆå¹³æˆï¼’ï¼’å¹´ï¼“æœˆä»¥å‰ï¼‰
       *****************************************************************
        200-EDIT-SEC                SECTION.
       *
@@ -339,7 +339,7 @@
             OR                                 "190813870"
             OR                                 "099999950"
             OR                                 "099999951"   )
-      *        Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *        å¹³æˆï¼‘ï¼˜å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
                IF  (SYOKIKSN-IN-KHNSRYCD  = "099999950"  OR
                                             "099999951") AND
                    SYOKIKSN-IN-SANTEISTYMD(1:6) >= "200604"
@@ -352,42 +352,42 @@
                MOVE    CONST-KGNTEN-VAL    TO  WRK-KIKAN-TBL
            END-IF
       *
-      *    ´ð½àÆü¼èÆÀ½èÍý
+      *    åŸºæº–æ—¥å–å¾—å‡¦ç†
            PERFORM 210-KJNYMD-GET-SEC
       *
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
            PERFORM 210-NYUINKHN-SEL-SEC
            IF    ( FLG-ERR NOT =   ZERO )
                GO  TO  200-EDIT-EXT
            END-IF
       *
-      *    Ê¿À®£±£¸Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *    å¹³æˆï¼‘ï¼˜å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
       **     DISPLAY  "FLG-SINRYOJO-VAL-1804 = " FLG-SINRYOJO-VAL-1804
            IF   FLG-SINRYOJO-VAL-1804     =    1
                IF   SYOKIKSN-IN-KHNSRYCD  = "099999950"
                    MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
-      *            Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±
+      *            æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘
       **             MOVE   "190097010"   TO  NYUKHN-KAGENCD (1)
       **             MOVE   "190097110"   TO  NYUKHN-KAGENCD (2)
       **             MOVE   "190119510"   TO  NYUKHN-KAGENCD (3)
       **             MOVE   "190119610"   TO  NYUKHN-KAGENCD (4)
                ELSE
                    MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
-      *            Í­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ£±
+      *            æœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‘
       **             MOVE   "190097210"   TO  NYUKHN-KAGENCD (1)
       **             MOVE   "190097310"   TO  NYUKHN-KAGENCD (2)
       **             MOVE   "190119710"   TO  NYUKHN-KAGENCD (3)
       **             MOVE   "190119810"   TO  NYUKHN-KAGENCD (4)
                END-IF
            END-IF
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Ë¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤ÈÍ­¸ú´ü´Ö¤òÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã«è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ã¨æœ‰åŠ¹æœŸé–“ã‚’è¨­å®š
            INITIALIZE              WRK-KGNTEN-TBL
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
                MOVE    NYUKHN-KAGENCD (IDX1)
                                    TO  WRK-KGNTEN-SRYCD (IDX1)
-      *        ´ð½àÆü
+      *        åŸºæº–æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-STZOGENPTN (IDX1)
@@ -398,7 +398,7 @@
                MOVE    WRK-KEISANYMD
                                    TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
       *
-      *        Í­¸ú´ü´Ö½ªÎ»Æü
+      *        æœ‰åŠ¹æœŸé–“çµ‚äº†æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-EDZOGENPTN (IDX1)
@@ -411,8 +411,8 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Î³ºÅö¤ÎÍ­¸ú´ü´Ö³«»ÏÆü¤Ë»»Äê³«»ÏÆü¤ò
-      *    ÀßÄê¤¹¤ë
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®è©²å½“ã®æœ‰åŠ¹æœŸé–“é–‹å§‹æ—¥ã«ç®—å®šé–‹å§‹æ—¥ã‚’
+      *    è¨­å®šã™ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
@@ -431,7 +431,7 @@
       *
            END-PERFORM
       *
-      *    Æ±°ìÅÀ¿ô¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¾ì¹ç¤Ï¤Þ¤È¤á¤ë
+      *    åŒä¸€ç‚¹æ•°ã®ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯ã¾ã¨ã‚ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   6 )
                COMPUTE IDX2    =   IDX1    +   1
@@ -451,7 +451,7 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤ÎÆâÍÆ¤òÊÖµÑÃÍ¤ËÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®å†…å®¹ã‚’è¿”å´å€¤ã«è¨­å®š
            MOVE    ZERO            TO  IDX2
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7)
@@ -475,30 +475,30 @@
        200-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÔ½¸½èÍý¡ÊÊ¿À®£²£²Ç¯£´·î²þÄê°Ê¹ß¡Ë
+      *    ç·¨é›†å‡¦ç†ï¼ˆå¹³æˆï¼’ï¼’å¹´ï¼”æœˆæ”¹å®šä»¥é™ï¼‰
       *****************************************************************
        201-EDIT-SEC                SECTION.
       *
            IF    ( SYOKIKSN-IN-KHNSRYCD    =   "099999950"
             OR                                 "099999951"
             OR                                 "099999952"   )
-      *        Ê¿À®£²£²Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *        å¹³æˆï¼’ï¼’å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
                MOVE    1       TO    FLG-SINRYOJO-VAL-2204
                MOVE    CONST-SINRYOJO-VAL-2204  TO  WRK-KIKAN-TBL
            ELSE
                MOVE    CONST-KGNTEN-VAL    TO  WRK-KIKAN-TBL
            END-IF
       *
-      *    ´ð½àÆü¼èÆÀ½èÍý
+      *    åŸºæº–æ—¥å–å¾—å‡¦ç†
            PERFORM 210-KJNYMD-GET-SEC
       *
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
            PERFORM 210-NYUINKHN-SEL-SEC
            IF    ( FLG-ERR NOT =   ZERO )
                GO  TO  201-EDIT-EXT
            END-IF
       *
-      *    Ê¿À®£²£²Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *    å¹³æˆï¼’ï¼’å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
            IF   FLG-SINRYOJO-VAL-2204     =    1
                IF   SYOKIKSN-IN-KHNSRYCD  = "099999950"  OR
                                             "099999951"  OR
@@ -506,14 +506,14 @@
                    MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
                END-IF
            END-IF
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Ë¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤ÈÍ­¸ú´ü´Ö¤òÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã«è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ã¨æœ‰åŠ¹æœŸé–“ã‚’è¨­å®š
            INITIALIZE              WRK-KGNTEN-TBL
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
                MOVE    NYUKHN-KAGENCD (IDX1)
                                    TO  WRK-KGNTEN-SRYCD (IDX1)
-      *        ´ð½àÆü
+      *        åŸºæº–æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-STZOGENPTN (IDX1)
@@ -524,7 +524,7 @@
                MOVE    WRK-KEISANYMD
                                    TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
       *
-      *        Í­¸ú´ü´Ö½ªÎ»Æü
+      *        æœ‰åŠ¹æœŸé–“çµ‚äº†æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-EDZOGENPTN (IDX1)
@@ -537,8 +537,8 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Î³ºÅö¤ÎÍ­¸ú´ü´Ö³«»ÏÆü¤Ë»»Äê³«»ÏÆü¤ò
-      *    ÀßÄê¤¹¤ë
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®è©²å½“ã®æœ‰åŠ¹æœŸé–“é–‹å§‹æ—¥ã«ç®—å®šé–‹å§‹æ—¥ã‚’
+      *    è¨­å®šã™ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
@@ -557,7 +557,7 @@
       *
            END-PERFORM
       *
-      *    Æ±°ìÅÀ¿ô¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¾ì¹ç¤Ï¤Þ¤È¤á¤ë
+      *    åŒä¸€ç‚¹æ•°ã®ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯ã¾ã¨ã‚ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   6 )
                COMPUTE IDX2    =   IDX1    +   1
@@ -577,7 +577,7 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤ÎÆâÍÆ¤òÊÖµÑÃÍ¤ËÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®å†…å®¹ã‚’è¿”å´å€¤ã«è¨­å®š
            MOVE    ZERO            TO  IDX2
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7)
@@ -601,7 +601,7 @@
        201-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ÊÔ½¸½èÍý¡ÊÊ¿À®£²£¶Ç¯£´·î²þÄê°Ê¹ß¡Ë
+      *    ç·¨é›†å‡¦ç†ï¼ˆå¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹å®šä»¥é™ï¼‰
       *****************************************************************
        202-EDIT-SEC                SECTION.
       *
@@ -611,16 +611,16 @@
             OR                                 "099999955"
             OR                                 "099999956"
             OR                                 "099999957"   )
-      *        Ê¿À®£²£¶Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *        å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
                MOVE    1       TO    FLG-SINRYOJO-VAL-2604
                MOVE    CONST-SINRYOJO-VAL-2604  TO  WRK-KIKAN-TBL
            ELSE
                MOVE    CONST-KGNTEN-VAL    TO  WRK-KIKAN-TBL
            END-IF
       *
-      *    ·ë³ËÉÂÅïÆþ±¡´ðËÜÎÁ¡ÊÊ¿À®£²£¸Ç¯ÅÙ²þÄê¡Ë
+      *    çµæ ¸ç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ï¼ˆå¹³æˆï¼’ï¼˜å¹´åº¦æ”¹å®šï¼‰
            IF   SYOKIKSN-IN-SANTEISTYMD(1:6)  >=    "201604"
-      *        ·ë³ËÉÂÅïÆþ±¡´ðËÜÎÁ¤ÎÈ½Äê¤Î°Ù¡¢ÅÀ¿ô¥Þ¥¹¥¿»²¾È
+      *        çµæ ¸ç—…æ£Ÿå…¥é™¢åŸºæœ¬æ–™ã®åˆ¤å®šã®ç‚ºã€ç‚¹æ•°ãƒžã‚¹ã‚¿å‚ç…§
                INITIALIZE                        TNS-TENSU-REC
                MOVE    SPA-HOSPNUM           TO  TNS-HOSPNUM
                MOVE    SYOKIKSN-IN-KHNSRYCD  TO  TNS-SRYCD
@@ -634,16 +634,16 @@
                END-IF
            END-IF
       *
-      *    ´ð½àÆü¼èÆÀ½èÍý
+      *    åŸºæº–æ—¥å–å¾—å‡¦ç†
            PERFORM 210-KJNYMD-GET-SEC
       *
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
            PERFORM 210-NYUINKHN-SEL-SEC
            IF    ( FLG-ERR NOT =   ZERO )
                GO  TO  202-EDIT-EXT
            END-IF
       *
-      *    Ê¿À®£²£¶Ç¯£´·î²þÄêÂÐ±þ¡ÊÍ­¾²¿ÇÎÅ½êÆþ±¡´ðËÜÎÁ¡Ë
+      *    å¹³æˆï¼’ï¼–å¹´ï¼”æœˆæ”¹å®šå¯¾å¿œï¼ˆæœ‰åºŠè¨ºç™‚æ‰€å…¥é™¢åŸºæœ¬æ–™ï¼‰
            IF   FLG-SINRYOJO-VAL-2604     =    1
                IF   SYOKIKSN-IN-KHNSRYCD  = "099999950"  OR
                                             "099999951"  OR
@@ -654,14 +654,14 @@
                    MOVE    SPACE        TO  SYOKIKSN-IN-KHNSRYCD
                END-IF
            END-IF
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Ë¿ÇÎÅ¹Ô°Ù¥³¡¼¥É¤ÈÍ­¸ú´ü´Ö¤òÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã«è¨ºç™‚è¡Œç‚ºã‚³ãƒ¼ãƒ‰ã¨æœ‰åŠ¹æœŸé–“ã‚’è¨­å®š
            INITIALIZE              WRK-KGNTEN-TBL
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
                MOVE    NYUKHN-KAGENCD (IDX1)
                                    TO  WRK-KGNTEN-SRYCD (IDX1)
-      *        ´ð½àÆü
+      *        åŸºæº–æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-STZOGENPTN (IDX1)
@@ -672,7 +672,7 @@
                MOVE    WRK-KEISANYMD
                                    TO  WRK-KGNTEN-YUKOSTYMD (IDX1)
       *
-      *        Í­¸ú´ü´Ö½ªÎ»Æü
+      *        æœ‰åŠ¹æœŸé–“çµ‚äº†æ—¥
                MOVE    WRK-KJNYMD
                                    TO WRK-YMD
                MOVE    WRK-KIKAN-EDZOGENPTN (IDX1)
@@ -685,8 +685,8 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤Î³ºÅö¤ÎÍ­¸ú´ü´Ö³«»ÏÆü¤Ë»»Äê³«»ÏÆü¤ò
-      *    ÀßÄê¤¹¤ë
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®è©²å½“ã®æœ‰åŠ¹æœŸé–“é–‹å§‹æ—¥ã«ç®—å®šé–‹å§‹æ—¥ã‚’
+      *    è¨­å®šã™ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7 )
       *
@@ -705,7 +705,7 @@
       *
            END-PERFORM
       *
-      *    Æ±°ìÅÀ¿ô¤Î¥Ç¡¼¥¿¤¬Â¸ºß¤¹¤ë¾ì¹ç¤Ï¤Þ¤È¤á¤ë
+      *    åŒä¸€ç‚¹æ•°ã®ãƒ‡ãƒ¼ã‚¿ãŒå­˜åœ¨ã™ã‚‹å ´åˆã¯ã¾ã¨ã‚ã‚‹
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   6 )
                COMPUTE IDX2    =   IDX1    +   1
@@ -725,7 +725,7 @@
       *
            END-PERFORM
       *
-      *    ¥ï¡¼¥¯²Ã¸º»»¥Æ¡¼¥Ö¥ë¤ÎÆâÍÆ¤òÊÖµÑÃÍ¤ËÀßÄê
+      *    ãƒ¯ãƒ¼ã‚¯åŠ æ¸›ç®—ãƒ†ãƒ¼ãƒ–ãƒ«ã®å†…å®¹ã‚’è¿”å´å€¤ã«è¨­å®š
            MOVE    ZERO            TO  IDX2
            PERFORM VARYING IDX1    FROM    1   BY  1
                UNTIL     ( IDX1    >   7)
@@ -749,12 +749,12 @@
        202-EDIT-EXT.
            EXIT.
       *****************************************************************
-      *    ´ð½àÆü¼èÆÀ½èÍý
+      *    åŸºæº–æ—¥å–å¾—å‡¦ç†
       *****************************************************************
        210-KJNYMD-GET-SEC              SECTION.
       *
       *
-      *    ´ð½à¤È¤Ê¤ëÆüÉÕ¤ò¤â¤È¤á¤ë¡Ê»»Äê³«»ÏÆü¡ÝÄÌ»»Æü¿ô¡Ë
+      *    åŸºæº–ã¨ãªã‚‹æ—¥ä»˜ã‚’ã‚‚ã¨ã‚ã‚‹ï¼ˆç®—å®šé–‹å§‹æ—¥âˆ’é€šç®—æ—¥æ•°ï¼‰
            MOVE    SYOKIKSN-IN-SANTEISTYMD
                                    TO WRK-YMD
       *
@@ -770,7 +770,7 @@
        210-KJNYMD-GET-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        210-NYUINKHN-SEL-SEC            SECTION.
       *
@@ -798,7 +798,7 @@
        210-NYUINKHN-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    Æþ±¡ÎÁ»»Äê¥Þ¥¹¥¿¸¡º÷½èÍý
+      *    å…¥é™¢æ–™ç®—å®šãƒžã‚¹ã‚¿æ¤œç´¢å‡¦ç†
       *****************************************************************
        220-HIZUKE-GET-SEC              SECTION.
       *
@@ -818,7 +818,7 @@
        220-HIZUKE-GET-EXT.
            EXIT.
       *****************************************************************
-      *    ÆüÉÕ¥Á¥§¥Ã¥¯¡¦ÊÔ½¸½èÍý
+      *    æ—¥ä»˜ãƒã‚§ãƒƒã‚¯ãƒ»ç·¨é›†å‡¦ç†
       *****************************************************************
        5002-HIZUKE-CHK-SEC             SECTION.
       *
@@ -829,7 +829,7 @@
                GO  TO  5002-HIZUKE-CHK-EXT
            END-IF
       *
-      *    ÆüÉÕ²èÌÌ¥Á¥§¥Ã¥¯¥µ¥Ö
+      *    æ—¥ä»˜ç”»é¢ãƒã‚§ãƒƒã‚¯ã‚µãƒ–
            INITIALIZE                      ORCSGDAYAREA
            MOVE    WRK-YMD             TO  SGDAY-INDAY
            CALL    "ORCSGDAY"          USING
@@ -844,7 +844,7 @@
        5002-HIZUKE-CHK-EXT.
            EXIT.
       *****************************************************************
-      *    ´ü´Ö»»½Ð½èÍý
+      *    æœŸé–“ç®—å‡ºå‡¦ç†
       *****************************************************************
        5002-KIKAN-CALC-SEC             SECTION.
       *
@@ -866,7 +866,7 @@
        5002-KIKAN-CALC-EXT.
            EXIT.
       *****************************************************************
-      *    ¥«¥ì¥ó¥À¡¼½èÍý
+      *    ã‚«ãƒ¬ãƒ³ãƒ€ãƒ¼å‡¦ç†
       *****************************************************************
        5002-CALENDAR-SEC               SECTION.
       *
@@ -885,7 +885,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÅÀ¿ô¥Þ¥¹¥¿¡¼ÆÉ¹þ¡Ê¼ç¥­¡¼¡Ë
+      *    ç‚¹æ•°ãƒžã‚¹ã‚¿ãƒ¼èª­è¾¼ï¼ˆä¸»ã‚­ãƒ¼ï¼‰
       *****************************************************************
        910-TENSU-READ-SEC         SECTION.
       *
@@ -917,7 +917,7 @@
        910-TENSU-READ-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤â¹Ô¤¦)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã‚‚è¡Œã†)
       *****************************************************************
        910-DBSELECT-SEC                SECTION.
       *
@@ -935,7 +935,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¸¡º÷½èÍý¡ÊFHETCH¤Ï¹Ô¤ï¤Ê¤¤)
+      *    ï¼¤ï¼¢æ¤œç´¢å‡¦ç†ï¼ˆFHETCHã¯è¡Œã‚ãªã„)
       *****************************************************************
        911-DBSELECT-SEC                SECTION.
       *
@@ -950,7 +950,7 @@
        911-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£ÂÆÉ¤ß¹þ¤ß½èÍý
+      *    ï¼¤ï¼¢èª­ã¿è¾¼ã¿å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC                 SECTION.
       *
@@ -965,7 +965,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSECURSOR-SEC                 SECTION.
       *

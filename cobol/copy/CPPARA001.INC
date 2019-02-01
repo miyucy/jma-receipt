@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,18 +16,18 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    Ģɼ�ǡ�������API�ѥ�᥿   COPY  (CPPARA001.INC)    *
+      *    帳票データ取得APIパラメタ   COPY  (CPPARA001.INC)    *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       ************************************************************
        01  PARA001-REC.
            03  PARA001-FORMID          PIC X(20).
-      *        ��������ɣ�
+      *        カスタムＩＤ
            03  PARA001-CUSTOMID        PIC X(20).
-      *        ��ݡ���̾��
+      *        レポート名称
            03  PARA001-FORMNAME        PIC X(100).
-      *        �ǡ����ɣ�
+      *        データＩＤ
            03  PARA001-DATAID          PIC X(80).
 

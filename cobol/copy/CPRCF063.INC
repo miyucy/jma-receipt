@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,71 +16,71 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �쥻�ץ����ٽ�������� ��̾     (CPRCF063.INC)        *
+      *    レセプト明細書（入院） 病名     (CPRCF063.INC)        *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  01.00.01    NACL-ƣ��    04/02/01  ��̾�����ɣ������ѹ�
-      *  03.05.01    NACL-��Ʀ��  07/05/30  ���롼�׿����б�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  01.00.01    NACL-藤原    04/02/01  病名コード２１に変更
+      *  03.05.01    NACL-小豆沢  07/05/30  グループ診療対応
       *
-      *  04.05.01    NACL-ƣ��    09/11/25  �쥻�ť����ȳ�ĥ�б�
-      *                                     ��­�����Ȥ��ɲ�
-      *                                     Ϣ�ֹ�򣳷���ѹ�
-      *                                     ������̾��������̾ʸ�������ɲ�
+      *  04.05.01    NACL-藤原    09/11/25  レセ電コメント拡張対応
+      *                                     補足コメントの追加
+      *                                     連番号を３桁に変更
+      *                                     入力病名、入力病名文字数の追加
       *
-      *  04.06.01    NACL-ƣ��    10/10/12  ����ñ�ȤΥ쥻ʬΥ�б�
-      *                                     ������kohid �ɲ�
+      *  04.06.01    NACL-藤原    10/10/12  公費単独のレセ分離対応
+      *                                     キーにkohid 追加
       *
-      *  04.07.01    NACL-ƣ��    12/12/17  ʣ����쥻�ץ�ʬ���б�
+      *  04.07.01    NACL-藤原    12/12/17  複数枚レセプト分割対応
       ************************************************************
       *01  RECE63-REC.
            03  RECE63-KEY.
                05  RECE63-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  RECE63-HOSPNUM      PIC 9(2).
-      *����ǯ��
+      *診療年月
                    07  RECE63-SRYYM        PIC 9(06).
-      *������ʬ
+      *入外区分
                    07  RECE63-NYUGAIKBN    PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  RECE63-PTID         PIC 9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                    07  RECE63-RECEKA       PIC X(02).
-      *������ʧ����
+      *審査支払機関
                    07  RECE63-TEISYUTUSAKI
                                            PIC 9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                    07  RECE63-RECESYUBETU  PIC 9(04).
-      *�ݸ����ֹ�        
+      *保険者番号        
                    07  RECE63-HKNJANUM     PIC X(08).
-      *�����ʬ
+      *補助区分
                    07  RECE63-HOJOKBN      PIC X(01).
-      *����ɣ�
+      *公費ＩＤ
                    07  RECE63-KOHID        PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  RECE63-TEKSTYMD     PIC X(08). 
-      *ʬ���ʬ
+      *分割区分
                    07  RECE63-RECEIPT-KBN  PIC X(10).
-      *���ų�����
+      *診療開始日
                05  RECE63-SRYYMD          PIC X(08).
-      *ž����ʬ
+      *転帰区分
                05  RECE63-TENKIKBN        PIC X(01).
-      *ž����
+      *転帰日
                05  RECE63-TENKIYMD        PIC X(08).
-      *��̾
+      *病名
                05  RECE63-BYOMEI          PIC X(160).
-      *����̾�ե饰
+      *主病名フラグ
                05  RECE63-SYUBYOFLG       PIC X(01).
-      *Ϣ�ֹ�
+      *連番号
                05  RECE63-RENNUM          PIC 9(03).
-      *�����ֹ�
+      *患者番号
            03  RECE63-PTNUM               PIC X(20).
-      *���Ų�
+      *診療科
            03  RECE63-SRYKA               PIC X(02).
-      *������̾������
+      *基本病名コード
            03  RECE63-KHNBYOMEICD         PIC X(07).
-      *��̾������
+      *病名コード
            03  RECE63-BYOMEICD-G.
                05  RECE63-BYOMEICD-1    PIC X(07).
                05  RECE63-BYOMEICD-2    PIC X(07).
@@ -107,23 +107,23 @@
            03  RECE63-BYOMEICD-R        REDEFINES   RECE63-BYOMEICD-G.
                05  RECE63-BYOMEICD      PIC X(07)
                                        OCCURS   21.
-      *�����ե饰
+      *疑いフラグ
            03  RECE63-UTAGAIFLG         PIC X(01).
-      *�����ե饰
+      *慢性フラグ
            03  RECE63-MANSEIKBN         PIC 9(02).
-      *�ݸ��ȹ��ֹ�
+      *保険組合番号
            03  RECE63-HKNCOMBI          PIC X(04).
-      *�쥻�ץ�ɽ���ե饰
+      *レセプト表示フラグ
            03  RECE63-REZEFLG           PIC X(01).
-      *�쥻�ץ�ɽ�����
+      *レセプト表示月数
            03  RECE63-REZEMM            PIC 9(02).
-      *��̾ʸ����
+      *病名文字数
            03  RECE63-BYOMEIMOJI        PIC 9(03).
-      *��­������
+      *補足コメント
            03  RECE63-HOSOKU-COMMENT    PIC X(40).
-      *������̾
+      *入力病名
            03  RECE63-IN-BYOMEI         PIC X(160).
-      *������̾ʸ����
+      *入力病名文字数
            03  RECE63-IN-BYOMEIMOJI     PIC 9(03).
-      *��̾�Խ��ե饰
+      *病名編集フラグ
            03  RECE63-BYOMEIHENFLG      PIC X(01).

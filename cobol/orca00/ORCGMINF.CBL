@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,18 +18,18 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCGMINF.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : ¥á¥Ë¥å¡¼
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ´¶À÷¾É¥µ¡¼¥Ù¥¤¥é¥ó¥¹
-      *  ´ÉÍý¼Ô            : 
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  09/12/04    NACL¡Ý¿¹ÏÆ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : æ„ŸæŸ“ç—‡ã‚µãƒ¼ãƒ™ã‚¤ãƒ©ãƒ³ã‚¹
+      *  ç®¡ç†è€…            : 
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  09/12/04    NACLâˆ’æ£®è„‡    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô        ÆüÉÕ      ÆâÍÆ
-      * 04.06.00     NACL-°ËÆ£    10/02/13  ¥ê¥¢¥ë¥¿¥¤¥àÁ÷¿®
-      *                                     ½é´üÉ½¼¨¤ÏÅöÆüÊó¹ðÆü
-      *                                     £±Æü£±²ó¤ÏÁ°Æü
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…        æ—¥ä»˜      å†…å®¹
+      * 04.06.00     NACL-ä¼Šè—¤    10/02/13  ãƒªã‚¢ãƒ«ã‚¿ã‚¤ãƒ é€ä¿¡
+      *                                     åˆæœŸè¡¨ç¤ºã¯å½“æ—¥å ±å‘Šæ—¥
+      *                                     ï¼‘æ—¥ï¼‘å›žã¯å‰æ—¥
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -42,11 +42,11 @@
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "COMMON-SPA".
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "M00COMMON-SPA".
-      *    ¥¹¥ÑÎÎ°è
+      *    ã‚¹ãƒ‘é ˜åŸŸ
            COPY    "M01SCR-SPA".
       *
            COPY    "ENUM-VALUE".
@@ -71,10 +71,10 @@
                05  SPA-MINF-END                PIC 9(01).
                05  SPA-MINF-FLG                PIC 9(01).
       *
-      *    ¥Õ¥¡¥¤¥ë¥Ç¥¤¥ì¥¯¥È¥ê°ÌÃÖ»ØÄê¥µ¥Ö
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ‡ã‚¤ãƒ¬ã‚¯ãƒˆãƒªä½ç½®æŒ‡å®šã‚µãƒ–
            COPY  "CPMKPASS.INC".
       *
-      *    ¥Õ¥é¥°ÎÎ°è
+      *    ãƒ•ãƒ©ã‚°é ˜åŸŸ
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
            03  FLG-LIST-ROW        PIC 9(01).
@@ -82,12 +82,12 @@
            03  FLG-BYOMEI          PIC 9(01).
            03  FLG-INFECT          PIC 9(01).
       *
-      *    Åº»úÎÎ°è
+      *    æ·»å­—é ˜åŸŸ
        01  IDX-AREA.
            03  IDX                 PIC 9(04).
            03  IDY                 PIC 9(04).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-PATH            PIC X(64).
            03  WRK-LIST-ROW        PIC S9(9)   BINARY.
@@ -98,7 +98,7 @@
                05  WRK-SDD         PIC 9(02). 
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
        01  INFECT-REC.
@@ -111,21 +111,21 @@
            COPY    "CPPTINF.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑ¡¡ÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨ã€€é ˜åŸŸ
       *****************************************************************
       *
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
-      *    ÆüÉÕÊÑ´¹¥µ¥Ö
+      *    æ—¥ä»˜å¤‰æ›ã‚µãƒ–
            COPY    "CPORCSGDAY.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
            COPY    "CPORCMCP.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
         LINKAGE                     SECTION.
       *
@@ -160,7 +160,7 @@
            SCRAREA.
       *
       *****************************************************************
-      *    ¼ç¡¡¡¡½èÍý
+      *    ä¸»ã€€ã€€å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -178,15 +178,15 @@
            EVALUATE    MCP-STATUS      ALSO    MCP-EVENT
                WHEN    "LINK"          ALSO    ANY
                    PERFORM 100-INIT-SEC
-      *        ²èÌÌÁ«°Ü
+      *        ç”»é¢é·ç§»
                WHEN     "PUTG"         ALSO   "CLICKED"
                    PERFORM 200-GMNSENI
-      *        ÆþÎÏ
+      *        å…¥åŠ›
                WHEN      OTHER
                    PERFORM 200-ENTRY
            END-EVALUATE.
       *
-      *    ²èÌÌÁ«°Ü¤¬¤Ê¤¤»þ¡¢²èÌÌÉ½¼¨¤Ø
+      *    ç”»é¢é·ç§»ãŒãªã„æ™‚ã€ç”»é¢è¡¨ç¤ºã¸
            IF      FLG-END             =   ZERO
                PERFORM 500-SET-SCREEN
            END-IF
@@ -199,21 +199,21 @@
            EXIT    PROGRAM.
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
-      *    ¥¨¥é¡¼²èÌÌ¤è¤ê
+      *    ã‚¨ãƒ©ãƒ¼ç”»é¢ã‚ˆã‚Š
            IF      SPA-MOTOPG          =   "MERR"
                MOVE    SPACE           TO  SPA-MOTOPG
                PERFORM 5001-MAPCUR-SEC
            ELSE
-      *        ½é´ü²èÌÌ¥»¥Ã¥È
+      *        åˆæœŸç”»é¢ã‚»ãƒƒãƒˆ
                PERFORM 300-SCREEN-SEC
                IF      FLG-END             =   1
                    GO  TO  100-INIT-EXT
                END-IF
-      *        ²èÌÌÊÔ½¸
+      *        ç”»é¢ç·¨é›†
                PERFORM 500-GMNHEN-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    PERFORM 510-ERRSET-SEC
@@ -233,18 +233,18 @@
            EXIT.
       *
       *****************************************************************
-      *    ½é´ü²èÌÌ½èÍý
+      *    åˆæœŸç”»é¢å‡¦ç†
       *****************************************************************
        300-SCREEN-SEC              SECTION.
       *
            EVALUATE    SPA-MOTOPG
-      *    ºîÉ½½èÍý
+      *    ä½œè¡¨å‡¦ç†
                WHEN    "MID1"
                    PERFORM 330-MID1-SET-SEC
                    GO  TO  300-SCREEN-EXT
            END-EVALUATE
       *
-      *    Â¾¤Î£Ì£Ä¤è¤ê
+      *    ä»–ã®ï¼¬ï¼¤ã‚ˆã‚Š
            IF      LINKAREA        NOT =   SPACE
                MOVE    LNK-KYOUTU      TO  SPA-KYOUTU
            END-IF
@@ -256,7 +256,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¹¥Ñ½é´üÊÔ½¸½èÍý
+      *    ã‚¹ãƒ‘åˆæœŸç·¨é›†å‡¦ç†
       *****************************************************************
        310-SPASET-SEC              SECTION.
       *
@@ -265,7 +265,7 @@
       *
            MOVE    SPA-SYSYMD      TO  WRK-SYMD
            IF      SPA-DATAINFECTIONKBN    =   2
-      *        Á°Æü
+      *        å‰æ—¥
                PERFORM 31012-ZENJITU-HEN-SEC
            END-IF
            PERFORM 31012-SEIWA-HEN-SEC
@@ -283,7 +283,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥ê¥¹¥È¥»¥Ã¥È½èÍý
+      *    ãƒªã‚¹ãƒˆã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        320-LIST-SET-SEC            SECTION.
       *
@@ -329,7 +329,7 @@
                    MOVE    LNK-DAY2-EDTYMD1(5:5)
                                                TO  SPA-MINF-TYMD(IDX)
                    IF      INFECT-DISEASE  =   1
-                       MOVE    "¥¤¥ó¥Õ¥ë¥¨¥ó¥¶"
+                       MOVE    "ã‚¤ãƒ³ãƒ•ãƒ«ã‚¨ãƒ³ã‚¶"
                                                TO  SPA-MINF-TBYOGEN(IDX)
                    ELSE
                        MOVE    INFECT-DISEASE  TO  SPA-MINF-TBYOGEN(IDX)
@@ -338,17 +338,17 @@
                    MOVE    PTINF-NAME          TO  SPA-MINF-TNAME(IDX)
                    EVALUATE    PTINF-SEX
                        WHEN    "1"
-                           MOVE    "ÃË"        TO  SPA-MINF-TSEX(IDX)
+                           MOVE    "ç”·"        TO  SPA-MINF-TSEX(IDX)
                        WHEN    "2"
-                           MOVE    "½÷"        TO  SPA-MINF-TSEX(IDX)
+                           MOVE    "å¥³"        TO  SPA-MINF-TSEX(IDX)
                    END-EVALUATE
                    IF      INFECT-SRYCD    NOT =   SPACE
-                       MOVE    "¡û"        TO  SPA-MINF-TSHINRYO(IDX)
+                       MOVE    "â—‹"        TO  SPA-MINF-TSHINRYO(IDX)
                    ELSE
                        MOVE    SPACE       TO  SPA-MINF-TSHINRYO(IDX)
                    END-IF
                    IF      INFECT-MEDSRYCD NOT =   SPACE
-                       MOVE    "¡û"        TO  SPA-MINF-TYAKUZAI(IDX)
+                       MOVE    "â—‹"        TO  SPA-MINF-TYAKUZAI(IDX)
                    ELSE
                        MOVE    SPACE       TO  SPA-MINF-TYAKUZAI(IDX)
                    END-IF
@@ -382,7 +382,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ³ÎÇ§²èÌÌ¡Ê£Ã£É£Ä£±¡Ë£Ï£Ë½èÍý
+      *    ç¢ºèªç”»é¢ï¼ˆï¼£ï¼©ï¼¤ï¼‘ï¼‰ï¼¯ï¼«å‡¦ç†
       *****************************************************************
        330-MID1-SET-SEC            SECTION.
       *
@@ -397,28 +397,28 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÁ«°Ü½èÍý
+      *    ç”»é¢é·ç§»å‡¦ç†
       *****************************************************************
        200-GMNSENI                 SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *        ½ªÎ»
+      *        çµ‚äº†
                WHEN    "CLICKED"   ALSO    "B01"
                    MOVE   "CHANGE"         TO  MCP-PUTTYPE
                    PERFORM 210-BACK
-      *        É½¼¨ÀÚÂØ
+      *        è¡¨ç¤ºåˆ‡æ›¿
                WHEN    "CLICKED"   ALSO    "B04"
                    PERFORM 210-KIRIKAE-SEC
-      *        Á°Æü
+      *        å‰æ—¥
                WHEN    "CLICKED"   ALSO    "B05"
                    PERFORM 210-ZENJITU-SEC
-      *        Á°ÊÇ
+      *        å‰é 
                WHEN    "CLICKED"   ALSO    "B06"
                    PERFORM 210-ZENPAGE-SEC
-      *        ¼¡ÊÇ
+      *        æ¬¡é 
                WHEN    "CLICKED"   ALSO    "B07"
                    PERFORM 210-JIPAGE-SEC
-      *        ¼¡Æü
+      *        æ¬¡æ—¥
                WHEN    "CLICKED"   ALSO    "B08"
                    PERFORM 210-JIJITU-SEC
            END-EVALUATE
@@ -428,12 +428,12 @@
            EXIT.
       *
       *****************************************************************
-      *    ²ñÏÃ¡¡½èÍý
+      *    ä¼šè©±ã€€å‡¦ç†
       *****************************************************************
        200-ENTRY                   SECTION.
       *
            EVALUATE    MCP-EVENT   ALSO    MCP-WIDGET
-      *        ¹ÔÁªÂò
+      *        è¡Œé¸æŠž
                WHEN    "ACTIVATE"  ALSO    "SRYYMD"
                    PERFORM 201-SRYYMD-SEC
            END-EVALUATE
@@ -443,7 +443,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¿ÇÎÅÆü½èÍý
+      *    è¨ºç™‚æ—¥å‡¦ç†
       *****************************************************************
        201-SRYYMD-SEC              SECTION.
       *
@@ -476,7 +476,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Ìá¤ë¡¡½èÍý
+      *    æˆ»ã‚‹ã€€å‡¦ç†
       *****************************************************************
        210-BACK                    SECTION.
       *
@@ -501,7 +501,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÀÚÂØ½èÍý
+      *    åˆ‡æ›¿å‡¦ç†
       *****************************************************************
        210-KIRIKAE-SEC             SECTION.
       *
@@ -525,7 +525,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á°Æü½èÍý
+      *    å‰æ—¥å‡¦ç†
       *****************************************************************
        210-ZENJITU-SEC             SECTION.
       *
@@ -544,7 +544,7 @@
            EXIT.
       *
       *****************************************************************
-      *    Á°ÊÇ½èÍý
+      *    å‰é å‡¦ç†
       *****************************************************************
        210-ZENPAGE-SEC             SECTION.
       *
@@ -557,7 +557,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼¡ÊÇ½èÍý
+      *    æ¬¡é å‡¦ç†
       *****************************************************************
        210-JIPAGE-SEC              SECTION.
       *
@@ -570,7 +570,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼¡Æü½èÍý
+      *    æ¬¡æ—¥å‡¦ç†
       *****************************************************************
        210-JIJITU-SEC              SECTION.
       *
@@ -589,7 +589,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÏÂÎñÀ¾ÎñÊÑ´¹ÊÔ½¸½èÍý
+      *    å’Œæš¦è¥¿æš¦å¤‰æ›ç·¨é›†å‡¦ç†
       *****************************************************************
        5002-HIZUKE-HEN-SEC         SECTION.
       *
@@ -607,7 +607,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼«²èÌÌÊÔ½¸½èÍý
+      *    è‡ªç”»é¢ç·¨é›†å‡¦ç†
       *****************************************************************
        500-SET-SCREEN              SECTION.
       *
@@ -628,7 +628,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌÆâÍÆÊÔ½¸½èÍý
+      *    ç”»é¢å†…å®¹ç·¨é›†å‡¦ç†
       *****************************************************************
        500-GMNHEN-SEC              SECTION.
       *
@@ -659,9 +659,9 @@
       *
            EVALUATE    SPA-MINF-FLG
                WHEN    1
-                   MOVE    "¿ÇÎÅÆü"    TO  MINF-LABEL
+                   MOVE    "è¨ºç™‚æ—¥"    TO  MINF-LABEL
                WHEN    2
-                   MOVE    "Êó¹ðÆü"    TO  MINF-LABEL
+                   MOVE    "å ±å‘Šæ—¥"    TO  MINF-LABEL
            END-EVALUATE
       *
            MOVE    SPA-MINF-TAISYOYMD  TO  MINF-TAISYOYMD
@@ -686,7 +686,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ²èÌÌ¥«¡¼¥½¥ë¥»¥Ã¥È½èÍý
+      *    ç”»é¢ã‚«ãƒ¼ã‚½ãƒ«ã‚»ãƒƒãƒˆå‡¦ç†
       *****************************************************************
        5001-MAPCUR-SEC             SECTION.
       *
@@ -699,14 +699,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºç†
       *****************************************************************
        510-ERRSET-SEC              SECTION.
       *
            MOVE    SPACE               TO  SPA-ERRMSG
            EVALUATE    SPA-ERRCD
                WHEN    "0001"
-                   MOVE    "ÆüÉÕ¤¬Àµ¤·¤¯¤¢¤ê¤Þ¤»¤ó"
+                   MOVE    "æ—¥ä»˜ãŒæ­£ã—ãã‚ã‚Šã¾ã›ã‚“"
                                        TO  SPA-ERRMSG
            END-EVALUATE
       *
@@ -730,7 +730,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼¥á¥Ã¥»¡¼¥¸É½¼¨Íý
+      *    ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸è¡¨ç¤ºç†
       *****************************************************************
        520-TIDSET-SEC              SECTION.
       *
@@ -747,11 +747,11 @@
            EXIT.
       *
      *****************************************************************
-      *    Á°ÆüÊÑ´¹½èÍý
+      *    å‰æ—¥å¤‰æ›å‡¦ç†
       *****************************************************************
        31012-ZENJITU-HEN-SEC       SECTION.
       *
-      *    Á°Æü
+      *    å‰æ—¥
            MOVE    SPACE           TO  STS-AREA-DAY
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY6-AREA
@@ -769,11 +769,11 @@
            EXIT.
       *
       *****************************************************************
-      *    ¼¡ÆüÊÑ´¹½èÍý
+      *    æ¬¡æ—¥å¤‰æ›å‡¦ç†
       *****************************************************************
        31012-JIJITU-HEN-SEC        SECTION.
       *
-      *    ¼¡Æü
+      *    æ¬¡æ—¥
            MOVE    SPACE           TO  STS-AREA-DAY
            INITIALIZE                  STS-AREA-DAY
            INITIALIZE                  LNK-DAY6-AREA
@@ -791,7 +791,7 @@
            EXIT.
       *
       *****************************************************************
-      *    À¾ÎñÆüËÜ¸ìÊÑ´¹½èÍý
+      *    è¥¿æš¦æ—¥æœ¬èªžå¤‰æ›å‡¦ç†
       *****************************************************************
        31012-SEIWA-HEN-SEC         SECTION.
       *
@@ -803,14 +803,14 @@
                                        STS-AREA-DAY
                                        LNK-DAY2-AREA
            MOVE    LNK-DAY2-EDTYMD3    TO  WRK-HENYMDG
-           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "¡¡"
+           INSPECT WRK-HENYMDG         REPLACING  ALL "  "  BY  "ã€€"
       *
            .
        31012-SEIWA-HEN-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ´¶À÷¾É¥×¥ë¡¼¥ÕÆÉ¤ß¹þ¤ß
+      *    æ„ŸæŸ“ç—‡ãƒ—ãƒ«ãƒ¼ãƒ•èª­ã¿è¾¼ã¿
       *****************************************************************
        900-INFECT-FET-SEC          SECTION.
       *
@@ -834,7 +834,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼ÔÌ¾ÆÉ¹þ
+      *    æ‚£è€…åèª­è¾¼
       *****************************************************************
        900-PTINF-READ-SEC          SECTION.
       *
@@ -880,7 +880,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ÉÂÌ¾ÆÉ¹þ
+      *    ç—…åèª­è¾¼
       *****************************************************************
        900-BYOMEI-READ-SEC         SECTION.
       *
@@ -925,7 +925,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ð£Õ£Ô¡¡½èÍý
+      *    ï¼°ï¼µï¼´ã€€å‡¦ç†
       *****************************************************************
        900-PUT-WINDOW              SECTION.
       *

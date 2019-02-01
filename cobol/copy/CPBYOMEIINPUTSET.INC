@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,32 +16,32 @@
       * 113-8621, Japan.
       *******************************************************************
       *****************************************************************
-      *    ÉÂÌ¾ÆþÎÏ¥»¥Ã¥È                  (CPBYOMEIINPUTSET.INC)
+      *    ç—…åå…¥åŠ›ã‚»ãƒƒãƒˆ                  (CPBYOMEIINPUTSET.INC)
       *****************************************************************
-      *  ½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       *****************************************************************
       *01  BYOMEIINPUTSET-REC.
            03  BYOSET-KEY.
-      *    °åÎÅµ¡´ØÈÖ¹æ
+      *    åŒ»ç™‚æ©Ÿé–¢ç•ªå·
                05  BYOSET-HOSPNUM      PIC 9(2).
-      *    ÉÂÌ¾¥»¥Ã¥È¥³¡¼¥É
+      *    ç—…åã‚»ãƒƒãƒˆã‚³ãƒ¼ãƒ‰
                05  BYOSET-BYOMEIINPUTSET
                                        PIC X(10).
-      *    ÉÂÌ¾¥»¥Ã¥ÈÌ¾
+      *    ç—…åã‚»ãƒƒãƒˆå
            03  BYOSET-BYOMEIINPUTSETNAME
                                        PIC X(40).
-      *    ÉÂÌ¾ÆþÎÏ¥³¡¼¥É
+      *    ç—…åå…¥åŠ›ã‚³ãƒ¼ãƒ‰
            03  BYOSET-BYOMEIINPUTCD-G.
                05  BYOSET-BYOMEIINPUTCD
                                        PIC X(20)    OCCURS  6.
-      *    Ã¼Ëö£É£Ä
+      *    ç«¯æœ«ï¼©ï¼¤
            03  BYOSET-TERMID           PIC X(64).
-      *    ¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *    ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  BYOSET-OPID             PIC X(16).
-      *    ºîÀ®Ç¯·îÆü
+      *    ä½œæˆå¹´æœˆæ—¥
            03  BYOSET-CREYMD           PIC X(08).
-      *    ¹¹¿·Ç¯·îÆü
+      *    æ›´æ–°å¹´æœˆæ—¥
            03  BYOSET-UPYMD            PIC X(08).
-      *    ¹¹¿·»þ´Ö
+      *    æ›´æ–°æ™‚é–“
            03  BYOSET-UPHMS            PIC X(06).

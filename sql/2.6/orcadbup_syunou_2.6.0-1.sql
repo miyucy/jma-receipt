@@ -1,8 +1,8 @@
 --                                    --
--- ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹                 --
+-- åŽç´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´                 --
 --                                    --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¼«Èñ£¶¤«¤é£±£°  JIHI_6           --
+-- é …ç›®ã®è¿½åŠ                          --
+--   è‡ªè²»ï¼–ã‹ã‚‰ï¼‘ï¼  JIHI_6           --
 --                   JIHI_6_TAX       --
 --                   JIHI_7           --
 --                   JIHI_7_TAX       --
@@ -12,24 +12,24 @@
 --                   JIHI_9_TAX       --
 --                   JIHI_10          --
 --                   JIHI_10_TAX      --
---   ÊÑÂ§½õÀ®¡Ý´µ¼ÔÉéÃ´¶â³Û           --
+--   å¤‰å‰‡åŠ©æˆâˆ’æ‚£è€…è² æ‹…é‡‘é¡           --
 --                   JYO_HKNFTNMONEY  --
---   ÊÑÂ§½õÀ®¡Ý·×»»ÉéÃ´¶â             --
+--   å¤‰å‰‡åŠ©æˆâˆ’è¨ˆç®—è² æ‹…é‡‘             --
 --                   JYO_COMPFTN      --
---   ÊÑÂ§½õÀ®¡Ý·×»»ÉéÃ´¶â¡Ê±ßÃ±°Ìµ­Ï¿ÍÑ¡Ë
+--   å¤‰å‰‡åŠ©æˆâˆ’è¨ˆç®—è² æ‹…é‡‘ï¼ˆå††å˜ä½è¨˜éŒ²ç”¨ï¼‰
 --                   JYO_COMPFTN_ENTANI --
---   ¸ºÌÈ¶â³Û        DISCOUNT_MONEY   --
+--   æ¸›å…é‡‘é¡        DISCOUNT_MONEY   --
 --                                    --
--- ¼ýÇ¼¥Æ¡¼¥Ö¥ë¤ÎÉÔÍ×¥ì¥³¡¼¥Éºï½ü     --
---   ºï½ü¾ò·ï                         --
---   ÅÁÉ¼ÈÖ¹æ9000000--9099999¤¬ÂÐ¾Ý   --
---   Æþ³°¶èÊ¬ = '1'                   --
---   ÅÁÉ¼ºîÀ®¶èÊ¬ = '3'               --
+-- åŽç´ãƒ†ãƒ¼ãƒ–ãƒ«ã®ä¸è¦ãƒ¬ã‚³ãƒ¼ãƒ‰å‰Šé™¤     --
+--   å‰Šé™¤æ¡ä»¶                         --
+--   ä¼ç¥¨ç•ªå·9000000--9099999ãŒå¯¾è±¡   --
+--   å…¥å¤–åŒºåˆ† = '1'                   --
+--   ä¼ç¥¨ä½œæˆåŒºåˆ† = '3'               --
 --                                    --
 -- Create Date : 2005/07/13           --
 --                                    --
 
--- TBL_SYUNOUWK ºîÀ®                  --
+-- TBL_SYUNOUWK ä½œæˆ                  --
 
 create table TBL_SYUNOUWK (
 HOSPID				char(24)	not null,
@@ -292,16 +292,16 @@ constraint TBL_SYUNOUWK_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
 
--- TBL_SYUNOU ¢ª TBL_SYUNOUWK   --
+-- TBL_SYUNOU â†’ TBL_SYUNOUWK   --
 
 insert into TBL_SYUNOUWK
 select * from TBL_SYUNOU;
 
--- TBL_SYUNOU ºï½ü               --
+-- TBL_SYUNOU å‰Šé™¤               --
 
 drop table TBL_SYUNOU;
 
--- TBL_SYUNOU ºîÀ®               --
+-- TBL_SYUNOU ä½œæˆ               --
 
 create table TBL_SYUNOU (
 HOSPID				char(24)	not null,
@@ -577,10 +577,10 @@ UPHMS				char(6),
 constraint TBL_SYUNOU_primary_key primary key (HOSPID,NYUGAIKBN,PTID,
 DENPNUM));
 
--- index ºîÀ®
+-- index ä½œæˆ
 create index idx_syunou_ptid on tbl_syunou (ptid);
 
--- TBL_SYUNOUWK ¢ª TBL_SYUNOU   --
+-- TBL_SYUNOUWK â†’ TBL_SYUNOU   --
 
 insert into TBL_SYUNOU
 (HOSPID,
@@ -976,11 +976,11 @@ UPDATE TBL_SYUNOU SET JYO_HKNFTNMONEY = SHOKUJI5,JYO_COMPFTN = SHOKUJI6,
 JYO_COMPFTN_ENTANI = SHOKUJI7;
 UPDATE TBL_SYUNOU SET SHOKUJI5 = 0,SHOKUJI6 = 0,SHOKUJI7 = 0;
 
--- ÉÔÍ×¥ì¥³¡¼¥É¤Îºï½ü            --
+-- ä¸è¦ãƒ¬ã‚³ãƒ¼ãƒ‰ã®å‰Šé™¤            --
 
 DELETE FROM TBL_SYUNOU WHERE NYUGAIKBN = '1' AND DENPNUM >= 9000000 AND
                              DENPNUM <= 9099999 AND CREATEKBN = '3';
 
--- TBL_SYUNOUWK ºï½ü             --
+-- TBL_SYUNOUWK å‰Šé™¤             --
 
 drop table TBL_SYUNOUWK;  

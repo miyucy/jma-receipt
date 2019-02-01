@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,16 +18,16 @@
        IDENTIFICATION                  DIVISION.
        PROGRAM-ID.                     ORCBS01.
       *****************************************************************
-      *  ¥·¥¹¥Æ¥àÌ¾        : £Ï£Ò£Ã£Á
-      *  ¥µ¥Ö¥·¥¹¥Æ¥àÌ¾    : Æü¼¡Åý·×
-      *  ¥³¥ó¥Ý¡¼¥Í¥ó¥ÈÌ¾  : ¼ýÇ¼»ÙÊ§¾ÚÌÀ½ñÈ¯¹Ô
-      *  ´ÉÍý¼Ô            :
-      *  ºîÀ®ÆüÉÕ    ºî¶È¼Ô        µ­½Ò
-      *  03/04/08    NACL¡ÝÂÀÅÄ    ¿·µ¬ºîÀ®
+      *  ã‚·ã‚¹ãƒ†ãƒ å        : ï¼¯ï¼²ï¼£ï¼¡
+      *  ã‚µãƒ–ã‚·ã‚¹ãƒ†ãƒ å    : æ—¥æ¬¡çµ±è¨ˆ
+      *  ã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆå  : åŽç´æ”¯æ‰•è¨¼æ˜Žæ›¸ç™ºè¡Œ
+      *  ç®¡ç†è€…            :
+      *  ä½œæˆæ—¥ä»˜    ä½œæ¥­è€…        è¨˜è¿°
+      *  03/04/08    NACLâˆ’å¤ªç”°    æ–°è¦ä½œæˆ
       *****************************************************************
-      *  ¥×¥í¥°¥é¥à½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
-      *  03.05.00    NACL-ÂÀÅÄ     07/05/24  ¥°¥ë¡¼¥×¿ÇÎÅÂÐ±þ
+      *  ãƒ—ãƒ­ã‚°ãƒ©ãƒ ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
+      *  03.05.00    NACL-å¤ªç”°     07/05/24  ã‚°ãƒ«ãƒ¼ãƒ—è¨ºç™‚å¯¾å¿œ
       *****************************************************************
       *
        ENVIRONMENT                         DIVISION.
@@ -35,13 +35,13 @@
        INPUT-OUTPUT                        SECTION.
        FILE-CONTROL.
       *
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
            SELECT  ORCBS01ERR-FILE ASSIGN  ERRPARA
                                    FILE    STATUS  IS  STS-ORCBS01ERR.
       *
        DATA                                DIVISION.
        FILE                                SECTION.
-      *    ¥¨¥é¡¼¥Õ¥¡¥¤¥ë
+      *    ã‚¨ãƒ©ãƒ¼ãƒ•ã‚¡ã‚¤ãƒ«
        FD  ORCBS01ERR-FILE.
        01  ORCBS01ERR-REC                  PIC X(200).
       *
@@ -52,23 +52,23 @@
       *
            COPY    ENUM-VALUE.
       *
-      *    ¥¹¥Æ¡¼¥¿¥¹ÎÎ°è
+      *    ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹é ˜åŸŸ
        01  STS-AREA.
            03  STS-ORCBS01ERR                  PIC X(02).
       *
-      *    ¥Õ¥é¥°
+      *    ãƒ•ãƒ©ã‚°
        01  FLG-AREA.
            03  FLG-END                         PIC 9(01).
            03  FLG-API                         PIC 9(01).
       *
-      *    ¥«¥¦¥ó¥ÈÎÎ°è
+      *    ã‚«ã‚¦ãƒ³ãƒˆé ˜åŸŸ
        01  CNT-AREA.
            03  CNT-OUT1                        PIC 9(06).
       *
        01  INDEX-AREA.
            03  IDX1                            PIC 9(05). 
       *
-      *    ¥Ñ¥é¥á¥¿ÎÎ°è
+      *    ãƒ‘ãƒ©ãƒ¡ã‚¿é ˜åŸŸ
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID                  PIC 9(07).
@@ -79,7 +79,7 @@
            03  WRK-PARA-STAFFCD                PIC X(05).
            03  WRK-PARA-JIHSUMKBN              PIC X(01).
       *
-      *    ¥·¥¹¥Æ¥àÎÎ°è
+      *    ã‚·ã‚¹ãƒ†ãƒ é ˜åŸŸ
        01  SYS-AREA.
            03  SYS-TIME.
                05  SYS-THH                     PIC 9(02).
@@ -91,7 +91,7 @@
                05  SYS-MM                      PIC 9(02).
                05  SYS-DD                      PIC 9(02).
       *
-      *    °ì»þÎÎ°è
+      *    ä¸€æ™‚é ˜åŸŸ
        01  WRK-AREA.
            03  WRK-JOBTITLE                    PIC X(100).
            03  WRK-PRTTITLE                    PIC X(100).
@@ -105,57 +105,57 @@
            COPY    "COMMON-SPA".
       *
       *****************************************************************
-      *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
+      *    ãƒ•ã‚¡ã‚¤ãƒ«ãƒ¬ã‚¤ã‚¢ã‚¦ãƒˆ
       *****************************************************************
       *
-      *    ¥·¥¹¥Æ¥à´ÉÍý
+      *    ã‚·ã‚¹ãƒ†ãƒ ç®¡ç†
            COPY    "CPSK1010.INC".
       *
-      *    ´µ¼Ô¾ðÊó
+      *    æ‚£è€…æƒ…å ±
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ´µ¼ÔÈÖ¹æ
+      *    æ‚£è€…ç•ªå·
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý¥Þ¥¹¥¿
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ãƒžã‚¹ã‚¿
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
       *****************************************************************
-      *    ¥µ¥Ö¥×¥íÍÑÎÎ°è
+      *    ã‚µãƒ–ãƒ—ãƒ­ç”¨é ˜åŸŸ
       *****************************************************************
       *
            COPY    "CPORCSCOMMON.INC".
       *
-      *    £Ä£Â¸¡º÷
+      *    ï¼¤ï¼¢æ¤œç´¢
            COPY    "MCPDATA.INC".
       *    COPY    "ORCA-DBPATH".
       *
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥óÊÔ½¸¥Ñ¥é¥á¥¿
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³ç·¨é›†ãƒ‘ãƒ©ãƒ¡ã‚¿
            COPY    "CPORCSPRGOPTION.INC".
       *
-      *    ¥¯¥é¥¤¥¢¥ó¥È°õºþÀ©¸æ
+      *    ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆå°åˆ·åˆ¶å¾¡
            COPY    "CPORCSPRTCTRL.INC".
       *
-      *    »ÙÊ§¾ÚÌÀ½ñ
+      *    æ”¯æ‰•è¨¼æ˜Žæ›¸
            COPY    "CPORCHCM31.INC".
       *
-      *    ¼«ÈñÆâÌõÌÀºÙ½ñ
+      *    è‡ªè²»å†…è¨³æ˜Žç´°æ›¸
            COPY    "CPORCHCM50.INC".
       *
-      *    °õºþ£Ä£ÂÀ©¸æ
+      *    å°åˆ·ï¼¤ï¼¢åˆ¶å¾¡
            COPY    "CPORCSPRT.INC".
       *
-      *    ¥¸¥ç¥Ö´ÉÍý£Ä£ÂÀ©¸æ¥µ¥Ö
+      *    ã‚¸ãƒ§ãƒ–ç®¡ç†ï¼¤ï¼¢åˆ¶å¾¡ã‚µãƒ–
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    °ì»þ¥Õ¥¡¥¤¥ëÌ¾ÊÔ½¸
+      *    ä¸€æ™‚ãƒ•ã‚¡ã‚¤ãƒ«åç·¨é›†
            COPY    "CPORCSGETTEMP.INC".
       *
       *****************************************************************
-      *    Ï¢Íí¡¡ÎÎ°è
+      *    é€£çµ¡ã€€é ˜åŸŸ
       *****************************************************************
        LINKAGE                 SECTION.
       *
@@ -167,7 +167,7 @@
            COMMAND-PARAM.
       *
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -180,7 +180,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    ½é´ü¡¡½èÍý
+      *    åˆæœŸã€€å‡¦ç†
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -231,52 +231,52 @@
            MOVE    SPACE           TO  WRK-JOBTITLE
                                        WRK-PRTTITLE
       *
-      *    WRK-PRTTITLE¤ÎÆâÍÆ¤ÏPUSH»þ¤ËÃÖ¤­´¹¤¨¤Æ¤¤¤ë¡£
-      *    ÃÍ¤òÊÑ¹¹¤·¤¿¾ì¹ç¡¢ORCBPRT1¤ÈORCSAPIFMTERM¤Î¾ò·ïÄÉ²Ã¤¬
-      *    É¬Í×¤È¤Ê¤ë¤Î¤ÇÃí°Õ
+      *    WRK-PRTTITLEã®å†…å®¹ã¯PUSHæ™‚ã«ç½®ãæ›ãˆã¦ã„ã‚‹ã€‚
+      *    å€¤ã‚’å¤‰æ›´ã—ãŸå ´åˆã€ORCBPRT1ã¨ORCSAPIFMTERMã®æ¡ä»¶è¿½åŠ ãŒ
+      *    å¿…è¦ã¨ãªã‚‹ã®ã§æ³¨æ„
            EVALUATE    WRK-PARA-PGTYPE
            WHEN    "HC31"
-               STRING  "»ÙÊ§ÆüÊÌ¡§"        DELIMITED   BY  SIZE
+               STRING  "æ”¯æ‰•æ—¥åˆ¥ï¼š"        DELIMITED   BY  SIZE
                        PTINF-NAME          DELIMITED   BY  SPACE
                INTO    WRK-PRTTITLE
                END-STRING
       *
-               MOVE    "»ÙÊ§¾ÚÌÀ½ñ¡ÊÆüÊÌ¡Ë"
+               MOVE    "æ”¯æ‰•è¨¼æ˜Žæ›¸ï¼ˆæ—¥åˆ¥ï¼‰"
                                    TO  WRK-JOBTITLE
       *
            WHEN    "HC32"
-               STRING  "»ÙÊ§·îÊÌ¡§"        DELIMITED   BY  SIZE
+               STRING  "æ”¯æ‰•æœˆåˆ¥ï¼š"        DELIMITED   BY  SIZE
                        PTINF-NAME          DELIMITED   BY  SPACE
                INTO    WRK-PRTTITLE
                END-STRING
       *
-               MOVE    "»ÙÊ§¾ÚÌÀ½ñ¡Ê·îÊÌ¡Ë"
+               MOVE    "æ”¯æ‰•è¨¼æ˜Žæ›¸ï¼ˆæœˆåˆ¥ï¼‰"
                                    TO  WRK-JOBTITLE
       *
            WHEN    "HC50"
       *
                IF    ( WRK-PARA-JIHSUMKBN      =   "1" )
-                   STRING  "¼«Èñ·îÊÌ¡§"        DELIMITED   BY  SIZE
+                   STRING  "è‡ªè²»æœˆåˆ¥ï¼š"        DELIMITED   BY  SIZE
                            PTINF-NAME          DELIMITED   BY  SPACE
                    INTO    WRK-PRTTITLE
                    END-STRING
-                   MOVE    "¼«ÈñÌÀºÙÆâÌõ½ñ¡Ê·îÊÌ¡Ë"
+                   MOVE    "è‡ªè²»æ˜Žç´°å†…è¨³æ›¸ï¼ˆæœˆåˆ¥ï¼‰"
                                    TO  WRK-JOBTITLE
                ELSE
-                   STRING  "¼«ÈñÆüÊÌ¡§"        DELIMITED   BY  SIZE
+                   STRING  "è‡ªè²»æ—¥åˆ¥ï¼š"        DELIMITED   BY  SIZE
                            PTINF-NAME          DELIMITED   BY  SPACE
                    INTO    WRK-PRTTITLE
                    END-STRING
-                   MOVE    "¼«ÈñÌÀºÙÆâÌõ½ñ¡ÊÆüÊÌ¡Ë"
+                   MOVE    "è‡ªè²»æ˜Žç´°å†…è¨³æ›¸ï¼ˆæ—¥åˆ¥ï¼‰"
                                    TO  WRK-JOBTITLE
                END-IF
       *
            WHEN    OTHER
-               STRING  "»ÙÊ§¾ÚÌÀ¡§"        DELIMITED   BY  SIZE
+               STRING  "æ”¯æ‰•è¨¼æ˜Žï¼š"        DELIMITED   BY  SIZE
                        PTINF-NAME          DELIMITED   BY  SPACE
                INTO    WRK-PRTTITLE
                END-STRING
-               MOVE    "»ÙÊ§¾ÚÌÀ½ñ"
+               MOVE    "æ”¯æ‰•è¨¼æ˜Žæ›¸"
                                    TO  WRK-JOBTITLE
            END-EVALUATE
       *
@@ -294,7 +294,7 @@
       *
            PERFORM 1001-ORCSPRTAREA-SEC
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý³«»Ï½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†é–‹å§‹å‡¦ç†
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -315,7 +315,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    £Ó£Ð£ÁÎÎ°èÀßÄê½èÍý
+      *    ï¼³ï¼°ï¼¡é ˜åŸŸè¨­å®šå‡¦ç†
       *****************************************************************
        1001-SPA-AREA-SET-SEC           SECTION.
       *
@@ -327,7 +327,7 @@
                                            SPA-SRYYMD
            MOVE    MCP-USER            TO  SPA-OPID
       *
-      *    £Ó£Ð£Á¶¦ÄÌÀßÄê
+      *    ï¼³ï¼°ï¼¡å…±é€šè¨­å®š
            INITIALIZE              SYS-1010-REC
            INITIALIZE              ORCSCOMMONAREA
            MOVE    "M00"       TO  ORCSCOMMON-PG
@@ -350,7 +350,7 @@
        1001-SPA-AREA-SET-EXT.
            EXIT.
       *****************************************************************
-      *    ¥×¥í¥°¥é¥à¥ª¥×¥·¥ç¥ó¼è¹þ¤ß½èÍý
+      *    ãƒ—ãƒ­ã‚°ãƒ©ãƒ ã‚ªãƒ—ã‚·ãƒ§ãƒ³å–è¾¼ã¿å‡¦ç†
       *****************************************************************
        1001-PRGOPTION-SEC              SECTION.
       *
@@ -369,11 +369,11 @@
            EXIT.
       *
       *****************************************************************
-      *    °õºþ£Ä£ÂÀ©¸æ¾ðÊóÎÎ°èÀßÄê½èÍý
+      *    å°åˆ·ï¼¤ï¼¢åˆ¶å¾¡æƒ…å ±é ˜åŸŸè¨­å®šå‡¦ç†
       *****************************************************************
        1001-ORCSPRTAREA-SEC            SECTION.
       *
-      *    °õºþ¥Ñ¥é¥á¥¿ÊÔ½¸
+      *    å°åˆ·ãƒ‘ãƒ©ãƒ¡ã‚¿ç·¨é›†
            INITIALIZE                      ORCSPRTAREA
            MOVE    "INS"               TO  SPRT-MODE
            MOVE    LNK-PRTKANRI-RENNUM TO  SPRT-RENNUM
@@ -400,13 +400,13 @@
        1001-ORCSPRTAREA-EXT.
            EXIT.
       *****************************************************************
-      *    ¼ç½èÍý
+      *    ä¸»å‡¦ç†
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            IF    ( FLG-API             =   1 )
       *
-      *        ORCSONPRTSET¤Ï»È¤ï¤Ê¤¤¡ÊUUID¤¬Æþ¤ë¤ÈXA01¤ÇÁªÂòÉÔ²Ä¤Ë¤Ê¤ë¡Ë
+      *        ORCSONPRTSETã¯ä½¿ã‚ãªã„ï¼ˆUUIDãŒå…¥ã‚‹ã¨XA01ã§é¸æŠžä¸å¯ã«ãªã‚‹ï¼‰
       *        CALL    "ORCSONPRTSET"      USING
       *                                    SPA-AREA
       *
@@ -439,7 +439,7 @@
            END-IF
       *
            IF    ( FLG-API             =   1 )
-      *        °õºþ¥À¥ß¡¼½èÍý
+      *        å°åˆ·ãƒ€ãƒŸãƒ¼å‡¦ç†
                MOVE    "99"                TO  SPA-PRT-FLG
                CALL    "ORCHCDUMMY"        USING
                                            SPA-AREA
@@ -450,7 +450,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ¥¨¥é¡¼½ÐÎÏ½èÍý
+      *    ã‚¨ãƒ©ãƒ¼å‡ºåŠ›å‡¦ç†
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -464,7 +464,7 @@
                WRITE   ORCBS01ERR-REC
                CLOSE   ORCBS01ERR-FILE
       *
-      *        ¥¸¥ç¥Ö´ÉÍý³«»Ï½èÍý
+      *        ã‚¸ãƒ§ãƒ–ç®¡ç†é–‹å§‹å‡¦ç†
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -485,17 +485,17 @@
        500-ERR-HENSYU-EXT.
            EXIT.
       *****************************************************************
-      *    ½ªÎ»½èÍý
+      *    çµ‚äº†å‡¦ç†
       *****************************************************************
        300-END-SEC                     SECTION.
       *
            IF    ( WRK-UPDCNT      =   ZERO )
-               MOVE    "½èÍýÂÐ¾Ý¤Î¥Ç¡¼¥¿¤¬¤¢¤ê¤Þ¤»¤ó¤Ç¤·¤¿"
+               MOVE    "å‡¦ç†å¯¾è±¡ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã›ã‚“ã§ã—ãŸ"
                                    TO  WRK-ERRMSG
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ¥¹¥Æ¥Ã¥×´ÉÍý½ªÎ»½èÍý
+      *    ã‚¹ãƒ†ãƒƒãƒ—ç®¡ç†çµ‚äº†å‡¦ç†
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    WRK-PARA-HOSPNUM TO JOB-HOSPNUM
@@ -517,7 +517,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ´µ¼Ô¾ðÊó¸¡º÷½èÍý(KEY)
+      *    æ‚£è€…æƒ…å ±æ¤œç´¢å‡¦ç†(KEY)
       *****************************************************************
        900-PTINF-KEY-SEL-SEC           SECTION.
       *
@@ -542,7 +542,7 @@
        900-PTINF-KEY-SEL-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¸¡º÷½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«æ¤œç´¢å‡¦ç†
       *****************************************************************
        910-DBSELECT-SEC            SECTION.
       *
@@ -559,7 +559,7 @@
        910-DBSELECT-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ëÆÉ¹þ½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«èª­è¾¼å‡¦ç†
       *****************************************************************
        910-DBFETCH-SEC             SECTION.
       *
@@ -573,7 +573,7 @@
        910-DBFETCH-EXT.
            EXIT.
       *****************************************************************
-      *    ¥Æ¡¼¥Ö¥ë¥¯¥í¡¼¥º½èÍý
+      *    ãƒ†ãƒ¼ãƒ–ãƒ«ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        910-DBCLOSE-SEC             SECTION.
       *
@@ -587,7 +587,7 @@
        910-DBCLOSE-EXT.
            EXIT.
       *****************************************************************
-      *    £Ä£Â¡¡¥ª¡¼¥×¥ó½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚ªãƒ¼ãƒ—ãƒ³å‡¦ç†
       *****************************************************************
        100-DBOPEN-SEC              SECTION.
       *
@@ -611,7 +611,7 @@
            EXIT.
       *
       *****************************************************************
-      *    £Ä£Â¡¡¥¯¥í¡¼¥º½èÍý
+      *    ï¼¤ï¼¢ã€€ã‚¯ãƒ­ãƒ¼ã‚ºå‡¦ç†
       *****************************************************************
        900-DBDISCONNECT-SEC        SECTION.
       *

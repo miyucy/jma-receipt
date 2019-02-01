@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,22 +18,22 @@
        IDENTIFICATION              DIVISION.
        PROGRAM-ID.                 ORCMUPSQL1.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �ޥ�����������
-      *  ����ݡ��ͥ��̾  : �ӣѣ�ʸ�ޥ�����������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : マスタ更新処理
+      *  コンポーネント名  : ＳＱＬ文マスタ更新処理
       *                    : 
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  11.04.05    NACL-��ƣ     ��������
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  11.04.05    NACL-伊藤     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       * TODO
-      * ���ϥ쥳����Ĺ 500 �Ȥ�Ω��SQLĹ 20000
-      * ���顼����ν���
-      * SQL�Ȥ�Ω�Ƥǲ��Ԥ���Ƭ����Ϥޤ��磱ʸ�����򡢤��줫��������
-      * ����ޤǽ�λ���Ƥ�����Ϥ���ɬ�פϤʤ�
+      * 入力レコード長 500 組み立てSQL長 20000
+      * エラー情報の出力
+      * SQL組み立てで改行の先頭から始まる場合１文字空白、それから末尾が
+      * カンマで終了している場合はその必要はない
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -41,17 +41,17 @@
        INPUT-OUTPUT                SECTION.
        FILE-CONTROL.
       *
-      *    ���ϡ��ӣѣ�ʸ�ޥ��������ǡ���
+      *    入力：ＳＱＬ文マスタ更新データ
            SELECT  IN-FILE         ASSIGN
                                    ASS-IN
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-IN.
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
            SELECT  ERR-FILE        ASSIGN
                                    ASS-ERR
                                    ORGANIZATION    IS  LINE SEQUENTIAL
                                    FILE    STATUS  IS  STS-ERR.
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
            SELECT  PLF-FILE        ASSIGN
                                    ASS-PLF
                                    ORGANIZATION    IS  LINE SEQUENTIAL
@@ -60,17 +60,17 @@
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ���ϡ��ӣѣ�ʸ�ޥ��������ǡ���
+      *    入力：ＳＱＬ文マスタ更新データ
        FD  IN-FILE.
        01  IN-REC.
            03  IN-LEN                  PIC 9(05).
            03  IN-SQL                  PIC X(20000).
       *
-      *    ���ϡ����顼�ե�����
+      *    出力：エラーファイル
        FD  ERR-FILE.
        01  ERR-REC                     PIC X(20000).
       *
-      *    ���ϡ��ץ롼�եե�����
+      *    出力：プルーフファイル
        FD  PLF-FILE.
        01  PLF-REC                     PIC X(1000).
       *
@@ -78,26 +78,26 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    �ե���������ΰ�
+      *    ファイル指定領域
        01  ASS-AREA.
            03  ASS-IN                  PIC X(256).
            03  ASS-ERR                 PIC X(256).
            03  ASS-PLF                 PIC X(256).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-IN                  PIC X(02).
            03  STS-ERR                 PIC X(02).
            03  STS-PLF                 PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-IN                  PIC 9(01).
            03  FLG-SQL                 PIC 9(01).
            03  FLG-SQL-END             PIC 9(01).
            03  FLG-BREAK               PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-ERR                 PIC 9(06).
@@ -117,7 +117,7 @@
            03  SYS-DD                  PIC 9(02).
       *
        01  SYS-TIME                    PIC 9(08).
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-SYMD.
                05  WRK-SYY             PIC 9(04).
@@ -132,11 +132,11 @@
            03  WRK-IN                  PIC X(01).
            03  WRK-HOMEDIR             PIC X(128).
       *
-      *    ���ϥե������ΰ�
+      *    出力ファイル領域
        01  MES-AREA.
            03  MES-TITLE1.
                05  FILLER              PIC X(26) VALUE
-                                       "��PGID:ORCMUPSQL1.CBL��".
+                                       "【PGID:ORCMUPSQL1.CBL】".
                05  MES-TITLE1-YY       PIC X(04) VALUE SPACE.
                05  FILLER              PIC X(01) VALUE ".".
                05  MES-TITLE1-MM       PIC X(02) VALUE SPACE.
@@ -157,27 +157,27 @@
            03  CONST-HOMEDIR           PIC X(28)  VALUE
                "/var/lib/jma-receipt/master/".
       *
-      *    ��ĥʸ���б�
+      *    拡張文字対応
            COPY    "CPORCSSTRING.INC".
       *
       *****************************************************************
-      *    �ե��������
+      *    ファイル定義
       *****************************************************************
       *
-      *    ����ִ�������
+      *    ジョブ管理情報
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "ENUM-VALUE".
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    ���̥ѥ�᥿
+      *    共通パラメタ
            COPY    "MCPAREA".
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ�����ΰ�
+      *    連絡　領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -188,7 +188,7 @@
            LNK-AREA.
       *
       ****************************************************************
-      *    �硡������
+      *    主　　処理
       *****************************************************************
        000-PROC-SEC                    SECTION.
       *
@@ -204,7 +204,7 @@
            .
       *
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
@@ -229,7 +229,7 @@
       *
            PERFORM 101-ASSIN-GET-SEC
       *
-      *    ���ϡ��������
+      *    入力　初期処理
            OPEN    INPUT               IN-FILE
            IF  STS-IN              NOT =   ZERO
                MOVE    1               TO  FLG-IN
@@ -237,10 +237,10 @@
                                        STS-IN "]"
            END-IF
       *
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
            PERFORM 2700-OUTLST-INIT-SEC
       *
-      *    �ӣѣ�ʸ�ޥ��������ǡ����ɹ��߽���
+      *    ＳＱＬ文マスタ更新データ読込み処理
            IF      FLG-IN              =   ZERO
                PERFORM 900-SQL-SEC
            END-IF
@@ -249,7 +249,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե�����������
+      *    ファイル情報取得
       *****************************************************************
        101-ASSIN-GET-SEC               SECTION.
       *
@@ -262,7 +262,7 @@
                MOVE    SGETTEMP-TEMPDIR    TO  WRK-HOMEDIR
            END-IF
       *
-      *    ���ϥե�����
+      *    入力ファイル
            MOVE    SPACE               TO  ASS-IN
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -273,7 +273,7 @@
                                        INTO    ASS-IN
            END-STRING
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            MOVE    SPACE               TO  ASS-ERR
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -284,7 +284,7 @@
                                        INTO    ASS-ERR
            END-STRING
       *
-      *    �ץ롼�եե�����
+      *    プルーフファイル
            MOVE    SPACE               TO  ASS-PLF
            STRING  WRK-HOMEDIR         DELIMITED  BY  SPACE
                    SPA-HOSPNUM         DELIMITED  BY  SIZE
@@ -299,7 +299,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ᥤ�����
+      *    メイン処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
@@ -315,7 +315,7 @@
                PERFORM 2040-ERR-SYORI-SEC
            ELSE
       *
-      *        �ӣѣ�ʸ�ޥ��������ǡ����ɹ��߽���
+      *        ＳＱＬ文マスタ更新データ読込み処理
                PERFORM 900-SQL-SEC
            END-IF
            .
@@ -323,31 +323,31 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����
+      *    エラー処理
       *****************************************************************
        2040-ERR-SYORI-SEC              SECTION.
       *
-      *    ���顼����
+      *    エラー出力
            MOVE    W-SQLSTR            TO  ERR-REC
            WRITE   ERR-REC
            ADD     1                   TO  CNT-ERR
       *
-      *    ���顼��å���������
+      *    エラーメッセージ出力
            PERFORM 20401-PLF-OUT-SEC
            .
        2040-ERR-SYORI-EXT.
            EXIT.
       *
       *****************************************************************
-      *    ���顼��å��������Ͻ���
+      *    エラーメッセージ出力処理
       *****************************************************************
        20401-PLF-OUT-SEC               SECTION.
       *
            EVALUATE    WRK-ERRCD
                WHEN    1
-                   MOVE  "�ӣѣ̥��顼"        TO  WRK-MSG-01
+                   MOVE  "ＳＱＬエラー"        TO  WRK-MSG-01
                WHEN    2
-                   MOVE  "�ӣѣ�Ĺ�����顼"    TO  WRK-MSG-01
+                   MOVE  "ＳＱＬ長さエラー"    TO  WRK-MSG-01
            END-EVALUATE
       *
            MOVE    CNT-SQL-LINE        TO  WRK-MSG-LINE
@@ -359,7 +359,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���ϥե����롡�������
+      *    出力ファイル　初期処理
       *****************************************************************
        2700-OUTLST-INIT-SEC            SECTION.
       *
@@ -369,7 +369,7 @@
                GO      TO              2700-OUTLST-INIT-EXT
            END-IF
       *
-      *    ���顼�쥳���ɽ��ϥե����롡�����ץ�
+      *    エラーレコード出力ファイル　オープン
            OPEN    OUTPUT              PLF-FILE
            IF  STS-PLF             NOT =   ZERO
                DISPLAY "*(ORCMUPSQL1)* PLFFILE OPN STS[" STS-PLF "]"
@@ -386,14 +386,14 @@
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                     SECTION.
       *
       *    DB DISCONNECT
       *    PERFORM 900-DBDISCONNECT-SEC
       *
-      *    ���ϥե����롡��λ����
+      *    出力ファイル　終了処理
            CLOSE                       IN-FILE
            CLOSE                       ERR-FILE
            CLOSE                       PLF-FILE
@@ -424,7 +424,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �ӣѣ�ʸ�ޥ��������ǡ����ɹ��߽���
+      *     ＳＱＬ文マスタ更新データ読込み処理
       *****************************************************************
        900-SQL-SEC                     SECTION.
       *
@@ -471,7 +471,7 @@
                END-IF
            END-PERFORM
       *
-      *    HOSPNUM �ִ�
+      *    HOSPNUM 置換
       *
            IF      LNK-RC              =   ZERO
                INITIALIZE                  ORCSSTRINGAREA
@@ -488,7 +488,7 @@
            EXIT.
       *
       *****************************************************************
-      *     �ޥ����������ǡ����ɹ��߽���
+      *     マスター更新データ読込み処理
       *****************************************************************
        900-IN-READ-SEC                 SECTION.
       *
@@ -504,7 +504,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡������ץ����
+      *    ＤＢ　オープン処理
       *****************************************************************
        100-DBOPEN-SEC                  SECTION.
       *
@@ -522,7 +522,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¡�������������
+      *    ＤＢ　クローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *
@@ -540,7 +540,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *

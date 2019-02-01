@@ -1,17 +1,17 @@
 --                                    --
--- ¼õ¿ÇÍúÎò¥Æ¡¼¥Ö¥ë¤ÎÊÑ¹¹             --
+-- å—è¨ºå±¥æ­´ãƒ†ãƒ¼ãƒ–ãƒ«ã®å¤‰æ›´             --
 --                                    --
--- ¹àÌÜ¤Îºï½ü                         --
---   ºÇ½ª¶èÊ¬ LASTKBN                 --
--- ¹àÌÜ¤ÎÄÉ²Ã                         --
---   ¤Þ¤È¤áÆþÎÏÅÁÉ¼ÈÖ¹æ GRP_DENPNUM   --
---   ¤Þ¤È¤áÆþÎÏÏ¢ÈÖ     GRP_RENNUM    --
---   ¼ýÇ¼¹¹¿·¶èÊ¬       SYU_UPDKBN    --
+-- é …ç›®ã®å‰Šé™¤                         --
+--   æœ€çµ‚åŒºåˆ† LASTKBN                 --
+-- é …ç›®ã®è¿½åŠ                          --
+--   ã¾ã¨ã‚å…¥åŠ›ä¼ç¥¨ç•ªå· GRP_DENPNUM   --
+--   ã¾ã¨ã‚å…¥åŠ›é€£ç•ª     GRP_RENNUM    --
+--   åŽç´æ›´æ–°åŒºåˆ†       SYU_UPDKBN    --
 --                                    --
 -- Create Date : 2004/07/04           --
 --                                    --
 
--- TBL_JYURRKWK ºîÀ®                  --
+-- TBL_JYURRKWK ä½œæˆ                  --
 
 create table TBL_JYURRKWK (
 HOSPID				char(24)	not null,
@@ -63,13 +63,13 @@ constraint TBL_JYURRKWK_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYMD,RENNUM,DOUJI_RENNUM,KAIKEI_RENNUM,EDANUM));
 
 
--- TBL_JYURRK ¢ª TBL_JYURRKWK   --
+-- TBL_JYURRK â†’ TBL_JYURRKWK   --
 
 insert into TBL_JYURRKWK
 select * from TBL_JYURRK;
 
 
--- TBL_JYURRKWK2 ºîÀ®                  --
+-- TBL_JYURRKWK2 ä½œæˆ                  --
 
 create table TBL_JYURRKWK2 (
 HOSPID				char(24)	not null,
@@ -120,20 +120,20 @@ UPHMS				char(6),
 constraint TBL_JYURRKWK2_primary_key primary key (HOSPID,PTID,NYUGAIKBN,SRYKA,
 SRYYMD,RENNUM,DOUJI_RENNUM,KAIKEI_RENNUM,EDANUM));
 
--- TBL_JYURRK ¤«¤éºÇ½ª¶èÊ¬'0'¤òºï½ü --
+-- TBL_JYURRK ã‹ã‚‰æœ€çµ‚åŒºåˆ†'0'ã‚’å‰Šé™¤ --
 
 delete from TBL_JYURRK WHERE LASTKBN = '0';
 
--- TBL_JYURRK ¢ª TBL_JYURRKWK2   --
+-- TBL_JYURRK â†’ TBL_JYURRKWK2   --
 
 insert into TBL_JYURRKWK2
 select * from TBL_JYURRK;
 
--- TBL_JYURRK ºï½ü               --
+-- TBL_JYURRK å‰Šé™¤               --
 
 drop table TBL_JYURRK;
 
--- TBL_JYURRK ºîÀ®               --
+-- TBL_JYURRK ä½œæˆ               --
 
 create table TBL_JYURRK (
 HOSPID				char(24)	not null,
@@ -187,7 +187,7 @@ constraint TBL_JYURRK_primary_key primary key (HOSPID,PTID,NYUGAIKBN,
 SRYKA,SRYYMD,RENNUM,DOUJI_RENNUM,KAIKEI_RENNUM,EDANUM));
 
 
--- TBL_JYURRKWK2 ¢ª TBL_JYURRK   --
+-- TBL_JYURRKWK2 â†’ TBL_JYURRK   --
 
 insert into TBL_JYURRK
 (HOSPID,
@@ -245,10 +245,10 @@ SRYKBN9,SRYKBN10,SRYKBN11,ZAINUM1,ZAINUM2,ZAINUM3,ZAINUM4,ZAINUM5,
 ZAINUM6,ZAINUM7,ZAINUM8,ZAINUM9,ZAINUM10,ZAINUM11,ZAINUM12,ZAINUM13,
 ZAINUM14,ZAINUM15,TERMID,OPID,CREYMD,UPYMD,UPHMS  from TBL_JYURRKWK2;
 
--- TBL_JYURRKWK ºï½ü             --
+-- TBL_JYURRKWK å‰Šé™¤             --
 
 drop table TBL_JYURRKWK;
 
--- TBL_JYURRKWK2 ºï½ü             --
+-- TBL_JYURRKWK2 å‰Šé™¤             --
 
 drop table TBL_JYURRKWK2;

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,37 +18,37 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBGCHILDBIRTH.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �Ģɼ
-      *  ����ݡ��ͥ��̾  : �л������������������������������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  09/07/28    NACL-ƣ��     ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : 月次帳票
+      *  コンポーネント名  : 出産育児一時金等代理申請・受取請求書
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  09/07/28    NACL-藤原     新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.05.01    NACL-ƣ��    09/10/13  ����ɼ�����ս�κ����б�
-      *  04.05.02    NACL-ƣ��    10/07/07  �����������б�
-      *                                     ������������ϣãӣ֤ο���ǯ
-      *                                     �������ǯ���Ʊ���ˤ���
-      *                                     ��Ͽ�����ͤ��ѹ���ȼ������
-      *  04.05.03    NACL-ƣ��    10/08/10  ��ʧ��������̾�Τ��ѹ���ȼ
-      *                                     ������
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.05.01    NACL-藤原    09/10/13  集計票、送付書の作成対応
+      *  04.05.02    NACL-藤原    10/07/07  ２５日請求対応
+      *                                     ２５日請求時はＣＳＶの診療年
+      *                                     月は請求年月と同じにする
+      *                                     記録条件仕様の変更に伴う修正
+      *  04.05.03    NACL-藤原    10/08/10  支払基金支部の名称の変更に伴
+      *                                     う修正
       *
-      *  04.06.01    NACL-ƣ��    10/06/17  ���ݸ����ֹ�η����ĥ�б�
-      *  04.06.02    NACL-ƣ��    11/03/15  ʿ������ǯ����ʹ����ʬ��
-      *                                     �ͼ��ѹ��ʣ��磱̾���ܡ� 
+      *  04.06.01    NACL-藤原    10/06/17  被保険者番号の桁数拡張対応
+      *  04.06.02    NACL-藤原    11/03/15  平成２３年４月以降提出分は
+      *                                     様式変更（１枚１名記載） 
       *                                     HCN61V02.red
-      *  04.06.03    NACL-ƣ��    13/06/05  �࿦���ݤ��ݸ����ֹ��������
-      *                                     �ݸ����ֹ���ص��ܤ���
+      *  04.06.03    NACL-藤原    13/06/05  退職国保の保険者番号を請求書の
+      *                                     保険者番号欄へ記載する
       *
-      *  04.07.01    NACL-ƣ��    12/01/24  monpe-0.6.20�б�
-      *  04.07.02    NACL-ƣ��    14/09/26  �����ƥ�����оݷ�����
-      *  04.07.03    NACL-ƣ��    15/08/18  ���ŵ����Խ�����ؤγ��߼�̾
-      *                                     �ɲ��б�
+      *  04.07.01    NACL-藤原    12/01/24  monpe-0.6.20対応
+      *  04.07.02    NACL-藤原    14/09/26  システム管理対象月設定
+      *  04.07.03    NACL-藤原    15/08/18  医療機関編集情報への開設者名
+      *                                     追加対応
       *
-      *  04.08.01    NACL-ƣ��    17/02/15  ľ�ܻ�ʧ���٤ΰ���������ȼ��
-      *                                     �б�
+      *  04.08.01    NACL-藤原    17/02/15  直接支払制度の一部改正に伴う
+      *                                     対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -56,32 +56,32 @@
        INPUT-OUTPUT            SECTION.
        FILE-CONTROL.
       *
-      *    ʬ�ڴ����ģ¹����ѥե�����
+      *    分娩管理ＤＢ更新用ファイル
            SELECT  UPD-FILE        ASSIGN  BUNBENUPD
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-BUNBENUPD.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  BUNBENERR-FILE  ASSIGN  BUNBENERR
                                    FILE    STATUS  IS  STS-BUNBENERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    ʬ�ڴ����ģ¹����ѥե�����
+      *    分娩管理ＤＢ更新用ファイル
        FD  UPD-FILE.
        01  BUNBENX-REC.
            COPY    "CPBUNBEN.INC"  REPLACING  //BUNBEN-//
                                    BY         //BUNBENX-//.
       *
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  BUNBENERR-FILE.
        01  BUNBENERR-REC           PIC X(200).
       *
        WORKING-STORAGE             SECTION.
       *
-      *    ʬ�ڴ����ģ¹����ѥե����� ̾���ΰ� 
+      *    分娩管理ＤＢ更新用ファイル 名称領域 
            COPY    "CPCOMMONDAT2.INC"
                                    REPLACING   //RECE01PARA//
                                    BY          //BUNBENUPD//.
@@ -89,14 +89,14 @@
            COPY    "CPRECEERR.INC" REPLACING  //RECEERR//
                                    BY         //BUNBENERR//.
       *
-      *    �����
+      *    請求書
            COPY    "HCN61V01.INC"  REPLACING  //HCN61V01//
                                    BY         //HCN61//.
-      *    ʿ������ǯ����ʹ����ʬ
+      *    平成２３年４月以降提出分
            COPY    "HCN61V02.INC".
-      *    ����ɼ
+      *    集計票
            COPY    "HCN65.INC".
-      *    ���ս�
+      *    送付書
            COPY    "HCN64.INC".
       *
        01  INDEX-AREA.
@@ -119,12 +119,12 @@
            03  IDZZ                PIC 9(03).
            03  IDWW                PIC 9(03).
       *
-      *    ���ơ������ΰ�
+      *    ステータス領域
        01  STS-AREA.
            03  STS-BUNBENERR       PIC X(02).
            03  STS-BUNBENUPD       PIC X(02).
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  FLG-AREA.
            03  FLG-END             PIC 9(01).
       *
@@ -136,7 +136,7 @@
            03  FLG-UPDFILE         PIC 9(01). 
            03  FLG-ERR             PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN              PIC 9(05).
            03  CNT-OUT             PIC 9(05).
@@ -152,7 +152,7 @@
                05  KEY-O-HKNJANUM  PIC X(08).
                05  KEY-O-BUNBENKBN PIC 9(01).
       *
-      *    �����ΰ�
+      *    集計領域
        01  SUM-AREA.
            03  SUM-TBL-OCC             OCCURS  2.
                05  SUM-CNT         PIC 9(03).
@@ -162,7 +162,7 @@
       *
            03  SUM-RECORD-CNT      PIC 9(09).
       *
-      *    �ѥ�᥿�ΰ�
+      *    パラメタ領域
        01  WRK-PARA.
            COPY    "CPORCSPRTLNK.INC".
            03  WRK-PARA-JOBID      PIC 9(07).
@@ -176,7 +176,7 @@
            03  WRK-PARA-PRTKBN     PIC X(01).
            03  WRK-PARA-SYSYM      PIC X(06).
       *
-      *    ����ΰ�
+      *    一時領域
        01  WRK-AREA.
            03  WRK-BUNBENERR       PIC X(200).
       *
@@ -214,7 +214,7 @@
            03  WRK-SCSVINFO-NYUGAIKBN
                                    PIC X(01).
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            03  WRK-HOSPNAME        PIC X(80).
            03  WRK-HOSPNAME-R      REDEFINES   WRK-HOSPNAME.
                05  WRK-HOSPNAME1   PIC X(40).
@@ -226,11 +226,11 @@
            03  WRK-HOSPTEL         PIC X(15).
            03  WRK-KAISETUNAME     PIC X(80).
       *
-      *     ���Ť��Խ���     
+      *     右づめ編集用     
            03  WRK-HENKAN          PIC X(20).
            03  WRK-LENGTH          PIC 9(02).
            03  WRK-HENSYU          PIC X(20).
-      *    ���ϥǡ����Խ���
+      *    出力データ編集用
            03  WRK-REC             PIC X(2500).
            03  WRK-REC-LENGTH      PIC 9(04).
            03  WRK-HENSYU-AREA.
@@ -241,7 +241,7 @@
                05  WRK-SYOSUU      PIC 9(01).
                05  WRK-END         PIC 9(01).
       *
-      *    ����ǯ��
+      *    請求年月
            03  WRK-SYMD.
                05  WRK-SYY         PIC 9(04).
                05  WRK-SMM         PIC 9(02).
@@ -249,20 +249,20 @@
       *
            03  WRK-ERRMSG          PIC X(300).
       *
-      *    �������ɽ��ʬ
+      *    ワーク点数表区分
            03  WRK-TENHYOKBN       PIC  9(01).
       *
-      *   ��������Ѵ������ֵ���
+      *   ワーク日付変換サブ返却値
            COPY    "CPORCSDAY.INC" REPLACING   //LNK-DAY//
                                    BY          //WRK-LNK-DAY//.
       *
-      *    ʣ������Ϣ��
+      *    複数枚用連番
            03  WRK-HEN-PAGE-AREA.
                05  WRK-PAGE1       PIC ZZ9.
                05  WRK-PAGE-HEN    PIC X(01).
                05  WRK-PAGE2       PIC ZZ9.
       *
-      *    �����������
+      *    請求書退避用
        01  TABLE-AREA.
            03  TBL-LIST-MAX        PIC 9(02).
            03  TBL-LIST-OCC        OCCURS  99.
@@ -275,31 +275,31 @@
            COPY    "COMMON-SPA".
       *  
        01  WRK-CONS-AREA.
-      *    �����
+      *    コンマ
            03  WRK-KUGIRI          PIC X(01)   VALUE   ",".
-      *    ���ԥ�����
+      *    改行コード
            03  WRK-KAIGYO          PIC X(01)   VALUE   X"0D".
-      *    ����ִ����ģ¤Υ�����
+      *    ジョブ管理ＤＢのキー値
            03  WRK-CONS-JOB-SHELLID
                                    PIC X(08)   VALUE   "SOKATU".
       *
            03  WRK-CONS-SRYYM      PIC X(06)   VALUE   "201104".      
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
-      *    ���ŵ��ؾ���ʴ��ܡ�
+      *    医療機関情報（基本）
            COPY    "CPSK1001.INC".
       *
-      *    ���ŵ��ؾ���ʽ����
+      *    医療機関情報（住所）
            COPY    "CPSK1002.INC".
       *
-      *    ���ŵ����Խ�����
+      *    医療機関編集情報
            COPY    "CPSK1900.INC".
            COPY    "CPSK1901.INC".
            COPY    "CPSK1902.INC".
@@ -308,64 +308,64 @@
        01  CSV-INFO-REC.
            COPY    "CPCSV-INFO.INC".
       *
-      *    ���饤�������¸
+      *    クライアント保存
        01  FILE-INFO-REC.
            COPY    "CPFILE-INFO.INC".
       *
-      *    ���Ծ���
+      *    患者情報
        01  PTINF-REC.
            COPY    "CPPTINF.INC".
       *
-      *    ʬ�ڴ���
+      *    分娩管理
        01  BUNBEN-REC.
            COPY    "CPBUNBEN.INC".
       *
-      *    ��������
+      *    印刷管理
        01  PRTKANRI-REC.
            COPY    "CPPRTKANRI.INC".
       *
-      *    ����
+      *    印刷
        01  PRTDATA-REC.
            COPY    "CPPRTDATA.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSKANACHK.INC".
       *
-      *    ����ִ����ģ����極��
+      *    ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �����ģ¹�������
+      *    印刷ＤＢ更新サブ
            COPY    "CPORCSPRT.INC".
       *
-      *   �����Ѵ�����
+      *   日付変換サブ
            COPY    "CPORCSDAY.INC".
            COPY    "CPORCSLNK.INC".
       *
-      *    ���饤�������¸�ģ����極��
+      *    クライアント保存ＤＢ制御サブ
            COPY    "CPORCSFILESV.INC".
       *
-      *    �ãӣִ����ģ����極��
+      *    ＣＳＶ管理ＤＢ制御サブ
            COPY    "CPORCSCSVINFO.INC".
       *
-      *    ��̾�����ѥ�᥿
+      *    県名取得パラメタ
            COPY    "CPORCSPREF.INC".
       *
-      *    ����ե�����̾�Խ�
+      *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPAREA".
       *
            COPY    "MCPDATA.INC".
       *
       *****************************************************************
-      *    Ϣ���ΰ�
+      *    連絡領域
       *****************************************************************
        LINKAGE                     SECTION.
       *
@@ -379,7 +379,7 @@
                                        COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -395,7 +395,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -441,12 +441,12 @@
                                    TO  SPA-HOSPNUM
            MOVE    ZERO            TO  LNK-PRTKANRI-SHORI-RENNUM
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBGCHILDBIRTH"
                                    TO  JOB-PGID
-           MOVE    "�л������������������������������"
+           MOVE    "出産育児一時金等代理申請・受取請求書"
                                    TO  JOB-SHELLMSG
       *
            PERFORM 900-CALL-ORCSJOB-SEC
@@ -456,7 +456,7 @@
            MOVE    3               TO  JOB-STOPFLG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ����ǯ���Խ�
+      *    請求年月編集
            MOVE    WRK-PARA-SKYYM  TO  WRK-SYMD (1:6)
            MOVE    "01"            TO  WRK-SYMD (7:2)
            PERFORM 5002-HIZUKE-HEN-SEC
@@ -465,7 +465,7 @@
            MOVE    WRK-LNK-DAY1-WYMD   (1:5)
                                    TO  WRK-SKYYMH
       *
-      *    ����ǯ��ʣ����������������ǯ�������˼���
+      *    診療年月（１０日請求時は請求年月の前月）取得
            IF      WRK-PARA-TEISYUTUBIKBN
                                    =   "2"
                MOVE    WRK-PARA-SKYYM  TO  WRK-SRYYM
@@ -482,7 +482,7 @@
                                        TO  WRK-SRYYM
            END-IF    
       *
-      *    �����ѥե�����̾����
+      *    更新用ファイル名設定
            MOVE    "BUNBUPD"       TO  BUNBENUPD-FILE-ID
            MOVE    LNK-PRTKANRI-TERMID
                                    TO  BUNBENUPD-TERMID
@@ -499,19 +499,19 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    SGETTEMP-FULLNAMES (2)
                                    TO  BUNBENERR
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
       *
-      *    �����ƥ����������� 
+      *    システム管理情報取得 
            PERFORM 1001-SYSKANRI-HENSYU-SEC
       *
            IF      WRK-PARA-TEISYUTUBIKBN
                                    =   "1" OR  "2"
                CONTINUE
            ELSE
-               MOVE    "�������ʬ�����꤬���äƤ��ޤ�" 
+               MOVE    "提出日区分の設定が誤っています" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -520,7 +520,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                    =   "0" OR  "1" OR  "2"
                CONTINUE
            ELSE
-               MOVE    "���������꤬���äƤ��ޤ�" 
+               MOVE    "提出先の設定が誤っています" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -528,7 +528,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            IF      WRK-PARA-PRTKBN =   "0" OR  "1" OR  "2" OR  "3"
                CONTINUE
            ELSE
-               MOVE    "����ɼ�����ս���������꤬���äƤ��ޤ�" 
+               MOVE    "集計票／送付書作成の設定が誤っています" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -538,7 +538,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            AND   ( WRK-PARA-TEISYUTUSAKI
                                    =   "1"      )
            AND   ( WRK-PARA-SKYYM  <   "201704" )
-               MOVE    "������������ϼ��ݤΤߤ�����Ǥ��ޤ���" 
+               MOVE    "２５日請求時は社保のみは設定できません" 
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
@@ -556,7 +556,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       * 
       *****************************************************************
-      *    �����ƥ����������� 
+      *    システム管理情報取得 
       *****************************************************************
        1001-SYSKANRI-HENSYU-SEC      SECTION.
       *
@@ -580,7 +580,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    ZERO                TO  SYS-1001-SANKANUM
                END-IF
            ELSE
-               MOVE    "���ŵ��ؾ���ʴ��ܡˤ������Ǥ��ޤ���" 
+               MOVE    "医療機関情報（基本）が取得できません" 
                                            TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -597,7 +597,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC         TO  SYS-1002-REC
            ELSE
-               MOVE    "���ŵ��ؾ���ʽ���ˤ������Ǥ��ޤ���" 
+               MOVE    "医療機関情報（住所）が取得できません" 
                                            TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -609,7 +609,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                            TO  WRK-KAISETUNAME
                MOVE    SYS-1002-ADRS       TO  WRK-HOSPADRS
                MOVE    SYS-1002-TEL        TO  WRK-HOSPTEL
-      *        ���ŵ����Խ��������
+      *        医療機関編集情報取得
                PERFORM 900-1900-READ-SEC
            END-IF    
       *    
@@ -618,21 +618,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                    SECTION.
       *
            OPEN    OUTPUT              UPD-FILE
       *
-      *    ����ʬ����
+      *    国保分作成
            IF      WRK-PARA-TEISYUTUSAKI
                                    =   "0" OR  "2"
                MOVE    "2"             TO  WRK-TEISYUTUSAKI
                PERFORM 2001-TEISYUTUSAKI-HENSYU-SEC
            END-IF
       *
-      *    ����ʬ����
-      *   ������ǯ���������ǯ��������ϣ�����������Ϻ������ʤ���
+      *    社保分作成
+      *   （請求年月が２０１７年３月以前は２５日請求時は作成しない）
            IF      WRK-PARA-TEISYUTUSAKI
                                    =   "0" OR  "1"
                IF    ( WRK-PARA-TEISYUTUBIKBN
@@ -647,7 +647,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       *
            CLOSE   UPD-FILE
       *
-      *   ʬ�ڴ����ģ¹�������
+      *   分娩管理ＤＢ更新処理
           IF       FLG-ERR         =   ZERO
               IF      CNT-UPDFILE      >   ZERO
                   PERFORM 310-BUNBEN-UPD-SEC
@@ -658,7 +658,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ��ʧ�������Խ�����
+      *    支払機関別編集処理
       *****************************************************************
        2001-TEISYUTUSAKI-HENSYU-SEC    SECTION.
       *
@@ -689,10 +689,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            ADD     1               TO  WRK-SEQ-NO
            MOVE    WRK-SEQ-NO      TO  WRK-DATA-SEQ-NO
       *
-      *    �������
+      *    削除処理
            PERFORM 1001-CSVINFO-CLEAR-SEC
       *
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
            PERFORM 900-BUNBEN-READ-SEC
       *
            PERFORM          UNTIL   FLG-END        =   1
@@ -700,21 +700,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    ZERO            TO  WRK-PAGE
                INITIALIZE                  TABLE-AREA
       *
-      *        ʬ�ڶ�ʬ���ݸ������Խ�����
+      *        分娩区分・保険者別編集処理
                MOVE    KEY-NEW         TO  KEY-OLD
                PERFORM          UNTIL   FLG-END        =   1
                                 OR      KEY-NEW    NOT =   KEY-OLD
-      *            �����Խ�����
+      *            明細編集処理
                    PERFORM 2002-BODY-PRINT-SEC
                END-PERFORM
       *
-      *        ����Խ�����
+      *        合計編集処理
                PERFORM 2003-TERM-PRINT-SEC
       *
-      *        Ģɼ��Ǽ����
+      *        帳票格納処理
                PERFORM 2006-TABLE-SET-SEC
       *
-      *        Ģɼ��������
+      *        帳票印刷処理
                PERFORM VARYING IDYY    FROM    1   BY  1
                        UNTIL   IDYY    >       TBL-LIST-MAX
                        OR      FLG-ERR >       ZERO
@@ -737,16 +737,16 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                END-PERFORM
       *
                IF      FLG-END         =   1
-      *            �ãӣ֡ʥǡ����쥳���ɡ��Խ�����
+      *            ＣＳＶ（データレコード）編集処理
                    PERFORM 2001-CSV-DATA-7111-RECORD-SEC
       *
-      *            �ãӣ֡ʥ���ȥ�����쥳���ɡ��Խ�����
+      *            ＣＳＶ（コントロールレコード）編集処理
                    PERFORM 2001-CSV-CONTROL-RECORD-SEC
       *
-      *            �ãӣ֡ʥ���ɥ쥳���ɡ��Խ�����
+      *            ＣＳＶ（エンドレコード）編集処理
                    PERFORM 2001-CSV-END-RECORD-SEC
       *
-      *            ����ɼ�����ս��Խ�����
+      *            集計票、送付書編集処理
                    PERFORM 2005-HKNJANUM-PRINT-SEC
                END-IF 
            END-PERFORM
@@ -755,18 +755,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    "key2"          TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
       *
-      *    �ե�������¸���󹹿�
+      *    ファイル保存情報更新
            PERFORM 3001-FILE-INFO-INSERT-SEC
            .
        2001-TEISYUTUSAKI-HENSYU-EXT.
            EXIT.
       *
       *****************************************************************
-      *    �������
+      *    削除処理
       *****************************************************************
        1001-CSVINFO-CLEAR-SEC          SECTION.
       *
-      *    ���饤�������¸�������
+      *    クライアント保存削除処理
            MOVE    SPACE           TO  FILE-INFO-REC
            INITIALIZE                  FILE-INFO-REC
            MOVE    SPA-HOSPNUM     TO  FILE-INFO-HOSPNUM
@@ -788,7 +788,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    "DBDELETE"      TO  MCP-FUNC
            PERFORM 900-ORCDBMAIN-SEC
       *
-      *    �ãӣ֣ģº������
+      *    ＣＳＶＤＢ削除処理
            INITIALIZE                  CSV-INFO-REC
            MOVE    SPA-HOSPNUM     TO  CSV-INFO-HOSPNUM
            MOVE    WRK-CONS-JOB-SHELLID
@@ -813,7 +813,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ���Ф��Խ�����
+      *    見出し編集処理
       *****************************************************************
        2001-HEAD-PRINT-SEC                SECTION.
       *     
@@ -834,9 +834,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    WRK-SKYYM       TO  HCN61-SKYYM
                    EVALUATE    KEY-N-BUNBENKBN
                        WHEN    1
-                           MOVE    "��"        TO  HCN61-BUNBENKBN (1)
+                           MOVE    "○"        TO  HCN61-BUNBENKBN (1)
                        WHEN    2
-                           MOVE    "��"        TO  HCN61-BUNBENKBN (2)
+                           MOVE    "○"        TO  HCN61-BUNBENKBN (2)
                    END-EVALUATE
                    MOVE    SYS-1001-PREFNUM
                                            TO  HCN61-HOSPCD (1:2)
@@ -867,9 +867,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    WRK-SKYYM       TO  HCN61V02-SKYYM
                    EVALUATE    KEY-N-BUNBENKBN
                        WHEN    1
-                           MOVE    "��"        TO  HCN61V02-BUNBENKBN(1)
+                           MOVE    "○"        TO  HCN61V02-BUNBENKBN(1)
                        WHEN    2
-                           MOVE    "��"        TO  HCN61V02-BUNBENKBN(2)
+                           MOVE    "○"        TO  HCN61V02-BUNBENKBN(2)
                    END-EVALUATE
                    MOVE    SYS-1001-PREFNUM
                                            TO  HCN61V02-HOSPCD (1:2)
@@ -897,11 +897,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����Խ�����
+      *    明細編集処理
       *****************************************************************
        2002-BODY-PRINT-SEC          SECTION.
       *
-      *    ���Ф��Խ�����
+      *    見出し編集処理
            PERFORM 2001-HEAD-PRINT-SEC
       *
            PERFORM          UNTIL   FLG-END        =   1
@@ -913,7 +913,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                INITIALIZE                  WRK-BIRTHDAYH
                                            WRK-CHILD-BIRTHDAYH
       *
-      *        ����ʬ�ڻ��ΰ�����ô�����Ϥ���¾�Ȥ���
+      *        正常分娩時の一部負担金等はその他とする
                IF    ( BUNBEN-BUNBENKBN    =   "1"  )
                AND   ( BUNBEN-MONEY (10)   >   ZERO )
                    ADD     BUNBEN-MONEY (10)   TO  BUNBEN-MONEY (9)
@@ -925,7 +925,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
       ******** MOVE    BUNBEN-PTID         TO  PTINF-PTID
       ******** PERFORM 900-PTINF-READ-SEC
       *
-      *        �����ͼ����Խ�����
+      *        明細様式別編集処理
                PERFORM 20021-BODY-HENSYU-SEC
       *
                ADD     1                   TO  SUM-CNT      (1)
@@ -935,18 +935,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                ADD     BUNBEN-MONEY (12)   TO  SUM-MONEY    (1)
                                                SUM-MONEY    (2)
       *
-      *        �ãӣ֡ʥǡ����쥳���ɡ��Խ�����
+      *        ＣＳＶ（データレコード）編集処理
                PERFORM 2001-CSV-DATA-7121-RECORD-SEC
       *
-      *        �����ѥե�������Ͻ���
+      *        更新用ファイル出力処理
                PERFORM 230-UPD-FILE-HENSYU-SEC
-      *        ʬ�ڴ����ɹ�   
+      *        分娩管理読込   
                PERFORM 900-BUNBEN-READ-N-SEC
            END-PERFORM
       *
-      *    Ģɼ��������
+      *    帳票印刷処理
            IF      KEY-NEW         =   KEY-OLD
-      *        Ģɼ��Ǽ����
+      *        帳票格納処理
                PERFORM 2006-TABLE-SET-SEC
            END-IF
  
@@ -955,7 +955,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *        �����ͼ����Խ�����
+      *        明細様式別編集処理
       *****************************************************************
        20021-BODY-HENSYU-SEC           SECTION.
       *
@@ -963,18 +963,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
              WHEN    "HCN61V01"
                EVALUATE    BUNBEN-KANYUKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61-TEISYUTUSAKI
+                       MOVE    "○"            TO  HCN61-TEISYUTUSAKI
                                                            (CNT-LINE 1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61-TEISYUTUSAKI
+                       MOVE    "○"            TO  HCN61-TEISYUTUSAKI
                                                            (CNT-LINE 2)
                END-EVALUATE
                EVALUATE    BUNBEN-HONKZKKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61-HONKZKKBN
+                       MOVE    "○"            TO  HCN61-HONKZKKBN
                                                            (CNT-LINE 1)
                    WHEN    "5"
-                       MOVE    "��"            TO  HCN61-HONKZKKBN
+                       MOVE    "○"            TO  HCN61-HONKZKKBN
                                                            (CNT-LINE 2)
                END-EVALUATE
                IF      BUNBEN-KIGO (23:)   =   SPACE
@@ -1003,10 +1003,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-BIRTHDAYH
                EVALUATE    WRK-LNK-DAY2-EDTYMD1-G
                    WHEN    "S"
-                       MOVE    "��"            TO  HCN61-BIRTHG
+                       MOVE    "○"            TO  HCN61-BIRTHG
                                                            (CNT-LINE 1)
                    WHEN    "H"
-                       MOVE    "��"            TO  HCN61-BIRTHG
+                       MOVE    "○"            TO  HCN61-BIRTHG
                                                            (CNT-LINE 2)
                END-EVALUATE
                MOVE    WRK-LNK-DAY2-EDTYMD1-Y
@@ -1029,13 +1029,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                            TO  HCN61-CBIRTHD (CNT-LINE)
                EVALUATE    BUNBEN-SIZANKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61-SIZANKBN
+                       MOVE    "○"            TO  HCN61-SIZANKBN
                                                            (CNT-LINE 1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61-SIZANKBN
+                       MOVE    "○"            TO  HCN61-SIZANKBN
                                                            (CNT-LINE 2)
                    WHEN    "3"
-                       MOVE    "��"            TO  HCN61-SIZANKBN
+                       MOVE    "○"            TO  HCN61-SIZANKBN
                                                            (CNT-LINE 3)
                END-EVALUATE
                MOVE    BUNBEN-BIRTHCNT     TO  WRK-9
@@ -1044,13 +1044,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    WRK-ZZ9             TO  HCN61-NYUINDAY (CNT-LINE)
                EVALUATE    BUNBEN-SANKAKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61-SANKAKBN
+                       MOVE    "○"            TO  HCN61-SANKAKBN
                                                            (CNT-LINE 1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61-SANKAKBN
+                       MOVE    "○"            TO  HCN61-SANKAKBN
                                                            (CNT-LINE 2)
                    WHEN    "3"
-                       MOVE    "��"            TO  HCN61-SANKAKBN
+                       MOVE    "○"            TO  HCN61-SANKAKBN
                                                            (CNT-LINE 3)
                END-EVALUATE
                MOVE    BUNBEN-MONEY (1)    TO  WRK-ZZZZZZZ9
@@ -1064,7 +1064,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    WRK-ZZZZZZZ9        TO  HCN61-KAIJO-MONEY
                                                            (CNT-LINE)
                ELSE
-                   MOVE    "���ݡ�����"        TO  HCN61-KAIJO-MONEY
+                   MOVE    "　−　　　"        TO  HCN61-KAIJO-MONEY
                                                            (CNT-LINE)
                END-IF
                IF      BUNBEN-BUNBENKBN    =   "1"
@@ -1072,7 +1072,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    WRK-ZZZZZZZ9        TO  HCN61-BUNBEN-MONEY
                                                            (CNT-LINE)
                ELSE
-                   MOVE    "���ݡ�����"        TO  HCN61-BUNBEN-MONEY
+                   MOVE    "　−　　　"        TO  HCN61-BUNBEN-MONEY
                                                            (CNT-LINE)
                END-IF
                MOVE    BUNBEN-MONEY (5)    TO  WRK-ZZZZZZZ9
@@ -1109,18 +1109,18 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
              WHEN    "HCN61V02"
                EVALUATE    BUNBEN-KANYUKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61V02-TEISYUTUSAKI
+                       MOVE    "○"            TO  HCN61V02-TEISYUTUSAKI
                                                            (1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61V02-TEISYUTUSAKI
+                       MOVE    "○"            TO  HCN61V02-TEISYUTUSAKI
                                                            (2)
                END-EVALUATE
                EVALUATE    BUNBEN-HONKZKKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61V02-HONKZKKBN
+                       MOVE    "○"            TO  HCN61V02-HONKZKKBN
                                                            (1)
                    WHEN    "5"
-                       MOVE    "��"            TO  HCN61V02-HONKZKKBN
+                       MOVE    "○"            TO  HCN61V02-HONKZKKBN
                                                            (2)
                END-EVALUATE
                IF      BUNBEN-KIGO (23:)   =   SPACE
@@ -1145,9 +1145,9 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    WRK-LNK-DAY1-WYMD   TO  WRK-BIRTHDAYH
                EVALUATE    WRK-LNK-DAY2-EDTYMD1-G
                    WHEN    "S"
-                       MOVE    "��"            TO  HCN61V02-BIRTHG (1)
+                       MOVE    "○"            TO  HCN61V02-BIRTHG (1)
                    WHEN    "H"
-                       MOVE    "��"            TO  HCN61V02-BIRTHG (2)
+                       MOVE    "○"            TO  HCN61V02-BIRTHG (2)
                END-EVALUATE
                MOVE    WRK-LNK-DAY2-EDTYMD1-Y
                                            TO  HCN61V02-BIRTHY
@@ -1168,13 +1168,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                            TO  HCN61V02-CBIRTHD
                EVALUATE    BUNBEN-SIZANKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61V02-SIZANKBN
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
                                                            (1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61V02-SIZANKBN
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
                                                            (2)
                    WHEN    "3"
-                       MOVE    "��"            TO  HCN61V02-SIZANKBN
+                       MOVE    "○"            TO  HCN61V02-SIZANKBN
                                                            (3)
                END-EVALUATE
                MOVE    BUNBEN-BIRTHCNT     TO  WRK-9
@@ -1183,13 +1183,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    WRK-ZZ9             TO  HCN61V02-NYUINDAY 
                EVALUATE    BUNBEN-SANKAKBN
                    WHEN    "1"
-                       MOVE    "��"            TO  HCN61V02-SANKAKBN
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
                                                            (1)
                    WHEN    "2"
-                       MOVE    "��"            TO  HCN61V02-SANKAKBN
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
                                                            (2)
                    WHEN    "3"
-                       MOVE    "��"            TO  HCN61V02-SANKAKBN
+                       MOVE    "○"            TO  HCN61V02-SANKAKBN
                                                            (3)
                END-EVALUATE
                MOVE    BUNBEN-MONEY (1)    TO  WRK-ZZZZZZZ9
@@ -1200,13 +1200,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    MOVE    BUNBEN-MONEY (3)    TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-KAIJO-MONEY
                ELSE
-                   MOVE    "���ݡ�����"        TO  HCN61V02-KAIJO-MONEY
+                   MOVE    "　−　　　"        TO  HCN61V02-KAIJO-MONEY
                END-IF
                IF      BUNBEN-BUNBENKBN    =   "1"
                    MOVE    BUNBEN-MONEY (4)    TO  WRK-ZZZZZZZ9
                    MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-BUNBEN-MONEY
                ELSE
-                   MOVE    "���ݡ�����"        TO  HCN61V02-BUNBEN-MONEY
+                   MOVE    "　−　　　"        TO  HCN61V02-BUNBEN-MONEY
                END-IF
                MOVE    BUNBEN-MONEY (5)    TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9        TO  HCN61V02-SHIN-MONEY
@@ -1238,7 +1238,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �����ѥե�������Ͻ���
+      *    更新用ファイル出力処理
       *****************************************************************
        230-UPD-FILE-HENSYU-SEC         SECTION.
       *
@@ -1250,7 +1250,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                CONTINUE
            ELSE
                MOVE    SPACE               TO  WRK-BUNBENERR
-               STRING "�����ѥե����� �񤭹��ߥ��顼 STS="
+               STRING "更新用ファイル 書き込みエラー STS="
                                                DELIMITED  BY  SIZE
                        STS-BUNBENUPD           DELIMITED  BY  SIZE
                                                INTO    WRK-BUNBENERR
@@ -1265,7 +1265,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����Խ�����
+      *    合計編集処理
       *****************************************************************
        2003-TERM-PRINT-SEC                SECTION.
       *
@@ -1291,11 +1291,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    ����ɼ�����ս��Խ�����
+      *    集計票、送付書編集処理
       *****************************************************************
        2005-HKNJANUM-PRINT-SEC     SECTION.
       *
-      *    ���ս����
+      *    送付書作成
            IF      WRK-PARA-PRTKBN =   "0" OR  "2"
                COMPUTE LNK-PRTKANRI-SHORI-RENNUM
                                    =   LNK-PRTKANRI-SHORI-RENNUM
@@ -1310,53 +1310,53 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    SYS-1001-PREFNUM    TO  IDX
                EVALUATE   WRK-TEISYUTUSAKI
                    WHEN    "1"
-      *                �������塢���Ԥϡ��ܡ��ԡפ�õ�
+      *                東京、大阪、京都は「府、都」を消去
                        IF      IDX         =   13  OR  26  OR  27
                            MOVE    SPACE   TO  SPREF-PREFNAME2 (IDX)(5:)
                        END-IF
-                       STRING  "�Ҳ��ݸ������󽷻�ʧ���"
+                       STRING  "社会保険診療報酬支払基金"
                                            DELIMITED    BY  SIZE
                                SPREF-PREFNAME2 (IDX)
                                            DELIMITED    BY  SPACE
-                               "����������"
+                               "支部　御中"
                                            DELIMITED    BY  SIZE
                                            INTO    HCN64-TEISYUTUSAKI
                        END-STRING
                    WHEN    "2"
                        STRING  SPREF-PREFNAME1 (IDX)
                                            DELIMITED    BY  SPACE
-                               "��̱���ݸ�����Ϣ��񡡸���"
+                               "国民健康保険団体連合会　御中"
                                            DELIMITED    BY  SIZE
                                            INTO    HCN64-TEISYUTUSAKI
                        END-STRING
                END-EVALUATE
       *
-      *        �����
+      *        所在地
                MOVE    WRK-HOSPADRS    TO  HCN64-HOSPADRS
-               INSPECT HCN64-HOSPADRS  REPLACING   ALL "  "    BY  "��"
+               INSPECT HCN64-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
-      *        ���߼�
+      *        開設者
                MOVE    WRK-KAISETUNAME TO  HCN64-KAISETUNAME
       *
-      *        �����ֹ�
+      *        電話番号
                MOVE    WRK-HOSPTEL     TO  HCN64-HOSPTEL
       *
-      *        ���ŵ�����������
+      *        医療機関等コード
                MOVE    SYS-1001-PREFNUM
                                        TO  HCN64-HOSPCD (1:2)
                MOVE    "1"             TO  HCN64-HOSPCD (3:1) 
                MOVE    SYS-1001-HOSPCD TO  HCN64-HOSPCD (4:7)
       *
-      *        ���ŵ���̾��
+      *        医療機関名称
                MOVE    WRK-HOSPNAME    TO  HCN64-HOSPNAME
-               INSPECT HCN64-HOSPNAME  REPLACING   ALL "  "    BY  "��"
+               INSPECT HCN64-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
-      *        ʬ�ڵ��ش����ֹ桦��������ʬ
+      *        分娩機関管理番号・施設等区分
                EVALUATE    SYS-1001-HOSPSBT
                    WHEN    "1"
-                       MOVE    "��"        TO  HCN64-HOSPSBT (1)
+                       MOVE    "○"        TO  HCN64-HOSPSBT (1)
                    WHEN    "2"
-                       MOVE    "��"        TO  HCN64-HOSPSBT (2)
+                       MOVE    "○"        TO  HCN64-HOSPSBT (2)
                END-EVALUATE
                IF      SYS-1001-SANKANUM
                                        =   ZERO
@@ -1366,28 +1366,28 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                           TO  HCN64-SANKANUM
       *************EVALUATE    SYS-1001-SANKANUM (3:1)
       *************    WHEN    "1"
-      *************        MOVE    "��"        TO  HCN64-HOSPSBT (1)
+      *************        MOVE    "○"        TO  HCN64-HOSPSBT (1)
       *************    WHEN    "2"
-      *************        MOVE    "��"        TO  HCN64-HOSPSBT (2)
+      *************        MOVE    "○"        TO  HCN64-HOSPSBT (2)
       *************    WHEN    "3"
-      *************        MOVE    "��"        TO  HCN64-HOSPSBT (3)
+      *************        MOVE    "○"        TO  HCN64-HOSPSBT (3)
       *************END-EVALUATE
                END-IF
       *
-      *        �����ʬ
+      *        請求月分
                MOVE    WRK-SKYYM       TO  HCN64-SKYYM
       *
-      *        ���ǯ����
-               MOVE    "ʿ��"          TO  HCN64-TEIG
+      *        提出年月日
+               MOVE    "平成"          TO  HCN64-TEIG
       *
                ADD     1               TO  CNT-PAGE
       *
-      *        Ģɼ��������
+      *        帳票印刷処理
                MOVE   "HCN64"          TO  WRK-PRTID
                PERFORM 2004-PRINT-OUT-SEC
            END-IF
       *
-      *    ����ɼ����
+      *    集計票作成
            IF      WRK-PARA-PRTKBN =   "0" OR  "1"
                COMPUTE LNK-PRTKANRI-SHORI-RENNUM
                                    =   LNK-PRTKANRI-SHORI-RENNUM
@@ -1402,53 +1402,53 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    SYS-1001-PREFNUM    TO  IDX
                EVALUATE   WRK-TEISYUTUSAKI
                    WHEN    "1"
-      *                �������塢���Ԥϡ��ܡ��ԡפ�õ�
+      *                東京、大阪、京都は「府、都」を消去
                        IF      IDX         =   13  OR  26  OR  27
                            MOVE    SPACE   TO  SPREF-PREFNAME2 (IDX)(5:)
                        END-IF
-                       STRING  "�Ҳ��ݸ������󽷻�ʧ���"
+                       STRING  "社会保険診療報酬支払基金"
                                            DELIMITED    BY  SIZE
                                SPREF-PREFNAME2 (IDX)
                                            DELIMITED    BY  SPACE
-                               "����������"
+                               "支部　御中"
                                            DELIMITED    BY  SIZE
                                            INTO    HCN65-TEISYUTUSAKI
                        END-STRING
                    WHEN    "2"
                        STRING  SPREF-PREFNAME1 (IDX)
                                            DELIMITED    BY  SPACE
-                               "��̱���ݸ�����Ϣ��񡡸���"
+                               "国民健康保険団体連合会　御中"
                                            DELIMITED    BY  SIZE
                                            INTO    HCN65-TEISYUTUSAKI
                        END-STRING
                END-EVALUATE
       *
-      *        �����
+      *        所在地
                MOVE    WRK-HOSPADRS    TO  HCN65-HOSPADRS
-               INSPECT HCN65-HOSPADRS  REPLACING   ALL "  "    BY  "��"
+               INSPECT HCN65-HOSPADRS  REPLACING   ALL "  "    BY  "　"
       *
-      *        ���߼�
+      *        開設者
                MOVE    WRK-KAISETUNAME TO  HCN65-KAISETUNAME
       *
-      *        �����ֹ�
+      *        電話番号
                MOVE    WRK-HOSPTEL     TO  HCN65-HOSPTEL
       *
-      *        ���ŵ�����������
+      *        医療機関等コード
                MOVE    SYS-1001-PREFNUM
                                        TO  HCN65-HOSPCD (1:2)
                MOVE    "1"             TO  HCN65-HOSPCD (3:1) 
                MOVE    SYS-1001-HOSPCD TO  HCN65-HOSPCD (4:7)
       *
-      *        ���ŵ���̾��
+      *        医療機関名称
                MOVE    WRK-HOSPNAME    TO  HCN65-HOSPNAME
-               INSPECT HCN65-HOSPNAME  REPLACING   ALL "  "    BY  "��"
+               INSPECT HCN65-HOSPNAME  REPLACING   ALL "  "    BY  "　"
       *
-      *        ʬ�ڵ��ش����ֹ桦��������ʬ
+      *        分娩機関管理番号・施設等区分
                EVALUATE    SYS-1001-HOSPSBT
                    WHEN    "1"
-                       MOVE    "��"        TO  HCN65-HOSPSBT (1)
+                       MOVE    "○"        TO  HCN65-HOSPSBT (1)
                    WHEN    "2"
-                       MOVE    "��"        TO  HCN65-HOSPSBT (2)
+                       MOVE    "○"        TO  HCN65-HOSPSBT (2)
                END-EVALUATE
                IF      SYS-1001-SANKANUM
                                        =   ZERO
@@ -1458,39 +1458,39 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                                           TO  HCN65-SANKANUM
       *************EVALUATE    SYS-1001-SANKANUM (3:1)
       *************    WHEN    "1"
-      *************        MOVE    "��"        TO  HCN65-HOSPSBT (1)
+      *************        MOVE    "○"        TO  HCN65-HOSPSBT (1)
       *************    WHEN    "2"
-      *************        MOVE    "��"        TO  HCN65-HOSPSBT (2)
+      *************        MOVE    "○"        TO  HCN65-HOSPSBT (2)
       *************    WHEN    "3"
-      *************        MOVE    "��"        TO  HCN65-HOSPSBT (3)
+      *************        MOVE    "○"        TO  HCN65-HOSPSBT (3)
       *************END-EVALUATE
                END-IF
       *
-      *        �����ʬ
+      *        請求月分
                MOVE    WRK-SKYYM       TO  HCN65-SKYYM
       *
-      *        ��������
+      *        請求書枚数
                MOVE    SUM-PAGE    (2) TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9    TO  HCN65-PAGE
       *
-      *        �谷���
+      *        取扱件数
                MOVE    SUM-CNT     (2) TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9    TO  HCN65-KENSU
       *
-      *        �л���
+      *        出産数
                MOVE    SUM-BIRTHCNT(2) TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9    TO  HCN65-BIRTHCNT
       *
-      *        ��������۹��
+      *        代理受取額合計
                MOVE    SUM-MONEY   (2) TO  WRK-ZZZZZZZ9
                MOVE    WRK-ZZZZZZZ9    TO  HCN65-DAIRI-MONEY
       *
-      *        ���ǯ����
-               MOVE    "ʿ��"          TO  HCN65-TEIG
+      *        提出年月日
+               MOVE    "平成"          TO  HCN65-TEIG
       *
                ADD     1               TO  CNT-PAGE
       *
-      *        Ģɼ��������
+      *        帳票印刷処理
                MOVE   "HCN65"          TO  WRK-PRTID
                PERFORM 2004-PRINT-OUT-SEC
            END-IF
@@ -1499,7 +1499,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��������
+      *    帳票印刷処理
       *****************************************************************
        2004-PRINT-OUT-SEC              SECTION.
       *
@@ -1528,11 +1528,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE
-                          "�ʼ��ݡ˽л������������������������������"
+                          "（社保）出産育児一時金等代理申請・受取請求書"
                                                    TO  SPRT-TITLE
                        WHEN    "2"
                            MOVE
-                          "�ʹ��ݡ˽л������������������������������"
+                          "（国保）出産育児一時金等代理申請・受取請求書"
                                                     TO  SPRT-TITLE
                    END-EVALUATE
                WHEN    "HCN61V02"
@@ -1541,11 +1541,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE
-                          "�ʼ��ݡ˽л������������������������������"
+                          "（社保）出産育児一時金等代理申請・受取請求書"
                                                    TO  SPRT-TITLE
                        WHEN    "2"
                            MOVE
-                          "�ʹ��ݡ˽л������������������������������"
+                          "（国保）出産育児一時金等代理申請・受取請求書"
                                                     TO  SPRT-TITLE
                    END-EVALUATE
                WHEN    "HCN64"
@@ -1554,10 +1554,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE
-                               "�ʼ��ݡ����ս�"    TO  SPRT-TITLE
+                               "（社保）送付書"    TO  SPRT-TITLE
                        WHEN    "2"
                            MOVE
-                               "�ʹ��ݡ����ս�"    TO  SPRT-TITLE
+                               "（国保）送付書"    TO  SPRT-TITLE
                    END-EVALUATE
                WHEN    "HCN65"
                    MOVE   "HCN65.red"      TO  SPRT-PRTID
@@ -1565,10 +1565,10 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                    EVALUATE    WRK-TEISYUTUSAKI
                        WHEN    "1"
                            MOVE
-                               "�ʼ��ݡ˽���ɼ"    TO  SPRT-TITLE
+                               "（社保）集計票"    TO  SPRT-TITLE
                        WHEN    "2"
                            MOVE
-                               "�ʹ��ݡ˽���ɼ"    TO  SPRT-TITLE
+                               "（国保）集計票"    TO  SPRT-TITLE
                    END-EVALUATE
            END-EVALUATE
            MOVE    LNK-PRTKANRI-TERMID
@@ -1585,7 +1585,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            IF      SPRT-RETURN     =   ZERO
                CONTINUE
            ELSE
-               MOVE    "�����ģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "印刷ＤＢに更新できませんでした"
                                       TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -1595,7 +1595,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    Ģɼ��Ǽ����
+      *    帳票格納処理
       *****************************************************************
        2006-TABLE-SET-SEC          SECTION.
       *
@@ -1619,17 +1619,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʥ���ȥ�����쥳���ɡ��Խ�����
+      *    ＣＳＶ（コントロールレコード）編集処理
       *****************************************************************
        2001-CSV-CONTROL-RECORD-SEC                SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    �쥳���ɼ���          
+      *    レコード識別          
            MOVE    "1,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
-      *    �����
+      *    提出先
            IF      WRK-PARA-TEISYUTUBIKBN
                                    =   "1"
                MOVE    WRK-TEISYUTUSAKI
@@ -1644,20 +1644,20 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF 
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �쥳�����ֹ�
+      *    レコード番号
            MOVE    WRK-CONTROL-SEQ-NO
                                    TO  WRK-NUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �ܥ�塼���ֹ�
+      *    ボリューム番号
            MOVE    "0"             TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �쥳���ɷ��
+      *    レコード件数
            MOVE    SUM-RECORD-CNT  TO  WRK-NUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���ŵ������ֹ�
+      *    医療機関等番号
            MOVE    SYS-1001-PREFNUM
                                    TO  WRK-DATA (1:2)
            MOVE    SYS-1001-TENHYOKBN
@@ -1665,7 +1665,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    SYS-1001-HOSPCD TO  WRK-DATA (4:7)
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ʬ�ڵ��ش����ֹ�
+      *    分娩機関管理番号
            IF      SYS-1001-SANKANUM
                                    =   ZERO
                CONTINUE
@@ -1675,17 +1675,17 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    10              TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ��
+      *    請求年月
            MOVE    WRK-SKYYMH      TO  WRK-DATA
            MOVE    5               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ե���������ֹ�
+      *    ファイル管理番号
       **** MOVE    0               TO  WRK-NUM
       **** MOVE    6               TO  WRK-NAGASA
            MOVE    1               TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1701,21 +1701,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʥǡ����쥳���ɡ�����������Խ�����
+      *    ＣＳＶ（データレコード・請求書情報）編集処理
       *****************************************************************
        2001-CSV-DATA-7111-RECORD-SEC SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    �쥳���ɼ���          
+      *    レコード識別          
            MOVE    "2,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
-      *    �쥳�����ֹ�
+      *    レコード番号
            MOVE    WRK-DATA-SEQ-NO TO  WRK-NUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �򴹾������ֹ�
+      *    交換情報識別番号
            IF      WRK-PARA-TEISYUTUBIKBN
                                    =   "1"
                MOVE    "7111"          TO  WRK-DATA
@@ -1724,11 +1724,11 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ��
+      *    請求年月
            MOVE    WRK-SKYYMH      TO  WRK-DATA
            MOVE    5               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ŵ������ֹ�
+      *    医療機関等番号
            MOVE    SYS-1001-PREFNUM
                                    TO  WRK-DATA (1:2)
            MOVE    SYS-1001-TENHYOKBN
@@ -1736,7 +1736,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    SYS-1001-HOSPCD TO  WRK-DATA (4:7)
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ʬ�ڵ��ش����ֹ�
+      *    分娩機関管理番号
            IF      SYS-1001-SANKANUM
                                    =   ZERO
                CONTINUE
@@ -1746,21 +1746,21 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    10              TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���
+      *    件数
            MOVE    SUM-CNT     (2) TO  WRK-NUM
            MOVE    6               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �л���
+      *    出産数
            MOVE    SUM-BIRTHCNT(2) TO  WRK-NUM
            MOVE    6               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �л�������������������۹��
+      *    出産育児一時金等代理受取額合計
            MOVE    SUM-MONEY   (2) TO  WRK-NUM
            MOVE    12              TO  WRK-NAGASA
            MOVE    1               TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1778,22 +1778,22 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʥǡ����쥳���ɡ�������������������Խ�����
+      *    ＣＳＶ（データレコード・申請受取請求書情報）編集処理
       *****************************************************************
        2001-CSV-DATA-7121-RECORD-SEC SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    �쥳���ɼ���          
+      *    レコード識別          
            MOVE    "2,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
-      *    �쥳�����ֹ�
+      *    レコード番号
            ADD     1               TO  WRK-SEQ-NO
            MOVE    WRK-SEQ-NO      TO  WRK-NUM
            MOVE    9               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �򴹾������ֹ�
+      *    交換情報識別番号
            IF      WRK-PARA-TEISYUTUBIKBN
                                    =   "1"
                MOVE    "7121"          TO  WRK-DATA
@@ -1802,23 +1802,23 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            END-IF
            MOVE    4               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ݸ����ֹ�
+      *    保険者番号
            MOVE    BUNBEN-HKNJANUM TO  WRK-HENKAN
            MOVE    8               TO  WRK-LENGTH 
            PERFORM 5003-DATA-RIGHT-HENSYU-SEC
            MOVE    WRK-HENKAN      TO  WRK-DATA
            MOVE    8               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����ǯ��
+      *    請求年月
            MOVE    WRK-SKYYMH      TO  WRK-DATA
            MOVE    5               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ʬ�ڶ�ʬ
+      *    分娩区分
            MOVE    BUNBEN-BUNBENKBN
                                    TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���ŵ������ֹ�
+      *    医療機関等番号
            MOVE    SYS-1001-PREFNUM
                                    TO  WRK-DATA (1:2)
            MOVE    SYS-1001-TENHYOKBN
@@ -1826,7 +1826,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            MOVE    SYS-1001-HOSPCD TO  WRK-DATA (4:7)
            MOVE    10              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ʬ�ڵ��ش����ֹ�
+      *    分娩機関管理番号
            IF      SYS-1001-SANKANUM
                                    =   ZERO
                CONTINUE
@@ -1836,70 +1836,70 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                MOVE    10              TO  WRK-NAGASA
            END-IF
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �������ٶ�ʬ
+      *    加入制度区分
            MOVE    BUNBEN-KANYUKBN TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ܿͲ�²��ʬ
+      *    本人家族区分
            MOVE    BUNBEN-HONKZKKBN
                                    TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ����
+      *    記号
            MOVE    BUNBEN-KIGO     TO  WRK-DATA
            MOVE    38              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �ֹ�
+      *    番号
            MOVE    BUNBEN-NUM      TO  WRK-DATA
            MOVE    38              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ǥ�ػ�̾
+      *    妊婦氏名
            MOVE    BUNBEN-NAME     TO  WRK-DATA
            MOVE    40              TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ��ǯ����
+      *    生年月日
            MOVE    WRK-BIRTHDAYH   TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    ���۽���
+      *    在胎週数
            MOVE    BUNBEN-ZAIWEEK  TO  WRK-NUM
            MOVE    2               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �л�ǯ����
+      *    出産年月日
            MOVE    WRK-CHILD-BIRTHDAYH
                                    TO  WRK-DATA
            MOVE    7               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �໺̵ͭ
+      *    死産有無
            MOVE    BUNBEN-SIZANKBN TO  WRK-DATA
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5004-MOJI-HENSYU-SEC
-      *    �л���
+      *    出産数
            MOVE    BUNBEN-BIRTHCNT TO  WRK-NUM
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ��������
+      *    入院日数
            MOVE    BUNBEN-NYUIN-DAY
                                    TO  WRK-NUM
            MOVE    3               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    ���ʰ����ݾ����ٶ�ʬ
+      *    産科医療保証制度区分
            MOVE    BUNBEN-SANKAKBN TO  WRK-NUM
            MOVE    1               TO  WRK-NAGASA
            PERFORM 5005-NUM-HENSYU-SEC
-      *    �����������������
+      *    入院料〜代理受取額
            PERFORM VARYING IDXX    FROM    1   BY  1
                    UNTIL   IDXX    >       12
                EVALUATE    IDXX
                    WHEN    3
-      *                ʬ�ڲ����
+      *                分娩介助料
                        IF      BUNBEN-BUNBENKBN    =   "2"
                            MOVE    BUNBEN-MONEY (IDXX)
                                                    TO  WRK-NUM
                             MOVE    8               TO  WRK-NAGASA
                        END-IF
                    WHEN    4
-      *                ʬ����
+      *                分娩料
                        IF      BUNBEN-BUNBENKBN    =   "1"
                            MOVE    BUNBEN-MONEY (IDXX)
                                                    TO  WRK-NUM
@@ -1912,13 +1912,13 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                END-EVALUATE
                PERFORM 5005-NUM-HENSYU-SEC
            END-PERFORM    
-      *    ����
+      *    備考
            MOVE    BUNBEN-BIKOU    TO  WRK-DATA
            MOVE    60              TO  WRK-NAGASA
            MOVE    1               TO  WRK-END 
            PERFORM 5004-MOJI-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1936,24 +1936,24 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡ʥ���ɥ쥳���ɡ��Խ�����
+      *    ＣＳＶ（エンドレコード）編集処理
       *****************************************************************
        2001-CSV-END-RECORD-SEC                SECTION.
       *
            INITIALIZE                  WRK-REC
                                        WRK-REC-LENGTH
       *
-      *    �쥳���ɼ���          
+      *    レコード識別          
            MOVE    "3,"            TO  WRK-REC
            MOVE    2               TO  WRK-REC-LENGTH
-      *    �쥳�����ֹ�
+      *    レコード番号
            ADD     1               TO  WRK-SEQ-NO
            MOVE    WRK-SEQ-NO      TO  WRK-NUM
            MOVE    9               TO  WRK-NAGASA
            MOVE    1               TO  WRK-END 
            PERFORM 5005-NUM-HENSYU-SEC
       *
-      *    ���ԥ������Խ�
+      *    改行コード編集
            STRING  WRK-REC(1:WRK-REC-LENGTH)
                                        DELIMITED  BY  SIZE
                    WRK-KAIGYO          DELIMITED  BY  SIZE
@@ -1969,7 +1969,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *    �ãӣ֡��ɣΣƣϽ��Ͻ���
+      *    ＣＳＶ＿ＩＮＦＯ出力処理
       *****************************************************************
        500-CSVINFO-SEC                SECTION.
       *
@@ -2006,7 +2006,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
                ADD     1               TO  WRK-OUT
                                            CNT-OUT
            ELSE
-               MOVE    "�ãӣ��ѣģ¤˹����Ǥ��ޤ���Ǥ���"
+               MOVE    "ＣＳＶ用ＤＢに更新できませんでした"
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -2017,7 +2017,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM
            EXIT.
       *
       *****************************************************************
-      *   ʬ�ڴ����ģ¹�������
+      *   分娩管理ＤＢ更新処理
       *****************************************************************
        310-BUNBEN-UPD-SEC              SECTION.
       *
@@ -2042,7 +2042,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 900-UPD-FILE-READ-SEC
                    ELSE
                        MOVE    SPACE               TO  WRK-BUNBENERR
-                       STRING "ʬ�ڴ����ģ¡��������顼��"
+                       STRING "分娩管理ＤＢ　更新エラー　"
                                                DELIMITED  BY  SIZE
                                BUNBEN-KEY      DELIMITED  BY  SIZE
                                                INTO    WRK-BUNBENERR
@@ -2051,7 +2051,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                        PERFORM 500-COBABORT-SEC
                    END-IF
                ELSE
-                   STRING "ʬ�ڴ����ģ¡��ɹ��߹������顼��"
+                   STRING "分娩管理ＤＢ　読込み更新エラー　"
                                                DELIMITED  BY  SIZE
                            BUNBENX-KEY         DELIMITED  BY  SIZE
                                                INTO    WRK-BUNBENERR
@@ -2067,7 +2067,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC          SECTION.
       *
@@ -2081,7 +2081,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                WRITE   BUNBENERR-REC
                CLOSE   BUNBENERR-FILE
       *
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-BUNBENERR     TO  JOB-YOBI
@@ -2095,7 +2095,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �۾ｪλ����
+      *    異常終了処理
       *****************************************************************
        500-COBABORT-SEC          SECTION.
       *
@@ -2112,7 +2112,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-END-SEC                 SECTION.
       *
@@ -2122,12 +2122,12 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            DISPLAY "*** ORCBGCHILDBIRTH END ***"
       *
            IF      CNT-IN          =   ZERO
-               MOVE    "�оݴ��Ԥ�����ޤ���Ǥ���"
+               MOVE    "対象患者がありませんでした"
                                        TO  WRK-BUNBENERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *     
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-PAGE        TO  JOB-UPDCNT
@@ -2140,7 +2140,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ե�������¸���󹹿�����
+      *    ファイル保存情報更新処理
       *****************************************************************
        3001-FILE-INFO-INSERT-SEC             SECTION.
       *
@@ -2185,19 +2185,19 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
                                    ALSO    WRK-PARA-TEISYUTUBIKBN
                WHEN    "1"         ALSO    "1"
                    MOVE
-               "�ʼ��ݡˣ��������ᡡ�л�����������������������������"
+               "（社保）１０日請求　出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "1"         ALSO    "2"
                    MOVE
-               "�ʼ��ݡˣ��������ᡡ�л�����������������������������"
+               "（社保）２５日請求　出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2"         ALSO    "1"
                    MOVE
-               "�ʹ��ݡˣ��������ᡡ�л�����������������������������"
+               "（国保）１０日請求　出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
                WHEN    "2"         ALSO    "2"
                    MOVE
-               "�ʹ��ݡˣ��������ᡡ�л�����������������������������"
+               "（国保）２５日請求　出産育児一時金等代理申請・受取請求"
                                            TO  SFILESV-TITLE    (1)
            END-EVALUATE
            IF      WRK-OUT         >   ZERO
@@ -2217,7 +2217,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����Ѵ�����
+      *    日付変換処理
       *****************************************************************
        5002-HIZUKE-HEN-SEC         SECTION.
       *
@@ -2249,7 +2249,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���Ť��Խ�����
+      *    右づめ編集処理
       *****************************************************************
        5003-DATA-RIGHT-HENSYU-SEC          SECTION.
       *
@@ -2275,7 +2275,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ�����ʸ����
+      *    出力レコード処理（文字）
       *****************************************************************
        5004-MOJI-HENSYU-SEC          SECTION.
       *
@@ -2312,14 +2312,14 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ���ϥ쥳���ɽ����ʿ�����ZZZZZZZZZ9.99999���Խ�
+      *    出力レコード処理（数字）ZZZZZZZZZ9.99999の編集
       *****************************************************************
        5005-NUM-HENSYU-SEC          SECTION.
       *
            IF      WRK-NAGASA          =   ZERO
                CONTINUE
            ELSE                   
-      *        ���ϰ���
+      *        開始位置
                COMPUTE WRK-ST  =   11      -   WRK-NAGASA
                IF      WRK-SYOSUU          >   ZERO
                    COMPUTE WRK-ST  =   WRK-ST  +   WRK-SYOSUU
@@ -2360,7 +2360,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ģ¹����ѥե������ɹ�
+      *    請求管理ＤＢ更新用ファイル読込
       *****************************************************************
        900-UPD-FILE-READ-SEC             SECTION.
       *
@@ -2376,7 +2376,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
       *
@@ -2405,7 +2405,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
       *****************************************************************
        900-BUNBEN-READ-SEC             SECTION.
       *
@@ -2432,7 +2432,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
       *
       *****************************************************************
-      *    ʬ�ڴ����ɹ�
+      *    分娩管理読込
       *****************************************************************
        900-BUNBEN-READ-N-SEC           SECTION.
       *
@@ -2475,7 +2475,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ��������ޥ����ɹ�
+      *    請求管理マスタ読込
       *****************************************************************
        900-BUNBEN-INV-SEC         SECTION.
       *
@@ -2505,7 +2505,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �����ɤ߹���
+      *    患者読み込み
       *****************************************************************
        900-PTINF-READ-SEC         SECTION.
       *
@@ -2539,7 +2539,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ����Խ������ɹ�
+      *    医療機関編集情報読込
       *****************************************************************
        900-1900-READ-SEC           SECTION.
       *
@@ -2555,11 +2555,11 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            IF      FLG-SYSKANRI        =   ZERO
                MOVE    MCPDATA-REC     TO  SYS-1900-REC
                IF      SYS-1900-PRTKBN(4)  NOT =   SPACE
-      *            ���ŵ���̾���Խ�����
+      *            医療機関名称編集情報
                    PERFORM 900-1901-READ-SEC
-      *            ���ŵ��ؽ����Խ�����
+      *            医療機関住所編集情報
                    PERFORM 900-1902-READ-SEC
-      *            ���ŵ���̾���Խ�����ʣ���
+      *            医療機関名称編集情報（２）
                    PERFORM 900-1903-READ-SEC
                 END-IF
            ELSE
@@ -2571,7 +2571,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ������ɤ߹���
+      *    医療機関名称編集情報読み込み
       *****************************************************************
        900-1901-READ-SEC           SECTION.
       *
@@ -2598,7 +2598,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ��ؽ����Խ������ɹ�
+      *    医療機関住所編集情報読込
       *****************************************************************
        900-1902-READ-SEC           SECTION.
       *
@@ -2626,7 +2626,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ���ŵ���̾���Խ�����ʣ����ɤ߹���
+      *    医療機関名称編集情報（２）読み込み
       *****************************************************************
        900-1903-READ-SEC           SECTION.
       *
@@ -2653,7 +2653,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -2670,7 +2670,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -2681,7 +2681,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -2693,7 +2693,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -2705,7 +2705,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -2718,7 +2718,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -2736,7 +2736,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,106 +16,106 @@
       * 113-8621, Japan.
       ********************************************************************
       ******************************************************************
-      *    ���Уɥ쥹�ݥ�ͽ�����           COPY (CPACCPTXMLRES.INC)
+      *    ＡＰＩレスポンス予約情報           COPY (CPACCPTXMLRES.INC)
       ******************************************************************
         01  XML-APPOINTRES.
             02  APNTRES-OBJECT         PIC X(36).
             02  APNTRES-MODE           PIC S9(9)   BINARY.
             02  APNTRES-APPOINTRES.
-      *       �»���
+      *       実施日
               03  APNTRES-INFORMATION-DATE    PIC X(10).
-      *       �»ܻ���
+      *       実施時間
               03  APNTRES-INFORMATION-TIME    PIC X(8).
-      *       �ֵѥ�����
+      *       返却コード
               03  APNTRES-API-RESULT          PIC X(2).
-      *       �ֵѥ�å�����
+      *       返却メッセージ
               03  APNTRES-API-RESULT-MSG      PIC X(100).
       *
               03  APNTRES-RESKEY              PIC X(100).
-      *       ͽ����
+      *       予約日
               03  APNTRES-APPOINT-DATE        PIC X(10).
-      *       ͽ�����
+      *       予約時間
               03  APNTRES-APPOINT-TIME        PIC X(8).
-      *       ͽ��ɣ�
+      *       予約ＩＤ
               03  APNTRES-APPOINT-ID          PIC X(5).
-      *       ���Ų�
+      *       診療科
               03  APNTRES-APPOINT-DEP-CODE    PIC X(2).
-      *       ���Ų�̾��
+      *       診療科名称
               03  APNTRES-APPOINT-DEP-NAME    PIC X(80).
-      *       �ɥ�����������
+      *       ドクターコード
               03  APNTRES-APPOINT-DR-CODE     PIC X(5).
-      *       �ɥ�������̾
+      *       ドクター氏名
               03  APNTRES-APPOINT-DR-NAME     PIC X(80).
-      *       �������ƶ�ʬ
+      *       診療内容区分
               03  APNTRES-APPOINT-DEP-INFO    PIC X(2).
-      *       ͽ���ʬ
+      *       予約区分
               03  APNTRES-APPOINT-INFO        PIC X(2).
-      *       ͽ����
+      *       予約メモ
               03  APNTRES-APPOINT-MEMO        PIC X(100).
-      *       �������ƶ�ʬ
+      *       診療内容区分
               03  APNTRES-PATIENT-INFOMATION.
-      *         �����ֹ�
+      *         患者番号
                 04  APNTRES-PATIENTID         PIC X(20).
-      *         ���Ի�̾
+      *         患者氏名
                 04  APNTRES-NAME              PIC X(100).
-      *         ���ԥ��ʻ�̾
+      *         患者カナ氏名
                 04  APNTRES-KANANAME          PIC X(100).
-      *         ������
+      *         誕生日
                 04  APNTRES-BIRTHDAY          PIC X(10).
-      *         ����
+      *         性別
                 04  APNTRES-SEX               PIC X(1).
-      *         �������
+      *         自宅情報
                 04  APNTRES-ADDRESS-INFO.
-      *           ͹���ֹ�
+      *           郵便番号
                   05  APNTRES-HOME-ZIP-CODE   PIC X(7).
-      *           ����
+      *           住所
                   05  APNTRES-HOME-ADDRESSES  PIC X(100).
-      *         �ݸ�����
+      *         保険情報
                 04  APNTRES-INSURANCE-G.
                   05  APNTRES-INSURANCE-INFO          OCCURS 20 TIMES.
-      *             �ݸ��μ���
+      *             保険の種類
                     06  APNTRES-MAIN-INSURANCE-CLASS   PIC X(03).
-      *             �ݸ����ֹ�
+      *             保険者番号
                     06  APNTRES-MAIN-INSURANCE-NUMBER  PIC X(08).
-      *             �ݸ��μ���̾��
+      *             保険の種類名称
                     06  APNTRES-MAIN-INSURANCE-NAME    PIC X(20).
-      *             ����
+      *             記号
                     06  APNTRES-MAIN-MARK              PIC X(80).
-      *             �ֹ�
+      *             番号
                     06  APNTRES-MAIN-NUMBER            PIC X(80).
-      *             ��³��ʬ
+      *             継続区分
                     06  APNTRES-MAIN-CONTINUATION      PIC X(01).
-      *             �����ʬ
+      *             補助区分
                     06  APNTRES-MAIN-ASSISTANCE        PIC X(01).
-      *             �ܿͲ�²��ʬ
+      *             本人家族区分
                     06  APNTRES-MAIN-FAMILY            PIC X(01).
-      *             ���ݸ���̾
+      *             被保険者名
                     06  APNTRES-MAIN-POLICYHOLDER      PIC X(100).
-      *             ͭ��������
+      *             有効開始日
                     06  APNTRES-MAIN-START-DATE        PIC X(10).
-      *             ͭ����λ��
+      *             有効終了日
                     06  APNTRES-MAIN-END-DATE          PIC X(10).
-      *             �������
+      *             公費情報
                     06  APNTRES-PUBLIC-INSURANCE-INFO           
                                               OCCURS  4 TIMES.
-      *               ����μ���
+      *               公費の種類
                       07  APNTRES-INSURANCE-CLASS         PIC X(03).
-      *               ����μ���̾��
+      *               公費の種類名称
                       07  APNTRES-INSURANCE-NAME          PIC X(20).
-      *               ��ô���ֹ�
+      *               負担者番号
                       07  APNTRES-PROVIDER-NUMBER         PIC X(08).
-      *               ������ֹ�
+      *               受給者番号
                       07  APNTRES-RECIPIENT-NUMBER        PIC X(20).
-      *               ��������ôΨ�ʳ��
+      *               入院−負担率（割）
                       07  APNTRES-RATE-ADMISSION          PIC X(04).
-      *               �����ݸ����
+      *               入院−固定額
                       07  APNTRES-MONEY-ADMISSION         PIC X(06).
-      *               �������ôΨ�ʳ��
+      *               外来−負担率（割）
                       07  APNTRES-RATE-OUTPATIENT         PIC X(04).
-      *               ����ݸ����
+      *               外来−固定額
                       07  APNTRES-MONEY-OUTPATIENT        PIC X(06).
-      *               ͭ��������
+      *               有効開始日
                       07  APNTRES-INSURANCE-START-DATE    PIC X(10).
-      *               ͭ����λ��
+      *               有効終了日
                       07  APNTRES-INSURANCE-END-DATE      PIC X(10).
       *

@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * Æü°åÉ¸½à¥ì¥»¥×¥È¥½¥Õ¥È¡ÊJMA standard receipt software¡Ë
+      * æ—¥åŒ»æ¨™æº–ãƒ¬ã‚»ãƒ—ãƒˆã‚½ãƒ•ãƒˆï¼ˆJMA standard receipt softwareï¼‰
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,55 +16,55 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    ´µ¼ÔÄê´üÀÁµáÍúÎò                   (CPPTTEIKIRRK.INC) *
+      *    æ‚£è€…å®šæœŸè«‹æ±‚å±¥æ­´                   (CPPTTEIKIRRK.INC) *
       ************************************************************
       ************************************************************
-      *  ¥³¥Ô¡¼¶ç½¤ÀµÍúÎò
-      * Maj/Min/Rev  ½¤Àµ¼Ô       ÆüÉÕ      ÆâÍÆ
+      *  ã‚³ãƒ”ãƒ¼å¥ä¿®æ­£å±¥æ­´
+      * Maj/Min/Rev  ä¿®æ­£è€…       æ—¥ä»˜      å†…å®¹
       ************************************************************
       *01  PTTEIKIRRK-REC.
-      *°åÎÅµ¡´Ø£É£Ä
+      *åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤
            03  PTTEIKIRRK-HOSPNUM           PIC 9(2).
-      *´µ¼Ô£É£Ä
+      *æ‚£è€…ï¼©ï¼¤
            03  PTTEIKIRRK-PTID             PIC  9(10).
-      *¿ÇÎÅÇ¯·î
+      *è¨ºç™‚å¹´æœˆ
            03  PTTEIKIRRK-SRYYM            PIC  X(06).
-      *ºîÀ®¶èÊ¬¡Ê½èÍý´ü¡Ë
-      *    £±¡Á£³¡§³Æ½èÍý´ü¡¿£¹¡§·îËö»þ¤Î¤ß¡ÊÆþÂà±¡ÅÐÏ¿¤Ç»ØÄê¡Ë
+      *ä½œæˆåŒºåˆ†ï¼ˆå‡¦ç†æœŸï¼‰
+      *    ï¼‘ã€œï¼“ï¼šå„å‡¦ç†æœŸï¼ï¼™ï¼šæœˆæœ«æ™‚ã®ã¿ï¼ˆå…¥é€€é™¢ç™»éŒ²ã§æŒ‡å®šï¼‰
            03  PTTEIKIRRK-SAKKBN           PIC  X(01).
-      *ÊÝ¸±ÁÈ¹ç¤»
+      *ä¿é™ºçµ„åˆã›
            03  PTTEIKIRRK-HKNCOMBINUM      PIC  9(04).
-      *¼ýÇ¼¡ÝÅÁÉ¼ÈÖ¹æ
+      *åŽç´âˆ’ä¼ç¥¨ç•ªå·
            03  PTTEIKIRRK-DENPNUM          PIC  9(07).
-      *ºï½ü¥Õ¥é¥°
+      *å‰Šé™¤ãƒ•ãƒ©ã‚°
            03  PTTEIKIRRK-DELFLG           PIC  9(01).
-      *½èÍý¶èÊ¬
+      *å‡¦ç†åŒºåˆ†
            03  PTTEIKIRRK-SYOKBN           PIC  X(01).
-      *´üÊÌ
+      *æœŸåˆ¥
            03  PTTEIKIRRK-KBT              PIC  X(01).
-      *ÀÁµá³«»ÏÇ¯·îÆü
+      *è«‹æ±‚é–‹å§‹å¹´æœˆæ—¥
            03  PTTEIKIRRK-SKYSTYMD         PIC  X(08).
-      *ÀÁµá½ªÎ»Ç¯·îÆü
+      *è«‹æ±‚çµ‚äº†å¹´æœˆæ—¥
            03  PTTEIKIRRK-SKYEDYMD         PIC  X(08).
-      *ÀÁµáÅÀ¿ô
+      *è«‹æ±‚ç‚¹æ•°
            03  PTTEIKIRRK-SKYTEN           PIC  S9(09).
-      *ÀÁµá¶â³Û¡Ý¾ÃÈñÀÇ¡ÊºÆ·Ç¡Ë
+      *è«‹æ±‚é‡‘é¡âˆ’æ¶ˆè²»ç¨Žï¼ˆå†æŽ²ï¼‰
            03  PTTEIKIRRK-SKYMONEY-TAX-SAI PIC  S9(07).
-      *ÀÁµá¶â³Û
+      *è«‹æ±‚é‡‘é¡
            03  PTTEIKIRRK-SKYMONEY         PIC  S9(09).
-      *Æþ±¡ÍúÎò¡ÝÍúÎòÏ¢ÈÖ
+      *å…¥é™¢å±¥æ­´âˆ’å±¥æ­´é€£ç•ª
            03  PTTEIKIRRK-RRKNUM           PIC  9(03).
-      *¼ýÇ¼¡ÝÅÁÉ¼ÈÖ¹æ»ÞÈÖ
+      *åŽç´âˆ’ä¼ç¥¨ç•ªå·æžç•ª
            03  PTTEIKIRRK-DENPEDANUM       PIC  9(02).
-      *ÀÁµá¥Ç¡¼¥¿¹¹¿·¥Õ¥é¥°¡Ê£°¡§¿·µ¬¡¿£±¡§ÄûÀµ¡Ë
+      *è«‹æ±‚ãƒ‡ãƒ¼ã‚¿æ›´æ–°ãƒ•ãƒ©ã‚°ï¼ˆï¼ï¼šæ–°è¦ï¼ï¼‘ï¼šè¨‚æ­£ï¼‰
            03  PTTEIKIRRK-SKYUPDFLG        PIC  9(01).
-      *Ã¼Ëö£É£Ä
+      *ç«¯æœ«ï¼©ï¼¤
            03  PTTEIKIRRK-TERMID           PIC  X(16).
-      *¥ª¥Ú¡¼¥ì¡¼¥¿£É£Ä
+      *ã‚ªãƒšãƒ¼ãƒ¬ãƒ¼ã‚¿ï¼©ï¼¤
            03  PTTEIKIRRK-OPID             PIC  X(16).
-      *ºîÀ®Ç¯·îÆü
+      *ä½œæˆå¹´æœˆæ—¥
            03  PTTEIKIRRK-CREYMD           PIC  X(08).
-      *¹¹¿·Ç¯·îÆü
+      *æ›´æ–°å¹´æœˆæ—¥
            03  PTTEIKIRRK-UPYMD            PIC  X(08).
-      *¹¹¿·»þ´Ö
+      *æ›´æ–°æ™‚é–“
            03  PTTEIKIRRK-UPHMS            PIC  X(06).

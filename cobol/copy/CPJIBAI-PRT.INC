@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -16,64 +16,64 @@
       * 113-8621, Japan.
       ********************************************************************
       ************************************************************
-      *    �����գУģ���         COPY (CPJIBAI-PRT.INC)         *
+      *    自賠責ＰＤＦ用         COPY (CPJIBAI-PRT.INC)         *
       ************************************************************
       ************************************************************
-      *  ���ԡ��罤������
-      * Maj/Min/Rev  ������       ����      ����
-      *  04.08.01    NACL-ƣ��    17/04/10  ����ñ�̤Ǥ�������������
-      *                                     ��ϫ�ҽ�����Ϸ��ݽ����б�
-      *                                     �ݸ���ʬ���ɲ�
+      *  コピー句修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
+      *  04.08.01    NACL-藤原    17/04/10  患者単位での点数算定設定
+      *                                     （労災準拠又は健保準拠）対応
+      *                                     保険区分の追加
       ************************************************************
       *01  JIBAI-PRT-REC.
-      *�ˣţ�
+      *ＫＥＹ
            03  JIBAI-PRT-KEY.
                05  JIBAI-PRT-KEY1.
-      *���ŵ��أɣ�
+      *医療機関ＩＤ
                    07  JIBAI-PRT-HOSPNUM   PIC 9(2).
-      *����ǯ��
+      *診療年月
                    07  JIBAI-PRT-SRYYM     PIC 9(06).
-      *������ʬ
+      *入外区分
                    07  JIBAI-PRT-NYUGAIKBN PIC X(01).
-      *���ԣɣ�
+      *患者ＩＤ
                    07  JIBAI-PRT-PTID      PIC 9(10).
-      *�쥻�ץȲ�
+      *レセプト科
                    07  JIBAI-PRT-RECEKA    PIC X(02).
-      *������ʧ����
+      *審査支払機関
                    07  JIBAI-PRT-TEISYUTUSAKI
                                            PIC 9(01).
-      *�쥻�ץȼ���
+      *レセプト種別
                    07  JIBAI-PRT-RECESYUBETU
                                            PIC X(04).
-      *�ݸ����ֹ�
+      *保険者番号
                    07  JIBAI-PRT-HKNJANUM  PIC X(08).
-      *�����ʬ
+      *補助区分
                    07  JIBAI-PRT-HOJOKBN-KEY
                                            PIC X(01).
-      *����ɣġʸ���ñ�ȤΤߡ�
+      *公費ＩＤ（公費単独のみ）
                    07  JIBAI-PRT-KOHID-KEY PIC 9(10).
-      *Ŭ�ѳ���ǯ����
+      *適用開始年月日
                    07  JIBAI-PRT-TEKSTYMD  PIC X(08).
-      *ʬ���ʬ
+      *分割区分
                    07  JIBAI-PRT-RECEIPT-KBN
                                            PIC X(10).
-      *�ǡ���Ϣ��
+      *データ連番
                05  JIBAI-PRT-RENNUM        PIC 9(03).
-      *�����ֹ�
+      *患者番号
            03  JIBAI-PRT-PTNUM             PIC X(20).
-      *�ݸ��ֹ�
+      *保険番号
            03  JIBAI-PRT-HKNNUM            PIC X(03).
-      *�ͼ���ʬ�ʣ������ͼ������������ͼ��������軰�Թ԰١�
+      *様式区分（４：新様式、５：従来様式、６：第三者行為）
            03  JIBAI-PRT-RECEKBN           PIC X(01).
-      *�ݸ���ʬ�ʣ��������ա�ϫ�ҽ��ˡ����������աʷ��ݽ��ˡ�
+      *保険区分（５：自賠責（労災準拠）、６：自賠責（健保準拠））
            03  JIBAI-PRT-HKNKBN            PIC X(01).
-      *Ģɼ��ʬ
+      *帳票区分
            03  JIBAI-PRT-PRTKBN            PIC X(03).
-      *����ǯ����
+      *作成年月日
            03  JIBAI-PRT-CREYMD            PIC X(08).
-      *��������
+      *作成時間
            03  JIBAI-PRT-CREHMS            PIC X(06).
-      *Ģɼ�ɣ�
+      *帳票ＩＤ
            03  JIBAI-PRT-FORMID            PIC X(20).
-      *Ģɼ�ǡ���
+      *帳票データ
            03  JIBAI-PRT-PRTDATA           PIC X(10000).

@@ -11,7 +11,7 @@
 
 extern void orcfiledel(char *arg);
 
-/* CALL¥¤¥ó¥¿¡¼¥Õ¥§¥¤¥¹Ï¢ÍíÎÎ°è */
+/* CALLã‚¤ãƒ³ã‚¿ãƒ¼ãƒ•ã‚§ã‚¤ã‚¹é€£çµ¡é ˜åŸŸ */
 struct str_chardata_contact
 {
 	char	retcd[2];
@@ -38,14 +38,14 @@ void orcfiledel(char *arg)
 	else
 		rc = unlink(filename_buf);
 
-	/* ¥¨¥é¡¼ */
+	/* ã‚¨ãƒ©ãƒ¼ */
 	if(rc == -1){
 		lt_contact->retcd[0] = '-';
 		lt_contact->retcd[1] = '1';
 		return ;
 	}
 
-	/* Àµ¾ï */
+	/* æ­£å¸¸ */
 	lt_contact->retcd[0] = '0';
 	lt_contact->retcd[1] = '0';
 

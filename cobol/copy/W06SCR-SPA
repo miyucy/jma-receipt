@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ∆¸∞Â…∏Ω‡•Ï•ª•◊•»•Ω•’•»° JMA standard receipt software°À
+      * Êó•ÂåªÊ®ôÊ∫ñ„É¨„Çª„Éó„Éà„ÇΩ„Éï„ÉàÔºàJMA standard receipt softwareÔºâ
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -15,15 +15,15 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      *    ø¶∞˜æ Û≈–œø£”£–£¡  (W06,W061)
+      *    ËÅ∑Âì°ÊÉÖÂ†±ÁôªÈå≤Ôº≥Ôº∞Ôº°  (W06,W061)
       ********************************************************************
-      *  •≥•‘°º∂ÁΩ§¿µÕ˙ŒÚ
-      * Maj/Min/Rev  Ω§¿µº‘       ∆¸…’      ∆‚Õ∆
+      *  „Ç≥„Éî„ÉºÂè•‰øÆÊ≠£Â±•Ê≠¥
+      * Maj/Min/Rev  ‰øÆÊ≠£ËÄÖ       Êó•‰ªò      ÂÜÖÂÆπ
       *****************************************************************
       *
-      *    ≤ËÃÃÕ—£”£–£¡
+      *    ÁîªÈù¢Áî®Ôº≥Ôº∞Ôº°
        01  SPA-W06.
-      *ø¶∞˜≈–œø° £◊£∞£∂°À
+      *ËÅ∑Âì°ÁôªÈå≤ÔºàÔº∑ÔºêÔºñÔºâ
            03  SPA-W06-AREA.
                05  SPA-GMN-PAGE        PIC 9(02).
                05  SPA-GMN-LINE        PIC 9(02).
@@ -33,12 +33,12 @@
                05  SPA-GMN-SYORI       PIC 9(01).
       *
                05  SPA-GMN-AREA.
-      *            ø¶∞˜∂Ë ¨
+      *            ËÅ∑Âì°Âå∫ÂàÜ
                    07  SPA-GMN-SYOKUKBN-G.
                        09  SPA-GMN-SYOKUKBN       PIC X(01).
                        09  SPA-GMN-SYOKUKBNF      PIC X(01).
                        09  SPA-GMN-SYOKUKBNMEI    PIC X(18).
-      *            ø¶∞˜•≥°º•…
+      *            ËÅ∑Âì°„Ç≥„Éº„Éâ
                    07  SPA-GMN-SYOKUCOD-G.
                        09  SPA-GMN-SYOKUCOD       PIC X(04).
                        09  SPA-GMN-SYOKUCODF      PIC X(01).
@@ -77,34 +77,34 @@
                        09  SPA-GMN-ISEKINUM       PIC X(08).
                        09  SPA-GMN-HKNDRNUMS      PIC X(08).
                        09  SPA-GMN-HKNDRNUMK      PIC X(12).
-      *                ∂»Ã≥∏¢∏¬
+      *                Ê•≠ÂãôÊ®©Èôê
                        09  SPA-GMN-CHK-G.
                            11  SPA-GMN-CHK        PIC X     OCCURS  36.
-      *            ¿ÏÃÁ≤ 
+      *            Â∞ÇÈñÄÁßë
                    07  SPA-GMN-SEMONKACD-G    OCCURS  5.
                        09  SPA-GMN-SEMONKACD       PIC X(02).
                        09  SPA-GMN-SEMONKACD-FL    PIC X(01).
                        09  SPA-GMN-SEMONKACD-MEI   PIC X(14).
-      *            ¥…Õ˝º‘∏¢∏¬
+      *            ÁÆ°ÁêÜËÄÖÊ®©Èôê
                    07  SPA-GMN-KANRIAUTHFLG-G. 
                        09  SPA-GMN-KANRIAUTH-MEI    PIC X(12).
                    07  SPA-NAI-KANRIAUTHFLG         PIC X(01).
-      *            ø«Œ≈π‘∞ŸΩÈ¥¸…Ωº®
+      *            Ë®∫ÁôÇË°åÁÇ∫ÂàùÊúüË°®Á§∫
                    07  SPA-GMN-ORCA21FLG-G. 
                        09  SPA-GMN-ORCA21FLG       PIC X(01).
                        09  SPA-GMN-ORCA21FLGF1     PIC X(01).
                        09  SPA-GMN-ORCA21FLG-MEI   PIC X(10).
-      *            …Ωº®∂Ë ¨
+      *            Ë°®Á§∫Âå∫ÂàÜ
                    07  SPA-GMN-HYOJIFLG-G. 
                        09  SPA-GMN-HYOJIFLG-MEI   PIC X(10).
                    07  SPA-NAI-HYOJIFLG           PIC X(01).
       *
       *----(04.07.01)--ADD-START---
-      *            •π°º•—°º•–•§•∂°º
+      *            „Çπ„Éº„Éë„Éº„Éê„Ç§„Ç∂„Éº
                    07  SPA-NAI-SUPERVISOR          PIC X(01).
       *----(04.07.01)--ADD-END-----
       *
-      *        ø«Œ≈≤ •∆°º•÷•Î
+      *        Ë®∫ÁôÇÁßë„ÉÜ„Éº„Éñ„É´
                05  SPA-GMN-SEMONKACD-AREA.
                    07  SPA-GMN-SEMONKACD-TBL  OCCURS 99.
                        09  SPA-GMN-SRYKA      PIC X(02).
@@ -114,77 +114,77 @@
                    07  SPA-SRYKA-YMD          PIC X(08).
       *
                05  SPA-GMN-INIT-G.
-      *            ø¶∞˜∂Ë ¨ÃææŒ
+      *            ËÅ∑Âì°Âå∫ÂàÜÂêçÁß∞
                    07  SPA-GMN-SYOKUKBN-LIST      PIC X(20)
                                                   OCCURS   10.
                    07  SPA-SYOKUKBN-MAX       PIC 9(04).
-      *            ¥…Õ˝º‘∏¢∏¬
+      *            ÁÆ°ÁêÜËÄÖÊ®©Èôê
                    07  SPA-GMN-KANRIAUTH-LSTG.
                        09  SPA-GMN-KANRIAUTH-LST  PIC X(12)
                                                   OCCURS  2. 
                    07  SPA-KANRIAUTHFLG-MAX       PIC 9(04).  
-      *            ø«Œ≈π‘∞ŸΩÈ¥¸…Ωº®
+      *            Ë®∫ÁôÇË°åÁÇ∫ÂàùÊúüË°®Á§∫
                    07  SPA-GMN-ORCA21FLG-LSTG.
                        09  SPA-GMN-ORCA21FLG-LST   PIC X(12)
                                                    OCCURS  2. 
                    07  SPA-ORCA21FLG-MAX       PIC 9(04).  
-      *            …Ωº®∂Ë ¨
+      *            Ë°®Á§∫Âå∫ÂàÜ
                    07  SPA-GMN-HYOJIFLG-LSTG.
                        09  SPA-GMN-HYOJIFLG-LST   PIC X(12)
                                                    OCCURS  2. 
                    07  SPA-HYOJIFLG-MAX       PIC 9(02).
       *
-      *            ¿¡µ·ΩÒΩÈ¥¸…Ωº®
+      *            Ë´ãÊ±ÇÊõ∏ÂàùÊúüË°®Á§∫
                    07  SPA-GMN-SKYPRTFLG-LSTG.
                        09  SPA-GMN-SKYPRTFLG-LST   PIC X(32)
                                                    OCCURS  9.
                    07  SPA-SKYPRTFLG-MAX       PIC 9(04).  
-      *            ±°≥∞ΩË ˝§ª§Û
+      *            Èô¢Â§ñÂá¶Êñπ„Åõ„Çì
                    07  SPA-GMN-SYOHOPRTFLG-LSTG.
                        09  SPA-GMN-SYOHOPRTFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-SYOHOPRTFLG-MAX      PIC 9(04).  
-      *            ÃÙ∫ﬁæ Û»Øπ‘
+      *            Ëñ¨Ââ§ÊÉÖÂ†±Áô∫Ë°å
                    07  SPA-GMN-YAKUJYOFLG-LSTG.
                        09  SPA-GMN-YAKUJYOFLG-LST   PIC X(30)
                                                    OCCURS  5. 
                    07  SPA-YAKUJYOFLG-MAX      PIC 9(04).  
-      *            ø«Œ≈»ÒÃ¿∫ŸΩÒ
+      *            Ë®∫ÁôÇË≤ªÊòéÁ¥∞Êõ∏
                    07  SPA-GMN-MEIPRTFLG-LSTG.
                        09  SPA-GMN-MEIPRTFLG-LST   PIC X(32)
                                                    OCCURS  9. 
                    07  SPA-MEIPRTFLG-MAX      PIC 9(04).  
-      *            ∏°∫∫¿µº∞ÃææŒ…Ωº®
+      *            Ê§úÊüªÊ≠£ÂºèÂêçÁß∞Ë°®Á§∫
                    07  SPA-GMN-FORMALFLG-LSTG.
                        09  SPA-GMN-FORMALFLG-LST   PIC X(40)
                                                    OCCURS  5. 
                    07  SPA-FORMALFLG-MAX      PIC 9(04).  
       *
-      *            ∆˛Œœ•π•Ø•Ì°º•Îπ‘øÙ
+      *            ÂÖ•Âäõ„Çπ„ÇØ„É≠„Éº„É´Ë°åÊï∞
                    07  SPA-GMN-GLINECNT       PIC 9(02).
                    07  SPA-GMN-NLINECNT       PIC 9(02).
       *
-      *            •Ø•È•§•¢•Û•» ›¬∏≤ƒ»›
+      *            „ÇØ„É©„Ç§„Ç¢„É≥„Éà‰øùÂ≠òÂèØÂê¶
                    07  SPA-GMN-CLIENT-SAVE-LSTG.
                        09  SPA-GMN-CLIENT-SAVE-LST PIC X(40)
                                                    OCCURS  2. 
                    07  SPA-CLIENT-SAVE-MAX    PIC 9(04).  
-      *            •Ê°º•∂°º•Ì•∞•§•Û∏¢∏¬
+      *            „É¶„Éº„Ç∂„Éº„É≠„Ç∞„Ç§„É≥Ê®©Èôê
                    07  SPA-GMN-USER-KANRI-LSTG.
                        09  SPA-GMN-USER-KANRI-LST  PIC X(40)
                                                    OCCURS  5. 
                    07  SPA-USER-KANRI-MAX      PIC 9(04).  
-      *            •Ø•È•§•¢•Û•»∞ı∫˛≤ƒ»›
+      *            „ÇØ„É©„Ç§„Ç¢„É≥„ÉàÂç∞Âà∑ÂèØÂê¶
                    07  SPA-GMN-CLIENT-PRT-LSTG.
                        09  SPA-GMN-CLIENT-PRT-LST  PIC X(40)
                                                    OCCURS  2. 
                    07  SPA-CLIENT-PRT-MAX      PIC 9(04).  
-      *            •◊•Í•Û•ø§ÿ§Œ•«°º•ø¡˜øÆ√±∞Ã
+      *            „Éó„É™„É≥„Çø„Å∏„ÅÆ„Éá„Éº„ÇøÈÄÅ‰ø°Âçò‰Ωç
                    07  SPA-GMN-PRTCONF-LSTG.
                        09  SPA-GMN-PRTCONF-LST    PIC X(40)
                                                    OCCURS  2. 
                    07  SPA-PRTCONF-MAX            PIC 9(04).  
-      *            •¿•§•¢•Ì•∞…Ωº®
+      *            „ÉÄ„Ç§„Ç¢„É≠„Ç∞Ë°®Á§∫
                    07  SPA-GMN-DIALOGFLG-LSTG.
                        09  SPA-GMN-DIALOGFLG-LST   PIC X(40)
                                                    OCCURS  2. 
@@ -193,7 +193,7 @@
                        09  SPA-GMN-ICCARDRW-LST   PIC X(40)
                                                    OCCURS  2. 
                    07  SPA-ICCARDRW-MAX           PIC 9(04).  
-      *            ¥À‹æ Û§Œ»Øπ‘∂Ë ¨
+      *            Âü∫Êú¨ÊÉÖÂ†±„ÅÆÁô∫Ë°åÂå∫ÂàÜ
                    07  SPA-1001-SKYPRTFLG      PIC  X(01).
                    07  SPA-1001-SYOHOPRTFLG    PIC  X(01).
                    07  SPA-1001-YAKUJYOPRTFLG  PIC  X(01).
@@ -201,64 +201,64 @@
                    07  SPA-1038-FORMALFLG      PIC  X(01).
       *
                05  SPA-PAGE2-G.
-      *            ¿¡µ·ΩÒ
+      *            Ë´ãÊ±ÇÊõ∏
                    07  SPA-GMN-SKYPRTFLG-G. 
                        09  SPA-GMN-SKYPRTFLG       PIC X(01).
                        09  SPA-GMN-SKYPRTFLG-F1    PIC X(01).
                        09  SPA-GMN-SKYPRTFLG-MEI   PIC X(30).
-      *            ±°≥∞ΩË ˝§ª§Û
+      *            Èô¢Â§ñÂá¶Êñπ„Åõ„Çì
                    07  SPA-GMN-SYOHOPRTFLG-G. 
                        09  SPA-GMN-SYOHOPRTFLG       PIC X(01).
                        09  SPA-GMN-SYOHOPRTFLG-F1    PIC X(01).
                        09  SPA-GMN-SYOHOPRTFLG-MEI   PIC X(28).
-      *            ÃÙ∫ﬁæ Û»Øπ‘
+      *            Ëñ¨Ââ§ÊÉÖÂ†±Áô∫Ë°å
                    07  SPA-GMN-YAKUJYOFLG-G. 
                        09  SPA-GMN-YAKUJYOFLG       PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-F1    PIC X(01).
                        09  SPA-GMN-YAKUJYOFLG-MEI   PIC X(28).
-      *            ø«Œ≈»ÒÃ¿∫ŸΩÒ
+      *            Ë®∫ÁôÇË≤ªÊòéÁ¥∞Êõ∏
                    07  SPA-GMN-MEIPRTFLG-G. 
                        09  SPA-GMN-MEIPRTFLG        PIC X(01).
                        09  SPA-GMN-MEIPRTFLG-F1     PIC X(01).
                        09  SPA-GMN-MEIPRTFLG-MEI    PIC X(30).
-      *            ∏°∫∫¿µº∞ÃææŒ…Ωº®
+      *            Ê§úÊüªÊ≠£ÂºèÂêçÁß∞Ë°®Á§∫
                    07  SPA-GMN-FORMALFLG-G. 
                        09  SPA-GMN-FORMALFLG        PIC X(01).
                        09  SPA-GMN-FORMALFLG-F1     PIC X(01).
                        09  SPA-GMN-FORMALFLG-MEI    PIC X(24).
-      *            •Ø•È•§•¢•Û•» ›¬∏≤ƒ»›
+      *            „ÇØ„É©„Ç§„Ç¢„É≥„Éà‰øùÂ≠òÂèØÂê¶
                    07  SPA-GMN-CLIENT-SAVE-G. 
                        09  SPA-GMN-CLIENT-SAVE      PIC X(01).
                        09  SPA-GMN-CLIENT-SAVE-F1   PIC X(01).
                        09  SPA-GMN-CLIENT-SAVE-MEI  PIC X(24).
-      *            •Ê°º•∂°º•Ì•∞•§•Û∏¢∏¬
+      *            „É¶„Éº„Ç∂„Éº„É≠„Ç∞„Ç§„É≥Ê®©Èôê
                    07  SPA-GMN-USER-KANRI-G. 
                        09  SPA-GMN-USER-KANRI      PIC X(01).
                        09  SPA-GMN-USER-KANRI-F1   PIC X(01).
                        09  SPA-GMN-USER-KANRI-MEI  PIC X(24).
-      *            •Ø•È•§•¢•Û•»∞ı∫˛≤ƒ»›
+      *            „ÇØ„É©„Ç§„Ç¢„É≥„ÉàÂç∞Âà∑ÂèØÂê¶
                    07  SPA-GMN-CLIENT-PRT-G. 
                        09  SPA-GMN-CLIENT-PRT      PIC X(01).
                        09  SPA-GMN-CLIENT-PRT-F1   PIC X(01).
                        09  SPA-GMN-CLIENT-PRT-MEI  PIC X(24).
-      *            •◊•Í•Û•ø§ÿ§Œ•«°º•ø¡˜øÆ√±∞Ã
+      *            „Éó„É™„É≥„Çø„Å∏„ÅÆ„Éá„Éº„ÇøÈÄÅ‰ø°Âçò‰Ωç
                    07  SPA-GMN-PRTCONF-G. 
                        09  SPA-GMN-PRTCONF        PIC X(01).
                        09  SPA-GMN-PRTCONF-F1     PIC X(01).
                        09  SPA-GMN-PRTCONF-MEI    PIC X(24).
-      *            •¿•§•¢•Ì•∞…Ωº®
+      *            „ÉÄ„Ç§„Ç¢„É≠„Ç∞Ë°®Á§∫
                    07  SPA-GMN-DIALOGFLG-G. 
                        09  SPA-GMN-DIALOGFLG       PIC X(01).
                        09  SPA-GMN-DIALOGFLG-F1    PIC X(01).
                        09  SPA-GMN-DIALOGFLG-MEI   PIC X(24).
-      *            £…£√•´°º•…•Í°º•¿°ø•È•§•ø
+      *            Ôº©Ôº£„Ç´„Éº„Éâ„É™„Éº„ÉÄÔºè„É©„Ç§„Çø
                    07  SPA-GMN-ICCARDRW-G. 
                        09  SPA-GMN-ICCARDRW        PIC X(01).
                        09  SPA-GMN-ICCARDRW-F1     PIC X(01).
                        09  SPA-GMN-ICCARDRW-MEI    PIC X(24).
       *
                05  SPA-PAGE3-G.
-      *            ¬æ±°∞ÂŒ≈µ°¥ÿæ Û
+      *            ‰ªñÈô¢ÂåªÁôÇÊ©üÈñ¢ÊÉÖÂ†±
                    07  SPA-GMN-GRPHOSP-G.
                        09  SPA-GMN-GRPHOSP-MAX      PIC 9(02).
                        09  SPA-GMN-GRPHOSP-OCC      OCCURS 9.
@@ -273,7 +273,7 @@
                    07  SPA-NAI-PASSWD         PIC 9(01).
       *
       *----(04.07.01)--ADD-START---
-      *         —πππ‡Ã‹ŒŒ∞Ë
+      *        Â§âÊõ¥È†ÖÁõÆÈ†òÂüü
                05  SPA-MAE-AREA.
                    07  SPA-MAE-STYUKYMD2      PIC X(10).
                    07  SPA-MAE-EDYUKYMD2      PIC X(10).
@@ -298,7 +298,7 @@
                        09  SPA-MAE-ORCA21FLG       PIC X(01).
                        09  SPA-MAE-ORCA21FLGF1     PIC X(01).
                        09  SPA-MAE-ORCA21FLG-MEI   PIC X(10).
-      *            …Ωº®∂Ë ¨
+      *            Ë°®Á§∫Âå∫ÂàÜ
                    07  SPA-MAE-HYOJIFLG-G.
                        09  SPA-MAE-HYOJIFLG-MEI   PIC X(10).
       *
@@ -347,7 +347,7 @@
                        09  SPA-MAE-ICCARDRW-F1     PIC X(01).
                        09  SPA-MAE-ICCARDRW-MEI    PIC X(24).
       *
-      *            ∆˛Œœ•π•Ø•Ì°º•Îπ‘øÙ
+      *            ÂÖ•Âäõ„Çπ„ÇØ„É≠„Éº„É´Ë°åÊï∞
                    07  SPA-MAE-GLINECNT       PIC 9(02).
                    07  SPA-MAE-NLINECNT       PIC 9(02).
       *
@@ -357,10 +357,10 @@
                            11  SPA-MAE-GRPUSERID   PIC X(16).
       *----(04.07.01)--ADD-END-----
       *H27.10
-      *        ∆˛Œœø¶∞˜¥…Õ˝º‘∂Ë ¨
+      *        ÂÖ•ÂäõËÅ∑Âì°ÁÆ°ÁêÜËÄÖÂå∫ÂàÜ
                05  SPA-NAI-STAFFKANRIKBN   PIC 9(01).
       *
-      *ø¶∞˜∞ÏÕ˜° £◊£∞£∂£±°À
+      *ËÅ∑Âì°‰∏ÄË¶ßÔºàÔº∑ÔºêÔºñÔºëÔºâ
            03  SPA-W061-AREA.
       *
                05  SPA-W061-SYORIKBN       PIC X(01).
@@ -404,7 +404,7 @@
                    07  SPA-GMN061-EDYUYMD      PIC X(12).
                    07  SPA-NAI061-EDYUYMD      PIC X(08).
       *
-      *    ¡™¬Ú∆‚Õ∆
+      *    ÈÅ∏ÊäûÂÜÖÂÆπ
                05  SPA-W061-SEL-G.
                    07  SPA-W061-SEL-SYOKUCD        PIC X(04).
                    07  SPA-W061-SEL-STYUKYMD       PIC X(08).

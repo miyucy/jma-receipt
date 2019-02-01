@@ -1,265 +1,265 @@
 kanri_cd    : "1001"
-name        : "°åÎÅµ¡´Ø¾ğÊó¡İ´ğËÜ"
+name        : "åŒ»ç™‚æ©Ÿé–¢æƒ…å ±âˆ’åŸºæœ¬"
 class_cd    : "*"
 item_max    : 42
 item_list   :
 - item_no   : 1
   item      : "PREFNUM"
-  item_jp   : "ÅÔÆ»ÉÜ¸©ÈÖ¹æ"
+  item_jp   : "éƒ½é“åºœçœŒç•ªå·"
   type      : "9"
   start     : 1
   length    : 2
   precision : 0
 - item_no   : 2
   item      : "TENHYOKBN"
-  item_jp   : "ÅÀ¿ôÉ½"
+  item_jp   : "ç‚¹æ•°è¡¨"
   type      : "9"
   start     : 3
   length    : 1
   precision : 0
 - item_no   : 3
   item      : "HOSPCD"
-  item_jp   : "°åÎÅµ¡´Ø¥³¡¼¥É"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰"
   type      : "9"
   start     : 4
   length    : 7
   precision : 0
 - item_no   : 4
   item      : "HOSPSBT"
-  item_jp   : "°åÎÅµ¡´Ø¼ïÊÌ"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢ç¨®åˆ¥"
   type      : "9"
   start     : 11
   length    : 1
   precision : 0
 - item_no   : 5
   item      : "HOSPID"
-  item_jp   : "°åÎÅµ¡´Ø£É£Ä"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢ï¼©ï¼¤"
   type      : "X"
   start     : 12
   length    : 24
 - item_no   : 6
   item      : "HOSPNAME"
-  item_jp   : "°åÎÅµ¡´ØÌ¾¾Î"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢åç§°"
   type      : "N"
   start     : 36
   length    : 120
 - item_no   : 7
   item      : "KAISETUNAME"
-  item_jp   : "³«Àß¼ÔÌ¾"
+  item_jp   : "é–‹è¨­è€…å"
   type      : "N"
   start     : 156
   length    : 120
 - item_no   : 8
   item      : "KANRINAME"
-  item_jp   : "´ÉÍı¼Ô»áÌ¾¡Ê±¡Ä¹¡Ë"
+  item_jp   : "ç®¡ç†è€…æ°åï¼ˆé™¢é•·ï¼‰"
   type      : "N"
   start     : 276
   length    : 80
 - item_no   : 9
   item      : "BEDSU"
-  item_jp   : "ÉÂ¾²¿ô¡Êµö²Ä¡Ë"
+  item_jp   : "ç—…åºŠæ•°ï¼ˆè¨±å¯ï¼‰"
   type      : "9"
   start     : 356
   length    : 4
   precision : 0
 - item_no   : 10
   item      : "ROUPAYKBN"
-  item_jp   : "Ï·¿Í»ÙÊ§¶èÊ¬"
+  item_jp   : "è€äººæ”¯æ‰•åŒºåˆ†"
   type      : "X"
   start     : 360
   length    : 1
 - item_no   : 11
   item      : "HOSPSBT1"
-  item_jp   : "µìÁí¹çÉÂ±¡¥Õ¥é¥°"
+  item_jp   : "æ—§ç·åˆç—…é™¢ãƒ•ãƒ©ã‚°"
   type      : "9"
   start     : 361
   length    : 1
   precision : 0
 - item_no   : 12
   item      : "HOSPCDN"
-  item_jp   : "°åÎÅµ¡´Ø¥³¡¼¥É¡Ê´Á»ú¡Ë"
+  item_jp   : "åŒ»ç™‚æ©Ÿé–¢ã‚³ãƒ¼ãƒ‰ï¼ˆæ¼¢å­—ï¼‰"
   type      : "N"
   start     : 362
   length    : 40
 - item_no   : 13
   item      : "SYOHOKBN"
-  item_jp   : "±¡³°½èÊı¶èÊ¬"
+  item_jp   : "é™¢å¤–å‡¦æ–¹åŒºåˆ†"
   type      : "X"
   start     : 402
   length    : 1
 - item_no   : 14
   item      : "SKYPRTFLG"
-  item_jp   : "ÀÁµá½ñÈ¯¹Ô¥Õ¥é¥°"
+  item_jp   : "è«‹æ±‚æ›¸ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 403
   length    : 1
 - item_no   : 15
   item      : "SYOHOPRTFLG"
-  item_jp   : "±¡³°½èÊı¤»¤óÈ¯¹Ô¥Õ¥é¥°"
+  item_jp   : "é™¢å¤–å‡¦æ–¹ã›ã‚“ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 404
   length    : 1
 - item_no   : 16
   item      : "ZENSYOHOFLG"
-  item_jp   : "Á°²ó½èÊıÉ½¼¨¥Õ¥é¥°"
+  item_jp   : "å‰å›å‡¦æ–¹è¡¨ç¤ºãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 405
   length    : 1
 - item_no   : 17
   item      : "YAKUJYOPRTFLG"
-  item_jp   : "ÌôºŞ¾ğÊóÈ¯¹Ô¥Õ¥é¥°"
+  item_jp   : "è–¬å‰¤æƒ…å ±ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 406
   length    : 1
 - item_no   : 18
   item      : "BEDSUIPN"
-  item_jp   : "ÉÂ¾²¿ô¡Ê°ìÈÌ¡Ë"
+  item_jp   : "ç—…åºŠæ•°ï¼ˆä¸€èˆ¬ï¼‰"
   type      : "9"
   start     : 407
   length    : 4
   precision : 0
 - item_no   : 19
   item      : "DISCOUNT-HASU-KBN"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬¡Ê¸ºÌÈÍ­¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†ï¼ˆæ¸›å…æœ‰ï¼‰"
   type      : "X"
   start     : 411
   length    : 1
 - item_no   : 20
   item      : "TAX-HASU-KBN"
-  item_jp   : "¾ÃÈñÀÇÃ¼¿ô¶èÊ¬"
+  item_jp   : "æ¶ˆè²»ç¨ç«¯æ•°åŒºåˆ†"
   type      : "X"
   start     : 412
   length    : 1
 - item_no   : 21
   item      : "DISCOUNT-HASU-KBN2"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬°åÊİ¡Ê¸ºÌÈÌµ¡¦Êİ¸±Ê¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†åŒ»ä¿ï¼ˆæ¸›å…ç„¡ãƒ»ä¿é™ºåˆ†ï¼‰"
   type      : "X"
   start     : 413
   length    : 1
 - item_no   : 22
   item      : "HIWARIKBN"
-  item_jp   : "¹¹Àµ¡¦°éÀ®¸ÂÅÙ³ÛÆü³ä·×»»"
+  item_jp   : "æ›´æ­£ãƒ»è‚²æˆé™åº¦é¡æ—¥å‰²è¨ˆç®—"
   type      : "X"
   start     : 414
   length    : 1
 - item_no   : 23
   item      : "DATACREATEFLG"
-  item_jp   : "¥Ç¡¼¥¿¼ı½¸ºîÀ®¥Õ¥é¥°"
+  item_jp   : "ãƒ‡ãƒ¼ã‚¿åé›†ä½œæˆãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 415
   length    : 1
 - item_no   : 24
   item      : "DATATEISYUTUKBN"
-  item_jp   : "¥Ç¡¼¥¿¼ı½¸Äó½ĞÊıË¡¶èÊ¬"
+  item_jp   : "ãƒ‡ãƒ¼ã‚¿åé›†æå‡ºæ–¹æ³•åŒºåˆ†"
   type      : "X"
   start     : 416
   length    : 1
 - item_no   : 25
   item      : "JIHIPOSITION"
-  item_jp   : "¼«ÈñÊİ¸±½¸·×Àè¶èÊ¬"
+  item_jp   : "è‡ªè²»ä¿é™ºé›†è¨ˆå…ˆåŒºåˆ†"
   type      : "X"
   start     : 417
   length    : 1
 - item_no   : 26
   item      : "MEIPRTFLG"
-  item_jp   : "¿ÇÎÅÈñÌÀºÙ½ñÈ¯¹Ô¥Õ¥é¥°"
+  item_jp   : "è¨ºç™‚è²»æ˜ç´°æ›¸ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 418
   length    : 1
 - item_no   : 27
   item      : "CHIHOUNUMKBN"
-  item_jp   : "ÃÏÊı¸øÈñÊİ¸±ÈÖ¹æ¥¿¥Ö¶èÊ¬"
+  item_jp   : "åœ°æ–¹å…¬è²»ä¿é™ºç•ªå·ã‚¿ãƒ–åŒºåˆ†"
   type      : "X"
   start     : 419
   length    : 1
 - item_no   : 28
   item      : "GENTAIKBN"
-  item_jp   : "¸ºÌÈ·×»»ÂĞ¾İ¶èÊ¬"
+  item_jp   : "æ¸›å…è¨ˆç®—å¯¾è±¡åŒºåˆ†"
   type      : "X"
   start     : 420
   length    : 1
 - item_no   : 29
   item      : "OKUSURIPRTFLG"
-  item_jp   : "¤ªÌô¼êÄ¢È¯¹Ô¥Õ¥é¥°"
+  item_jp   : "ãŠè–¬æ‰‹å¸³ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 421
   length    : 1
 - item_no   : 30
   item      : "YYKHYOPRTFLG"
-  item_jp   : "Í½ÌóÉ¼È¯¹Ô¥Õ¥é¥°"
+  item_jp   : "äºˆç´„ç¥¨ç™ºè¡Œãƒ•ãƒ©ã‚°"
   type      : "X"
   start     : 422
   length    : 1
 - item_no   : 31
   item      : "TANHOSPNAME"
-  item_jp   : "Ã»½Ì°åÎÅµ¡´ØÌ¾¾Î"
+  item_jp   : "çŸ­ç¸®åŒ»ç™‚æ©Ÿé–¢åç§°"
   type      : "N"
   start     : 423
   length    : 20
 - item_no   : 32
   item      : "DISCOUNT-HASU-KBN2J"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬°åÊİ¡Ê¸ºÌÈÌµ¡¦¼«ÈñÊ¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†åŒ»ä¿ï¼ˆæ¸›å…ç„¡ãƒ»è‡ªè²»åˆ†ï¼‰"
   type      : "X"
   start     : 443
   length    : 1
 - item_no   : 33
   item      : "DISCOUNT-HASU-KBN3"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬Ï«ºÒ¡Ê¸ºÌÈÌµ¡¦Êİ¸±Ê¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†åŠ´ç½ï¼ˆæ¸›å…ç„¡ãƒ»ä¿é™ºåˆ†ï¼‰"
   type      : "X"
   start     : 444
   length    : 1
 - item_no   : 34
   item      : "DISCOUNT-HASU-KBN3J"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬Ï«ºÒ¡Ê¸ºÌÈÌµ¡¦¼«ÈñÊ¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†åŠ´ç½ï¼ˆæ¸›å…ç„¡ãƒ»è‡ªè²»åˆ†ï¼‰"
   type      : "X"
   start     : 445
   length    : 1
 - item_no   : 35
   item      : "DISCOUNT-HASU-KBN4"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬¼«ÇåÀÕ¡Ê¸ºÌÈÌµ¡¦Êİ¸±Ê¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†è‡ªè³ è²¬ï¼ˆæ¸›å…ç„¡ãƒ»ä¿é™ºåˆ†ï¼‰"
   type      : "X"
   start     : 446
   length    : 1
 - item_no   : 36
   item      : "DISCOUNT-HASU-KBN4J"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬¼«ÇåÀÕ¡Ê¸ºÌÈÌµ¡¦¼«ÈñÊ¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†è‡ªè³ è²¬ï¼ˆæ¸›å…ç„¡ãƒ»è‡ªè²»åˆ†ï¼‰"
   type      : "X"
   start     : 447
   length    : 1
 - item_no   : 37
   item      : "DISCOUNT-HASU-KBN5J"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬¸ø³²¡Ê¸ºÌÈÌµ¡¦¼«ÈñÊ¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†å…¬å®³ï¼ˆæ¸›å…ç„¡ãƒ»è‡ªè²»åˆ†ï¼‰"
   type      : "X"
   start     : 448
   length    : 1
 - item_no   : 38
   item      : "SANKANUM"
-  item_jp   : "Ê¬ÊÚµ¡´Ø´ÉÍıÈÖ¹æ"
+  item_jp   : "åˆ†å¨©æ©Ÿé–¢ç®¡ç†ç•ªå·"
   type      : "9"
   start     : 449
   length    : 10
   precision : 0
 - item_no   : 39
   item      : "DATAINFECTIONKBN"
-  item_jp   : "£Ï£Ò£Ã£Á¥µ¡¼¥Ù¥¤¥é¥ó¥¹¶èÊ¬"
+  item_jp   : "ï¼¯ï¼²ï¼£ï¼¡ã‚µãƒ¼ãƒ™ã‚¤ãƒ©ãƒ³ã‚¹åŒºåˆ†"
   type      : "X"
   start     : 459
   length    : 1
 - item_no   : 40
   item      : "DISCOUNT-HASU-KBN6"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬Âè»°¼Ô¹Ô°Ù¡Ê¸ºÌÈÌµ¡¦Êİ¸±Ê¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†ç¬¬ä¸‰è€…è¡Œç‚ºï¼ˆæ¸›å…ç„¡ãƒ»ä¿é™ºåˆ†ï¼‰"
   type      : "X"
   start     : 460
   length    : 1
 - item_no   : 41
   item      : "DISCOUNT-HASU-KBN6J"
-  item_jp   : "ÀÁµá³ÛÃ¼¿ô¶èÊ¬Âè»°¼Ô¹Ô°Ù¡Ê¸ºÌÈÌµ¡¦¼«ÈñÊ¬¡Ë"
+  item_jp   : "è«‹æ±‚é¡ç«¯æ•°åŒºåˆ†ç¬¬ä¸‰è€…è¡Œç‚ºï¼ˆæ¸›å…ç„¡ãƒ»è‡ªè²»åˆ†ï¼‰"
   type      : "X"
   start     : 461
   length    : 1
 - item_no   : 42
   item      : "DAISANKBN"
-  item_jp   : "Âè»°¼Ô¹Ô°Ù¡Ê°åÎÅÈñ¡ËÉéÃ´¶â³Û·×»»¶èÊ¬"
+  item_jp   : "ç¬¬ä¸‰è€…è¡Œç‚ºï¼ˆåŒ»ç™‚è²»ï¼‰è² æ‹…é‡‘é¡è¨ˆç®—åŒºåˆ†"
   type      : "X"
   start     : 462
   length    : 1

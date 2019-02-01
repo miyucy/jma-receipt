@@ -1,6 +1,6 @@
       *******************************************************************
       * Project code name "ORCA"
-      * ����ɸ��쥻�ץȥ��եȡ�JMA standard receipt software��
+      * 日医標準レセプトソフト（JMA standard receipt software）
       * Copyright(C) 2002 JMA (Japan Medical Association)
       *
       * This program is part of "JMA standard receipt software".
@@ -18,15 +18,15 @@
        IDENTIFICATION          DIVISION.
        PROGRAM-ID.             ORCBM400.
       *****************************************************************
-      *  �����ƥ�̾        : �ϣңã�
-      *  ���֥����ƥ�̾    : �쥻�ץ�
-      *  ����ݡ��ͥ��̾  : �����գУģƥե��������
-      *  ������            : 
-      *  ��������    ��ȼ�        ����
-      *  16/10/07    NACL��ƣ��    ��������
+      *  システム名        : ＯＲＣＡ
+      *  サブシステム名    : レセプト
+      *  コンポーネント名  : 自賠責ＰＤＦファイル作成
+      *  管理者            : 
+      *  作成日付    作業者        記述
+      *  16/10/07    NACL−藤原    新規作成
       *****************************************************************
-      *  �ץ�����ཤ������
-      * Maj/Min/Rev  ������       ����      ����
+      *  プログラム修正履歴
+      * Maj/Min/Rev  修正者       日付      内容
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -34,19 +34,19 @@
        INPUT-OUTPUT                SECTION.      
        FILE-CONTROL.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
            SELECT  PRT-FILE        ASSIGN  ASGNPARA
                                    ORGANIZATION    IS  LINE
                                                        SEQUENTIAL 
                                    FILE    STATUS  IS  STS-PRT.
-      *    ���顼�ե�����
+      *    エラーファイル
            SELECT  RECEERR-FILE    ASSIGN  RECEERR
                                    FILE    STATUS  IS  STS-RECEERR.
       *
        DATA                        DIVISION.
        FILE                        SECTION.
       *
-      *    �����ѥǡ���
+      *    印刷用データ
        FD  PRT-FILE.
        01  PRT-REC.
            03  PRT-HEAD                PIC X(100).
@@ -64,16 +64,16 @@
            03  PRT-PRTID               PIC X(30).
            03  PRT-PRTDATA             PIC X(20000).
       *     
-      *    ���顼�ե�����
+      *    エラーファイル
        FD  RECEERR-FILE.
        01  RECEERR-REC                 PIC X(200). 
       *
        WORKING-STORAGE             SECTION.
       *
-      *    �����ѥǡ��� ̾���ΰ� 
+      *    印刷用データ 名称領域 
            COPY    "CPASGNPARA.INC".
       *
-      *    ���顼�ե����� ̾���ΰ� 
+      *    エラーファイル 名称領域 
            COPY    "CPRECEERR.INC".
       *
        01  JIBAIPARA.
@@ -86,7 +86,7 @@
       *
            COPY    "COMMON-SPA".
       *
-      *    �ե饰�ΰ�
+      *    フラグ領域
        01  STS-AREA.
            03  STS-PRT                 PIC X(02).
            03  STS-RECEERR             PIC X(02).
@@ -99,7 +99,7 @@
       *
            03  FLG-SET                 PIC 9(01).
       *
-      *    ��������ΰ�
+      *    カウント領域
        01  CNT-AREA.
            03  CNT-IN                  PIC 9(06).
            03  CNT-OUT                 PIC 9(06).
@@ -118,7 +118,7 @@
            03  IDYY                    PIC 9(05).
            03  IDZZ                    PIC 9(05).
       *
-      *    ���ŵ��ؾ����ΰ�
+      *    医療機関情報領域
        01  TBL-SYS1001-T.
            03  TBL-SYS1001-OCC         OCCURS  10.
                05  TBL-SYS1001         PIC X(610).
@@ -157,17 +157,17 @@
            03  WRK-ERR-FILE-MSG        PIC X(100).
            03  WRK-ERR-FILE-MSG1       PIC X(17).
            03  WRK-ERR-FLG             PIC 9(01).
-      *    ���顼�ե�����̾���ΰ�
+      *    エラーファイル名称領域
            COPY    "CPTEMPFL.INC"      REPLACING  //TEMPFLPARA//
                                        BY         //WRK-ERR-FILE-NM//.
       *
        01  WRK-SGETTEMP-ST             PIC 9(05).
       *
       *****************************************************************
-      *    �ե�����쥤������
+      *    ファイルレイアウト
       *****************************************************************
       *
-      *    ���ŵ��ؾ���
+      *    医療機関情報
            COPY    "CPSYSKANRI.INC".
            COPY    "CPSK1001.INC".
       *
@@ -176,25 +176,25 @@
        01  JIBAI-PRT-REC.
            COPY    "CPJIBAI-PRT.INC".
       *
-      *    ����ִ����ޥ���
+      *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
       *
            COPY    "CPSHELLTBL.INC".
       *
       *****************************************************************
-      *    ���֥ץ����ΰ�
+      *    サブプロ用領域
       *****************************************************************
       *
-      *   ����ִ����ģ����極��
+      *   ジョブ管理ＤＢ制御サブ
            COPY    "CPORCSJOBKANRI.INC".
       *
-      *    �ޥ������ռ�������
+      *    マシン日付取得サブ
            COPY    "CPORCSMCNDATE.INC".
       *
            COPY    "CPORCSGETTEMP.INC".
       *
-      *    �ģ¸���
+      *    ＤＢ検索
            COPY    "MCPDATA.INC".
       *
            COPY    "MCPAREA".
@@ -208,7 +208,7 @@
                                    USING   COMMAND-PARAM.
       *
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        000-PROC-SEC                SECTION.
       *
@@ -221,7 +221,7 @@
            STOP    RUN
            .
       *****************************************************************
-      *    �������
+      *    初期処理
       *****************************************************************
        100-INIT-SEC                SECTION.
       *
@@ -257,7 +257,7 @@
       *
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
-      *    ����������
+      *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
            CALL    "ORCSMCNDATE"       USING
                                        ORCSMCNDATEAREA
@@ -281,15 +281,15 @@
       *
            PERFORM 100-DBOPEN-SEC
       *
-      *    ���ƥå״������Ͻ���
+      *    ステップ管理開始処理
            MOVE    "STS"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    "ORCBM400"      TO  JOB-PGID
-           MOVE    "�����գУģƥե��������"
+           MOVE    "自賠責ＰＤＦファイル作成"
                                    TO  JOB-SHELLMSG
            PERFORM 900-CALL-ORCSJOB-SEC
       *
-      *    ���ŵ��ؾ������
+      *    医療機関情報取得
            MOVE     SPACE              TO  TBL-SYS1001-T
            INITIALIZE                      TBL-SYS1001-T
       *
@@ -323,7 +323,7 @@
            PERFORM 900-CLOSE-SEC
       *
            IF      TBL-SYS1001-MAX     =   ZERO
-               MOVE    "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
+               MOVE    "医療機関情報が取得できませんでした。"
                                          TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
                PERFORM 500-COBABORT-SEC
@@ -339,7 +339,7 @@
            EXIT.
       * 
       *****************************************************************
-      *    �����
+      *    主処理
       *****************************************************************
        200-MAIN-SEC                SECTION.
       *
@@ -365,9 +365,9 @@
                END-IF
       *
                IF      FLG-JIBAI-PRT       =   1
-                   STRING  "�������ԤΣУģƥǡ�����¸�ߤ��ޤ���"
+                   STRING  "該当患者のＰＤＦデータが存在しません"
                                                DELIMITED  BY  SIZE
-                           "�������ֹ��"      DELIMITED  BY  SIZE
+                           "　患者番号＝"      DELIMITED  BY  SIZE
                            RECE10-PTNUM        DELIMITED  BY  SIZE
                                                INTO  WRK-RECEERR
                    END-STRING
@@ -379,7 +379,7 @@
                PERFORM         UNTIL   FLG-JIBAI-PRT =   1
                    MOVE    SPACE               TO  PRT-REC
       *
-      *            ���ŵ��ؾ���
+      *            医療機関情報
                    MOVE    ZERO                TO  FLG-SET
       *
                    PERFORM VARYING IDX     FROM    1   BY  1
@@ -394,8 +394,8 @@
                        END-IF
                    END-PERFORM
                    IF      FLG-SET             =   ZERO
-                       STRING  "���ŵ��ؾ��󤬼����Ǥ��ޤ���Ǥ�����"
-                               "����ǯ���"    DELIMITED  BY  SIZE
+                       STRING  "医療機関情報が取得できませんでした。"
+                               "診療年月＝"    DELIMITED  BY  SIZE
                                JIBAI-PRT-SRYYM DELIMITED  BY  SIZE
                                                INTO    WRK-RECEERR
                        END-STRING
@@ -418,7 +418,7 @@
                    MOVE    WRK-RECENUM         TO  PRT-RECENUM
                    MOVE    JIBAI-PRT-RENNUM    TO  PRT-RENNUM
                    MOVE    JIBAI-PRT-FORMID    TO  PRT-PRTID
-      *            ��̵������ͭ����ѹ�
+      *            枠無しを枠有りに変更
                    EVALUATE    JIBAI-PRT-FORMID
                        WHEN    "HCM23V06.red"
                            MOVE    "HCM48V02.red"  TO  PRT-PRTID
@@ -428,7 +428,7 @@
                            MOVE    "HCN48V04.red"  TO  PRT-PRTID
                        WHEN    "HCN53V04.red"
                            MOVE    "HCN54V04.red"  TO  PRT-PRTID
-      *                    ³��
+      *                    続紙
                        WHEN    "HCM29V04.red"
                            MOVE    "HCM49V02.red"  TO  PRT-PRTID
                    END-EVALUATE
@@ -439,7 +439,7 @@
                        CONTINUE
                    ELSE
                        MOVE    SPACE               TO  WRK-RECEERR
-                       STRING "�ե����� �񤭹��ߥ��顼  STS="
+                       STRING "ファイル 書き込みエラー  STS="
                                                    DELIMITED  BY  SIZE
                                STS-PRT             DELIMITED  BY  SIZE
                                            INTO    WRK-RECEERR
@@ -467,7 +467,7 @@
 
       *
       *****************************************************************
-      *    ��λ����
+      *    終了処理
       *****************************************************************
        300-TERM-SEC                SECTION.
       *
@@ -488,12 +488,12 @@
                MOVE    "monthly"       TO  MCP-PATHNAME
                PERFORM 900-ORCDBMAIN-SEC
            ELSE
-               MOVE    "�����оݤΥǡ���������ޤ���Ǥ���"
+               MOVE    "処理対象のデータがありませんでした"
                                            TO  WRK-RECEERR
                PERFORM 500-ERR-HENSYU-SEC
            END-IF
       *
-      *    ���ƥå״�����λ����
+      *    ステップ管理終了処理
            MOVE    "STE"           TO  SJOBKANRI-MODE
            INITIALIZE                  JOBKANRI-REC
            MOVE    CNT-OUT         TO  JOB-UPDCNT2
@@ -508,7 +508,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼���Ͻ���
+      *    エラー出力処理
       *****************************************************************
        500-ERR-HENSYU-SEC                SECTION.
       *
@@ -522,7 +522,7 @@
                WRITE   RECEERR-REC
                CLOSE   RECEERR-FILE
       *         
-      *        ����ִ������Ͻ���
+      *        ジョブ管理開始処理
                MOVE    "JBE"           TO  SJOBKANRI-MODE
                INITIALIZE                  JOBKANRI-REC
                MOVE    WRK-RECEERR     TO  JOB-YOBI
@@ -534,7 +534,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ���顼����λ����
+      *    エラー時終了処理
       *****************************************************************
        500-COBABORT-SEC                SECTION.
       *
@@ -551,26 +551,26 @@
            EXIT.
       *
       *****************************************************************
-      *    �ե����륨�顼����
+      *    ファイルエラー処理
       *****************************************************************
        500-FILE-ERR-ABORT-SEC           SECTION.
       *
            EVALUATE    WRK-ERR-FLG
                WHEN    1
-                   MOVE    "�ե�����ϣУţΥ��顼��FILE="
+                   MOVE    "ファイルＯＰＥＮエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file open err" TO  WRK-ERR-FILE-MSG1
                WHEN    2
-                   MOVE    "�ե������ɤ߹��ߥ��顼��FILE="
+                   MOVE    "ファイル読み込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file read err" TO  WRK-ERR-FILE-MSG1
                WHEN    3
-                   MOVE    "�ե�����񤭹��ߥ��顼��FILE="
+                   MOVE    "ファイル書き込みエラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file write err"
                                            TO  WRK-ERR-FILE-MSG1
                WHEN    4
-                   MOVE    "�ե����빹�����顼��FILE="
+                   MOVE    "ファイル更新エラー　FILE="
                                            TO  WRK-ERR-FILE-MSG
                    MOVE    "file rewrite err"
                                            TO  WRK-ERR-FILE-MSG1
@@ -602,7 +602,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ɹ�
+      *    システム管理読込
       *****************************************************************
        900-SYSKANRI-READ-SEC           SECTION.
       *
@@ -631,7 +631,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����ƥ�����ޥ����ɤ߹��߽���
+      *    システム管理マスタ読み込み処理
       *****************************************************************
        900-SYSKANRI-N-SEC         SECTION.
       *
@@ -647,7 +647,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ɹ�
+      *    請求管理読込
       *****************************************************************
        900-SEIKYU-SELECT-SEC             SECTION.
       *
@@ -678,7 +678,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ��������ɹ�
+      *    請求管理読込
       *****************************************************************
        900-SEIKYU-READ-SEC             SECTION.
       *
@@ -706,7 +706,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �����գУģ��ɹ�
+      *    自賠責ＰＤＦ読込
       *****************************************************************
        900-JIBAI-PRT-READ-SEC           SECTION.
       *
@@ -725,7 +725,7 @@
            EXIT.
       *
       *****************************************************************
-      *    ����ִ����ģ��������
+      *    ジョブ管理ＤＢ制御処理
       *****************************************************************
        900-CALL-ORCSJOB-SEC            SECTION.
       *
@@ -742,7 +742,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ӣţ̣ţãԽ���
+      *    ＤＢＳＥＬＥＣＴ処理
       *****************************************************************
        900-DBSELECT-SEC                SECTION.
       *
@@ -755,7 +755,7 @@
                INITIALIZE                      WRK-ERR-AREA
                MOVE    MCP-RC              TO  WRK-MCP-RC
       *
-               STRING  "�ģ��ɤ߹��ߥ��顼��TABLE="
+               STRING  "ＤＢ読み込みエラー　TABLE="
                                            DELIMITED   BY  SIZE
                        MCP-TABLE           DELIMITED   BY  SPACE
                        " RC="              DELIMITED   BY  SIZE
@@ -781,7 +781,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ£ƣţԣãȽ���
+      *    ＤＢＦＥＴＣＨ処理
       *****************************************************************
        900-DBFETCH-SEC                SECTION.
       *
@@ -793,7 +793,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륯����������
+      *    テーブルクローズ処理
       *****************************************************************
        900-CLOSE-SEC               SECTION.
       *
@@ -805,7 +805,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ơ��֥륢����������
+      *    テーブルアクセス処理
       *****************************************************************
        900-ORCDBMAIN-SEC               SECTION.
       *
@@ -818,7 +818,7 @@
            EXIT.
       *      
       *****************************************************************
-      *    �ģ¥����ץ����
+      *    ＤＢオープン処理
       *****************************************************************
        100-DBOPEN-SEC                SECTION.
       *
@@ -836,7 +836,7 @@
            EXIT.
       *
       *****************************************************************
-      *    �ģ¥�����������
+      *    ＤＢクローズ処理
       *****************************************************************
        900-DBDISCONNECT-SEC            SECTION.
       *

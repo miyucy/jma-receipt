@@ -1,12 +1,12 @@
 --                                    --
--- •Ï•ª•◊•»≈≈ªª•«°º•ø•ﬁ•π•ø           --
---    •Ï•ª≈≈•«°º•ø (RECEDATA)         --
---    §Ú2500§À —ππ                    --
+-- „É¨„Çª„Éó„ÉàÈõªÁÆó„Éá„Éº„Çø„Éû„Çπ„Çø           --
+--    „É¨„ÇªÈõª„Éá„Éº„Çø (RECEDATA)         --
+--    „Çí2500„Å´Â§âÊõ¥                    --
 --                                    --
 -- Create Date : 2006/05/16           --
 --                                    --
 
--- TBL_RECEDENWK  ∫Ó¿Æ              --
+-- TBL_RECEDENWK  ‰ΩúÊàê              --
 
 create table TBL_RECEDENWK (
 HOSPID			char(24)	not null,
@@ -28,16 +28,16 @@ constraint TBL_RECEDENWK_primary_key primary key (HOSPID,SRYYM,NYUGAIKBN,
 PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD,
 RECKBN,RENNUM));
 
--- TBL_RECEDEN ¢™ TBL_RECEDENWK   --
+-- TBL_RECEDEN ‚Üí TBL_RECEDENWK   --
 
 insert into TBL_RECEDENWK
 select * from TBL_RECEDEN;
 
--- TBL_RECEDEN ∫ÔΩ¸               --
+-- TBL_RECEDEN ÂâäÈô§               --
 
 drop table TBL_RECEDEN;
 
--- TBL_RECEDEN ∫Ó¿Æ               --
+-- TBL_RECEDEN ‰ΩúÊàê               --
 
 create table TBL_RECEDEN (
 HOSPID			char(24)	not null,
@@ -59,12 +59,12 @@ constraint TBL_RECEDEN_primary_key primary key (HOSPID,SRYYM,NYUGAIKBN,
 PTID,RECEKA,TEISYUTUSAKI,RECESYUBETU,HKNJANUM,HOJOKBN_KEY,TEKSTYMD,
 RECKBN,RENNUM));
 
--- TBL_RECEDENWK ¢™ TBL_RECEDEN   --
+-- TBL_RECEDENWK ‚Üí TBL_RECEDEN   --
 
 insert into TBL_RECEDEN
 select * from TBL_RECEDENWK;
 
 
--- TBL_RECEDENWK ∫ÔΩ¸             --
+-- TBL_RECEDENWK ÂâäÈô§             --
 
 drop table TBL_RECEDENWK;
