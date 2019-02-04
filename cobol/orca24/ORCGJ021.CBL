@@ -1276,6 +1276,8 @@
            IF      SPA-ERRCD           =   SPACE
                PERFORM 31011-HKNCOMBI-HEN-SEC
                MOVE    WRK-HKNCOMBIMEI     TO  SPA-J021-MAE-HKNCOMBIMEI
+      *H31.1   自費保険情報編集
+               MOVE    COMB-HKNNUM         TO  SPA-J021-MAE-HKNNUM
       *
       *        収納から負担割合を編集する
                INITIALIZE                  SYUNOU-REC
