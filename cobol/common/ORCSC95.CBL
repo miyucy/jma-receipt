@@ -2063,8 +2063,21 @@
                    GO      TO      100131-HKNCOMBI-CHK-EXT
                END-IF
       *
+      *!!!!
+      *H31.2
+      *        外来の入院中訂正の保険は自費・アフターのみ
+               IF     (SPA-SYORIFLG        =   1  )
+                  AND (LNK-SC95-KBN        =   "4")
+                  AND (SPA-NYUGAIKBN       =   2  )
+                  AND (SPA-NAI-NYUIN       =   1  )
+      *            外来の入院中訂正の保険組合せ決定
+                   PERFORM 10013119-HKNCOMBI-SETNYUIN-SEC
+               ELSE
+      *
       *        省略時の保険組合せ決定
                PERFORM 1001311-HKNCOMBI-SET-SEC
+      *
+               END-IF
       *        前回の保険組合せとの判定
                IF     (WRK-MAE-HKNCOMBI    NOT =   SPACE )
                  AND  (SPA-ZENHKNCHK-FLG       =   "1"
@@ -2146,6 +2159,52 @@
            .
        1001311-HKNCOMBI-SET-EXT.
            EXIT.
+      *
+      *H31.2
+      *****************************************************************
+      *    外来の入院中訂正の保険組合せ決定処理
+      *****************************************************************
+       10013119-HKNCOMBI-SETNYUIN-SEC      SECTION.
+      *
+           MOVE    ZERO                TO  WRK-CNT-HKN
+           MOVE    ZERO                TO  WRK-CNT-HKN2
+           MOVE    ZERO                TO  WRK-IDXH
+           MOVE    ZERO                TO  WRK-IDXH2
+      *
+           PERFORM VARYING     IDX     FROM    1   BY  1
+                   UNTIL       IDX     >   SPA-HKN-MAX
+      *        労災（アフターケア）対象とする
+               IF     (SPA-NAI-HKNNUM (IDX)    =   "971" )
+                  AND (SPA-NAI-RSI-HKNKBN(IDX) =   "3"   )
+                   MOVE    IDX                 TO  WRK-IDXH
+                   MOVE    SPA-HKN-MAX         TO  IDX
+               END-IF
+      *
+      *        自費はアフターケがない時に有効とする
+               IF     (ORCSHKN-NAI-HKNNUM (IDX)(1:2) =   "98")
+                   IF      WRK-IDXH2           =   ZERO
+                       MOVE    IDX             TO  WRK-IDXH2
+                   END-IF
+                END-IF
+           END-PERFORM
+      *
+           IF      WRK-IDXH            =   ZERO
+               MOVE    WRK-IDXH2       TO  WRK-IDXH
+           END-IF
+      *    対象がなければ、選択なし
+           IF      WRK-IDXH            =   ZERO
+               GO      TO      10013119-HKNCOMBI-SETNYUIN-EXT
+           END-IF
+      *
+           MOVE    SPA-GMN-THKNCOMBINUM (WRK-IDXH)
+                                       TO  SPA-HKNCOMBINUM
+      *    保険決定
+           PERFORM 400-HKNCOMBI-CHKHEN-SEC
+      *
+           .
+       10013119-HKNCOMBI-SETNYUIN-EXT.
+           EXIT.
+      *H31.2
       *
       *****************************************************************
       *    前回の保険組合せとの判定処理
