@@ -30,6 +30,9 @@
       *  05.00.01    NACL-藤原    18/09/05  ＣＳＶ対応
       *                                     悪性腫瘍病理組織標本加算の追加
       *                                     抽出条件の追加
+      *
+      *  05.02.01    NACL-藤原    19/02/05  ＣＳＶデータの最後のデータの
+      *                                     編集方法の修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1753,6 +1756,7 @@
                MOVE    TENSULST-AKUSEIBYORIKSN (IDX)
                                            TO  WRK-DATA
                MOVE    1                   TO  WRK-NAGASA
+               MOVE    1                   TO  WRK-END
                PERFORM 5004-MOJI-HENSYU-SEC
       *
                STRING  WRK-REC(1:WRK-REC-LENGTH) DELIMITED  BY  SIZE
