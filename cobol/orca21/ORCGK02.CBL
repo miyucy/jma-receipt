@@ -371,6 +371,8 @@
            03  FLG-CHUEND              PIC 9(01).
       *
            03  FLG-INGAI-ARI           PIC 9(01).
+      *H31.2
+           03  FLG-NAI-NYUIN           PIC 9(01).
       *
       *    添字領域
        01  IDX-AREA.
@@ -2577,6 +2579,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF      SPA-KIDCD           =   "0121"
       *        入院中自費保険確認
                IF      SPA-HKNNUM (1:2)    =   "98"
+      *H31.2
+                                           OR  SPACE
                    MOVE    SPACE               TO  SPA-KIDCD
       *            入院中自費保険へ
                    MOVE    1                   TO  SPA-NAI-NYUIN
@@ -10253,6 +10257,9 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    1               TO  SPA-HKN-ERR2
            END-IF
       *
+      *H31.2
+           MOVE    SPA-NAI-NYUIN       TO  FLG-NAI-NYUIN
+      *
       *    パラメタファイルより表示
            MOVE    3               TO  FLG-PARASET
            PERFORM 3002-PARA-SET-SEC
@@ -10260,6 +10267,20 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *    スパ共通編集処理（保険組合せ編集しない（ORCSC95AREA)
            MOVE    ORCSC95AREA         TO  WRK-ORCSC95AREA
            PERFORM 310-SPA-SET-SEC
+      *
+      *H31.2
+      *    入院中メッセージは再表示なし
+           MOVE    SPACE               TO  WRK-KIDCD
+           IF      SPA-KIDCD           =   "0121"
+               MOVE    SPA-KIDCD           TO  WRK-KIDCD
+               MOVE    SPACE               TO  SPA-KIDCD
+               IF      FLG-NAI-NYUIN       =   1
+                   MOVE    1                   TO  SPA-NAI-NYUIN
+                   MOVE    SPACE               TO  WRK-KIDCD
+               END-IF
+           END-IF
+      *TEST
+      *TEST
       *
            MOVE    WRK-ORCSC95AREA     TO  ORCSC95AREA
       *
@@ -10337,6 +10358,12 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            IF     (SPA-DENPNUM         =   ZERO ) AND
                   (SPA-HKNCOMBINUM NOT =   "9999")
                MOVE    "1036"              TO  SPA-ERRCD
+           END-IF
+      *
+      *H31.2
+      *    入院中確認メッセージ
+           IF      WRK-KIDCD           =   "0121"
+               MOVE    WRK-KIDCD       TO  SPA-KIDCD 
            END-IF
       *
            .
