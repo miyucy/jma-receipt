@@ -261,13 +261,30 @@ class Jma_print
 
   end
 
+  def execute_qpdf(in_pdfs, out_pdf)
+    execute("qpdf --empty --pages #{in_pdfs.join(' ')} -- #{out_pdf}")
+  end
+
   def execute_concat(pdf_files,printer)
     out_file = "#{@mcp_temp_dir}/#{File.basename(pdf_files[0]).sub(/.pdf$/,'')}#{timestamp}.pdf"
 
     if @orca_version < "050100-1"
       execute("pdftk #{pdf_files.join(' ')} cat output #{out_file}")
     else
-      execute("qpdf --empty --pages #{pdf_files.join(' ')} -- #{out_file}")
+      out_pdfs=[]
+      pdf_files.each_slice(500).with_index do |in_pdfs , i|
+        out_pdf = "#{out_file}.#{i}"
+        execute_qpdf(in_pdfs, out_pdf)
+        out_pdfs << out_pdf
+      end
+
+      if out_pdfs.size > 1
+         execute_qpdf(out_pdfs, out_file)
+         execute("rm #{out_pdfs.join(' ')}")
+      else
+         execute("mv #{out_pdfs.first} #{out_file}")
+      end
+
     end
 
     case @print_order
