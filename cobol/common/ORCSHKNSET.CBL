@@ -41,6 +41,7 @@
       * 04.06.00     NACL-多々納  10/09/29  入院・外来非該当対応
       * 04.08.00     NACL-多々納  13/07/XX  第三者行為対応
       * 04.08.00     NACL-多々納  14/01/XX  負担割合公費対応
+      * 05.00.00     NACL-多々納  19/02/08  処理区分４ 件数200件追加
       *****************************************************************
       *
       *
@@ -110,6 +111,9 @@
            03  WRK-CNT-HKN2            PIC 9(04).
       *
            03  WRK-SRYYMD              PIC X(08).
+      *    最大件数
+           03  WRK-MAX-CNT             PIC 9(04).
+      *
       *
        01  WRK-HENSYU-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -215,6 +219,13 @@
            IF      SPA-SRYYMD(7:2)     =   "00"
                MOVE    "01"            TO  WRK-SRYYMD(7:2)
            END-IF
+      *H31.2
+      *    最大件数変更
+           MOVE    100                 TO  WRK-MAX-CNT
+           IF      ORCSHKN-KBN4        =   "1"
+      *        最大 200件へ
+               MOVE    200                 TO  WRK-MAX-CNT
+           END-IF
       *
       *    保険組合せ編集処理
            PERFORM 100-HKNCOMBI-HENSYU-SEC
@@ -294,7 +305,8 @@
            MOVE    ZERO                TO  IDX
            PERFORM
                UNTIL      (FLG-HKNCOMBI        =   1      )  OR
-                          (IDX                 >=  100    )
+      ******************  (IDX                 >=  100    )
+                          (IDX                 >=  WRK-MAX-CNT)
       *
       *        対象の保険組合せのみ編集
                MOVE    ZERO                TO  FLG-HKNCOMBICHK
