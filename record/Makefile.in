@@ -558,6 +558,7 @@ RECORD_files = \
 	karteno3v2.rec \
 	patientlst7v2.rec \
     datacheckv3.rec \
+	medicalmodav35.rec \
 
 DEF_files = \
 
@@ -1094,7 +1095,8 @@ DB_files = \
     xml_data_check.db \
     xml_data_checkv3req.db \
     xml_data_checkv3res.db \
- 
+        xml_medicalav3req5.db \
+        xml_medicalav3res5.db \
 
 shell.db: shell.db.in
 	sed -e 's,\@scriptsdir\@,$(scriptsdir),g' $< >$@
