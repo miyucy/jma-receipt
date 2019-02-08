@@ -2269,10 +2269,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE    IDX                 TO  PARA-EDANUM
                    MOVE    HKNCOMBI-REC        TO  PARA-DATA-REC
                    PERFORM 400-PARA-INSERT-SEC
-      *TEST
+      *
       *            非表示区分保存
                    ADD    1                    TO  SPA-HYO-MAX
-                   IF     SPA-HYO-MAX          <=  200
+      *H31.2       IF     SPA-HYO-MAX          <=  200
+                   IF     SPA-HYO-MAX          <=  400
                        MOVE    COMB-HKNCOMBINUM
                                            TO  SPA-HYO-HKNCOMBINUM
                                                           (SPA-HYO-MAX)
