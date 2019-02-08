@@ -1710,3 +1710,20 @@ path	last_update2	{
 	};
 };
 
+path	key37 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_key37_csr CURSOR FOR
+		SELECT *
+		FROM tbl_tensu
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND   YAKKAKJNCD    LIKE :YAKKAKJNCD
+			AND   YUKOSTYMD  <=  :YUKOSTYMD
+			AND   YUKOEDYMD  >=  :YUKOEDYMD
+                        AND   SRYCD LIKE '6%'
+			ORDER   BY       SRYCD,
+				         YUKOSTYMD
+		;
+	};
+};
+
+
