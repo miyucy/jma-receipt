@@ -3658,11 +3658,6 @@
       *
            MOVE    SPACE               TO  WRK-SRYCD
       *
-      *TEST
-      *TEST
-      *TEST
-      *H30.4
-      *    コメントコードが廃止予定。別のコードに変更？？
            IF      SPA-SYOYMD          =   SPA-SRYYMD
       *        初診
                MOVE    "830000020"         TO  WRK-SRYCD
@@ -3773,6 +3768,14 @@
                                            TO  SPA-COM-SRYKBN
                                                          (SPA-GMN-IDX)
            END-IF
+      *
+      *!!
+      *H31.2
+      *    併用算定再チェックを行う
+           MOVE    SPACE           TO  SPA-COM-HCHKFLG(SPA-GMN-IDX)
+           MOVE    SPACE           TO  SPA-COM-HKEIFLG(SPA-GMN-IDX)
+      *!!
+      *
       *!!!!!!!!!!!!!!!!
       *??  加算自動発生済み設定
       *    IF     (WRK-SRYCD(1:1)      =   "1" )
@@ -8104,6 +8107,7 @@
       *    複数料（＄）、保険組合せ（＃）対応処理
       *****************************************************************
        1015-FUKU-SYORI-SEC              SECTION.
+      *
       *
            IF      LNK-SC10S-STRIDX    =   ZERO
                MOVE    1               TO  LNK-SC10S-STRIDX
