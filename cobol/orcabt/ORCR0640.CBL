@@ -784,6 +784,8 @@
       *  05.00.02    NACL-ÌçÏÆ    18/12/07  ´Î¤¬¤ó¡¦½ÅÅÙ´Î¹ÅÊÑ¼£ÎÅ¸¦µæÂ¥¿Ê
       *                                     »ö¶È°åÎÅÂÐ±þ
       *  05.00.03    NACL-ÌçÏÆ    19/01/11  ¥Þ¥ëÄ¹¤ÈÀ¸ÊÝ¤Ë´Ø¤¹¤ë½¤Àµ
+      *  05.00.04    NACL-ÌçÏÆ    19/02/13  £°£·£¹Ëô£°£²£´Ã±ÆÈ¤Î¿©»öÎÅÍÜÍó
+      *                                     µ­ºÜ½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -27004,11 +27006,12 @@
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
                          (SYU-KOH4HKNNUM      =   SPACE         ))
-      ***          OR   ((SYU-KOH1HKNNUM      =  "024" OR  "079") AND
-      ***                (SYU-KOH2HKNNUM      =   SPACE         ) AND
-      ***                (SYU-KOH3HKNNUM      =   SPACE         ) AND
-      ***                (SYU-KOH4HKNNUM      =   SPACE         ) AND
-      ***                (SYU-SKJ-FTNKBN(IDX3)  =  "3"          ))
+                   OR   ((SYU-KOH1HKNNUM      =  "024" OR  "079") AND
+                         (SYU-KOH2HKNNUM      =   SPACE         ) AND
+                         (SYU-KOH3HKNNUM      =   SPACE         ) AND
+                         (SYU-KOH4HKNNUM      =   SPACE         ) AND
+                         (SYU-SKJ-FTNKBN(IDX3)  =  "3"          ) AND
+                         (SYS-200501-SHOKUJI-PRTKBN  =  "2"     ))
                    OR   ((SYU-KOH1HKNNUM      =  "015" OR  "016") AND
                          (SYU-KOH2HKNNUM      =   SPACE         ) AND
                          (SYU-KOH3HKNNUM      =   SPACE         ) AND
