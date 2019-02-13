@@ -200,6 +200,9 @@
       *                                     共済組合を追加
       *  04.08.13    NACL-藤原    18/01/26  全国公費一部負担金記載対応
       *                                    （公費のみのレセプト）
+      *
+      *  05.00.01    NACL-藤原    19/02/13  上限０円時の食事欄記載
+      *                                    （法別２４・７９）に追加
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -2745,7 +2748,10 @@
            MOVE    "1"                 TO  SPA-GMN-SHOKUJI-PRTKBNL   (2)
            MOVE    "食事上限０円時は「０」を記載しない"
                                        TO  SPA-GMN-SHOKUJI-PRTKBNMEIL(2)
-           MOVE    2                   TO  SPA-GMN-SHOKUJI-PRTKBN-MAX
+           MOVE    "2"                 TO  SPA-GMN-SHOKUJI-PRTKBNL   (3)
+           MOVE    "１と同様（単独分の標準負担は空欄）"
+                                       TO  SPA-GMN-SHOKUJI-PRTKBNMEIL(3)
+           MOVE    3                   TO  SPA-GMN-SHOKUJI-PRTKBN-MAX
       *     
            MOVE    "0"                 TO
                                    SPA-GMN-INSPECT-CHARA-KBNL   (1)
