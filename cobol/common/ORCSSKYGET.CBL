@@ -37,6 +37,8 @@
       *                                     保険別請求チェック表の機能追加
       *  04.08.03    NACL-門脇    17/03/17  保険別請求チェック表の機能追加
       *                                     （公費請求書に関わる対応）
+      *
+      *  05.00.01    NACL-門脇    19/02/13  公費請求書に関わる対応修正
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -310,21 +312,21 @@
                IF  FLG-KOHSKY-HENSYU-NG  =  ZERO
                     CONTINUE
                ELSE
-                 IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
-                 OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
+      ***        IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
+      ***        OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
                     MOVE   1     TO  FLG-TAISYO3
-                 END-IF
+      ***        END-IF
                END-IF
              END-IF
            ELSE
              IF  FLG-KOHSKY-NASHI      =  ZERO
                IF  FLG-KOHSKY-HENSYU-NG  =  ZERO
-                 IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
-                 OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
+      ***        IF  (WRK-SKYIRYO-KOHFTN-KOHSKY NOT =  ZERO)
+      ***        OR  (WRK-SKYSKJ-KOHFTN-KOHSKY  NOT =  ZERO)
                     MOVE   2     TO  FLG-TAISYO3
-                 ELSE
-                    MOVE   9     TO  FLG-TAISYO3
-                 END-IF
+      ***        ELSE
+      ***           MOVE   9     TO  FLG-TAISYO3
+      ***        END-IF
                ELSE
                     MOVE   9     TO  FLG-TAISYO3
                END-IF
