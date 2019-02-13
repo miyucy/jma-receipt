@@ -29,6 +29,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       *  05.00.01    NACL-藤原    18/01/24  テスト患者区分の追加
       *  05.00.02    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
+      *  05.00.03    NACL-藤原    19/02/07  月次統計と処理を別にする
       *****************************************************************
       *
        ENVIRONMENT         DIVISION.
@@ -109,12 +110,12 @@
       *    システム管理ＤＢ（３００３）のキー値  
            03  WRK-CONS-3003-KBNCD     PIC X(08)   VALUE   "052".
       *    ジョブ管理ＤＢの値
-           03  WRK-CONS-JOB-SHELLID    PIC X(08)   VALUE   "MONTHLY".
+           03  WRK-CONS-JOB-SHELLID    PIC X(08)   VALUE   "STOCK".
            03  WRK-CONS-JOB-JOBID      PIC 9(07)   VALUE   1.
       *
       *    印刷管理ＤＢの値  
            03  WRK-CONS-PRTKANRI-TBL-KEY
-                                       PIC X(08)   VALUE   "MONTHLY".
+                                       PIC X(08)   VALUE   "STOCK".
            03  WRK-CONS-PRTKANRI-TBL-GROUP
                                        PIC X(14)   VALUE   SPACE.
       *
