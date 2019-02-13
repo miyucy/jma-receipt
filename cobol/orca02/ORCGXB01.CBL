@@ -27,6 +27,7 @@
       *****************************************************************
       *  プログラム修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.01    NACL-藤原    19/02/07  API在庫管理を月次統計で表示する
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -111,6 +112,7 @@
            03  WRK-MCP-WIDGET      PIC X(64).
            03  WRK-SHELLID         PIC X(08).
            03  WRK-DEL-SHELLID     PIC X(08).
+           03  WRK-SELNUM          PIC 9(05).
       *
        01  WRK-HEN-AREA.
            03  WRK-HENYMDG         PIC X(09).
@@ -389,9 +391,20 @@
            MOVE    IDXL                TO  SPA-GMN-JOBLIST-MAX
       *
            IF    ( TJOBINF-MAX         =   ZERO )
-            OR   ( SHELLTBL-SHELLID
-                                   NOT =  TJOBINF-SHELLID (TJOBINF-MAX))
                COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
+           ELSE
+               IF    ( SHELLTBL-SHELLID
+                                   NOT =  TJOBINF-SHELLID (TJOBINF-MAX))
+                   COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
+               ELSE
+                   IF      IDXL        >   1
+                       COMPUTE IDX0    =   IDXL    -   1
+                       IF      JOB-SHELLID
+                                       NOT =   SPA-GMN-TSHELLID (IDX0)
+                           COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
+                       END-IF
+                   END-IF
+               END-IF
            END-IF
       *
            MOVE    TJOBINF-MAX         TO  SPA-GMN-TNO (IDXL)
@@ -678,17 +691,31 @@
       *****************************************************************
        4100-JOBLIST-SELECT-SEC             SECTION.
       *
+      *    行選択
+           MOVE    ZERO                TO  WRK-SELNUM
+      *
            PERFORM VARYING IDXL    FROM    1   BY  1
                    UNTIL ( IDXL    >   SPA-GMN-JOBLIST-MAX )
-                    OR   ( SPA-GMN-JOBLIST-SEL
-                                   >   ZERO )
                IF    ( XB01-JOBLIST-SELECT (IDXL)   =   "T" )
-                   MOVE    SPA-GMN-TNO (IDXL)
-                                   TO  XB01-SELNUM
-                   PERFORM 4100-SELNUM-CHK-SEC
-                   MOVE    202     TO  SPA-GMN-CUR
+                   IF      SPA-GMN-TNO (IDXL)
+                                           =   SPA-GMN-SELNUM
+                       CONTINUE
+                   ELSE
+                       MOVE    SPA-GMN-TNO (IDXL)
+                                               TO  WRK-SELNUM
+                       MOVE    SPA-GMN-JOBLIST-MAX
+                                               TO  IDXL
+                   END-IF
                END-IF
            END-PERFORM
+      *
+           IF      WRK-SELNUM          >   ZERO
+               MOVE    WRK-SELNUM          TO  XB01-SELNUM
+           END-IF
+      *
+      **** MOVE    SPA-GMN-SELNUM      TO  XB01-SELNUM
+           PERFORM 4100-SELNUM-CHK-SEC
+           MOVE    202                 TO  SPA-GMN-CUR
       *
            .
        4100-JOBLIST-SELECT-EXT.
@@ -1250,7 +1277,9 @@
       *
                    IF    ( JOB-SHELLID         =   SPA-JOB-SHELLID )
                     OR  (( SPA-JOB-SHELLID     =  "SOKATU" )
-                     AND ( SHELLTBL-SHELLID    =  "COLLECT" ))
+                     AND ( JOB-SHELLID         =  "COLLECT" ))
+                    OR  (( SPA-JOB-SHELLID     =  "MONTHLY" )
+                     AND ( JOB-SHELLID         =  "STOCK"   ))
                        CONTINUE
                    ELSE
                        MOVE    ZERO        TO  FLG-LOOPEND
@@ -1314,6 +1343,8 @@
                    IF    ( SHELLTBL-SHELLID    =  SPA-JOB-SHELLID )
                     OR  (( SPA-JOB-SHELLID     =  "SOKATU" )
                      AND ( SHELLTBL-SHELLID    =  "COLLECT" ))
+                    OR  (( SPA-JOB-SHELLID     =  "MONTHLY" )
+                     AND ( SHELLTBL-SHELLID    =  "STOCK"   ))
                        CONTINUE
                    ELSE
                        MOVE    ZERO    TO  FLG-LOOPEND
