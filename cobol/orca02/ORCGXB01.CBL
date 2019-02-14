@@ -393,16 +393,11 @@
            IF    ( TJOBINF-MAX         =   ZERO )
                COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
            ELSE
-               IF    ( SHELLTBL-SHELLID
-                                   NOT =  TJOBINF-SHELLID (TJOBINF-MAX))
-                   COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
-               ELSE
-                   IF      IDXL        >   1
-                       COMPUTE IDX0    =   IDXL    -   1
-                       IF      JOB-SHELLID
-                                       NOT =   SPA-GMN-TSHELLID (IDX0)
-                           COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
-                       END-IF
+               IF      IDXL        >   1
+                   COMPUTE IDX0    =   IDXL    -   1
+                   IF      JOB-SHELLID
+                                   NOT =   SPA-GMN-TSHELLID (IDX0)
+                       COMPUTE TJOBINF-MAX =   TJOBINF-MAX +   1
                    END-IF
                END-IF
            END-IF
