@@ -233,26 +233,26 @@
       *
        01  WRK-KCOMB-AREA.
       *      組合せ退避用
-           02  WRK-KCOMB-REC       OCCURS   100.
+           02  WRK-KCOMB-REC       OCCURS   200.
            COPY  "CPHKNCOMBI.INC"  REPLACING //COMB-//
                                          BY //WRK-KCOMB-//.
        01  WRK-RCOMB-AREA.
       *    　組合せ退避用
-           02  WRK-RCOMB-REC       OCCURS   100.
+           02  WRK-RCOMB-REC       OCCURS   200.
            COPY  "CPHKNCOMBI.INC"  REPLACING //COMB-//
                                          BY //WRK-RCOMB-//.
       *
        01  WRK-LCOMB-AREA.
       *    　組合せ退避用（組合せ最終形 元SPA-KUMI-）
-           02  WRK-LCOMB-REC       OCCURS   100.
+           02  WRK-LCOMB-REC       OCCURS   200.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-LCOMB-//.
        01  WRK-LCOMB2-AREA.
-           02  WRK-LCOMB2-REC      OCCURS   100.
+           02  WRK-LCOMB2-REC      OCCURS   200.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-LCOMB2-//.
        01  WRK-LCOMB3-AREA.
-           02  WRK-LCOMB3-REC      OCCURS   100.
+           02  WRK-LCOMB3-REC      OCCURS   200.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-LCOMB3-//.
       *
@@ -262,11 +262,11 @@
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-TCOMB-//.
        01  WRK-TCOMB2-AREA.
-           02  WRK-TCOMB2-REC      OCCURS   100.
+           02  WRK-TCOMB2-REC      OCCURS   200.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-TCOMB2-//.
        01  WRK-TCOMB3-AREA.
-           02  WRK-TCOMB3-REC      OCCURS   100.
+           02  WRK-TCOMB3-REC      OCCURS   200.
            COPY  "CPHKNCOMBI.INC" REPLACING //COMB-//
                                          BY //WRK-TCOMB3-//.
       *    新組合せパラメタデータ用レイアウト
@@ -278,26 +278,21 @@
        01  WRK-IDXSRT-AREA.
            03  WRK-SRT-STYMD       PIC X(08).
            03  WRK-SRT-EDYMD       PIC X(08).
-    *****  03  WRK-SRT-RJN-IDX OCCURS 5 PIC 9(04).
-           03  WRK-SRT-RJN-IDX OCCURS 99 PIC 9(04).
+           03  WRK-SRT-RJN-IDX     PIC 9(04)    OCCURS 200.
            03  WRK-SRT-RJN-CNT     PIC 9(04).
            03  WRK-SRT-RJN-CNT2    PIC 9(04).
-     ***** 03  WRK-SRT-HKN-IDX OCCURS 5 PIC 9(04).
-           03  WRK-SRT-HKN-IDX OCCURS 99 PIC 9(04).
+           03  WRK-SRT-HKN-IDX     PIC 9(04)    OCCURS 200.
            03  WRK-SRT-HKN-CNT     PIC 9(04).
            03  WRK-SRT-HKN-CNT2    PIC 9(04).
            03  WRK-SRT-IDX         PIC 9(04).
-      *****03  WRK-SRT-SEH-IDX OCCURS 5 PIC 9(04).
-           03  WRK-SRT-SEH-IDX OCCURS 99  PIC 9(04).
+           03  WRK-SRT-SEH-IDX     PIC 9(04)    OCCURS 200.
            03  WRK-SRT-SEH-CNT     PIC 9(04).
            03  WRK-SRT-SEH-CNT2    PIC 9(04).
-      *****03  WRK-SRT-HJO-IDX OCCURS 5 PIC 9(04).
-           03  WRK-SRT-HJO-IDX OCCURS 99 PIC 9(04).
+           03  WRK-SRT-HJO-IDX     PIC 9(04)    OCCURS 200.
            03  WRK-SRT-HJO-CNT     PIC 9(04).
            03  WRK-SRT-HJO-CNT2    PIC 9(04).
            03  WRK-SRT-HJO-KOHNO   PIC X(03).
-      *****03  WRK-SRT-CHO-IDX OCCURS 5 PIC 9(04).
-           03  WRK-SRT-CHO-IDX OCCURS 99 PIC 9(04).
+           03  WRK-SRT-CHO-IDX     PIC 9(04)    OCCURS 200.
            03  WRK-SRT-CHO-CNT     PIC 9(04).
            03  WRK-SRT-CHO-CNT2    PIC 9(04).
       *    1:保険表中から老人を検索 / 2:公費表中から老人を検索
@@ -378,7 +373,7 @@
                05  WRK-KEN-SEIDO       PIC X(10).
       *
            03  WRK-HOKEN-AREA.
-               05  WRK-HOKEN-REC       OCCURS   100.
+               05  WRK-HOKEN-REC       OCCURS   200.
                    07  WRK-HKN-HKNID       PIC 9(10).
                    07  WRK-HKN-HKNNUM      PIC X(03).
                    07  WRK-HKN-HKNJANUM    PIC X(08).
@@ -392,7 +387,7 @@
                    07  WRK-HKN-SEIDO       PIC X(10).
       *
            03  WRK-KOUHI-AREA.
-               05  WRK-KOUHI-REC       OCCURS   100.
+               05  WRK-KOUHI-REC       OCCURS   200.
                    07  WRK-KOH-KOHID       PIC 9(10).
                    07  WRK-KOH-HKNNUM      PIC X(03).
                    07  WRK-KOH-PAYKBN      PIC X(02).
@@ -413,7 +408,7 @@
            03  WRK-SYOCYO-TEKEDYMD         PIC 9(08).
       *
            03  WRK-NYUSYO-TABLE.
-               05  WRK-NYUSYO-OCC            OCCURS   100.
+               05  WRK-NYUSYO-OCC            OCCURS   200.
                    07  WRK-NYUSYO-TEKSTYMD   PIC 9(08).
                    07  WRK-NYUSYO-TEKEDYMD   PIC 9(08).
                    07  WRK-NYUSYO-JKYSNUM    PIC X(20).
@@ -421,7 +416,7 @@
                    07  WRK-NYUSYO-CFLG2      PIC X(01).
       *
            03  WRK-SAIGAI-TABLE.
-               05  WRK-SAIGAI-OCC            OCCURS   100.
+               05  WRK-SAIGAI-OCC            OCCURS   200.
                    07  WRK-SAIGAI-TEKSTYMD   PIC 9(08).
                    07  WRK-SAIGAI-TEKEDYMD   PIC 9(08).
                    07  WRK-SAIGAI-JKYSNUM    PIC X(20).
@@ -429,7 +424,7 @@
                    07  WRK-SAIGAI-CFLG2      PIC X(01).
       *
            03  WRK-BUNKAT-TABLE.
-               05  WRK-BUNKAT-OCC            OCCURS   100.
+               05  WRK-BUNKAT-OCC            OCCURS   200.
                    07  WRK-BUNKAT-TEKSTYMD   PIC 9(08).
                    07  WRK-BUNKAT-TEKEDYMD   PIC 9(08).
                    07  WRK-BUNKAT-JKYSNUM    PIC X(20).
@@ -443,10 +438,10 @@
            03  WRK-SEIHO-YMD               PIC X(08).
       *
            03  TBL-SEIHO-YMD-T.
-               05  TBL-SEIHO-YMD-OCC       OCCURS   100.
+               05  TBL-SEIHO-YMD-OCC       OCCURS   200.
                    07  TBL-SEIHO-YMD       PIC X(08).
            03  TBL-SEIHO-YMD2-T.
-               05  TBL-SEIHO-YMD2-OCC      OCCURS   100.
+               05  TBL-SEIHO-YMD2-OCC      OCCURS   200.
                    07  TBL-SEIHO-YMD2      PIC X(08).
       *
        01  WRK-HIYATOI-AREA.
@@ -604,7 +599,7 @@
                MOVE    PARA-DATA-REC       TO  PTHKNINF-REC
                IF      PTHKN-SAKJOKBN      =   SPACE
                    ADD     1               TO  CNT-HKN
-                   IF  CNT-HKN             >   100
+                   IF  CNT-HKN             >   200
                        MOVE    "0015"      TO  SPA-ERRCD
                    ELSE
                        PERFORM 330-HKNINF-SET-SEC
@@ -676,7 +671,7 @@
                    END-IF
                ELSE
                    ADD     1               TO  CNT-KOH
-                   IF  CNT-KOH             >   100
+                   IF  CNT-KOH             >   200
                        MOVE    "0015"      TO  SPA-ERRCD
                    ELSE
                        PERFORM 330-KOHINF-SET-SEC
@@ -1087,7 +1082,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO              TO  WRK-TCOMB2-MAX
       *
            PERFORM   VARYING   IDZ   FROM    1   BY  1
-                      UNTIL  ( IDZ   >       100           )
+                      UNTIL  ( IDZ   >       200           )
                        OR    ( IDZ   >       WRK-LCOMB-MAX )
             IF     (  FLG-SYOCYO   =  ZERO                    )
             OR     (( FLG-SYOCYO   =   1                     ) AND
@@ -1183,7 +1178,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM   VARYING   IDZ   FROM    1   BY  1
-                      UNTIL  ( IDZ   >       100            )
+                      UNTIL  ( IDZ   >       200            )
                        OR    ( IDZ   >       WRK-TCOMB2-MAX )
              ADD     1             TO  CNT-COMB
              MOVE    SPA-HOSPNUM   TO  WRK-TCOMB2-HOSPNUM    (IDZ)
@@ -1223,11 +1218,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    日付順に並び替え
            PERFORM  VARYING  IDY3  FROM  1  BY  1
-                     UNTIL  (IDY3                      >  100 )
+                     UNTIL  (IDY3                      >  200 )
                       OR    (WRK-BUNKAT-TEKSTYMD(IDY3) =  ZERO)
              COMPUTE  IDY4  =  IDY3  +  1
              PERFORM  VARYING  IDY5  FROM  IDY4  BY  1
-                       UNTIL  (IDY5                      >  100 )
+                       UNTIL  (IDY5                      >  200 )
                         OR    (WRK-BUNKAT-TEKSTYMD(IDY5) =  ZERO)
                IF   WRK-BUNKAT-TEKSTYMD(IDY3) >
                                         WRK-BUNKAT-TEKSTYMD(IDY5)
@@ -1240,7 +1235,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            IF    FLG-CHECK   =   1
              PERFORM  VARYING  IDY3  FROM  1  BY  1
-                       UNTIL  (IDY3                      >  100 )
+                       UNTIL  (IDY3                      >  200 )
                         OR    (WRK-BUNKAT-TEKSTYMD(IDY3) =  ZERO)
                MOVE    ZERO                       TO  WRK-CHECK-TEKSTYMD
                MOVE    ZERO                       TO  WRK-CHECK-TEKEDYMD
@@ -1257,7 +1252,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                          LNK-DAY6-AREA
                  MOVE  LNK-DAY6-KEISAN            TO  WRK-CHECK-TEKEDYMD
                END-IF
-               IF  (IDY5  <  101                             )
+               IF  (IDY5  <  201                             )
                AND (WRK-BUNKAT-TEKEDYMD(IDY3)  NOT = 99999999)
                  INITIALIZE                           STS-AREA-DAY
                  INITIALIZE                           LNK-DAY6-AREA
@@ -1284,14 +1279,14 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            END-IF
       *
            PERFORM   VARYING   IDY3   FROM    1   BY  1
-                      UNTIL  ( IDY3   >       100               )
+                      UNTIL  ( IDY3   >       200               )
                        OR    ( WRK-BUNKAT-TEKSTYMD(IDY3) = ZERO )
       *
              INITIALIZE           WRK-TCOMB3-AREA
              MOVE     ZERO    TO  WRK-TCOMB2-MAX
       *
              PERFORM   VARYING   IDZ    FROM    1   BY  1
-                        UNTIL  ( IDZ    >       100               )
+                        UNTIL  ( IDZ    >       200               )
                          OR    ( WRK-TCOMB2-TEKSTYMD(IDZ) = SPACE )
                IF  WRK-TCOMB2-SYU-HKNKOHSBTKBN(IDZ)
                                                = "4" OR "8" OR "9"
@@ -1452,7 +1447,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                      WRK-HIYATOI-AREA
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX   >       100 )
+                       UNTIL   ( IDX   >       200 )
                        OR      ( IDX   >       CNT-HKN )
              IF  WRK-HKN-SBT (IDX)     =   "1"
       *!       特別療養費は対象外
@@ -1567,7 +1562,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  INITIALIZE                  WRK-KCOMB-AREA
                  MOVE    ZERO            TO  WRK-KCOMB-MAX
                  PERFORM     VARYING   IDZ   FROM    1   BY  1
-                             UNTIL   ( IDZ   >       100 )
+                             UNTIL   ( IDZ   >       200 )
                              OR      ( IDZ   >       WRK-RCOMB-MAX )
                      ADD     1           TO  WRK-KCOMB-MAX
                      MOVE    WRK-RCOMB-REC (IDZ)
@@ -1579,7 +1574,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE    ZERO              TO  WRK-RCOMB-MAX
       *          再度元テーブルより生保　付加
                  PERFORM     VARYING   IDX2  FROM    1   BY  1
-                             UNTIL   ( IDX2  >       100 )
+                             UNTIL   ( IDX2  >       200 )
                              OR      ( IDX2  >       WRK-KCOMB-MAX )
       *           公費表中より生保を検索し、適用開始日順に
       *                                インデックス取得
@@ -1603,10 +1598,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *              生保を検索
                      PERFORM     VARYING   IDZ   FROM  1   BY  1
                                  UNTIL     IDZ   >     WRK-SRT-SEH-CNT
-                       MOVE    WRK-SRT-SEH-IDX (IDZ)
-                                                 TO  WRK-COMB-IDX
-      *###
-                       PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                       IF   WRK-RCOMB-MAX  >=  200
+                         MOVE    200    TO  IDZ
+                       ELSE
+                         MOVE    WRK-SRT-SEH-IDX(IDZ)
+                                        TO  WRK-COMB-IDX
+                         PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                       END-IF
                      END-PERFORM
                    END-IF
                  END-PERFORM
@@ -1615,7 +1613,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE    ZERO                  TO  WRK-KCOMB-MAX
                  MOVE    WRK-LCOMB-MAX         TO  WRK-LCOMB-MAX-O
                  PERFORM     VARYING   IDZ   FROM    1   BY  1
-                             UNTIL   ( IDZ   >       100 )
+                             UNTIL   ( IDZ   >       200 )
                              OR      ( IDZ   >       WRK-RCOMB-MAX )
                      ADD     1           TO  WRK-LCOMB-MAX
                      MOVE    WRK-RCOMB-REC (IDZ)
@@ -1634,7 +1632,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE    ZERO                TO  WRK-RCOMB-MAX
       *          再度元テーブルより生保　付加
                  PERFORM     VARYING   IDX2  FROM    1   BY  1
-                             UNTIL   ( IDX2  >       100 )
+                             UNTIL   ( IDX2  >       200 )
                              OR      ( IDX2  >       WRK-KCOMB-MAX )
                    INITIALIZE                WRK-IDXSRT-AREA
       *
@@ -1660,9 +1658,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                  長期高額を検索
                          PERFORM   VARYING IDZ   FROM  1   BY  1
                                    UNTIL   IDZ   >     WRK-SRT-CHO-CNT
-                             MOVE    WRK-SRT-CHO-IDX (IDZ)
-                                                 TO  WRK-COMB-IDX
+                           IF   WRK-RCOMB-MAX  >=  200
+                             MOVE    200    TO  IDZ
+                           ELSE
+                             MOVE    WRK-SRT-CHO-IDX(IDZ)
+                                            TO  WRK-COMB-IDX
                              PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                           END-IF
                          END-PERFORM
                        END-IF
                    END-IF
@@ -1670,7 +1672,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
                  MOVE    WRK-LCOMB-MAX-O      TO  WRK-LCOMB-MAX
                  PERFORM     VARYING   IDZ   FROM    1   BY  1
-                             UNTIL   ( IDZ   >       100 )
+                             UNTIL   ( IDZ   >       200 )
                              OR      ( IDZ   >       WRK-RCOMB-MAX )
                      ADD     1           TO  WRK-LCOMB-MAX
                      MOVE    WRK-RCOMB-REC (IDZ)
@@ -1757,7 +1759,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    公費表中より補助公費を適用開始日の早い順にインデックス設定
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       CNT-KOH )
       *
       *----(01.00.04) LINE MOD START -------------------------------
@@ -1805,12 +1807,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-HJO-CNT2)
                          END-PERFORM
                          MOVE    IDZ       TO  WRK-SRT-HJO-IDX (IDY)
-                         MOVE    99        TO  IDY
+                         MOVE    200       TO  IDY
                        END-IF
                      END-PERFORM
                      ADD     1             TO  WRK-SRT-HJO-CNT
                      IF  WRK-SRT-HJO-CNT2  =   ZERO
-                         IF      WRK-SRT-HJO-CNT    >   99
+                         IF      WRK-SRT-HJO-CNT    >   200
                              MOVE    "0015"         TO  SPA-ERRCD
                          ELSE
                              MOVE    IDZ       TO  WRK-SRT-HJO-IDX
@@ -1833,7 +1835,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    公費表中より生保を適用開始日の早い順にインデックス設定
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100     )
+                       UNTIL   ( IDZ   >       200     )
                        OR      ( IDZ   >       CNT-KOH )
       *
              IF  (WRK-KOH-SBT(IDZ)         =   "5"  )  AND
@@ -1865,12 +1867,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-SEH-CNT2)
                        END-PERFORM
                        MOVE    IDZ         TO  WRK-SRT-SEH-IDX (IDY)
-                       MOVE    99          TO  IDY
+                       MOVE    200         TO  IDY
                      END-IF
                    END-PERFORM
                    ADD     1               TO  WRK-SRT-SEH-CNT
                    IF  WRK-SRT-SEH-CNT2    =   ZERO
-                       IF      WRK-SRT-SEH-CNT    >   99
+                       IF      WRK-SRT-SEH-CNT    >   200
                            MOVE    "0015"            TO  SPA-ERRCD
                        ELSE
                            MOVE    IDZ         TO  WRK-SRT-SEH-IDX
@@ -1892,7 +1894,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    公費表中より長期高額を適用開始日の早い順にインデックス設定
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       CNT-KOH )
       *
              IF  (WRK-KOH-SBT (IDZ)    =   "2"  )  AND
@@ -1924,12 +1926,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-CHO-CNT2)
                        END-PERFORM
                        MOVE    IDZ         TO  WRK-SRT-CHO-IDX (IDY)
-                       MOVE    99          TO  IDY
+                       MOVE    200         TO  IDY
                      END-IF
                    END-PERFORM
                    ADD     1               TO  WRK-SRT-CHO-CNT
                    IF  WRK-SRT-CHO-CNT2    =   ZERO
-                       IF      WRK-SRT-CHO-CNT    >   99
+                       IF      WRK-SRT-CHO-CNT    >   200
                            MOVE    "0015"         TO  SPA-ERRCD
                        ELSE
                            MOVE    IDZ         TO  WRK-SRT-CHO-IDX
@@ -3372,7 +3374,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX   >       100 )
+                       UNTIL   ( IDX   >       200 )
                        OR      ( IDX   >       CNT-KOH )
              IF  (WRK-KOH-SBT(IDX)     =   "5")   AND
                  (WRK-KOH-SAKJOKBN(IDX)     =   SPACE)
@@ -3440,7 +3442,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    END-IF
       *            [編集後テーブル]より転送
                    PERFORM     VARYING   IDZ   FROM    1   BY  1
-                               UNTIL   ( IDZ   >       100 )
+                               UNTIL   ( IDZ   >       200 )
                                OR      ( IDZ   >       WRK-RCOMB-MAX )
                      ADD     1           TO  WRK-LCOMB-MAX
                      MOVE    WRK-RCOMB-REC (IDZ)
@@ -3478,7 +3480,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX   >       100 )
+                       UNTIL   ( IDX   >       200 )
                        OR      ( IDX   >       CNT-KOH )
              IF ((WRK-KOH-SBT   (IDX)  =   "6")   AND
                  (WRK-KOH-SAKJOKBN   (IDX)  =   SPACE)) OR
@@ -3559,7 +3561,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX   >       100 )
+                       UNTIL   ( IDX   >       200 )
                        OR      ( IDX   >       CNT-KOH )
       *
       *----(01.00.04) LINE MOD START -------------------------------
@@ -3571,7 +3573,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *        [保険テーブル]より主保険を検索
                PERFORM     VARYING   IDY2  FROM    1   BY  1
-                           UNTIL   ( IDY2  >       100 )
+                           UNTIL   ( IDY2  >       200 )
                            OR      ( IDY2  >       CNT-HKN )
       *
                  INITIALIZE                    WRK-COMB-AREA
@@ -3640,7 +3642,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    主保険が存在しない期間を求め、主公費中心の組合せを作成
       *    -------------------------------------------------------
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX       >   100 )
+                       UNTIL   ( IDX       >   200 )
                        OR      ( IDX       >   CNT-KOH )
       *
       *----(01.00.04) LINE MOD START -----------------------------
@@ -3708,7 +3710,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    ZERO                TO  WRK-KCOMB-MAX
                INITIALIZE                      WRK-KCOMB-AREA
                PERFORM     VARYING   IDZ   FROM  1   BY  1
-                           UNTIL   ( IDZ   >     100 )
+                           UNTIL   ( IDZ   >     200 )
                            OR      ( IDZ   >     WRK-RCOMB-MAX )
                    ADD     1               TO  WRK-LCOMB-MAX
                    MOVE    WRK-RCOMB-REC (IDZ)
@@ -3874,7 +3876,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            INITIALIZE                    WRK-KCOMB-AREA
       *    [編集後テーブル]より転送
            PERFORM   VARYING   IDZ   FROM    1   BY  1
-                     UNTIL   ( IDZ   >       100 )
+                     UNTIL   ( IDZ   >       200 )
                      OR      ( IDZ   >       WRK-RCOMB-MAX )
                ADD     1             TO  WRK-LCOMB-MAX
                MOVE    WRK-RCOMB-REC (IDZ)
@@ -3901,7 +3903,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-RCOMB-MAX
       *    [公費テーブル]より補助公費を検索
            PERFORM     VARYING   IDX2  FROM    1   BY  1
-                       UNTIL   ( IDX2  >       100 )
+                       UNTIL   ( IDX2  >       200 )
                        OR      ( IDX2  >       WRK-KCOMB-MAX )
       *
              INITIALIZE                WRK-IDXSRT-AREA
@@ -4234,7 +4236,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    WRK-LCOMB-MAX-O       TO  WRK-LCOMB-MAX
       *    [編集後テーブル]より転送
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       WRK-RCOMB-MAX )
                ADD     1               TO  WRK-LCOMB-MAX
                MOVE    WRK-RCOMB-REC (IDZ)
@@ -4252,7 +4254,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO              TO  WRK-RCOMB-MAX
       *    再度元テーブルより生保　付加
            PERFORM     VARYING   IDX2  FROM    1   BY  1
-                       UNTIL   ( IDX2  >       100 )
+                       UNTIL   ( IDX2  >       200 )
                        OR      ( IDX2  >       WRK-KCOMB-MAX )
       *
              INITIALIZE                WRK-IDXSRT-AREA
@@ -4290,9 +4292,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                生保を検索
                      PERFORM     VARYING   IDZ   FROM  1   BY  1
                                  UNTIL     IDZ   >     WRK-SRT-SEH-CNT
-                       MOVE    WRK-SRT-SEH-IDX (IDZ)
-                                             TO  WRK-COMB-IDX
-                       PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                       IF   WRK-RCOMB-MAX  >=  200
+                         MOVE    200    TO  IDZ
+                       ELSE
+                         MOVE    WRK-SRT-SEH-IDX(IDZ)
+                                        TO  WRK-COMB-IDX
+                         PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                       END-IF
                      END-PERFORM
                    END-IF
                  END-IF
@@ -4305,7 +4311,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *----(01.00.03) LINE ADD END   --------------------------------
            MOVE    WRK-LCOMB-MAX-O     TO  WRK-LCOMB-MAX
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       WRK-RCOMB-MAX )
                ADD     1               TO  WRK-LCOMB-MAX
                MOVE    WRK-RCOMB-REC (IDZ)
@@ -4325,7 +4331,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-RCOMB-MAX
       *    再度元テーブルより長期　付加
            PERFORM     VARYING   IDX2  FROM    1   BY  1
-                       UNTIL   ( IDX2  >       100 )
+                       UNTIL   ( IDX2  >       200 )
                        OR      ( IDX2  >       WRK-KCOMB-MAX )
                INITIALIZE                  WRK-IDXSRT-AREA
                ADD     1               TO  WRK-RCOMB-MAX
@@ -4393,9 +4399,13 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *                  長期高額を検索
                          PERFORM   VARYING   IDZ   FROM    1   BY  1
                                    UNTIL     IDZ   >   WRK-SRT-CHO-CNT
-                             MOVE    WRK-SRT-CHO-IDX (IDZ)
-                                                   TO  WRK-COMB-IDX
+                           IF   WRK-RCOMB-MAX  >=  200
+                             MOVE    200    TO  IDZ
+                           ELSE
+                             MOVE    WRK-SRT-CHO-IDX(IDZ)
+                                            TO  WRK-COMB-IDX
                              PERFORM 570144-FUTAN-KONZAI-SEH-SEC
+                           END-IF
                          END-PERFORM
                      END-IF
                    END-IF
@@ -4405,7 +4415,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
            MOVE    WRK-LCOMB-MAX-O     TO  WRK-LCOMB-MAX
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       WRK-RCOMB-MAX )
                ADD     1               TO  WRK-LCOMB-MAX
                MOVE    WRK-RCOMB-REC (IDZ)
@@ -4858,7 +4868,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            IF  WRK-SRT-FLG       =   "1"
       *      公費表中より老人を適用開始日の早い順にインデックス設定
              PERFORM     VARYING   IDZ   FROM    1   BY  1
-                         UNTIL   ( IDZ   >       100 )
+                         UNTIL   ( IDZ   >       200 )
                          OR      ( IDZ   >       CNT-KOH )
                IF  WRK-KOH-SAKJOKBN (IDZ)  =   SPACE
       *          [公費]適用年月日と[組合せ]適用年月日
@@ -4892,12 +4902,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-RJN-CNT2)
                            END-PERFORM
                            MOVE    IDZ    TO  WRK-SRT-RJN-IDX (IDY)
-                           MOVE    99          TO  IDY
+                           MOVE    200    TO  IDY
                          END-IF
                        END-PERFORM
                        ADD     1           TO  WRK-SRT-RJN-CNT
                        IF  WRK-SRT-RJN-CNT2  =   ZERO
-                           IF      WRK-SRT-RJN-CNT   >   99
+                           IF      WRK-SRT-RJN-CNT   >   200
                                MOVE    "0015"            TO  SPA-ERRCD
                            ELSE
                                MOVE    IDZ     TO  WRK-SRT-RJN-IDX
@@ -4913,7 +4923,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *    === 公費表より呼ばれた ===
       *      公費表中より老人を適用開始日の早い順にインデックス設定
              PERFORM     VARYING   IDZ   FROM    1   BY  1
-                         UNTIL   ( IDZ   >       100 )
+                         UNTIL   ( IDZ   >       200 )
                          OR      ( IDZ   >       CNT-KOH )
              IF  (IDZ                NOT =   IDX  )  AND
                  (WRK-KOH-SAKJOKBN (IDZ)  =   SPACE)
@@ -4948,12 +4958,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-RJN-CNT2)
                            END-PERFORM
                            MOVE    IDZ    TO  WRK-SRT-RJN-IDX (IDY)
-                           MOVE    99          TO  IDY
+                           MOVE    200    TO  IDY
                          END-IF
                        END-PERFORM
                        ADD     1           TO  WRK-SRT-RJN-CNT
                        IF  WRK-SRT-RJN-CNT2  =   ZERO
-                           IF      WRK-SRT-RJN-CNT   >   99
+                           IF      WRK-SRT-RJN-CNT   >   200
                                MOVE    "0015"            TO  SPA-ERRCD
                            ELSE
                                MOVE    IDZ     TO  WRK-SRT-RJN-IDX
@@ -4978,7 +4988,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
       *    保険表中より主保険を適用開始日の早い順にインデックス設定
            PERFORM     VARYING   IDZ   FROM    1   BY  1
-                       UNTIL   ( IDZ   >       100 )
+                       UNTIL   ( IDZ   >       200 )
                        OR      ( IDZ   >       CNT-HKN )
       *
              IF  ((WRK-HKN-SBT(IDZ)     =   "1"  )  AND
@@ -5039,12 +5049,12 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                                    (WRK-SRT-HKN-CNT2)
                        END-PERFORM
                        MOVE    IDZ         TO  WRK-SRT-HKN-IDX (IDY)
-                       MOVE    99          TO  IDY
+                       MOVE    200         TO  IDY
                      END-IF
                    END-PERFORM
                    ADD     1             TO  WRK-SRT-HKN-CNT
                    IF  WRK-SRT-HKN-CNT2  =   ZERO
-                       IF      WRK-SRT-HKN-CNT   >   99
+                       IF      WRK-SRT-HKN-CNT   >   200
                            MOVE    "0015"            TO  SPA-ERRCD
                        ELSE
                            MOVE    IDZ     TO  WRK-SRT-HKN-IDX
@@ -5248,7 +5258,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
       *
              MOVE    WRK-LCOMB2-REC(1)    TO  WRK-TCOMB-REC
              PERFORM    VARYING   IDX4   FROM   2   BY   1
-                         UNTIL  ( IDX4    >    100           )
+                         UNTIL  ( IDX4    >    200           )
                           OR    ( IDX4    >   WRK-LCOMB2-MAX )
                COMPUTE   IDX5  =  IDX4  -  1
                MOVE  WRK-LCOMB2-REC(IDX4) TO  WRK-LCOMB2-REC(IDX5)
@@ -5257,10 +5267,10 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                     WRK-LCOMB2-REC(WRK-LCOMB2-MAX)
       *
              PERFORM    VARYING   IDX4   FROM   1   BY   1
-                         UNTIL  ( IDX4    >    100           )
+                         UNTIL  ( IDX4    >    200           )
                           OR    ( IDX4    >   WRK-LCOMB2-MAX )
                IF  (IDX4   =   WRK-LCOMB2-MAX)
-               OR  (IDX4   =   100           )
+               OR  (IDX4   =   200           )
                   MOVE      9999   TO   IDX5
                ELSE
                   COMPUTE   IDX5    =   IDX4  +  1
@@ -5294,7 +5304,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                                      TO   WRK-SEIHO-YMD
                  MOVE    ZERO        TO   FLG-ARI
                  PERFORM  VARYING  IDX7   FROM    1   BY  1
-                           UNTIL   IDX7                >   100
+                           UNTIL   IDX7                >   200
                             OR     TBL-SEIHO-YMD(IDX7) =  SPACE
                             OR     FLG-ARI             =   1
                    IF  TBL-SEIHO-YMD(IDX7) = WRK-SEIHO-YMD
@@ -5316,7 +5326,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
              END-PERFORM
       *
              PERFORM    VARYING   IDX4   FROM   1   BY   1
-                         UNTIL  ( IDX4    >    100           )
+                         UNTIL  ( IDX4    >    200           )
                           OR    ( IDX4    >   WRK-LCOMB2-MAX )
                IF   WRK-LCOMB2-TEKSTYMD(IDX4) = "99999999"
                AND  WRK-LCOMB2-TEKEDYMD(IDX4) = "99999999"
@@ -5330,7 +5340,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                  MOVE     ZERO     TO    IDX8
                  INITIALIZE              TBL-SEIHO-YMD2-T
                  PERFORM  VARYING  IDX7   FROM    1   BY  1
-                           UNTIL   IDX7                >   100
+                           UNTIL   IDX7                >   200
                             OR     TBL-SEIHO-YMD(IDX7) =  SPACE
                    IF  (WRK-LCOMB2-TEKSTYMD(IDX4)
                                       <= TBL-SEIHO-YMD(IDX7))
@@ -5350,7 +5360,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                    MOVE  WRK-LCOMB2-TEKSTYMD(IDX4)
                                    TO   WRK-SEIHO-YMD
                    PERFORM  VARYING  IDX8   FROM    1   BY  1
-                             UNTIL   IDX8                 >   100
+                             UNTIL   IDX8                 >   200
                               OR     TBL-SEIHO-YMD2(IDX8) =  SPACE
                      ADD   1       TO   IDX9
                      MOVE  SPACE   TO   WRK-LCOMB2-HYOJIKBN(IDX4)
@@ -5538,7 +5548,7 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    ZERO                TO  WRK-LCOMB-MAX
       *
            PERFORM     VARYING   IDX   FROM    1   BY  1
-                       UNTIL   ( IDX   >       100 )
+                       UNTIL   ( IDX   >       200 )
                        OR      ( IDX   >       CNT-HKN )
              IF  ((WRK-HKN-SBT   (IDX)  =   "4" OR "8" OR "9")
       *!          特別療養費 対象

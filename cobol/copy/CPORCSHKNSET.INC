@@ -24,6 +24,7 @@
       * Maj/Min/Rev  修正者       日付      内容
       * 01.00.01     NACL-多々納  05/08/17  保険者番号、公費ＩＤ返却追加
       * 04.01.00     NACL-多々納  07/11/12  処理区分３（非表示）追加
+      * 05.00.00     NACL-多々納  19/02/08  処理区分４ 件数２００追加
       ************************************************************
        01  ORCSHKNSETAREA.
       *
@@ -35,6 +36,8 @@
                05  ORCSHKN-KBN2                PIC  X(01).
       *処理区分３（１：非表示分有り）
                05  ORCSHKN-KBN3                PIC  X(01).
+      *処理区分４（１：MAX 200件 ）
+               05  ORCSHKN-KBN4                PIC  X(01).
       *
       *保険組合せ一覧
            03  ORCSHKN-OUT-AREA.
@@ -45,7 +48,7 @@
       *
       *        一覧画面表示
                05  ORCSHKN-GMN-HKNCOMBI-LISTG.
-                   07  ORCSHKN-GMN-HKN-LIST    OCCURS  100.
+                   07  ORCSHKN-GMN-HKN-LIST    OCCURS  200.
       *                保険組合番号
                        09  ORCSHKN-GMN-HKNCOMBINUM     PIC  X(04).
       *                保険名称（労災の部位は１２文字まで）
