@@ -349,6 +349,8 @@
       *  05.00.02    NACL-藤原    18/01/05  登録時の補足コメント半角入力
       *                                     のチェック追加
       *  05.00.03    NACL-藤原    18/06/21  診療科のチェックの修正
+      *  05.00.04    NACL-藤原    18/11/22  Warning 対応
+      *  05.00.05    NACL-藤原    19/02/13  保険組合せを最大２００に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -736,7 +738,7 @@
        01  WRK-PTBYOMEI-DELETE-REC.
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-DELETE-//.
+                                   BY          //WRK-PTBYO-DLT-//.
       *
       *    患者病名マスタ−（レセ電エラーフラグチェック用）
        01  WRK-PTBYOMEI-CHK-AREA.
@@ -751,7 +753,7 @@
            02  WRK-PTBYOMEI-INSERT-REC         OCCURS  99.
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-INSERT-//.
+                                   BY          //WRK-PTBYO-INS-//.
       *
       *    患者病名マスタ−（開始日別表示用）
        01  WRK-LINE                PIC 9(03).
@@ -759,12 +761,12 @@
        01  WRK-PTBYOMEI-SRYYMD-AREA.
            02  WRK-PTBYOMEI-SRYYMD-MAX         PIC 9(03).
       *
-           02  WRK-PTBYO-SRYYMD-BANGO          PIC 9(05)
+           02  WRK-PTBYO-SRY-BANGO             PIC 9(05)
                                                OCCURS  200.
            02  WRK-PTBYOMEI-SRYYMD-REC         OCCURS  200.
            COPY    "CPPTBYOMEI.INC"
                                    REPLACING   //PTBYO-//
-                                   BY          //WRK-PTBYO-SRYYMD-//.
+                                   BY          //WRK-PTBYO-SRY-//.
       *
       *    スパ領域（ワーク）
            COPY    "COMMON-SPA"    REPLACING   //SPA-//
@@ -797,7 +799,9 @@
            COPY    "CPSK1010.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *    病名機能情報
            COPY    "CPSK1042.INC".
       *    診療行為一括入金管理情報
@@ -972,7 +976,7 @@
                IF      SPA-C02-BYOSET-INDEX-MAX
                                        >   ZERO
       *            病名入力セットから自院病名編集処理
-                   PERFORM 410261-BYOMEIINPUTSET-HENSYU-SEC
+                   PERFORM 410261-BYOMEIINPUTSET-HEN-SEC
                    IF    ( SPA-CIDCD2      NOT =   SPACE )
                    OR    ( SPA-CIDCD6      NOT =   SPACE )
                    OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -1395,7 +1399,7 @@
                                                SPA-ERRCD
                                                WRK-HAISIYMDH
       *                病名入力セットから自院病名編集処理
-                       PERFORM 410261-BYOMEIINPUTSET-HENSYU-SEC
+                       PERFORM 410261-BYOMEIINPUTSET-HEN-SEC
                        IF    ( SPA-CIDCD2      NOT =   SPACE )
                        OR    ( SPA-CIDCD6      NOT =   SPACE )
                        OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -1675,15 +1679,15 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-HOSPNUM
                                        SYS-EDYUKYMD
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
+               MOVE    MCPDATA-REC     TO  SYS-25-REC
            ELSE    
-               MOVE    SPACE           TO  SYS-200501-REC
+               MOVE    SPACE           TO  SYS-25-REC
            END-IF
-           IF      SYS-200501-TENKIBYOMEI-KBN
+           IF      SYS-25-TENKIBYOMEI-KBN
                                    =   SPACE
-               MOVE    ZERO            TO  SYS-200501-TENKIBYOMEI-KBN
+               MOVE    ZERO            TO  SYS-25-TENKIBYOMEI-KBN
            END-IF
-           MOVE    SYS-200501-TENKIBYOMEI-KBN
+           MOVE    SYS-25-TENKIBYOMEI-KBN
                                        TO
                                        SPA-C02-200501-TENKIBYOMEI-KBN
       *    
@@ -1907,6 +1911,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "2"                 TO  ORCSHKN-KBN
            MOVE    "2"                 TO  ORCSHKN-KBN3
+           MOVE    "1"                 TO  ORCSHKN-KBN4
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -1914,7 +1919,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >      ORCSHKN-HKN-MAX
-                   OR          IDX     >      100
+                   OR          IDX     >      200
                PERFORM 3102-HKNCOMBI-SPA-SEC
            END-PERFORM                                
            .
@@ -2184,7 +2189,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                IF      FLG-CHK         =   ZERO
                    ADD     1               TO  WRK-PTBYOMEI-SRYYMD-MAX
                                                IDX2
-                   MOVE    IDX2            TO  WRK-PTBYO-SRYYMD-BANGO
+                   MOVE    IDX2            TO  WRK-PTBYO-SRY-BANGO
                                                (WRK-PTBYOMEI-SRYYMD-MAX)
                    MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-SRYYMD-REC
                                                (WRK-PTBYOMEI-SRYYMD-MAX)
@@ -2226,20 +2231,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        UNTIL   IDZZ    >       WRK-PTBYOMEI-SRYYMD-MAX
                    ADD     1           TO  IDX
       *
-                   MOVE    WRK-PTBYO-SRYYMD-BANGO   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-BANGO   (IDZZ)
                                        TO  SPA-GMN-C02-TBANGO     (IDX)
-                   MOVE    WRK-PTBYO-SRYYMD-SRYKA   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-SRYKA   (IDZZ)
                                        TO  SPA-NAI-C02-TSRYKA     (IDX)
                                            WRK-KBN
                    PERFORM 5001-SRYKA-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TSRYKA     (IDX)
-                   MOVE    WRK-PTBYO-SRYYMD-RENNUM  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-RENNUM  (IDZZ)
                                        TO  SPA-NAI-C02-TRENNUM    (IDX)
-                   MOVE    WRK-PTBYO-SRYYMD-SEQNUM  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-SEQNUM  (IDZZ)
                                        TO  SPA-NAI-C02-TSEQNUM    (IDX)
-                   MOVE    WRK-PTBYO-SRYYMD-BYOMEI  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-BYOMEI  (IDZZ)
                                        TO  SPA-NAI-C02-TBYOMEI    (IDX)
-                   MOVE    WRK-PTBYO-SRYYMD-HOSOKU-COMMENT  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-HOSOKU-COMMENT  (IDZZ)
                                        TO  SPA-NAI-C02-THOSOKU-COMMENT
                                                                   (IDX)
                    INITIALIZE              ORCSMKBYOMEIAREA
@@ -2251,20 +2256,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    MOVE    SMKBYO-BYOMEI
                                        TO  SPA-GMN-C02-TBYOMEI (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-SRYYMD  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-SRYYMD  (IDZZ)
                                        TO  SPA-NAI-C02-TSRYYMD    (IDX)
                                        WRK-SYMD
                    PERFORM 5002-HIZUKE-HEN-SEC
                    MOVE    WRK-HENYMDG TO  SPA-GMN-C02-TSRYYMD    (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-REZEMM  (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-REZEMM  (IDZZ)
                                        TO  SPA-GMN-C02-TREZEMM    (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                   MOVE    WRK-PTBYO-SRY-TENKIYMD(IDZZ)
                                        TO  SPA-NAI-C02-TTENKIYMD  (IDX)
-                   IF      WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                   IF      WRK-PTBYO-SRY-TENKIYMD(IDZZ)
                                    NOT =   SPACE
-                       MOVE    WRK-PTBYO-SRYYMD-TENKIYMD(IDZZ)
+                       MOVE    WRK-PTBYO-SRY-TENKIYMD(IDZZ)
                                        TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    WRK-HENYMDG TO
@@ -2274,35 +2279,35 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-GMN-C02-TTENKIYMD  (IDX)
                    END-IF
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-TENKIKBN(IDZZ)
+                   MOVE    WRK-PTBYO-SRY-TENKIKBN(IDZZ)
                                        TO  SPA-NAI-C02-TTENKIKBN  (IDX)
                                            WRK-KBN
                    PERFORM 5001-TENKIKBN-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TTENKIKBN  (IDX)
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-UTAGAIFLG   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-UTAGAIFLG   (IDZZ)
                                        TO  WRK-KBN
                    PERFORM 5001-UTAGAIFLG-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TUTAGAIFLG (IDX)
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-SYUBYOFLG   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-SYUBYOFLG   (IDZZ)
                                        TO  WRK-KBN
                    PERFORM 5001-SYUBYOFLG-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TSYUBYOFLG (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-MANSEIKBN   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-MANSEIKBN   (IDZZ)
                                        TO  WRK-KBN 
                    PERFORM 5001-MANSEIKBN-HENSYU-SEC
                    MOVE    WRK-KBNMEITAN
                                        TO  SPA-GMN-C02-TMANSEIKBN (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-NYUGAIKBN   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-NYUGAIKBN   (IDZZ)
                                        TO  SPA-NAI-C02-TNYUGAIKBN (IDX)
                                            WRK-KBN 
                    PERFORM 5001-NYUGAIKBN-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TNYUGAIKBN (IDX)
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-HKNCOMBI    (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-HKNCOMBI    (IDZZ)
                                        TO  SPA-NAI-C02-THKNCOMBI  (IDX)
                                            WRK-KBN 
                    PERFORM 5001-HKNCOMBI-HENSYU-SEC
@@ -2313,7 +2318,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-GMN-C02-THKNCOMBI  (IDX)
                    END-IF
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-KOHID    (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-KOHID    (IDZZ)
                                        TO  SPA-NAI-C02-TKOHID  (IDX)
                                            WRK-KOHID
                    MOVE    SPACE       TO  WRK-KBNMEI 
@@ -2324,24 +2329,24 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TKOHID (IDX)
                    END-IF
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-HKNBYOMEIFLG(IDZZ)
+                   MOVE    WRK-PTBYO-SRY-HKNBYOMEIFLG(IDZZ)
                                        TO  WRK-KBN 
                    PERFORM 5001-HKNBYOMEIFLG-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO
                                        SPA-GMN-C02-THKNBYOMEIFLG  (IDX)
       * 
-                   MOVE    WRK-PTBYO-SRYYMD-REZEFLG     (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-REZEFLG     (IDZZ)
                                        TO  WRK-KBN 
                    PERFORM 5001-REZEFLG-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO  SPA-GMN-C02-TREZEFLG   (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-BYOMEIHENFLG   (IDZZ)
+                   MOVE    WRK-PTBYO-SRY-BYOMEIHENFLG   (IDZZ)
                                        TO  SPA-NAI-C02-TBYOMEIHENFLG
                                                                   (IDX)
       *
-                   IF      WRK-PTBYO-SRYYMD-CREYMD  (IDZZ)
+                   IF      WRK-PTBYO-SRY-CREYMD  (IDZZ)
                                    NOT =   SPACE
-                       MOVE    WRK-PTBYO-SRYYMD-CREYMD  (IDZZ)
+                       MOVE    WRK-PTBYO-SRY-CREYMD  (IDZZ)
                                        TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    WRK-HENYMDG
@@ -2349,15 +2354,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-GMN-C02-TCREYMD (IDX)
                    END-IF
       *
-                   IF      WRK-PTBYO-SRYYMD-CREHMS  (IDZZ)
+                   IF      WRK-PTBYO-SRY-CREHMS  (IDZZ)
                                    NOT =   SPACE
-                       MOVE    WRK-PTBYO-SRYYMD-CREHMS  (IDZZ) (1:2)
+                       MOVE    WRK-PTBYO-SRY-CREHMS  (IDZZ) (1:2)
                                        TO
                                        SPA-GMN-C02-TCREHMS (IDX) (1:2)
-                       MOVE    WRK-PTBYO-SRYYMD-CREHMS  (IDZZ) (3:2)
+                       MOVE    WRK-PTBYO-SRY-CREHMS  (IDZZ) (3:2)
                                        TO
                                        SPA-GMN-C02-TCREHMS (IDX) (4:2)
-                       MOVE    WRK-PTBYO-SRYYMD-CREHMS  (IDZZ) (5:2)
+                       MOVE    WRK-PTBYO-SRY-CREHMS  (IDZZ) (5:2)
                                        TO
                                        SPA-GMN-C02-TCREHMS (IDX) (7:2)
                        MOVE    ":"     TO
@@ -2365,9 +2370,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-GMN-C02-TCREHMS (IDX) (6:1)
                    END-IF
       *
-                   IF      WRK-PTBYO-SRYYMD-UPYMD  (IDZZ)
+                   IF      WRK-PTBYO-SRY-UPYMD  (IDZZ)
                                    NOT =   SPACE
-                       MOVE    WRK-PTBYO-SRYYMD-UPYMD  (IDZZ)
+                       MOVE    WRK-PTBYO-SRY-UPYMD  (IDZZ)
                                        TO  WRK-SYMD
                        PERFORM 5002-HIZUKE-HEN-SEC
                        MOVE    WRK-HENYMDG
@@ -2375,15 +2380,15 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-GMN-C02-TUPYMD (IDX)
                    END-IF
       *
-                   IF      WRK-PTBYO-SRYYMD-UPHMS  (IDZZ)
+                   IF      WRK-PTBYO-SRY-UPHMS  (IDZZ)
                                    NOT =   SPACE
-                       MOVE    WRK-PTBYO-SRYYMD-UPHMS  (IDZZ) (1:2)
+                       MOVE    WRK-PTBYO-SRY-UPHMS  (IDZZ) (1:2)
                                        TO
                                        SPA-GMN-C02-TUPHMS (IDX) (1:2)
-                       MOVE    WRK-PTBYO-SRYYMD-UPHMS  (IDZZ) (3:2)
+                       MOVE    WRK-PTBYO-SRY-UPHMS  (IDZZ) (3:2)
                                        TO
                                        SPA-GMN-C02-TUPHMS (IDX) (4:2)
-                       MOVE    WRK-PTBYO-SRYYMD-UPHMS  (IDZZ) (5:2)
+                       MOVE    WRK-PTBYO-SRY-UPHMS  (IDZZ) (5:2)
                                        TO
                                        SPA-GMN-C02-TUPHMS (IDX) (7:2)
                        MOVE    ":"     TO
@@ -2391,19 +2396,19 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                        SPA-GMN-C02-TUPHMS (IDX) (6:1)
                    END-IF
       *
-                   IF      WRK-PTBYO-SRYYMD-DISCHARGEFLG(IDZZ)
+                   IF      WRK-PTBYO-SRY-DISCHARGEFLG(IDZZ)
                                        =   "1"
                        MOVE    "記載"  TO
                                        SPA-GMN-C02-TDISCHARGEFLG (IDX)
                    END-IF
       *
-                   MOVE    WRK-PTBYO-SRYYMD-CLASS1(IDZZ)
+                   MOVE    WRK-PTBYO-SRY-CLASS1(IDZZ)
                                        TO  WRK-KBN 
                    PERFORM 5001-CLASS1-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO
                                        SPA-GMN-C02-TCLASS1  (IDX)
       *
-                   MOVE    WRK-PTBYO-SRYYMD-CLASS2(IDZZ)
+                   MOVE    WRK-PTBYO-SRY-CLASS2(IDZZ)
                                        TO  WRK-KBN 
                    PERFORM 5001-CLASS2-HENSYU-SEC
                    MOVE    WRK-KBNMEI  TO
@@ -2450,7 +2455,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        31011-HKNCOMBI-HENSYU-SEC   SECTION.
       *
-           IF      WRK-PTBYO-SRYYMD-HKNCOMBI (IDZZ)
+           IF      WRK-PTBYO-SRY-HKNCOMBI (IDZZ)
                                    =   ZERO
                GO  TO  3101-HKNCOMBI-HENSYU-EXT
            END-IF
@@ -2459,7 +2464,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
            MOVE    SPA-NAI-C02-PTID
                                    TO  COMB-PTID
-           MOVE    WRK-PTBYO-SRYYMD-HKNCOMBI (IDZZ)
+           MOVE    WRK-PTBYO-SRY-HKNCOMBI (IDZZ)
                                    TO  COMB-HKNCOMBINUM
            MOVE    HKNCOMBI-REC        TO  MCPDATA-REC
            MOVE    "tbl_hkncombi"      TO  MCP-TABLE
@@ -2591,7 +2596,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
        31011-PTRSIINF-HENSYU-SEC   SECTION.
       *
-           IF      WRK-PTBYO-SRYYMD-KOHID (IDZZ)
+           IF      WRK-PTBYO-SRY-KOHID (IDZZ)
                                        =   ZERO
                GO  TO  31011-PTRSIINF-HENSYU-EXT
            END-IF
@@ -2601,7 +2606,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    SPA-NAI-C02-PTID
                                    TO  PTRSI-PTID
            MOVE    ZERO            TO  PTRSI-HKNID
-           MOVE    WRK-PTBYO-SRYYMD-KOHID (IDZZ)
+           MOVE    WRK-PTBYO-SRY-KOHID (IDZZ)
                                    TO  PTRSI-KOHID
            MOVE    PTRSIINF-REC    TO  MCPDATA-REC
            MOVE    "tbl_ptrsiinf"  TO  MCP-TABLE
@@ -2972,7 +2977,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        END-IF   
                    END-PERFORM
                END-PERFORM
-               PERFORM 3201-C04SPASET-BYOMEI-HENSYU-SEC
+               PERFORM 3201-C04SPASET-BYOMEI-HEN-SEC
              END-IF 
            END-IF
       *
@@ -2987,9 +2992,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-GMN-C02-HOSOKUCD (IDZ)
                            MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
                                                TO  USBYO-BYOMEIINPUTCD
-                           PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+                           PERFORM 410243-HOSOKU-USERBYO-HEN-SEC
                        END-PERFORM
-                       PERFORM 3202-C04SPASET-HOSOKU-HENSYU-SEC
+                       PERFORM 3202-C04SPASET-HOSOKU-HEN-SEC
                    ELSE
                        MOVE    SPA-C01-HOSOKU-COMMENT
                                        TO  SPA-GMN-C02-HOSOKU-COMMENT
@@ -3007,9 +3012,9 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                            SPA-GMN-C02-HOSOKUCD (IDZ)
                    MOVE    SPA-GMN-C02-HOSOKUCD (IDZ)
                                                TO  USBYO-BYOMEIINPUTCD
-                   PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+                   PERFORM 410243-HOSOKU-USERBYO-HEN-SEC
       *
-                   PERFORM 3202-C04SPASET-HOSOKU-HENSYU-SEC
+                   PERFORM 3202-C04SPASET-HOSOKU-HEN-SEC
                END-IF
            END-IF
            .
@@ -3019,7 +3024,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *****************************************************************
       *    自院病名セット処理（病名編集処理）
       *****************************************************************
-       3201-C04SPASET-BYOMEI-HENSYU-SEC    SECTION.
+       3201-C04SPASET-BYOMEI-HEN-SEC    SECTION.
       *
            PERFORM VARYING IDX3    FROM    1   BY  1
                    UNTIL   IDX3    >       6
@@ -3077,18 +3082,18 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    IF      SPA-NAI-C02-BYOMEI-O (IDZ IDX3)
                                                =   "■■■"
                        MOVE    "0091"        TO  SPA-ERRCD
-                       GO  TO  3201-C04SPASET-BYOMEI-HENSYU-EXT
+                       GO  TO  3201-C04SPASET-BYOMEI-HEN-EXT
                    END-IF
                END-PERFORM       
            END-PERFORM       
            .
-       3201-C04SPASET-BYOMEI-HENSYU-EXT.
+       3201-C04SPASET-BYOMEI-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    自院病名セット処理（補足コメント編集処理）
       *****************************************************************
-       3202-C04SPASET-HOSOKU-HENSYU-SEC    SECTION.
+       3202-C04SPASET-HOSOKU-HEN-SEC    SECTION.
       *
            MOVE    SPACE           TO  SPA-GMN-C02-HOSOKU-COMMENT
                                        WRK-BYOMEI
@@ -3113,7 +3118,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
            .
-       3202-C04SPASET-HOSOKU-HENSYU-EXT.
+       3202-C04SPASET-HOSOKU-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3165,13 +3170,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                        ELSE
                            IF    ( WRK-HENSYU-DATA-O (8)   =   SPACE )
                            AND   ( WRK-HENSYU-DATA-O (9)   =   SPACE )
-                               PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                               PERFORM 4101131-KANTAN-SYUSEI-UPD-SEC
                            ELSE
                                IF      WRK-HENSYU-DATA-O (9)   =   SPACE
                                    PERFORM 3201-BYOMEI-COPY-KOUSIN-SEC
                                ELSE
                                    PERFORM
-                                       3203-BYOMEI-SRYKA-COPY-KOUSIN-SEC
+                                       3203-BYOMEI-SRYKA-COPY-UPD-SEC
                                END-IF
                            END-IF
                        END-IF
@@ -3503,7 +3508,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    病名診療科複写更新処理
       *****************************************************************
-       3203-BYOMEI-SRYKA-COPY-KOUSIN-SEC         SECTION.
+       3203-BYOMEI-SRYKA-COPY-UPD-SEC         SECTION.
       *
       *    更新日取得
            INITIALIZE                  ORCSMCNDATEAREA
@@ -3525,7 +3530,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF      FLG-PTBYOMEI        =   1
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
-               GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+               GO  TO  3203-BYOMEI-SRYKA-COPY-UPD-EXT
            ELSE
                MOVE    PTBYOMEI-REC        TO  WRK-PTBYOMEI-COPY-REC
                                                WRK-PTBYOMEI-DELETE-REC
@@ -3552,7 +3557,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF      FLG-PTBYOMEI        =   ZERO
                IF      PTBYO-RENNUM        =   99
                    MOVE    "0089"              TO  SPA-ERRCD
-                   GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+                   GO  TO  3203-BYOMEI-SRYKA-COPY-UPD-EXT
                END-IF
                MOVE    PTBYO-RENNUM        TO  WRK-RENNUM
            END-IF
@@ -3578,7 +3583,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
            IF      MCP-RC          NOT =   ZERO 
                MOVE    "1001"              TO  SPA-ERRCD
                DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
-               GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+               GO  TO  3203-BYOMEI-SRYKA-COPY-UPD-EXT
            ELSE
                PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
@@ -3597,11 +3602,11 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
                IF      MCP-RC              NOT =   ZERO 
                    MOVE    "1002"                  TO  SPA-ERRCD
                DISPLAY MCP-FUNC "PTBYOMEI-KEY =>" WRK-PTBYO-COPY-KEY
-                   GO  TO  3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT
+                   GO  TO  3203-BYOMEI-SRYKA-COPY-UPD-EXT
                END-IF
            END-IF
            .
-       3203-BYOMEI-SRYKA-COPY-KOUSIN-EXT.
+       3203-BYOMEI-SRYKA-COPY-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -3981,7 +3986,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  JYURRK-HOSPNUM
                                                WRK-HAISIYMDH
       *
       *                病名入力セットから自院病名編集処理
-                       PERFORM 410261-BYOMEIINPUTSET-HENSYU-SEC
+                       PERFORM 410261-BYOMEIINPUTSET-HEN-SEC
                        IF    ( SPA-CIDCD2      NOT =   SPACE )
                        OR    ( SPA-CIDCD6      NOT =   SPACE )
                        OR    ( SPA-ERRCD       NOT =   SPACE )
@@ -5217,7 +5222,7 @@ grpsys                                         SPA-AREA
                        PERFORM VARYING IDX     FROM
                                                WRK-STNUM-O (IDXX)  BY  1
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                           PERFORM 4101132-KANTAN-SYUSEI-DABURI-CHK-SEC
+                           PERFORM 4101132-KANTAN-DABURI-CHK-SEC
                            IF      SPA-ERRCD   NOT =   SPACE
                                GO  TO  410113-KANTAN-SYUSEI-EXT
                            END-IF
@@ -5305,7 +5310,7 @@ grpsys                                         SPA-AREA
                    PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
                            UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                       PERFORM 4101131-KANTAN-SYUSEI-KOUSIN-SEC
+                       PERFORM 4101131-KANTAN-SYUSEI-UPD-SEC
                        IF      SPA-ERRCD   NOT =   SPACE
                            GO  TO  410113-KANTAN-KOUSHIN-EXT
                        END-IF
@@ -5398,7 +5403,7 @@ grpsys                                         SPA-AREA
       *****************************************************************
       *    簡単修正転帰・保険適用チェック処理
       *****************************************************************
-       4101132-KANTAN-SYUSEI-DABURI-CHK-SEC         SECTION.
+       4101132-KANTAN-DABURI-CHK-SEC         SECTION.
       *
       *    転記日のセット
            MOVE    SPA-NAI-C02-TTENKIYMD (IDX)
@@ -5421,7 +5426,7 @@ grpsys                                         SPA-AREA
                IF      SPA-NAI-C02-TSRYYMD (IDX)
                                        >    WRK-HENSYU-DATA-O (2)
                    MOVE    "0084"      TO  SPA-ERRCD
-                   GO  TO  4101132-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  4101132-KANTAN-DABURI-CHK-EXT
                END-IF
            END-IF
       *    保険適用と開始日のチェック
@@ -5438,7 +5443,7 @@ grpsys                                         SPA-AREA
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
                    MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                                TO  WRK-ERR-BYOMEI
-                   GO  TO  4101132-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  4101132-KANTAN-DABURI-CHK-EXT
                END-IF
            END-IF
       *
@@ -5452,13 +5457,13 @@ grpsys                                         SPA-AREA
                                            BY 1
                                UNTIL   IDY >       WRK-EDNUM-O (IDXY)
                            PERFORM
-                               41011321-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC
+                               41011321-KANTAN-HKNCOMB-CHK-SEC
                        END-PERFORM
                    END-IF
                END-PERFORM
            END-IF
            IF      SPA-ERRCD   NOT =   SPACE
-               GO  TO  4101132-KANTAN-SYUSEI-DABURI-CHK-EXT
+               GO  TO  4101132-KANTAN-DABURI-CHK-EXT
            END-IF
       *
       *    マスタとのチェック
@@ -5577,13 +5582,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
-       4101132-KANTAN-SYUSEI-DABURI-CHK-EXT.
+       4101132-KANTAN-DABURI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    保険組合せ変更時同一病名重複チェック処理
       *****************************************************************
-       41011321-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC SECTION.
+       41011321-KANTAN-HKNCOMB-CHK-SEC SECTION.
       *
       *    同一診療科・同一病名の場合だけチェック
            IF  ( IDXX              =    IDXY )
@@ -5606,7 +5611,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            AND   ( SPA-NAI-C02-TNYUGAIKBN (IDY)
                                                        =   "1" ) )
                            GO  TO
-                               41011321-KANTAN-SYUSEI-HKNCOMBI-CHK-EXT
+                               41011321-KANTAN-HKNCOMB-CHK-EXT
                        END-IF
                    END-IF     
       *
@@ -5676,13 +5681,13 @@ grpsys     PERFORM 900-DBSELECT-SEC
                END-IF
            END-IF
            .
-       41011321-KANTAN-SYUSEI-HKNCOMBI-CHK-EXT.
+       41011321-KANTAN-HKNCOMB-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    簡単修正更新処理
       *****************************************************************
-       4101131-KANTAN-SYUSEI-KOUSIN-SEC         SECTION.
+       4101131-KANTAN-SYUSEI-UPD-SEC         SECTION.
       *
            INITIALIZE                      PTBYO-KEY
 grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -5699,7 +5704,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            IF      FLG-PTBYOMEI        =   1
                MOVE    "1003"              TO  SPA-ERRCD
                DISPLAY "INV PTBYOMEI-KEY =>" PTBYO-KEY 
-               GO  TO  4101131-KANTAN-SYUSEI-KOUSIN-EXT
+               GO  TO  4101131-KANTAN-SYUSEI-UPD-EXT
            END-IF
            IF      PTBYO-TENKIKBN      =   "2"
                MOVE    1                   TO  FLG-TENKIKBN-CHK
@@ -5826,7 +5831,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                PERFORM 450221-RECEUPD-UPDATE-SEC
            END-IF
            .
-       4101131-KANTAN-SYUSEI-KOUSIN-EXT.
+       4101131-KANTAN-SYUSEI-UPD-EXT.
            EXIT.
       *
       *****************************************************************
@@ -5920,7 +5925,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                           END-IF
                        END-PERFORM
                        IF      FLG-TENKIKBN     =   1
-                           PERFORM 4101151-KEIKOKU-TENKIKBN-CHK-SEC
+                           PERFORM 4101151-KEIKOKU-TENKI-CHK-SEC
                        END-IF
                    END-IF
                END-IF
@@ -6121,7 +6126,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *****************************************************************
       *    死亡区分更新確認メッセージ表示のチェック処理
       *****************************************************************
-       4101151-KEIKOKU-TENKIKBN-CHK-SEC    SECTION.
+       4101151-KEIKOKU-TENKI-CHK-SEC    SECTION.
       *
            MOVE    ZERO            TO  FLG-TENKIKBN
       *
@@ -6188,7 +6193,7 @@ grpsys                 MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                MOVE    9           TO  SPA-C02-KEIKOKU-FLG4
            END-IF
            .
-       4101151-KEIKOKU-TENKIKBN-CHK-EXT.
+       4101151-KEIKOKU-TENKI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -6311,7 +6316,7 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
            END-PERFORM
            MOVE    "1"             TO  SPA-NAI-C02-BYOMEITOP (1)
       *
-           PERFORM 4101111-BYOMEI-SELECT-HENSYU-SEC
+           PERFORM 4101111-BYOMEI-SELECT-HEN-SEC
       *
       *    病名コードに存在しないコードがあるとき
            PERFORM VARYING IDZ     FROM    1   BY  1
@@ -6369,7 +6374,7 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
       *****************************************************************
       *    選択病名編集処理
       *****************************************************************
-       4101111-BYOMEI-SELECT-HENSYU-SEC      SECTION.
+       4101111-BYOMEI-SELECT-HEN-SEC      SECTION.
       *      
            MOVE    SPA-PTBYO-SRYKA    TO  SPA-GMN-C02-BSRYKA
                                           WRK-KBN
@@ -6530,7 +6535,7 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
                    MOVE    SPA-GMN-C02-HOSOKUCD(IDX)
                                                TO  USBYO-BYOMEIINPUTCD
                    MOVE    IDX                 TO  IDZ
-                   PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+                   PERFORM 410243-HOSOKU-USERBYO-HEN-SEC
                END-IF
            END-PERFORM
       *    
@@ -6543,7 +6548,7 @@ grpsys                 MOVE    SPA-HOSPNUM TO  USBYO-HOSPNUM
            MOVE    9                   TO  SPA-GMN-C02-CUR
       *
            .
-       4101111-BYOMEI-SELECT-HENSYU-EXT.
+       4101111-BYOMEI-SELECT-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -7469,7 +7474,7 @@ grpsys                         MOVE    SPA-HOSPNUM
                                ELSE
       *                            病名入力セット検索
                                    PERFORM
-                                   41028-BYOMEICDINPUTSET-KENSAKU-SEC
+                                   41028-BYOMEICDINPUTSET-KEN-SEC
                                    IF      FLG-BYOMEIINPUTSET   =   ZERO
                                        PERFORM 41021-BYOMEICD-HENSYU-SEC
                                        MOVE    SPACE       TO  SPA-ERRCD
@@ -8341,7 +8346,7 @@ grpsys                         MOVE    SPA-HOSPNUM
            END-IF
       *
       *    病名入力セットから自院病名編集処理
-           PERFORM 410261-BYOMEIINPUTSET-HENSYU-SEC
+           PERFORM 410261-BYOMEIINPUTSET-HEN-SEC
       *
            .
        41026-BYOMEIINPUTSET-CHECK-EXT.
@@ -8350,7 +8355,7 @@ grpsys                         MOVE    SPA-HOSPNUM
       *****************************************************************
       *    病名入力セットから自院病名編集処理
       *****************************************************************
-       410261-BYOMEIINPUTSET-HENSYU-SEC  SECTION.
+       410261-BYOMEIINPUTSET-HEN-SEC       SECTION.
       *
            PERFORM VARYING IDWW    FROM    1   BY  1
                    UNTIL   IDWW    >       6
@@ -8385,7 +8390,7 @@ grpsys                         MOVE    SPA-HOSPNUM
                    MOVE    SPACE       TO  SPA-C02-BYOSET-BYOMEIINPUTCD
                                                              (IDWW)
       *************IF      FLG-USERBYOMEI-CHK  =   ZERO
-      *************    GO  TO  410261-BYOMEIINPUTSET-HENSYU-EXT
+      *************    GO  TO  410261-BYOMEIINPUTSET-HEN-EXT
       *************END-IF
       *
       *            廃止病名のとき
@@ -8396,7 +8401,7 @@ grpsys                         MOVE    SPA-HOSPNUM
                        PERFORM 500-BYOMEI-KENSAKU-SEC
                    END-IF
                    IF      SPA-CIDCD6      NOT =   SPACE
-                       GO  TO  410261-BYOMEIINPUTSET-HENSYU-EXT
+                       GO  TO  410261-BYOMEIINPUTSET-HEN-EXT
                    END-IF
       *
                    PERFORM 41021-BYOMEICD-HENSYU-SEC
@@ -8404,7 +8409,7 @@ grpsys                         MOVE    SPA-HOSPNUM
                    COMPUTE SPA-GMN-C02-CUR     =   IDZ +   1
       *
                    IF      SPA-ERRCD           =   "0075"  OR "0094"
-                       GO  TO  410261-BYOMEIINPUTSET-HENSYU-EXT
+                       GO  TO  410261-BYOMEIINPUTSET-HEN-EXT
                    END-IF
                END-IF
            END-PERFORM
@@ -8412,13 +8417,13 @@ grpsys                         MOVE    SPA-HOSPNUM
            INITIALIZE                  SPA-C02-BYOMEIINPUTSET-AREA
       *
            .
-       410261-BYOMEIINPUTSET-HENSYU-EXT.
+       410261-BYOMEIINPUTSET-HEN-EXT.
            EXIT.
       *
       *****************************************************************
       *    セット病名検索（コードより検索）
       *****************************************************************
-       41028-BYOMEICDINPUTSET-KENSAKU-SEC  SECTION.
+       41028-BYOMEICDINPUTSET-KEN-SEC      SECTION.
       *
            INITIALIZE                      BYOMEIINPUTSET-REC
            MOVE    SPA-HOSPNUM         TO  BYOSET-HOSPNUM
@@ -8448,14 +8453,14 @@ grpsys                         MOVE    SPA-HOSPNUM
            PERFORM 900-CLOSE-SEC
       *
            IF      FLG-BYOMEIINPUTSET  =   1
-              GO  TO  41028-BYOMEICDINPUTSET-KENSAKU-EXT
+              GO  TO  41028-BYOMEICDINPUTSET-KEN-EXT
            END-IF
       *
       *    検索画面遷移処理
            PERFORM 410291-C04-SYORI-SEC
       *
            .
-       41028-BYOMEICDINPUTSET-KENSAKU-EXT.
+       41028-BYOMEICDINPUTSET-KEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -8569,7 +8574,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                            UNTIL   IDX >       3
                        IF    ( SPA-GMN-C02-HOSOKUCD (IDX)
                                                    NOT =   SPACE )             
-                       AND   ( SPA-NAI-C02-HOSOKU-USERBYOMEIFLG (IDX)
+                       AND   ( SPA-NAI-C02-HOSOKU-USERBYOFLG (IDX)
                                                        =   SPACE )
                        AND   ( SPA-NAI-C02-HOSOKU-COMMENT(IDX)(1:2)
                                                    NOT =   "■"  )
@@ -9875,7 +9880,7 @@ grpsys                                       SPA-AREA
                    MOVE    SPA-HOSPNUM     TO  USBYO-HOSPNUM
                    MOVE    SPA-GMN-C02-HOSOKUCD(IDZ)
                                            TO  USBYO-BYOMEIINPUTCD
-                   PERFORM 410243-HOSOKU-USERBYOMEI-HENSYU-SEC
+                   PERFORM 410243-HOSOKU-USERBYO-HEN-SEC
                    IF      FLG-USERBYOMEI   NOT =   ZERO
       *                自院病名検索
                        PERFORM 41029-USERBYOMEICD-KENSAKU-SEC
@@ -10111,7 +10116,7 @@ grpsys                                       SPA-AREA
       *****************************************************************
       *    自院病名マスタ編集処理（補足コメント）
       *****************************************************************
-       410243-HOSOKU-USERBYOMEI-HENSYU-SEC SECTION.
+       410243-HOSOKU-USERBYO-HEN-SEC       SECTION.
       *
            INITIALIZE                  SPA-NAI-C04-HOSOKU-G (IDZ)
       *
@@ -10125,7 +10130,7 @@ grpsys                                       SPA-AREA
                    MOVE    USBYO-BYOMEI    TO
                                        SPA-NAI-C02-HOSOKU-COMMENT (IDZ)
                    MOVE    "1"             TO 
-                                       SPA-NAI-C02-HOSOKU-USERBYOMEIFLG
+                                       SPA-NAI-C02-HOSOKU-USERBYOFLG
                                                                   (IDZ)
                ELSE    
                    MOVE    "■■■"        TO
@@ -10133,7 +10138,7 @@ grpsys                                       SPA-AREA
                END-IF
            END-IF
            .    
-       410243-HOSOKU-USERBYOMEI-HENSYU-EXT.
+       410243-HOSOKU-USERBYO-HEN-EXT.
            EXIT.
       *
       *****************************************************************
@@ -10902,7 +10907,7 @@ grpsys     PERFORM 900-ORCDBMAIN-SEC
                                        =   1   )
            AND   ( SPA-GMN-C02-DISCHARGEFLG
                                        =   "1" )
-               PERFORM 4508-DISCHARGEFLG-DABURI-CHK-SEC
+               PERFORM 4508-DISCHARGEFLG-DABURI-CK-SEC
                IF      SPA-ERRCD       NOT =   SPACE
                    MOVE    42                  TO  SPA-GMN-C02-CUR
                    GO  TO  4501-KEIKOKU-CHK-EXT
@@ -12209,11 +12214,11 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
       *
                    MOVE    PTBYOMEI-REC    TO  WRK-PTBYOMEI-INSERT-REC
                                                                (IDY1)
-                   MOVE    WRK-RENNUM      TO  WRK-PTBYO-INSERT-RENNUM
+                   MOVE    WRK-RENNUM      TO  WRK-PTBYO-INS-RENNUM
                                                                (IDY1)
-                   MOVE    SMCNDATE-YMD    TO  WRK-PTBYO-INSERT-UPYMD
+                   MOVE    SMCNDATE-YMD    TO  WRK-PTBYO-INS-UPYMD
                                                                (IDY1)
-                   MOVE    SMCNDATE-HMS    TO  WRK-PTBYO-INSERT-UPHMS
+                   MOVE    SMCNDATE-HMS    TO  WRK-PTBYO-INS-UPHMS
                                                                (IDY1)
       *            既に登録済の病名を削除する
                    MOVE    PTBYOMEI-REC    TO  MCPDATA-REC
@@ -12263,7 +12268,7 @@ grpsys             PERFORM 900-ORCDBMAIN-SEC
       *
            PERFORM VARYING IDY1    FROM    1   BY  1
                    UNTIL   IDY1    >       99
-                   OR      WRK-PTBYO-INSERT-RENNUM (IDY1)
+                   OR      WRK-PTBYO-INS-RENNUM (IDY1)
                                            =   ZERO
                MOVE    WRK-PTBYOMEI-INSERT-REC (IDY1) 
                                            TO  PTBYOMEI-REC
@@ -12290,7 +12295,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
       *****************************************************************
       *    退院証明書記載フラグ重複チェック処理
       *****************************************************************
-       4508-DISCHARGEFLG-DABURI-CHK-SEC   SECTION.
+       4508-DISCHARGEFLG-DABURI-CK-SEC   SECTION.
       *
            INITIALIZE                      PTBYOMEI-REC
            MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
@@ -12353,7 +12358,7 @@ grpsys         PERFORM 900-ORCDBMAIN-SEC
            MOVE    "key49"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .                   
-       4508-DISCHARGEFLG-DABURI-CHK-EXT.
+       4508-DISCHARGEFLG-DABURI-CK-EXT.
            EXIT.
       *
       *****************************************************************
@@ -13294,7 +13299,7 @@ grpsys                                          SPA-AREA
                        UNTIL   IDX >       3
                    IF    ( SPA-GMN-C02-HOSOKUCD (IDX)
                                                NOT =   SPACE )             
-                   AND   ( SPA-NAI-C02-HOSOKU-USERBYOMEIFLG (IDX)
+                   AND   ( SPA-NAI-C02-HOSOKU-USERBYOFLG (IDX)
                                                    =   SPACE )
                    AND   ( SPA-NAI-C02-HOSOKU-COMMENT (IDX) (1:2)
                                                NOT =   "■"  )

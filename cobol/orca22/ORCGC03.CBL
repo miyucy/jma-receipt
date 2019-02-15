@@ -2467,7 +2467,7 @@
                        IF      IDY             =   3
                            INITIALIZE SPA-NAI-C03-BYOMEIINPUTCD-OCC
                                                                    (IDY)
-                                      SPA-NAI-C03-BYOMEIINPUTCD-CHK-OCC
+                                      SPA-NAI-C03-BYOMEIINPUTCD-CHK-O
                                                                    (IDY)
                                       SPA-GMN-C03-BYOMEIINPUTCD(IDY)
                        ELSE
@@ -2479,9 +2479,9 @@
                                                            (IDW)
                                    TO  SPA-NAI-C03-BYOMEIINPUTCD-OCC
                                                                    (IDY)
-                           MOVE    SPA-NAI-C03-BYOMEIINPUTCD-CHK-OCC
+                           MOVE    SPA-NAI-C03-BYOMEIINPUTCD-CHK-O
                                                            (IDW)
-                                   TO  SPA-NAI-C03-BYOMEIINPUTCD-CHK-OCC
+                                   TO  SPA-NAI-C03-BYOMEIINPUTCD-CHK-O
                                                                    (IDY)
                            IF      SPA-C03-BYOMEIINPUTCD-ERR-INDEX
                                                    =   IDW

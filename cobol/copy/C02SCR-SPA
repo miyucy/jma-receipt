@@ -127,6 +127,8 @@
       *  05.00.01    NACL-藤原    16/02/17  一括入力対応（病名コード除く）
       *  05.00.02    NACL-藤原    17/10/05  開始日の未来日入力の警告表示
       *                                     の修正
+      *  05.00.03    NACL-藤原    18/11/22  Warning 対応
+      *  05.00.04    NACL-藤原    19/02/13  保険組合せを最大２００に変更
       *****************************************************************
       *
        01  SPA-C02FREE.
@@ -191,7 +193,7 @@
                            11  SPA-GMN-C02-LASTYMD     PIC X(16).
       *
                        09  SPA-GMN-C02-HKN-TBL.
-                           11  SPA-GMN-C02-HKN-TBLO    OCCURS   200.
+                           11  SPA-GMN-C02-HKN-TBLO    OCCURS   400.
                                13  SPA-GMN-C02-THKNCOMBINUM
                                                        PIC 9(04).
                                13  SPA-GMN-C02-THKNCOMBIMEI
@@ -342,7 +344,7 @@
                        09  SPA-GMN-C02-NYUGAIKBN-MAX       PIC 9(02).
       *
                        09  SPA-GMN-C02-HKNCOMBILST-G.
-                           11  SPA-GMN-C02-HKNCOMBILST     OCCURS  100.
+                           11  SPA-GMN-C02-HKNCOMBILST     OCCURS  200.
                                13  SPA-GMN-C02-HKNCOMBIL   PIC X(04).
                                13  SPA-GMN-F1L             PIC X(01).
                                13  SPA-GMN-C02-HKNCOMBIMEIL
@@ -474,7 +476,7 @@
                                13  SPA-NAI-C02-HOSOKU-OCC  OCCURS  3.
                                    15  SPA-NAI-C02-HOSOKU-COMMENT
                                                            PIC X(80).
-                                   15  SPA-NAI-C02-HOSOKU-USERBYOMEIFLG
+                                   15  SPA-NAI-C02-HOSOKU-USERBYOFLG
                                                            PIC X(01).
       *
                                13  SPA-NAI-C02-HOSOKUCD-CHK
@@ -506,7 +508,7 @@
                                13  SPA-NAI-C02-TUPDOWN     PIC 9(01).
       *
                        09  SPA-NAI-C02-HKN-TBL.
-                           11  SPA-NAI-C02-HKN-TBLO    OCCURS   100.
+                           11  SPA-NAI-C02-HKN-TBLO    OCCURS   200.
                                13  SPA-NAI-C02-THKNCOMBINUM PIC 9(04).
                                13  SPA-NAI-C02-THKNCOMBIMEI PIC X(40).
                                13  SPA-NAI-C02-TEKSTYMD     PIC 9(08).
@@ -724,7 +726,7 @@
                                    15  SPA-NAI-C03-CDSYU
                                                            PIC X(01).
                            11  SPA-NAI-C03-BYOMEIINPUTCD-CHK.
-                               13  SPA-NAI-C03-BYOMEIINPUTCD-CHK-OCC
+                               13  SPA-NAI-C03-BYOMEIINPUTCD-CHK-O
                                                            OCCURS  3.
                                    15  SPA-NAI-C03-BYOMEIINPUTCD-FLG
                                                            PIC X(02).
@@ -1096,7 +1098,7 @@
                        09  SPA-GMN-C10-NYUGAIKBN-MAX       PIC 9(02).
       *
                        09  SPA-GMN-C10-HKNCOMBILST-G.                         
-                           11  SPA-GMN-C10-HKNCOMBILST     OCCURS  101.
+                           11  SPA-GMN-C10-HKNCOMBILST     OCCURS  201.
                                13  SPA-GMN-C10-HKNCOMBIL   PIC X(04).
                                13  SPA-GMN-F1L             PIC X(01).
                                13  SPA-GMN-C10-HKNCOMBIMEIL

@@ -21,7 +21,7 @@
                 04  C10-HKNCOMBI.
                   05  C10-VALUE   PIC X(40).
                 04  C10-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
-                04  C10-HKNCOMBI-ITEM    PIC X(40)   OCCURS  101 TIMES.
+                04  C10-HKNCOMBI-ITEM    PIC X(40)   OCCURS  201 TIMES.
               03  C10-KOHIDCOMBO.
                 04  C10-KOHIDCOMBO-STATE   PIC S9(9)   BINARY.
                 04  C10-KOHID.

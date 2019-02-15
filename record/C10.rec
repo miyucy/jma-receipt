@@ -32,7 +32,7 @@ C10 {
         textdata varchar(40);
       };
       count int;
-        item varchar(40)[101];
+        item varchar(40)[201];
     };
     KOHIDCOMBO {
       state int;

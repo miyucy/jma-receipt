@@ -71,6 +71,8 @@
       *
       *  04.07.01    NACL-藤原    13/07/12  第三者行為対応
       *  04.07.02    NACL-藤原    14/07/14  第三者行為の重複チェック修正
+      *
+      *  05.00.01    NACL-藤原    18/11/22  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1211,7 +1213,7 @@
                        PERFORM VARYING IDX     FROM
                                            WRK-STNUM-O (IDXX)  BY  1
                                UNTIL   IDX     >   WRK-EDNUM-O (IDXX)
-                           PERFORM 41011-KANTAN-SYUSEI-DABURI-CHK-SEC
+                           PERFORM 41011-KANTAN-DABURI-CHK-SEC
                            IF      SPA-ERRCD   NOT =   SPACE
                                MOVE    1           TO  SPA-GMN-C10-CUR
                                GO  TO  4101-KAKUTEI-CHK-EXT
@@ -1310,7 +1312,7 @@
       *****************************************************************
       *    簡単修正時の転帰・保険適用チェック処理
       *****************************************************************
-       41011-KANTAN-SYUSEI-DABURI-CHK-SEC         SECTION.
+       41011-KANTAN-DABURI-CHK-SEC         SECTION.
       *
       *    転記日のセット
            MOVE    SPA-NAI-C02-TTENKIYMD (IDX)
@@ -1333,7 +1335,7 @@
                IF      SPA-NAI-C02-TSRYYMD (IDX)
                                        >    WRK-HENSYU-DATA-O (2)
                    MOVE    "0084"      TO  SPA-ERRCD
-                   GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  41011-KANTAN-DABURI-CHK-EXT
                END-IF
            END-IF
       *
@@ -1369,7 +1371,7 @@
                MOVE    "0083"          TO  SPA-ERRCD
                MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                        TO  WRK-ERR-BYOMEI
-               GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
+               GO  TO  41011-KANTAN-DABURI-CHK-EXT
            END-IF 
       *
       *    保険適用と開始日のチェック
@@ -1386,7 +1388,7 @@
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
                    MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                                TO  WRK-ERR-BYOMEI
-                   GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  41011-KANTAN-DABURI-CHK-EXT
                END-IF
            END-IF
       *    第三者行為と開始日のチェック
@@ -1405,7 +1407,7 @@
                    MOVE    LNK-DAY2-EDTYMD3    TO  WRK-ERR-SRYYMD
                    MOVE    SPA-GMN-C02-TBYOMEI (IDX)
                                                TO  WRK-ERR-BYOMEI
-                   GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
+                   GO  TO  41011-KANTAN-DABURI-CHK-EXT
                END-IF
            END-IF
       *
@@ -1424,13 +1426,13 @@
                                UNTIL   IDY >       WRK-EDNUM-O(IDXY)
                                OR      SPA-ERRCD
                                            NOT =       SPACE
-                           PERFORM 410111-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC
+                           PERFORM 410111-KANTAN-HKNCOMB-CHK-SEC
                        END-PERFORM
                    END-IF
                END-PERFORM
            END-IF
            IF      SPA-ERRCD   NOT =   SPACE
-               GO  TO  41011-KANTAN-SYUSEI-DABURI-CHK-EXT
+               GO  TO  41011-KANTAN-DABURI-CHK-EXT
            END-IF
       *
       *    マスタとのチェック
@@ -1547,13 +1549,13 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
            MOVE    WRK-MCP-PATHNAME    TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
            .
-       41011-KANTAN-SYUSEI-DABURI-CHK-EXT.
+       41011-KANTAN-DABURI-CHK-EXT.
            EXIT.
       *
       *****************************************************************
       *    保険組合せ変更時同一病名重複チェック処理
       *****************************************************************
-       410111-KANTAN-SYUSEI-HKNCOMBI-CHK-SEC SECTION.
+       410111-KANTAN-HKNCOMB-CHK-SEC       SECTION.
       *
       *    同一診療科・同一病名の場合だけチェック
            IF       IDX               =    IDY
@@ -1574,7 +1576,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                                                        =   "2" )
                            AND   ( SPA-NAI-C02-TNYUGAIKBN (IDY)
                                                        =   "1" ) )
-                           GO  TO  410111-KANTAN-SYUSEI-HKNCOMBI-CHK-EXT
+                           GO  TO  410111-KANTAN-HKNCOMB-CHK-EXT
                        END-IF
                    END-IF     
       *
@@ -1655,7 +1657,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  PTBYO-HOSPNUM
                END-IF
            END-IF
            .
-       410111-KANTAN-SYUSEI-HKNCOMBI-CHK-EXT.
+       410111-KANTAN-HKNCOMB-CHK-EXT.
            EXIT.
       *
       *****************************************************************
