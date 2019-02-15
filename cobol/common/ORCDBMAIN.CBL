@@ -59,42 +59,11 @@
            03  WRK-PATHNAME            PIC X(64).
            03  WRK-FUNC                PIC X(64).
            03  WRK-TABLE               PIC X(64).
-      *
-       01  ORCXKANACONVAREA.
-      *   IN/OUTの長さをMCPDARA-RECに合せるため独自に引数領域を編集
-      *   出力バイト数
-           03 KANACONV-LEN             PIC S9(9) BINARY.
-      *   返り値( 0: 正常 1: 範囲外文字 2: 外字、変換不能 )
-           03 KANACONV-RETURN          PIC S9(9) BINARY.
-      *   変換文字列数(バイト)
-           03 KANACONV-MAXLEN          PIC S9(9) BINARY.
-      *   変換フラグ (0: 変換しない,     1: 変換する
-      *               2: 1+カタカナ変換, 3: 1+ひらがな変換)
-      *   ※ 半角カナおよび外字は全てのフラグで変換される
-      *      か捨てられる。
-      *     (外字は■)
-           03 KANACONV-CONV-FLAG       PIC S9(9) BINARY.
-      *   出力文字種指定
-      *       0: 半角カナ、外字のみ変換
-      *      14: 全角   2: ひらがな  4: カタカナ
-      *      112: ASCII 16: 数字     32: アルファベット
-      *      15: 全角+スペース改行   113: ASCII+スペース改行 
-      *   出力文字種は OR をとることで複数指定できる
-      *   例: (6: ひらがな、カタカナのみ)
-      *       (48: 英数字のみ)
-           03 KANACONV-CHAR-TYPE       PIC S9(9) BINARY.
-      *   文字領域の長さ(INDATA, OUTDATAの長さと同じであること)
-           03 KANACONV-STLEN           PIC S9(9) BINARY.
-      *   入力文字列
-           03 KANACONV-INDATA          PIC X(50000).
-      *   出力文字列
-           03 KANACONV-OUTDATA         PIC X(50000).
+           03  WRK-MIDDLEWARE-NAME     PIC X(64).
       *
        01  CONST-AREA.
            03 CONST-MAX-LEN            PIC 9(08)   VALUE 50000.
       *
-           COPY    "MCPDATA.INC"       REPLACING   //MCPDATA-//
-                                       BY          //WKMCPDATA-//.
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -302,11 +271,6 @@
       *****************************************************************
        100-INIT-SEC                    SECTION.
       *
-      *    更新日取得
-           INITIALIZE                  ORCSMCNDATEAREA
-           CALL    "ORCSMCNDATE"       USING
-                                       ORCSMCNDATEAREA
-      *
            MOVE    ZERO                TO  MCP-LOGFLAG
            IF      MCP-FUNC        =  "DBINSERT" OR "DBUPDATE" 
                                    OR "DBDELETE"
@@ -341,6 +305,10 @@
       *****************************************************************
        800-EDIT-ERRMSG-SEC             SECTION.
       *
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
            MOVE   SPACE            TO  WRK-ERRMSG
            MOVE   MCP-RC           TO  WRK-MCP-RC
       *
@@ -368,92 +336,42 @@
            INTO   WRK-ERRMSG
            END-STRING
       *
-           CALL    "coblog"    USING   WRK-ERRMSG
+           ACCEPT  WRK-MIDDLEWARE-NAME
+                                 FROM ENVIRONMENT  "MCP_MIDDLEWARE_NAME"
+      *
+           IF    ( WRK-MIDDLEWARE-NAME =   "ginbee" )
+               DISPLAY SMCNDATE-YMD(1:4) "-"
+                       SMCNDATE-YMD(5:2) "-"
+                       SMCNDATE-YMD(7:2) " "
+                       SMCNDATE-HMS(1:2) ":"
+                       SMCNDATE-HMS(3:2) ":"
+                       SMCNDATE-HMS(5:2) " "
+                       WRK-ERRMSG
+           ELSE
+               CALL    "coblog"    USING   WRK-ERRMSG
+           END-IF
       *
            IF    ( MCP-FUNC    =   "DBINSERT"
                                 OR "DBUPDATE" )
-               MOVE    1               TO  IDX1
-               MOVE    ZERO            TO  KANACONV-RETURN
-               PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
-                        OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
-                        OR   ( KANACONV-RETURN NOT =   ZERO )
+               PERFORM VARYING IDX1    FROM    1   BY  1
+                       UNTIL ( IDX1    >   CONST-MAX-LEN )
+                         OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
+                         OR   ( MCPDATA-REC (IDX1 : 1)  < X"20" )
+                         OR   ( MCPDATA-REC (IDX1 : 1)  > X"7E" )
       *
-                   MOVE    MCPDATA-REC (1 :IDX1)
-                                       TO  WKMCPDATA-REC
-                   PERFORM 800-KANACONV-SEC
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
+                  CONTINUE
       *
                END-PERFORM
       *
-               IF    ( KANACONV-RETURN NOT =   ZERO )
-                AND  ( IDX1                >   1 )
-                   COMPUTE IDX1    =   IDX1    -   1
+               IF    ( IDX1         >   1 )
+                   COMPUTE IDX1  =  IDX1  -    1
                END-IF
       *
       *-----------------------------------------------------------------
                DISPLAY "ORCDBMAIN MCPDATA-REC(1:" IDX1 ")=["
-                       MCPDATA-REC (1 : IDX1) "]"
-      *-----------------------------------------------------------------
-      *
-               MOVE    MCPDATA-REC     TO  WKMCPDATA-REC
-               PERFORM 800-KANACONV-SEC
-               MOVE    1               TO  IDX1
-               PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
-                        OR   ( MCPDATA-REC (IDX1 : )   =   SPACE )
-      *
-                   IF    ( MCPDATA-REC (IDX1 : 1)
-                                   NOT =  KANACONV-OUTDATA  (IDX1 : 1))
-      *
-                       MOVE    1        TO   IDX3
-                       IF    ( IDX1     >    9 )
-                           COMPUTE IDX3 =    IDX1  -   9
-                       END-IF
-      *
-      *-----------------------------------------------------------------
-                       DISPLAY "  *** FOUND BINARY"
-                               " IN MCPDATA-REC:" IDX1
-                               " MCPDATA-REC(" IDX3 ":" "20)["
-                               MCPDATA-REC (IDX3 : 20) "]"
-      *-----------------------------------------------------------------
-      *
-                       MOVE    MCPDATA-REC (IDX1 : )
-                                        TO  WKMCPDATA-REC(IDX1:)
-      *
-                       PERFORM UNTIL ( IDX1    >=  CONST-MAX-LEN )
-                                OR   ( MCPDATA-REC (IDX1 : ) =   SPACE )
-                                OR   ( MCPDATA-REC (IDX1 : 1)
-                                       =   KANACONV-OUTDATA (IDX1 : 1) )
-                           COMPUTE IDX1    =   IDX1    +   1
-                           MOVE    SPACE   TO  WKMCPDATA-REC
-                           MOVE    MCPDATA-REC (IDX1 :)
-                                           TO  WKMCPDATA-REC (IDX1 :)
-                           PERFORM 800-KANACONV-SEC
-                       END-PERFORM
-                   END-IF
-      *
-                   COMPUTE IDX1    =   IDX1    +   1
-      *
-               END-PERFORM
+                         MCPDATA-REC (1 : IDX1) "]"
            END-IF
       *
            .
        800-EDIT-ERRMSG-EXT.
            EXIT.
-      *****************************************************************
-      *    エラーメッセージ編集処理
-      *****************************************************************
-       800-KANACONV-SEC             SECTION.
-      *
-           INITIALIZE                  ORCXKANACONVAREA
-           MOVE    CONST-MAX-LEN   TO  KANACONV-LEN
-                                       KANACONV-STLEN
-           MOVE    0               TO  KANACONV-CONV-FLAG
-           MOVE    113             TO  KANACONV-CHAR-TYPE
-           MOVE    WKMCPDATA-REC   TO  KANACONV-INDATA
-           CALL    "kanaconv"      USING ORCXKANACONVAREA
-      *
-           .
-       800-KANACONV-EXT.
-           EXIT.
-      *
