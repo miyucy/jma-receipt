@@ -4256,6 +4256,11 @@ grpsys     CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    SPA-COM-GAITENTTLKBN(IDX)  TO  WRK-TENTTLKBN
            END-IF
       *
+      *    添え字エラー
+           IF      WRK-TENTTLKBN       =   ZERO
+               GO  TO  45010-JIHI-SET-EXT
+           END-IF
+      *
            EVALUATE    SPA-COM-SRYSYUKBN (IDX)
       *        消費税なし
                WHEN    "950"
