@@ -592,7 +592,7 @@
       *
       *    保険組合せ 非表示区分保存
            03  SPA-HYO-HKNCOMBI-AREA.
-               05  SPA-HYO-HKNCOMB-OCC     OCCURS    200.
+               05  SPA-HYO-HKNCOMB-OCC     OCCURS    400.
                    07  SPA-HYO-HKNCOMBINUM     PIC 9(04).
                    07  SPA-HYO-HKNNUM          PIC X(03).
                    07  SPA-HYO-KOH1HKNNUM      PIC X(03).

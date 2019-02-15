@@ -127,7 +127,8 @@
       *
       *    非表示区分テーブル（P02SCR-SPA のSPA-HYO-HKNCOMBI-AREA）
            03  WRK-HYO-HKNCOMBI-AREA.
-               05  WRK-HYO-HKNCOMB-OCC     OCCURS    200.
+      *H31.2   05  WRK-HYO-HKNCOMB-OCC     OCCURS    200.
+               05  WRK-HYO-HKNCOMB-OCC     OCCURS    400.
                    07  WRK-HYO-HKNCOMBINUM     PIC 9(04).
                    07  WRK-HYO-HKNNUM          PIC X(03).
                    07  WRK-HYO-KOH1HKNNUM      PIC X(03).
@@ -456,6 +457,8 @@
       *        今回追加分を非表示テーブルへ追加
                IF     (COMB-CHGKBN         =   "A" )
                  AND  (FLG-INIT            =   1   )
+      *H31.2
+                 AND  (SPA-HYO-MAX         <   400 )
                    ADD     1                   TO  SPA-HYO-MAX
                    MOVE    COMB-HKNCOMBINUM    TO  SPA-HYO-HKNCOMBINUM
                                                           (SPA-HYO-MAX)
@@ -486,6 +489,11 @@
                MOVE    IDY             TO  SPA-GMN27-MAX
       *        初期画面編集
                PERFORM 320-HONCOMBI-SET-SEC
+      *
+               MOVE    SPACE           TO  SPA-GMN27-SELNUM
+               MOVE    ZERO            TO  SPA-NAI27-SELNUM
+               INITIALIZE                  SPA-GMN27-MEISAI-AREA
+               MOVE    1               TO  SPA-GMN27-CUR
            END-IF
       *
            .
@@ -1282,9 +1290,12 @@
                                                                  (IDX)
                    MOVE    SPA-GMN27-HYOIDX (IDX)
                                                TO  IDX5
-                   MOVE    SPA-GMN27-THYOJIKBN (IDX)
+      *H31.2
+                   IF      IDX5                >   ZERO
+                       MOVE    SPA-GMN27-THYOJIKBN (IDX)
                                                TO  SPA-HYO-HYOJIKBN
                                                                  (IDX5)
+                   END-IF
                END-IF
            END-IF
       *
@@ -1954,14 +1965,19 @@
            END-EVALUATE
            IF     (SPA-ERRCD           =   SPACE )
              AND  (SPA-NAI27-IDX       >   ZERO  )
-      *        表示内容変更
+      *
                MOVE    SPA-NAI27-IDX       TO  IDX
-               MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN
+      *        表示内容変更
+               IF      SPA-GMN27-HYOIDX (IDX)   >   ZERO
+      *H31.2       SPAに登録なしは更新なし
+                   MOVE    SPA-NAI27-IDX       TO  IDX
+                   MOVE    SPA-GMN27-HYOJIKBN  TO  SPA-GMN27-THYOJIKBN
                                                                  (IDX)
-               MOVE    SPA-GMN27-HYOIDX (IDX)
+                   MOVE    SPA-GMN27-HYOIDX (IDX)
                                            TO  IDX5
-               MOVE    SPA-GMN27-THYOJIKBN (IDX)
+                   MOVE    SPA-GMN27-THYOJIKBN (IDX)
                                            TO  SPA-HYO-HYOJIKBN (IDX5)
+               END-IF
       *        選択へ
                MOVE    1                   TO  SPA-GMN27-CUR
            END-IF
