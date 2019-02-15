@@ -122,7 +122,7 @@
                 04  C02-HKNCOMBI.
                   05  C02-VALUE   PIC X(40).
                 04  C02-HKNCOMBI-COUNT   PIC S9(9)   BINARY.
-                04  C02-HKNCOMBI-ITEM    PIC X(40)   OCCURS  100 TIMES.
+                04  C02-HKNCOMBI-ITEM    PIC X(40)   OCCURS  200 TIMES.
               03  C02-KOHIDCOMBO.
                 04  C02-KOHIDCOMBO-STATE   PIC S9(9)   BINARY.
                 04  C02-KOHID.
@@ -167,10 +167,10 @@
                   05  C02-HKN-COUNT       PIC S9(9)   BINARY.
                   05  C02-HKN-ROW         PIC S9(9)   BINARY.
                   05  C02-HKN-ROWATTR     PIC S9(9)   BINARY.
-                  05  C02-HKN-ITEM        OCCURS  200 TIMES.
+                  05  C02-HKN-ITEM        OCCURS  400 TIMES.
                     06  C02-HKNCOMBINUM   PIC X(4).
                     06  C02-HKNCOMBIMEI   PIC X(50).
-                  05  C02-HKN-SELECT      PIC X   OCCURS  200 TIMES.
+                  05  C02-HKN-SELECT      PIC X   OCCURS  400 TIMES.
               03  C02-SCROLLEDWINDOW28.
                 04  C02-BYOMEILST.
                   05  C02-BYO-COUNT       PIC S9(9)   BINARY.

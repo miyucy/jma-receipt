@@ -171,7 +171,7 @@ C02 {
         textdata varchar(40);
       };
       count int;
-        item varchar(40)[100];
+        item varchar(40)[200];
     };
     KOHIDCOMBO {
       state int;
@@ -235,8 +235,8 @@ C02 {
           item {
             column1 varchar(4);
             column2 varchar(50);
-          }[200];
-          selectdata bool[200];
+          }[400];
+          selectdata bool[400];
       };
     };
     scrolledwindow28 {

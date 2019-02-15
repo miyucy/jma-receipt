@@ -350,6 +350,7 @@
       *                                     のチェック追加
       *  05.00.03    NACL-藤原    18/06/21  診療科のチェックの修正
       *  05.00.04    NACL-藤原    18/11/22  Warning 対応
+      *  05.00.05    NACL-藤原    19/02/13  保険組合せを最大２００に変更
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1910,6 +1911,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
            INITIALIZE                  ORCSHKNSETAREA
            MOVE    "2"                 TO  ORCSHKN-KBN
            MOVE    "2"                 TO  ORCSHKN-KBN3
+           MOVE    "1"                 TO  ORCSHKN-KBN4
            CALL    "ORCSHKNSET"        USING
                                        SPA-AREA
                                        ORCSHKNSETAREA
@@ -1917,7 +1919,7 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-HOSPNUM
       *
            PERFORM VARYING     IDX     FROM   1   BY  1
                    UNTIL       IDX     >      ORCSHKN-HKN-MAX
-                   OR          IDX     >      100
+                   OR          IDX     >      200
                PERFORM 3102-HKNCOMBI-SPA-SEC
            END-PERFORM                                
            .
