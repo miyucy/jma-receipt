@@ -411,7 +411,8 @@
                    END-EVALUATE
                WHEN    1
       *            Ç¯¤Î·å¤¬£²¡¢£±·å¤Ï·îÆü¤ÈÈ½ÃÇ¤¹¤ë
-                   IF      WRK-KETA            <=  2
+                   IF      WRK-KETA            =   1
+                                               OR  2
                        MOVE    WRK-MM              TO  WRK-DD
                        MOVE    SPACE               TO  WRK-MM
                        MOVE    WRK-YY(1:WRK-KETA)  TO  WRK-INSUJI
@@ -445,7 +446,8 @@
                    END-IF
                WHEN    2
       *            Ç¯¤Î·å¤¬£²·å¤ÏÏÂÎñÇ¯¤Î¤ß¤ÈÈ½ÃÇ¤¹¤ë
-                   IF     (WRK-KETA            <=  2 )
+                   IF     (WRK-KETA            =   1
+                                               OR  2 )
                      AND  (WRK-YY(1:WRK-KETA)   NUMERIC   )
                        MOVE    SPACE               TO  WRK-HYY
                        STRING  WRK-SYSWGO          DELIMITED  BY  SIZE
