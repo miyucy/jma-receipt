@@ -2582,7 +2582,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209210"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2592,7 +2592,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209410"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2602,7 +2602,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209610"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2612,7 +2612,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190209810"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2622,7 +2622,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190210810"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2632,7 +2632,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£±° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211010"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2642,7 +2642,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211210"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2652,7 +2652,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≤° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211410"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2662,7 +2662,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190210010"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2672,7 +2672,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190210210"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2682,7 +2682,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190210410"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2692,7 +2692,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À
               WHEN      "190210610"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2702,7 +2702,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211610"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2712,7 +2712,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£≥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190211810"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2722,7 +2722,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢…¬≈Ô∆˛±°£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190212010"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2732,7 +2732,7 @@
       *      (A308-3)√œ∞Ë Ò≥Á•±•¢∆˛±°∞ÂŒ≈¥…Õ˝Œ¡£¥° ¿∏≥ËŒ≈Õ‹°À° ∆√ƒÍ√œ∞Ë°À
               WHEN      "190212210"
                   PERFORM  201-CHIIKI-HOUKATSU-NISSU-SEC
-                  MOVE   WRK-CHIIKI-HOUKATSU-NISSU
+                  ADD   WRK-CHIIKI-HOUKATSU-NISSU
                                              TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
@@ -2763,7 +2763,7 @@
              MOVE    "190182410"             TO  STUSAN-TOKUTEI-SRYCD(3)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+             ADD    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2778,7 +2778,7 @@
              MOVE    "190182410"             TO  STUSAN-TOKUTEI-SRYCD(3)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+             ADD    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2793,7 +2793,7 @@
              MOVE    "190182410"             TO  STUSAN-TOKUTEI-SRYCD(3)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+             ADD    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
       *    ª‹¿ﬂ¥Ω‡ —ππ§À§Ë§Í¥Àœ¬•±•¢…¬≈Ô∆˛±°Œ¡§Œ£±§»£≤§¨∫Æ∫ﬂ§π§ÎæÏπÁ§À
@@ -2816,7 +2816,7 @@
              MOVE    "190212910"             TO  STUSAN-TOKUTEI-SRYCD(6)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+             ADD    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
            EVALUATE  WRK-TOKNYUIN2-SRYCD(1)
@@ -2834,7 +2834,7 @@
              MOVE    "190212910"             TO  STUSAN-TOKUTEI-SRYCD(6)
              CALL    "ORCSTUSAN"     USING   ORCSTUSANAREA
                                              SPA-AREA
-             MOVE    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
+             ADD    STUSAN-NISSU09          TO  LNK-TOKNYUIN2-NISSU08
            END-EVALUATE
       *
       *    ∆√ƒÍ∆˛±°Œ¡•≥°º•…§¨£±ºÔŒ‡§ŒæÏπÁ
