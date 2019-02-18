@@ -1809,7 +1809,7 @@
            IF  ( WRK-KANACHK-INPUT     NOT =   SPACE )
                MOVE    SPACE           TO  ORCSKANACHKAREA
                INITIALIZE                  ORCSKANACHKAREA
-               MOVE    "2"             TO  KANACHK-SYORI
+               MOVE    "1"             TO  KANACHK-SYORI
                MOVE    WRK-KANACHK-INPUT
                                        TO  KANACHK-MAE-INPUT
                CALL    "ORCSKANACHK"   USING   ORCSKANACHKAREA
