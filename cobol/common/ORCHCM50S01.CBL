@@ -511,6 +511,10 @@
       *****************************************************************
        200111-JIHISRY-HEN-SEC          SECTION.
       *
+           MOVE    SRY-SRYCD (IDX-SRY) TO  WRK-SRYCD
+           MOVE    SYU-SRYYMD          TO  WRK-SRYYMD
+           PERFORM 900-TENSU-KEY-SEL-SEC
+      *
            MOVE    SPACE               TO  WRK-SRYKBN
            MOVE    ZERO                TO  WRK-TENTTLKBN
       *
@@ -583,8 +587,6 @@
                     AND  ( WRK-SRYYMD  <=  WRK-EDSRYYMD )
       *
                        IF    (  ACCT-DAY (IDXN IDX-DAY)   >   ZERO )
-                           MOVE    SRY-SRYCD (IDX-SRY) TO  WRK-SRYCD
-                           PERFORM 900-TENSU-KEY-SEL-SEC
                            MOVE    SRY-NYUGAIKBN   TO  WRK-NYUGAIKBN
                            MOVE    SRY-SRYKBN      TO  WRK-SRYKBN2
                            MOVE    SRY-SRYCD    (IDX-SRY)
