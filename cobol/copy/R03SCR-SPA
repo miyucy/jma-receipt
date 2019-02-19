@@ -80,6 +80,7 @@
                        09  SPA-DATAKBN33-VALUE     PIC X(01).
      *
                05  SPA-NAIB-R03-AREA.
+                   07  SPA-NAI-SMCNDATE-12         PIC 9(06).
                    07  SPA-NAI-SRYYM               PIC 9(06).
                    07  SPA-NAI-SRYYMH              PIC X(16).
                    07  SPA-NAI-NYUGAIKBN           PIC X(06).
