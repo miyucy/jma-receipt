@@ -586,18 +586,19 @@
                ELSE
       *        施設基準不適応
                    MOVE    2                   TO  FLG-KIJUNN
+      *H31.2
       *            施設基準不適合（手術）
-                   MOVE    "150382490"         TO  WRK-SRYCD
-                   IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
-                       COMPUTE IDX-S               =   IDX-Z  +  1
-                       MOVE    1                   TO  FLG-ARI
-                   ELSE
-                       MOVE    IDX-Z               TO  IDX-S
-                       MOVE    ZERO                TO  FLG-ARI
-                   END-IF
-                   IF      FLG-ARI         =   1
-                       MOVE    IDX-S           TO  IDX-T
-                   END-IF
+                   PERFORM 1001112-SSTKIJUNGEN-ADD-SEC
+      ****         IF      WRK-COM-INPUTCD (IDX-Z + 1) =   WRK-SRYCD
+      *                COMPUTE IDX-S               =   IDX-Z  +  1
+      *                MOVE    1                   TO  FLG-ARI
+      *            ELSE
+      *                MOVE    IDX-Z               TO  IDX-S
+      *                MOVE    ZERO                TO  FLG-ARI
+      *            END-IF
+      *            IF      FLG-ARI         =   1
+      *                MOVE    IDX-S           TO  IDX-T
+      ******       END-IF
                    PERFORM 1002-KASAN-SET-SEC
                    IF      FLG-ADD         =   1
                        MOVE    IDX-S           TO  IDX-ZS2
@@ -617,6 +618,39 @@
            END-IF
            .
        100111-KIJUNN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    施設基準不適合（手術）処理
+      *****************************************************************
+       1001112-SSTKIJUNGEN-ADD-SEC     SECTION.
+      *
+      *    施設基準不適合（手術）
+           MOVE    "150382490"         TO  WRK-SRYCD
+           MOVE    ZERO                TO  FLG-ARI
+           MOVE    ZERO                TO  IDX-T
+           COMPUTE IDX2                =   IDX-Z   +   1
+           PERFORM VARYING     IDX1    FROM    IDX2    BY  1
+                   UNTIL      (IDX1    >   SPA-MAX-LINE  )  OR
+                              (WRK-COM-INPUTCD(IDX1)   =   SPACE AND
+                               WRK-GMN-INPUTCD(IDX1)   =   SPACE )
+               IF       WRK-COM-INPUTCD (IDX1) =   WRK-SRYCD
+                   MOVE    IDX1                TO  IDX-S
+                   MOVE    IDX-S               TO  IDX-T
+                   MOVE    1                   TO  FLG-ARI
+               ELSE
+      *            次の手技料で終了
+                   IF     (WRK-COM-INPUTCD(IDX1)(1:1)  =   "1")
+                      AND (WRK-COM-DATAKBN(IDX1)       =   "1")
+                       MOVE    SPA-MAX-LINE    TO  IDX1
+                   END-IF
+               END-IF
+           END-PERFORM
+           IF      FLG-ARI             =   ZERO
+               MOVE    IDX-Z               TO  IDX-S
+           END-IF
+      *
+           .
+       1001112-SSTKIJUNGEN-ADD-EXT.
            EXIT.
       *
       *****************************************************************
