@@ -138,7 +138,10 @@
       *  04.08.04    NACL-藤原    17/04/10  患者単位での点数算定設定
       *                                     （労災準拠又は健保準拠）対応
       *
-      *  04.09.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
+      *  05.00.01    NACL-藤原    16/12/12  ＨＡＯＲＩ対応
+      *  05.00.02    NACL-藤原    19/02/15  一括作成時の診療年月が一年以
+      *                                     上前の確認メッセージ対応
+      *                                     Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -326,7 +329,9 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
            COPY    "CPSK200505.INC".
       *
            COPY    "CPSK2006.INC".
@@ -463,6 +468,10 @@
                    PERFORM 510-ERRSET-SEC
                    GO  TO  100-INIT-EXT
                END-IF
+               IF      SPA-RIDCD       NOT =   SPACE
+                   PERFORM 520-RIDSET-SEC
+                   GO  TO  100-INIT-EXT
+               END-IF
            END-IF
       *
            MOVE    SPACE               TO  LINKAREA
@@ -530,6 +539,22 @@
        310-SPASET-SEC              SECTION.
       *
            INITIALIZE              SPA-R03-AREA
+      *
+      *    マシン日付の一年前取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"            TO  LNK-DAY6-IRAI
+           MOVE    SMCNDATE-YMD    TO  LNK-DAY6-KIJUN 
+           MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+           MOVE    -12             TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN (1:6)
+                                   TO  SPA-NAI-SMCNDATE-12
       *
       *    医療情報連携基盤用情報
            INITIALIZE                  SYS-9101-REC
@@ -722,40 +747,40 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                                    TO  SPA-NAI-2005-AUTODSPKBN
       *
       *    区分コード０１のデータ読み込み
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"          TO  SYS-200501-KANRICD
-           MOVE    "01"            TO  SYS-200501-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
-                                       SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           INITIALIZE                  SYS-25-REC
+           MOVE    "2005"          TO  SYS-25-KANRICD
+           MOVE    "01"            TO  SYS-25-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-25-STYUKYMD
+                                       SYS-25-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+               MOVE   MCPDATA-REC  TO  SYS-25-REC
            ELSE
-               INITIALIZE              SYS-200501-REC
+               INITIALIZE              SYS-25-REC
                MOVE    SYS-2005-TERMID (1:4)
-                                   TO  SYS-200501-TBL (1:4)
+                                   TO  SYS-25-TBL (1:4)
            END-IF
-           IF      SYS-200501-INSPECT-ZERO-KBN
+           IF      SYS-25-INSPECT-ZERO-KBN
                                    =   SPACE
-               MOVE    "0"             TO  SYS-200501-INSPECT-ZERO-KBN
+               MOVE    "0"             TO  SYS-25-INSPECT-ZERO-KBN
            END-IF
-           IF      SYS-200501-RECEIPT-MAKE-KBN
+           IF      SYS-25-RECEIPT-MAKE-KBN
                                    =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEIPT-MAKE-KBN
+               MOVE    "1"             TO  SYS-25-RECEIPT-MAKE-KBN
            END-IF
-           IF      SYS-200501-INSPECT-INCLUDE-KBN
+           IF      SYS-25-INSPECT-INCLUDE-KBN
                                    =   SPACE
                MOVE    "0"             TO
-                                       SYS-200501-INSPECT-INCLUDE-KBN
+                                       SYS-25-INSPECT-INCLUDE-KBN
            END-IF
-           MOVE    SYS-200501-INSPECT-ZERO-KBN
+           MOVE    SYS-25-INSPECT-ZERO-KBN
                                    TO  SPA-NAI-200501-INSPECT-ZERO-KBN
-           MOVE    SYS-200501-INSPECT-INCLUDE-KBN
+           MOVE    SYS-25-INSPECT-INCLUDE-KBN
                                    TO
                                    SPA-NAI-200501-INSPECT-INCLUDE
-           MOVE    SYS-200501-RECEIPT-MAKE-KBN
+           MOVE    SYS-25-RECEIPT-MAKE-KBN
                                    TO  SPA-NAI-200501-RECEIPT-MAKE-KBN
            EVALUATE    SPA-NAI-200501-RECEIPT-MAKE-KBN
                WHEN    "1"
@@ -806,13 +831,23 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
                IF      SPA-RIDCD       =   "6666"
                    MOVE    "JOIN"          TO  MCP-PUTTYPE
                    PERFORM 210-BACK-SYORI-SEC
-               ELSE    
+               ELSE
+                   IF  SPA-RIDCD           =   "1030"
+                       MOVE    SPACE           TO  SPA-RID1-FLG
+                                                   SPA-R99-FLG
+                       MOVE    SPACE           TO  SPA-RIDCD
+                       MOVE    SPACE           TO  SPA-RIDCD2
+      *
+      *                ガイドメッセージセット処理
+                       PERFORM 4501-MESSEGE-SEC
+                       GO  TO  330-RID1-SET-EXT
+                   END-IF
       *            ジョブ管理チェック処理
                    PERFORM 4501-JOBKANRI-CHK-SEC
                    IF      SPA-ERRCD      =   SPACE
                        PERFORM 450-KOUSHIN-SEC
-                   END-IF    
-               END-IF    
+                   END-IF
+               END-IF
            END-IF
       *
            EVALUATE    SPA-GMN-SYOKBN
@@ -860,6 +895,22 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200505-HOSPNUM
            MOVE    SPACE           TO  SPA-R01-MOTOPG
       *
            INITIALIZE              SPA-R03-AREA
+      *
+      *    マシン日付の一年前取得
+           INITIALIZE                  ORCSMCNDATEAREA
+           CALL    "ORCSMCNDATE"       USING
+                                       ORCSMCNDATEAREA
+      *
+           INITIALIZE                  STS-AREA-DAY
+           INITIALIZE                  LNK-DAY6-AREA
+           MOVE    "61"            TO  LNK-DAY6-IRAI
+           MOVE    SMCNDATE-YMD    TO  LNK-DAY6-KIJUN 
+           MOVE    "2"             TO  LNK-DAY6-ZOGENPTN
+           MOVE    -12             TO  LNK-DAY6-ZOGEN
+           CALL    "ORCSDAY"       USING   STS-AREA-DAY
+                                           LNK-DAY6-AREA
+           MOVE    LNK-DAY6-KEISAN (1:6)
+                                   TO  SPA-NAI-SMCNDATE-12
       *
       *    医療情報連携基盤用情報
            INITIALIZE                  SYS-2005-REC
@@ -2071,7 +2122,34 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                    END-IF    
            END-EVALUATE
       *
-      *    ガイドメッセージセット
+      *    ＨＡＯＲＩ以外の一括作成時の診療年月のチェック
+      *    システム日付の一年前以前は警告表示を行う
+           IF    ( SPA-GMN-SYOKBN  =   "T"   )
+           AND   ( SPA-GMN-IKKATU  =   "T"   )
+           AND   ( SPA-R01-JOB-PARAM
+                                   =   SPACE )
+               IF      SPA-NAI-SRYYM   <=  SPA-NAI-SMCNDATE-12
+                   MOVE    SPACE           TO  SPA-RID1-FLG
+                                               SPA-R99-FLG
+                   MOVE    SPACE           TO  SPA-RIDCD
+                   MOVE    SPACE           TO  SPA-RIDCD2
+      *
+                   MOVE    "1030"          TO  SPA-RIDCD
+                   GO  TO  450-TOUROKU-EXT
+               END-IF 
+           END-IF
+      *
+      *    ガイドメッセージセット処理
+           PERFORM 4501-MESSEGE-SEC
+           .
+       450-TOUROKU-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ガイドメッセージセット処理
+      *****************************************************************
+       4501-MESSEGE-SEC            SECTION.
+      *
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
                WHEN    "5"
@@ -2121,7 +2199,7 @@ grpsys                 PERFORM 900-DBSELECT-SEC
                    END-EVALUATE
            END-EVALUATE
            .
-       450-TOUROKU-EXT.
+       4501-MESSEGE-EXT.
            EXIT.
       *
       *****************************************************************
@@ -2611,20 +2689,20 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
                    END-IF
       *
       *            区分コード０１のデータ読み込み
-                   INITIALIZE                  SYS-200501-REC
-                   MOVE    "2005"          TO  SYS-200501-KANRICD
-                   MOVE    "01"            TO  SYS-200501-KBNCD
-                   MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
-                                               SYS-200501-EDYUKYMD
-grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
-                   MOVE    SYS-200501-REC  TO  MCPDATA-REC
+                   INITIALIZE                  SYS-25-REC
+                   MOVE    "2005"          TO  SYS-25-KANRICD
+                   MOVE    "01"            TO  SYS-25-KBNCD
+                   MOVE    SPA-SYSYMD      TO  SYS-25-STYUKYMD
+                                               SYS-25-EDYUKYMD
+grpsys             MOVE    SPA-HOSPNUM     TO  SYS-25-HOSPNUM
+                   MOVE    SYS-25-REC  TO  MCPDATA-REC
                    PERFORM 900-SYSKANRI-INV-SEC
                    IF      FLG-SYSKANRI    =   ZERO
-                       MOVE   MCPDATA-REC  TO  SYS-200501-REC
+                       MOVE   MCPDATA-REC  TO  SYS-25-REC
                    ELSE
-                       INITIALIZE              SYS-200501-REC
+                       INITIALIZE              SYS-25-REC
                        MOVE    SYS-2005-TERMID (1:4)
-                                           TO  SYS-200501-TBL (1:4)
+                                           TO  SYS-25-TBL (1:4)
                    END-IF
       *
                    IF      SYS-2005-PREFPRGID (1) (1:1)
@@ -2651,57 +2729,57 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                        MOVE    ZERO            TO
                                            SYS-2005-FRAME-JIBAIPRTKBN-N
                    END-IF
-                   IF      SYS-200501-JIBAIPRTKBN
+                   IF      SYS-25-JIBAIPRTKBN
                                                =   SPACE
-                       MOVE    "1"         TO  SYS-200501-JIBAIPRTKBN
+                       MOVE    "1"         TO  SYS-25-JIBAIPRTKBN
                    END-IF
-                   IF      SYS-200501-JIBAIPRTKBN-N
+                   IF      SYS-25-JIBAIPRTKBN-N
                                                =   SPACE
                        MOVE    "1"             TO
-                                               SYS-200501-JIBAIPRTKBN-N
+                                               SYS-25-JIBAIPRTKBN-N
                    END-IF
-                   IF      SYS-200501-JIBAIPRTKBN1
+                   IF      SYS-25-JIBAIPRTKBN1
                                                =   SPACE
                        MOVE    "2"             TO
-                                               SYS-200501-JIBAIPRTKBN1
+                                               SYS-25-JIBAIPRTKBN1
                    END-IF
-                   IF      SYS-200501-JIBAIPRTKBN1-N
+                   IF      SYS-25-JIBAIPRTKBN1-N
                                                =   SPACE
                        MOVE    "2"             TO
-                                               SYS-200501-JIBAIPRTKBN1-N
+                                               SYS-25-JIBAIPRTKBN1-N
                    END-IF
-                   IF      SYS-200501-KOUIKIRECEKBN
+                   IF      SYS-25-KOUIKIRECEKBN
                                                =   SPACE
-                       MOVE    ZERO        TO  SYS-200501-KOUIKIRECEKBN
+                       MOVE    ZERO        TO  SYS-25-KOUIKIRECEKBN
                    END-IF
-                   IF      SYS-200501-FRAME-ROUPRTKBN
-                                               =   SPACE
-                       MOVE    ZERO            TO
-                                           SYS-200501-FRAME-ROUPRTKBN
-                   END-IF
-                   IF      SYS-200501-FRAME-ROUPRTKBN-N
+                   IF      SYS-25-FRAME-ROUPRTKBN
                                                =   SPACE
                        MOVE    ZERO            TO
-                                           SYS-200501-FRAME-ROUPRTKBN-N
+                                           SYS-25-FRAME-ROUPRTKBN
                    END-IF
-                   IF      SYS-200501-COMMENT-ROU-KSIKBN
+                   IF      SYS-25-FRAME-ROUPRTKBN-N
                                                =   SPACE
                        MOVE    ZERO            TO
-                                   SYS-200501-COMMENT-ROU-KSIKBN
+                                           SYS-25-FRAME-ROUPRTKBN-N
                    END-IF
-                   IF      SYS-200501-ROUPRTKBN
+                   IF      SYS-25-COMMENT-ROU-KSIKBN
                                                =   SPACE
                        MOVE    ZERO            TO
-                                           SYS-200501-ROUPRTKBN
+                                   SYS-25-COMMENT-ROU-KSIKBN
                    END-IF
-                   IF      SYS-200501-ROUPRTKBN-N
+                   IF      SYS-25-ROUPRTKBN
                                                =   SPACE
                        MOVE    ZERO            TO
-                                           SYS-200501-ROUPRTKBN-N
+                                           SYS-25-ROUPRTKBN
                    END-IF
-                   IF      SYS-200501-ROURECEKBN
+                   IF      SYS-25-ROUPRTKBN-N
                                                =   SPACE
-                       MOVE    "0"             TO  SYS-200501-ROURECEKBN
+                       MOVE    ZERO            TO
+                                           SYS-25-ROUPRTKBN-N
+                   END-IF
+                   IF      SYS-25-ROURECEKBN
+                                               =   SPACE
+                       MOVE    "0"             TO  SYS-25-ROURECEKBN
                    END-IF
       *
       *            労災指定医療機関の有無
@@ -2829,7 +2907,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                                    TO  SHELLTBL-ARG13
                            END-IF
                        WHEN    "3"
-                           MOVE    SYS-200501-ROURECEKBN
+                           MOVE    SYS-25-ROURECEKBN
                                                    TO  SHELLTBL-ARG12
                            MOVE    SYS-4001-RSIIRYOKBN
                                                    TO  SHELLTBL-ARG13
@@ -2839,7 +2917,7 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    END-EVALUATE
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "3"
-                           MOVE    SYS-200501-COMMENT-ROU-KSIKBN
+                           MOVE    SYS-25-COMMENT-ROU-KSIKBN
                                                    TO  SHELLTBL-ARG14
                        WHEN    OTHER
                            MOVE    "00"            TO  SHELLTBL-ARG14
@@ -2855,10 +2933,10 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                            END-IF
                        WHEN    "3"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
-                               MOVE    SYS-200501-FRAME-ROUPRTKBN-N
+                               MOVE    SYS-25-FRAME-ROUPRTKBN-N
                                                    TO  SHELLTBL-ARG15
                            ELSE
-                               MOVE    SYS-200501-FRAME-ROUPRTKBN
+                               MOVE    SYS-25-FRAME-ROUPRTKBN
                                                    TO  SHELLTBL-ARG15
                            END-IF
                    END-EVALUATE
@@ -2866,27 +2944,27 @@ grpsys             MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
                    EVALUATE    SPA-R01-RECEKBN
                        WHEN    "4"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
-                               MOVE    SYS-200501-JIBAIPRTKBN1-N
+                               MOVE    SYS-25-JIBAIPRTKBN1-N
                                                    TO  SHELLTBL-ARG17
                            ELSE
-                               MOVE    SYS-200501-JIBAIPRTKBN1
+                               MOVE    SYS-25-JIBAIPRTKBN1
                                                    TO  SHELLTBL-ARG17
                            END-IF
                        WHEN    "5"
                        WHEN    "8"
                            IF      SPA-GMN-NYUGAIKBN   =   "1"
-                               MOVE    SYS-200501-JIBAIPRTKBN-N
+                               MOVE    SYS-25-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG17
                            ELSE
-                               MOVE    SYS-200501-JIBAIPRTKBN
+                               MOVE    SYS-25-JIBAIPRTKBN
                                                    TO  SHELLTBL-ARG17
                            END-IF
                        WHEN    "3"
                            IF      SPA-R01-NYUGAIKBN   =   "1"
-                               MOVE    SYS-200501-ROUPRTKBN-N
+                               MOVE    SYS-25-ROUPRTKBN-N
                                                    TO  SHELLTBL-ARG17
                            ELSE
-                               MOVE    SYS-200501-ROUPRTKBN
+                               MOVE    SYS-25-ROUPRTKBN
                                                    TO  SHELLTBL-ARG17
                            END-IF
                    END-EVALUATE
@@ -3659,6 +3737,13 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
                    MOVE
                    "個別作成分の新規作成処理（ＥＦファイル）を行います"
                                             TO  WRK-RIDMSG
+               WHEN    "1030"
+                   STRING  "診療年月が一年以上前ですが、"
+                                                    DELIMITED  BY  SIZE
+                           "このまま処理を行いますか"
+                                                    DELIMITED  BY  SIZE 
+                                                    INTO  WRK-RIDMSG
+                   END-STRING
                WHEN    "6666"
                    MOVE    "レセプト作成処理中です"
                                             TO  WRK-RIDMSG
@@ -3691,7 +3776,12 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
            END-IF
       *
            MOVE    "戻る"               TO  RID1-B01-LABEL
-           MOVE    "B12"                TO  MCP-WIDGET
+           EVALUATE    SPA-RIDCD
+               WHEN    "1030"
+                   MOVE    "B01"                TO  MCP-WIDGET
+               WHEN    OTHER
+                   MOVE    "B12"                TO  MCP-WIDGET
+           END-EVALUATE
       *
            MOVE    "R03"                TO  SPA-MOTOPG
            MOVE    "RID1"               TO  SPA-SAKIPG
