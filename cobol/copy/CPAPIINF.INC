@@ -15,7 +15,7 @@
       * program and contact JMA, 2-28-16 Honkomagome, Bunkyo-ku, Tokyo,
       * 113-8621, Japan.
       ********************************************************************
-      * 0500.201901
+      * 0500.201902
       ********************************************************************
        01  APIINF-AREA.
          03  APIINF-DATA.
@@ -124,7 +124,7 @@
            05  FILLER                  PIC  X(32)      VALUE
            "datacheckv3".
            05  FILLER                  PIC  X(64)      VALUE
-           SPACE.
+           "データチェック".
            05  FILLER                  PIC  X(64)      VALUE
            "データチェック".
            05  FILLER                  PIC  X(16)      VALUE
@@ -408,7 +408,17 @@
            05  FILLER                  PIC  X(64)      VALUE
            "ユーザー管理".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0500.201902".
+           05  FILLER                  PIC  X(16)      VALUE
+           "orca51".
+           05  FILLER                  PIC  X(32)      VALUE
+           "masterexportv3".
+           05  FILLER                  PIC  X(64)      VALUE
+           "マスタ取得".
+           05  FILLER                  PIC  X(64)      VALUE
+           "マスタ取得".
+           05  FILLER                  PIC  X(16)      VALUE
+           "0500.201902".
            05  FILLER                  PIC  X(16)      VALUE
            "orca51".
            05  FILLER                  PIC  X(32)      VALUE
@@ -508,7 +518,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "診療内容基本チェック".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201808".
+           "0500.201902".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
@@ -578,7 +588,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "点数マスタ一括取得".
            05  FILLER                  PIC  X(16)      VALUE
-           "0500.201810".
+           "0500.201902".
            05  FILLER                  PIC  X(16)      VALUE
            "orca102".
            05  FILLER                  PIC  X(32)      VALUE
@@ -940,10 +950,10 @@
            05  FILLER                  PIC  X(16)      VALUE
            "0500.201804".
          03  APIINF-R REDEFINES APIINF-DATA.
-           05  APIINF-OCC              OCCURS 92.
+           05  APIINF-OCC              OCCURS 93.
              07  APIINF-LD             PIC  X(16).
              07  APIINF-ID             PIC  X(32).
              07  APIINF-HAORI-NAME     PIC  X(64).
              07  APIINF-NAME           PIC  X(64).
              07  APIINF-VERSION        PIC  X(16).
-         03  APIINF-MAX                PIC  9(05)      VALUE 92.
+         03  APIINF-MAX                PIC  9(05)      VALUE 93.
