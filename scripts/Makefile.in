@@ -151,6 +151,7 @@ shell_sources = \
 	tools/run_jmamr_mis.sh.in \
 	daily/online-reprint.sh.in \
 	tools/run_mis_past.sh.in \
+	allways/master_export.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \

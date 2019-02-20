@@ -35,6 +35,7 @@ bindapi	"patientmedicalallv3"	"OpenCOBOL"	"ORAPI052R7V3";
 bindapi	"addressmasterlstv3"	"OpenCOBOL"	"ORAPI052R8V3";
 bindapi	"tempmedicaladdv3"	"OpenCOBOL"	"ORAPI051R1V3";
 bindapi	"statisticsformv3"	"OpenCOBOL"	"ORAPI051R2V3";
+bindapi	"masterexportv3"	"OpenCOBOL"	"ORAPI052R9V3";
 
 multiplex_group	orca51;
 
@@ -73,6 +74,7 @@ data	{
 		addressmasterlstv3;
 		tempmedicaladdv3;
 		statisticsformv3;
+		masterexportv3;
 	};
 };
 
@@ -98,6 +100,8 @@ db "xml2" {
  xml_temp_medical_addv3res;
  xml_statistics_formv3req;
  xml_statistics_formv3res;
+ xml_master_exportv3req;
+ xml_master_exportv3res;
 };
 
 #@monblob@db "monblob" {

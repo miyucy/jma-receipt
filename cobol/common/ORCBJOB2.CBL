@@ -79,6 +79,8 @@ grpsys*
            03  WRK-PARA-ERRFILE        PIC X(100).
            03  WRK-PARA-SHELLMSG       PIC X(100).
            03  WRK-PARA-YOBI           PIC X(100).
+           03  WRK-PARA-UPDCNT-X.
+               05  WRK-PARA-UPDCNT     PIC 9(10).
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -142,6 +144,7 @@ grpsys*
                                                RECEERR
                                                WRK-PARA-SHELLMSG
                                                WRK-PARA-YOBI
+                                               WRK-PARA-UPDCNT
            END-UNSTRING
            MOVE    WRK-PARA-HOSPNUM    TO  SPA-HOSPNUM
       *
@@ -191,6 +194,11 @@ grpsys*
                MOVE    WRK-PARA-ERRCD      TO  JOB-ERRCD
                MOVE    WRK-PARA-SHELLMSG   TO  JOB-SHELLMSG
                MOVE    WRK-PARA-YOBI       TO  JOB-YOBI
+      *
+               IF    ( WRK-PARA-MODE       =   "STE" )
+                AND  ( WRK-PARA-UPDCNT-X   IS  NUMERIC )
+                   MOVE    WRK-PARA-UPDCNT TO  JOB-UPDCNT
+               END-IF
       *
                PERFORM 900-CALL-ORCSJOB-SEC
                IF    ( WRK-PARA-MODE       =   "CHK" )
