@@ -158,6 +158,7 @@ shell_sources = \
 	allways/migrate-v51_master_license_upgrade.sh.in \
 	allways/migrate-v51_migrate_ctrl.sh.in \
 	allways/migrate-v51_migrate.sh.in \
+	allways/master_export.sh.in \
 
 ruby_sources = \
 	daily/print_parent2.rb.in \
