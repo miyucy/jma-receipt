@@ -4619,14 +4619,6 @@
                MOVE    SPA-GOK-NYUKIN      TO  WRK-NYUKIN
                MOVE    SPA-GOK-HENKIN      TO  WRK-HENKIN-GAKU
            END-IF
-      *TEST
-      *    DISPLAY "310512-NYUKIN-JYUTOU-SEC "
-      *          ",SPA-GOK-NYUKIN:" SPA-GOK-NYUKIN
-      *          ",SPA-GOK-HENKIN:" SPA-GOK-HENKIN
-      *          ",SPA-GMN-ZENMISYU:" SPA-GMN-ZENMISYU
-      *          ",WRK-SEIKYUN:" WRK-SEIKYU
-      *          ",WRK-NYUKIN:" WRK-NYUKIN
-      *TEST
       *
       *    まとめなし
            IF     ((SPA-GMN-ZENMISYU   =   ZERO )  AND
@@ -4703,11 +4695,6 @@
                COMPUTE SPA-NYU-ZENMISYU    =   WRK-NYUKIN
                                            -   LNK-SCNYUKIN-FURIWAKEZAN
            END-IF
-      *TEST
-      *    DISPLAY "K03 A WRK-NYUKIN: "  WRK-NYUKIN
-      *          ",FURIWAKEZAN:" LNK-SCNYUKIN-FURIWAKEZAN
-      *          ",SPA-NYU-ZENMISYU:" SPA-NYU-ZENMISYU
-      *TEST
       *
       *    返金振り分け残額
            MOVE    LNK-SCNYUKIN-HENKINZAN  TO  SPA-NYU-ZENHENKIN
@@ -6409,6 +6396,8 @@
       *H26.8
       *    外用回数エラー、戻るへ
            IF      SPA-ERRCD           =   "0052"
+                                       OR  "0051"
+                                       OR  "0053"
                MOVE    91              TO  SPA-GMN-CUR
            END-IF
            .
@@ -7782,12 +7771,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                    PERFORM 450011-NYUKIN-KEISAN-SEC
                END-IF
            END-IF
-      *TEST
-      *    DISPLAY "K03 3003-HAORI-UPD-SEC"
-      *         ".SPA-GMN-SRYKA:"  SPA-GMN-SRYKA
-      *        ".SPA-GMN-HKNCOMBI:"  SPA-GMN-HKNCOMBI
-      *        ".SPA-GOK-NYUKIN:"  SPA-GOK-NYUKIN
-      ***      ".WRK-NYUKIN:"  WRK-NYUKIN
       *
            IF      SPA-ERRCD           =   SPACE
       *        外来更新処理
@@ -8244,6 +8227,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0052"
                    STRING  "外用薬剤の回数が１回以上になります。"
                            "同じ剤は回数をまとめて入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
+      *H31.2
+               WHEN    "0053"
+                   STRING  "訂正の上限回数をオーバーします。"
+                           "更新できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING

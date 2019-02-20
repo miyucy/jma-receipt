@@ -1822,6 +1822,15 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 990-DBCLOSE-SEC
       *
+      *H31.2
+      *    ≈¡…º»÷πÊªﬁ»÷
+           IF      WRK-DENPEDANUM      =   99
+               MOVE    "0053"              TO  SPA-ERRCD
+           END-IF
+           IF      SPA-ERRCD       NOT =   SPACE
+               GO  TO  45001-SINMEI-SYORI2-EXT
+           END-IF
+      *
            MOVE    SPACE               TO  SYUMEI-REC
            INITIALIZE                      SYUMEI-REC
            MOVE    SYU-HOSPNUM         TO  SMEI-HOSPNUM
