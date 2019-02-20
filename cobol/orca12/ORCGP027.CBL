@@ -72,6 +72,8 @@
       *
            03  FLG-INIT            PIC 9(01).
       *
+           03  FLG-INITCOB         PIC 9(01).
+      *
       *    カウント領域
        01  CNT-AREA.
            03  CNT-ERR             PIC 9(06).
@@ -490,11 +492,16 @@
       *        初期画面編集
                PERFORM 320-HONCOMBI-SET-SEC
       *
-               MOVE    SPACE           TO  SPA-GMN27-SELNUM
-               MOVE    ZERO            TO  SPA-NAI27-SELNUM
-               INITIALIZE                  SPA-GMN27-MEISAI-AREA
-               MOVE    1               TO  SPA-GMN27-CUR
+      *H31.2   変更があれば　選択クリア
+               IF      (FLG-INIT           =   1  )
+                   OR  (FLG-INITCOB        =   1  )
+                   MOVE    SPACE           TO  SPA-GMN27-SELNUM
+                   MOVE    ZERO            TO  SPA-NAI27-SELNUM
+                   INITIALIZE                  SPA-GMN27-MEISAI-AREA
+                   MOVE    1               TO  SPA-GMN27-CUR
+               END-IF
            END-IF
+      *
       *
            .
        320-PARAFILE-KENSAKU-EXT.
@@ -981,6 +988,7 @@
       *    組合せ情報
                IF  SPA-P027-PG             >   1
                    COMPUTE   SPA-P027-PG   =   SPA-P027-PG   -   1
+                   MOVE    1               TO  FLG-INITCOB
                END-IF
            END-IF
       *
@@ -1021,6 +1029,7 @@
       *ver.4.7.0
            IF     SPA-NAI-NEXTFLG      =   0
                ADD     1               TO  SPA-P027-PG
+               MOVE    1               TO  FLG-INITCOB
            END-IF
       *
       *    パラメタより編集
