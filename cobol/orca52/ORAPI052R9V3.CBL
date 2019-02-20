@@ -366,10 +366,6 @@
                MOVE    "対象の処理はありません。"
                                            TO  SPA-ERRMSG
       *
-           WHEN    "E80"
-               MOVE    "一時ディレクトリが取得できません。"
-                                           TO  SPA-ERRMSG
-      *
            WHEN    "E88"
                MOVE    "Ｄａｔａ＿Ｉｄが取得できません。"
                                            TO  SPA-ERRMSG 
