@@ -114,6 +114,8 @@
               03  HCN01-BYOMEI
                         PIC X(100).
               03  HCN01-STRYMD.
+                04  HCN01-STRGG
+                        PIC X(1).
                 04  HCN01-STRYY
                         PIC X(2).
                 04  HCN01-STRMM
@@ -121,6 +123,8 @@
                 04  HCN01-STRDD
                         PIC X(2).
               03  HCN01-ENDYMD.
+                04  HCN01-ENDGG
+                        PIC X(1).
                 04  HCN01-ENDYY
                         PIC X(2).
                 04  HCN01-ENDMM

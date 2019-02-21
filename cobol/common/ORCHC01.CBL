@@ -65,6 +65,7 @@
       *  04.08.00    NACL-多々納  14/07/30  一時ディレクトリ対応
       *  04.08.00    NACL-多々納  16/07/XX  API(GINBEE)対応
       *  05.00.01    NACL-太田    18/07/26  API印刷対応
+      *  05.00.00    NACL-多々納  19/03/XX  元号編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1700,6 +1701,11 @@
       *    病名期間編集処理
            PERFORM 200211-BYOMEI-SET-SEC
       *
+      *H31.3
+      *    元号
+           MOVE    WRK-STRGOW          TO  HC01-STRGG   (IDX)
+           MOVE    WRK-ENDGOW          TO  HC01-ENDGG   (IDX)
+      *
            MOVE    WRK-STRYYW          TO  HC01-STRYMD  (IDX  1)
            MOVE    WRK-STRMMW          TO  HC01-STRYMD  (IDX  2)
            MOVE    WRK-STRDDW          TO  HC01-STRYMD  (IDX  3)
@@ -1784,6 +1790,10 @@
       *
       *    病名期間編集処理
            PERFORM 200211-BYOMEI-SET-SEC
+      *H31.3
+      *    元号
+           MOVE    WRK-STRGOW          TO  HC011-STRGG   (IDX)
+           MOVE    WRK-ENDGOW          TO  HC011-ENDGG   (IDX)
       *
            MOVE    WRK-STRYYW          TO  HC011-STRYMD  (IDX  1)
            MOVE    WRK-STRMMW          TO  HC011-STRYMD  (IDX  2)

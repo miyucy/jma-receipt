@@ -38,6 +38,7 @@
       *  05.00.00    NACL-太田    17/04/29  退院日編集対応
       *  05.00.00    NACL-森脇    17/07/11  API(GINBEE)対応
       *  05.00.01    NACL-太田    18/07/26  API印刷対応
+      *  05.00.00    NACL-多々納  19/03/XX  元号編集対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1377,6 +1378,9 @@
       *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
+      *H31.3
+      *    元号
+           MOVE    WRK-HGO             TO  HCN01-STRGG  (IDX)
            MOVE    WRK-HYY             TO  HCN01-STRYY  (IDX)
            MOVE    WRK-HMM             TO  HCN01-STRMM  (IDX)
            MOVE    WRK-HDD             TO  HCN01-STRDD  (IDX)
@@ -1385,6 +1389,9 @@
            IF      PTBYO-TENKIYMD  NOT =   SPACE
                MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
+      *H31.3
+      *        元号
+               MOVE    WRK-HGO             TO  HCN01-ENDGG  (IDX)
                MOVE    WRK-HYY             TO  HCN01-ENDYY  (IDX)
                MOVE    WRK-HMM             TO  HCN01-ENDMM  (IDX)
                MOVE    WRK-HDD             TO  HCN01-ENDDD  (IDX)
@@ -1437,6 +1444,9 @@
       *    開始年月日（診療年月日）
            MOVE    PTBYO-SRYYMD        TO  WRK-SYMD
            PERFORM 31012-SEIWA-HEN-SEC
+      *H31.3
+      *    元号
+           MOVE    WRK-HGO             TO  HCN011-STRGG  (IDX)
            MOVE    WRK-HYY             TO  HCN011-STRYY  (IDX)
            MOVE    WRK-HMM             TO  HCN011-STRMM  (IDX)
            MOVE    WRK-HDD             TO  HCN011-STRDD  (IDX)
@@ -1445,6 +1455,9 @@
            IF      PTBYO-TENKIYMD  NOT =   SPACE
                MOVE    PTBYO-TENKIYMD      TO  WRK-SYMD
                PERFORM 31012-SEIWA-HEN-SEC
+      *H31.3
+      *        元号
+               MOVE    WRK-HGO             TO  HCN011-ENDGG  (IDX)
                MOVE    WRK-HYY             TO  HCN011-ENDYY  (IDX)
                MOVE    WRK-HMM             TO  HCN011-ENDMM  (IDX)
                MOVE    WRK-HDD             TO  HCN011-ENDDD  (IDX)
