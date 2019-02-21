@@ -134,10 +134,10 @@
        01  GENGO-TBL.
       *TEST
       *TEST
-      *2019.5.1からの新元号仮対応（元号）G とする
+      *2019.5.1からの新元号仮対応（◇◇）G とする
            03  FILLER.
              05  FILLER    PIC X(10)   VALUE   "5G20190501".
-             05  FILLER    PIC X(04)   VALUE   "元号".
+             05  FILLER    PIC X(04)   VALUE   "◇◇".
       *TEST
       *TEST
            03  FILLER.

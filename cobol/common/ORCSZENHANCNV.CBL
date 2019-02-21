@@ -157,8 +157,8 @@
                                            "大正"  OR  "明治"
       *!!!!
       *TEST
-      *2019.5.1からの新元号仮対応（元号）G とする
-                                       OR  "元号"
+      *2019.5.1からの新元号仮対応（◇◇）G とする
+                                       OR  "◇◇"
       *TEST
       *
                PERFORM 2001-YMD-WAREKI-HENSYU-SEC
@@ -196,8 +196,8 @@
                    MOVE    "1"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
       *!!!!
       *TEST
-      *2019.5.1からの新元号仮対応（元号）G とする
-               WHEN    "元号"
+      *2019.5.1からの新元号仮対応（◇◇）とする
+               WHEN    "◇◇"
                    MOVE    "5"         TO  LNK-ZENHANCNV-OT-WYMD (1:1)
       *TEST
       *!!!!
