@@ -128,20 +128,20 @@
                "1129010 00000000 99999999 1129010".
       * 抗てんかん薬
       *    クロナゼパム
-           03  FILLER  PIC X(35)   VALUE
-               "1139003 00000000 99999999 1139003".
+      **   03  FILLER  PIC X(35)   VALUE
+      **       "1139003 00000000 99999999 1139003".
       *    クロバザム
-           03  FILLER  PIC X(35)   VALUE
-               "1139006 00000000 99999999 1139006".
+      **   03  FILLER  PIC X(35)   VALUE
+      **       "1139006 00000000 99999999 1139006".
       * 麻酔導入薬・鎮静薬
       *    ミダゾラム（注射）
-           03  FILLER  PIC X(35)   VALUE
-               "1124401 00000000 99999999 1124401".
-           03  FILLER  PIC X(35)   VALUE
-               "1139401 00000000 99999999 1124401".
+      **   03  FILLER  PIC X(35)   VALUE
+      **       "1124401 00000000 99999999 1124401".
+      **   03  FILLER  PIC X(35)   VALUE
+      **       "1139401 00000000 99999999 1124401".
       *
        01  TBL-PSYCHO2-CODE-AREA-R REDEFINES   TBL-PSYCHO2-CODE-AREA.
-           03  TBL-PSYCHO2-OCC     OCCURS  36  INDEXED   TBL-PSY2.
+           03  TBL-PSYCHO2-OCC     OCCURS  32  INDEXED   TBL-PSY2.
                05  TBL-PSYCHO2-CODE        PIC X(07).
                05  TBL-PSYCHO2-YOBI1       PIC X(01).
                05  TBL-PSYCHO2-STYMD       PIC X(08).
