@@ -131,8 +131,8 @@
            03  FILLER  PIC X(35)   VALUE
                "1139003 00000000 99999999 1139003".
       *    •Ø•Ì•–•∂•‡
-      **   03  FILLER  PIC X(35)   VALUE
-      **       "1139006 00000000 99999999 1139006".
+           03  FILLER  PIC X(35)   VALUE
+               "1139006 00000000 99999999 1139006".
       * À„øÏ∆≥∆˛ÃÙ°¶ƒ√¿≈ÃÙ
       *    •ﬂ•¿•æ•È•‡° √ÌºÕ°À
       **   03  FILLER  PIC X(35)   VALUE
@@ -141,7 +141,7 @@
       **       "1139401 00000000 99999999 1124401".
       *
        01  TBL-PSYCHO2-CODE-AREA-R REDEFINES   TBL-PSYCHO2-CODE-AREA.
-           03  TBL-PSYCHO2-OCC     OCCURS  33  INDEXED   TBL-PSY2.
+           03  TBL-PSYCHO2-OCC     OCCURS  34  INDEXED   TBL-PSY2.
                05  TBL-PSYCHO2-CODE        PIC X(07).
                05  TBL-PSYCHO2-YOBI1       PIC X(01).
                05  TBL-PSYCHO2-STYMD       PIC X(08).
