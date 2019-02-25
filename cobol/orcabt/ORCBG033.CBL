@@ -740,7 +740,7 @@
            MOVE    ZERO                TO  IDX2
       *
            PERFORM
-                   UNTIL      (IDX     >=   36   )
+                   UNTIL      (IDX     >=   32   )
                            OR (IDX2    >=   20000)
                ADD     1                   TO  IDX
                SET     TBL-PSY2            TO  IDX
