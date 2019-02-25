@@ -627,8 +627,8 @@
       *    開始日
            IF      WRK-SRY-YYMM       <   "201903"
       *        H31.3　以前はエラー
-               MOVE    1                   TO  FLG-END
                PERFORM 2009-PRINT00-SEC
+               MOVE    1                   TO  FLG-END
                GO      TO    110-PARA-HENSYU-EXT
            END-IF
       *
