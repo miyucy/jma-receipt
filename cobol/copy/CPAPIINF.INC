@@ -406,7 +406,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            SPACE.
            05  FILLER                  PIC  X(64)      VALUE
-           "ユーザー管理".
+           "ユーザ管理".
            05  FILLER                  PIC  X(16)      VALUE
            "0510.201902".
            05  FILLER                  PIC  X(16)      VALUE
@@ -558,7 +558,7 @@
            05  FILLER                  PIC  X(64)      VALUE
            "保険履歴情報一括変更".
            05  FILLER                  PIC  X(16)      VALUE
-           "0510.201812".
+           "0510.201902".
            05  FILLER                  PIC  X(16)      VALUE
            "api21".
            05  FILLER                  PIC  X(32)      VALUE
