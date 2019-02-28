@@ -1012,7 +1012,7 @@
                                  (PTCOM-INPUTCHI2(1:2)   >=  "05")) OR
                                 ((PTCOM-INPUTCHI1(1:2)   =   "27")  AND
                                  (PTCOM-INPUTCHI2(1:2)   =   "04")  AND
-                                 (PTCOM-INPUTCHI3(1:2)   =   "02"))
+                                 (PTCOM-INPUTCHI3(1:2)   >=  "02"))
                                MOVE    "3"       TO  LNK-DAY1-YMD(2:1)
                           END-IF
                           CALL    "ORCSDAY"     USING   STS-AREA-DAY
