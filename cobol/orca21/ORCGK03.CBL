@@ -6382,6 +6382,8 @@
       *H26.8
       *    外用回数エラー、戻るへ
            IF      SPA-ERRCD           =   "0052"
+                                       OR  "0051"
+                                       OR  "0053"
                MOVE    91              TO  SPA-GMN-CUR
            END-IF
            .
@@ -8131,6 +8133,14 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                WHEN    "0052"
                    STRING  "外用薬剤の回数が１回以上になります。"
                            "同じ剤は回数をまとめて入力して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO  SPA-ERRMSG
+                   END-STRING
+      *
+      *H31.2
+               WHEN    "0053"
+                   STRING  "訂正の上限回数をオーバーします。"
+                           "更新できません。"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
