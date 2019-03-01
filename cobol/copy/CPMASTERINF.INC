@@ -128,6 +128,18 @@
                05 PIC X(50) VALUE  "労働基準監督署".
                05 PIC X(01) VALUE  "1".
       *
+               05 PIC X(50) VALUE  "tbl_material_h".
+               05 PIC X(50) VALUE  "特定器材品目".
+               05 PIC X(01) VALUE  "1".
+      *
+               05 PIC X(50) VALUE  "tbl_material_k".
+               05 PIC X(50) VALUE  "特材品目算定関連手技".
+               05 PIC X(01) VALUE  "1".
+      *
+               05 PIC X(50) VALUE  "tbl_material_s".
+               05 PIC X(50) VALUE  "特材品目算定適応疾患".
+               05 PIC X(01) VALUE  "1".
+      *
                05 PIC X(50) VALUE  "tbl_nyuincdchg".
                05 PIC X(50) VALUE  "入院料コード置換".
                05 PIC X(01) VALUE  "1".
@@ -150,6 +162,10 @@
       *
                05 PIC X(50) VALUE  "tbl_psychotropic".
                05 PIC X(50) VALUE  "向精神薬成分コード".
+               05 PIC X(01) VALUE  "1".
+      *
+               05 PIC X(50) VALUE  "tbl_recekisai".
+               05 PIC X(50) VALUE  "レセプト記載事項".
                05 PIC X(01) VALUE  "1".
       *
                05 PIC X(50) VALUE  "tbl_senteicdchg".
@@ -201,10 +217,10 @@
                05 PIC X(01) VALUE  "1".
       *
            03  MASTERINF-R  REDEFINES  MASTERINF-VAL.
-               05  MASTERINF-OCC   OCCURS    44.
+               05  MASTERINF-OCC   OCCURS    48.
                    07  MASTERINF-ID    PIC X(50).
                    07  MASTERINF-NAME  PIC X(50).
                    07  MASTERINF-EXISTS-UPYMD
                                        PIC X(1).
            03  MASTERINF-MAX       PIC 9(03)
-                                   VALUE     44.
+                                   VALUE     48.
