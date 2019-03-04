@@ -114,6 +114,8 @@
       *  04.08.05    NACL-藤原    17/04/10  患者単位での点数算定設定
       *                                     （労災準拠又は健保準拠）対応
       *  04.08.06    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -257,7 +259,9 @@
            COPY    "CPSK1005.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK2009.INC".
       *
@@ -583,44 +587,42 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1001-HOSPNUM
            MOVE    SYS-2005-SYARECEKBN TO  SPA-NAI-2005-SYARECEKBN
            MOVE    SYS-2005-KKHRECEKBN TO  SPA-NAI-2005-KKHRECEKBN
       *
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    ZERO                TO  SYS-200501-STYUKYMD 
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    ZERO                TO  SYS-25-STYUKYMD 
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
+               MOVE    MCPDATA-REC     TO  SYS-25-REC
            ELSE    
-               INITIALIZE                  SYS-200501-REC
+               INITIALIZE                  SYS-25-REC
            END-IF
-           IF      SYS-200501-KOUIKIRECEKBN
+           IF      SYS-25-KOUIKIRECEKBN
                                        =   SPACE
-               MOVE    ZERO                TO  SYS-200501-KOUIKIRECEKBN
+               MOVE    ZERO                TO  SYS-25-KOUIKIRECEKBN
            END-IF
-           IF     SYS-200501-RECEDEN-DISASTER
+           IF     SYS-25-RECEDEN-DISASTER
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
+               MOVE    "1"             TO  SYS-25-RECEDEN-DISASTER
            END-IF
-           IF     SYS-200501-ROURECEKBN
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-ROURECEKBN
+           IF     SYS-25-ROURECEKBN    =   SPACE
+               MOVE    "0"             TO  SYS-25-ROURECEKBN
            END-IF
-           IF      SYS-200501-JIBAI-PDF
-                                   =   SPACE
-               MOVE    "0"             TO  SYS-200501-JIBAI-PDF
+           IF      SYS-25-JIBAI-PDF    =   SPACE
+               MOVE    "0"             TO  SYS-25-JIBAI-PDF
            END-IF
-           MOVE    SYS-200501-KOUIKIRECEKBN
+           MOVE    SYS-25-KOUIKIRECEKBN
                                        TO  SPA-NAI-200501-KOUIKIRECEKBN
-           MOVE    SYS-200501-RECEDEN-DISASTER
+           MOVE    SYS-25-RECEDEN-DISASTER
                                        TO
                                        SPA-NAI-200501-RECEDEN-DISASTER
-           MOVE    SYS-200501-ROURECEKBN
+           MOVE    SYS-25-ROURECEKBN
                                        TO  SPA-NAI-200501-ROURECEKBN
-           MOVE    SYS-200501-JIBAI-PDF
+           MOVE    SYS-25-JIBAI-PDF
                                        TO  SPA-NAI-200501-JIBAI-PDF
       *
       *    レセプト編集区分情報（主科情報）

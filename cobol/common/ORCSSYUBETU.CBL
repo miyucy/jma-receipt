@@ -129,6 +129,7 @@
       *  04.08.04    NACL-Æ£¸¶    18/03/28  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *
       *  05.00.01    NACL-Æ£¸¶    18/11/29  ´Î¤¬¤ó¼£ÎÅÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    19/02/15  Warning ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -435,27 +436,27 @@
       *     
        01  WRK-SEIHO-RECE61-REC. 
            COPY    "CPRCF061.INC"  REPLACING  //RECE61//
-                                   BY         //WRK-SEIHO-RECE61//.
+                                   BY         //WK-SH-RECE61//.
       *    Ï·¿ÍÊÝ¸±¡Ý»ÙÊ§¶èÊ¬
-           03  WRK-SEIHO-RECE61-RJNPAYKBN    PIC X(02).
+           03  WRK-SH-RE61-RJNPAYKBN         PIC X(02).
       *    ¼çÊÝ¸±¡Ý¸øÈñ¼ïÊÌ¶èÊ¬
-           03  WRK-SEIHO-RECE61-HKNKOHSBTKBN PIC X(01).
+           03  WRK-SH-RE61-HKNKOHSBTKBN      PIC X(01).
       *    
-           03  WRK-SEIHO-RECE61-KOH-AREA     OCCURS  10. 
+           03  WRK-SH-RE61-KOH-AREA          OCCURS  10. 
       *       ¸øÈñ¡ÝË¡ÊÌÈÖ¹æ
-               05  WRK-SEIHO-RECE61-KOHHBTNUM    PIC X(02).
+               05  WRK-SH-RE61-KOHHBTNUM         PIC X(02).
       *
       *    ¥ï¡¼¥¯À¸ÊÝ¤Þ¤È¤á
        01  TBL-SEIHO-RECE61-AREA.
            02  TBL-SEIHO-RECE61-REC    OCCURS  50. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
-                                       BY         //TBL-SEIHO-RECE61-//.
-           02  TBL-SEIHO-RECE61-PRTFLG PIC 9(01)  OCCURS  50.
-           02  TBL-SEIHO-RECE61-MAX    PIC 9(03).
+                                       BY         //TBL-SH-RE61-//.
+           02  TBL-SH-RE61-PRTFLG      PIC 9(01)  OCCURS  50.
+           02  TBL-SH-RE61-MAX         PIC 9(03).
       *
        01  WRK-KOH-RECE61-REC. 
            COPY    "CPRCF061.INC"      REPLACING  //RECE61-//
-                                       BY         //WRK-KOH-RECE61-//.
+                                       BY         //WRK-KO-RE61-//.
       *
       *    »ÜÀßÆþ½ê¾ðÊó¡Ê£¹£µ£°¡¢£¹£µ£±¡ËÂàÈòÍÑÎÎ°è
        01  TABLE-PTKOHINF-AREA.
@@ -495,7 +496,9 @@
       *****************************************************************
       *     
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *     
       *    ¸©Æâ°·¤¤ÊÝ¸±¼Ô¾ðÊó
            COPY    "CPSK1033.INC".
@@ -683,27 +686,27 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-2005-HOSPNUM
                MOVE    ZERO                TO  SYS-2005-RJNGNBKKBN
            END-IF
       * 
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-SYUBETU-SRYYM   TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                  SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-SYUBETU-SRYYM   TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE    MCPDATA-REC     TO  SYS-200501-REC
+               MOVE    MCPDATA-REC     TO  SYS-25-REC
            ELSE    
-               MOVE    SPACE           TO  SYS-200501-REC
+               MOVE    SPACE           TO  SYS-25-REC
            END-IF
-           IF      SYS-200501-DISASTER-RECEIPT
+           IF      SYS-25-DISASTER-RECEIPT
                                    =   SPACE
-               MOVE    ZERO            TO  SYS-200501-DISASTER-RECEIPT
+               MOVE    ZERO            TO  SYS-25-DISASTER-RECEIPT
            END-IF
       *??
            display
-          "SYS-200501-DISASTER-RECEIPT=" SYS-200501-DISASTER-RECEIPT
+          "SYS-200501-DISASTER-RECEIPT=" SYS-25-DISASTER-RECEIPT
       *??
       *
       *    ¸©Æâ°·¤¤ÊÝ¸±¼Ô¾ðÊó¡ÊÊ¡²¬¤Î¤ß¡Ë
@@ -1576,8 +1579,7 @@ grpsys     MOVE    LNK-SYUBETU-HOSPNUM     TO  WRK-RECE61-HOSPNUM
            END-IF
       *
       *    ºÒ³²³ºÅö¤ÎÍ­Ìµ¡ÊÊ¿À®£²£¸Ç¯£±£°·î°Ê¹ß¡Ë
-           IF    ( SYS-200501-DISASTER-RECEIPT
-                                           =   "1"     )
+           IF    ( SYS-25-DISASTER-RECEIPT =   "1"     )
            AND   ( WRK-RECE61-SRYYM        >=   201610 )
                IF    ( WRK-RECE61-RECEIPT-KBN (5:1)
                                                =   SPACE )
@@ -2122,8 +2124,7 @@ grpsys                 MOVE   LNK-SYUBETU-HOSPNUM
            MOVE    WRK-RECE61-REC      TO  WRK-SEIHO-RECE61-REC
       *
            INITIALIZE                      WRK-RECE61-REC
-           MOVE    WRK-SEIHO-RECE61-KEY
-                                       TO  WRK-RECE61-KEY
+           MOVE    WK-SH-RECE61-KEY    TO  WRK-RECE61-KEY
       *****MOVE    COMB-TEKSTYMD       TO  WRK-RECE61-TEKSTYMD
            INITIALIZE                      PTKOHINF-REC
            MOVE    WRK-RECE61-HOSPNUM  TO  PTKOH-HOSPNUM
@@ -2304,10 +2305,10 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                            END-IF
                        ELSE
       *                    ¸øÈñÃ±ÆÈ¡ÊÀ¸ÊÝ¡¢Ãæ¹ñ»ÄÎ±Ë®¿ÍÅù¡¢¼«Î©»Ù±ç¡Ë¤Î¾ì¹çÂàÈò
-                           ADD     1        TO  TBL-SEIHO-RECE61-MAX
+                           ADD     1        TO  TBL-SH-RE61-MAX
                            MOVE    WRK-RECE61-REC
                                             TO  TBL-SEIHO-RECE61-REC
-                                              (TBL-SEIHO-RECE61-MAX)
+                                              (TBL-SH-RE61-MAX)
                        END-IF
                    END-IF
                END-IF
@@ -2416,18 +2417,18 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                        CONTINUE
                    ELSE
                        PERFORM VARYING IDA FROM    1   BY  1
-                               UNTIL   IDA >       TBL-SEIHO-RECE61-MAX
+                               UNTIL   IDA >       TBL-SH-RE61-MAX
       *                  ¥ì¥»¥×¥ÈÊ¬³ä¶èÊ¬Ëè¤Ë¤Þ¤È¤á¤ë
                          IF      WRK-RECE61-RECEIPT-KBN    =
-                                   TBL-SEIHO-RECE61-RECEIPT-KBN (IDA)
+                                   TBL-SH-RE61-RECEIPT-KBN (IDA)
                            PERFORM VARYING IDYY    FROM    1   BY  1
                                    UNTIL   IDYY    >       10
                                    OR      WRK-RECE61-KOHID-O (IDYY)
                                                    =       ZERO
-                               IF      TBL-SEIHO-RECE61-KOHID-O (IDA 1)
+                               IF      TBL-SH-RE61-KOHID-O (IDA 1)
                                            =   WRK-RECE61-KOHID-O (IDYY)
                                    MOVE    1           TO
-                                           TBL-SEIHO-RECE61-PRTFLG(IDA)
+                                           TBL-SH-RE61-PRTFLG(IDA)
                                    MOVE    1           TO  WRK-SEIHO-FLG
                                    PERFORM VARYING IDB FROM    1   BY  1
                                            UNTIL   IDB >       10
@@ -2435,7 +2436,7 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                                                (IDB)
                                                            =   ZERO
                                            MOVE
-                                             TBL-SEIHO-RECE61-HKNCOMBI-O
+                                             TBL-SH-RE61-HKNCOMBI-O
                                                               (IDA 1)
                                                            TO
                                                WRK-RECE61-HKNCOMBI-O
@@ -2444,13 +2445,13 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
                                        IF      WRK-RECE61-HKNCOMBI-O
                                                                (IDB)
                                                    =
-                                             TBL-SEIHO-RECE61-HKNCOMBI-O
+                                             TBL-SH-RE61-HKNCOMBI-O
                                                               (IDA 1)
                                            MOVE    10          TO  IDB
                                        END-IF
                                    END-PERFORM    
                                    MOVE    10              TO  IDYY
-                                   MOVE    TBL-SEIHO-RECE61-MAX
+                                   MOVE    TBL-SH-RE61-MAX
                                                            TO  IDA
                                END-IF
                            END-PERFORM
@@ -2471,17 +2472,17 @@ grpsys             OR      TBL-RECE61-HOSPNUM (IDXX)  =   ZERO
       *
       *    ¸øÈñÃ±ÆÈ¥ì¥»¤Î½ÐÎÏ½èÍý
            IF    ( WRK-SEIHO-FLG           =   ZERO )
-           AND   (  WRK-KOH-RECE61-HOSPNUM >   ZERO )
+           AND   (  WRK-KO-RE61-HOSPNUM    >   ZERO )
       *        ¼çÊÝ¸±¤È¤Î¤Þ¤È¤á¤¬¤Ê¤¯À¸ÊÝ¡¢Ãæ¹ñ»ÄÎ±Ë®¿ÍÅù¡¢¼«Î©»Ù±ç°Ê³°¤È¤Î
       *        ¸øÈñÃ±ÆÈ¤Î¾ì¹ç
                MOVE    WRK-KOH-RECE61-REC  TO  WRK-RECE61-REC
       *        ¥ì¥»¥×¥È¾ðÊóÀßÄê½èÍý
                PERFORM 30011-SYUBETUGET-CALL-SEC
            ELSE
-               IF      TBL-SEIHO-RECE61-MAX    >   ZERO
+               IF      TBL-SH-RE61-MAX         >   ZERO
                    PERFORM VARYING IDXX    FROM    1   BY  1
-                           UNTIL   IDXX    >       TBL-SEIHO-RECE61-MAX
-                       IF      TBL-SEIHO-RECE61-PRTFLG (IDXX)
+                           UNTIL   IDXX    >       TBL-SH-RE61-MAX
+                       IF      TBL-SH-RE61-PRTFLG (IDXX)
                                                =   1
                            CONTINUE
                        ELSE
@@ -2878,8 +2879,7 @@ grpsys                 MOVE    LNK-SYUBETU-HOSPNUM TO  PTKOH-HOSPNUM
            INITIALIZE                      TABLE-PTKOHINF-AREA
       *
       *    £¹£µ£¹¡ÊºÒ³²³ºÅö¡Ë
-           IF    ( SYS-200501-DISASTER-RECEIPT
-                                           =   "1"     )
+           IF    ( SYS-25-DISASTER-RECEIPT =   "1"     )
            AND   ( LNK-SYUBETU-SRYYM       >=   201610 )
                INITIALIZE                      PTKOHINF-REC
                MOVE    SPA-HOSPNUM         TO  PTKOH-HOSPNUM
