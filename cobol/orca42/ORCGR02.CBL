@@ -166,6 +166,7 @@
       *  05.00.01    NACL-藤原    18/10/15  ＭＯＮＢＬＯＢエラー対応
       *  05.00.02    NACL-藤原    18/11/21  社保編綴順のときの表示の修正
       *  05.00.03    NACL-藤原    18/11/28  カナ氏名順のときの印刷対応
+      *  05.00.04    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -433,7 +434,9 @@
            COPY    "CPSK2004.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK2008.INC".
       *
@@ -1110,31 +1113,31 @@ grpsys     MOVE    SPA-HOSPNUM      TO  SYS-2005-HOSPNUM
            END-IF    
       *
       *    区分コード０１のデータ読み込み
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"          TO  SYS-200501-KANRICD
-           MOVE    "01"            TO  SYS-200501-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
-                                       SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           INITIALIZE                  SYS-25-REC
+           MOVE    "2005"          TO  SYS-25-KANRICD
+           MOVE    "01"            TO  SYS-25-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-25-STYUKYMD
+                                       SYS-25-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+               MOVE   MCPDATA-REC  TO  SYS-25-REC
            ELSE
-               INITIALIZE              SYS-200501-REC
+               INITIALIZE              SYS-25-REC
                MOVE    SYS-2005-TERMID (1:4)
-                                   TO  SYS-200501-TBL (1:4)
+                                   TO  SYS-25-TBL (1:4)
            END-IF
       *
            MOVE    SYS-2005-SYAPRTNM    TO  SPA-NAI-2005-SYAPRTNM
            MOVE    SYS-2005-KKHPRTNM    TO  SPA-NAI-2005-KKHPRTNM
-           MOVE    SYS-200501-KOUIKIPRTNM
+           MOVE    SYS-25-KOUIKIPRTNM
                                         TO  SPA-NAI-2005-KOUIKIPRTNM
            MOVE    SYS-2005-SYAPRTNM-NEXT
                                         TO  SPA-NAI-2005-SYAPRTNM-NEXT
            MOVE    SYS-2005-KKHPRTNM-NEXT
                                         TO  SPA-NAI-2005-KKHPRTNM-NEXT
-           MOVE    SYS-200501-KOUIKIPRTNM-NEXT
+           MOVE    SYS-25-KOUIKIPRTNM-NEXT
                                         TO
                                         SPA-NAI-2005-KOUIKIPRTNM-NEXT
            IF      SYS-2005-SYAPRTNM-N  =   SPACE
@@ -1145,9 +1148,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE   SYS-2005-KKHPRTNM
                                         TO  SYS-2005-KKHPRTNM-N
            END-IF
-           IF      SYS-200501-KOUIKIPRTNM-N  =   SPACE
-                   MOVE   SYS-200501-KOUIKIPRTNM
-                                        TO  SYS-200501-KOUIKIPRTNM-N
+           IF      SYS-25-KOUIKIPRTNM-N      =   SPACE
+                   MOVE   SYS-25-KOUIKIPRTNM
+                                        TO  SYS-25-KOUIKIPRTNM-N
            END-IF
            IF      SYS-2005-SYAPRTNM-NEXT-N  =   SPACE
                    MOVE   SYS-2005-SYAPRTNM-NEXT
@@ -1157,42 +1160,38 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                    MOVE   SYS-2005-KKHPRTNM-NEXT
                                         TO  SYS-2005-KKHPRTNM-NEXT-N
            END-IF
-           IF      SYS-200501-KOUIKIPRTNM-NEXT-N  =   SPACE
-                   MOVE   SYS-200501-KOUIKIPRTNM-NEXT
-                                        TO
-                                        SYS-200501-KOUIKIPRTNM-NEXT-N
+           IF      SYS-25-KOUIKIPRTNM-NEXT-N      =   SPACE
+                   MOVE   SYS-25-KOUIKIPRTNM-NEXT
+                                        TO  SYS-25-KOUIKIPRTNM-NEXT-N
            END-IF
-           IF      SYS-200501-DRCD-PRTKBN
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-DRCD-PRTKBN
+           IF      SYS-25-DRCD-PRTKBN  =   SPACE
+               MOVE    "0"             TO  SYS-25-DRCD-PRTKBN
            END-IF
-           IF    ( SYS-200501-DRCD-PRTKBN
+           IF    ( SYS-25-DRCD-PRTKBN
                                        =   "1"   )
-           AND   ( SYS-200501-DRCD-PRTJYUNKBN
+           AND   ( SYS-25-DRCD-PRTJYUNKBN
                                        =   SPACE )
-               MOVE    "1"             TO  SYS-200501-DRCD-PRTJYUNKBN
+               MOVE    "1"             TO  SYS-25-DRCD-PRTJYUNKBN
            END-IF
-           MOVE    SYS-200501-DRCD-PRTJYUNKBN
+           MOVE    SYS-25-DRCD-PRTJYUNKBN
                                        TO  SPA-NAI-2005-DRCD-PRTJYUNKBN
-           IF      SYS-200501-BTUNUM-PRTKBN
+           IF      SYS-25-BTUNUM-PRTKBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-BTUNUM-PRTKBN
+               MOVE    "0"             TO  SYS-25-BTUNUM-PRTKBN
            END-IF
-           IF    ( SYS-200501-BTUNUM-PRTKBN
+           IF    ( SYS-25-BTUNUM-PRTKBN
                                        =   "1"   )
-           AND   ( SYS-200501-BTUNUM-PRTJYUNKBN
+           AND   ( SYS-25-BTUNUM-PRTJYUNKBN
                                        =   SPACE )
-               MOVE    "1"             TO  SYS-200501-BTUNUM-PRTJYUNKBN
+               MOVE    "1"             TO  SYS-25-BTUNUM-PRTJYUNKBN
            END-IF
-           MOVE    SYS-200501-BTUNUM-PRTJYUNKBN
+           MOVE    SYS-25-BTUNUM-PRTJYUNKBN
                                        TO
                                        SPA-NAI-2005-BTUNUM-PRTJYUNKBN
-           IF      SYS-200501-JIHI-PRTKBN
-                                       =   SPACE
-               MOVE    "0"             TO  SYS-200501-JIHI-PRTKBN
+           IF      SYS-25-JIHI-PRTKBN  =   SPACE
+               MOVE    "0"             TO  SYS-25-JIHI-PRTKBN
            END-IF
-           MOVE    SYS-200501-JIHI-PRTKBN
-                                       TO  SPA-NAI-2005-JIHI-PRTKBN
+           MOVE    SYS-25-JIHI-PRTKBN  TO  SPA-NAI-2005-JIHI-PRTKBN
       *
       *    診療科の表示（一括作成時のみ）
            IF    ( SPA-SYUKA-KBN       =   "1"             )
@@ -1254,7 +1253,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
              END-IF
            ELSE
       *      医師別出力設定のとき
-             IF    ( SYS-200501-DRCD-PRTKBN
+             IF    ( SYS-25-DRCD-PRTKBN
                                          =   "1"   )
              AND   ( SPA-R01-RECE08-DRCD-SRYKA
                                      NOT =   SPACE )
@@ -1306,7 +1305,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            END-IF                                                             
       *
       *    一括作成で医師別出力設定のとき
-           IF    ( SYS-200501-DRCD-PRTKBN
+           IF    ( SYS-25-DRCD-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-DRCD-SRYKA
                                    NOT =   SPACE )
@@ -1334,7 +1333,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
            END-IF
       *
       *    一括作成で病棟別出力設定のとき
-           IF    ( SYS-200501-BTUNUM-PRTKBN
+           IF    ( SYS-25-BTUNUM-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-SORT-1
                                    NOT =   SPACE )
@@ -1355,7 +1354,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
       *
       *    ターミナルデジット出力設定のとき
-           IF    ( SYS-200501-TERMINAL-DIGIT-PRTKBN
+           IF    ( SYS-25-TERMINAL-DIGIT-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-SORT-2 (1:2)
                                    NOT =   SPACE )
@@ -1384,7 +1383,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                MOVE     SYS-2005-PRTJYUNKBN3
                                        TO  SPA-NAI-2005-PRTJYUNKBN3
            END-IF
-           IF      SYS-200501-PRTJYUNKBN5   =   SPACE
+           IF      SYS-25-PRTJYUNKBN5       =   SPACE
                IF      SYS-2005-PRTJYUNKBN1 =   "06"
                    MOVE   "01"         TO  SPA-NAI-200501-PRTJYUNKBN5
                ELSE
@@ -1392,7 +1391,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                                        TO  SPA-NAI-200501-PRTJYUNKBN5
                END-IF
            ELSE
-               MOVE     SYS-200501-PRTJYUNKBN5
+               MOVE     SYS-25-PRTJYUNKBN5
                                        TO  SPA-NAI-200501-PRTJYUNKBN5
            END-IF
       *
@@ -1404,24 +1403,24 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        MOVE    SYS-2005-PRTJYUNKBN1
                                             TO  SYS-2005-PRTJYUNKBN3
                END-IF
-               IF      SYS-200501-PRTJYUNKBN5
+               IF      SYS-25-PRTJYUNKBN5
                                             =   SPACE 
                        MOVE    SYS-2005-PRTJYUNKBN1
-                                            TO  SYS-200501-PRTJYUNKBN5
+                                            TO  SYS-25-PRTJYUNKBN5
                END-IF
            ELSE
                MOVE   SYS-2005-PRTJYUNKBN4  TO  SYS-2005-PRTJYUNKBN1
                                                 SYS-2005-PRTJYUNKBN3
-                                                SYS-200501-PRTJYUNKBN5
+                                                SYS-25-PRTJYUNKBN5
            END-IF
      
            IF    ( SPA-R01-NYUGAIKBN    =   "1"   )
-           AND   ( SYS-200501-PRTJYUNKBN6
+           AND   ( SYS-25-PRTJYUNKBN6
                                     NOT =   SPACE )
-               MOVE   SYS-200501-PRTJYUNKBN6
+               MOVE   SYS-25-PRTJYUNKBN6
                                             TO  SYS-2005-PRTJYUNKBN1
                                                 SYS-2005-PRTJYUNKBN3
-                                                SYS-200501-PRTJYUNKBN5
+                                                SYS-25-PRTJYUNKBN5
            END-IF           
            IF      SYS-2005-PRTJYUNKBN2 =   SPACE
                    MOVE   "01"          TO  SYS-2005-PRTJYUNKBN2
@@ -1429,20 +1428,20 @@ grpsys         PERFORM 900-DBSELECT-SEC
       *
            MOVE    SYS-2005-SYAPRTNM-N  TO  SPA-NAI-2005-SYAPRTNM-N
            MOVE    SYS-2005-KKHPRTNM-N  TO  SPA-NAI-2005-KKHPRTNM-N
-           MOVE    SYS-200501-KOUIKIPRTNM-N
+           MOVE    SYS-25-KOUIKIPRTNM-N
                                         TO  SPA-NAI-2005-KOUIKIPRTNM-N
            MOVE    SYS-2005-SYAPRTNM-NEXT-N
                                        TO  SPA-NAI-2005-SYAPRTNM-NEXT-N
            MOVE    SYS-2005-KKHPRTNM-NEXT-N
                                        TO  SPA-NAI-2005-KKHPRTNM-NEXT-N
-           MOVE    SYS-200501-KOUIKIPRTNM-NEXT-N
+           MOVE    SYS-25-KOUIKIPRTNM-NEXT-N
                                        TO
                                        SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
       *
-           IF      SYS-200501-PRT-CHECKKBN =   SPACE
-               MOVE   "0"                TO  SYS-200501-PRT-CHECKKBN
+           IF      SYS-25-PRT-CHECKKBN     =   SPACE
+               MOVE   "0"                TO  SYS-25-PRT-CHECKKBN
            END-IF
-           MOVE    SYS-200501-PRT-CHECKKBN
+           MOVE    SYS-25-PRT-CHECKKBN
                                        TO  SPA-NAI-2005-PRT-CHECKKBN
       *    
       *    出力順（一括作成）
@@ -1478,7 +1477,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                        END-IF
                    END-PERFORM
                END-IF
-               IF      SYS-200501-PRTJYUNKBN5
+               IF      SYS-25-PRTJYUNKBN5
                                            =   "07"    OR  "08"    OR  
                                                "11"    OR  "12"    OR
                                                "13"
@@ -1488,7 +1487,7 @@ grpsys         PERFORM 900-DBSELECT-SEC
                            UNTIL   IDX >       SPA-GMN-PRTJYUN2-MAX
                            OR      SPA-GMN-PRTJYUN2L (IDX)
                                        =   SPACE
-                       IF      SYS-200501-PRTJYUNKBN5
+                       IF      SYS-25-PRTJYUNKBN5
                                            =   SPA-GMN-PRTJYUN2L (IDX)
                            MOVE    SPA-GMN-PRTJYUN2LST(IDX)
                                                TO  SPA-GMN-PRTJYUN2-G
@@ -1575,10 +1574,10 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
                MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KKHPRTNM-N
            END-IF                                              
       *    広域連合印刷先
-           IF      SYS-200501-KOUIKIPRTNM   =   SPACE
+           IF      SYS-25-KOUIKIPRTNM       =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO  SPA-NAI-2005-KOUIKIPRTNM
            END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-N =   SPACE
+           IF      SYS-25-KOUIKIPRTNM-N     =   SPACE
                MOVE    SYS-1031-PRTNM (4)  TO
                                            SPA-NAI-2005-KOUIKIPRTNM-N
            END-IF                                              
@@ -1621,21 +1620,21 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
                END-IF
            END-IF
       *    広域連合印刷先（続紙）
-           IF      SYS-200501-KOUIKIPRTNM-NEXT  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM       =   SPACE
+           IF      SYS-25-KOUIKIPRTNM-NEXT      =   SPACE
+               IF      SYS-25-KOUIKIPRTNM           =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
                                            SPA-NAI-2005-KOUIKIPRTNM-NEXT
                ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM   TO
+                   MOVE    SYS-25-KOUIKIPRTNM       TO
                                            SPA-NAI-2005-KOUIKIPRTNM-NEXT
                END-IF
            END-IF                                              
-           IF      SYS-200501-KOUIKIPRTNM-NEXT-N  =   SPACE
-               IF      SYS-200501-KOUIKIPRTNM-N       =   SPACE
+           IF      SYS-25-KOUIKIPRTNM-NEXT-N      =   SPACE
+               IF      SYS-25-KOUIKIPRTNM-N           =   SPACE
                    MOVE    SYS-1031-PRTNM (4)  TO
                                        SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
                ELSE                                              
-                   MOVE    SYS-200501-KOUIKIPRTNM-N  TO
+                   MOVE    SYS-25-KOUIKIPRTNM-N      TO
                                        SPA-NAI-2005-KOUIKIPRTNM-NEXT-N
                END-IF
            END-IF
@@ -1717,7 +1716,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            END-IF
       *
       *    医師別出力の編集処理
-           IF    ( SYS-200501-DRCD-PRTKBN
+           IF    ( SYS-25-DRCD-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-DRCD-SRYKA
                                    NOT =   SPACE )
@@ -1725,7 +1724,7 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SYS-1031-HOSPNUM
            END-IF
       *
       *    病棟別出力の編集処理
-           IF    ( SYS-200501-BTUNUM-PRTKBN
+           IF    ( SYS-25-BTUNUM-PRTKBN
                                        =   "1"   )
            AND   ( SPA-R01-RECE08-SORT-1
                                    NOT =   SPACE )

@@ -76,6 +76,8 @@
       *  04.06.01    NACL-藤原    12/09/27  生活保護期間重複対応
       *
       *  04.08.01    NACL-藤原    18/06/18  更新時のOPID 設定
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -285,7 +287,9 @@
            COPY    "CPHKNNUM.INC".
       *
       *    レセプト印刷情報
-           COPY  "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *****************************************************************
       *    サブプロ用　領域
@@ -448,33 +452,31 @@
            END-IF
       *
       *    レセプト・総括編集情報
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    SPA-HOSPNUM         TO  SYS-200501-HOSPNUM
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    SPA-SYSYMD          TO  SYS-200501-STYUKYMD
-                                           SYS-200501-EDYUKYMD
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    SPA-HOSPNUM         TO  SYS-25-HOSPNUM
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    SPA-SYSYMD          TO  SYS-25-STYUKYMD
+                                           SYS-25-EDYUKYMD
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            MOVE    "tbl_syskanri"      TO  WRK-MCP-TABLE
            MOVE    "key10"             TO  WRK-MCP-PATHNAME
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
       *
-           IF      SYS-200501-SEIHO-DSPKBN
-                                        =   SPACE
-               MOVE    "0"                  TO  SYS-200501-SEIHO-DSPKBN
+           IF      SYS-25-SEIHO-DSPKBN  =   SPACE
+               MOVE    "0"                  TO  SYS-25-SEIHO-DSPKBN
            END-IF
-           MOVE    SYS-200501-SEIHO-DSPKBN
-                                       TO  SPA-NAI-200501-SEIHO-DSPKBN
+           MOVE    SYS-25-SEIHO-DSPKBN TO  SPA-NAI-200501-SEIHO-DSPKBN
       *
            MOVE    1                   TO  SPA-NAI-HYOUJIFLG
       *
-           PERFORM 3101-SEH-HENSYU-SEC     
+           PERFORM 3101-SEH-HENSYU-SEC
       *
            .
        310-SPASET-EXT.

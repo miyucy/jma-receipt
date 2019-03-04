@@ -184,7 +184,8 @@
       *  04.08.08    NACL-Æ£¸¶    17/04/10  ´µ¼ÔÃ±°Ì¤Ç¤ÎÅÀ¿ô»»ÄêÀßÄê
       *                                     ¡ÊÏ«ºÒ½àµòËô¤Ï·òÊÝ½àµò¡ËÂÐ±þ
       *
-      *  04.09.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
+      *  05.00.01    NACL-Æ£¸¶    16/12/12  £È£Á£Ï£Ò£ÉÂÐ±þ
+      *  05.00.02    NACL-Æ£¸¶    19/02/15  Warning ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -470,7 +471,9 @@
            COPY    "CPSK2003.INC".
       *
            COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
            COPY    "CPSK4001.INC".
       *
@@ -4662,20 +4665,20 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-2005-HOSPNUM
            END-IF
       *
       *    ¶èÊ¬¥³¡¼¥É£°£±¤Î¥Ç¡¼¥¿ÆÉ¤ß¹þ¤ß
-           INITIALIZE                  SYS-200501-REC
-           MOVE    "2005"          TO  SYS-200501-KANRICD
-           MOVE    "01"            TO  SYS-200501-KBNCD
-           MOVE    SPA-SYSYMD      TO  SYS-200501-STYUKYMD
-                                       SYS-200501-EDYUKYMD
-grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC  TO  MCPDATA-REC
+           INITIALIZE                  SYS-25-REC
+           MOVE    "2005"          TO  SYS-25-KANRICD
+           MOVE    "01"            TO  SYS-25-KBNCD
+           MOVE    SPA-SYSYMD      TO  SYS-25-STYUKYMD
+                                       SYS-25-EDYUKYMD
+grpsys     MOVE    SPA-HOSPNUM     TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC      TO  MCPDATA-REC
            PERFORM 900-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI    =   ZERO
-               MOVE   MCPDATA-REC  TO  SYS-200501-REC
+               MOVE   MCPDATA-REC  TO  SYS-25-REC
            ELSE
-               INITIALIZE              SYS-200501-REC
+               INITIALIZE              SYS-25-REC
                MOVE    SYS-2005-TERMID (1:4)
-                                   TO  SYS-200501-TBL (1:4)
+                                   TO  SYS-25-TBL (1:4)
            END-IF
       *
            IF      SYS-2005-PREFPRGID (1) (1:1)
@@ -4700,49 +4703,49 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SYS-200501-HOSPNUM
                                        =   SPACE
                MOVE    ZERO            TO  SYS-2005-FRAME-JIBAIPRTKBN-N
            END-IF
-           IF      SYS-200501-JIBAIPRTKBN
+           IF      SYS-25-JIBAIPRTKBN
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-JIBAIPRTKBN
+               MOVE    "1"             TO  SYS-25-JIBAIPRTKBN
            END-IF
-           IF      SYS-200501-JIBAIPRTKBN-N
+           IF      SYS-25-JIBAIPRTKBN-N
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-JIBAIPRTKBN-N
+               MOVE    "1"             TO  SYS-25-JIBAIPRTKBN-N
            END-IF
-           IF      SYS-200501-JIBAIPRTKBN1
+           IF      SYS-25-JIBAIPRTKBN1
                                        =   SPACE
-               MOVE    "2"             TO  SYS-200501-JIBAIPRTKBN1
+               MOVE    "2"             TO  SYS-25-JIBAIPRTKBN1
            END-IF
-           IF      SYS-200501-JIBAIPRTKBN1-N
+           IF      SYS-25-JIBAIPRTKBN1-N
                                        =   SPACE
-               MOVE    "2"             TO  SYS-200501-JIBAIPRTKBN1-N
+               MOVE    "2"             TO  SYS-25-JIBAIPRTKBN1-N
            END-IF
-           IF      SYS-200501-KOUIKIRECEKBN
+           IF      SYS-25-KOUIKIRECEKBN
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-KOUIKIRECEKBN
+               MOVE    ZERO            TO  SYS-25-KOUIKIRECEKBN
            END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN
+           IF      SYS-25-FRAME-ROUPRTKBN
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-FRAME-ROUPRTKBN
+               MOVE    ZERO            TO  SYS-25-FRAME-ROUPRTKBN
            END-IF
-           IF      SYS-200501-FRAME-ROUPRTKBN-N
+           IF      SYS-25-FRAME-ROUPRTKBN-N
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-FRAME-ROUPRTKBN-N
+               MOVE    ZERO            TO  SYS-25-FRAME-ROUPRTKBN-N
            END-IF
-           IF      SYS-200501-COMMENT-ROU-KSIKBN
+           IF      SYS-25-COMMENT-ROU-KSIKBN
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-COMMENT-ROU-KSIKBN
+               MOVE    ZERO            TO  SYS-25-COMMENT-ROU-KSIKBN
            END-IF
-           IF      SYS-200501-ROUPRTKBN
+           IF      SYS-25-ROUPRTKBN
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-ROUPRTKBN
+               MOVE    ZERO            TO  SYS-25-ROUPRTKBN
            END-IF
-           IF      SYS-200501-ROUPRTKBN-N
+           IF      SYS-25-ROUPRTKBN-N
                                        =   SPACE
-               MOVE    ZERO            TO  SYS-200501-ROUPRTKBN-N
+               MOVE    ZERO            TO  SYS-25-ROUPRTKBN-N
            END-IF
-           IF      SYS-200501-ROURECEKBN
+           IF      SYS-25-ROURECEKBN
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-ROURECEKBN
+               MOVE    "0"             TO  SYS-25-ROURECEKBN
            END-IF
       *
            MOVE    ZERO                TO  FLG-4001-RSIIRYOKBN
@@ -4873,7 +4876,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                                TO  SHELLTBL-ARG13
                    END-IF
                WHEN    "3"
-                   MOVE    SYS-200501-ROURECEKBN
+                   MOVE    SYS-25-ROURECEKBN
                                                TO  SHELLTBL-ARG12
                    MOVE    FLG-4001-RSIIRYOKBN TO  SHELLTBL-ARG13
                WHEN    OTHER
@@ -4882,7 +4885,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            END-EVALUATE
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "3"
-                   MOVE    SYS-200501-COMMENT-ROU-KSIKBN
+                   MOVE    SYS-25-COMMENT-ROU-KSIKBN
                                            TO  SHELLTBL-ARG14
                WHEN    OTHER
                    MOVE    WRK-PREFNUM     TO  SHELLTBL-ARG14
@@ -4898,10 +4901,10 @@ grpsys     PERFORM 900-DBSELECT-SEC
                    END-IF
                WHEN    "3"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    SYS-200501-FRAME-ROUPRTKBN-N
+                       MOVE    SYS-25-FRAME-ROUPRTKBN-N
                                                    TO  SHELLTBL-ARG15
                    ELSE
-                       MOVE    SYS-200501-FRAME-ROUPRTKBN
+                       MOVE    SYS-25-FRAME-ROUPRTKBN
                                                    TO  SHELLTBL-ARG15
                    END-IF
            END-EVALUATE
@@ -4909,27 +4912,27 @@ grpsys     MOVE    SPA-HOSPNUM     TO  SHELLTBL-ARG16
            EVALUATE    SPA-R01-RECEKBN
                WHEN    "4"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    SYS-200501-JIBAIPRTKBN1-N
+                       MOVE    SYS-25-JIBAIPRTKBN1-N
                                                    TO  SHELLTBL-ARG17
                    ELSE
-                       MOVE    SYS-200501-JIBAIPRTKBN1
+                       MOVE    SYS-25-JIBAIPRTKBN1
                                                    TO  SHELLTBL-ARG17
                    END-IF
                WHEN    "5"
                WHEN    "8"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    SYS-200501-JIBAIPRTKBN-N
+                       MOVE    SYS-25-JIBAIPRTKBN-N
                                                    TO  SHELLTBL-ARG17
                    ELSE
-                       MOVE    SYS-200501-JIBAIPRTKBN
+                       MOVE    SYS-25-JIBAIPRTKBN
                                                    TO  SHELLTBL-ARG17
                    END-IF
                WHEN    "3"
                    IF      SPA-R01-NYUGAIKBN   =   "1"
-                       MOVE    SYS-200501-ROUPRTKBN-N
+                       MOVE    SYS-25-ROUPRTKBN-N
                                                    TO  SHELLTBL-ARG17
                    ELSE
-                       MOVE    SYS-200501-ROUPRTKBN
+                       MOVE    SYS-25-ROUPRTKBN
                                                    TO  SHELLTBL-ARG17
                    END-IF
            END-EVALUATE
