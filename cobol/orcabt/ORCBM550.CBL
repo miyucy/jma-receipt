@@ -53,6 +53,8 @@
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
       *  04.08.05    NACL-藤原    18/03/28  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -1024,7 +1026,7 @@
            END-EVALUATE
            EVALUATE    WRK-FILE-TMP(5:8)
                WHEN    "RECEIPTC"
-                   PERFORM 2001133-RECEIPTC-KOUMOKU-BETU-SEC
+                   PERFORM 2001133-RECEIP-KOUMOKU-BETU-SEC
            END-EVALUATE
            EVALUATE    WRK-FILE-TMP(5:6)
                WHEN    "RRECEC"
@@ -1809,7 +1811,7 @@
       *****************************************************************
       *    返戻ファイル項目別処理
       *****************************************************************
-       2001133-RECEIPTC-KOUMOKU-BETU-SEC     SECTION.
+       2001133-RECEIP-KOUMOKU-BETU-SEC       SECTION.
       *??
       **   IF      WRK-MO-ST           =   ZERO
       **        MOVE    0                  TO  TBL-HENREI-B-SELECT-FLG
@@ -1818,7 +1820,7 @@
       **                                                       (IDZZ)
       **        MOVE    WRK-PARA-REC       TO  TBL-HENREI-B-HENREI-INFO2
       **                                                       (IDZZ)
-      **       GO  TO   2001133-RECEIPTC-KOUMOKU-BETU-EXT
+      **       GO  TO   2001133-RECEIP-KOUMOKU-BETU-EXT
       **   END-IF
            DISPLAY "WRK-PARA-REC=" WRK-PARA-REC(1:2) "#" WRK-KOUMOKU-NO
       *??
@@ -2345,7 +2347,7 @@
            END-EVALUATE
       *
            .
-       2001133-RECEIPTC-KOUMOKU-BETU-EXT.
+       2001133-RECEIP-KOUMOKU-BETU-EXT.
            EXIT.
       *
       *

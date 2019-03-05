@@ -101,6 +101,8 @@
       *                                      （１日からの変更のみ）
       *  04.08.04    NACL-藤原    18/04/06  平成３０年４月改正対応
       *                                     カタカナ（氏名）、患者状態の追加
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -351,7 +353,9 @@ grpsys COPY    "COMMON-SPA".
       *
            COPY    "CPSK2005.INC".
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    医療機関情報（基本）
            COPY    "CPSK1001.INC".
@@ -640,27 +644,27 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  SYS-1002-HOSPNUM
            END-IF    
       *
       *    レセプト印刷情報
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
-           IF     SYS-200501-RECEDEN-DISASTER
+           IF     SYS-25-RECEDEN-DISASTER
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
+               MOVE    "1"             TO  SYS-25-RECEDEN-DISASTER
            END-IF
       *
-           DISPLAY "RECEDEN-DISASTER=" SYS-200501-RECEDEN-DISASTER
+           DISPLAY "RECEDEN-DISASTER=" SYS-25-RECEDEN-DISASTER
       *    
            .
        110-SYSKANRI-HENSYU-EXT.
@@ -2206,7 +2210,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
                END-IF
       *
       *        未確定分をレセ電データに記録するか
-               IF    (  SYS-200501-RECEDEN-DISASTER
+               IF    (  SYS-25-RECEDEN-DISASTER
                                            =   "0"              )
                AND   ( RECE10-ETC-YKZFTN (1)
                                            =   6   OR  7  OR  8 )

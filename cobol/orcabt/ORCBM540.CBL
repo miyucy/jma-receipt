@@ -42,6 +42,8 @@
       *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -148,7 +150,9 @@
            COPY    "CPSK1902.INC".
            COPY    "CPSK1903.INC".
       *
-           COPY  "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    パラメタ
        01  BTPARA-REC.
@@ -357,27 +361,27 @@
            PERFORM 900-1900-READ-SEC
       *
       *    レセプト・総括編集情報
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 910-SYSKANRI-INV-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
       *    光ディスク等送付書（媒体種類）
-           IF      SYS-200501-RECEDEN-LST2-MEDIA
+           IF      SYS-25-RECEDEN-LST2-MEDIA
                                        =   SPACE
-               MOVE    "0"             TO  SYS-200501-RECEDEN-LST2-MEDIA
+               MOVE    "0"             TO  SYS-25-RECEDEN-LST2-MEDIA
            END-IF
            DISPLAY "SYS-200501-RECEDEN-LST2-MEDIA="
-                                       SYS-200501-RECEDEN-LST2-MEDIA
+                                       SYS-25-RECEDEN-LST2-MEDIA
            DISPLAY "WRK-PARA-DATAKBN             ="
                                        WRK-PARA-DATAKBN
       *
@@ -473,7 +477,7 @@
            MOVE    WRK-HENYMD-D        TO  HCM64-SKYYMD
       *
       *    媒体種類
-           EVALUATE    SYS-200501-RECEDEN-LST2-MEDIA
+           EVALUATE    SYS-25-RECEDEN-LST2-MEDIA
                                        ALSO    WRK-PARA-DATAKBN
                WHEN    "0"             ALSO    "1"
                WHEN    "0"             ALSO    "3"

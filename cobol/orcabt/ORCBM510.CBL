@@ -59,6 +59,8 @@
       *  04.08.02    NACL-藤原    16/06/27  医療機関コード変更時のレセ電
       *                                     データ等の作成対応
       *                                      （１日からの変更のみ）
+      *
+      *  05.00.01    NACL-藤原    19/02/15  Warning 対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -226,7 +228,9 @@
            COPY    "CPSK1901.INC".
       *----(04.03.01)--ADD-END-----
       *
-           COPY    "CPSK200501.INC".
+           COPY    "CPSK200501.INC"
+                                   REPLACING  //SYS-200501//
+                                   BY         //SYS-25//.
       *
       *    請求管理情報
            COPY    "CPRCF010.INC".
@@ -424,27 +428,27 @@ grpsys     PERFORM 900-CALL-ORCSJOB-SEC
       *----(04.03.01)--ADD-END-----
       *
       *    レセプト印刷情報
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
+           MOVE    SPACE               TO  SYS-25-REC
+           INITIALIZE                      SYS-25-REC
+           MOVE    "2005"              TO  SYS-25-KANRICD
+           MOVE    "01"                TO  SYS-25-KBNCD
+           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-25-STYUKYMD (1:6)
+           MOVE    "01"                TO  SYS-25-STYUKYMD (7:2)
+           MOVE    SYS-25-STYUKYMD     TO  SYS-25-EDYUKYMD
+           MOVE    WRK-PARA-HOSPNUM    TO  SYS-25-HOSPNUM
+           MOVE    SYS-25-REC          TO  MCPDATA-REC
            PERFORM 800-SYSKANRI-READ-SEC
            IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
+               MOVE    MCPDATA-REC         TO  SYS-25-REC
            ELSE
-               INITIALIZE                      SYS-200501-REC
+               INITIALIZE                      SYS-25-REC
            END-IF
-           IF     SYS-200501-RECEDEN-DISASTER
+           IF     SYS-25-RECEDEN-DISASTER
                                        =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
+               MOVE    "1"             TO  SYS-25-RECEDEN-DISASTER
            END-IF
       *
-           DISPLAY "RECEDEN-DISASTER=" SYS-200501-RECEDEN-DISASTER
+           DISPLAY "RECEDEN-DISASTER=" SYS-25-RECEDEN-DISASTER
       *    
       *
       *    請求管理読み込み
@@ -1280,7 +1284,7 @@ grpsys     PERFORM 900-DBFETCH-SEC
                END-IF
       *
       *        未確定分をレセ電データに記録するか
-               IF    (  SYS-200501-RECEDEN-DISASTER
+               IF    (  SYS-25-RECEDEN-DISASTER
                                            =   "0"              )
                AND   ( RECE10-ETC-YKZFTN (1)
                                            =   6   OR  7  OR  8 )
