@@ -257,8 +257,6 @@
       *    ファイルレイアウト
       *****************************************************************
       *
-           COPY    "CPSK2005.INC".
-           COPY    "CPSK200501.INC".
            COPY    "CPSK9101.INC".
       *
       *    医療機関情報（基本）
@@ -505,29 +503,6 @@
       *        医療機関編集情報
                PERFORM 900-1900-READ-SEC
            END-IF
-      *
-      *    レセプト印刷情報
-           MOVE    SPACE               TO  SYS-200501-REC
-           INITIALIZE                      SYS-200501-REC
-           MOVE    "2005"              TO  SYS-200501-KANRICD
-           MOVE    "01"                TO  SYS-200501-KBNCD
-           MOVE    LNK-PRTKANRI-SRYYM  TO  SYS-200501-STYUKYMD (1:6)
-           MOVE    "01"                TO  SYS-200501-STYUKYMD (7:2)
-           MOVE    SYS-200501-STYUKYMD TO  SYS-200501-EDYUKYMD
-           MOVE    WRK-PARA-HOSPNUM    TO  SYS-200501-HOSPNUM
-           MOVE    SYS-200501-REC      TO  MCPDATA-REC
-           PERFORM 910-SYSKANRI-INV-SEC
-           IF      FLG-SYSKANRI        =   ZERO
-               MOVE    MCPDATA-REC         TO  SYS-200501-REC
-           ELSE
-               INITIALIZE                      SYS-200501-REC
-           END-IF
-           IF     SYS-200501-RECEDEN-DISASTER
-                                       =   SPACE
-               MOVE    "1"             TO  SYS-200501-RECEDEN-DISASTER
-           END-IF
-      *
-      *    DISPLAY "RECEDEN-DISASTER=" SYS-200501-RECEDEN-DISASTER
       *
       *    医療情報連携基盤情報
            MOVE    SPACE               TO  SYS-9101-REC
