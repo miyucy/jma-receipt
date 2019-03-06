@@ -3495,20 +3495,6 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
       *            画面制御
                    MOVE    "JOIN"              TO  WRK-PUTTYPE
                    PERFORM 41002-KOUSIN-SYORI-SEC
-      *H10.4
-      *        不安不眠薬投与確認
-               WHEN    "2008"
-                   MOVE    SPACE               TO  SPA-KIDCD
-                   IF      SPA-KID1-FLG        =   "OK"
-                      MOVE    1                TO  SPA-FUANCHK-OK
-                   ELSE
-                      MOVE    ZERO             TO  SPA-FUANCHK-OK
-                   END-IF
-                   MOVE    SPACE               TO  SPA-KIDCD
-                   MOVE    SPACE               TO  SPA-KID1-FLG
-      *            画面制御
-                   MOVE    "JOIN"              TO  WRK-PUTTYPE
-                   PERFORM 41002-KOUSIN-SYORI-SEC
       *
       *        クリア確認チェック
                WHEN    "0125"
@@ -12958,8 +12944,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
       *    クライアント印刷前　処理
       *****************************************************************
        4901-CLIENT-PRT-SEC         SECTION.
-      *TEST
-           DISPLAY "K02 ORCSPRTCTRL CALL"
       *
       *    INITIALIZE                  KDMY01
       *    MOVE    SPACE               TO  KDMY01-PANDAPRINT1
@@ -14935,14 +14919,6 @@ grpsys         CALL    "ORCDBMAIN"         USING   MCPAREA
                                        DELIMITED   BY  SIZE
                                        INTO    WRK-KIDMSG
                    END-STRING
-      *H30.4　改正
-               WHEN    "2008"
-                   STRING  "ＸＸＸＸＸＸＸＸとなります。"
-                           "逓減しますか？"
-                                       DELIMITED   BY  SIZE
-                                       INTO    WRK-KIDMSG
-                   END-STRING
-      ***
       *ver.4.7
       *
                WHEN    "0140"
