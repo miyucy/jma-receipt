@@ -2417,11 +2417,26 @@
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
-      *TEST
-      *H30.5
+      *
+      *H31.3
                WHEN    "0248"
                    STRING   "外用薬の総量が桁数オーバーします。"
                             "数量と回数を確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "0249"
+                   STRING   "点数が桁数オーバーします。"
+                            "数量と回数を確認して下さい。"
+                                       DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *
+               WHEN    "K229"
+                   STRING   "警告！"
+                            "向精神薬長期処方減算対象の"
+                            "投薬がありません。"
                                        DELIMITED  BY  SIZE
                                        INTO    SPA-ERRMSG
                    END-STRING
@@ -3813,6 +3828,21 @@
                            "のみの算定です"
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
+                   END-STRING
+      *H31.4
+               WHEN    "K277"
+                   STRING  "警告！"
+                           "向精神薬長期処方減算対象です。"
+                           "処方料を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+               WHEN    "K278"
+                   STRING  "警告！"
+                           "向精神薬長期処方減算対象です。"
+                           "処方箋料を確認して下さい。"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
                    END-STRING
       *H29.8
                WHEN    "1310"

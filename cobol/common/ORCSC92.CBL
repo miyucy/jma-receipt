@@ -79,6 +79,8 @@
       *  05.00.00    NACL-多々納  17/01/XX  点数マスタユーザ対応
       *  04.08.00    NACL-多々納  18/03/XX  平成３０年４月改正対応
       *  04.08.00    NACL-多々納  18/09/XX  選択式コメント対応
+      *  05.00.00    NACL-多々納  19/03/XX  平成３１年４月改正対応
+      *                                     薬剤点数識別＝５対応
       *****************************************************************
       *
       *
@@ -296,6 +298,12 @@
            03  WRK-CHKTEN               PIC 9(09)V9(4).
       *
            03  WRK-PSY-MEI              PIC X(02).
+      *
+      *H31.4
+      *    向精神薬長期投与
+           03  WRK-CHK-YAKKAKCD        PIC X(07).
+           03  WRK-CHK-SRYYM           PIC X(06).
+      *
       *H24.4
       *    コメントの入力値用
        01  WRK-INPUT-SET-AREA.
@@ -399,6 +407,10 @@
       *
       *    酸素コードテーブル
            COPY     "CMSANSOTBL.INC".
+      *
+      *H31.4
+      *    向精神薬長期投与対象薬剤パラメタ
+           COPY    "CMPSYCHOTROPIC2.INC".
       *
       *****************************************************************
       *    ファイルレイアウト
@@ -3896,6 +3908,15 @@
                COMPUTE SPA-COM-TEN     (IDX-T) =   TNS-TEN   /  10
                COMPUTE SPA-COM-KISOTEN (IDX-T) =   TNS-TEN   /  10
            END-IF
+      *
+      *H31.3
+      *    薬剤　乗算金額（１０で乗ずる）
+           IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
+                  (TNS-TENSIKIBETU     =   5    ) AND
+                  (TNS-TEN             >   ZERO )
+               COMPUTE SPA-COM-TEN     (IDX-T) =   TNS-TEN   *  10
+               COMPUTE SPA-COM-KISOTEN (IDX-T) =   TNS-TEN   *  10
+           END-IF
       *!!
       *    コメント金額クリア
            IF     (TNS-SRYCD(1:1)      =   "8"  )
@@ -3920,6 +3941,15 @@
            IF     (TNS-SRYCD(1:1)      =   "6" )
              AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
                PERFORM 3009-PSYCHOTROPIC-HEN-SEC
+           END-IF
+      *
+      *H31.4
+      *    向精神薬長期投与対象(H31.4から）
+           MOVE    SPACE           TO  SPA-COM-PSYCHO2(IDX-T)
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+             AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
+             AND  (SPA-SRYYMD          >=  "20190401")
+               PERFORM 30092-PSYCHOTROPIC2-HEN-SEC
            END-IF
       *
       *
@@ -5592,6 +5622,33 @@
            .
        3009-PSYCHOTROPIC-HEN-EXT.
            EXIT.
+      *H31.4
+      *****************************************************************
+      *  向精神薬長期投与対象編集処理
+      *****************************************************************
+       30092-PSYCHOTROPIC2-HEN-SEC     SECTION.
+      *
+           MOVE    TNS-YAKKAKJNCD(1:7)
+                                       TO  WRK-CHK-YAKKAKCD
+           MOVE    SPA-SRYYMD(1:6)     TO  WRK-CHK-SRYYM
+      *
+           SET     TBL-PSY2            TO  1
+           SEARCH      TBL-PSYCHO2-OCC     VARYING   TBL-PSY2
+               AT  END
+                   CONTINUE
+               WHEN   (WRK-CHK-YAKKAKCD    =   TBL-PSYCHO2-CODE
+                                                        (TBL-PSY2))
+                  AND (WRK-CHK-SRYYM       >=  TBL-PSYCHO2-STYMD
+                                                        (TBL-PSY2))
+                  AND (WRK-CHK-SRYYM       <=  TBL-PSYCHO2-EDYMD
+                                                        (TBL-PSY2))
+                   MOVE    "1"             TO  SPA-COM-PSYCHO2 (IDX-T)
+           END-SEARCH
+           .
+       30092-PSYCHOTROPIC2-HEN-EXT.
+           EXIT.
+      *H31.4
+      *
       *
       *H30.9
       *****************************************************************

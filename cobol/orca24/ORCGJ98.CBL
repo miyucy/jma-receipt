@@ -54,6 +54,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  13/03/15  Ï«ºÒ¥ì¥»ÅÅÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/05/XX  °ìÈÌÌ¾¸¡º÷¡¦¸þÀº¿ÀÌôµ­ºÜÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  18/09/XX  ¥ì¥»¥×¥Èµ­ºÜ¥³¥á¥ó¥ÈÂÐ±þ
+      *  05.00.00    NACL-Â¿¡¹Ç¼  19/03/XX  ÌôºÞ¶â³Û¼ïÊÌ¡á£µ¡¡ÂÐ±þ
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -169,13 +170,18 @@
                05  WRK-TENSUS      PIC ZZZZZZ9.99.
       *H28.4
            03  WRK-KISOTEN-CHK.
-               05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
+      *H31.3   05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
+               05  WRK-KISOTEN-6C   PIC 9(09)V9(3).
            03  WRK-KISOTEN-CHK-R    REDEFINES   WRK-KISOTEN-CHK.
-               05  WRK-KISOTEN-R1   PIC 9(07).
+               05  WRK-KISOTEN-R1   PIC 9(09).
                05  WRK-KISOTEN-R2   PIC 9(02).
                05  WRK-KISOTEN-R3   PIC 9(01).
            03  WRK-TENSUS-X6.
                05  WRK-TENSUS-S4   PIC ZZZZZ9.999.
+      *H31.3
+           03  WRK-TENSUS-X9.
+               05  WRK-TENSUS-S9   PIC ZZZZZZZZZ9.
+      *
       *
            03  WRK-MOJI1           PIC X(22).
            03  WRK-MOJI2           PIC X(22).
@@ -2298,6 +2304,16 @@
                COMPUTE SPA-J98-GMN-KISOTEN (IDX)
                                            =   TNS-TEN   /  10
            END-IF
+      *
+      *H31.3
+      *    ÌôºÞ¡¡¾è»»¶â³Û¡Ê£±£°¤Ç¾è¤º¤ë¡Ë
+           IF     (TNS-SRYCD(1:1)      =   "6"  )
+             AND  (TNS-TENSIKIBETU     =   5    )
+             AND  (TNS-TEN             >   ZERO )
+               COMPUTE SPA-J98-GMN-KISOTEN (IDX)
+                                           =   TNS-TEN   *  10
+           END-IF
+      *
       *     ÌôºÞ¡¦´ïºà¤Î»þÃ±°Ì
            IF      TNS-SRYCD (1:1)     =   "6"  OR  "7"
                MOVE    TNS-TANINAME        TO  SPA-J98-GMN-TANI(IDX)
@@ -2881,6 +2897,14 @@
                                                TO  WRK-TENSUS-S4
                        MOVE    WRK-TENSUS-S4   TO  J98-KISOTEN (IDX)
                    END-IF
+      *H31.3
+      *            À°¿ô£¹·åÉ½¼¨
+                   IF      SPA-J98-GMN-KISOTEN(IDX)
+                                               >   9999999
+                       MOVE    SPA-J98-GMN-KISOTEN(IDX)
+                                               TO  WRK-TENSUS-S9
+                       MOVE    WRK-TENSUS-S9   TO  J98-KISOTEN (IDX)
+                   END-IF
                END-IF
       *H24.4
       *        °ìÈÌÌ¾¾Î¤Ï¡¢Ã±²Áµ­ºÜ¤Ê¤·
@@ -2904,6 +2928,17 @@
                                MOVE    SPA-J98-GMN-KISOTEN(IDX)
                                                    TO  WRK-TENSUS-S4
                                MOVE    WRK-TENSUS-S4(3:8)
+                                                   TO  WRK-TENSUS-G
+                               MOVE    WRK-TENSUS-X2
+                                                   TO  J98-KISOTEN(IDX)
+                           END-IF
+      *H31.3
+      *                    À°¿ô£¸·åÉ½¼¨
+                           IF      SPA-J98-GMN-KISOTEN(IDX)
+                                                   >   9999999
+                               MOVE    SPA-J98-GMN-KISOTEN(IDX)
+                                               TO  WRK-TENSUS-S9
+                               MOVE    WRK-TENSUS-S9(3:8)
                                                    TO  WRK-TENSUS-G
                                MOVE    WRK-TENSUS-X2
                                                    TO  J98-KISOTEN(IDX)
