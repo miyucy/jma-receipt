@@ -1241,9 +1241,9 @@
                           (SPA-COM-DATAKBN (IDX-1)       =   "3" )
                        MOVE    1               TO  FLG-FIRUMU
                    END-IF
-                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
-                          (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
-                          (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )
+                     AND  (SPA-COM-DATAKBN (IDX-1)       =   "1" )
+                     AND  (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
                      AND  (SPA-COM-SURYO (IDX-1)         >   1   )
                        IF      FLG-FIRUMU                =   ZERO
                            MOVE    "1"             TO  SPA-COM-SURFLG
@@ -1259,12 +1259,21 @@
                            END-IF
                        END-IF
                    END-IF
+      *H31.3
+      *            ²Ã»»¤Ï¥Õ¥£¥ë¥à¤Ë´Ø·¸¤Ê¤¯¼êÆþÎÏ¡ÊÇ¾ÀÔ¿ñÂ¤±ÆºÞ»ÈÍÑ»£±Æ²Ã»»¡Ë
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )
+                     AND  (SPA-COM-DATAKBN (IDX-1)       =   "2" )
+                     AND  (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
+                     AND  (SPA-COM-SURYO (IDX-1)         >   1   )
+                       MOVE    "1"             TO  SPA-COM-SURFLG
+                                                               (IDX-1)
+                   END-IF
                END-IF
       *        ²èÁü¿ÇÃÇ°Ê³°¤Î¿ôÎÌÆþÎÏ
                IF      SPA-COM-SRYKBN (IDX-1)  NOT =   "70"
-                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" )  AND
-                          (SPA-COM-DATAKBN (IDX-1)       =   "1" )  AND
-                          (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
+                   IF     (SPA-COM-INPUTCD(IDX-1)(1:1)   =   "1" ) 
+      *H31.3         AND  (SPA-COM-DATAKBN (IDX-1)       =   "1" )
+                     AND  (SPA-COM-KZMCOMPSIKIBETU(IDX-1)  NOT =  ZERO)
                      AND  (SPA-COM-SURYO (IDX-1)         >   1   )
                        MOVE    "1"             TO  SPA-COM-SURFLG
                                                                (IDX-1)
