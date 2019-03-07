@@ -39,6 +39,7 @@
       *  04.03.01    NACL-森脇    08/06/13  ＣＳＶファイル出力対応
       *  04.08.01    NACL-森脇    14/07/31  一時ファイルディレクトリ設定
       *  04.08.02    NACL-森脇    16/03/17  金額種別４に対応
+      *  05.00.00    NACL-森脇    19/03/07  金額種別５に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -480,14 +481,19 @@
            ADD     1                   TO  CNT-LINE
       *
       *----(04.08.02)--UPD-START---
-           IF      TNS-TENSIKIBETU     =   4
-               COMPUTE WRK-TENSU   =   TNS-TEN     /   10
-               MOVE    WRK-TENSU           TO  WRK-TEN
-               MOVE    WRK-TEN(2:14)       TO  HCML01-TEN(CNT-LINE)
-           ELSE
-               MOVE    TNS-TEN             TO  WRK-TEN
-               MOVE    WRK-TEN(1:14)       TO  HCML01-TEN(CNT-LINE)
-           END-IF
+           EVALUATE    TNS-TENSIKIBETU
+               WHEN    4
+                   COMPUTE WRK-TENSU   =   TNS-TEN     /   10
+                   MOVE    WRK-TENSU           TO  WRK-TEN
+                   MOVE    WRK-TEN(2:14)       TO  HCML01-TEN(CNT-LINE)
+               WHEN    5
+                   COMPUTE WRK-TENSU   =   TNS-TEN     *   10
+                   MOVE    WRK-TENSU           TO  WRK-TEN
+                   MOVE    WRK-TEN(1:14)       TO  HCML01-TEN(CNT-LINE)
+               WHEN    OTHER
+                   MOVE    TNS-TEN             TO  WRK-TEN
+                   MOVE    WRK-TEN(1:14)       TO  HCML01-TEN(CNT-LINE)
+           END-EVALUATE
       *----(04.08.02)--UPD-END-----
            MOVE    TNS-CSYYOURYO       TO  WRK-CSYYOURYO
            MOVE    WRK-CSYYOURYO       TO  HCML01-CSYYOURYO(CNT-LINE)
