@@ -118,6 +118,7 @@
       *                                     通則加算対象外区分を０（所定
       *                                     点数の対象となる診療行為）に
       *                                     読み替え
+      *              NACL-小豆沢  19/03/07  医薬品マスターの金額種別対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -512,7 +513,7 @@
       *                点数識別区分
                        09  TBL-ZAIW-TENSIKIBETU     PIC  9(01).
       *                点数
-                       09  TBL-ZAIW-TEN             PIC  9(09)V9(02).
+                       09  TBL-ZAIW-TEN             PIC  9(09)V9(03).
       *                明細請求フラグ
                        09  TBL-ZAIW-MEISKYFLG       PIC  X(01).
       *                自動算定区分
@@ -2348,6 +2349,18 @@
                                    TBL-ZAIW-TENSIKIBETU(1 WRK-TBLMAX6)
                MOVE    RECE05-TEN        (IDX) TO
                                    TBL-ZAIW-TEN        (1 WRK-TBLMAX6)
+      *        点数識別が４（除算金額）のときは１０で除した値に置き換える
+               IF      RECE05-SRYCD (IDX)(1:1)  =   "6"   AND
+                       RECE05-TENSIKIBETU (IDX) =    4
+                   COMPUTE   TBL-ZAIW-TEN (1 WRK-TBLMAX6)
+                          =  RECE05-TEN (IDX)   /   10
+               END-IF
+      *        点数識別が５（乗算金額）のときは１０で乗じた値に置き換える
+               IF      RECE05-SRYCD (IDX)(1:1)  =   "6"   AND
+                       RECE05-TENSIKIBETU (IDX) =    5
+                   COMPUTE   TBL-ZAIW-TEN (1 WRK-TBLMAX6)
+                          =  RECE05-TEN (IDX)   *   10
+               END-IF
                IF      RECE05-SRYCD (IDX)  =  (WRK-CONS-TEIGEN  OR
                                                WRK-CONS-TEIGEN2 OR
                                                WRK-CONS-TEIGEN3 OR
