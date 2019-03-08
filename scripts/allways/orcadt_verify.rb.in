@@ -15,9 +15,13 @@ module OrcaDT
       begin
         smime = File.read(url)
       rescue Errno::ENOENT
-        OpenURI.open_uri(url,
-          :http_basic_authentication => [opts["user"], opts["password"]]
-        ) {|sio| smime = sio.read }
+        if opts["user"]
+          OpenURI.open_uri(url,
+            :http_basic_authentication => [opts["user"], opts["password"]]
+          ) {|sio| smime = sio.read }
+        else
+          OpenURI.open_uri(url) {|sio| smime = sio.read }
+        end
       end 
 
       flag = OpenSSL::PKCS7::BINARY

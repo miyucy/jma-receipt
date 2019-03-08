@@ -31,6 +31,13 @@ ACCESSKEY=$7
 KANRIFILE=ORCADBR-LI.DAT
 UPDKANRIFILE=info/${KANRIFILE}
 
+DOMAINC=$(echo ${DBLICENSEPATH} | sed -E 's/^.*(http|https|ftp):\/\/([^/]+).*/\2/g')
+if [ "${DOMAINC}" = "ftp.orca.med.or.jp" ]; then
+  DBLICENSEPATH=http://lmaster.orca.med.or.jp/pub/orca_data/license_master
+else
+  echo "URL:[ ${DBLICENSEPATH} ]"
+fi
+
 if [ "${MCP_MIDDLEWARE_NAME}" = "ginbee" ]; then
   MASTERDIR="${MCP_TEMPDIR}"
 fi
