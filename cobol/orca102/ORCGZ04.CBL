@@ -48,6 +48,7 @@
       *  04.06.00    NACL-多々納  12/08/16  期間変更警告追加
       *  04.08.00    NACL-多々納  16/03/XX  Ｈ２８年４月改正対応
       *  05.00.00    NACL-多々納  17/01/XX  ユーザー設定他GINBEE対応
+      *  05.00.00    NACL-多々納  19/03/XX  点数識別区分＝５対応
       *****************************************************************
       *
        ENVIRONMENT                               DIVISION.
@@ -648,9 +649,9 @@
            MOVE    "4"                 TO  SPA-GMN-OLDTENSKBL     (4)
            MOVE    "除算金額（金額を１０で除す。）" 
                                        TO  SPA-GMN-OLDTENSKBMEIL  (4)
-           MOVE    "5"                 TO  SPA-GMN-OLDTENSKBL  (5)
+           MOVE    "5"                 TO  SPA-GMN-OLDTENSKBL     (5)
            MOVE    "乗算金額（金額を１０で乗ずる。）" 
-                                       TO  SPA-GMN-OLDTENSKBMEIL(5)
+                                       TO  SPA-GMN-OLDTENSKBMEIL  (5)
            MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (6)
            MOVE    "減点"              TO  SPA-GMN-OLDTENSKBMEIL  (6)
       *
