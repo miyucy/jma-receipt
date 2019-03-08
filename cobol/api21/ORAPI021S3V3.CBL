@@ -3015,6 +3015,7 @@
                MOVE    SPA-SYUNOU-REC (SPA-SYUNOU-IDX)
                                            TO  SYUNOU-REC
                MOVE    SPA-SYUNOU-IDX      TO  IDX
+               MOVE    SYU-DENPNUM         TO  WRK-DENPNUM
            END-IF
       *
       *    保険組合せ番号
