@@ -167,7 +167,8 @@
            03  WRK-GMN-SELNO       PIC 9(03).
            03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
-               05  WRK-TENSUS      PIC ZZZZZZ9.99.
+      *H31.3   05  WRK-TENSUS      PIC ZZZZZZ9.99.
+               05  WRK-TENSUS      PIC ZZZZZZZ9.99.
       *H28.4
            03  WRK-KISOTEN-CHK.
       *H31.3   05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
@@ -177,10 +178,7 @@
                05  WRK-KISOTEN-R2   PIC 9(02).
                05  WRK-KISOTEN-R3   PIC 9(01).
            03  WRK-TENSUS-X6.
-               05  WRK-TENSUS-S4   PIC ZZZZZ9.999.
-      *H31.3
-           03  WRK-TENSUS-X9.
-               05  WRK-TENSUS-S9   PIC ZZZZZZZZZ9.
+               05  WRK-TENSUS-S4   PIC ZZZZZZ9.999.
       *
       *
            03  WRK-MOJI1           PIC X(22).
@@ -239,7 +237,7 @@
            03  WRK-TENSUS-X2.
                05  WRK-TENSUS-GX1          PIC X(01).
       *H28.4   05  WRK-TENSUS-G            PIC ZZZZ9.99.
-               05  WRK-TENSUS-G            PIC X(08).
+               05  WRK-TENSUS-G            PIC X(09).
                05  WRK-TENSUS-GX2          PIC X(01).
            03  WRK-NAME                    PIC X(100).
            03  WRK-MSG-2                   PIC X(10).
@@ -2897,14 +2895,6 @@
                                                TO  WRK-TENSUS-S4
                        MOVE    WRK-TENSUS-S4   TO  J98-KISOTEN (IDX)
                    END-IF
-      *H31.3
-      *            À°¿ô£¹·åÉ½¼¨
-                   IF      SPA-J98-GMN-KISOTEN(IDX)
-                                               >   9999999
-                       MOVE    SPA-J98-GMN-KISOTEN(IDX)
-                                               TO  WRK-TENSUS-S9
-                       MOVE    WRK-TENSUS-S9   TO  J98-KISOTEN (IDX)
-                   END-IF
                END-IF
       *H24.4
       *        °ìÈÌÌ¾¾Î¤Ï¡¢Ã±²Áµ­ºÜ¤Ê¤·
@@ -2916,7 +2906,8 @@
                        ELSE
                            MOVE    SPA-J98-GMN-KISOTEN(IDX)
                                                    TO  WRK-TENSUS
-                           MOVE    WRK-TENSUS(3:8) TO  WRK-TENSUS-G
+      *H31.4               MOVE    WRK-TENSUS(3:8) TO  WRK-TENSUS-G
+                           MOVE    WRK-TENSUS(3:9) TO  WRK-TENSUS-G
                            MOVE    "("             TO  WRK-TENSUS-GX1
                            MOVE    ")"             TO  WRK-TENSUS-GX2
                            MOVE    WRK-TENSUS-X2   TO  J98-KISOTEN(IDX)
@@ -2927,18 +2918,8 @@
                            IF      WRK-KISOTEN-R3  NOT =   ZERO
                                MOVE    SPA-J98-GMN-KISOTEN(IDX)
                                                    TO  WRK-TENSUS-S4
-                               MOVE    WRK-TENSUS-S4(3:8)
-                                                   TO  WRK-TENSUS-G
-                               MOVE    WRK-TENSUS-X2
-                                                   TO  J98-KISOTEN(IDX)
-                           END-IF
-      *H31.3
-      *                    À°¿ô£¸·åÉ½¼¨
-                           IF      SPA-J98-GMN-KISOTEN(IDX)
-                                                   >   9999999
-                               MOVE    SPA-J98-GMN-KISOTEN(IDX)
-                                               TO  WRK-TENSUS-S9
-                               MOVE    WRK-TENSUS-S9(3:8)
+      *H31.4                   MOVE    WRK-TENSUS-S4(3:8)
+                               MOVE    WRK-TENSUS-S4(3:9)
                                                    TO  WRK-TENSUS-G
                                MOVE    WRK-TENSUS-X2
                                                    TO  J98-KISOTEN(IDX)

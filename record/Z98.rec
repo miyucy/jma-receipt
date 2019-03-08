@@ -27,7 +27,7 @@ Z98 {
             column1 varchar(3);
             column2 varchar(70);
             column3 varchar(6);
-            column4 varchar(10);
+            column4 varchar(11);
             column5 varchar(10);
             column6 varchar(2);
           }[200];
