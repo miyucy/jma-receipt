@@ -2016,6 +2016,24 @@
            CALL    "ORCSC90TEN2"       USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *H31.3
+      *    桁数チェック
+      *    他の診療と合わせる為、2018/4から
+           IF      SPA-SRYYMD          >=  "20180401"
+      *
+           IF      LNK-SC90-ERRCD  NOT =   SPACE
+               MOVE    LNK-SC90-ERRCD      TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
+      *        最大７桁
+           IF     (WRK-COM-TENSU(IDX-MAX)  *   LNK-ORCSC-KAISU)
+                                           >   9999999
+               MOVE    "0249"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
+      *
+           END-IF
+      *
       *H25.2
       *    労災の点数編集
            IF     (IDX-SYU         NOT =   ZERO  )  AND

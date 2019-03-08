@@ -150,7 +150,7 @@
            03  WRK-GMN-SELNO       PIC 9(03).
            03  WRK-NOZ             PIC ZZZ.
            03  WRK-TENSUS-X.
-               05  WRK-TENSUS      PIC ZZZZZZ9.99.
+               05  WRK-TENSUS      PIC ZZZZZZZ9.99.
       *
            03  WRK-MOJI1           PIC X(22).
            03  WRK-MOJI2           PIC X(22).

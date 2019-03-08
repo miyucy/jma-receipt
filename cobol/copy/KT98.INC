@@ -29,7 +29,7 @@
                     06  KT98-NO     PIC X(3).
                     06  KT98-NAME   PIC X(70).
                     06  KT98-TANI   PIC X(6).
-                    06  KT98-KISOTEN PIC X(10).
+                    06  KT98-KISOTEN PIC X(11).
                     06  KT98-SETCD    PIC X(10).
                     06  KT98-SRYKBN  PIC X(2).
                   05  KT98-SELECT

@@ -23,7 +23,7 @@
                     06  Z98-NO      PIC X(3).
                     06  Z98-NAME    PIC X(70).
                     06  Z98-TANI    PIC X(6).
-                    06  Z98-KISOTEN  PIC X(10).
+                    06  Z98-KISOTEN  PIC X(11).
                     06  Z98-SETCD    PIC X(10).
                     06  Z98-SRYKBN   PIC X(02).
                   05  Z98-SELECT

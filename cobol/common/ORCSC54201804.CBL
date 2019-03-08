@@ -1133,6 +1133,19 @@
            CALL    "ORCSC90TEN2"       USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *H31.2
+      *    桁数チェック
+           IF      LNK-SC90-ERRCD  NOT =   SPACE
+               MOVE    LNK-SC90-ERRCD      TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
+      *    最大７桁
+           IF     (WRK-COM-TENSU  (IDX-MAX)    *   LNK-ORCSC-KAISU)
+                                           >   9999999
+               MOVE    "0249"              TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
+      *
       *    計
            COMPUTE WRK-COM-KEI (IDX-MAX)   =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU

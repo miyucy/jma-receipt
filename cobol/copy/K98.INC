@@ -32,7 +32,7 @@
                     06  K98-NO      PIC X(3).
                     06  K98-NAME    PIC X(70).
                     06  K98-TANI    PIC X(6).
-                    06  K98-KISOTEN  PIC X(10).
+                    06  K98-KISOTEN  PIC X(11).
                     06  K98-SETCD    PIC X(10).
                     06  K98-SRYKBN   PIC X(02).
                   05  K98-SELECT  PIC X       OCCURS  200 TIMES.

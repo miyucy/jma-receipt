@@ -35,6 +35,7 @@
       *  04.07.00    NACL-多々納  12/03/XX  平成２４年４月改正対応
       *  04.07.00    NACL-多々納  12/08/28  薬剤料減点対応
       *  04.08.00    NACL-多々納  18/06/XX  桁数オーバー対応
+      *  05.00.00    NACL-多々納  19/03/XX  点数など桁数オーバー対応
       *****************************************************************
       *
       *
@@ -79,40 +80,40 @@
                05  WRK-SURYO-S1    PIC 9(05).
                05  WRK-SURYO-S2    PIC 9(05).
       *
-           03  WRK-SYOKEIS         PIC 9(09)V9(8).
-           03  WRK-SYOKEIS2        PIC 9(09)V9(8).
-           03  WRK-SYOKEIS3        PIC 9(09)V9(8).
-           03  WRK-SYOKEI          PIC 9(09).
-           03  WRK-TENSUKEIS       PIC 9(09)V9(6).
-           03  WRK-TENSUKEI-9      PIC 9(09).
+           03  WRK-SYOKEIS         PIC 9(10)V9(8).
+           03  WRK-SYOKEIS2        PIC 9(10)V9(8).
+           03  WRK-SYOKEIS3        PIC 9(10)V9(8).
+           03  WRK-SYOKEI          PIC 9(10).
+           03  WRK-TENSUKEIS       PIC 9(10)V9(6).
+           03  WRK-TENSUKEI-9      PIC 9(10).
       *    薬剤
-           03  WRK-ZAIKEI          PIC 9(09)V9(8).
+           03  WRK-ZAIKEI          PIC 9(10)V9(8).
       *    器材
-           03  WRK-KIZKEI          PIC 9(09)V9(5).
-           03  WRK-KIZKEI-3        PIC 9(09)V9(5).
+           03  WRK-KIZKEI          PIC 9(10)V9(5).
+           03  WRK-KIZKEI-3        PIC 9(10)V9(5).
       *    コバルト
-           03  WRK-KIZKEI-4        PIC 9(09)V9(5).
+           03  WRK-KIZKEI-4        PIC 9(10)V9(5).
       *    フィルム
-           03  WRK-FIRKEI          PIC 9(09)V9(5).
-           03  WRK-NYU-FIRKEI      PIC 9(09)V9(5).
-           03  WRK-NYU-FIRTEN      PIC 9(09)V9(5).
-           03  WRK-FIRTEN-G        PIC 9(09).
-           03  WRK-FIRTEN          PIC 9(09).
+           03  WRK-FIRKEI          PIC 9(10)V9(5).
+           03  WRK-NYU-FIRKEI      PIC 9(10)V9(5).
+           03  WRK-NYU-FIRTEN      PIC 9(10)V9(5).
+           03  WRK-FIRTEN-G        PIC 9(10).
+           03  WRK-FIRTEN          PIC 9(10).
       *    窒素
-           03  WRK-CHISOKEI        PIC 9(09)V9(5).
-           03  WRK-CHITEN          PIC 9(08).
+           03  WRK-CHISOKEI        PIC 9(10)V9(5).
+           03  WRK-CHITEN          PIC 9(10).
       *    酸素
-           03  WRK-SANSOKIN        PIC 9(09)V9(5).
-           03  WRK-SANSOKIN-SUM    PIC 9(09)V9(5).
-           03  WRK-SANSOGOK        PIC 9(09).
-           03  WRK-SANTEN          PIC 9(08).
+           03  WRK-SANSOKIN        PIC 9(10)V9(5).
+           03  WRK-SANSOKIN-SUM    PIC 9(10)V9(5).
+           03  WRK-SANSOGOK        PIC 9(10).
+           03  WRK-SANTEN          PIC 9(10).
       *
       *    薬剤点数
-           03  WRK-SC90-YKZTEN         PIC 9(08).
+           03  WRK-SC90-YKZTEN         PIC 9(10).
       *    器材点数
-           03  WRK-SC90-KIZTEN         PIC 9(08).
+           03  WRK-SC90-KIZTEN         PIC 9(10).
       *    フィルム点数
-           03  WRK-SC90-FIRTEN         PIC 9(08).
+           03  WRK-SC90-FIRTEN         PIC 9(10).
       *
       *    注射液計算用
            03  WRK-SURYO-CHU9      PIC 9(05).
@@ -123,6 +124,9 @@
            03  WRK-MAISU           PIC 9(05).
       *ver.4.7
            03  WRK-GENTEN          PIC 9(08).
+      *H31.3
+           03  WRK-GOK-TENSU       PIC 9(14).
+           03  WRK-GOK-KIZAI       PIC 9(14).
       *
       *診療行為処理最大行
        01  MAX-LINE                PIC 9(03)   VALUE   400.
@@ -262,6 +266,16 @@
                MOVE    WRK-GENTEN          TO  WRK-SC90-YKZTEN
            END-IF
       *
+      *H31.2
+      *    合計が９桁オーバーはエラー
+           IF    ((WRK-SC90-YKZTEN *   LNK-SC90-YKZTEN)
+                                       >   999999999   )
+             OR  ((WRK-SC90-KIZTEN *   LNK-SC90-KIZTEN )
+                                       >   999999999   )
+             OR  ((WRK-SC90-FIRTEN  *   LNK-SC90-FIRTEN )
+                                       >   999999999   )
+               MOVE    "0249"          TO  LNK-SC90-ERRCD
+           END-IF
       *
       *    手技点数
            MOVE    LNK-SC90-TENSU      TO  LNK-COM-SYUTEN-M (IDX-SYU)
@@ -287,6 +301,13 @@
            COMPUTE WRK-SYOKEIS2        =  (LNK-COM-KISOTEN (IDX)
                                        *   LNK-COM-SURYO   (IDX)  )
            ADD     WRK-SYOKEIS2        TO  WRK-ZAIKEI
+      *
+      *H31.2
+      *    金額が１０桁オーバーはエラー
+           IF     (LNK-COM-KISOTEN (IDX)   *   LNK-COM-SURYO(IDX))
+                                           >   9999999999
+               MOVE    "0249"          TO  LNK-SC90-ERRCD
+           END-IF
            .
        1001-YAKUZAI-SET-EXT.
            EXIT.
@@ -310,6 +331,12 @@
                ELSE
                    MOVE    LNK-COM-SURYO (IDX)     TO  WRK-SURYO-CHU
                END-IF
+      *H31.2
+      *        金額が１０桁オーバーはエラー
+               IF     (LNK-COM-KISOTEN (IDX)   *   WRK-SURYO-CHU)
+                                           >   9999999999
+                   MOVE    "0249"          TO  LNK-SC90-ERRCD
+               END-IF
       *        点数
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN (IDX)
                                            *   WRK-SURYO-CHU
@@ -326,12 +353,17 @@
       *ない
                MOVE    LNK-COM-SURYO  (IDX)    TO  WRK-SURYO
       *
+      *H31.2
+      *        金額が１０桁オーバーはエラー
+               IF     (LNK-COM-KISOTEN (IDX)   *   WRK-SURYO)
+                                           >   9999999999
+                   MOVE    "0249"          TO  LNK-SC90-ERRCD
+               END-IF
+      *
       *        点数
                COMPUTE WRK-SYOKEIS2        =   LNK-COM-KISOTEN(IDX)
                                            *   WRK-SURYO
-      *???                                 *   LNK-COM-SURYO  (IDX)
            END-IF
-      *
            ADD     WRK-SYOKEIS2        TO  WRK-ZAIKEI
            .
        1002-CHUUSYA-SET-EXT.
@@ -360,6 +392,13 @@
       *    器材（フィルム）画像診断以外編集処理
       *****************************************************************
        1003-FIRUMU-SET-SEC           SECTION.
+      *
+      *H31.2
+      *    金額が１０桁オーバーはエラー
+           IF     (LNK-COM-KISOTEN (IDX)   *   LNK-COM-SURYO(IDX))
+                                           >   9999999999
+               MOVE    "0249"          TO  LNK-SC90-ERRCD
+           END-IF
       *
       *    点数
       *    (購入価格＊数量)
@@ -405,6 +444,13 @@
       *    器材編集処理
       *****************************************************************
        1004-KIZAI-SET-SEC            SECTION.
+      *
+      *H31.2
+      *    金額が１０桁オーバーはエラー
+           IF     (LNK-COM-KISOTEN (IDX)   *   LNK-COM-SURYO(IDX))
+                                           >   9999999999
+               MOVE    "0249"          TO  LNK-SC90-ERRCD
+           END-IF
       *
            EVALUATE    LNK-COM-TOKUKIZAISBT1 (IDX)
                WHEN    ZERO
@@ -620,10 +666,16 @@
       *    薬剤
            MOVE    LNK-SC90-YKZTEN     TO  LNK-COM-YKZTEN  (IDX-MAX)
       *    器材
-           COMPUTE LNK-COM-KIZAITEN(IDX-MAX)
+      *H31.3
+      *    COMPUTE LNK-COM-KIZAITEN(IDX-MAX)
+      *                                =   LNK-SC90-KIZTEN
+      *                                +   LNK-SC90-SANTEN
+      **                               +   LNK-SC90-CHITEN
+           COMPUTE WRK-GOK-KIZAI
                                        =   LNK-SC90-KIZTEN
                                        +   LNK-SC90-SANTEN
                                        +   LNK-SC90-CHITEN
+           MOVE    WRK-GOK-KIZAI       TO  LNK-COM-KIZAITEN(IDX-MAX)
       *    フィルム
            IF      LNK-COM-SRYKBN (01)    =   "70"
       *        フィルム料を手技料２へ
@@ -635,13 +687,29 @@
            ELSE
                ADD     LNK-SC90-FIRTEN     TO  LNK-COM-KIZAITEN(IDX-MAX)
            END-IF
+      *
       *    点数計　計算
-           COMPUTE LNK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
+      *    COMPUTE LNK-COM-TENSU (IDX-MAX) =   LNK-SC90-TENSUKEI
+      *                                    +   LNK-SC90-YKZTEN
+      *                                    +   LNK-SC90-KIZTEN
+      *                                    +   LNK-SC90-FIRTEN
+      *                                    +   LNK-SC90-SANTEN
+      *                                    +   LNK-SC90-CHITEN
+      *H31.3
+      *    点数計　計算
+           COMPUTE WRK-GOK-TENSU           =   LNK-SC90-TENSUKEI
                                            +   LNK-SC90-YKZTEN
                                            +   LNK-SC90-KIZTEN
                                            +   LNK-SC90-FIRTEN
                                            +   LNK-SC90-SANTEN
                                            +   LNK-SC90-CHITEN
+      *    ８桁まで編集する
+           MOVE    WRK-GOK-TENSU           TO  LNK-COM-TENSU (IDX-MAX)
+      *    ７桁まで
+           IF      WRK-GOK-TENSU       >   9999999
+               MOVE    "0249"              TO  LNK-SC90-ERRCD
+           END-IF
+      *
       *    減点分
            IF      FLG-GENTEN          =   1
                MOVE    1               TO  LNK-COM-PLUSKBN (IDX-MAX)

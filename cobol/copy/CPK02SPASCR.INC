@@ -511,6 +511,9 @@
                        09  SPA-COM-TNSP-KISAIKBN       PIC X(01).
       *                向精神薬区分
                        09  SPA-COM-PSY-CLASS           PIC X(01).
+      *H31.4
+      *                向精神薬長期処方対象
+                       09  SPA-COM-PSYCHO2             PIC X(01).
       *H28.9           持参薬剤区分
                        09  SPA-COM-JISANYAKU           PIC X(01).
       *H30.9           レセプト記載事項区分
