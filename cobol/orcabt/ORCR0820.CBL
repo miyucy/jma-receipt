@@ -64,6 +64,8 @@
       *  04.08.02    NACL-門脇    14/07/23  ３２文字以上の文字列修正
       *                                     （コンパイル時のワーニング修正）
       *  04.08.03    NACL-藤原    17/03/31  同日再入院の入退院履歴のチェック
+      *
+      *  05.00.01    NACL-門脇    19/02/01  療養期間編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -182,6 +184,9 @@
            03  WK-PTNYUINRRK-TENSTUYMD    PIC  X(08).
            03  WK-PTNYUINRRK-TENSTUYMD2   PIC  X(08).
            03  WK-PTNYUINRRK-TENNYUYMD    PIC  X(08).
+      *
+           03  WRK-TAIHI-RYOSTYMD      PIC X(08).
+           03  WRK-TAIHI-RYOEDYMD      PIC X(08).
       *
       *    病棟区分テーブル                                             
        01  WRK-BYOTOKBN-TABLE.                                          
@@ -393,6 +398,10 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            END-IF 
       *
       *    入退院履歴情報編集・病棟番号・種別セット処理
+           MOVE   RECE82-RYOSTYMD      TO  WRK-TAIHI-RYOSTYMD
+           MOVE   RECE82-RYOEDYMD      TO  WRK-TAIHI-RYOEDYMD
+           MOVE   SPACE                TO  RECE82-RYOSTYMD
+           MOVE   SPACE                TO  RECE82-RYOEDYMD
            PERFORM 2101-RECE88-HENSYU-SEC
       *
       *    労災レセプト回数取得
@@ -586,6 +595,20 @@ grpsys         PERFORM 900-CALL-ORCSJOB-SEC
            MOVE    "tbl_ptnyuinrrk"    TO  MCP-TABLE
            MOVE    "key23"             TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+      *
+      *    療養期間置き換え
+           IF     RECE82-RYOSTYMD   NOT =   SPACE
+             IF  (WRK-TAIHI-RYOSTYMD(1:6) = RECE82-RYOSTYMD(1:6))
+             AND (WRK-TAIHI-RYOSTYMD(7:2) > RECE82-RYOSTYMD(7:2))
+               MOVE   WRK-TAIHI-RYOSTYMD   TO   RECE82-RYOSTYMD
+             END-IF
+           END-IF
+           IF     RECE82-RYOEDYMD   NOT =   SPACE
+             IF  (WRK-TAIHI-RYOEDYMD(1:6) = RECE82-RYOEDYMD(1:6))
+             AND (WRK-TAIHI-RYOEDYMD(7:2) < RECE82-RYOEDYMD(7:2))
+               MOVE   WRK-TAIHI-RYOEDYMD   TO   RECE82-RYOEDYMD
+             END-IF
+           END-IF
       *
       *    病棟区分並替え
       *

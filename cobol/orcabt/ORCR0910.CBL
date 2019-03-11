@@ -152,6 +152,8 @@
       *  04.08.13    NACL-ÌçÏÆ    18/04/02  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *
       *  05.00.01    NACL-ÌçÏÆ    18/11/16  µÜ¾ë¸©ÃÏÊý¸øÈñÂÐ±þ
+      *  05.00.02    NACL-ÌçÏÆ    19/03/11  ¸øÌ³ºÒ³²¡ÊÏ«ºÒ½àµò¡Ë¤ÎÃÏ¸øºÒÆÃÊÌ
+      *                                     ²Ã»»ÂÐ±þ¡ÊµþÅÔÉÜ¡Ë½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1643,7 +1645,7 @@ grpsys     MOVE    WRK-PARA-HOSPNUM    TO  RECE86PARA-HOSPNUM
                                                      NOT = "830000020")
              OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)(1:3)  = "008"  )
              OR  (TBL-ZAIW-SRYCD (WRK-WIDX1 WRK-WIDX2)
-                                          = "101989010" OR "101989020")
+                           = "101989010" OR "101989020" OR "101989050")
                    CONTINUE
              ELSE
                    MOVE    1                 TO  FLG-NOPRT
