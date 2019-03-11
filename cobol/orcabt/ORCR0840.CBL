@@ -304,6 +304,9 @@
       *  04.08.24    NACL-ÌçÏÆ    18/07/23  Àº¿À²ÊÂà±¡Á°Ë¬Ìä»ØÆ³ÎÁ¤Î»»ÄêÆü
       *                                     ¼«Æ°µ­ºÜ½¤Àµ
       *  04.08.25    NACL-ÌçÏÆ    18/09/27  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
+      *
+      *  05.00.01    NACL-ÌçÏÆ    19/03/11  ¸øÌ³ºÒ³²¡ÊÏ«ºÒ½àµò¡Ë¤ÎÃÏ¸øºÒÆÃÊÌ
+      *                                     ²Ã»»ÂÐ±þ¡ÊµþÅÔÉÜ¡Ë½¤Àµ
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1053,6 +1056,8 @@
            03  CONS-ROUSAI45   PIC X(09)   VALUE   "101801160".
            03  CONS-ROUSAI46   PIC X(09)   VALUE   "101801170".
            03  CONS-ROUSAI47   PIC X(09)   VALUE   "101801180".
+      *
+           03  CONS-ROUSAI48   PIC X(09)   VALUE   "101989050".
       *
            03  CONS-ROUCOM1    PIC X(09)   VALUE   "840800001".
            03  CONS-ROUCOM2    PIC X(09)   VALUE   "840800002".
@@ -3618,6 +3623,11 @@ grpsys     PERFORM 900-DBSELECT-SEC
                       IF  TNS-NYUTENTTLKBN   =     130
                           MOVE   "13"        TO    RECE84-SRYKBN
                                                    RECE85-SRYKBN
+                      ELSE
+                       IF SRY-SRYCD(IDX2)    =     CONS-ROUSAI48
+                          MOVE   "11"        TO    RECE84-SRYKBN
+                                                   RECE85-SRYKBN
+                       END-IF
                       END-IF
                     END-IF
                   END-IF
@@ -8942,6 +8952,15 @@ grpsys        MOVE    SPA-HOSPNUM          TO    SYS-HOSPNUM
                          COMPUTE   RECE82-TENSU(37) =
                                    RECE82-TENSU(37) -
                                   (TNS-TEN     *   ACCT-ZAIKAISU)
+                       ELSE
+                         IF  SRY-SRYCD(IDX3) = CONS-ROUSAI48
+                          COMPUTE  RECE82-TENSU(1)  =
+                                   RECE82-TENSU(1)  +
+                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                          COMPUTE  RECE82-TENSU(37) =
+                                   RECE82-TENSU(37) -
+                                  (TNS-TEN     *   ACCT-ZAIKAISU)
+                         END-IF
                        END-IF
                        COMPUTE       RECE82-TENSU(38)  =
                                      RECE82-TENSU(38)  +
