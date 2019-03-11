@@ -78,6 +78,8 @@
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/04/20  ¸þÀº¿ÀÌô¶èÊ¬ÄÉ²ÃÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  18/03/XX  Ê¿À®£³£°Ç¯£´·î²þÀµÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  18/09/XX  ÁªÂò¼°¥³¥á¥ó¥ÈÂÐ±þ
+      *  05.00.00    NACL-Â¿¡¹Ç¼  19/03/XX  Ê¿À®£³£±Ç¯£´·î²þÀµÂÐ±þ
+      *                                     ÌôºÞÅÀ¿ô¼±ÊÌ¡á£µÂÐ±þ
       *****************************************************************
       *
       *
@@ -290,6 +292,11 @@
       *H30.5
            03  WRK-TEN-7                   PIC 9(07).
       *
+      *H31.4
+      *    ¸þÀº¿ÀÌôÄ¹´üÅêÍ¿
+           03  WRK-CHK-YAKKAKCD        PIC X(07).
+           03  WRK-CHK-SRYYM           PIC X(06).
+      *
       *H24.4
       *
       *    ¥³¥á¥ó¥È¤ÎÆþÎÏÃÍÍÑ
@@ -400,6 +407,10 @@
       *
       *    »ÀÁÇ¥³¡¼¥É¥Æ¡¼¥Ö¥ë
            COPY     "CMSANSOTBL.INC".
+      *
+      *H31.4
+      *    ¸þÀº¿ÀÌôÄ¹´üÅêÍ¿ÂÐ¾ÝÌôºÞ¥Ñ¥é¥á¥¿
+           COPY    "CMPSYCHOTROPIC2.INC".
       *
       *****************************************************************
       *    ¥Õ¥¡¥¤¥ë¥ì¥¤¥¢¥¦¥È
@@ -3893,6 +3904,15 @@
                COMPUTE SPA-COM-TEN     (IDX-T) =   TNS-TEN   /  10
                COMPUTE SPA-COM-KISOTEN (IDX-T) =   TNS-TEN   /  10
            END-IF
+      *
+      *H31.3
+      *    ÌôºÞ¡¡¾è»»¶â³Û¡Ê£±£°¤Ç¾è¤º¤ë¡Ë
+           IF     (TNS-SRYCD(1:1)      =   "6"  ) AND
+                  (TNS-TENSIKIBETU     =   5    ) AND
+                  (TNS-TEN             >   ZERO )
+               COMPUTE SPA-COM-TEN     (IDX-T) =   TNS-TEN   *  10
+               COMPUTE SPA-COM-KISOTEN (IDX-T) =   TNS-TEN   *  10
+           END-IF
       *!!
       *    ¥³¥á¥ó¥È¶â³Û¥¯¥ê¥¢
            IF     (TNS-SRYCD(1:1)      =   "8"  )
@@ -3917,6 +3937,15 @@
            IF     (TNS-SRYCD(1:1)      =   "6" )
              AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
                PERFORM 3009-PSYCHOTROPIC-HEN-SEC
+           END-IF
+      *
+      *H31.4
+      *    ¸þÀº¿ÀÌôÄ¹´üÅêÍ¿ÂÐ¾Ý(H31.4¤«¤é¡Ë
+           MOVE    SPACE           TO  SPA-COM-PSYCHO2(IDX-T)
+           IF     (TNS-SRYCD(1:1)      =   "6" )
+             AND  (TNS-YAKKAKJNCD  NOT =   SPACE )
+             AND  (SPA-SRYYMD          >=  "20190401")
+               PERFORM 30092-PSYCHOTROPIC2-HEN-SEC
            END-IF
       *
       *
@@ -5572,6 +5601,33 @@
            .
        3009-PSYCHOTROPIC-HEN-EXT.
            EXIT.
+      *
+      *H31.4
+      *****************************************************************
+      *  ¸þÀº¿ÀÌôÄ¹´üÅêÍ¿ÂÐ¾ÝÊÔ½¸½èÍý
+      *****************************************************************
+       30092-PSYCHOTROPIC2-HEN-SEC     SECTION.
+      *
+           MOVE    TNS-YAKKAKJNCD(1:7)
+                                       TO  WRK-CHK-YAKKAKCD
+           MOVE    SPA-SRYYMD(1:6)     TO  WRK-CHK-SRYYM
+      *
+           SET     TBL-PSY2            TO  1
+           SEARCH      TBL-PSYCHO2-OCC     VARYING   TBL-PSY2
+               AT  END
+                   CONTINUE
+               WHEN   (WRK-CHK-YAKKAKCD    =   TBL-PSYCHO2-CODE
+                                                        (TBL-PSY2))
+                  AND (WRK-CHK-SRYYM       >=  TBL-PSYCHO2-STYMD
+                                                        (TBL-PSY2))
+                  AND (WRK-CHK-SRYYM       <=  TBL-PSYCHO2-EDYMD
+                                                        (TBL-PSY2))
+                   MOVE    "1"             TO  SPA-COM-PSYCHO2 (IDX-T)
+           END-SEARCH
+           .
+       30092-PSYCHOTROPIC2-HEN-EXT.
+           EXIT.
+      *H31.4
       *
       *H30.9
       *****************************************************************

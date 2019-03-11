@@ -23,6 +23,7 @@
       ************************************************************
       *  コピー句修正履歴
       * Maj/Min/Rev  修正者       日付      内容
+      *  05.00.00    NACL-多々納  19/03/XX  点数を9桁、ERRCD追加
       ************************************************************
       *
        01  ORCSC90AREA.
@@ -40,19 +41,23 @@
       *****03  LNK-SC90-KAISU          PIC 9(03).
       *
       *    点数（手技）
-           03  LNK-SC90-TENSU          PIC 9(08).
+           03  LNK-SC90-TENSU          PIC 9(09).
       *    合計点数
            03  LNK-SC90-SUM-AREA.
       *        点数計
-               05  LNK-SC90-TENSUKEI       PIC 9(08).
+               05  LNK-SC90-TENSUKEI       PIC 9(09).
       *        薬剤点数
-               05  LNK-SC90-YKZTEN         PIC 9(08).
+               05  LNK-SC90-YKZTEN         PIC 9(09).
       *        器材点数
-               05  LNK-SC90-KIZTEN         PIC 9(08).
+               05  LNK-SC90-KIZTEN         PIC 9(09).
       *        器材点数（酸素点数）
-               05  LNK-SC90-SANTEN         PIC 9(08).
+               05  LNK-SC90-SANTEN         PIC 9(09).
       *        器材点数（窒素点数）
-               05  LNK-SC90-CHITEN         PIC 9(08).
+               05  LNK-SC90-CHITEN         PIC 9(09).
       *        フィルム点数
-               05  LNK-SC90-FIRTEN         PIC 9(08).
+               05  LNK-SC90-FIRTEN         PIC 9(09).
+      *
+      *H31.3
+      *    エラーコード
+           03  LNK-SC90-ERRCD          PIC X(04).
       *

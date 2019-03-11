@@ -72,7 +72,7 @@
                        11  SPA-Z98-GMN-SRYCD      PIC X(09).
                        11  SPA-Z98-GMN-NAME       PIC X(70).
                        11  SPA-Z98-GMN-TANI       PIC X(10).
-                       11  SPA-Z98-GMN-KISOTEN    PIC 9(07)V99.
+                       11  SPA-Z98-GMN-KISOTEN    PIC 9(09)V99.
                        11  SPA-Z98-GMN-SETCD      PIC X(10).
       *
                        11  SPA-Z98-NAI-NO         PIC 9(03).

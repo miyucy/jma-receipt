@@ -71,7 +71,9 @@
       *  04.08.00    NACL-多々納  17/03/XX  処方料訂正展開対応
       *                                     一般名加算対象医薬品対応
       *  04.08.00    NACL-多々納  17/04/XX  処方３０日超警告対応
-      *  04.08.00    NACL-多々納  19/03/XX  Ｈ３０年４月改正対応
+      *  04.08.00    NACL-多々納  18/03/XX  Ｈ３０年４月改正対応
+      *  05.00.00    NACL-多々納  19/03/XX  Ｈ３１年４月改正対応他
+      *                                     （向精神薬長期処方減算）
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -569,6 +571,12 @@
            03  IDX-BNKT                PIC 9(04).
            03  IDX-BC                  PIC 9(04).
            03  FLG-BNKT                PIC 9(01).
+      *
+      *H31.3
+      *    向精神薬長期投与
+           03  FLG-PSYCHOKI-OK         PIC 9(01).
+           03  FLG-CHOKIGEN            PIC 9(01).
+           03  IDX-CHOGEN              PIC 9(04).
       *
       *    継続の時、自動発生のチェック
        01  WRK-CONTCHK-TBL.
@@ -1427,6 +1435,12 @@
            CALL    "ORCSC90TEN2"       USING
                                        ORCSC90AREA
                                        WRK-SCR-REC
+      *H31.2
+      *    桁数チェック
+           IF      LNK-SC90-ERRCD  NOT =   SPACE
+               MOVE    LNK-SC90-ERRCD      TO  SPA-ERRCD
+               MOVE    "1"                 TO  WRK-COM-CUR (IDX-MAX)
+           END-IF
       *
       *    計
       *    外用薬時、回数は１とする
@@ -1438,6 +1452,14 @@
                COMPUTE WRK-COM-KEI (IDX-MAX)
                                            =   WRK-COM-TENSU  (IDX-MAX)
                                            *   LNK-ORCSC-KAISU
+      *H31.3
+      *        最大７桁
+               IF     (WRK-COM-TENSU(IDX-MAX)  *   LNK-ORCSC-KAISU)
+                                           >   9999999
+                   MOVE    "0249"              TO  SPA-ERRCD
+                   MOVE    "1"                 TO  WRK-COM-CUR(IDX-MAX)
+               END-IF
+      *
            END-IF
       *
       *    院外の時、点数をゼロとする
@@ -2576,6 +2598,11 @@
                MOVE    ZERO            TO  FLG-ONLNE-ARI
            END-IF
       *
+      *H31.3
+      *    向精神薬長期投与減額
+           MOVE    ZERO                TO  SPA-FUANCHOKI
+           MOVE    ZERO                TO  FLG-PSYCHOKI-OK
+           MOVE    ZERO                TO  IDX-CHOGEN
       *
       *    継続の時、算定分の編集
       *!!  IF     (LNK-ORCSC-CONTKBN    =   "1"  OR  "2" )
@@ -2663,11 +2690,48 @@
                        END-IF
                    END-PERFORM
                END-IF
+      *
+      *H31.3
+      *        向精神薬長期投与減算対象
+               IF      WRK-COM-INPUTCD(IDX)    =   "099200301"
+                   MOVE    1                   TO  SPA-FUANCHOKI
+                   MOVE    IDX                 TO  IDX-CHOGEN
+               END-IF
+      *H31.3
+      *        向精神薬長期投与対象
+               IF     (WRK-COM-SRYKBN(IDX)(1:1)    =   "2" )
+                AND   (WRK-COM-INPUTCD(IDX)(1:1)   =   "6" )
+                AND   (SPA-NYUGAIKBN           =   "2"     )
+      *            向精神薬長期処方対象薬剤
+                   IF      WRK-COM-PSYCHO2 (IDX)   =   "1"
+                       MOVE    1               TO  FLG-PSYCHOKI-OK
+                   END-IF
+               END-IF
+      *
              END-IF
       *H27.4
       *        ３０日以上対象区分クリア
                MOVE    SPACE           TO  WRK-COM-YOBI2  (IDX)
            END-PERFORM
+      *
+      *H31.3
+      *    向精神薬長期処方減算チェック
+           IF    (SPA-FUANCHOKI       =   1    )
+             AND (SPA-NYUGAIKBN       =   "2"  )
+               IF      FLG-PSYCHOKI-OK     =   ZERO
+                   IF     (WRK-COM-KZMFLG (IDX-CHOGEN) =   SPACE)
+                     AND  (LNK-ORCSC-KEI-IDX       =   ZERO )
+                       MOVE    "K229"          TO  SPA-ERRCD
+                       MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-CHOGEN)
+                       MOVE    "1"             TO  WRK-COM-KZMFLG
+                                                          (IDX-CHOGEN)
+                       MOVE    IDX-CHOGEN      TO  LNK-ORCSC-KEI-IDX
+                   END-IF
+               END-IF
+           END-IF
+      *
+      *
       *H26.4
       *    地域包括診療料算定有で、出来高（会計）の時、包括外とする
            IF      FLG-CHKCARKSN       =   2
@@ -2821,8 +2885,10 @@
       *    皮膚保湿薬チェック
            MOVE    ZERO                TO  WRK-HIFU-YAK
            MOVE    ZERO                TO  IDX-HIFU
-      *    不安不眠薬逓減
-           MOVE    ZERO                TO  WRK-FUANYAKU
+      *H31.3
+      *    向精神薬長期投与
+           MOVE    ZERO                TO  FLG-PSYCHOKI-OK
+           MOVE    ZERO                TO  FLG-CHOKIGEN
       *
            PERFORM VARYING     IDX     FROM    1   BY  1
                    UNTIL      (IDX     >   SPA-MAX-LINE  )  OR
@@ -3070,6 +3136,22 @@
                    PERFORM 30002-PSYCHO-HEN-SEC
                END-IF
       *
+      *H31.4
+      *        向精神薬長期投与対象
+               IF     (WRK-CHK-SRYSYUKBN(1:2)  =   "21"
+                                               OR  "22"
+                                               OR  "23"
+                                               OR  "29" )
+                AND   (WRK-COM-INPUTCD (IDX)(1:1)  =   "6")
+                AND   (SPA-NYUGAIKBN       =   "2"  )
+                AND   (SPA-FUANCHOKI       =   1    )
+      *            向精神薬長期処方対象薬剤
+                   IF      WRK-COM-PSYCHO2 (IDX)   =   "1"
+                       MOVE    1               TO  FLG-PSYCHOKI-OK
+                   END-IF
+               END-IF
+      *
+      *
       *H28.4
       *        湿布薬枚数チェック
                IF    (SPA-NYUGAIKBN        =   "2"  )
@@ -3090,23 +3172,31 @@
       *
       *H29.4
       *    一般名加算算定編集
-           IF      SPA-SRYYMD          >=  "20170317"
-               IF      (FLG-GENERIC-OK     =   1   )
-                   OR ((CNT-GENERIC        >=  2   )  AND
-                       (FLG-GENERIC-NO     =   ZERO))
-                   MOVE    1               TO  FLG-GENERIC-OK12
-               END-IF
-      *        4/1までは、３，４で２つ以上あれば対象
-               IF      (SPA-SRYYMD         <   "20170401")
-                   AND (FLG-GENERIC-NO2    =   ZERO )
-                   AND (CNT-GENERIC3       >=  2    )
-                   MOVE    1               TO  FLG-GENERIC-OK12
-               END-IF
-           ELSE
-               IF      (FLG-GENERIC-OK     =   1   )
-                   MOVE    1               TO  FLG-GENERIC-OK12
-               END-IF
+      *H31.3   (2018からの判定のみとする)
+           IF      (FLG-GENERIC-OK     =   1   )
+               OR ((CNT-GENERIC        >=  2   )  AND
+                   (FLG-GENERIC-NO     =   ZERO))
+      *        1,2あり、3,4を含めて２件
+               MOVE    1               TO  FLG-GENERIC-OK12
            END-IF
+      *
+      ***  IF      SPA-SRYYMD          >=  "20170317"
+      *        IF      (FLG-GENERIC-OK     =   1   )
+      *            OR ((CNT-GENERIC        >=  2   )  AND
+      *                (FLG-GENERIC-NO     =   ZERO))
+      *            MOVE    1               TO  FLG-GENERIC-OK12
+      *        END-IF
+      *        4/1までは、３，４で２つ以上あれば対象
+      *        IF      (SPA-SRYYMD         <   "20170401")
+      *            AND (FLG-GENERIC-NO2    =   ZERO )
+      *            AND (CNT-GENERIC3       >=  2    )
+      *            MOVE    1               TO  FLG-GENERIC-OK12
+      *        END-IF
+      *    ELSE
+      *        IF      (FLG-GENERIC-OK     =   1   )
+      *            MOVE    1               TO  FLG-GENERIC-OK12
+      *        END-IF
+      *****END-IF
       *
       *H26.4
       *    外来のうがい薬のみのチェック
@@ -3151,6 +3241,7 @@
             AND   (SPA-NYUGAIKBN       =   "2"  )
                PERFORM 30003-PSYCHO-CHK-SEC
            END-IF
+      *
       *
       *H28.9
       *    認知症地域包括診療　薬剤チェック処理
@@ -3281,7 +3372,7 @@
        30002-PSYCHO-HEN-EXT.
            EXIT.
       *****************************************************************
-      *   抗精神薬剤投与チェック処理
+      *   向精神薬剤投与チェック処理
       *****************************************************************
        30003-PSYCHO-CHK-SEC              SECTION.
       *
@@ -3304,7 +3395,7 @@
            MOVE    WRK-SRYKA           TO  SPA-PSY80-KA (IDX-80)
            IF    (ORCSPSYCHO-COUNT (3) >=  3 )
              OR  (ORCSPSYCHO-COUNT (4) >=  3 )
-      *         抗うつ薬(3)、抗精神薬(4)を３種類以上
+      *         抗うつ薬(3)、向精神薬(4)を３種類以上
                MOVE    1               TO  SPA-PSY80-ARI(IDX-80)
                IF   ((ORCSPSYCHO-COUNT (3)  =  3 )
                  AND (ORCSPSYCHO-COUNT (4)  <= 3 ))
@@ -3329,10 +3420,10 @@
       *!!
       *H30.4
       *    不安不眠薬入力あり
-           IF    (ORCSPSYCHO-COUNT (1) >=  ZERO )
-             OR  (ORCSPSYCHO-COUNT (2) >=  ZERO )
-               MOVE    1               TO  WRK-FUANYAKU
-           END-IF
+      *    IF    (ORCSPSYCHO-COUNT (1) >=  ZERO )
+      *      OR  (ORCSPSYCHO-COUNT (2) >=  ZERO )
+      *        MOVE    1               TO  WRK-FUANYAKU
+      ***  END-IF
            .
        30003-PSYCHO-CHK-EXT.
            EXIT.
@@ -3880,10 +3971,24 @@
                                        INTO  LNK-ORCSC-ERRMSG
                            END-STRING
                        END-IF
+      *H31.3
+      *                向精神薬長期投与　対象警告なし
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       END-IF
+      *
                    ELSE
       *                用法まとめ分
                        IF      WRK-ZAICNT2-AL      >=   7
                            MOVE    "K239"          TO  SPA-ERRCD
+                       END-IF
+      *H31.3
+      *                向精神薬長期投与　対象警告
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    "K278"          TO  SPA-ERRCD
                        END-IF
                    END-IF
                END-IF
@@ -3907,7 +4012,6 @@
            IF     (IDX-SYOHOU      NOT =   ZERO )
              AND  (FLG-IPPANKSN        =   ZERO )
              AND  (SPA-ERRCD           =   SPACE)
-      ***    AND  (FLG-GENERIC-OK      =   1    )
              AND  (FLG-GENERIC-OK12    =   1    )
       *        処方せん料の入力があり、一般名加算対象
                IF     (WRK-COM-KZMFLG2 (IDX-SYOHOU) =   SPACE) AND
@@ -3928,7 +4032,6 @@
                   (FLG-TONPUK2         =   1    )  OR
                   (FLG-GAIYAK2         =   1    ))
       *     一般名加算と院外投薬あり
-      ***      IF     (FLG-GENERIC-OK      =   ZERO )
                IF     (FLG-GENERIC-OK12    =   ZERO )
       *            一般名加算投薬なし
                    IF     (WRK-COM-KZMFLG (IDX-IP) =   SPACE) AND
@@ -3942,32 +4045,18 @@
                    END-IF
       *H28.4
                ELSE
-      *            加算のチェック
-      *            IF     (FLG-GENERIC-NO      =   1 )
-      *               OR  (CNT-GENERIC         <   2 )
-      *                一般名表示なし有
-      *                IF      WRK-COM-INPUTCD (IDX-IP)
-      *                                       NOT =   "120003570"
-      *                    MOVE    "K222"          TO  SPA-ERRCD
-      *                END-IF
-      *            ELSE
-      *                すべて一般名
-      *                IF      WRK-COM-INPUTCD (IDX-IP)
-      *                                       NOT =   "120004270"
-      *                    MOVE    "K223"          TO  SPA-ERRCD
-      *                END-IF
-      **           END-IF
       *H29.4
+      *H31.3       (2018からの判定のみとする)
                    IF    ((FLG-GENERIC-NO      =   ZERO )
                       AND (CNT-GENERIC         >=  2    ))
-                   OR    ((SPA-SRYYMD          <   "20170401")
-                      AND (SPA-SRYYMD          >=  "20170317")
-                      AND (FLG-GENERIC-NO2     =   ZERO )
-                      AND (CNT-GENERIC2        >=  2    ))
-                   OR    ((SPA-SRYYMD          <   "20170401")
-                      AND (SPA-SRYYMD          >=  "20170317")
-                      AND (FLG-GENERIC-NO2    =   ZERO  )
-                      AND (CNT-GENERIC3        >=  2    ))
+      ***          OR    ((SPA-SRYYMD          <   "20170401")
+      *               AND (SPA-SRYYMD          >=  "20170317")
+      *               AND (FLG-GENERIC-NO2     =   ZERO )
+      *               AND (CNT-GENERIC2        >=  2    ))
+      *            OR    ((SPA-SRYYMD          <   "20170401")
+      *               AND (SPA-SRYYMD          >=  "20170317")
+      *               AND (FLG-GENERIC-NO2    =   ZERO  )
+      ****            AND (CNT-GENERIC3        >=  2    ))
       *                一般名加算１
                        IF      WRK-COM-INPUTCD (IDX-IP)
                                               NOT =   "120004270"
@@ -4119,7 +4208,7 @@
            END-IF
       *
            MOVE    ZERO                TO  FLG-250IN
-      *    処方せん料と投薬チェック
+      *    処方料と投薬チェック
            IF     (IDX-SYOHOU2     NOT =   ZERO )
              AND  (SPA-ERRCD           =   SPACE)
                EVALUATE    WRK-COM-INPUTCD (IDX-SYOHOU2)
@@ -4134,6 +4223,14 @@
                            MOVE    "K259"          TO  SPA-ERRCD
                        END-IF
                    END-IF
+      *H31.3
+      *            向精神薬長期投与　対象警告
+                   IF      SPA-ERRCD           =   SPACE
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    "K277"          TO  SPA-ERRCD
+                       END-IF
+                   END-IF
       *
                WHEN    "120002610"
       *        ７種類以上
@@ -4143,6 +4240,12 @@
                        IF    ( FLG-TAZAI-ARI       =   1     )
                            MOVE    "K258"          TO  SPA-ERRCD
                        END-IF
+      *H31.3
+      *                向精神薬長期投与　減算あり
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    1           TO  FLG-CHOKIGEN
+                       END-IF
                    ELSE
       *                ７種類未満の時
                        MOVE    "K261"          TO  SPA-ERRCD
@@ -4150,6 +4253,21 @@
                        IF      FLG-CHKCARKSN       =   1
                            MOVE    "K266"          TO  SPA-ERRCD
                        END-IF
+      *H31.3
+      *                向精神薬長期投与　対象警告なし
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           IF     (WRK-ZAICNT      >=  7    )
+                               MOVE    1           TO  FLG-CHOKIGEN
+                           END-IF
+                       END-IF
+      *                向精神薬多剤
+                       IF    ( FLG-TAZAI-ARI       =   1     )
+                         AND ( SPA-ERRCD           =   SPACE )
+                           MOVE    "K258"          TO  SPA-ERRCD
+                       END-IF
+      *
                    END-IF
       *
                WHEN    CONS-TAZAI-SYOHOU
@@ -4193,6 +4311,12 @@
                        MOVE    1                   TO  SPA-PSYCHO-CHK
                        MOVE    ZERO                TO  SPA-PSYCHO-OK
                        MOVE    2                   TO  FLG-250IN
+      *H31.3
+      *                向精神薬長期投与対象で７種類未満減額なし
+                       IF     (SPA-FUANCHOKI       =   1 )
+                          AND (FLG-CHOKIGEN        =   ZERO)
+                           MOVE    ZERO            TO  SPA-NAIFUKU-OK
+                       END-IF
                    WHEN    "120001210"
       *                （その他）
                        MOVE    1                   TO  FLG-250IN
@@ -5004,18 +5128,6 @@
                COMPUTE WRK-ZAITENSU6       =   HZN6-COM-TENSU  (IDXG6)
                                            *   HZN6-COM-KAISU  (IDXG6)
            END-IF
-      *TEST
-      *    DISPLAY "WRK-ZAITENSU:"  WRK-ZAITENSU
-      *          ",IDXG4:"  IDXG4
-      *         ",TENSU:"  HZN3-COM-TENSU  (IDXG4)
-      *         ",KAISU:"  HZN3-COM-KAISU  (IDXG4)
-      *    IF      IDXG5               >   ZERO
-      *    DISPLAY "WRK-ZAITENSU5:"  WRK-ZAITENSU5
-      *          ",IDXG5:"  IDXG5
-      *         ",TENSU:"  HZN5-COM-TENSU  (IDXG5)
-      *         ",KAISU:"  HZN5-COM-KAISU  (IDXG5)
-      *    END-IF
-      *TEST
       *
            .
        300091-GEN30-HENSYU-EXT.
@@ -5308,13 +5420,12 @@
                  AND  (LNK-ORCSC-KIDCD     =   SPACE )
                    MOVE    1                   TO  SPA-PSYCHO-CHK
                    MOVE    "2006"              TO  LNK-ORCSC-KIDCD
-                END-IF
+               END-IF
       *
                IF     (SPA-NAIFUKU-CHK     =   ZERO  )  AND
                       (SPA-ERRCD           =   SPACE )
                  AND  (LNK-ORCSC-KIDCD     =   SPACE )
                  AND  (FLG-NASI            =   ZERO  )
-      *ver.4.7
       *            ７種類以上の場合、確認
                    EVALUATE    TRUE
                    WHEN   (WRK-ZAICNT2         >=  7 )  AND
@@ -5340,26 +5451,7 @@
       *                用法まとめで７種類以上
                        MOVE    WRK-ZAICNT2-AL  TO  WRK-ZAICNT2
                    END-IF
-      *ver.4.7
-      *!!!
                END-IF
-      *????
-      *H30.4
-               IF     (SPA-NAIFUKU-OK      =   ZERO  )
-                 AND  (SPA-ERRCD           =   SPACE )
-                 AND  (LNK-ORCSC-KIDCD     =   SPACE )
-                 AND  (FLG-NASI            =   ZERO  )
-      *            不安不眠薬逓減
-                   IF     (SPA-FUANCHK-CHK     =   ZERO )
-                      AND (SPA-FUANCHOKI       =   1    )
-                      AND (WRK-FUANYAKU        >   ZERO )
-                       MOVE    1               TO  SPA-FUANCHK-CHK
-                       MOVE    "2008"          TO  LNK-ORCSC-KIDCD
-                       GO      TO      3001-INGAI-SYORI-EXT
-                   END-IF
-               END-IF
-      *????
-      *
       *
                IF     (LNK-ORCSC-KIDCD     =   SPACE )  AND
                       (SPA-ERRCD           =   SPACE )
@@ -5513,6 +5605,15 @@
                MOVE    "120002910"         TO  WRK-SRYCD
                MOVE    "120002710"         TO  WRK-SRYCD2
            END-IF
+      *!!
+      *H31.3
+      *    向精神薬長期投与処方せん料
+           IF     (FLG-PSYCHOKI-OK     =   1     )
+              AND (SPA-SRYYMD          >=  "20190401")
+               MOVE    "120002710"         TO  WRK-SRYCD
+               MOVE    "120002910"         TO  WRK-SRYCD2
+           END-IF
+      *!!
       *
       *H26.10
       *    向精神薬多剤投与処方せん料
@@ -5557,31 +5658,6 @@
                GO      TO      30011-SYOHOUSEN-SYORI-EXT
            END-IF
       *
-      *処方せん料の次に別剤として追加。加算での追加はできない
-      *H24.4
-           IF     (FLG-ERR             =   ZERO )
-             AND  (FLG-GENERIC-OK      =   1    )
-             AND  (SPA-SRYYMD          <   "20170317")
-               IF     (FLG-GENERIC-NO      =   1 )
-                  OR  (CNT-GENERIC         <   2 )
-      *            一般名表示なし有
-                   MOVE    "120003570"         TO  WRK-SRYCD
-                   MOVE    "120004270"         TO  WRK-SRYCD2
-               ELSE
-      *            すべて一般名
-                   MOVE    "120004270"         TO  WRK-SRYCD
-                   MOVE    "120003570"         TO  WRK-SRYCD2
-               END-IF
-      *
-               PERFORM 3002-KASAN-SYORI-SEC
-               IF      FLG-ERR             =   ZERO
-                   MOVE    "820"           TO  LNK-ORCSC-SRYSYUKBN
-                                                         (02 IDXS)
-                   MOVE    "80"            TO  LNK-ORCSC-SRYKBN
-                                                         (02 IDXS)
-               END-IF
-           END-IF
-      *
       *H29.4 から
            IF     (FLG-ERR             =   ZERO )
             AND   (SPA-SRYYMD          >=  "20170317")
@@ -5596,17 +5672,17 @@
                ELSE
       *!!!
       *        ４月１日までは、1,2のみ一般名でも加算１
-               IF     (SPA-SRYYMD          <   "20170401")
-                   IF    ((CNT-GENERIC2        >=  2         )
-                      AND (FLG-GENERIC-NO2     =   ZERO      ))
+      *        IF     (SPA-SRYYMD          <   "20170401")
+      *            IF    ((CNT-GENERIC2        >=  2         )
+      *               AND (FLG-GENERIC-NO2     =   ZERO      ))
       *            3,4が２件以上、一般名であれば加算１
-                   OR    ((CNT-GENERIC3        >=  2         )
-                      AND (FLG-GENERIC-NO2     =   ZERO      ))
-                       MOVE    "120004270"         TO  WRK-SRYCD
-                       MOVE    "120003570"         TO  WRK-SRYCD2
-                   END-IF
-               END-IF
-               IF      WRK-SRYCD           =   SPACE
+      *            OR    ((CNT-GENERIC3        >=  2         )
+      *               AND (FLG-GENERIC-NO2     =   ZERO      ))
+      *                MOVE    "120004270"         TO  WRK-SRYCD
+      *                MOVE    "120003570"         TO  WRK-SRYCD2
+      *            END-IF
+      ******** END-IF
+      *********IF      WRK-SRYCD           =   SPACE
                    IF      FLG-GENERIC-OK12    =   1
       *                後発品が１つ以上一般名
                        MOVE    "120003570"         TO  WRK-SRYCD
@@ -5614,7 +5690,7 @@
                    END-IF
                END-IF
       *
-               END-IF
+      ******** END-IF
                IF      WRK-SRYCD       NOT =   SPACE
                    PERFORM 3002-KASAN-SYORI-SEC
                    IF      FLG-ERR             =   ZERO
@@ -5831,26 +5907,29 @@
       *H28.4
            OR    ((FLG-GEN30-PSY       =   1 )  AND
                   (WRK-ZAICNT-2        >=  7 ))
-      *????
       *H29.3
       *    処方料手入力
            OR   ((FLG-250IN            =   2  )  AND
                  (FLG-CHKCARKSN        =   ZERO ))
+      *H31.3
+      *         向精神薬長期投与なし
+      ***    AND ( FLG-PSYCHOKI-OK     =   ZERO ))
+      *
       *        内服の薬剤逓減有りチェック
                IF      SPA-NAIFUKU-CHK     =   ZERO
                    MOVE    1               TO  SPA-NAIFUKU-CHK
                    MOVE    "2001"          TO  LNK-ORCSC-KIDCD
                    GO      TO      3002-INNAI-SYORI-EXT
-               ELSE
-                  IF      SPA-NAIFUKU-OK       =   1
+      ****     ELSE
+               END-IF
+      *
+               IF      SPA-NAIFUKU-OK       =   1
       *
       *           薬剤料逓減あり
                   IF    ( WRK-ZAICNT          >=  7 )
-      *????
       *H29.3
       *    処方料手入力
                    OR   ( FLG-250IN            =   2  )
-      *????
       *            全内服薬
                        COMPUTE WRK-SANTEN-9    =   WRK-KEIKEI
                                            *   90
@@ -5868,24 +5947,12 @@
                        PERFORM 3001-GENHEN-SEC
                   END-IF
       *H27.4
-                       MOVE    1               TO  FLG-GEN30-7GEN
-                   ELSE
+                   MOVE    1               TO  FLG-GEN30-7GEN
+               ELSE
       *            逓減なし
-      *????
-      *H30.4
-      *            不安不眠薬逓減
-                       IF     (SPA-FUANCHK-CHK     =   ZERO )
-                          AND (SPA-FUANCHOKI       =   1    )
-                          AND (WRK-FUANYAKU        >   ZERO )
-                           MOVE    1               TO  SPA-FUANCHK-CHK
-                           MOVE    "2008"          TO  LNK-ORCSC-KIDCD
-                           GO      TO      3002-INNAI-SYORI-EXT
-                       END-IF
-      *????
-      *
-                       MOVE    6           TO  WRK-ZAICNT
-                   END-IF
+                   MOVE    6           TO  WRK-ZAICNT
                END-IF
+      *****    END-IF
            END-IF
       *H27.4
       *    ３０日以上の逓減
@@ -6001,12 +6068,9 @@
                    MOVE    "120002610"         TO  WRK-SRYCD2
                END-IF
       *!!
-      *H30.4
-      *        不安不眠薬投与処方料
-               IF     (SPA-FUANCHK-OK      =   1     )
-                 AND  (SPA-FUANCHK-CHK     =   1     )
-      **           MOVE    CONS-FUMIN-SYOHOU   TO  WRK-SRYCD
-      **           MOVE    CONS-FUMIN-SYOHOU   TO  WRK-SRYCD2
+      *H31.3
+      *        向精神薬長期投与処方料
+               IF     (FLG-PSYCHOKI-OK     =   1     )
                    MOVE    "120002610"         TO  WRK-SRYCD
                    MOVE    "120001210"         TO  WRK-SRYCD2
                END-IF

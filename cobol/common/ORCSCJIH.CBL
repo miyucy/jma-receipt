@@ -107,13 +107,13 @@
       *
       *
       *    診療行為算定編集パラメタ
-           COPY    "CPORCSC90.INC".
+      *****COPY    "CPORCSC90.INC".
       *
       *    診療行為算定歴チェックパラメタ
-           COPY    "CPORCSC91.INC".
+      **** COPY    "CPORCSC91.INC".
       *
       *    診療行為点数編集・基本チェック
-           COPY    "CPORCSC92.INC".
+      **** COPY    "CPORCSC92.INC".
       *
       *    画面再編集パラメタ
            COPY    "CPORCSC94.INC".
@@ -274,6 +274,20 @@
                                                           (IDX-Z)
                        END-IF
                    END-IF
+      *H31.3   薬剤の判別
+               WHEN    "6"
+      *            計算できる点数識別であること
+                   EVALUATE    WRK-COM-TENSIKIBETU(IDX-Z)
+                       WHEN    1
+                       WHEN    2
+                       WHEN    4
+                       WHEN    5
+                           CONTINUE
+                       WHEN    OTHER
+                           MOVE    "0055"          TO  WRK-ERRCD
+                           MOVE    "1"             TO  WRK-COM-CUR
+                                                          (IDX-Z)
+                   END-EVALUATE
       *
                WHEN    OTHER
       *            計算できる点数識別であること
@@ -302,7 +316,6 @@
            MOVE    ZERO                TO  IDX-MAX
       *
            INITIALIZE                  WRK-AREA
-           INITIALIZE                  ORCSC90AREA
       *
       *    消費税率編集
            MOVE    CONS-ZEI1           TO  WRK-ZEIRITU
@@ -605,6 +618,8 @@
                    MOVE    1           TO  WRK-TENSIKIBETU
       *        金額（整数)（金額は計算済み）
                WHEN    4
+      *H31.3
+               WHEN    5
                    MOVE    1           TO  WRK-TENSIKIBETU
                END-EVALUATE
            END-IF

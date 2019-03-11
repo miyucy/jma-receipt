@@ -615,9 +615,13 @@
            MOVE    "4"                 TO  SPA-GMN-TENSIKIBETUL   (4)
            MOVE    "½ü»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç½ü¤¹¡£¡Ë" 
                                        TO  SPA-GMN-TENSIKIBETUMEIL(4)
-           MOVE    "7"                 TO  SPA-GMN-TENSIKIBETUL   (5)
-           MOVE    "¸ºÅÀ"              TO  SPA-GMN-TENSIKIBETUMEIL(5)
-           MOVE    5                   TO  SPA-TENSKB-MAX
+      *H31.4
+           MOVE    "5"                 TO  SPA-GMN-TENSIKIBETUL   (5)
+           MOVE    "¾è»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç¾è¤º¤ë¡£¡Ë" 
+                                       TO  SPA-GMN-TENSIKIBETUMEIL(5)
+           MOVE    "7"                 TO  SPA-GMN-TENSIKIBETUL   (6)
+           MOVE    "¸ºÅÀ"              TO  SPA-GMN-TENSIKIBETUMEIL(6)
+           MOVE    6                   TO  SPA-TENSKB-MAX
       *
            MOVE    "0"                 TO  SPA-GMN-OLDTENSKBL     (1)
            MOVE    SPACE               TO  SPA-GMN-OLDTENSKBMEIL  (1)
@@ -628,8 +632,12 @@
            MOVE    "4"                 TO  SPA-GMN-OLDTENSKBL     (4)
            MOVE    "½ü»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç½ü¤¹¡£¡Ë" 
                                        TO  SPA-GMN-OLDTENSKBMEIL  (4)
-           MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (5)
-           MOVE    "¸ºÅÀ"              TO  SPA-GMN-OLDTENSKBMEIL  (5)
+      *H31.4
+           MOVE    "5"                 TO  SPA-GMN-OLDTENSKBL     (5)
+           MOVE    "¾è»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç¾è¤º¤ë¡£¡Ë" 
+                                       TO  SPA-GMN-OLDTENSKBMEIL  (5)
+           MOVE    "7"                 TO  SPA-GMN-OLDTENSKBL     (6)
+           MOVE    "¸ºÅÀ"              TO  SPA-GMN-OLDTENSKBMEIL  (6)
       *
            MOVE    "0"                 TO  SPA-GMN-MADOKUKBNL     (1)
            MOVE    "¤Ê¤·"              TO  SPA-GMN-MADOKUKBNMEIL  (1)
