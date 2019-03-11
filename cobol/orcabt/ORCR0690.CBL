@@ -217,6 +217,7 @@
       *  05.00.01    NACL-門脇    18/11/16  宮城県地方公費対応
       *  05.00.02    NACL-藤原    18/06/11  ファイルのエラー処理追加
       *                                     Warning 対応
+      *  05.00.03    NACL-門脇    19/03/11  予約コード読み飛ばし修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -826,25 +827,13 @@
            03  FILLER          PIC X(09)   VALUE   "099409901".
       *    初診料ダミー
            03  FILLER          PIC X(09)   VALUE   "099110001".
-      *    育児栄養指導加算（ＤＵＭＭＹ）
-           03  FILLER          PIC X(09)   VALUE   "099114001".
       *    実日数減算
            03  FILLER          PIC X(09)   VALUE   "099409903".
-      *    在医総・在医総管（ＤＵＭＭＹ）
-           03  FILLER          PIC X(09)   VALUE   "099140003".
-      *    初診料未算定扱い
-           03  FILLER          PIC X(09)   VALUE   "099409906".
-      *    寝たきり老人在宅総合診療科算定終了
-           03  FILLER          PIC X(09)   VALUE   "099140001".
-      *    短期滞在一部負担金まとめ徴収
-           03  FILLER          PIC X(09)   VALUE   "099409908".
-      *    短期滞在一部負担金徴収なし
-           03  FILLER          PIC X(09)   VALUE   "099409909".
       *
        01  TBL-NOSRYCD-R       REDEFINES   TBL-NOSRYCD-AREA.
-            03  TBL-NOSRYCD     PIC X(09)   OCCURS   18.
+            03  TBL-NOSRYCD     PIC X(09)   OCCURS   12.
       *
-       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   18.
+       01  TBL-NOSRYCD-MAX     PIC 9(02)   VALUE   12.
       *
       *    固定値
        01  CONST-AREA.
