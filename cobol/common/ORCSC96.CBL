@@ -2847,17 +2847,6 @@
                                        DELIMITED  BY  SIZE
                                        INTO  SPA-ERRMSG
                    END-STRING
-      *!!!!!!!!!!!!!!!!!!!!
-      *TEST
-      *H30.5
-               WHEN    "K179"
-                   STRING  "警告！！"
-                           "妊婦期間を過ぎているようです。"
-                           "妊婦設定を解除して下さい。"
-                                       DELIMITED  BY  SIZE
-                                       INTO  SPA-ERRMSG
-                   END-STRING
-      *!!!!!!!!!!!!!!!!!!!!
       *!
                WHEN    "1050"
                    STRING  "労災・自賠責・公害、包括分入力の"
