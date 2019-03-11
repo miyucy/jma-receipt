@@ -403,6 +403,8 @@
            03  FLG-RKISAI          PIC 9(01).
            03  FLG-ETC             PIC 9(01).
            03  FLG-SENTAKU-OKIKAE  PIC 9(01).
+           03  FLG-CHECK-OK        PIC 9(01).
+           03  FLG-CHECK-OK2       PIC 9(01).
       *
       *    カウント領域
        01  CNT-AREA.
@@ -465,6 +467,7 @@
            03  IDX43               PIC 9(02).
            03  IDX45               PIC 9(03).
            03  IDX46               PIC 9(03).
+           03  IDX47               PIC 9(03).
            03  DAY-IDX             PIC 9(04).
            03  DAY-IDX2            PIC 9(02).
            03  IDY                 PIC 9(04).
@@ -1121,6 +1124,17 @@
                05  TBL-HASSYO-HAIYO2-DAY-OCC2       OCCURS  31.
                    07  TBL-HASSYO-HAIYO2-SANTEI     PIC 9(01).
       *
+           03  TBL-HASSYO-KYUSEIYMD-T.
+             04  TBL-HASSYO-KYUSEIYMD-OCC           OCCURS  50.
+               05  TBL-HASSYO-SINDAI-KYUSEIYMD      PIC X(08).
+               05  TBL-HASSYO-KOKYUKI-KYUSEIYMD     PIC X(08).
+               05  TBL-HASSYO-NOUKE-KYUSEIYMD       PIC X(08).
+               05  TBL-HASSYO-UNDOKI-KYUSEIYMD      PIC X(08).
+               05  TBL-HASSYO-NANBYO-KYUSEIYMD      PIC X(08).
+               05  TBL-HASSYO-SYOGAI-KYUSEIYMD      PIC X(08).
+               05  TBL-HASSYO-SESSYOKU-KYUSEIYMD    PIC X(08).
+               05  TBL-HASSYO-HAIYO-KYUSEIYMD       PIC X(08).
+      *
       *****（リハ加算用）
        01  TBL-HASSYO9-INF.
            03  TBL-HASSYO9-SINDAI-FLG            PIC 9(01).
@@ -1162,6 +1176,12 @@
              04  TBL-HASSYO9-HAIYO2-DAY-OCC          OCCURS  10.
                05  TBL-HASSYO9-HAIYO2-DAY-OCC2       OCCURS  31.
                    07  TBL-HASSYO9-HAIYO2-SANTEI     PIC 9(01).
+      *
+           03  TBL-HASSYO9-KYUSEIYMD-T.
+             04  TBL-HASSYO9-KYUSEIYMD-OCC           OCCURS  50.
+               05  TBL-HASSYO9-SINDAI-KYUSEIYMD      PIC X(08).
+               05  TBL-HASSYO9-KOKYUKI-KYUSEIYMD     PIC X(08).
+               05  TBL-HASSYO9-HAIYO-KYUSEIYMD       PIC X(08).
       *****
       *
        01  TBL-ZAISIEN-INF.
@@ -4476,8 +4496,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
            IF  WRK-RIHASANTEI-YMD  NOT = SPACE
              MOVE     1      TO  FLG-RIHA
              MOVE     WRK-RIHASANTEI-YMD  TO  WRK-KYUSEIYMD
-             PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
-             PERFORM    20011-HASSYO-COMMENT2-SEC
+             MOVE     ZERO   TO  FLG-CHECK-OK
+             PERFORM      20011-KYUSEIYMD-CHECK-SEC
+             IF   FLG-CHECK-OK = 1
+               PERFORM    20011-KYUSEIHASSYO-KENSAKU-SEC
+               PERFORM    20011-HASSYO-COMMENT2-SEC
+             END-IF
            END-IF
            PERFORM   VARYING   IDX16    FROM   1   BY   1
                       UNTIL    IDX16      >   31
@@ -4485,8 +4509,12 @@ grpsys     PERFORM 900-DBSELECT-SEC
                MOVE   2      TO  FLG-RIHA
                MOVE   RECE02-SRYYM        TO  WRK-KYUSEIYMD(1:6)
                MOVE   IDX16               TO  WRK-KYUSEIYMD(7:2)
-               PERFORM  20011-KYUSEIHASSYO-KENSAKU-SEC
-               PERFORM  20011-HASSYO-COMMENT2-SEC
+               MOVE   ZERO   TO  FLG-CHECK-OK
+               PERFORM    20011-KYUSEIYMD-CHECK-SEC
+               IF   FLG-CHECK-OK = 1
+                 PERFORM  20011-KYUSEIHASSYO-KENSAKU-SEC
+                 PERFORM  20011-HASSYO-COMMENT2-SEC
+               END-IF
              END-IF
            END-PERFORM
       *
@@ -6526,6 +6554,215 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        200111-RIHA-SANTEIPLUS2-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    発症日チェック（第三者行為）
+      *****************************************************************
+       20011-KYUSEIYMD-CHECK-SEC          SECTION.
+      *
+           IF   TBL-HASSYO-SINDAI-FLG   =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-SINDAI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-SINDAI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-SINDAI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-KOKYUKI-FLG  =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-KOKYUKI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-KOKYUKI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-KOKYUKI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-NOUKE-FLG    =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-NOUKE-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-NOUKE-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-NOUKE-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-UNDOKI-FLG   =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-UNDOKI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-UNDOKI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-UNDOKI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-NANBYO-FLG   =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-NANBYO-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-NANBYO-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-NANBYO-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-SYOGAI-FLG   =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-SYOGAI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-SYOGAI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-SYOGAI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-SESSYOKU-FLG =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-SESSYOKU-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-SESSYOKU-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-SESSYOKU-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO-HAIYO-FLG    =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO-HAIYO-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO-HAIYO-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO-HAIYO-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+      *****
+      *
+           IF   TBL-HASSYO9-SINDAI-FLG  =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO9-SINDAI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO9-SINDAI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO9-SINDAI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO9-HAIYO-FLG   =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO9-HAIYO-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO9-HAIYO-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO9-HAIYO-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           IF   TBL-HASSYO9-KOKYUKI-FLG =   2 OR 3
+             MOVE     ZERO   TO    FLG-CHECK-OK2
+             PERFORM  VARYING  IDX47  FROM  1  BY  1
+                       UNTIL  (IDX47             >  50   )
+                        OR    (TBL-HASSYO9-KOKYUKI-KYUSEIYMD(IDX47)
+                                                 =  SPACE)
+                        OR    (FLG-CHECK-OK2     =  1    )
+               IF  TBL-HASSYO9-KOKYUKI-KYUSEIYMD(IDX47) = WRK-KYUSEIYMD
+                 MOVE   1    TO    FLG-CHECK-OK2
+               END-IF
+             END-PERFORM
+             IF    FLG-CHECK-OK2 = ZERO
+               MOVE   WRK-KYUSEIYMD
+                             TO    TBL-HASSYO9-KOKYUKI-KYUSEIYMD(IDX47)
+               MOVE     1    TO    FLG-CHECK-OK
+             END-IF
+           END-IF
+      *
+           .
+       20011-KYUSEIYMD-CHECK-EXT.
            EXIT.
       *
       *****************************************************************

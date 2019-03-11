@@ -82,6 +82,8 @@
       *                                     レセ電請求が不可となる事に伴う対応
       *  04.08.07    NACL-藤原    17/04/10  患者単位での点数算定設定
       *                                     （労災準拠又は健保準拠）対応
+      *
+      *  05.00.01    NACL-門脇    19/02/01  療養期間編集修正
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1419,10 +1421,8 @@ grpsys     MOVE    SPA-HOSPNUM         TO  SPTID-HOSPNUM
            END-IF
            MOVE   PTRSI-SHOBYOYMD      TO  WRK-RECE82-SHOBYOYMD
            MOVE   PTRSI-SISIKBN        TO  WRK-RECE82-SISIKBN
-      **>  MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-RYOSTYMD
-           MOVE   SPACE                TO  WRK-RECE82-RYOSTYMD
-      **>  MOVE   PTRSI-RYOEDYMD       TO  WRK-RECE82-RYOEDYMD
-           MOVE   SPACE                TO  WRK-RECE82-RYOEDYMD
+           MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-RYOSTYMD
+           MOVE   PTRSI-RYOEDYMD       TO  WRK-RECE82-RYOEDYMD
            MOVE   PTRSI-COMMENT        TO  WRK-RECE82-COMMENT
            MOVE   PTRSI-SAIGAIKBN      TO  WRK-RECE82-SAIGAIKBN 
            MOVE   PTRSI-RYOSTYMD       TO  WRK-RECE82-SHOSHINYMD
