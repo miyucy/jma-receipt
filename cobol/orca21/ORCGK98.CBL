@@ -179,7 +179,7 @@
            05  WRK-TENSUS2         PIC ZZZZ9.99.
       *H28.4
            03  WRK-KISOTEN-CHK.
-      *H31.3   05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
+      *H31.4   05  WRK-KISOTEN-6C   PIC 9(07)V9(3).
                05  WRK-KISOTEN-6C   PIC 9(09)V9(3).
            03  WRK-KISOTEN-CHK-R    REDEFINES   WRK-KISOTEN-CHK.
                05  WRK-KISOTEN-R1   PIC 9(09).

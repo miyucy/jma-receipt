@@ -623,6 +623,7 @@
            MOVE    "4"                 TO  SPA-GMN-TENSIKIBETUL   (4)
            MOVE    "½ü»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç½ü¤¹¡£¡Ë" 
                                        TO  SPA-GMN-TENSIKIBETUMEIL(4)
+      *H31.4
            MOVE    "5"                 TO  SPA-GMN-TENSIKIBETUL   (5)
            MOVE    "¾è»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç¾è¤º¤ë¡£¡Ë" 
                                        TO  SPA-GMN-TENSIKIBETUMEIL(5)
@@ -639,6 +640,7 @@
            MOVE    "4"                 TO  SPA-GMN-OLDTENSKBL     (4)
            MOVE    "½ü»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç½ü¤¹¡£¡Ë" 
                                        TO  SPA-GMN-OLDTENSKBMEIL  (4)
+      *H31.4
            MOVE    "5"                 TO  SPA-GMN-OLDTENSKBL     (5)
            MOVE    "¾è»»¶â³Û¡Ê¶â³Û¤ò£±£°¤Ç¾è¤º¤ë¡£¡Ë" 
                                        TO  SPA-GMN-OLDTENSKBMEIL  (5)
