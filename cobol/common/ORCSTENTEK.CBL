@@ -41,6 +41,7 @@
       *  04.07.00    NACL-Â¿¡¹Ç¼  11/11/XX  Æ±ÆüºÆÆþ±¡ÂÐ±þ
       *  04.07.00    NACL-Â¿¡¹Ç¼  14/10/16  ¿ÇÎÅ²ÊÊÔ½¸ÂÐ±þ
       *  04.08.00    NACL-Â¿¡¹Ç¼  16/06/XX  Ãæ¿´ÀÅÌ®¡Ê¿¢Æþ·¿¥«¥Æ¡¼¥Æ¥ë¡ËÂÐ±þ
+      *  05.00.00    NACL-Â¿¡¹Ç¼  19/03/XX  ÅÀ¿ô¼±ÊÌ¶èÊ¬¡á4,5¤È·å¿ôÂÐ±þ
       *****************************************************************
       *
       *
@@ -128,15 +129,19 @@
       *
            03  WRK-DD              PIC 9(02).
       *
-           03  WRK-TENSU           PIC 9(07)V9(04).
+      **   03  WRK-TENSU           PIC 9(07)V9(04).
+           03  WRK-TENSU           PIC 9(11)V9(04).
            03  WRK-SURYO-9         PIC 9(07).
            03  WRK-SURYO           PIC 9(07)V9(05).
            03  WRK-HAIKI-SURYO     PIC 9(07)V9(05).
            03  WRK-EKIRYOU         PIC 9(07)V9(05).
       *
-           03  WRK-TENSU-KEI       PIC 9(07)V9(06).
-           03  WRK-SYOKEIS2        PIC 9(08)V9(06).
-           03  WRK-TENSU-GOK       PIC 9(08)V9(05).
+      **   03  WRK-TENSU-KEI       PIC 9(07)V9(06).
+      **   03  WRK-SYOKEIS2        PIC 9(08)V9(06).
+      **   03  WRK-TENSU-GOK       PIC 9(08)V9(05).
+           03  WRK-TENSU-KEI       PIC 9(11)V9(06).
+           03  WRK-SYOKEIS2        PIC 9(11)V9(06).
+           03  WRK-TENSU-GOK       PIC 9(11)V9(05).
       *
            03  WRK-SRYCD               PIC X(09).
            03  WRK-MAX-RYOU            PIC 9(07).
@@ -155,13 +160,15 @@
            03  IDXD                    PIC 9(04).
            03  WRK-DAY                 PIC 9(02).
            03  WRK-DOU-SURYO           PIC 9(07)V9(05).
-           03  WRK-DOU-TENSU-GOK       PIC 9(08)V9(05)  OCCURS  2.
+      **   03  WRK-DOU-TENSU-GOK       PIC 9(08)V9(05)  OCCURS  2.
+           03  WRK-DOU-TENSU-GOK       PIC 9(11)V9(05)  OCCURS  2.
       *
       *    ±ÕÎÌ½¸·×ÍÑ
        01  TBL-AREA.
            03  TBL-AREA-OCC            OCCURS   100.
                05  TBL-SRYCD           PIC X(09).
-               05  TBL-TEN             PIC 9(07)V9(5).
+      **       05  TBL-TEN             PIC 9(07)V9(5).
+               05  TBL-TEN             PIC 9(09)V9(5).
                05  TBL-CSYYOURYO       PIC 9(07)V9(5).
       *
                05  TBL-SEIBUTU         PIC 9(01).
@@ -743,6 +750,24 @@
                        IF      FLG-TENSU           =   ZERO
       *                    ÅÀ¿ô
                            MOVE    TNS-TEN         TO  TBL-TEN   (IDX-T)
+      *H31.4
+      *                    ÅÀ¿ô¼±ÊÌ¤Ë¤è¤ë·×»»
+                           IF    (TNS-SRYCD(1:1)   =   "6"  )
+                             AND (TNS-TEN          >   ZERO )
+      *                        ÌôºÞ¡¡¾è»»¶â³Û¡Ê£±£°¤Ç¾è¤º¤ë¡Ë
+                               IF      TNS-TENSIKIBETU =   5
+                                   COMPUTE TBL-TEN   (IDX-T)
+                                                       =   TNS-TEN
+                                                       *   10
+                               END-IF
+      *                        ÌôºÞ¡¡½ü»»¶â³Û¡Ê£±£°¤Ç½ü¤¹¡Ë
+                               IF      TNS-TENSIKIBETU =   4
+                                   COMPUTE TBL-TEN   (IDX-T)
+                                                       =   TNS-TEN
+                                                       /   10
+                               END-IF
+                           END-IF
+      *
       *                    ±ÕÎÌ
                            IF      TNS-CSYYOURYO   =   ZERO
                                MOVE    1               TO  TBL-CSYYOURYO
@@ -2730,11 +2755,8 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
            MOVE    SPACE               TO  TENSUPLUS-REC
            INITIALIZE                      TENSUPLUS-REC
            MOVE    TNS-SRYCD           TO  TNSP-SRYCD
-      **   MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
-      **   MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
-           MOVE    ORCSTEN-SRYYM       TO  TNSP-YUKOSTYMD(1:6)
-           MOVE    WRK-DD              TO  TNSP-YUKOSTYMD(7:2)
-           MOVE    TNSP-YUKOSTYMD      TO  TNSP-YUKOEDYMD
+           MOVE    TNS-YUKOSTYMD       TO  TNSP-YUKOSTYMD
+           MOVE    TNS-YUKOEDYMD       TO  TNSP-YUKOEDYMD
       *
            MOVE    SPA-HOSPNUM         TO  TNSP-HOSPNUM
            MOVE    TENSUPLUS-REC       TO  MCPDATA-REC
