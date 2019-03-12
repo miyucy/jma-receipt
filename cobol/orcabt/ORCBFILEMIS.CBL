@@ -224,17 +224,16 @@
            MOVE    "2"                 TO  FLMISSV-CODE-TYPE(1)
            MOVE    SPACE               TO  FLMISSV-PUTFLG(1)
            MOVE    SPACE               TO  WRK-TITLE
-           IF      LNK-PRTKANRI-TBL-KEY    =   "RENKEI1"
-               PERFORM 20011-RENKEI1-TITLE-SEC
-           ELSE
-               IF      LNK-PRTKANRI-TBL-KEY    =   "MISRECE1"
+           EVALUATE    LNK-PRTKANRI-TBL-KEY
+               WHEN    "RENKEI1"
+                   PERFORM 20011-RENKEI1-TITLE-SEC
+               WHEN    "MISRECE1"
                    PERFORM 20011-MISRECE1-TITLE-SEC
-               ELSE
-                   IF      LNK-PRTKANRI-TBL-KEY    =   "MISJMAMR"
-                       PERFORM 20011-MISJMAMR-TITLE-SEC
-                   END-IF
-               END-IF
-           END-IF
+               WHEN    "MISJMAMR"
+                   PERFORM 20011-MISJMAMR-TITLE-SEC
+               WHEN    "MIGRATE1"
+                   PERFORM 20011-MIGRATE1-TITLE-SEC
+           END-EVALUATE
            MOVE    WRK-TITLE           TO  FLMISSV-TITLE(1)
            MOVE    WRK-PARA-MONBLOB-ID TO  FLMISSV-TBL-UUID(1)
       *
@@ -364,6 +363,28 @@
            END-IF
            .
        20011-MISJMAMR-TITLE-EXT.
+           EXIT.
+      *****************************************************************
+      *    データ内容（タイトル）の編集（マスタデータ移行）処理
+      *****************************************************************
+       20011-MIGRATE1-TITLE-SEC    SECTION.
+      *
+           MOVE    SPACE               TO  WRK-TITLE
+           EVALUATE    WRK-PARA-TEISYUTUSAKI
+               WHEN    "1"
+                   MOVE    "点数マスタ"        TO  WRK-TITLE
+               WHEN    "2"
+                   MOVE    "チェックマスタ"    TO  WRK-TITLE
+               WHEN    "3"
+                   MOVE    "一般老人置換マスタ"
+                                               TO  WRK-TITLE
+               WHEN    "4"
+                   MOVE    "保険者マスタ"      TO  WRK-TITLE
+               WHEN    "5"
+                   MOVE    "住所マスタ"        TO  WRK-TITLE
+           END-EVALUATE
+           .
+       20011-MIGRATE1-TITLE-EXT.
            EXIT.
       *****************************************************************
       *    終了処理
