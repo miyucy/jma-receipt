@@ -275,3 +275,17 @@ path	key20		{
 		;
 	};
 };
+
+path	chklist		{ 	
+	DBSELECT	{
+		DECLARE tbl_chk_user_chklist_csr CURSOR FOR
+		SELECT *
+		FROM tbl_chk_user
+			WHERE HOSPNUM	  =   :HOSPNUM
+			AND ((CHKKBN      =   '5')
+			OR   (CHKKBN      =   'A')
+			OR   (CHKKBN      =   'B'))
+		ORDER   BY    CHKKBN,SRYCD,GRPNUM,YUKOSTYMD,YUKOEDYMD,CDKBN
+		;
+	};
+};
