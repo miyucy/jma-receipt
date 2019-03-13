@@ -3957,6 +3957,13 @@
       *                用法まとめ分
                            MOVE    "K238"          TO  SPA-ERRCD
                        END-IF
+      *H31.3
+      *                向精神薬長期投与　対象警告なし
+                       IF     (FLG-PSYCHOKI-OK     =   1 )
+                          AND (SPA-SRYYMD          >=  "20190401")
+                           MOVE    SPACE           TO  SPA-ERRCD
+                           MOVE    SPACE           TO  LNK-ORCSC-ERRMSG
+                       END-IF
                    END-IF
                ELSE
       *            ７種類以内
