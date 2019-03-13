@@ -93,6 +93,7 @@ path	all	{
 		SELECT *
 		FROM tbl_hknjainf_user
 		WHERE	HOSPNUM = :HOSPNUM
+                ORDER BY HKNJANUM
  		;
 	};
 };

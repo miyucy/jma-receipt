@@ -542,3 +542,26 @@ path	upd1	{
 	};
 };
 
+path	all 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_user_all_csr CURSOR FOR
+		SELECT *,2
+		FROM tbl_tensu_user
+			WHERE HOSPNUM    =   :HOSPNUM
+			ORDER   BY  SRYCD,YUKOSTYMD
+		;
+	};
+};
+
+path	chklist 	{
+	DBSELECT	{
+		DECLARE tbl_tensu_user_chklist_csr CURSOR FOR
+		SELECT *,2
+		FROM tbl_tensu_user
+			WHERE HOSPNUM    =   :HOSPNUM
+			AND  ((SUBSTR(SRYCD,1,3) = '099')
+			OR    (SUBSTR(SRYCD,1,1) <> '0'))
+			ORDER   BY  SRYCD,YUKOSTYMD
+		;
+	};
+};
