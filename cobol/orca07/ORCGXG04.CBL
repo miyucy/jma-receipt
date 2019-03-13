@@ -265,8 +265,8 @@
            INITIALIZE                      SPA-GMN-AREA
                                            SPA-NAI-AREA
       *
-debug      PERFORM 3101-DATACHK-SEC
-debug      IF      FLG-FILEMIS             =   1
+           PERFORM 3101-DATACHK-SEC
+           IF      FLG-FILEMIS             =   1
                GO  TO  310-SPASET-90
            END-IF
       *
@@ -290,17 +290,13 @@ debug      IF      FLG-FILEMIS             =   1
                MOVE    1                   TO  FLG-FILEMIS
            END-IF
       *
-debug      DISPLAY "TBL-KEY [ " SPA-NAI-XG04-TBL-KEY " ] : "
-                   FLG-FILEMIS
-debug      IF      FLG-FILEMIS             =   1
+           IF      FLG-FILEMIS             =   1
                MOVE    "tbl_file_mis"      TO  MCP-TABLE
                MOVE    "key2"              TO  MCP-PATHNAME
                PERFORM 900-CLOSE-SEC
                PERFORM 4401-DATACHANGE-SEC
                GO  TO  310-SPASET-SEC
            END-IF
-debug *
-debug      DISPLAY "SPA SET !"
            MOVE    SPACE               TO  WRK-FILE-MIS-TBL-GROUP
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   FLG-FILEMIS     =   1
