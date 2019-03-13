@@ -21,6 +21,7 @@ bind	"ORCMUP0042MIGV51"	"OpenCOBOL";
 bind	"ORCMUP0052MIGV51"	"OpenCOBOL";
 bind	"ORCMUP0092MIGV51"	"OpenCOBOL";
 bind	"ORCMUP0102MIGV51"	"OpenCOBOL";
+bind	"ORCBFILEMIS"	"OpenCOBOL";
 
 db	{
 	tbl_dbkanri;
@@ -50,4 +51,5 @@ db	{
 	tbl_tensu_master;
 	tbl_tensu_price;
 	tbl_tensuplus;
+	tbl_file_mis;
 };

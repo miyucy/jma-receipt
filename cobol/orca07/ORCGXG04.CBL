@@ -264,6 +264,12 @@
       *
            INITIALIZE                      SPA-GMN-AREA
                                            SPA-NAI-AREA
+      *
+           PERFORM 3101-DATACHK-SEC
+           IF      FLG-FILEMIS             =   1
+               GO  TO  310-SPASET-90
+           END-IF
+      *
            IF      SPA-NAI-XG04-TBL-KEY
                                        =   SPACE
                MOVE    "RENKEI1"           TO  SPA-NAI-XG04-TBL-KEY
@@ -284,6 +290,13 @@
                MOVE    1                   TO  FLG-FILEMIS
            END-IF
       *
+           IF      FLG-FILEMIS             =   1
+               MOVE    "tbl_file_mis"      TO  MCP-TABLE
+               MOVE    "key2"              TO  MCP-PATHNAME
+               PERFORM 900-CLOSE-SEC
+               PERFORM 4401-DATACHANGE-SEC
+               GO  TO  310-SPASET-SEC
+           END-IF
            MOVE    SPACE               TO  WRK-FILE-MIS-TBL-GROUP
            MOVE    ZERO                TO  IDX
            PERFORM UNTIL   FLG-FILEMIS     =   1
@@ -366,12 +379,38 @@
            MOVE    "tbl_file_mis"      TO  MCP-TABLE
            MOVE    "key2"              TO  MCP-PATHNAME
            PERFORM 900-CLOSE-SEC
+           .
+       310-SPASET-90.
       *
            MOVE    IDX                 TO  SPA-GMN-MAX
            MOVE    1                   TO  FLG-LIST-ROW
            MOVE    1                   TO  SPA-GMN-CUR
            .
        310-SPASET-EXT.
+           EXIT.
+      *****************************************************************
+      *    スパ初期編集処理
+      *****************************************************************
+       3101-DATACHK-SEC            SECTION.
+      *
+           INITIALIZE                      FILE-MIS-REC
+           MOVE    SPA-HOSPNUM         TO  FILE-MIS-HOSPNUM
+           MOVE    FILE-MIS-REC        TO  MCPDATA-REC
+           MOVE    "tbl_file_mis"      TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 900-DBSELECT-SEC
+           IF      MCP-RC              =   ZERO
+               MOVE    "tbl_file_mis"      TO  MCP-TABLE
+               MOVE    "all"               TO  MCP-PATHNAME
+               PERFORM 900-FILE-MIS-READ-SEC
+           ELSE
+               MOVE    1                   TO  FLG-FILEMIS
+           END-IF
+           MOVE    "tbl_file_mis"      TO  MCP-TABLE
+           MOVE    "all"               TO  MCP-PATHNAME
+           PERFORM 900-CLOSE-SEC
+           .
+       3101-DATACHK-EXT.
            EXIT.
       *****************************************************************
       *    確認画面処理
@@ -755,18 +794,29 @@
       *****************************************************************
        440-DATACHANGE-SEC          SECTION.
       *
+           PERFORM 4401-DATACHANGE-SEC
+      *
+           PERFORM 310-SPASET-SEC
+           .
+       440-DATACHANGE-EXT.
+           EXIT.
+      *****************************************************************
+      *    データ切替
+      *****************************************************************
+       4401-DATACHANGE-SEC         SECTION.
+      *
            EVALUATE    SPA-NAI-XG04-TBL-KEY
                WHEN    "RENKEI1"
                    MOVE    "MISRECE1"          TO  SPA-NAI-XG04-TBL-KEY
                WHEN    "MISRECE1"
                    MOVE    "MISJMAMR"          TO  SPA-NAI-XG04-TBL-KEY
                WHEN    "MISJMAMR"
+                   MOVE    "MIGRATE1"          TO  SPA-NAI-XG04-TBL-KEY
+               WHEN    "MIGRATE1"
                    MOVE    "RENKEI1"           TO  SPA-NAI-XG04-TBL-KEY
            END-EVALUATE
-      *
-           PERFORM 310-SPASET-SEC
            .
-       440-DATACHANGE-EXT.
+       4401-DATACHANGE-EXT.
            EXIT.
       *****************************************************************
       *    情報削除画面へ

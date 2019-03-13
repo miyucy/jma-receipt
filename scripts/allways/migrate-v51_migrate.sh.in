@@ -25,6 +25,24 @@ fi
 HOSPNUM=${1}
 LDDIRECTORY=${LDDEFDIR}/dirmigv51
 
+EXDATE=$(date  '+%Y%m%d%H%M')
+RUNDATE="${EXDATE}00"
+
+prf2monblob() {
+  PRFNAME="${HOSPNUM}${PROID}-prf.csv"
+  CSVFILE="/tmp/${PRFNAME}"
+  echo "--- file name  [ ${PRFFILE} => ${CSVFILE} ]"
+  nkf -s ${PRFFILE} > ${CSVFILE}
+
+  #if [ -s ${CSVFILE} ]; then
+    RECCNT="$(wc -l ${CSVFILE} | awk '{i=split($0,arr," ");printf("%06d",arr[1])}')"
+    ${MONBLOB} -dir ${LDDIRECTORY} -import ${CSVFILE} > /tmp/blobid-$$
+    MONBLOBID=`cat /tmp/blobid-$$`
+    PARAM="1,MIGRATE1,${RUNDATE},${1},,${RUNDATE:0:8},MIGRATE,1,,,,${1},0000001,MIGRATE,01,0,/tmp,${PRFNAME},${RECCNT},${MONBLOBID}"
+    ${DBSTUB} -dir ${LDDIRECTORY} -bd migv51 ORCBFILEMIS -parameter "${PARAM}"
+  #fi
+}
+
 # 住所テーブル
 
 echo "住所テーブルを開始します。"
@@ -41,6 +59,7 @@ else
   RC=${PIPESTATUS[0]}
   chmod 644 ${PRFFILE}
   if [ ${RC} = 0 ]; then
+    prf2monblob 5
     echo "住所テーブルは終了しました。"
   else
     echo " "
@@ -68,6 +87,7 @@ else
   RC=${PIPESTATUS[0]}
   chmod 644 ${PRFFILE}
   if [ ${RC} = 0 ]; then
+    prf2monblob 2
     echo "チェックテーブルは終了しました。"
   else
     echo " "
@@ -95,6 +115,7 @@ else
   RC=${PIPESTATUS[0]}
   chmod 644 ${PRFFILE}
   if [ ${RC} = 0 ]; then
+    prf2monblob 4
     echo "保険者テーブルは終了しました。"
   else
     echo " "
@@ -122,6 +143,7 @@ else
   RC=${PIPESTATUS[0]}
   chmod 644 ${PRFFILE}
   if [ ${RC} = 0 ]; then
+    prf2monblob 3
     echo "一般老人置換テーブルは終了しました。"
   else
     echo " "
@@ -149,6 +171,7 @@ else
   RC=${PIPESTATUS[0]}
   chmod 644 ${PRFFILE}
   if [ ${RC} = 0 ]; then
+    prf2monblob 1
     echo "点数テーブルは終了しました。"
   else
     echo " "

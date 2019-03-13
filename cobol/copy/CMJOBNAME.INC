@@ -132,10 +132,14 @@
            03  FILLER               PIC X(40)   VALUE
                                     "診療情報フォーマット".
       *
+           03  FILLER               PIC X(08)   VALUE   "MIGRATE1".
+           03  FILLER               PIC X(40)   VALUE
+                                    "マスタデータ移行".
+      *
        01  MNAME-DATA-REC-R         REDEFINES   MNAME-DATA-REC.
-           03  MNAME-TBL-OCC        OCCURS      29  INDEXED TBL-IDX.
+           03  MNAME-TBL-OCC        OCCURS      30  INDEXED TBL-IDX.
                05  MNAME-SHELLID    PIC X(08).
                05  MNAME-JOBNAME    PIC X(40).
       *
-       01  MNAME-MAX                PIC 9(04)   VALUE   29.
+       01  MNAME-MAX                PIC 9(04)   VALUE   30.
       *
