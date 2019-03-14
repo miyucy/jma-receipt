@@ -1299,6 +1299,13 @@
                MOVE    "0005"              TO  SPA-ERRCD
            ELSE
                MOVE    KANACHK-MAX         TO  WRK-CD-MCNT
+      *
+      *        間に空白がある時、エラー
+               IF      KANACHK-RC2     NOT =   ZERO
+                   MOVE    "0023"          TO  SPA-ERRCD
+                   GO      TO    41021-INPUTCD-CHK-EXT
+               END-IF
+      *
       *        全角
                IF      KANACHK-SYUBETU     =   2
                    MOVE    1               TO  FLG-KANJI
@@ -1521,6 +1528,16 @@
                    MOVE    4               TO  SPA-GMN-Z07-CUR
                    MOVE    01              TO  SPA-NAI-CURIDX
                END-IF
+           END-IF
+      *
+      *H31.3
+      *    画面表示コードが１０文字以上をエラーとする
+           IF     (SPA-GMN-INPUTCD(1)  NOT =   SPACE )  AND
+                  (SPA-GMN-INPUTCD(1)(11:)
+                                       NOT =   SPACE )
+               MOVE    "0022"          TO  SPA-ERRCD
+               MOVE    4               TO  SPA-GMN-Z07-CUR
+               MOVE    01              TO  SPA-NAI-CURIDX
            END-IF
       *
            .
@@ -3194,6 +3211,17 @@
                WHEN    "0017"
                    MOVE    "患者禁忌薬剤置換指示入力エラー"
                                                  TO  SPA-ERRMSG
+      *H31.3
+               WHEN    "0022"
+                   STRING  "表示入力コードは半角１０文字、"
+                           "全角５文字までにして下さい。"
+                                         DELIMITED BY SIZE
+                                                 INTO  SPA-ERRMSG
+                   END-STRING
+               WHEN    "0023"
+                   MOVE    "文字の間に空白は入力できません。"
+                                                 TO  SPA-ERRMSG
+      *
                WHEN    "0200"  THRU  "0206"
                    MOVE    "チェックマスタ更新エラー"
                                                  TO  SPA-ERRMSG
