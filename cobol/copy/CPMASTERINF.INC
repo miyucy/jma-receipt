@@ -36,6 +36,10 @@
                05 PIC X(50) VALUE  "チェック".
                05 PIC X(01) VALUE  "1".
       *
+               05 PIC X(50) VALUE  "tbl_chksnd".
+               05 PIC X(50) VALUE  "チェック２".
+               05 PIC X(01) VALUE  "1".
+      *
                05 PIC X(50) VALUE  "tbl_etensu_1".
                05 PIC X(50) VALUE  "電子点数表１".
                05 PIC X(01) VALUE  "0".
@@ -216,11 +220,15 @@
                05 PIC X(50) VALUE  "統計覚書".
                05 PIC X(01) VALUE  "1".
       *
+               05 PIC X(50) VALUE  "tbl_yakujyo".
+               05 PIC X(50) VALUE  "薬剤情報".
+               05 PIC X(01) VALUE  "1".
+      *
            03  MASTERINF-R  REDEFINES  MASTERINF-VAL.
-               05  MASTERINF-OCC   OCCURS    48.
+               05  MASTERINF-OCC   OCCURS    50.
                    07  MASTERINF-ID    PIC X(50).
                    07  MASTERINF-NAME  PIC X(50).
                    07  MASTERINF-EXISTS-UPYMD
                                        PIC X(1).
            03  MASTERINF-MAX       PIC 9(03)
-                                   VALUE     48.
+                                   VALUE     50.
