@@ -655,9 +655,10 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   16 )
       *
-               IF    ( IDX0                NOT =   16 )
-                 OR  ( SYU-HKNTEN (IDX0)   NOT =   ZERO )
-                 OR  ( SYU-TGMONEY(IDX0)   NOT =   ZERO )
+               IF    ( IDX0                    NOT =   16 )
+                 OR  ( SYU-HKNTEN (IDX0)       NOT =   ZERO )
+                 OR  ( SYU-TGMONEY(IDX0)       NOT =   ZERO )
+                 OR  ( SYU-TGMONEY-TAX (IDX0)  NOT =   ZERO )
                        MOVE    SS015-SRYITEML (IDX0)
                                TO  INCOMERES02-SRYITEM-KBN  (IDX0)
                        MOVE    SS015-SRYITEMMEIL (IDX0)
