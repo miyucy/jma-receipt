@@ -685,9 +685,10 @@
            PERFORM VARYING IDX0    FROM    1   BY  1
                    UNTIL ( IDX0    >   16 )
       *
-               IF    ( IDX0                NOT =   16 )
-                 OR  ( SYU-HKNTEN (IDXA)   NOT =   ZERO )
-                 OR  ( SYU-TGMONEY(IDXA)   NOT =   ZERO )
+               IF    ( IDX0                    NOT =   16 )
+                 OR  ( SYU-HKNTEN (IDX0)       NOT =   ZERO )
+                 OR  ( SYU-TGMONEY(IDX0)       NOT =   ZERO )
+                 OR  ( SYU-TGMONEY-TAX (IDX0)  NOT =   ZERO )
                    MOVE    TBL-HKNTEN-KBN (IDX0)
                                TO  ICINFRES-SRYITEM-KBN  (IDXA IDX0)
                    MOVE    TBL-HKNTEN-MEI (IDX0)
