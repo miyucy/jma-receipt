@@ -150,6 +150,11 @@
       *    排他制御
            COPY    "CPORCSLOCK.INC".
       *
+       01  UIDIO-AREA.
+           03  UIDIO-RET               PIC X(2).
+           03  UIDIO-UID               PIC X(36).
+       01  UIDIO-ST                    PIC 9(2).
+      *
       *****************************************************************
       *    ファイルレイアウト
       *****************************************************************
@@ -230,7 +235,8 @@
                                        ORCSMCNDATEAREA
       *
            IF    ( INCOMEREQ01-ORCA-UID  =   SPACE )
-               MOVE    SPA-TERMID  TO  SPA-API-ORCA-UID
+               PERFORM 800-ORCUIDSET-SEC
+               MOVE    UIDIO-UID   TO  SPA-API-ORCA-UID
            ELSE
                MOVE    INCOMEREQ01-ORCA-UID
                                    TO  SPA-API-ORCA-UID
@@ -1176,6 +1182,19 @@
       *
            .
        800-LENGTH-EXT.
+           EXIT.
+      *****************************************************************
+      *    UID取得処理
+      *****************************************************************
+       800-ORCUIDSET-SEC               SECTION.
+      *
+           INITIALIZE                  UIDIO-AREA
+           CALL    "orcuidset"         USING
+                                       UIDIO-ST
+                                       UIDIO-AREA
+      *
+           .
+       800-ORCUIDSET-EXT.
            EXIT.
       *****************************************************************
       *    エラーメッセージ編集処理
