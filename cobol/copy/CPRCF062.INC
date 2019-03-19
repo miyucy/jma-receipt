@@ -161,6 +161,8 @@
       *  04.08.10    NACL-門脇    17/10/18  入院料と異なる保険組み合わせ
       *                                     での食事算定対応
       *  04.08.11    NACL-門脇    18/03/27  平成３０年４月改正対応
+      *
+      *  05.00.01    NACL-門脇    19/03/13  システム管理２０１０機能追加対応
       ************************************************************
       *01  RECE62-REC.
            03  RECE62-KEY.
@@ -782,6 +784,7 @@
                    07  RECE62-EKF-ENCHGKBN-K   PIC  X(01).
                    07  RECE62-EKF-ENCHGKBN-Y   PIC  X(01).
                    07  RECE62-EKF-KOH2SKJKBN   PIC  X(01).
+                   07  RECE62-EKF-FTNHASUKBN   PIC  X(01).
       *
       *実日数・請求点記載フラグ
            03  RECE62-JSKISAIFLG          PIC  X(01).
