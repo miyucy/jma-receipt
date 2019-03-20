@@ -441,6 +441,22 @@
                        09  SPA-GMN-KOH2SKJTAIKBN              PIC X(01).
                        09  SPA-GMN-KOH2SKJTAIKBNF             PIC X(01).
                        09  SPA-GMN-KOH2SKJTAIKBNMEI           PIC X(38).
+                   07  SPA-GMN-FTNHASUKBNG-G.
+                       09  SPA-GMN-FTNHASUKBNG                PIC X(01).
+                       09  SPA-GMN-FTNHASUKBNGF               PIC X(01).
+                       09  SPA-GMN-FTNHASUKBNGMEI             PIC X(78).
+                   07  SPA-GMN-FTNHASUTAIKBNG-G.
+                       09  SPA-GMN-FTNHASUTAIKBNG             PIC X(01).
+                       09  SPA-GMN-FTNHASUTAIKBNGF            PIC X(01).
+                       09  SPA-GMN-FTNHASUTAIKBNGMEI          PIC X(38).
+                   07  SPA-GMN-FTNHASUKBNN-G.
+                       09  SPA-GMN-FTNHASUKBNN                PIC X(01).
+                       09  SPA-GMN-FTNHASUKBNNF               PIC X(01).
+                       09  SPA-GMN-FTNHASUKBNNMEI             PIC X(78).
+                   07  SPA-GMN-FTNHASUTAIKBNN-G.
+                       09  SPA-GMN-FTNHASUTAIKBNN             PIC X(01).
+                       09  SPA-GMN-FTNHASUTAIKBNNF            PIC X(01).
+                       09  SPA-GMN-FTNHASUTAIKBNNMEI          PIC X(38).
                    07  SPA-GMN-JYUHENKBN-G.
                        09  SPA-GMN-JYUHENKBN               PIC X(01).
                        09  SPA-GMN-JYUHENKBNF              PIC X(01).
@@ -954,6 +970,34 @@
                            11  SPA-GMN-KOH2SKJKBNL          PIC X(01).
                            11  SPA-GMN-KOH2SKJKBNFL         PIC X(01).
                            11  SPA-GMN-KOH2SKJKBNMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-FTNHASUKBNGLST-G.
+                       09  SPA-GMN-FTNHASUKBNG-MAX           PIC 9(03).
+                       09  SPA-GMN-FTNHASUKBNGLST            OCCURS 10.
+                           11  SPA-GMN-FTNHASUKBNGL          PIC X(01).
+                           11  SPA-GMN-FTNHASUKBNGFL         PIC X(01).
+                           11  SPA-GMN-FTNHASUKBNGMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-FTNHASUTAIKBNGLST-G.
+                       09  SPA-GMN-FTNHASUTAIKBNG-MAX        PIC 9(03).
+                       09  SPA-GMN-FTNHASUTAIKBNGLST         OCCURS 10.
+                           11  SPA-GMN-FTNHASUTAIKBNGL       PIC X(01).
+                           11  SPA-GMN-FTNHASUTAIKBNGFL      PIC X(01).
+                           11  SPA-GMN-FTNHASUTAIKBNGMEIL    PIC X(38).
+      *
+                   07  SPA-GMN-FTNHASUKBNNLST-G.
+                       09  SPA-GMN-FTNHASUKBNN-MAX           PIC 9(03).
+                       09  SPA-GMN-FTNHASUKBNNLST            OCCURS 10.
+                           11  SPA-GMN-FTNHASUKBNNL          PIC X(01).
+                           11  SPA-GMN-FTNHASUKBNNFL         PIC X(01).
+                           11  SPA-GMN-FTNHASUKBNNMEIL       PIC X(78).
+      *
+                   07  SPA-GMN-FTNHASUTAIKBNNLST-G.
+                       09  SPA-GMN-FTNHASUTAIKBNN-MAX        PIC 9(03).
+                       09  SPA-GMN-FTNHASUTAIKBNNLST         OCCURS 10.
+                           11  SPA-GMN-FTNHASUTAIKBNNL       PIC X(01).
+                           11  SPA-GMN-FTNHASUTAIKBNNFL      PIC X(01).
+                           11  SPA-GMN-FTNHASUTAIKBNNMEIL    PIC X(38).
       *
                    07  SPA-GMN-JYUHENKBNLST-G.
                        09  SPA-GMN-JYUHENKBN-MAX           PIC 9(03).
@@ -1806,6 +1850,18 @@
       *    入院時食事療養記載（公費２欄置き換え）コンボ編集処理
            PERFORM 3110-KOH2SKJKBNLST-SEC
       *
+      *    一部負担金記載１円未満端数処理（外来）コンボ編集処理
+           PERFORM 3110-FTNHASUKBNGLST-SEC
+      *
+      *    一部負担金記載１円未満端数処理（外来）対象区分コンボ編集処理
+           PERFORM 3110-FTNHASUTAIKBNGLST-SEC
+      *
+      *    一部負担金記載１円未満端数処理（入院）コンボ編集処理
+           PERFORM 3110-FTNHASUKBNNLST-SEC
+      *
+      *    一部負担金記載１円未満端数処理（入院）対象区分コンボ編集処理
+           PERFORM 3110-FTNHASUTAIKBNNLST-SEC
+      *
       *    月途中受給者証変更時負担計算コンボ編集処理
            PERFORM 3110-JYUHENKBNLST-SEC
       *
@@ -2578,6 +2634,78 @@
       *
            .
        3110-KOH2SKJKBNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（外来）コンボ編集処理
+      *****************************************************************
+       3110-FTNHASUKBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-FTNHASUKBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-FTNHASUKBNGL    (1)
+           MOVE  "１円未満を切り捨てた金額記載"
+                                   TO  SPA-GMN-FTNHASUKBNGMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-FTNHASUKBNGL    (2)
+           MOVE  "１円未満を切り上げた金額記載"
+                                   TO  SPA-GMN-FTNHASUKBNGMEIL (2)
+      *
+           MOVE    2               TO  SPA-GMN-FTNHASUKBNG-MAX
+      *
+           .
+       3110-FTNHASUKBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（外来）対象区分コンボ編集処理
+      *****************************************************************
+       3110-FTNHASUTAIKBNGLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-FTNHASUTAIKBNGLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-FTNHASUTAIKBNGL    (1)
+           MOVE  "レセプト請求分全て"
+                                   TO  SPA-GMN-FTNHASUTAIKBNGMEIL (1)
+      *
+           MOVE    1               TO  SPA-GMN-FTNHASUTAIKBNG-MAX
+      *
+           .
+       3110-FTNHASUTAIKBNGLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（入院）コンボ編集処理
+      *****************************************************************
+       3110-FTNHASUKBNNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-FTNHASUKBNNLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-FTNHASUKBNNL    (1)
+           MOVE  "１円未満を切り捨てた金額記載"
+                                   TO  SPA-GMN-FTNHASUKBNNMEIL (1)
+      *
+           MOVE  "1"               TO  SPA-GMN-FTNHASUKBNNL    (2)
+           MOVE  "１円未満を切り上げた金額記載"
+                                   TO  SPA-GMN-FTNHASUKBNNMEIL (2)
+      *
+           MOVE    2               TO  SPA-GMN-FTNHASUKBNN-MAX
+      *
+           .
+       3110-FTNHASUKBNNLST-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（入院）対象区分コンボ編集処理
+      *****************************************************************
+       3110-FTNHASUTAIKBNNLST-SEC        SECTION.
+      *
+           INITIALIZE                  SPA-GMN-FTNHASUTAIKBNNLST-G
+      *
+           MOVE  "0"               TO  SPA-GMN-FTNHASUTAIKBNNL    (1)
+           MOVE  "レセプト請求分全て"
+                                   TO  SPA-GMN-FTNHASUTAIKBNNMEIL (1)
+      *
+           MOVE    1               TO  SPA-GMN-FTNHASUTAIKBNN-MAX
+      *
+           .
+       3110-FTNHASUTAIKBNNLST-EXT.
            EXIT.
       *****************************************************************
       *    負担金未発生分の回数カウント（外来）コンボ編集処理
@@ -4465,6 +4593,10 @@
            MOVE    W65-ENCHGTAIKBNYN   TO  SPA-GMN-ENCHGTAIKBNYN-G
            MOVE    W65-KOH2SKJKBN      TO  SPA-GMN-KOH2SKJKBN-G
            MOVE    W65-KOH2SKJTAIKBN   TO  SPA-GMN-KOH2SKJTAIKBN-G
+           MOVE    W65-FTNHASUKBNG     TO  SPA-GMN-FTNHASUKBNG-G
+           MOVE    W65-FTNHASUTAIKBNG  TO  SPA-GMN-FTNHASUTAIKBNG-G
+           MOVE    W65-FTNHASUKBNN     TO  SPA-GMN-FTNHASUKBNN-G
+           MOVE    W65-FTNHASUTAIKBNN  TO  SPA-GMN-FTNHASUTAIKBNN-G
            MOVE    W65-KAICNTKBNG      TO  SPA-GMN-KAICNTKBNG-G
            MOVE    W65-KAICNTTAIKBNG   TO  SPA-GMN-KAICNTTAIKBNG-G
            MOVE    W65-CYOKEIKBNG      TO  SPA-GMN-CYOKEIKBNG-G
@@ -5085,6 +5217,22 @@
       *
            IF    ( SPA-ERRCD   =   SPACE )
                PERFORM 4101-KOH2SKJTAIKBN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-FTNHASUKBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-FTNHASUTAIKBNG-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-FTNHASUKBNN-CHK-SEC
+           END-IF
+      *
+           IF    ( SPA-ERRCD   =   SPACE )
+               PERFORM 4101-FTNHASUTAIKBNN-CHK-SEC
            END-IF
       *
            IF    ( SPA-ERRCD   NOT =   SPACE )
@@ -6054,6 +6202,10 @@
            MOVE    SPA-GMN-ENCHGTAIKBNYN   TO SYS-2010-ENCHG-TAIKBN-Y-N
            MOVE    SPA-GMN-KOH2SKJKBN      TO SYS-2010-KOH2SKJKBN
            MOVE    SPA-GMN-KOH2SKJTAIKBN   TO SYS-2010-KOH2SKJ-TAIKBN
+           MOVE    SPA-GMN-FTNHASUKBNG     TO SYS-2010-FTNHASUKBN-G
+           MOVE    SPA-GMN-FTNHASUTAIKBNG  TO SYS-2010-FTNHASU-TAIKBN-G
+           MOVE    SPA-GMN-FTNHASUKBNN     TO SYS-2010-FTNHASUKBN-N
+           MOVE    SPA-GMN-FTNHASUTAIKBNN  TO SYS-2010-FTNHASU-TAIKBN-N
            MOVE    SPA-GMN-KAICNTKBNG      TO SYS-2010-KAICNTKBN-G
            MOVE    SPA-GMN-KAICNTTAIKBNG   TO SYS-2010-KAICNT-TAIKBN-G
            MOVE    SPA-GMN-CYOKEIKBNG      TO SYS-2010-CYOKEIKBN-G
@@ -7316,6 +7468,24 @@
                                        TO  WRK-CMB-CD
            PERFORM 4200-COMMONTAIKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOH2SKJTAIKBN-G
+      *
+           MOVE    SYS-2010-FTNHASUKBN-G TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNG-G
+      *
+           MOVE    SYS-2010-FTNHASU-TAIKBN-G
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNG-G
+      *
+           MOVE    SYS-2010-FTNHASUKBN-N TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNN-G
+      *
+           MOVE    SYS-2010-FTNHASU-TAIKBN-N
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNN-G
       *
            MOVE    SYS-2010-KAICNTKBN-G
                                        TO  WRK-CMB-CD
@@ -9695,6 +9865,64 @@
        4101-KOH2SKJTAIKBN-CHK-EXT.
            EXIT.
       *****************************************************************
+      *    一部負担金記載１円未満端数処理（外来）チェック処理
+      *****************************************************************
+       4101-FTNHASUKBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-FTNHASUKBNG TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNG-G
+      *
+           IF    ( SPA-GMN-FTNHASUKBNG  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-FTNHASUTAIKBNG
+           END-IF
+      *
+           .
+       4101-FTNHASUKBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（外来）対象区分チェック処理
+      *****************************************************************
+       4101-FTNHASUTAIKBNG-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-FTNHASUTAIKBNG
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNG-G
+      *
+           .
+       4101-FTNHASUTAIKBNG-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（入院）チェック処理
+      *****************************************************************
+       4101-FTNHASUKBNN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-FTNHASUKBNN TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNN-G
+      *
+           IF    ( SPA-GMN-FTNHASUKBNN  =   "0" )
+               MOVE    "0"             TO  SPA-GMN-FTNHASUTAIKBNN
+           END-IF
+      *
+           .
+       4101-FTNHASUKBNN-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数処理（入院）対象区分チェック処理
+      *****************************************************************
+       4101-FTNHASUTAIKBNN-CHK-SEC      SECTION.
+      *
+           MOVE    SPA-GMN-FTNHASUTAIKBNN
+                                       TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNN-G
+      *
+           .
+       4101-FTNHASUTAIKBNN-CHK-EXT.
+           EXIT.
+      *****************************************************************
       *    負担金未発生分の回数カウント（外来）チェック処理
       *****************************************************************
        4101-KAICNTKBNG-CHK-SEC      SECTION.
@@ -10886,6 +11114,26 @@
            PERFORM 4200-KOH2SKJKBNLST-CHK-SEC
            MOVE    WRK-CMB-ITM         TO  SPA-GMN-KOH2SKJKBN-G
       *
+      *    一部負担金記載１円未満端数（外来）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNG-G
+      *
+      *    一部負担金記載１円未満端数対象区分（外来）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNGLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNG-G
+      *
+      *    一部負担金記載１円未満端数（入院）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUKBNN-G
+      *
+      *    一部負担金記載１円未満端数対象区分（入院）
+           MOVE    "0"             TO  WRK-CMB-CD
+           PERFORM 4200-FTNHASUTAIKBNNLST-CHK-SEC
+           MOVE    WRK-CMB-ITM         TO  SPA-GMN-FTNHASUTAIKBNN-G
+      *
       *    負担金未発生分の回数カウント（外来）
            MOVE    "0"             TO  WRK-CMB-CD
            PERFORM 4200-KAICNTKBNGLST-CHK-SEC
@@ -11950,6 +12198,10 @@
            MOVE    SPA-GMN-ENCHGTAIKBNYN-G     TO  W65-ENCHGTAIKBNYN
            MOVE    SPA-GMN-KOH2SKJKBN-G        TO  W65-KOH2SKJKBN
            MOVE    SPA-GMN-KOH2SKJTAIKBN-G     TO  W65-KOH2SKJTAIKBN
+           MOVE    SPA-GMN-FTNHASUKBNG-G       TO  W65-FTNHASUKBNG
+           MOVE    SPA-GMN-FTNHASUTAIKBNG-G    TO  W65-FTNHASUTAIKBNG
+           MOVE    SPA-GMN-FTNHASUKBNN-G       TO  W65-FTNHASUKBNN
+           MOVE    SPA-GMN-FTNHASUTAIKBNN-G    TO  W65-FTNHASUTAIKBNN
            MOVE    SPA-GMN-KAICNTKBNG-G        TO  W65-KAICNTKBNG
            MOVE    SPA-GMN-KAICNTTAIKBNG-G     TO  W65-KAICNTTAIKBNG
            MOVE    SPA-GMN-CYOKEIKBNG-G        TO  W65-CYOKEIKBNG
@@ -12532,6 +12784,42 @@
                    UNTIL ( IDX-CMB >   SPA-GMN-KOH2SKJKBN-MAX )
                MOVE    SPA-GMN-KOH2SKJKBNLST(IDX-CMB)
                                        TO  W65-KOH2SKJKBN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    一部負担金記載１円未満端数処理（外来）
+           MOVE    SPA-GMN-FTNHASUKBNG-MAX
+                                   TO  W65-FTNHASUKBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUKBNG-MAX )
+               MOVE    SPA-GMN-FTNHASUKBNGLST(IDX-CMB)
+                                   TO  W65-FTNHASUKBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    一部負担金記載１円未満端数処理（外来）対象区分
+           MOVE    SPA-GMN-FTNHASUTAIKBNG-MAX
+                                   TO  W65-FTNHASUTAIKBNG-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUTAIKBNG-MAX )
+               MOVE    SPA-GMN-FTNHASUTAIKBNGLST(IDX-CMB)
+                                   TO  W65-FTNHASUTAIKBNG-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    一部負担金記載１円未満端数処理（入院）
+           MOVE    SPA-GMN-FTNHASUKBNN-MAX
+                                   TO  W65-FTNHASUKBNN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUKBNN-MAX )
+               MOVE    SPA-GMN-FTNHASUKBNNLST(IDX-CMB)
+                                   TO  W65-FTNHASUKBNN-ITEM (IDX-CMB)
+           END-PERFORM
+      *
+      *    一部負担金記載１円未満端数処理（入院）対象区分
+           MOVE    SPA-GMN-FTNHASUTAIKBNN-MAX
+                                   TO  W65-FTNHASUTAIKBNN-COUNT
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUTAIKBNN-MAX )
+               MOVE    SPA-GMN-FTNHASUTAIKBNNLST(IDX-CMB)
+                                   TO  W65-FTNHASUTAIKBNN-ITEM (IDX-CMB)
            END-PERFORM
       *
       *    負担金未発生分の回数カウント（外来）
@@ -13129,6 +13417,10 @@
                                        W65-ENCHGTAIKBNYN-ITEM-STATE
                                        W65-KOH2SKJTAIKBN-STATE
                                        W65-KOH2SKJTAIKBN-ITEM-STATE
+                                       W65-FTNHASUTAIKBNG-STATE
+                                       W65-FTNHASUTAIKBNG-ITEM-STATE
+                                       W65-FTNHASUTAIKBNN-STATE
+                                       W65-FTNHASUTAIKBNN-ITEM-STATE
                                        W65-JYUHENTAIKBN-STATE
                                        W65-JYUHENTAIKBN-ITEM-STATE
                                        W65-JGNFTNTAIKBN-STATE
@@ -13539,6 +13831,16 @@
                                    TO  W65-KOH2SKJTAIKBN-STATE
                                        W65-KOH2SKJTAIKBN-ITEM-STATE
            END-IF
+           IF    ( SPA-GMN-FTNHASUKBNG  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNHASUTAIKBNG-STATE
+                                       W65-FTNHASUTAIKBNG-ITEM-STATE
+           END-IF
+           IF    ( SPA-GMN-FTNHASUKBNN  =  "0" )
+               MOVE    WIDGET-INSENSITIVE
+                                   TO  W65-FTNHASUTAIKBNN-STATE
+                                       W65-FTNHASUTAIKBNN-ITEM-STATE
+           END-IF
            IF    ( SPA-GMN-KAICNTKBNG  =  "0" )
                MOVE    WIDGET-INSENSITIVE
                                    TO  W65-KAICNTTAIKBNG-STATE
@@ -13877,6 +14179,14 @@
                MOVE    "KOH2SKJKBN"        TO  MCP-WIDGET
            WHEN    518
                MOVE    "KOH2SKJTAIKBN"     TO  MCP-WIDGET
+           WHEN    519
+               MOVE    "FTNHASUKBNG"       TO  MCP-WIDGET
+           WHEN    520
+               MOVE    "FTNHASUTAIKBNG"    TO  MCP-WIDGET
+           WHEN    521
+               MOVE    "FTNHASUKBNN"       TO  MCP-WIDGET
+           WHEN    522
+               MOVE    "FTNHASUTAIKBNN"    TO  MCP-WIDGET
       *
            WHEN    601
                MOVE    "JYUHENKBN"         TO  MCP-WIDGET
@@ -14273,6 +14583,14 @@
            WHEN    "KOH2SKJKBN"
                MOVE    518                 TO  SPA-GMN-CUR
            WHEN    "KOH2SKJTAIKBN"
+               MOVE    519                 TO  SPA-GMN-CUR
+           WHEN    "FTNHASUKBNG"
+               MOVE    520                 TO  SPA-GMN-CUR
+           WHEN    "FTNHASUTAIKBNG"
+               MOVE    521                 TO  SPA-GMN-CUR
+           WHEN    "FTNHASUKBNN"
+               MOVE    522                 TO  SPA-GMN-CUR
+           WHEN    "FTNHASUTAIKBNN"
                MOVE    004                 TO  SPA-GMN-CUR
            WHEN    "JYUHENKBN"
                MOVE    602                 TO  SPA-GMN-CUR
@@ -14795,6 +15113,20 @@
       *
            IF    ( SPA-GMN-CUR     =   518 )
                IF    ( W65-KOH2SKJTAIKBN-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    519                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   520 )
+               IF    ( W65-FTNHASUTAIKBNG-STATE
+                                       =   WIDGET-INSENSITIVE )
+                   MOVE    521                 TO  SPA-GMN-CUR
+               END-IF
+           END-IF
+      *
+           IF    ( SPA-GMN-CUR     =   522 )
+               IF    ( W65-FTNHASUTAIKBNN-STATE
                                        =   WIDGET-INSENSITIVE )
                    MOVE    004                 TO  SPA-GMN-CUR
                END-IF
@@ -16602,6 +16934,122 @@
       *
            .
        4200-KOH2SKJKBNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数（外来）コンボチェック処理
+      *****************************************************************
+       4200-FTNHASUKBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUKBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-FTNHASUKBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-FTNHASUKBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-FTNHASUKBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-FTNHASUKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数（外来）コンボチェック処理
+      *****************************************************************
+       4200-FTNHASUTAIKBNGLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUTAIKBNG-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-FTNHASUTAIKBNGL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-FTNHASUTAIKBNGLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-FTNHASUTAIKBNGLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-FTNHASUTAIKBNGLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数（入院）コンボチェック処理
+      *****************************************************************
+       4200-FTNHASUKBNNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUKBNN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-FTNHASUKBNNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-FTNHASUKBNNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-FTNHASUKBNNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-FTNHASUKBNNLST-CHK-EXT.
+           EXIT.
+      *****************************************************************
+      *    一部負担金記載１円未満端数（入院）コンボチェック処理
+      *****************************************************************
+       4200-FTNHASUTAIKBNNLST-CHK-SEC          SECTION.
+      *
+           INITIALIZE                  WRK-CMB-ITM-G
+      *
+           PERFORM VARYING IDX-CMB FROM    1   BY  1
+                   UNTIL ( IDX-CMB >   SPA-GMN-FTNHASUTAIKBNN-MAX )
+                    OR   ( WRK-CMB-ITM NOT =   SPACE )
+      *
+               IF    ( SPA-GMN-FTNHASUTAIKBNNL (IDX-CMB)
+                                       =   WRK-CMB-CD )
+      *
+                   MOVE    SPA-GMN-FTNHASUTAIKBNNLST (IDX-CMB)
+                                   TO  WRK-CMB-ITM
+      *
+               END-IF
+      *
+           END-PERFORM
+      *
+           IF    ( WRK-CMB-ITM     =   SPACE )
+               MOVE    SPA-GMN-FTNHASUTAIKBNNLST (1)
+                                   TO  WRK-CMB-ITM
+           END-IF
+      *
+           .
+       4200-FTNHASUTAIKBNNLST-CHK-EXT.
            EXIT.
       *****************************************************************
       *    負担金未発生分の回数カウント（外来）コンボチェック処理
