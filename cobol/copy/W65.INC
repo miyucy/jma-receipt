@@ -524,6 +524,26 @@
                     06  W65-KOH2SKJTAIKBN-COUNT  PIC S9(9) BINARY.
                     06  W65-KOH2SKJTAIKBN-ITEM   PIC X(40) OCCURS 10.
                     06  W65-KOH2SKJTAIKBN-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-FTNHASUKBNG.
+                    06  W65-FTNHASUKBNG           PIC X(80).
+                    06  W65-FTNHASUKBNG-COUNT     PIC S9(9) BINARY.
+                    06  W65-FTNHASUKBNG-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-FTNHASUTAIKBNG.
+                    06  W65-FTNHASUTAIKBNG        PIC X(40).
+                    06  W65-FTNHASUTAIKBNG-STATE  PIC S9(9) BINARY.
+                    06  W65-FTNHASUTAIKBNG-COUNT  PIC S9(9) BINARY.
+                    06  W65-FTNHASUTAIKBNG-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-FTNHASUTAIKBNG-ITEM-STATE  PIC S9(9) BINARY.
+                  05  W65-CMB-FTNHASUKBNN.
+                    06  W65-FTNHASUKBNN           PIC X(80).
+                    06  W65-FTNHASUKBNN-COUNT     PIC S9(9) BINARY.
+                    06  W65-FTNHASUKBNN-ITEM      PIC X(80) OCCURS 10.
+                  05  W65-CMB-FTNHASUTAIKBNN.
+                    06  W65-FTNHASUTAIKBNN        PIC X(40).
+                    06  W65-FTNHASUTAIKBNN-STATE  PIC S9(9) BINARY.
+                    06  W65-FTNHASUTAIKBNN-COUNT  PIC S9(9) BINARY.
+                    06  W65-FTNHASUTAIKBNN-ITEM   PIC X(40) OCCURS 10.
+                    06  W65-FTNHASUTAIKBNN-ITEM-STATE  PIC S9(9) BINARY.
                 04  W65-FXD12.
                   05  W65-CMB-JYUHENKBN.
                     06  W65-JYUHENKBN            PIC X(80).
