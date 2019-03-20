@@ -350,7 +350,7 @@ db "push" {
         push_batch01;
 };
 
-#@monblob@db "monblob" {
-#@monblob@ monblob;
-#@monblob@};
+db "monblob" {
+ monblob;
+};
 

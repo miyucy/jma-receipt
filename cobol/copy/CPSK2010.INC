@@ -305,8 +305,15 @@
            03  SYS-2010-NINNASIKBN-K        PIC  X(01).
            03  SYS-2010-NINNASI-TAIKBN-K    PIC  X(01).
       *
+      *一部負担金記載１円未満端数処理（外来）
+           03  SYS-2010-FTNHASUKBN-G        PIC  X(01).
+           03  SYS-2010-FTNHASU-TAIKBN-G    PIC  X(01).
+      *一部負担金記載１円未満端数処理（入院）
+           03  SYS-2010-FTNHASUKBN-N        PIC  X(01).
+           03  SYS-2010-FTNHASU-TAIKBN-N    PIC  X(01).
+      *
       *予備
-           03  SYS-2010-YOBI                PIC  X(326).
+           03  SYS-2010-YOBI                PIC  X(322).
       *端末ＩＤ
            03  SYS-2010-TERMID              PIC  X(16).
       *オペレータＩＤ

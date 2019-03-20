@@ -104,9 +104,9 @@ db "xml2" {
  xml_master_exportv3res;
 };
 
-#@monblob@db "monblob" {
-#@monblob@ monblob;
-#@monblob@};
+db "monblob" {
+ monblob;
+};
 
 db	{
 	tbl_syskanri;
