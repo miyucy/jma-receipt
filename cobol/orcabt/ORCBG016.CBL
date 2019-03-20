@@ -31,6 +31,7 @@
       *  04.03.01    NACL-森脇     08/08/29  パラメタ増加
       *  04.05.01    NACL-森脇     08/09/18  病棟別集計対応
       *  04.08.01    NACL-森脇     14/07/22  一時ファイルディレクトリ設定
+      *  05.00.00    NACL-森脇     19/03/20  労災自賠の入院時の加算除外
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -127,6 +128,9 @@
            03  FLG-TENSU           PIC 9(01).
            03  FLG-PTINF           PIC 9(01).
            03  FLG-NYUINACCT       PIC 9(01).
+      *----(05.00.00)--ADD-START---
+           03  FLG-COMB            PIC 9(01).
+      *----(05.00.00)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -268,6 +272,9 @@
                05  TSRYCD-SRYCD    PIC X(09).
                05  TSRYCD-NAME     PIC X(200).
                05  TSRYCD-KAISU    PIC 9(03).
+      *----(05.00.00)--ADD-START---
+               05  TSRYCD-NG       PIC 9(01).
+      *----(05.00.00)--ADD-END-----
       *
        01  TPTINF-AREA.
         02 TPTINF-MAX                      PIC 9(05).
@@ -331,6 +338,12 @@
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
       *
+      *----(05.00.00)--ADD-START---
+      *    保険組み合わせ
+       01  COMB-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *----(05.00.00)--ADD-END-----
+      *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
            COPY    "CPJOBKANRI.INC".
@@ -380,6 +393,11 @@
       *    一時ファイル名編集
            COPY    "CPORCSGETTEMP.INC".
       *----(04.08.01)--ADD-END-----
+      *
+      *----(05.00.00)--ADD-START---
+      *    労災入院診療コードチェックサブ
+           COPY    "CPORCHCM34S03.INC".
+      *----(05.00.00)--ADD-END-----
       *
       *    ＤＢ検索
            COPY    "MCPAREA".
@@ -731,8 +749,19 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                        MOVE    WRK-SRYCD   TO  TSRYCD-SRYCD (TSRYCD-MAX)
                        MOVE    TNS-NAME    TO  TSRYCD-NAME  (TSRYCD-MAX)
                        MOVE    WRK-KAISU   TO  TSRYCD-KAISU (TSRYCD-MAX)
+      *----(05.00.00)--ADD-START---
+                       INITIALIZE              HCM34S03-AREA
+                       MOVE    WRK-PARA-SRYYM
+                                           TO  HCM34S03-SRYYM
+                       MOVE    WRK-SRYCD   TO  HCM34S03-SRYCD
+                       CALL    "ORCHCM34S03"   USING
+                                               HCM34S03-AREA
+                                               SPA-AREA
+                       IF    ( HCM34S03-IGNORE =   1 )
+                           MOVE    1       TO  TSRYCD-NG (TSRYCD-MAX)
+                       END-IF
+      *----(05.00.00)--ADD-END-----
                    END-IF
-      *
                END-IF
            END-IF
       *
@@ -1011,6 +1040,9 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
                    UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
+      *----(05.00.00)--ADD-START---
+               PERFORM 900-HKNCOMBI-READ-SEC
+      *----(05.00.00)--ADD-END-----
                PERFORM VARYING IDX-NSRY    FROM    1   BY  1
                        UNTIL ( IDX-NSRY    >   CONST-NSRYACT-MAX )
                    IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
@@ -1019,8 +1051,16 @@ grpsys     MOVE    SPA-HOSPNUM     TO  BG0162-HOSPNUM
                                UNTIL ( IDX4    >   TSRYCD-MAX )
                            IF    ( TSRYCD-SRYCD (IDX4)
                                =   SS009-SRYCD(IDX-NACCT IDX-NSRY) )
-                               PERFORM 20012-IN01-HEN-SEC
-                               MOVE    TSRYCD-MAX  TO  IDX4
+      *----(05.00.00)--UPD-START---
+                               IF   (( COMB-HKNNUM =   "971"   OR 
+                                       COMB-HKNNUM =   "973" ) AND
+                                       TSRYCD-NG (IDX4)    =   1 )
+                                   CONTINUE
+                               ELSE
+                                   PERFORM 20012-IN01-HEN-SEC
+                                   MOVE    TSRYCD-MAX  TO  IDX4
+                               END-IF
+      *----(05.00.00)--UPD-END-----
                            END-IF
                        END-PERFORM
                    END-IF
@@ -2131,6 +2171,37 @@ grpsys                                 TO  PTNUM-HOSPNUM
            .
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
+      *----(05.00.00)--ADD-START---
+      *****************************************************************
+      *    検索処理
+      *****************************************************************
+       900-HKNCOMBI-READ-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-COMB
+      *
+           INITIALIZE                  COMB-REC
+           MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
+           MOVE    NACCT-PTID      TO  COMB-PTID
+           MOVE    SS009-HKNCOMBI(IDX-NACCT)
+                                   TO  COMB-HKNCOMBINUM 
+           MOVE    COMB-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  COMB-REC
+           ELSE
+               INITIALIZE                  COMB-REC
+               MOVE    1               TO  FLG-COMB
+           END-IF
+      *
+           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+           .
+       900-HKNCOMBI-READ-EXT.
+           EXIT.
+      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    ＤＢ検索処理
       *****************************************************************
