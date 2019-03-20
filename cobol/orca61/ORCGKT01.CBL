@@ -8359,6 +8359,10 @@ grpsys             CALL    "ORCDBMAIN"         USING   MCPAREA
                MOVE    "1"                 TO  SPA-COM-KZMFLG5 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG6 (IDX2)
                MOVE    "1"                 TO  SPA-COM-KZMFLG7 (IDX2)
+      *H31.4
+               MOVE    "1"                 TO  SPA-COM-KZMFLG8 (IDX2)
+               MOVE    "1"                 TO  SPA-COM-KZMFLG9 (IDX2)
+               MOVE    "1"                 TO  SPA-COM-KZMFLG10(IDX2)
                MOVE    "1"                 TO  SPA-COM-KINKIFLG(IDX2)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG(IDX2)
                MOVE    "1"                 TO  SPA-COM-TUKIJGNFLG1(IDX2)
