@@ -190,6 +190,8 @@
                            11  SPA-COM-KZMFLG8       PIC X(01).
       *                    ·Ù¹ð¡ÊÊñ³ç»»ÄêÆþÎÏ·Ù¹ð(H29.9¡Ë
                            11  SPA-COM-KZMFLG9       PIC X(01).
+      *                    ·Ù¹ð¡Ê¥ê¥Ï²ð¸î¡Ë(H31.4¡Ë
+                           11  SPA-COM-KZMFLG10      PIC X(01).
       *                    Æþ±¡ÎÁÊ»ÍÑ·Ù¹ð
                            11  SPA-COM-KZMFLGNK      PIC X(01).
       *                    Íâ·îÆþ±¡ÎÁ¤Ê¤··Ù¹ð

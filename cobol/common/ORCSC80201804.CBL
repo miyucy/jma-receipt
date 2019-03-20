@@ -61,6 +61,7 @@
       *  04.08.00    NACL-多々納  17/07/XX  心身療法２０未満加算対応追加
       * 04.08.00     NACL-多々納  18/04/XX  Ｈ３０年４月改正対応
       * 04.08.00     NACL-多々納  18/05/23  精神児童加算施設基準判定修正
+      * 05.00.00     NACL-多々納  19/03/20  Ｈ３１年４月改正対応
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -378,6 +379,8 @@
            03  WRK-CHK-SOUKIYMD        PIC X(08).
            03  WRK-CHK-RIHA-KBN        PIC X(01).
       *
+      *H31.3
+           03  WRK-RIHA-EDCHK          PIC X(01).
       *
       *   きざみ値行為再計算用
            03  WRK-RIHA-KIZAMI-G.
@@ -2360,6 +2363,7 @@
                        MOVE    SPACE           TO  WRK-RIHA-KBN2
                        MOVE    SPACE           TO  WRK-RIHA-KIG
                        MOVE    SPACE           TO  WRK-RIHA-GEN
+                       MOVE    SPACE           TO  WRK-RIHA-EDCHK
                    WHEN    WRK-COM-INPUTCD (IDX-Z)
                                                =   TBL-RIH16-SRYCD
                                                            (TBL-RIH16)
@@ -2373,7 +2377,12 @@
                        MOVE    TBL-RIH16-YOBO (TBL-RIH16)
                                                TO  WRK-RIHA-GEN
                        MOVE    1               TO  FLG-RIHA-OK
+      *H31.3
+      *                1:H31.4から経過措置対応
+                       MOVE    TBL-RIH16-EDCHK (TBL-RIH16)
+                                               TO  WRK-RIHA-EDCHK
            END-SEARCH
+      *
       *    リハビリテーション料の労災コード
            IF     (WRK-COM-INPUTCD   (IDX-Z)(1:3)  =   "101")
               AND (WRK-COM-CDKBN-KBN (IDX-Z)       =   "H"  )
@@ -2433,6 +2442,17 @@
       *
       *    急性発生日計算処理
            PERFORM 1001121-KYUSEIYMD15-SEC
+      *
+      *H31.3
+      *    H31.4から経過措置対応
+           IF      (SPA-SRYYMD         >=  "20190401")
+               AND (WRK-RIHA-EDCHK     =   "1"       )
+               AND (SPA-NYUGAIKBN      =   "2"       )
+               PERFORM 100124-GAIRAI-ENDCHEK-SEC
+               IF      WRK-ERRCD       NOT =   SPACE
+                   GO      TO      100112-RIGAKU-CHK-EXT
+               END-IF
+           END-IF
       *
       *H28.9
       *    H28.10　改正対応
@@ -2785,6 +2805,24 @@
            .
        1001231-YOUKAIGO-EXT.
            EXIT.
+      *H31.3
+      *****************************************************************
+      *     H31.4から経過措置チェック処理
+      *****************************************************************
+       100124-GAIRAI-ENDCHEK-SEC        SECTION.
+      *
+           IF     (WRK-COM-KZMFLG10(IDX-Z) =   SPACE)
+           AND    (LNK-ORCSC-KEI-IDX        =   ZERO )
+               MOVE    IDX-Z           TO  LNK-ORCSC-KEI-IDX
+               MOVE    "1"             TO  WRK-COM-KZMFLG10
+                                                        (IDX-Z)
+               MOVE    "K818"          TO  WRK-ERRCD
+               MOVE    "1"             TO  WRK-COM-CUR   (IDX-Z)
+           END-IF
+           .
+       100124-GAIRAI-ENDCHEK-EXT.
+           EXIT.
+      *
       *****************************************************************
       *     H28.10　改正対応チェック処理
       *****************************************************************
