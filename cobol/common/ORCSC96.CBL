@@ -3694,6 +3694,15 @@
                                        INTO    SPA-ERRMSG
                    END-STRING
       *!!!
+      *H31.3
+               WHEN    "K818"
+                   STRING  "警告！"
+                           "維持期リハ経過措置終了による特別対応の"
+                           "要件を満たしてますか？"
+                                               DELIMITED  BY  SIZE
+                                       INTO    SPA-ERRMSG
+                   END-STRING
+      *!!!
       *H29.1
                WHEN    "K190"
                    STRING  "警告！"
