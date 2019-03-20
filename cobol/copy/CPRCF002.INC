@@ -162,6 +162,8 @@
       *  04.08.09    NACL-門脇    18/04/06  平成３０年４月改正対応
       *  04.08.10    NACL-門脇    18/05/22  平成３０年４月改正対応
       *  04.08.11    NACL-門脇    18/06/11  逓減点数集計のサイン対応
+      *
+      *  05.00.01    NACL-門脇    19/03/13  システム管理２０１０機能追加対応
       ************************************************************
       *01  RECE02-REC.
            03  RECE02-KEY.
@@ -673,6 +675,7 @@
                    09  RECE02-EKF-KSINGKBN-Y   PIC  X(01).
                    09  RECE02-EKF-ENCHGKBN-K   PIC  X(01).
                    09  RECE02-EKF-ENCHGKBN-Y   PIC  X(01).
+                   09  RECE02-EKF-FTNHASUKBN   PIC  X(01).
       *
                    09  RECE02-GNBKEIKBN-K-G    PIC  X(01).
       *
