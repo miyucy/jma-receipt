@@ -30,6 +30,7 @@
       * 04.06.01     NACL-森脇    10/08/25  ＣＳＶ出力対応
       * 04.08.01     NACL-森脇    14/07/23  一時ファイルディレクトリ設定
       * 04.08.02     NACL-森脇    16/09/01  持参薬システム予約コード対象外
+      * 05.00.00     NACL-森脇    19/03/22  労災自賠の入院時の加算除外
       *****************************************************************
       *
        ENVIRONMENT                 DIVISION.
@@ -133,6 +134,9 @@
            03  FLG-TARGET          PIC 9(01).
            03  FLG-TOUYAKU         PIC 9(01).
            03  FLG-CHUSYA          PIC 9(01).
+      *----(05.00.00)--ADD-START---
+           03  FLG-COMB            PIC 9(01).
+      *----(05.00.00)--ADD-END-----
       *
       *    カウント領域
        01  CNT-AREA.
@@ -375,6 +379,11 @@
       *    患者番号マスタ
        01  PTNUM-REC.
            COPY    "CPPTNUM.INC".
+      *----(05.00.00)--ADD-START---
+      *    保険組み合わせ
+       01  COMB-REC.
+           COPY    "CPHKNCOMBI.INC".
+      *----(05.00.00)--ADD-END-----
       *
       *    ジョブ管理マスタ
        01  JOBKANRI-REC.
@@ -411,6 +420,10 @@
       *
       *    指定診療行為件数調サブ２
            COPY    "CPORCSS009.INC".
+      *----(05.00.00)--ADD-START---
+      *    労災入院診療コードチェックサブ
+           COPY    "CPORCHCM34S03.INC".
+      *----(05.00.00)--ADD-END-----
       *
       *----(04.08.01)--ADD-START---
       *    一時ファイル名編集
@@ -1078,7 +1091,9 @@
       *
            PERFORM VARYING IDX-NACCT   FROM    1   BY  1
                    UNTIL ( IDX-NACCT   >   SS009-HENKYAKU-MAX )
-      *
+      *----(05.00.00)--ADD-START---
+               PERFORM 900-HKNCOMBI-READ-SEC
+      *----(05.00.00)--ADD-END-----
                MOVE    SS009-SRYKBN (IDX-NACCT)
                                        TO  WRK-SRYKBN
                IF    ( WRK-SRYKBN      =   "90" OR "92" OR "97" )
@@ -1100,9 +1115,24 @@
       *
                            IF    ( SS009-SRYCD (IDX-NACCT IDX-NSRY)
                                            NOT =   SPACE )
-      *
-                               PERFORM 20012-IN01-HEN-SEC
-      *
+      *----(05.00.00)--UPD-START---
+                               IF    ( COMB-HKNNUM =   "971"   OR 
+                                       COMB-HKNNUM =   "973" ) 
+                               INITIALIZE              HCM34S03-AREA
+                               MOVE    WRK-PARA-STRYMD(1:6)
+                                                   TO  HCM34S03-SRYYM
+                               MOVE    SS009-SRYCD (IDX-NACCT IDX-NSRY)
+                                                   TO  HCM34S03-SRYCD
+                               CALL    "ORCHCM34S03"   USING
+                                                       HCM34S03-AREA
+                                                       SPA-AREA
+                               IF    ( HCM34S03-IGNORE =   0 )
+                                   PERFORM 20012-IN01-HEN-SEC
+                               END-IF
+                               ELSE
+                                   PERFORM 20012-IN01-HEN-SEC
+                               END-IF
+      *----(05.00.00)--UPD-END-----
                            END-IF
                        END-PERFORM
                    END-IF
@@ -2261,6 +2291,37 @@
            .
        900-NYUINACCT-KEY27-FET-EXT.
            EXIT.
+      *----(05.00.00)--ADD-START---
+      *****************************************************************
+      *    検索処理
+      *****************************************************************
+       900-HKNCOMBI-READ-SEC    SECTION.
+      *
+           MOVE    ZERO            TO  FLG-COMB
+      *
+           INITIALIZE                  COMB-REC
+           MOVE    SPA-HOSPNUM     TO  COMB-HOSPNUM
+           MOVE    NACCT-PTID      TO  COMB-PTID
+           MOVE    SS009-HKNCOMBI(IDX-NACCT)
+                                   TO  COMB-HKNCOMBINUM 
+           MOVE    COMB-REC        TO  MCPDATA-REC
+           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBSELECT-SEC
+           IF    ( MCP-RC          =   ZERO )
+               MOVE    MCPDATA-REC     TO  COMB-REC
+           ELSE
+               INITIALIZE                  COMB-REC
+               MOVE    1               TO  FLG-COMB
+           END-IF
+      *
+           MOVE    "tbl_hkncombi"  TO  MCP-TABLE
+           MOVE    "key"           TO  MCP-PATHNAME
+           PERFORM 910-DBCLOSECURSOR-SEC
+           .
+       900-HKNCOMBI-READ-EXT.
+           EXIT.
+      *----(05.00.00)--ADD-END-----
       *****************************************************************
       *    ＤＢ検索処理（FHETCHも行う)
       *****************************************************************
