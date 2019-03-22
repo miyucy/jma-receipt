@@ -5772,6 +5772,14 @@
                    WHEN    "1" ALSO  "1" ALSO  "3"
                    WHEN    "1" ALSO  "3" ALSO  "3"
                    WHEN    "4" ALSO  "4" ALSO  "4"
+      *
+                   WHEN    "0" ALSO  "0" ALSO  "3"
+                   WHEN    "0" ALSO  "3" ALSO  "0"
+                   WHEN    "3" ALSO  "0" ALSO  "0"
+                   WHEN    "0" ALSO  "3" ALSO  "3"
+                   WHEN    "3" ALSO  "0" ALSO  "3"
+                   WHEN    "3" ALSO  "3" ALSO  "0"
+                   WHEN    "3" ALSO  "3" ALSO  "3"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    IDXE    TO  FLG-ERR
@@ -5787,6 +5795,14 @@
                    WHEN    "1" ALSO  "1" ALSO  "3"
                    WHEN    "1" ALSO  "3" ALSO  "3"
                    WHEN    "0" ALSO  "0" ALSO  "0"
+      *
+                   WHEN    "0" ALSO  "0" ALSO  "1"
+                   WHEN    "0" ALSO  "1" ALSO  "0"
+                   WHEN    "1" ALSO  "0" ALSO  "0"
+                   WHEN    "0" ALSO  "1" ALSO  "1"
+                   WHEN    "1" ALSO  "0" ALSO  "1"
+                   WHEN    "1" ALSO  "1" ALSO  "0"
+                   WHEN    "1" ALSO  "1" ALSO  "1"
                        CONTINUE
                    WHEN    OTHER
                        MOVE    IDXE    TO  FLG-ERR
@@ -11591,8 +11607,7 @@
                    MOVE    "2"         TO  SPA-GMN-SEIRYOKBNHON
                    MOVE    "0"         TO  SPA-GMN-SEIRYOTAIKBNHON
                WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
-                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
-                                        OR "243" OR "177" OR "187" )
+                AND  ( SPA-GMN-KOHNUM  =   "143" OR "243" )
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =   "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
@@ -11611,8 +11626,7 @@
                WHEN  ( SPA-PREFNUM     =   CONST-SAITAMA )
                 AND  ( SPA-GMN-KOHNUM  =   "672" )
                WHEN  ( SPA-PREFNUM     =   CONST-GUNMA )
-                AND  ( SPA-GMN-KOHNUM  =   "146" OR "246" OR "143"
-                                        OR "243" OR "177" OR "187" )
+                AND  ( SPA-GMN-KOHNUM  =   "143" OR "243" )
                WHEN  ( SPA-PREFNUM     =   CONST-NIIGATA )
                 AND  ( SPA-GMN-KOHNUM  =   "261" OR "361" OR "561"
                                         OR "264" OR "364" OR "564"
