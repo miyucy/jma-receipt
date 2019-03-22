@@ -787,6 +787,38 @@ W65 {
             item varchar(40)[10];
           state int;
         };
+        CMB_FTNHASUKBNG {
+          FTNHASUKBNG {
+            textdata varchar(80);
+          };
+          count int;
+            item varchar(80)[10];
+        };
+        CMB_FTNHASUTAIKBNG {
+          FTNHASUTAIKBNG {
+            textdata varchar(40);
+            state int;
+          };
+          count int;
+            item varchar(40)[10];
+            state int;
+        };
+        CMB_FTNHASUKBNN {
+          FTNHASUKBNN {
+            textdata varchar(80);
+          };
+          count int;
+            item varchar(80)[10];
+        };
+        CMB_FTNHASUTAIKBNN {
+          FTNHASUTAIKBNN {
+            textdata varchar(40);
+            state int;
+          };
+          count int;
+            item varchar(40)[10];
+            state int;
+        };
       };
       fxd12 {
         CMB_JYUHENKBN {
