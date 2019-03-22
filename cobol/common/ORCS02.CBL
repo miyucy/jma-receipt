@@ -479,6 +479,7 @@
       *  05.00.05    NACL-門脇    18/12/03  群馬県地方公費対応
       *  05.00.06    NACL-門脇    19/03/01  北海道地方公費対応
       *  05.00.07    NACL-門脇    19/03/20  計算金額桁数チェック修正
+      *  05.00.08    NACL-門脇    19/03/20  群馬県地方公費対応
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -6848,6 +6849,13 @@
                      (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
                      MOVE     "2"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
                  END-IF
+                 IF ((WK-1001-PREFNUM         =   10     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =
+                      "146" OR "246" OR "177" OR "187"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201903" ))
+                     MOVE     "3"     TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                 END-IF
                WHEN       "1"
                WHEN       "2"
                WHEN       "3"
@@ -6866,6 +6874,13 @@
                      (LNK-SYU-SRYYMD(1:6)    >= "200511" ) AND
                      (LNK-SYU-SRYYMD(1:6)    <= "200703" ))
                      MOVE     "2"     TO  WK-2010-SEIKANKBN-HON(IDX-CYO)
+                 END-IF
+                 IF ((WK-1001-PREFNUM         =   10     ) AND
+                     (COMB-KOHHKNNUM(IDX-CYO) =
+                      "146" OR "246" OR "177" OR "187"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201903" ))
+                     MOVE     "3"     TO  WK-2010-SEIKANKBN-HON(IDX-CYO)
                  END-IF
                WHEN       "1"
                WHEN       "2"
@@ -7441,9 +7456,15 @@
                  END-IF
                WHEN       10
                  IF ((COMB-KOHHKNNUM(IDX-CYO) =
-                      "146" OR "246" OR "143" OR "243" OR
-                      "177" OR "187"                     ) AND
+                      "143" OR "243"                     ) AND
                      (LNK-SYU-SRYYMD(1:6)    >= "200610" ))
+                   MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
+                                      WK-2010-SEIKANKBN-HON(IDX-CYO)
+                 END-IF
+                 IF ((COMB-KOHHKNNUM(IDX-CYO) =
+                      "146" OR "246" OR "177" OR "187"   ) AND
+                     (LNK-SYU-SRYYMD(1:6)    >= "200610" ) AND
+                     (LNK-SYU-SRYYMD(1:6)    <= "201903" ))
                    MOVE    "3"    TO  WK-2010-SEIRYOKBN-HON(IDX-CYO)
                                       WK-2010-SEIKANKBN-HON(IDX-CYO)
                  END-IF
@@ -29309,6 +29330,31 @@
              WHEN       "1"
                EVALUATE  WK-NYUSKJRYYKBN
                  WHEN        "1"
+                   IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-HON(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-HON(KOH-IDX)
+                                      WK-2010-SEIKANKBN-HON(KOH-IDX)
+                   END-IF
                    IF   WK-2010-SKJRYOKBN-HON(KOH-IDX) = "2"
                    AND  WK-2010-SEIRYOKBN-HON(KOH-IDX) = "2"
                    AND  WK-2010-SEIKANKBN-HON(KOH-IDX) = "2"
@@ -29390,6 +29436,31 @@
                  WHEN        "3"
                    IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
                        (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-HON(KOH-IDX) = "1"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-HON(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-HON(KOH-IDX)
+                                      WK-2010-SEIKANKBN-HON(KOH-IDX)
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "0") AND
                        (WK-2010-SEIKANKBN-HON(KOH-IDX) = "3"))
                    OR ((WK-2010-SKJRYOKBN-HON(KOH-IDX) = "1") AND
                        (WK-2010-SEIRYOKBN-HON(KOH-IDX) = "1") AND
@@ -29429,6 +29500,31 @@
              WHEN       "2"
                EVALUATE  WK-NYUSKJRYYKBN
                  WHEN        "1"
+                   IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-TSY(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-TSY(KOH-IDX)
+                                      WK-2010-SEIKANKBN-TSY(KOH-IDX)
+                   END-IF
                    IF   WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "2"
                    AND  WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "2"
                    AND  WK-2010-SEIKANKBN-TSY(KOH-IDX) = "2"
@@ -29510,6 +29606,31 @@
                  WHEN        "3"
                    IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
                        (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "1"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-TSY(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-TSY(KOH-IDX)
+                                      WK-2010-SEIKANKBN-TSY(KOH-IDX)
+                   END-IF
+                   IF ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "0") AND
                        (WK-2010-SEIKANKBN-TSY(KOH-IDX) = "3"))
                    OR ((WK-2010-SKJRYOKBN-TSY(KOH-IDX) = "1") AND
                        (WK-2010-SEIRYOKBN-TSY(KOH-IDX) = "1") AND
@@ -29549,6 +29670,31 @@
              WHEN       "3"
                EVALUATE  WK-NYUSKJRYYKBN
                  WHEN        "1"
+                   IF ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "3") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-TNK(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-TNK(KOH-IDX)
+                                      WK-2010-SEIKANKBN-TNK(KOH-IDX)
+                   END-IF
                    IF   WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "2"
                    AND  WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "2"
                    AND  WK-2010-SEIKANKBN-TNK(KOH-IDX) = "2"
@@ -29628,6 +29774,31 @@
                      MOVE       3     TO  FLG-NYUSKJJYOGAK
                    END-IF
                  WHEN        "3"
+                   IF ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "1"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "0"))
+                   OR ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "1") AND
+                       (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "1"))
+                     MOVE   "0"  TO   WK-2010-SKJRYOKBN-TNK(KOH-IDX)
+                                      WK-2010-SEIRYOKBN-TNK(KOH-IDX)
+                                      WK-2010-SEIKANKBN-TNK(KOH-IDX)
+                   END-IF
                    IF ((WK-2010-SKJRYOKBN-TNK(KOH-IDX) = "0") AND
                        (WK-2010-SEIRYOKBN-TNK(KOH-IDX) = "0") AND
                        (WK-2010-SEIKANKBN-TNK(KOH-IDX) = "3"))
