@@ -478,6 +478,7 @@
       *  05.00.04    NACL-ÌçÏÆ    18/11/29  ¸½ÊªµëÉÕÅ¬ÍÑ¶èÊ¬¥Á¥§¥Ã¥¯
       *  05.00.05    NACL-ÌçÏÆ    18/12/03  ·²ÇÏ¸©ÃÏÊý¸øÈñÂÐ±þ
       *  05.00.06    NACL-ÌçÏÆ    19/03/01  ËÌ³¤Æ»ÃÏÊý¸øÈñÂÐ±þ
+      *  05.00.07    NACL-ÌçÏÆ    19/03/20  ·×»»¶â³Û·å¿ô¥Á¥§¥Ã¥¯½¤Àµ
       ****************************************************************
        ENVIRONMENT         DIVISION.
        CONFIGURATION       SECTION.
@@ -684,6 +685,7 @@
            03  WK-JIHIGAKU             PIC 9(10).
            03  WK-JIHIGAKU2            PIC 9(10).
            03  WK-JIHIGAKU3            PIC 9(10).
+           03  WK-JIHIGAKU4            PIC 9(10).
            03  WK-JIHIFTN              PIC 9V99.
            03  WK-ZAN-JIRITU           PIC 9(08).
            03  WK-ZAN-JIRITU-ENTANI    PIC 9(08)V9(01).
@@ -3506,6 +3508,14 @@
                             WK-JIHIGAKU           *  WK-JIHIFTN
                     COMPUTE WK-JIHIGAKU3  =
                            (WK-JIHIGAKU2  *  WK-S4) + WK-S3
+                    COMPUTE  WK-JIHIGAKU4  =  WK-JIHIGAKU2
+                                           +  WK-JIHIGAKU3
+                    IF   WK-JIHIGAKU   >  9999999
+                    OR   WK-JIHIGAKU2  >  9999999
+                    OR   WK-JIHIGAKU3  >  9999999
+                    OR   WK-JIHIGAKU4  >  9999999
+                      MOVE  "2"  TO  LNK-S02-SKYCHKFLG
+                    END-IF
                     IF    IDX9  =  17
                        MOVE   ZERO  TO  WK-JIHIGAKU2
                        MOVE   ZERO  TO  WK-JIHIGAKU3
@@ -3529,6 +3539,10 @@
                             LNK-SYU-HKNTEN (IDX9) *  HKN-TENTNK
                     COMPUTE WK-JIHIGAKU2  =
                             WK-JIHIGAKU           *  WK-JIHIFTN
+                    IF   WK-JIHIGAKU   >  9999999
+                    OR   WK-JIHIGAKU2  >  9999999
+                      MOVE  "2"  TO  LNK-S02-SKYCHKFLG
+                    END-IF
                     IF    IDX9  =  17
                        MOVE   ZERO  TO  WK-JIHIGAKU2
                     END-IF
