@@ -5875,12 +5875,14 @@
                                        TSMEI-REC
                                        SPA-AREA
       *
-           PERFORM 3101-MISYU-EDIT-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-MISYU-EDIT-SEC
       *
-           MOVE    2                   TO  FLG-MEILIST-ROW
-           PERFORM 300-SYUNOU-HENSYU-SEC
+               MOVE    2               TO  FLG-MEILIST-ROW
+               PERFORM 300-SYUNOU-HENSYU-SEC
       *
-           MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        430-TORIKESI-KOUSHIN-EXT.
@@ -6124,7 +6126,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "1001"              TO  SPA-ERRCD
+               MOVE    "4001"              TO  SPA-ERRCD
            END-IF     
            .
        4501-SMEI-SAKUSEI-EXT.
@@ -6316,11 +6318,13 @@
              END-IF
            END-IF
       *
-           PERFORM 3101-MISYU-EDIT-SEC
+           IF    ( SPA-ERRCD           =   SPACE )
+               PERFORM 3101-MISYU-EDIT-SEC
       *
-           MOVE    2                   TO  FLG-MEILIST-ROW
-           PERFORM 300-SYUNOU-HENSYU-SEC
-           MOVE    1                   TO  SPA-GMN-CUR
+               MOVE    2               TO  FLG-MEILIST-ROW
+               PERFORM 300-SYUNOU-HENSYU-SEC
+               MOVE    1               TO  SPA-GMN-CUR
+           END-IF
       *
            .
        4701-NYUDEL-EXT.
@@ -6551,7 +6555,7 @@
            MOVE    "key"               TO  MCP-PATHNAME
            PERFORM 910-DBINSERT-SEC
            IF      MCP-RC          NOT =   ZERO
-               MOVE    "1001"              TO  SPA-ERRCD
+               MOVE    "4002"              TO  SPA-ERRCD
            END-IF     
            .
        4701-SMEI-SAKUSEI-EXT.
