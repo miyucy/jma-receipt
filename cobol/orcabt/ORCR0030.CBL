@@ -809,6 +809,7 @@
       *  05.00.01    NACL-ÃÁœ∆    18/12/03  ∑≤«œ∏©√œ ˝∏¯»Ò¬–±˛
       *  05.00.02    NACL-ÃÁœ∆    19/01/11  •ﬁ•Îƒπ§»¿∏ ›§À¥ÿ§π§ÎΩ§¿µ
       *  05.00.03    NACL-ÃÁœ∆    19/03/11  ÕΩÃÛ•≥°º•…∆…§ﬂ»Ù§–§∑Ω§¿µ
+      *  05.00.04    NACL-ÃÁœ∆    19/03/13  ÀÃ≥§∆ª√œ ˝∏¯»Ò¬–±˛
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -999,6 +1000,7 @@
            03  FLG-SAIGAI-TAISYO                       PIC 9(01).
            03  FLG-CHIIKI                              PIC 9(01).
            03  FLG-CHIIKI2                             PIC 9(01).
+           03  FLG-CHIIKI3                             PIC 9(01).
            03  FLG-KGKIPNTAI                           PIC 9(01).
            03  FLG-KGK                                 PIC 9(01).
            03  FLG-SKY-TOKKOH                          PIC 9(01).
@@ -1462,6 +1464,11 @@
            03  WRK-KOHSKY-XXX-COMPFTN-EN-RUI9          PIC 9(09).
            03  WRK-KOHSKY-XXX-FLG-RUI1                 PIC 9(01).
            03  WRK-KOHSKY-XXX-FLG-RUI2                 PIC 9(01).
+      *
+      *    ∏¯»Ò¿¡µ·ΩÒ ¨§Œ…È√¥≥‰πÁŒŒ∞Ë
+       01  WRK-KOHSKY-GAIKFTNRATE-TABLE.
+           03  WRK-KOHSKY-GAIKFTNRATE-OCC              OCCURS   4.
+               05  WRK-KOHSKY-GAIKFTNRATE              PIC 9(03).
       *
       *    º¬∆¸øÙ•´•¶•Û•»Õ—ŒŒ∞Ë                                         
        01  TBL-JNISSU.
@@ -1942,6 +1949,8 @@
              04  WRK-ETCKISAIFLGINF-OCC        OCCURS  5.
                05  WRK-EKF-HKNFTNFLG-K         PIC X(01).
                05  WRK-EKF-HKNFTNFLG-Y         PIC X(01).
+      *
+           03  WRK-CHIIKI-ENTANI               PIC 9(08).
       *
       *---------------------------------------------------------------
       *  ≤ÛøÙ∏∫ªªÕ—¬‡»ÚŒŒ∞Ë
@@ -4245,6 +4254,7 @@ grpsys           PERFORM 900-DBSELECT-SEC
       *
            MOVE      ZERO       TO   FLG-KOHSKY-ARI
            INITIALIZE                WRK-KOHSKY-XXX-TABLE
+           INITIALIZE                WRK-KOHSKY-GAIKFTNRATE-TABLE
            IF   (IDZ                       =     1   )
            AND  (RECE02-SRYYM             >= "201704")
              PERFORM  VARYING  IDX36  FROM  1  BY  1
@@ -4259,6 +4269,33 @@ grpsys           PERFORM 900-DBSELECT-SEC
                AND  (RECE02-KOHSKY-KOHNUM(IDX36)
                                       NOT = RECE02-KOHNUM(4))
                  MOVE     1     TO   FLG-KOHSKY-ARI
+      *
+                 INITIALIZE                     HKNNUM-REC
+                 MOVE    RECE02-HOSPNUM     TO  HKN-HOSPNUM
+                 MOVE    RECE02-KOHSKY-KOHNUM(IDX36)
+                                            TO  HKN-HKNNUM
+                 MOVE    RECE02-SRYYM       TO  HKN-TEKSTYMD(1:6)
+                                                HKN-TEKEDYMD(1:6)
+                 MOVE    "01"               TO  HKN-TEKSTYMD(7:2)
+                                                HKN-TEKEDYMD(7:2)
+                 MOVE    "00"               TO  HKN-PAYKBN
+                 MOVE    HKNNUM-REC         TO  MCPDATA-REC
+                 MOVE    "tbl_hknnum"       TO  MCP-TABLE
+                 MOVE    "key"              TO  MCP-PATHNAME
+                 PERFORM   900-DBSELECT-SEC
+                 IF     MCP-RC   =   ZERO
+                   MOVE  "tbl_hknnum"       TO  MCP-TABLE
+                   MOVE  "key"              TO  MCP-PATHNAME
+                   PERFORM 900-DBFETCH-SEC
+                   IF   MCP-RC   =   ZERO
+                     MOVE  MCPDATA-REC      TO  HKNNUM-REC
+                     MOVE  HKN-HON-GAIKFTNRATE
+                              TO  WRK-KOHSKY-GAIKFTNRATE(IDX36)
+                   END-IF
+                 END-IF
+                 MOVE    "tbl_hknnum"       TO  MCP-TABLE
+                 MOVE    "key"              TO  MCP-PATHNAME
+                 PERFORM   900-CLOSE-SEC
                END-IF
              END-PERFORM
            END-IF
@@ -10813,6 +10850,15 @@ grpsys          MOVE    RECE02-HOSPNUM TO  LNK-KOREIFTNCHK-HOSPNUM
                                                      (KOHFTN-IDX + 1)
                   END-IF
                END-EVALUATE
+           END-EVALUATE
+      *
+      *@@@
+      *
+           EVALUATE  SYS-2010-FTNHASUKBN-G
+             WHEN      "0"
+                    MOVE SPACE TO RECE02-EKF-FTNHASUKBN(KOHFTN-IDX + 1)
+             WHEN      "1"
+                    MOVE  "1"  TO RECE02-EKF-FTNHASUKBN(KOHFTN-IDX + 1)
            END-EVALUATE
       *
       *@@@
@@ -23615,9 +23661,20 @@ grpsys     PERFORM 900-DBSELECT-SEC
                         MOVE  KH-IDX  TO  RECE02-GENBAKU-IDX(IDX1)
                       END-IF
                     ELSE
-                      ADD   SYU-KOH-COMPFTN(IDX3)  TO
-                                           RECE02-FTNMONEY(KH-IDX)
-                                           RECE02-FTNMONEY-KOJ(KH-IDX)
+                      IF  (RECE02-EKF-FTNHASUKBN(KH-IDX)      = "1")
+                      AND (RECE02-HON-GAIKFTNRATE(KH-IDX - 1)(3:1)
+                                                          NOT = "0")
+                        COMPUTE  WRK-CHIIKI-ENTANI            =
+                                 SYU-KOH-COMPFTN-ENTANI(IDX3) +
+                                 0.9
+                        ADD   WRK-CHIIKI-ENTANI
+                                      TO  RECE02-FTNMONEY(KH-IDX)
+                                          RECE02-FTNMONEY-KOJ(KH-IDX)
+                      ELSE
+                        ADD   SYU-KOH-COMPFTN(IDX3)
+                                      TO  RECE02-FTNMONEY(KH-IDX)
+                                          RECE02-FTNMONEY-KOJ(KH-IDX)
+                      END-IF
                     END-IF
                   END-IF
                 END-IF
@@ -23625,7 +23682,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
               COMPUTE  WRK-TAIHI-FTNMONEY-EN(KH-IDX)  =
                        WRK-TAIHI-FTNMONEY-EN(KH-IDX)  +
-                      (SYU-KOH-COMPFTN-ENTANI(IDX3)   + 0.5)
+                      (SYU-KOH-COMPFTN-ENTANI(IDX3)   + 0.9)
               COMPUTE  WRK-TAIHI-FTNMONEY-EN2(KH-IDX) =
                        WRK-TAIHI-FTNMONEY-EN2(KH-IDX) +
                        SYU-KOH-COMPFTN-ENTANI(IDX3)
@@ -24058,8 +24115,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                          *  10
                 ADD       WRK-SKY-KEISAN   TO  WRK-SKY-ZENGAKU-KOH
       *
-                ADD       SYU-KOH-FTN-ENTANI
-                                           TO  WRK-SKY-FTNMONEY-KOH
+                PERFORM   2105262-SKY-SYUNOU-HENSYU4-SEC
       *
                 IF     FLG-KOHSKY-ARI     =  1
                   IF  (SYU-KOH-HKNNUM(1)  =   "972" OR "974")
@@ -24393,6 +24449,185 @@ grpsys     PERFORM 900-DBSELECT-SEC
       *
            .
        21052611-SKY-SYUNOU-HENSYU3-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿¡µ·≥€º˝«º ‘Ω∏
+      *****************************************************************
+       2105262-SKY-SYUNOU-HENSYU4-SEC               SECTION.
+      *
+           MOVE     ZERO         TO     FLG-CHIIKI3
+           PERFORM  VARYING  IDX36  FROM  4  BY  -1
+                     UNTIL   IDX36    <   1
+             IF  (SYU-KOH-HKNNUM(IDX36) NOT = SPACE          )
+             AND (SYU-KOH-HKNNUM(IDX36) NOT = "972" AND "974")
+               IF  (SYU-KOH-HKNNUM(IDX36) = RECE02-KOHNUM(1))
+               OR  (SYU-KOH-HKNNUM(IDX36) = RECE02-KOHNUM(2))
+               OR  (SYU-KOH-HKNNUM(IDX36) = RECE02-KOHNUM(3))
+               OR  (SYU-KOH-HKNNUM(IDX36) = RECE02-KOHNUM(4))
+                 IF SYU-KOH-HKNNUM(IDX36)(1:1) >= "1" AND <= "8"
+                   PERFORM    21052621-SKY-SYUNOU-HENSYU5-SEC
+                   MOVE   1   TO  FLG-CHIIKI3
+                 END-IF
+               ELSE
+                 IF  (SYU-KOH-HKNNUM(IDX36) =
+                                      RECE02-KOHSKY-KOHNUM(1))
+                 OR  (SYU-KOH-HKNNUM(IDX36) =
+                                      RECE02-KOHSKY-KOHNUM(2))
+                 OR  (SYU-KOH-HKNNUM(IDX36) =
+                                      RECE02-KOHSKY-KOHNUM(3))
+                 OR  (SYU-KOH-HKNNUM(IDX36) =
+                                      RECE02-KOHSKY-KOHNUM(4))
+                   PERFORM    21052622-SKY-SYUNOU-HENSYU6-SEC
+                   MOVE   2   TO  FLG-CHIIKI3
+                 END-IF
+               END-IF
+               MOVE       1   TO  IDX36
+             END-IF
+           END-PERFORM
+           IF  FLG-CHIIKI3  =  ZERO
+                   ADD    SYU-KOH-FTN-ENTANI
+                              TO  WRK-SKY-FTNMONEY-KOH
+           END-IF
+      *
+           .
+       2105262-SKY-SYUNOU-HENSYU4-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿¡µ·≥€º˝«º ‘Ω∏
+      *****************************************************************
+       21052621-SKY-SYUNOU-HENSYU5-SEC               SECTION.
+      *
+           EVALUATE  SYU-KOH-HKNNUM(IDX36)
+             WHEN      RECE02-KOHNUM(1)
+               IF  RECE02-HON-GAIKFTNRATE(1)(3:1) NOT = "0"
+                 IF  RECE02-EKF-FTNHASUKBN(2) = "1"
+                     COMPUTE  WRK-CHIIKI-ENTANI             =
+                              SYU-KOH-COMPFTN-ENTANI(IDX36) +
+                              0.9
+                     ADD   WRK-CHIIKI-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 ELSE
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 END-IF
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHNUM(2)
+               IF  RECE02-HON-GAIKFTNRATE(2)(3:1) NOT = "0"
+                 IF  RECE02-EKF-FTNHASUKBN(3) = "1"
+                     COMPUTE  WRK-CHIIKI-ENTANI             =
+                              SYU-KOH-COMPFTN-ENTANI(IDX36) +
+                              0.9
+                     ADD   WRK-CHIIKI-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 ELSE
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 END-IF
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHNUM(3)
+               IF  RECE02-HON-GAIKFTNRATE(3)(3:1) NOT = "0"
+                 IF  RECE02-EKF-FTNHASUKBN(4) = "1"
+                     COMPUTE  WRK-CHIIKI-ENTANI             =
+                              SYU-KOH-COMPFTN-ENTANI(IDX36) +
+                              0.9
+                     ADD   WRK-CHIIKI-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 ELSE
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 END-IF
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHNUM(4)
+               IF  RECE02-HON-GAIKFTNRATE(4)(3:1) NOT = "0"
+                 IF  RECE02-EKF-FTNHASUKBN(5) = "1"
+                     COMPUTE  WRK-CHIIKI-ENTANI             =
+                              SYU-KOH-COMPFTN-ENTANI(IDX36) +
+                              0.9
+                     ADD   WRK-CHIIKI-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 ELSE
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+                 END-IF
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+           END-EVALUATE
+      *
+           .
+       21052621-SKY-SYUNOU-HENSYU5-EXT.
+           EXIT.
+      *
+      *****************************************************************
+      *    ¿¡µ·≥€º˝«º ‘Ω∏
+      *****************************************************************
+       21052622-SKY-SYUNOU-HENSYU6-SEC               SECTION.
+      *
+           EVALUATE  SYU-KOH-HKNNUM(IDX36)
+             WHEN      RECE02-KOHSKY-KOHNUM(1)
+               IF  WRK-KOHSKY-GAIKFTNRATE(1)(3:1) NOT = "0"
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHSKY-KOHNUM(2)
+               IF  WRK-KOHSKY-GAIKFTNRATE(2)(3:1) NOT = "0"
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHSKY-KOHNUM(3)
+               IF  WRK-KOHSKY-GAIKFTNRATE(3)(3:1) NOT = "0"
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+             WHEN      RECE02-KOHSKY-KOHNUM(4)
+               IF  WRK-KOHSKY-GAIKFTNRATE(4)(3:1) NOT = "0"
+      *              •Ï•ª•◊•»…È√¥∂‚≥€£±£∞±ﬂÃ§À˛ªÕºŒ∏ﬁ∆˛§ŒæÏπÁ
+      *              £±£∞±ﬂ√±∞Ã§«Ω∏∑◊§µ§Ï§Î
+                     ADD   SYU-KOH-COMPFTN(IDX36)
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               ELSE
+                     ADD   SYU-KOH-FTN-ENTANI
+                                 TO  WRK-SKY-FTNMONEY-KOH
+               END-IF
+           END-EVALUATE
+      *
+           .
+       21052622-SKY-SYUNOU-HENSYU6-EXT.
            EXIT.
       *
       *****************************************************************
@@ -27407,7 +27642,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
            MOVE   WRK-TAIHI-GENKIN(1)  TO   WRK-TAIHI-GENKIN-XXX
            COMPUTE  WRK-TAIHI-GENKIN-XXX-EN   =
                     WRK-TAIHI-GENKIN-EN(1)    +
-                    0.5
+                    0.9
       *
       *    ∏¯»Ò§Œ…È√¥∑◊ªª
            IF   WRK-JYOGEN-KOH   =    ZERO
@@ -27586,7 +27821,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      TO   WRK-TAIHI-GENKIN-XXX
            COMPUTE  WRK-TAIHI-GENKIN-XXX-EN         =
                     WRK-TAIHI-GENKIN-EN(KOHFTN-IDX) +
-                    0.5
+                    0.9
       *
            IF   ((RECE02-KOHNUM(KOHFTN-IDX)      = "051") AND
                  (TBL-DOTANDOKU-FLG(KOHFTN-IDX)  =   1  ))
@@ -27600,7 +27835,7 @@ grpsys     PERFORM 900-DBSELECT-SEC
                                      TO   WRK-TAIHI-GENKIN-XXX
                COMPUTE  WRK-TAIHI-GENKIN-XXX-EN             =
                         WRK-TAIHI-GENKIN-EN-GEN(KOHFTN-IDX) +
-                        0.5
+                        0.9
              END-IF
            END-IF
       *
@@ -28787,15 +29022,23 @@ grpsys     PERFORM 900-DBSELECT-SEC
               AND (RECE02-KOHNUM(4) =  SPACE         )
                  MOVE     2    TO    KOHFTN-IDX
                  PERFORM  21111-KOHFTN-KINGAKU-SEC
-                 IF  (WRK-GAIJGNGAK  NOT =  ZERO               )
-                 AND (WRK-GAIJGNGAK  NOT =
-                          WRK-TAIHI-FTNMONEY-EN(KOHFTN-IDX + 1))
-                   COMPUTE WRK-GAIJGNGAK =
-                           WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
-                           0.5
-                   MOVE    WRK-GAIJGNGAK
-                           TO  RECE02-FTNMONEY(KOHFTN-IDX + 1)
-                               RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)
+                 IF  (WRK-GAIJGNGAK  NOT =  ZERO              )
+                 AND (WRK-GAIJGNGAK  >
+                               RECE02-FTNMONEY(KOHFTN-IDX + 1))
+                    IF WRK-GAIJGNGAK  >
+                              WRK-TAIHI-FTNMONEY-EN(KOHFTN-IDX + 1)
+                      COMPUTE RECE02-FTNMONEY(KOHFTN-IDX + 1)        =
+                              WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                              0.5
+                      COMPUTE RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)    =
+                              WRK-TAIHI-FTNMONEY-EN2(KOHFTN-IDX + 1) +
+                              0.5
+                    ELSE
+                      COMPUTE RECE02-FTNMONEY(KOHFTN-IDX + 1)        =
+                              WRK-TAIHI-FTNMONEY-EN(KOHFTN-IDX + 1)
+                      COMPUTE RECE02-FTNMONEY-KOJ(KOHFTN-IDX + 1)    =
+                              WRK-TAIHI-FTNMONEY-EN(KOHFTN-IDX + 1)
+                    END-IF
                  END-IF
               END-IF
            END-IF
@@ -30017,7 +30260,7 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                END-IF
                COMPUTE    WRK-SKY-FTNMONEY-KOH9     =
                           WRK-SKY-FTNMONEY-KOH      +
-                          0.5
+                          0.9
       *
                IF    FLG-KOHSKY-ARI  =  1
                  MOVE WRK-SKY-FTNMONEY-JYOKEN
@@ -30030,10 +30273,10 @@ grpsys     MOVE   RECE02-HOSPNUM      TO  LNK-ORCSJGNGET-HOSPNUM
                  END-IF
                  COMPUTE    WRK-SKY-FTNMONEY-KOH9-JYOKEN =
                             WRK-SKY-FTNMONEY-KOH-JYOKEN  +
-                            0.5
+                            0.9
                  COMPUTE    WRK-KOHSKY-XXX-COMPFTN-EN-RUI9 =
                             WRK-KOHSKY-XXX-COMPFTN-EN-RUI  +
-                            0.5
+                            0.9
                  PERFORM  VARYING  IDX36  FROM  1  BY  1
                            UNTIL   IDX36    >  10
                    EVALUATE   WRK-KOHSKY-XXX-FLG(IDX36)
