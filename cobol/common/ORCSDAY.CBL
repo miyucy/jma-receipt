@@ -352,7 +352,8 @@
                05  EDT-GYMD3-D         PIC  X(04).
                05  EDT-GYMD3-HI        PIC  X(02).
       *
-       01  EDT-YMD                     PIC  N(06).
+      *01  EDT-YMD                     PIC  N(06).
+       01  EDT-YMD                     PIC  X(12).
        01  EDT-YMDR                    REDEFINES  EDT-YMD.
            03  EDT-YMD-OC              PIC  X(02) OCCURS 6.
        01  EDT-YMDR1                   REDEFINES  EDT-YMD.
