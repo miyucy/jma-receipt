@@ -186,8 +186,8 @@
            03  WRK-HENTEN              PIC X(10).
       *----(04.08.02)--UPD-START---
            03  WRK-HENTENSU            PIC X(10).
-           03  WRK-TEN                 PIC 9(07)V9(03).
-           03  WRK-TENSU               PIC ZZZZZZ9.999.
+           03  WRK-TEN                 PIC 9(08)V9(03).
+           03  WRK-TENSU               PIC ZZZZZZZ9.999.
       *----(04.08.02)--UPD-START---
       *
            03  WRK-HENKIN              PIC X(16).
@@ -1443,8 +1443,18 @@
            MOVE    ZERO            TO  TOKEI-SRYSURYO
            MOVE    ZERO            TO  TOKEI-TEN
            PERFORM 900-TOKEI-READ-SEC
-           COMPUTE WRK-GSURYO      =   TNS-TEN *
+      *----(04.08.02)--UPD-START---
+           EVALUATE    TNS-TENSIKIBETU
+               WHEN    4
+                   COMPUTE WRK-TEN =   TNS-TEN   /   10
+               WHEN    5
+                   COMPUTE WRK-TEN =   TNS-TEN   *   10
+               WHEN    OTHER
+                   MOVE    TNS-TEN   TO  WRK-TEN
+           END-EVALUATE
+           COMPUTE WRK-GSURYO      =   WRK-TEN *
                                     (  WRK-SURYO *   WRK-KAISU )
+      *----(04.08.02)--UPD-START---
            COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                    +   WRK-GSURYO
       *
@@ -1477,8 +1487,18 @@
            MOVE    ZERO            TO  TOKEI-SRYSURYO
            MOVE    ZERO            TO  TOKEI-TEN
            PERFORM 900-TOKEI-READ-SEC
-           COMPUTE WRK-GSURYO      =   TNS-TEN
-                                   * ( WRK-SURYO *   ACCT-DAY (1 IDX-D))
+      *----(04.08.02)--UPD-START---
+           EVALUATE    TNS-TENSIKIBETU
+               WHEN    4
+                   COMPUTE WRK-TEN =   TNS-TEN   /   10
+               WHEN    5
+                   COMPUTE WRK-TEN =   TNS-TEN   *   10
+               WHEN    OTHER
+                   MOVE    TNS-TEN   TO  WRK-TEN
+           END-EVALUATE
+           COMPUTE WRK-GSURYO      =   WRK-TEN *
+                                    (  WRK-SURYO *   ACCT-DAY (1 IDX-D))
+      *----(04.08.02)--UPD-START---
            COMPUTE TOKEI-SRYSURYO  =   TOKEI-SRYSURYO
                                    +   WRK-GSURYO
       *
@@ -1560,7 +1580,7 @@
                    WHEN    OTHER
                        MOVE    TOKEI-TEN           TO  WRK-TEN
                        MOVE    WRK-TEN             TO  WRK-TENSU
-                       MOVE    WRK-TENSU(1:10)     TO  WRK-HENTENSU
+                       MOVE    WRK-TENSU(2:10)     TO  WRK-HENTENSU
                        PERFORM 400-ZHEN-TEN-SET-SEC
                        MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
                END-EVALUATE
@@ -1619,7 +1639,7 @@
                                        /   CNT-TOKEI   *   100
       *----(04.08.02)--UPD-START---
                MOVE    WRK-WARIAI      TO  WRK-TENSU
-               MOVE    WRK-TENSU(1:10) TO  WRK-HENTENSU
+               MOVE    WRK-TENSU(2:10) TO  WRK-HENTENSU
                PERFORM 400-ZHEN-TEN-SET-SEC
                MOVE    WRK-HENTEN      TO  WRK-NAI-TEN(25)
       *----(04.08.02)--UPD-END-----
