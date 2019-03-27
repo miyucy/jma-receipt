@@ -511,13 +511,17 @@
                    INITIALIZE                  TENSUCSV-REC
                    MOVE    TNS-HOSPNUM     TO  CSV-HOSPNUM
       *----(04.08.02)--UPD-START---
-                   IF      TNS-TENSIKIBETU     =   4
-                       COMPUTE WRK-TENSU   =   TNS-TEN     /   10
-                       MOVE    WRK-TENSU(2:12)     TO  CSV-TEN
-                   ELSE
-                       MOVE    TNS-TEN             TO  WRK-TENSU
-                       MOVE    WRK-TENSU(1:12)     TO  CSV-TEN
-                   END-IF
+                   EVALUATE    TNS-TENSIKIBETU
+                       WHEN    4
+                           COMPUTE WRK-TENSU   =   TNS-TEN /   10
+                           MOVE    WRK-TENSU(2:12) TO  CSV-TEN
+                       WHEN    5
+                           COMPUTE WRK-TENSU   =   TNS-TEN *   10
+                           MOVE    WRK-TENSU(1:12) TO  CSV-TEN
+                       WHEN    OTHER
+                           MOVE    TNS-TEN         TO  WRK-TENSU
+                           MOVE    WRK-TENSU(1:12) TO  CSV-TEN
+                   END-EVALUATE
       *----(04.08.02)--UPD-END-----
                    MOVE    ICD-INPUTCD     TO  CSV-SRYCD
                    MOVE    TNS-NAME        TO  CSV-NAME
