@@ -38,6 +38,7 @@
       *  04.08.01    NACL-森脇    14/07/23  一時ファイルディレクトリ設定
       *  04.08.02    NACL-森脇    16/03/17  金額種別４に対応
       *  04.08.03    NACL-森脇    16/09/01  持参薬対象外
+      *  05.00.00    NACL-森脇    19/03/27  金額種別５に対応
       *****************************************************************
       *
        ENVIRONMENT             DIVISION.
@@ -1543,19 +1544,26 @@
                MOVE    TOKEI-KOME          TO  WRK-NAI-KOME(IDY)
       *        点数編集
       *----(04.08.02)--UPD-START---
-               IF      TOKEI-TENSIKIBETU   =   4
-                   COMPUTE WRK-TEN     =   TOKEI-TEN   /   10
-                   MOVE    WRK-TEN             TO  WRK-TENSU
-                   MOVE    WRK-TENSU(2:10)     TO  WRK-HENTENSU
-                   PERFORM 400-ZHEN-TEN-SET-SEC
-                   MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
-               ELSE
-                   MOVE    TOKEI-TEN           TO  WRK-TEN
-                   MOVE    WRK-TEN             TO  WRK-TENSU
-                   MOVE    WRK-TENSU(1:10)     TO  WRK-HENTENSU
-                   PERFORM 400-ZHEN-TEN-SET-SEC
-                   MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
-               END-IF
+               EVALUATE    TOKEI-TENSIKIBETU
+                   WHEN    4
+                       COMPUTE WRK-TEN     =   TOKEI-TEN   /   10
+                       MOVE    WRK-TEN         TO  WRK-TENSU
+                       MOVE    WRK-TENSU(2:10) TO  WRK-HENTENSU
+                       PERFORM 400-ZHEN-TEN-SET-SEC
+                       MOVE    WRK-HENTEN      TO  WRK-NAI-TEN(IDY)
+                   WHEN    5
+                       COMPUTE WRK-TEN     =   TOKEI-TEN   *   10
+                       MOVE    WRK-TEN         TO  WRK-TENSU
+                       MOVE    WRK-TENSU(1:10) TO  WRK-HENTENSU
+                       PERFORM 400-ZHEN-TEN-SET-SEC
+                       MOVE    WRK-HENTEN      TO  WRK-NAI-TEN(IDY)
+                   WHEN    OTHER
+                       MOVE    TOKEI-TEN           TO  WRK-TEN
+                       MOVE    WRK-TEN             TO  WRK-TENSU
+                       MOVE    WRK-TENSU(1:10)     TO  WRK-HENTENSU
+                       PERFORM 400-ZHEN-TEN-SET-SEC
+                       MOVE    WRK-HENTEN          TO  WRK-NAI-TEN(IDY)
+               END-EVALUATE
       *----(04.08.02)--UPD-START---
            ELSE
                MOVE    TOKEI-NAME          TO  WRK-NAI-NAME  (IDY)
@@ -1638,11 +1646,14 @@
                                                WRK-NAI-SURYO(IDY IDX)
       *                合計編集
       *----(04.08.02)--UPD-START---
-                       IF      TOKEI-TENSIKIBETU   =   4
-                           COMPUTE WRK-TEN     =   TOKEI-TEN   /   10
-                       ELSE
-                           MOVE    TOKEI-TEN       TO  WRK-TEN
-                       END-IF
+                       EVALUATE    TOKEI-TENSIKIBETU
+                           WHEN    4
+                               COMPUTE WRK-TEN =   TOKEI-TEN   /   10
+                           WHEN    5
+                               COMPUTE WRK-TEN =   TOKEI-TEN   *   10
+                           WHEN    OTHER
+                               MOVE    TOKEI-TEN   TO  WRK-TEN
+                       END-EVALUATE
                        COMPUTE WRK-KIN         =   WRK-TEN
                                                *   TOKEI-SRYSURYO
       *----(04.08.02)--UPD-START---
