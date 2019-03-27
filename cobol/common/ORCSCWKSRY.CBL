@@ -1841,6 +1841,8 @@
                    MOVE    SPACE               TO  SPA-COM-KEIFLG(IDX2)
       *            金額入力
                    IF      SPA-COM-SRYSYUKBN(IDX2) =   "809"
+      *H31.3                   CLAIM,API対応（800で送信）
+                                                   OR  "800"
                        MOVE    SPA-COM-INPUTCD (IDX2)  TO  TNS-SRYCD
                        PERFORM 910-TENSU-READ-SEC
                        IF      TNS-TEN                 =   ZERO
