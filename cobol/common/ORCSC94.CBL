@@ -282,6 +282,8 @@
                            MOVE    WRK-KEI-X           TO  WRK-SURYO-X
       *                    自賠責金額入力
                            IF      SPA-COM-SRYSYUKBN(IDX)  =   "809"
+      *H31.3                   CLAIM,API対応（800で送信）
+                                                           OR  "800"
                                MOVE    SPA-COM-JIHIMONEY(IDX)
                                                        TO  WRK-KEI-Z
                                MOVE    WRK-KEI-X       TO  WRK-SURYO-X
